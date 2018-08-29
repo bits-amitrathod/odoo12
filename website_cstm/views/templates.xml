@@ -185,6 +185,7 @@
                             <img src="/website_cstm/static/src/img/visa-319d545c6fd255c9aad5eeaad21fd6f7f7b4fdbdb1a35ce83b89cca12a187f00.svg"
                                  alt="Visa"/>
                         </div>
+                        <t t-call="website.language_selector"/>
                     </div>
                 </div>
             </div>
