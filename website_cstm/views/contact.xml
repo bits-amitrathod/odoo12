@@ -1,0 +1,136 @@
+<odoo>
+    <template id="contact_page" name="Contact Page">
+        <t name="Contact Us" t-name="website.contactus">
+            <t t-call="website.layout">
+                <div id="wrap">
+                    <div class="oe_structure"/>
+                    <section class="about-us-section mb0">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="header-title">
+                                        <h1>Contact</h1>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-sm-6 mb48 mt8">
+                                    <p>
+                                        <strong>Jamie Gutermuth – Senior Sales Manager</strong>
+                                    </p>
+                                    <p>(412) 221-4280</p>
+                                    <p>
+                                        <a href="#">
+                                            <font style="color: rgb(255, 0, 0);" class="bg-white-25">Jamie@surgicalproductsolutions.com</font>
+                                        </a>
+                                    </p>
+                                    <p>
+                                        <a href="#" target="_blank" title="LinkedIn: Jamie Gutermuth" rel="noopener noreferrer">
+                                            <font style="color: rgb(255, 0, 0);" class="bg-white-25">LinkedIn</font>
+                                        </a>
+                                    </p>
+                                </div>
+                                <div class="col-md-6 col-sm-6 mb48 mt8">
+                                    <p>
+                                        <strong>Dena Gula – Sales Manager</strong>
+                                    </p>
+                                    <p>(412) 564-1047</p>
+                                    <p>
+                                        <a href="#" data-original-title="" title="">
+                                            <font style="color: rgb(255, 0, 0);" data-original-title="" title="">Dena@surgicalproductsolutions.com</font>
+                                        </a>
+                                    </p>
+                                    <p>
+                                        <a href="#" target="_blank" title="LinkedIn: Dena Gula" rel="noopener noreferrer">
+                                            <font style="color: rgb(255, 0, 0);">LinkedIn</font>
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-sm-6 mb48 mt8">
+                                    <p>
+                                        <strong>Chelsea Cernigliaro – Sales Specialist</strong>
+                                    </p>
+                                    <p>(412) 564-1281</p>
+                                    <p>
+                                        <a href="#" data-original-title="" title="">
+                                            <font style="color: rgb(255, 0, 0);">Chelsea@surgicalproductsolutions.com</font>
+                                        </a>
+                                    </p>
+                                    <p>
+                                        <a href="#">
+                                            <font style="color: rgb(255, 0, 0);">LinkedIn</font>
+                                        </a>
+                                    </p>
+                                </div>
+                                <div class="col-md-6 col-sm-6 mb48 mt8">
+                                    <p>
+                                        <strong>Jessica Kuna</strong>
+                                        <strong><span> </span>–<span> </span>Sales Specialist</strong>
+                                    </p>
+                                    <p>(412) 564-1279</p>
+                                    <p>
+                                        <a href="#">
+                                            <font style="color: rgb(255, 0, 0);">jkuna@surgicalproductsolutions.com</font>
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-sm-6 mb48 mt8">
+                                    <p>
+                                        <strong>Barrett Herzer – Sales Specialist</strong>
+                                    </p>
+                                    <p>(412) 248-1284</p>
+                                    <p>
+                                        <a href="#">
+                                            <font style="color: rgb(255, 0, 0);">barrett@surgicalproductsolutions.com</font>
+                                        </a>
+                                    </p>
+                                </div>
+                                <div class="col-md-6 col-sm-6 mb48 mt8">
+                                    <p>
+                                        <strong>Cassidy Nelson – Sales Specialist</strong>
+                                    </p>
+                                    <p>(412) 564-9011</p>
+                                    <p>
+                                        <a href="#" data-original-title="" title="">
+                                            <font style="color: rgb(255, 0, 0);">cassidy@surgicalproductsolutions.com</font>
+                                        </a>
+                                    </p>
+                                </div>
+                                <div class="col-md-6 col-sm-6 mb48 mt8">
+                                    <p>
+                                        <strong>Brittany Edwards – Sales Specialist</strong>
+                                    </p>
+                                    <p>(412) 434-0214</p>
+                                    <p>
+                                        <a href="#">
+                                            <font style="color: rgb(255, 0, 0);">brittany@surgicalproductsolutions.com</font>
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row contact-form">
+                                <div class="col-md-8 mb48">
+                                    <iframe width="100%" height="340" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?f=q&amp;source=embed&amp;hl=en&amp;geocode=&amp;q=643+First+Avenue+Pittsburgh,+PA+15219&amp;z=12&amp;output=embed"/>
+                                </div>
+                                <div class="col-md-4 mb48">
+                                    <label for="contactFormName">Name <span class="red">*</span></label>
+                                    <input type="text" id="contactFormName" name="contact[contact-form-name]" placeholder="Name" class="form-control" autocapitalize="words" value="" required="required"/>
+                                    <label for="contactFormEmail">Email <span class="red">*</span></label>
+                                    <input type="email" id="contactFormEmail" name="contact[email]" placeholder="Email" autocorrect="off" autocapitalize="off" value="" class="form-control" required="required"/>
+                                    <label for="contactFormMessage">Message <span class="red">*</span></label>
+                                    <textarea id="contactFormMessage" class="form-control" name="contact[body]" placeholder="Message" required="required"/>
+                                    <input type="" class="submit action_button" value="Send"/>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="oe_structure"/>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

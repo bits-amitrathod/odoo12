@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <menuitem
+            id="menu_tps_report"
+            name="Total Product Sales"
+            parent="sale.menu_sale_report"
+            sequence="5"
+            action="tps_report_sale.open_tps_sales_action"/>
+
+</odoo>

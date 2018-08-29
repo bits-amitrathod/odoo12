@@ -1,0 +1,78 @@
+<odoo>
+    <template id="about_page" name="About Page">
+        <t t-name="website.about">
+            <t t-call="website.layout">
+                <div id="wrap" class="oe_structure oe_empty"/>
+                <section class="about-us-section">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12">
+                                <div class="header-title">
+                                    <h1>About</h1>
+                                </div>
+                                <div class="about-us-description">
+                                    <p>SPS is a leader in providing cost-saving solutions for
+                                        healthcare facilities across the United States who choose
+                                        to save money without sacrificing quality of care. We accomplish
+                                        this by providing hospitals and surgery centers two ways to save
+                                        on their high-volume surgical disposables. We help our customers
+                                        recover significant budget costs by purchasing their un-used,
+                                        in-date surgical surplus while at the same time, providing them
+                                        additional cost savings and flexibility when purchasing the same
+                                        high volume products they are currently utilizing.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="service-section">
+                    <div class="container">
+                        <hr/>
+                        <div class="row">
+                            <div class="col-md-4 col-sm-4">
+                                <div class="service-picture">
+                                    <img alt="warehouse SPS Shop" class="img-responsive"
+                                         src="/website_cstm/static/src/img/warehouse-woman-ABOUT.jpg"/>
+                                </div>
+                            </div>
+                            <div class="col-md-8 col-sm-8">
+                                <div class="service-picture-description">
+                                    <p>SPS provides a solution for surgical disposables when they become
+                                        jeopardized and are no longer being used by the facility.
+                                        This can be due to product conversions, contract changes,
+                                        or physician departures. We purchase these surgical disposables
+                                        that would otherwise remain un-used and eventually expire on the
+                                        shelves of the OR, injecting cash directly into the hospital’s budget.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="row">
+                            <div class="col-md-8  col-sm-8">
+                                <div class="service-picture-description">
+                                    <p>SPS acts as an independent distributor of un-used, in date surgical disposables.
+                                        We can sell your facility high volume products that you are currently buying
+                                        from top vendors,
+                                        at an even greater discount from top tier pricing. We also provide the
+                                        flexibility to purchase individual items in “eaches,” rather than in cases,
+                                        which helps in the unique case of a preferential product that is outside your
+                                        normal buying patterns
+                                        (Physician Preference Item)—and avoids disrupting any contract compliances.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-4  col-sm-4">
+                                <div class="service-picture">
+                                    <img alt="warehouse SPS Shop" class="img-responsive" src="/website_cstm/static/src/img/Scissors-ABOUT.jpg"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+            </t>
+        </t>
+    </template>
+</odoo>

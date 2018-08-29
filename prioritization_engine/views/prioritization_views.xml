@@ -1,0 +1,250 @@
+<odoo>
+  <data>
+      <record id="view_form_prioritization_customer" model="ir.ui.view">
+            <field name="name">Prioritization customer form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="priority" eval="20"/>
+            <field name="arch" type="xml">
+                <button name="toggle_active" position="before">
+                    <button class="oe_stat_button" name ="action_view_notification" type="object"  icon="fa-bell">
+                         <span class="o_stat_text">In-Stock Notification</span>
+                    </button>
+                </button>
+                  <field name="vat" position="after">
+                      <field name="sku_preconfig"/>
+                      <field name="sku_postconfig"/>
+                      <field name="quickbook_id"/>
+                      <field name="preferred_method"/>
+                  </field>
+                  <field name="lang" position="after">
+                     <field name="prioritization"/>
+                     <field name="on_hold"/>
+                     <field name="is_broker"/>
+                     <field name="having_carrier"/>
+                     <field name="carrier_info"  attrs="{'invisible':[('having_carrier', '==', False)]}"/>
+                     <field name="carrier_acc_no" attrs="{'invisible':[('having_carrier', '==', False)]}"/>
+                      <field name="shipping_terms"/>
+                  </field>
+                  <xpath expr="/form/sheet/notebook/page[@name='sales_purchases']" position="after">
+                      <page name="prioritization" string="Customer Priority Configuration">
+                                <field name="prioritization_ids" widget="one2many_selectable"/>
+                       </page>
+                       <page name="CustomerOrder" string="Customer Order">
+                            <field name="order_ids" mode="tree">
+                                    <tree string="Sales Orders for Customer" editable="bottom" create="false">
+                                        <field name="message_needaction" invisible="1"/>
+                                        <field name="name" string="Order Number" attrs="{'readonly':[('state','=','sale')]}"/>
+                                        <field name="cust_po"/>
+                                         <field name="user_id"/>
+                                        <field name="amount_total" sum="Total Tax Included" widget="monetary"/>
+                                        <field name="currency_id" />
+                                        <field name="invoice_status" />
+                                        <field name="state"/>
+                                    </tree>
+                            </field>
+                      </page>
+                      <page name="prioritization" string="Global Priority Configuration">
+                      <group>
+                        <group>
+                            <field name="auto_allocate" />
+                            <field name="priority"/>
+                             <field name="expiration_tolerance" />
+                            <field name="length_of_hold"/>
+                        </group>
+                        <group>
+                            <field name="min_threshold" min="1" max="999"/>
+                             <field name="max_threshold" min="1" max="999"/>
+                            <field name="cooling_period" min="1" max="365"/>
+                             <field name="partial_ordering" />
+                            <field name="partial_UOM"/>
+                      </group>
+                      </group>
+                      </page>
+                  </xpath>
+            </field>
+      </record>
+
+      <record id="view_tree_prioritization_normal" model="ir.ui.view">
+            <field name="sequence" eval="1"/>
+            <field name="name">Prioritization normal tree</field>
+            <field name="model">prioritization_engine.prioritization</field>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+              <tree editable="bottom">
+                    <field name="sequence" widget="handle"/>
+                    <field name="product_id"/>
+                    <field name="sku_code" />
+                    <field name="lst_price" readonly="True"/>
+                    <field name="auto_allocate" />
+                  <field name="priority"/>
+                   <field name="expiration_tolerance" />
+                  <field name="length_of_holding"/>
+                  <field name="min_threshold"/>
+                  <field name="max_threshold"/>
+                  <field name="cooling_period"/>
+                  <field name="partial_ordering" />
+                  <field name="partial_UOM"/>
+                    <!--<field name="price" invisible="not context.get('pricelist',False)" readonly="True"/>-->
+                    <!--<field name="uom_id" options="{'no_open': True, 'no_create': True}" groups="product.group_uom"/>-->
+                </tree>
+            </field>
+      </record>
+
+      <record id="view_form_prioritization_normal" model="ir.ui.view">
+            <field name="sequence" eval="1"/>
+            <field name="name">Prioritization normal form</field>
+            <field name="model">prioritization.transient</field>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+              <form >
+                  <group>
+                    <group>
+                        <field name="auto_allocate" />
+                        <field name="priority"/>
+                         <field name="expiration_tolerance" />
+                        <field name="length_of_hold"/>
+                    </group>
+                    <group>
+                        <field name="min_threshold"/>
+                         <field name="max_threshold"/>
+                        <field name="cooling_period"/>
+                         <field name="partial_ordering" />
+                        <field name="partial_UOM"/>
+                  </group>
+                  </group>
+                  <footer class="oe_edit_only">
+                        <button string="Multiple Update" name="action_confirm" type="object" class="oe_highlight"/>
+                        <button string="Discard" special="cancel"/>
+                  </footer>
+                </form>
+            </field>
+      </record>
+
+      <record id="action_sps_customer" model="ir.actions.act_window">
+            <field name="name">Create Customer</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to add a contact in your contacts directory.
+              </p><p>
+                Odoo helps you easily track all activities related to
+                a customer: discussions, history of business opportunities,
+                documents, etc.
+              </p>
+            </field>
+      </record>
+
+      <record id="action_sps_transient" model="ir.actions.act_window">
+            <field name="name">Multiple Update Operations</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">prioritization.transient</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+          <!--  <field name="target">new</field>-->
+            <field name="target">new</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to add a contact in your contacts directory.
+              </p><p>
+                Odoo helps you easily track all activities related to
+                a customer: discussions, history of business opportunities,
+                documents, etc.
+              </p>
+            </field>
+      </record>
+
+      <record id="product_form_ex" model="ir.ui.view">
+            <field name="name">product.product.form_ex</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <page name="general_information" position="inside">
+                    <group name="Category" string="Category">
+                        <group>
+                              <field name="location"/>
+                              <field name="sku_code"/>
+                        </group>
+                        <group>
+                            <field name="premium"/>
+                            <field name="manufacturer_pref"/>
+                         </group>
+                     </group>
+                </page>
+            </field>
+        </record>
+
+      <record id="view_notification_setting_form" model="ir.ui.view">
+            <field name="name">notification.setting.form</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <form string="Notification Setting" create="false">
+                    <sheet>
+                         <group>
+                            <group>
+                                    <field name="start_date"/>
+                                    <field name="monday"/>
+                                    <field name="tuesday"/>
+                                    <field name="wednesday"/>
+                                    <field name="thursday"/>
+                            </group>
+                                 <group>
+                                    <field name="end_date"/>
+                                    <field name="friday"/>
+                                    <field name="saturday"/>
+                                    <field name="sunday"/>
+                                  </group>
+                         </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+      <record id="action_notification_setting" model="ir.actions.act_window">
+            <field name="name">Notification Setting</field>
+            <field name="res_model">res.partner</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="domain"></field>
+             <field name="context">{
+                    'customer_id':[],
+            }
+            </field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click here to create a new transfer.
+              </p><p>
+                You can either do it immediately or mark it as Todo for future processing. Use your scanner to validate the transferred quantity quicker.
+              </p>
+            </field>
+        </record>
+
+      <!-- Top menu item -->
+    <menuitem name="Prioritization Engine" id="prioritization_engine.menu_root"/>
+
+      <!-- menu categories -->
+    <menuitem name="Customer" id="prioritization_engine.prioritization_cmenu" parent="prioritization_engine.menu_root"/>
+
+      <!-- actions -->
+    <menuitem name="Customer" id="prioritization_engine.prioritization_cust_menu" parent="prioritization_engine.prioritization_cmenu"
+              action="action_sps_customer"/>
+      <!-- menu categories -->
+
+    <menuitem name="Product" id="prioritization_engine.prioritization_pmenu" parent="prioritization_engine.menu_root"/>
+
+    <!-- actions -->
+
+    <menuitem name="Product" id="prioritization_engine.prioritization_pro_menu" parent="prioritization_engine.prioritization_pmenu"
+              action="product.product_template_action"/>
+
+         <!-- menu categories -->
+    <menuitem name="Import Document" id="prioritization_engine.prioritization_imenu" parent="prioritization_engine.menu_root"/>
+         <!-- actions -->
+    <menuitem name="Import Document" id="prioritization_engine.prioritization_import_menu" parent="prioritization_engine.prioritization_imenu"
+              action="action_notification_setting"/>
+
+  </data>
+</odoo>

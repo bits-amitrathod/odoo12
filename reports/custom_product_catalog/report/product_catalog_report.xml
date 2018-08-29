@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report
+                id="action_report_custom_catalog_wise"
+                string="Custom Product Catalog"
+                model="custome.product.report"
+                report_type="qweb-html"
+                file="custom_product_catalog.catalog_temp"
+                name="custom_product_catalog.catalog_temp"
+        />
+
+        <report
+                id="action_report_product_catalog_wise"
+                string="Product Catalog"
+                model="custome.product.report"
+                report_type="qweb-html"
+                file="custom_product_catalog.product_catalog_temp"
+                name="custom_product_catalog.product_catalog_temp"
+        />
+    </data>
+</odoo>

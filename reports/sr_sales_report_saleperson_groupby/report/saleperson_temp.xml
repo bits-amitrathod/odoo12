@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="saleperson_temp">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <page>
+                    <div class="oe_structure"/>
+                    <div class="row">
+                    <center>
+                        <b>
+                            <h2> Surgical Product Solutions </h2>
+                            <h4> Gross Sales By Salesperson </h4>
+                        </b>
+                    </center>
+                    <center>
+                       Date Range: <b>
+                            <span t-esc="start_date"/>
+                            -
+                            <span t-esc="end_date"/>
+                        </b>
+                    </center>
+                    </div>
+                    <br/>
+                    <t t-foreach="data" t-as="user">
+                        <center>
+                            <b>
+                                <span>Salesperson :</span>
+                                <span t-esc="user[0]"/>
+                            </b>
+                        </center>
+                        <t t-set="total_sum" t-value="0"/>
+                        <table class="table table-condensed" style="border: 1px solid black;">
+                            <thead>
+                                <tr style="border: 1px solid black;">
+                                    <th style="border: 1px solid black;text-align: center;center;width: 327px;">Order</th>
+                                    <th style="border: 1px solid black;text-align: center;center;width: 474px;">Date</th>
+                                    <th style="border: 1px solid black;text-align: center;">Price</th>
+
+                                </tr>
+                                <tr t-foreach="user[1]" t-as="order">
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="order[0]"/>
+                                    </td>
+                                    <td align="center" style="border: 1px solid black;">
+                                        <span t-esc="order[1]"/>
+                                    </td>
+                                    <td align="right" style="border: 1px solid black;">
+                                        $ <span t-esc="order[2]"/>
+                                       <t t-set="total_sum" t-value="total_sum + float(order[2])"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="border: 1px solid black;">
+                                    </td>
+                                    <td style="border: 1px solid black;text-align: right;">
+                                        <b>Total</b>
+                                    </td>
+                                    <td align="right" style="border: 1px solid black;">
+                                        $ <span t-esc="total_sum"/>
+                                    </td>
+                                </tr>
+                            </thead>
+                        </table>
+                    </t>
+                </page>
+            </t>
+        </t>
+    </template>
+</odoo>

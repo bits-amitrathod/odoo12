@@ -1,0 +1,49 @@
+<section class="oe_container">
+    <div class="oe_row oe_spaced">
+        <div class="oe_span12">
+            <h2 class="oe_slogan">Multiple selection for One2many</h2>
+        </div>
+        <div class="oe_span12">
+            <p class="oe_mt32">
+				Just add the widget 'one2many_selectable' on any one2many or many2many field to display checkboxes for each record and add an action button.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+        <h2 class="oe_slogan">How it works </h2>
+        <div class="oe_span12">
+            <p class="oe_mt32">
+The button added on top of the tree, when pressed, will call a python function alongwith the selected resords as arguments.
+Both model and the python function name can be changed from javascript. I have added comments in the JS file (/web_one2many_selectable/static/src/js/widgets.js).
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+        <h2 class="oe_slogan">Sample Python Function </h2>
+        <div class="oe_span6">
+            <p class="oe_mt32">
+@api.multi<br>
+def bulk_verify(self):<br>
+    &emsp;for record in self:<br>
+    &emsp;print record<br>
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+        <h2 class="oe_slogan">Screenshot </h2>
+        <div class="oe_span12">
+            <div class="oe_row_img oe_centered">
+                <img class="oe_picture oe_screenshot" src="sreenshot1.png">
+            </div>
+        </div>
+    </div>
+</section>

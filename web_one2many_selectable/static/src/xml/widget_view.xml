@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="One2ManySelectable">
+     	<div class="cf_button_array" style="padding-left: 2%">
+	        	<t>
+					<button name="action_view_notification" icon="gtk-yes"
+							class="cf_button_confirm btn btn-primary btn-sm o_form_button_edit"
+							href="javascript:void(0)" style="margin-top: 8px;margin-left: 16px;">
+						Multiple Update
+					</button>
+				</t>
+	        </div>
+	</t>
+ </templates>

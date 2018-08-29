@@ -1,0 +1,58 @@
+<odoo>
+  <data>
+      <record id="view_order_form_ex" model="ir.ui.view">
+            <field name="name">sale.order.form_ex</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                 <button name="action_quotation_send"  position="after">
+                 <field name="show_validate" invisible="1"/>
+                <!-- <field name="show_check_availability" invisible="1"/>
+                   <field name="picking_type_code" invisible="1"/>
+                     <field name="show_validate" invisible="1"/>
+                   -->
+                 <button name="action_assign"  string="Check Availability" type="object" class="oe_highlight" groups="base.group_user" states="sale"/>
+                 <button name="action_validate" string="Validate" groups="stock.group_stock_user" type="object" class="oe_highlight" states="sale"/>
+                 <button name="do_unreserve" string="Unreserve" groups="base.group_user" type="object" states="sale"/>
+                 <!--<button name="action_validate" string="Validate" type="object" states="sale" class="btn-primary"/>
+                 <button name="action_validate" string="Validate" type="object" states="sale" class="btn-primary"/>-->
+
+                 </button>
+                 <button name="action_cancel" position="after" >
+                 <button name="action_void" string="Voided" type="object" states="draft,sent"/>
+                 </button>
+                 <field name="partner_shipping_id" position="after">
+                     <field name="preferred_method"/>
+                     <field name="shipping_terms"/>
+                 </field>
+                <field name="payment_term_id" position="after">
+                     <field name="carrier_info"/>
+                     <field name="carrier_acc_no"/>
+                 </field>
+                 <xpath expr="/form/sheet/notebook/page[1]/field[@name='order_line']/tree/field[@name='currency_id']" position="after">
+                          <button name="action_show_details" string="Register lots, packs, location" type="object" icon="fa-list"  options='{"warn": true}' states="sale"/>
+                 </xpath>
+
+            </field>
+        </record>
+
+      <record id="view_invoice_form_ex" model="ir.ui.view">
+            <field name="name">account.invoice.form_ex</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+                 <field name="payment_term_id" position="after">
+                             <field name="preferred_method"/>
+                             <field name="shipping_terms"/>
+                 </field>
+                <field name="date_due" position="after">
+                     <field name="expiration_date"/>
+                </field>
+                 <field name="comment" position="before">
+                      <field name="note" class="oe_inline" placeholder="Customer Message....." style="width:50% !important;"/>
+                      <div class="oe_clear"/>
+                 </field>
+            </field>
+        </record>
+  </data>
+</odoo>

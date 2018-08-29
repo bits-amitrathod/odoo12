@@ -1,0 +1,368 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+    <record model="ir.ui.view" id="vendor_offer.list">
+      <field name="name">purchase.order list2</field>
+      <field name="model">purchase.order</field>
+      <field name="priority">20</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="appraisal_no" attrs="{'invisible':[('state', 'not in', ('ven_draft'))]}"/>
+          <field name="state" invisible="1"   />
+          <field name="acq_user_id" string='Acq Manager' attrs="{'invisible':[('state', 'not in', ('ven_draft'))]}"/>
+          <field name="partner_id" attrs="{'invisible':[('state', 'not in', ('ven_draft'))]}"/>
+          <field name="offer_amount" attrs="{'invisible':[('state', 'not in', ('ven_draft'))]}"  widget="monetary"/>
+          <field name="retail_amt" attrs="{'invisible':[('state', 'not in', ('ven_draft'))]}"  widget="monetary"/>
+          <field name="date_offered" attrs="{'invisible':[('state', 'not in', ('ven_draft'))]}"/>
+          <field name="revision" attrs="{'invisible':[('state', 'not in', ('ven_draft'))]}"/>
+          <field name="currency_id" invisible="1"/>
+          <field name="message_unread" invisible="1"/>
+        </tree>
+
+      </field>
+    </record>
+
+      <record model="ir.ui.view" id="listmultiplier">
+      <field name="name">multiplier.multiplier listmultiplier</field>
+      <field name="model">multiplier.multiplier</field>
+      <field name="arch" type="xml">
+        <tree>
+            <field name="name" />
+            <field name="retail" />
+            <field name="margin" />
+        </tree>
+      </field>
+    </record>
+
+     <record model="ir.ui.view" id="listcompetition">
+      <field name="name">competition.competition listcompetition</field>
+      <field name="model">competition.competition</field>
+      <field name="arch" type="xml">
+        <tree>
+            <field name="name" />
+            <field name="margin" />
+        </tree>
+      </field>
+    </record>
+
+
+       <record id="view_vendor_offer_multiplier" model="ir.ui.view">
+            <field name="name">multiplier.multiplier.form</field>
+            <field name="model">multiplier.multiplier</field>
+            <field name="arch" type="xml">
+                <form string="Multiplier" class="o_sale_order">
+      <header></header>
+                      <sheet>
+                           <group>
+                        <group>
+                             <field name="name" />
+                             <field name="code" />
+                             <field name="retail" />
+                             <field name="margin" />
+                        </group>
+                           </group>
+                      </sheet>
+                </form>
+            </field>
+       </record>
+
+       <record id="view_vendor_offer_competition" model="ir.ui.view">
+            <field name="name">competition.competition.form</field>
+            <field name="model">competition.competition</field>
+            <field name="arch" type="xml">
+                <form string="Competition" class="o_sale_order">
+      <header></header>
+                      <sheet>
+                           <group>
+                        <group>
+                             <field name="name" />
+                             <field name="margin" />
+                        </group>
+                           </group>
+                      </sheet>
+                </form>
+            </field>
+       </record>
+
+
+        <record id="purchase_form_action_vendor" model="ir.actions.act_window">
+            <field name="name">Purchase Orders</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_form_action"></field>
+            <field name="view_mode">tree,kanban,form,pivot,graph,calendar</field>
+            <field name="context">{'search_default_todo':1, 'show_purchase': True}</field>
+            <field name="domain">[('state','not in',('draft','sent','bid', 'confirmed','ven_draft'))]</field>
+            <field name="search_view_id" ref="purchase.view_purchase_order_filter"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a quotation that will be converted into a purchase order.
+              </p><p>
+                Use this menu to search within your purchase orders by
+                references, vendor, products, etc. For each purchase order,
+                you can track the related discussion with the vendor, control
+                the products received and control the vendor bills.
+              </p>
+            </field>
+        </record>
+        <menuitem action="purchase_form_action_vendor" id="purchase.menu_purchase_form_action" parent="purchase.menu_procurement_management" sequence="5"/>
+
+    <record id="view_vendor_offer_form" model="ir.ui.view">
+            <field name="name">purchase.order.form</field>
+            <field name="model">purchase.order</field>
+            <field name="context">{state: 'ven_draft'}</field>
+            <field name="arch" type="xml">
+                <form string="Vendor Offer" class="o_sale_order">
+                <header>
+                    <button name="action_send_offer_email" string="Send Offer by Email" type="object"  class="btn-primary"/>
+                    <button name="action_print_vendor_offer" string="Print Vendor Offer" type="object"  class="btn-primary"/>
+                    <button name="action_confirm_vendor_offer" states="ven_draft" string="Confirm Order" type="object"  />
+                    <button name="action_cancel_vendor_offer"  states="ven_draft" string="Cancel" type="object"  />
+                     <field name="status" widget="statusbar" statusbar_visible="ven_draft,ven_sent,purchase" readonly="1"  />
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <!--<button name="action_send_offer_email"-->
+                            <!--type="object"-->
+                            <!--class="oe_stat_button"-->
+                            <!--icon="fa-archive" string="Active">-->
+                        <!--</button>-->
+                    </div>
+                    <div class="oe_title">
+                         <label string="Vendor Offer"/>
+                        <h1>
+                          <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="partner_id"  string='Facility Name'/>
+                            <field name="acq_user_id" />
+                            <field name="possible_competition" />
+                            <field name="accelerator" />
+                            <field name="priority" />
+                            <field name="max" />
+                            <field name="state" invisible="1" />
+                        </group>
+                        <group>
+                            <field name="date_offered" string="Offer Date"/>
+                            <field name="appraisal_no" />
+                            <field name="accepted_date" />
+                            <field name="declined_date" />
+                            <field name="offer_type" />
+                            <field name="new_customer" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Product">
+                            <field name="order_line" mode="tree,kanban" attrs="{'readonly': [('state', 'not in', ('draft', 'ven_draft'))]}" >
+                                            <form >
+                                                <group>
+                                                    <group>
+                                                         <field name="product_id" />
+                                                         <field name="sku_code"   readonly="1"/>
+                                                         <field name="product_brand_id" readonly="1"  />
+                                                         <field name="name"    invisible="1" />
+                                                         <field name="tier"  readonly="1" />
+                                                         <field name="prod_qty"  />
+                                                         <field name="expiration_date"  />
+                                                         <field name="qty_in_stock"    />
+                                                         <field name="product_sales_count"  />
+                                                         <field name="product_sales_count_month"  />
+                                                    </group>
+                                                     <group>
+                                                         <field name="product_sales_count_90"   />
+                                                         <field name="product_sales_count_yrs" />
+                                                         <field name="expired_inventory"   />
+                                                         <field name="price_unit"  invisible="1" />
+                                                         <field name="product_unit_price"  />
+                                                         <field name="product_offer_price"   />
+                                                         <field name="product_retail"  />
+                                                         <field name="offer_price"   />
+                                                         <field name="margin"    />
+                                                         <field name="multiplier"   />
+                                                         <field name="product_note"  readonly="1" />
+                                                         <field name="product_qty"  invisible="1" />
+                                                         <field name="date_planned"  invisible="1" />
+                                                         <field name="product_uom"  invisible="1" />
+                                                     </group>
+                                                </group>
+                                            </form>
+                                <tree   >
+                                                         <field name="currency_id" invisible="1"/>
+                                                         <field name="product_id" />
+                                                         <field name="sku_code"  readonly="1" />
+                                                         <field name="product_brand_id"   readonly="1"/>
+                                                         <field name="name"  invisible="1" />
+                                                         <field name="tier"  readonly="1" />
+                                                         <field name="prod_qty"  />
+                                                         <field name="expiration_date"    />
+                                                         <field name="qty_in_stock"  />
+                                                         <field name="product_sales_count" />
+                                                         <field name="product_sales_count_month"  />
+                                                         <field name="product_sales_count_90"    />
+                                                         <field name="product_sales_count_yrs"   />
+                                                         <field name="expired_inventory"   />
+                                                         <!--<field name="premium" />-->
+                                                         <field name="product_unit_price"  />
+                                                         <field name="product_offer_price"   />
+                                                         <field name="product_retail" />
+                                                         <field name="offer_price"   />
+                                                         <field name="margin" />
+                                                         <field name="multiplier"   />
+                                                        <field name="product_qty"  invisible="1" />
+                                                         <!--<field name="product_uom_qty"   invisible="1"  />-->
+                                                         <field name="date_planned"  invisible="1"  />
+                                                         <field name="product_uom"    invisible="1"/>
+                                                         <field name="order_id"   invisible="1"  />
+
+                                </tree>
+
+                            </field>
+                             <group class="oe_subtotal_footer oe_right">
+                                <field name="retail_amt" widget="monetary"  />
+                                <field name="offer_amount"  widget="monetary"/>
+                            </group>
+                            <field name="notes" class="oe_inline" placeholder="Define your terms and conditions ..."/>
+                            <div class="oe_clear"/>
+                        </page>
+                        <page string="Deliveries">
+                            <group>
+                                <group  >
+                                        <field name="date_planned" />
+                                        <field name="shipping_label_issued" />
+                                </group>
+                                 <group  >
+                                        <field name="shipping_date" />
+                                        <field name="delivered_date" />
+                                        <field name="expected_date" />
+                                </group>
+                            </group>
+                        </page>
+                         <page string="Notes">
+                            <group>
+                                <group  >
+                                        <field name="notes_desc" />
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+
+                </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="purchase_order_form" model="ir.ui.view">
+            <field name="name">purchase.order.form</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"></field>
+            <field name="arch" type="xml">
+                <!--<form string="Purchase Order">-->
+                     <xpath expr="//group/group/field[@name='company_id']" position="after">
+                <field name="carrier_info"></field>
+                    <field name="carrier_acc_no"></field>
+                          <field name="shipping_terms"></field>
+                </xpath>
+
+                <!--</form>-->
+            </field>
+        </record>
+
+      <record id="product_template_form_view" model="ir.ui.view">
+        <field name="name">product.template.common.form</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <page name="general_information"  position="inside">
+                         <group>
+                                <group name="group_general">
+
+                    <field name="tier"></field>
+                    <field name="class_code"></field>
+
+                                </group>
+                         </group>
+            </page>
+        </field>
+      </record>
+
+
+    <!-- actions opening views on models -->
+    <!--<record model="ir.actions.act_window" id="vendor_offer.action_window">-->
+      <!--<field name="name">Vendor Offer</field>-->
+      <!--<field name="res_model">purchase.order</field>-->
+      <!--<field name="view_mode">tree,form</field>-->
+         <!--&lt;!&ndash;<field name="domain">[('state', '=', 'ven_draft')]</field>&ndash;&gt;-->
+        <!--<field name="domain">[('state','in',('ven_draft','ven_sent','purchase'))]</field>-->
+         <!--<field name="view_ids" eval="[(5, 0, 0),-->
+        <!--(0, 0, {'view_mode': 'tree', 'view_id': ref('vendor_offer.list')},),-->
+        <!--(0, 0, {'view_mode': 'form', 'view_id': ref('view_vendor_offer_form')})-->
+        <!--]"/>-->
+
+    <!--</record>-->
+
+      <record id="vendor_offer.action_window" model="ir.actions.act_window">
+            <field name="name">Requests for vendor Offer</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.order</field>
+            <field name="domain">[('state','in',('ven_draft','ven_sent'))]</field>
+            <field name="view_mode">form,tree</field>
+             <field name="view_ids" eval="[(5, 0, 0),
+        (0, 0, {'view_mode': 'tree', 'view_id': ref('vendor_offer.list')},),
+        (0, 0, {'view_mode': 'form', 'view_id': ref('view_vendor_offer_form')})
+        ]"/>
+            <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+            Click to create a request for quotation.
+            </p><p>
+            The quotation contains the history of the discussion/negotiation
+            you had with your vendor. Once confirmed, a request for
+            quotation is converted into a purchase order.
+            </p><p>
+            Most propositions of purchase orders are created automatically
+            by Odoo based on inventory needs.
+            </p>
+            </field>
+       </record>
+
+     <record model="ir.actions.act_window" id="vendor_offer.action_window_multiplier">
+      <field name="name">Multiplier</field>
+      <field name="res_model">multiplier.multiplier</field>
+      <field name="view_mode">tree,form</field>
+         <field name="view_ids" eval="[(5, 0, 0),
+        (0, 0, {'view_mode': 'tree', 'view_id': ref('listmultiplier')},),
+        (0, 0, {'view_mode': 'form', 'view_id': ref('view_vendor_offer_multiplier')})
+        ]"/>
+
+    </record>
+
+     <record model="ir.actions.act_window" id="vendor_offer.action_window_competition">
+      <field name="name">Competition</field>
+      <field name="res_model">competition.competition</field>
+      <field name="view_mode">tree,form</field>
+         <field name="view_ids" eval="[(5, 0, 0),
+        (0, 0, {'view_mode': 'tree', 'view_id': ref('listcompetition')},),
+        (0, 0, {'view_mode': 'form', 'view_id': ref('view_vendor_offer_competition')})
+        ]"/>
+
+    </record>
+
+      <menuitem
+            id="menu_product_in_config_purchase_setting" name="Setting"  sequence="99"  parent="purchase.menu_purchase_root" />
+
+    <menuitem
+            id="menu_product_in_config_purchase_multiplier" name="Multiplier" action="vendor_offer.action_window_multiplier"
+            parent="vendor_offer.menu_product_in_config_purchase_setting" sequence="29" />
+      <menuitem
+            id="menu_product_in_config_purchase_competition" name="Competition" action="vendor_offer.action_window_competition"
+            parent="vendor_offer.menu_product_in_config_purchase_setting" sequence="30" />
+
+   <menuitem id="menu_procurement_management_supplier_offer" name="Vendor Offers"
+            parent="purchase.menu_procurement_management"  action="vendor_offer.action_window" sequence="14"
+           />
+
+  </data>
+</odoo>

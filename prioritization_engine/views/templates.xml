@@ -1,0 +1,9 @@
+<odoo>
+    <template id="report_invoice_document_extended" inherit_id="account.report_invoice_document">
+        <xpath expr="//div[@class='clearfix']" position="after">
+               <p t-if="o.note">
+                   <span t-field="o.note"/>
+               </p>
+        </xpath>
+    </template>
+</odoo>
