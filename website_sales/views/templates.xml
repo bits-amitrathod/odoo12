@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Product Expiration Lot~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    -->
+
+    <template id="products_item" name="Products item" inherit_id="website_sale.products_item">
+        <xpath expr="//div[@class='product_price']" position="before">
+            <t t-call="website_sales.productExpirationDate"/>
+        </xpath>
+    </template>
+
+    <template id="productExpirationDate" name="Product Expiration Date">
+        <t t-if="isVisibleWebsiteExpirationDate">
+            <div style="padding-bottom: 5px;">
+                <strong>Expiration :</strong>
+                <br/>
+
+                Min -
+                <t t-if="'product.product_variant_id.id' in productExpiration and productExpiration[product.product_variant_id.id]['min'] is None">
+                    <span t-esc="productExpiration[product.product_variant_id.id]['min']" t-options="{'widget': 'date'}"/>
+                </t>
+                <t t-else="">
+                    N/A
+                </t>
+
+                <br/>
+
+                Max -
+                <t t-if="'product.product_variant_id.id' in productExpiration and productExpiration[product.product_variant_id.id]['max'] is None">
+                    <span t-esc="productExpiration[product.product_variant_id.id]['max']" t-options="{'widget': 'date'}"/>
+                </t>
+                <t t-else="">
+                    N/A
+                </t>
+                           <!--<span t-esc="productExpiration"/>-->
+                <!--product-->
+                  <!--<span t-esc="product.id"/> <span t-esc="product.product_variant_id.id"/>-->
+            </div>
+        </t>
+    </template>
+
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.website.sale</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="website.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@id='sale_product_catalog_settings']" position="inside">
+
+                <div class="col-xs-12 col-md-6 o_setting_box" id="product_lot_expiration_date_setting">
+                    <div class="o_setting_left_pane">
+                        <field name="default_website_expiration_date"/>
+                    </div>
+                    <div class="o_setting_right_pane">
+                        <label for="default_website_expiration_date"/>
+                        <div class="text-muted">
+                            Display an product lot expiration minimum &amp; maximum dates
+                        </div>
+                    </div>
+                </div>
+
+            </xpath>
+        </field>
+    </record>
+
+
+    <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Customer Reference As sales Order ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    -->
+
+    <template id="assets_frontend" inherit_id="web.assets_frontend" name="Website Assets">
+        <xpath expr="//script[last()]" position="after">
+            <script type="text/javascript" src="/website_sales/static/src/js/script.js"/>
+        </xpath>
+    </template>
+
+    <template id="customerReferenceSO" name="customerReferenceSO" inherit_id="website_sale.payment">
+        <xpath expr="//div[@id='payment_method']" position="before">
+            <div class="row" id="order_customer_referance_so">
+                <div id="cart_totala" class="col-xs-12 col-sm-5 col-sm-push-7">
+                    <span class="col-xs-6 text-right h5 mt0">Purchase Order:</span>
+                    <span class="col-xs-6 text-right-not-xs text-left-xs h4 mt0" style="white-space: nowrap;">
+                        <input type="text" class="form-control" name="customerReferenceSO"
+                               t-att-value="website_sale_order.client_order_ref"/>
+                    </span>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+
+    <template id="category_vender" name="category Vender">
+        <strong>Category:</strong>
+        <ul class="list-inline">
+            <t t-foreach="product.public_categ_ids" t-as="c">
+                <t t-call="website_sales.categories_recursive"/>
+            </t>
+        </ul>
+        <p>
+            <strong>Vendor:</strong>
+            <a t-att-href="keep('/shop/brands', brand=product.product_brand_id.id)"
+               t-field="product.product_brand_id.name"></a>
+        </p>
+    </template>
+
+    <template id="categories_recursive" name="Category list">
+        <li t-att-class="'active' if c.id == int(category or 0) else None">
+            <a t-att-href="keep('/shop/category/' + slug(c), category=0)" t-field="c.name"></a>
+            <ul t-if="c.child_id" class="nav nav-pills nav-stacked nav-hierarchy">
+                <t t-foreach="c.child_id" t-as="c">
+                    <t t-call="website_sales.categories_recursive"/>
+                </t>
+            </ul>
+        </li>
+    </template>
+
+</odoo>

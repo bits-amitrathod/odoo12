@@ -1,0 +1,35 @@
+<odoo>
+    <template id="search_page" name="Search By">
+        <t t-name="website.search-by">
+            <t t-call="website.layout">
+                <div id="wrap" class="oe_structure oe_empty"/>
+                <section class="search-by">
+                    <div class="container">
+                        <div class="row search-by-border">
+                            <div class="col-md-12">
+                                <h1 class="search_title">Search</h1>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p class="search-tagline">Search for anything in our shop.</p>
+                            </div>
+                        </div>
+                        <form class="search contact-form" action="/search" role="search" t-attf-action="/shop"
+                              method="get">
+                            <div class="row">
+                                <div class="col-md-3 col-md-offset-3">
+                                    <input type="text" class="form-control search_autocomplete" name="search"
+                                           placeholder="Search..." value=""/>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="submit" class="action_button" value="Search"/>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+            </t>
+        </t>
+    </template>
+</odoo>
