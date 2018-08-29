@@ -41,7 +41,7 @@ class Customer(models.Model):
         ('2', 'Prepaid'),
         (3,'Freight Collect')], string='Shipping Terms')
 
-    @api.model
+    '''@api.model
     def create(self, vals):
         self.on_hold_changes(vals)
         return super(Customer, self).create(vals)
@@ -56,7 +56,7 @@ class Customer(models.Model):
         for child_id in self.child_ids:
             print(child_id.on_hold);
             #child_id.write({'on_hold':self.on_hold});
-            print(child_id.on_hold)
+            print(child_id.on_hold)'''
 
     def action_view_notification(self):
         '''
