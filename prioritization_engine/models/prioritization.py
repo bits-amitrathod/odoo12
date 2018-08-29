@@ -48,14 +48,14 @@ class Customer(models.Model):
 
     @api.multi
     def write(self, vals):
-        res = super(Customer, self).write(vals)
+        #res = super(Customer, self).write(vals)
         self.on_hold_changes(vals)
         return res
 
     def on_hold_changes(self, vals):
         for child_id in self.child_ids:
             print(child_id.on_hold);
-            child_id.write({'on_hold':self.on_hold});
+            #child_id.write({'on_hold':self.on_hold});
             print(child_id.on_hold)
 
     def action_view_notification(self):
