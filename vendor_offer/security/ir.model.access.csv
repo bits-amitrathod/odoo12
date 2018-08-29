@@ -1,7 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_vendor_offer_vendor_offer,vendor_offer.vendor_offer,model_vendor_offer_vendor_offer,,1,0,0,0
-access_multiplier_multiplier,access_multiplier_multiplier,model_multiplier_multiplier,base.group_user,1,0,0,0
-competition.competition has no access rules, consider adding one. E.g. access_competition_competition,access_competition_competition,model_competition_competition,base.group_user,1,0,0,0
-access_tier_tier,access_tier_tier,model_tier_tier,base.group_user,1,0,0,0
-access_classcode_classcode,access_classcode_classcode,model_classcode_classcode,base.group_user,1,0,0,0
-
