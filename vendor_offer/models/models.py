@@ -112,7 +112,7 @@ class VendorOffer(models.Model):
     @api.onchange('accelerator','retail_amt')
     def accelerator_onchange(self):
         if self.accelerator == True:
-            self.max = float(self.retail_amt)*float(0.65)
+            self.max = round(float(self.retail_amt)*float(0.65),2)
         else:
             self.max = 0
 
