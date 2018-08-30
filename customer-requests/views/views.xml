@@ -1,0 +1,155 @@
+<odoo>
+    <data>
+
+        <record id="view_tree_documents_normal" model="ir.ui.view">
+            <field name="sequence" eval="1"/>
+            <field name="name">Import Document normal tree</field>
+            <field name="model">sps.cust.uploaded.documents</field>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+                <tree create="false">
+                    <field name="create_date"/>
+                    <field name="document_name"/>
+                    <field name="source"/>
+                    <field name="status"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_tree_requests_normal" model="ir.ui.view">
+            <field name="sequence" eval="1"/>
+            <field name="name">Import Document normal tree</field>
+            <field name="model">sps.customer.requests</field>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+                <tree create="false">
+                    <field name="product_id"/>
+                    <field name="customer_sku"/>
+                    <field name="quantity"/>
+                    <field name="required_quantity"/>
+                    <field name="status"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="view_form_documents_normal" model="ir.ui.view">
+            <field name="sequence" eval="1"/>
+            <field name="name">Import Document normal Form</field>
+            <field name="model">sps.cust.uploaded.documents</field>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+                <form create="false" edit="false">
+                    <group>
+                        <field name="customer_id"/>
+                        <field name="source"/>
+                        <field name="status"/>
+                    </group>
+                    <group>
+                        <field name="request_ids"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_form_template_normal" model="ir.ui.view">
+            <field name="sequence" eval="1"/>
+            <field name="name">Customer Template Form</field>
+            <field name="model">sps.customer.template</field>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+                <form create="false" edit="false">
+                    <group>
+                        <field name="customer_id"/>
+                        <field name="non_selected_columns"/>
+                        <field name="file_name"/>
+                        <field name="template_type"/>
+                        <field name="template_status"/>
+                    </group>
+                    <group>
+                        <field name="mf_customer_sku"/>
+                        <field name="mf_required_quantity"/>
+                        <field name="mf_quantity"/>
+                        <field name="mf_uom"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+         <record id="view_tree_templates_normal" model="ir.ui.view">
+            <field name="sequence" eval="1"/>
+            <field name="name">Imported Templates normal tree</field>
+            <field name="model">sps.customer.template</field>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+                <tree create="false" edit="false">
+                    <field name="create_date"/>
+                    <field name="file_name"/>
+                    <field name="template_status" />
+                    <field name="template_type" />
+                    <field name="mf_customer_sku"/>
+                    <field name="mf_quantity"/>
+                    <field name="mf_uom"/>
+                    <field name="mf_required_quantity"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_form_import_document" model="ir.ui.view">
+            <field name="name">Import Documents customer form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/sheet/notebook/page[@name='internal_notes']" position="after">
+                    <page name="importdocument" string="Import Document">
+                        <field name="document_ids"/>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_form_import_template" model="ir.ui.view">
+            <field name="name">Import Template customer form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/sheet/notebook/page[@name='internal_notes']" position="after">
+                    <page name="importedtemplate" string="Imported Templates">
+                        <field name="template_ids"/>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <template id="assets_backend" name="base_import assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/base_import/static/lib/javascript-state-machine/state-machine.js"></script>
+                <script type="text/javascript" src="/customer-requests/static/src/js/template_import.js"></script>
+            </xpath>
+        </template>
+
+        <record id="customer-template-client-action" model="ir.actions.client">
+            <field name="name">Customer Import Template</field>
+            <field name="type">ir.actions.client</field>
+            <field name="tag">importtemplate</field>
+            <field name="params">[{'model': 'sps.customer.template', 'user_type': 'customer', 'request_model': 'sps.customer.requests'}]</field>
+        </record>
+
+        <record id="vendor-template-client-action" model="ir.actions.client">
+            <field name="name">Vendor Offer</field>
+             <field name="type">ir.actions.client</field>
+            <field name="tag">importtemplate</field>
+            <field name="params">[{'model': 'sps.customer.template', 'user_type': 'supplier', 'request_model': 'product.supplierinfo'}]</field>
+        </record>
+
+
+        <menuitem name="Import" id="prioritization_engine.prioritization_imenu" parent="prioritization_engine.menu_root"/>
+
+        <menuitem name="Vendor Offer" id="prioritization_engine.prioritization_vendor_template_menu" parent="prioritization_engine.prioritization_imenu"
+                  action="vendor-template-client-action"/>
+
+        <menuitem name="Customer Template" id="prioritization_engine.prioritization_customer_template_menu" parent="prioritization_engine.prioritization_imenu"
+                  action="customer-template-client-action"/>
+
+    </data>
+</odoo>

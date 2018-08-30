@@ -10,7 +10,10 @@ allocated_product_list = []
 class PrioritizationEngineModel(models.Model):
     _name = "prioritization.engine.model"
 
-    sps_customer_request = fields.Many2one('sps.customer.requests', string='Customer Request')
+    customer_request_id = fields.Integer(store=False)
+    customer_id = fields.Integer(store=False)
+    product_id = fields.Integer(store=False)
+    required_quantity = fields.Integer(store=False)
 
     product_priority = fields.Integer(store=False)
     auto_allocate = fields.Boolean(store=False)
@@ -19,27 +22,27 @@ class PrioritizationEngineModel(models.Model):
     partial_order = fields.Boolean(store=False)
     expiration_tolerance = fields.Integer(store=False)
 
-    def allocate_product_by_priority(self, pr_models):
+    def allocate_product_by_priority(self, prioritization_engine_request_list):
         _logger.info('In product_allocation_by_priority')
-        for prioritization_engine_model in pr_models:
+        for prioritization_engine_request in prioritization_engine_request_list:
             # auto allocate True/False
             if self.auto_allocate:
                 # get available production lot list.
-                product_lot_list = self.get_available_product_lot_list(prioritization_engine_model.sps_customer_request)
+                product_lot_list = self.get_available_product_lot_list()
                 if len(product_lot_list) >= 1:
                     # check cooling period- method return True/False
-                    if self.calculate_cooling_priod_in_days(prioritization_engine_model.sps_customer_request):
+                    if self.calculate_cooling_priod_in_days(prioritization_engine_request):
                         _logger.info('successed cooling period')
                         # check length of holds- method return True/False
-                        if self.calculate_length_of_holds_in_hours(prioritization_engine_model.sps_customer_request):
+                        if self.calculate_length_of_holds_in_hours(prioritization_engine_request):
                             _logger.info('successed length of hold')
                             # allocate product
-                            if self.allocate_product(prioritization_engine_model.sps_customer_request, product_lot_list):
+                            if self.allocate_product(prioritization_engine_request, product_lot_list):
                                 _logger.info('product allocated....')
                             # check partial order flag is True or False
                             elif self.partial_order:
                                 _logger.info('Partial ordering flag is True')
-                                self.allocate_partial_order_product(prioritization_engine_model.sps_customer_request, product_lot_list)
+                                self.allocate_partial_order_product(prioritization_engine_request, product_lot_list)
                             else:
                                 _logger.info('Partial ordering flag is False')
                         else:
@@ -52,14 +55,15 @@ class PrioritizationEngineModel(models.Model):
                 _logger.info('Auto allocate is false....')
 
         self.env['available.product.list'].update_production_lot_list()
-        self.env['allocated.product.list'].display_allocated_product_list(allocated_product_list)
+        self.env['allocated.product.list'].display_allocated_product_list()
 
     # get available production lot list, parameter product id.
-    def get_available_product_lot_list(self, sps_customer_request):
+    def get_available_product_lot_list(self):
         _logger.info('expiration_tolerance %r', self.expiration_tolerance)
         production_lot_list = self.env['available.product.list'].get_available_production_lot_list()
         _logger.info('production_lot_list ^^^^^: %r', production_lot_list)
         filtered_production_lot_list_to_be_returned = []
+
         for production_lot in production_lot_list:
             if datetime.strptime(production_lot.use_date,
                                      '%Y-%m-%d %H:%M:%S') >= self.get_product_expiration_tolerance_date():
@@ -68,9 +72,9 @@ class PrioritizationEngineModel(models.Model):
         return filtered_production_lot_list_to_be_returned
 
     # calculate cooling period
-    def calculate_cooling_priod_in_days(self, sps_customer_request):
+    def calculate_cooling_priod_in_days(self, prioritization_engine_request):
         # get product last purchased date
-        confirmation_date = self.get_product_last_purchased_date(sps_customer_request)
+        confirmation_date = self.get_product_last_purchased_date(prioritization_engine_request)
         if not confirmation_date is None:
             # get current datetime
             current_datetime = datetime.datetime.now()
@@ -84,15 +88,15 @@ class PrioritizationEngineModel(models.Model):
                 return True
             else:
                 # update status In cooling period
-                self.env['sps.customer.requests'].search([('id', '=', sps_customer_request.id)]).write(dict(status='InCoolingPeriod'))
+                self.env['sps.customer.requests'].search([('id', '=', prioritization_engine_request.customer_request_id)]).write(dict(status='InCoolingPeriod'))
                 return False
         else:
             return True
 
     # calculate length of hold(In hours)
-    def calculate_length_of_holds_in_hours(self, sps_customer_request):
+    def calculate_length_of_holds_in_hours(self, prioritization_engine_request):
         # get product create date
-        create_date = self.get_product_create_date(sps_customer_request)
+        create_date = self.get_product_create_date(prioritization_engine_request)
 
         if not create_date is None:
             # get current datetime
@@ -106,7 +110,7 @@ class PrioritizationEngineModel(models.Model):
                 return True
             else:
                 # update status In Process
-                self.env['sps.customer.requests'].search([('id', '=', sps_customer_request.id)]).write(dict(status='Unprocessed'))
+                self.env['sps.customer.requests'].search([('id', '=', prioritization_engine_request.customer_request_id)]).write(dict(status='Unprocessed'))
                 return False
         else:
             return True
@@ -117,22 +121,19 @@ class PrioritizationEngineModel(models.Model):
         return expiration_tolerance_date
 
     # Allocate product
-    def allocate_product(self, sps_customer_request, product_lot_list):
+    def allocate_product(self, prioritization_engine_request, product_lot_list):
         product_allocation_flag = False
         for product_lot in product_lot_list:
-            if product_lot.available_quantity >= sps_customer_request.required_quantity:
+            if product_lot.available_quantity >= prioritization_engine_request.required_quantity:
                 _logger.info('product allocated from lot %r %r %r %r', product_lot.lot_id, product_lot.available_quantity,product_lot.available_quantity,
-                            sps_customer_request.required_quantity)
+                             prioritization_engine_request.required_quantity)
 
-                product_lot.reserved_quantity = int(product_lot.reserved_quantity) + int(sps_customer_request.required_quantity)
-                product_lot.available_quantity = int(product_lot.available_quantity) - int(sps_customer_request.required_quantity)
+                product_lot.reserved_quantity = int(product_lot.reserved_quantity) + int(prioritization_engine_request.required_quantity)
+                product_lot.available_quantity = int(product_lot.available_quantity) - int(prioritization_engine_request.required_quantity)
 
-                _logger.info('Quantity Updated')
-
-                allocated_product = self.env['allocated.product.list'].add_allocated_products(sps_customer_request.customer_id, sps_customer_request.product_id, sps_customer_request.required_quantity)
-                allocated_product_list.append(allocated_product)
-
-                self.env['sps.customer.requests'].search([('id', '=', sps_customer_request.id)]).write(
+                self.env['allocated.product.list'].add_allocated_products(prioritization_engine_request.customer_id,prioritization_engine_request.product_id,prioritization_engine_request.required_quantity)
+                # allocated_product_list.append(allocated_product)
+                self.env['sps.customer.requests'].search([('id', '=', prioritization_engine_request.customer_request_id)]).write(
                     dict(status='Completed'))
 
                 product_allocation_flag = True
@@ -141,8 +142,8 @@ class PrioritizationEngineModel(models.Model):
 
 
     # Allocate partial order product
-    def allocate_partial_order_product(self, sps_customer_request, product_lot_list):
-        remaining_product_allocation_quantity = sps_customer_request.required_quantity
+    def allocate_partial_order_product(self, prioritization_engine_request, product_lot_list):
+        remaining_product_allocation_quantity = prioritization_engine_request.required_quantity
         for product_lot in product_lot_list:
             if remaining_product_allocation_quantity >= product_lot.available_quantity:
                 _logger.info('product allocated from lot %r %r %r', product_lot.lot_id)
@@ -166,34 +167,35 @@ class PrioritizationEngineModel(models.Model):
 
         if remaining_product_allocation_quantity == 0:
             _logger.info("Allocated Partial order of product id " + str(
-                    sps_customer_request.product_id.id) + ". Total required product quantity is " + str(
-                    sps_customer_request.required_product_quantity))
+                prioritization_engine_request.product_id) + ". Total required product quantity is " + str(
+                prioritization_engine_request.required_quantity))
 
             allocated_product = self.env['allocated.product.list'].add_allocated_products(
-                sps_customer_request.customer_id, sps_customer_request.product_id,
-                sps_customer_request.required_quantity)
+                prioritization_engine_request.customer_id, prioritization_engine_request.product_id,
+                prioritization_engine_request.required_quantity)
             allocated_product_list.append(allocated_product)
 
-            self.env['sps.customer.requests'].search([('id', '=', sps_customer_request.id)]).write(
+            self.env['sps.customer.requests'].search([('id', '=', prioritization_engine_request.customer_request_id)]).write(
                     dict(status='Completed'))
         elif remaining_product_allocation_quantity > 0:
-            allocated_product_quantity = int(sps_customer_request.required_quantity) - int(
+            allocated_product_quantity = int(prioritization_engine_request.required_quantity) - int(
                 remaining_product_allocation_quantity)
             _logger.info(str(" We have allocated only " + str(allocated_product_quantity) + " products. " + str(
                 remaining_product_allocation_quantity) + " are pending."))
 
-            allocated_product = self.env['allocated.product.list'].add_allocated_products(
-                sps_customer_request.customer_id, sps_customer_request.product_id,
+            allocated_product = self.pool.get('allocated.product.list')
+            allocated_product.add_allocated_products(
+                prioritization_engine_request.customer_id, prioritization_engine_request.product_id,
                 allocated_product_quantity)
             allocated_product_list.append(allocated_product)
 
-            self.env['sps.customer.requests'].search([('id', '=', sps_customer_request.id)]).write(
+            self.env['sps.customer.requests'].search([('id', '=', prioritization_engine_request.customer_request_id)]).write(
                     dict(status='Partial'))
 
     # get product last purchased date, parameter product id
-    def get_product_last_purchased_date(self, sps_customer_request):
+    def get_product_last_purchased_date(self, prioritization_engine_request):
         _logger.info("In get_product_last_purchased_date()")
-        sale_orders_line = self.env['sale.order.line'].search([('product_id', '=', sps_customer_request.product_id.id)])
+        sale_orders_line = self.env['sale.order.line'].search([('product_id', '=', prioritization_engine_request.product_id)])
         sorted_sale_orders_line = sorted([line for line in sale_orders_line if line.order_id.confirmation_date],
                                          key=self._sort_by_confirmation_date, reverse=True)
         if len(sorted_sale_orders_line)> 0:
@@ -211,9 +213,9 @@ class PrioritizationEngineModel(models.Model):
             return datetime.strptime(sale_order_dict.order_id.confirmation_date, '%Y-%m-%d %H:%M:%S')
 
     # get product create date for to calculate length of hold, parameter product id
-    def get_product_create_date(self, sps_customer_request):
+    def get_product_create_date(self, prioritization_engine_request):
         _logger.info("In get_product_create_date()")
-        sale_orders_line = self.env['sale.order.line'].search([('product_id', '=', sps_customer_request.product_id.id)])
+        sale_orders_line = self.env['sale.order.line'].search([('product_id', '=', prioritization_engine_request.product_id)])
 
         sorted_sale_orders_line = sorted([line for line in sale_orders_line if line.order_id.create_date], key=self._sort_by_create_date, reverse=True)
 

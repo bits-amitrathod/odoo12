@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_customer-requests_customer-requests,customer-requests.customer-requests,model_customer-requests_customer-requests,,1,0,0,0
+access_sps_cust_uploaded_documents,access_sps_cust_uploaded_documents,model_sps_cust_uploaded_documents,base.group_user,1,0,0,0
+access_sps_document_process,access_sps_document_process,model_sps_document_process,base.group_user,1,0,0,0

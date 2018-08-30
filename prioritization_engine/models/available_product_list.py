@@ -7,15 +7,15 @@ _logger = logging.getLogger(__name__)
 available_production_lot_list_to_be_returned = []
 
 
-class AvailableProductList(models.Model):
+class AvailableProductList(models.TransientModel):
     _name = "available.product.list"
 
-    stock_quant_id = fields.Integer(store=False)
-    lot_id = fields.Integer(store=False)
-    product_id = fields.Integer(store=False)
-    available_quantity = fields.Boolean(store=False)
-    reserved_quantity = fields.Boolean(store=False)
-    use_date = fields.Date(store=False) # product expiry date
+    stock_quant_id = fields.Integer()
+    lot_id = fields.Integer()
+    product_id = fields.Integer()
+    available_quantity = fields.Boolean()
+    reserved_quantity = fields.Boolean()
+    use_date = fields.Date() # product expiry date
 
 
     # get available production lot list, parameter product id.
