@@ -36,14 +36,15 @@ class lot_history(models.TransientModel):
                 temp = []
                 for order in groupby_dict[user]:
                     temp_2 = []
-                    temp_2.append(order.name)
                     temp_2.append(order.product_id.product_tmpl_id.sku_code)
+                    temp_2.append(order.name)
                     temp_2.append(order.product_id.product_tmpl_id.name)
                     temp_2.append(ACTIONS[order.product_id.product_tmpl_id.type])
+                    temp_2.append(datetime.datetime.strptime(str(order.create_date), '%Y-%m-%d %H:%M:%S').date().strftime('%m-%d-%Y'))
                     temp_2.append(order.product_id.product_tmpl_id.product_brand_id.partner_id.name)
                     temp_2.append(order.product_id.product_tmpl_id.product_brand_id.partner_id.phone)
                     temp_2.append(order.product_id.product_tmpl_id.product_brand_id.partner_id.email)
-                    temp_2.append(datetime.datetime.strptime(str(order.create_date),'%Y-%m-%d %H:%M:%S').date().strftime('%m-%d-%Y'))
+
                     temp.append(temp_2)
                 final_dict[user] = temp
 

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../../addons/purchase/.idea/purchase.iml" filepath="$PROJECT_DIR$/../../addons/purchase/.idea/purchase.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/purchase_history_custome.iml" filepath="$PROJECT_DIR$/.idea/purchase_history_custome.iml" />
+    </modules>
+  </component>
+</project>
