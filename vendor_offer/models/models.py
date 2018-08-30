@@ -81,7 +81,7 @@ class VendorOffer(models.Model):
         self.appraisal_no = 'AP' + str(randint(11111, 99999))
 
 
-    @api.depends('order_line.offer_price')
+    @api.depends('order_line.offer_price','order_line.product_offer_price')
     def _amount_tot_all(self):
 
         for order in self:
@@ -100,9 +100,11 @@ class VendorOffer(models.Model):
         for order in self:
             for line in order.order_line:
                 multiplier_list = self.env['multiplier.multiplier'].search([('id', '=', line.multiplier.id)])
-                line.margin = multiplier_list.margin
-                line.offer_price = round(float(line.price_unit) * (
-                            float(multiplier_list.margin) / 100 + float(self.possible_competition.id) / 100),2)
+                possible_competition_list = self.env['competition.competition'].search([('id', '=', self.possible_competition.id)])
+                line.product_unit_price = math.ceil(
+                    round(float(line.price_unit) * (float(multiplier_list.retail) / 100), 2))
+                line.product_offer_price = math.ceil(round(float(line.product_unit_price) * (
+                            float(multiplier_list.margin) / 100 + float(possible_competition_list.margin) / 100), 2))
 
     @api.onchange('offer_amount', 'retail_amt')
     def cal_potentail_profit_margin(self):
@@ -169,7 +171,7 @@ class VendorOfferProduct(models.Model):
     product_retail = fields.Char(string="Total Retail Price")
     product_unit_price = fields.Char(string="Retail Price")
 
-    @api.depends('product_qty', 'price_unit', 'taxes_id')
+    @api.depends('product_qty', 'price_unit', 'taxes_id','product_offer_price')
     def _compute_amount(self):
         for line in self:
             super(VendorOfferProduct, self)._compute_amount()
