@@ -59,7 +59,7 @@ class comparebymonth():
                 sum = sum + (r1.product_uom_qty * r1.price_unit)
 
             object.amount = record.amount_untaxed
-            object.discount_amount = float(round(sum -record.amount_untaxed))
+            object.discount_amount = float(sum -record.amount_untaxed)
             object.total_amount = record.amount_total
             dict[record.id] = object
 
