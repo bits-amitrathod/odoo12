@@ -342,5 +342,5 @@ class ClassCode(models.Model):
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
-    tier = fields.Many2one('tier.tier', string="Tier")
+    tier = fields.Many2one('tier.tier', string="Tier",required=True)
     class_code = fields.Many2one('classcode.classcode', string="Class Code")
