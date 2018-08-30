@@ -41,7 +41,7 @@ class Customer(models.Model):
         ('2', 'Prepaid'),
         (3,'Freight Collect')], string='Shipping Terms')
 
-    ''''@api.model
+    '''@api.model
     def create(self, vals):
         self.on_hold_changes(vals)
         return super(Customer, self).create(vals)
