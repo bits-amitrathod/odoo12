@@ -94,13 +94,13 @@
         <strong>Category:</strong>
         <ul class="list-inline">
             <t t-foreach="product.public_categ_ids" t-as="c">
-                <t t-call="website_sales.categories_recursive"/>
+                <t t-call="website_sales.categories_recursive" class="linkCstm"/>
             </t>
         </ul>
         <p>
             <strong>Vendor:</strong>
             <a t-att-href="keep('/shop/brands', brand=product.product_brand_id.id)"
-               t-field="product.product_brand_id.name"></a>
+               t-field="product.product_brand_id.name" class="linkCstm"></a>
         </p>
     </template>
 
