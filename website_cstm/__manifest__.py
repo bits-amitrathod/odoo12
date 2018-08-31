@@ -13,7 +13,7 @@
     'category': 'website',
     'version': '0.1',
 
-    'depends': ['website_sales','website_product_brand','web_search'],
+    'depends': ['website_sales','stock','website_product_brand','web_search'],
 
     'data': [
         'security/ir.model.access.csv',
