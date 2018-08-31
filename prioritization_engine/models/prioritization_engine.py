@@ -15,38 +15,41 @@ class PrioritizationEngine(models.TransientModel):
         _logger.info('In product_allocation_by_priority')
         # get available production lot list.
         available_product_lot_list = self.get_available_product_lot_list()
-
-        for prioritization_engine_request in prioritization_engine_request_list:
-            # auto allocate True/False
-            if prioritization_engine_request['auto_allocate']:
-                filter_available_product_lot_list = self.filter_available_product_lot_list(available_product_lot_list, prioritization_engine_request)
-                if len(filter_available_product_lot_list) >= 1:
-                    # check cooling period- method return True/False
-                    if self.calculate_cooling_priod_in_days(prioritization_engine_request):
-                        _logger.info('successed cooling period')
-                        # check length of holds- method return True/False
-                        if self.calculate_length_of_holds_in_hours(prioritization_engine_request):
-                            _logger.info('successed length of hold')
-                            # allocate product
-                            if self.allocate_product(prioritization_engine_request, filter_available_product_lot_list):
-                                _logger.info('product allocated....')
-                            # check partial order flag is True or False
-                            elif prioritization_engine_request['partial_order']:
-                                _logger.info('Partial ordering flag is True')
-                                self.allocate_partial_order_product(prioritization_engine_request, filter_available_product_lot_list)
+        if len(available_product_lot_list) > 0:
+            for prioritization_engine_request in prioritization_engine_request_list:
+                # auto allocate True/False
+                if prioritization_engine_request['auto_allocate']:
+                    _logger.info('Auto allocate is true....')
+                    filter_available_product_lot_list = self.filter_available_product_lot_list(available_product_lot_list, prioritization_engine_request)
+                    if len(filter_available_product_lot_list) >= 1:
+                        # check cooling period- method return True/False
+                        if self.calculate_cooling_priod_in_days(prioritization_engine_request):
+                            _logger.info('successed cooling period')
+                            # check length of holds- method return True/False
+                            if self.calculate_length_of_holds_in_hours(prioritization_engine_request):
+                                _logger.info('successed length of hold')
+                                # allocate product
+                                if self.allocate_product(prioritization_engine_request, filter_available_product_lot_list):
+                                    _logger.info('product allocated....')
+                                # check partial order flag is True or False
+                                elif prioritization_engine_request['partial_order']:
+                                    _logger.info('Partial ordering flag is True')
+                                    self.allocate_partial_order_product(prioritization_engine_request, filter_available_product_lot_list)
+                                else:
+                                    _logger.info('Partial ordering flag is False')
                             else:
-                                _logger.info('Partial ordering flag is False')
+                                _logger.info('In length of hold false....')
                         else:
-                            _logger.info('In length of hold false....')
+                            _logger.info('In cooling period false.....')
                     else:
-                        _logger.info('In cooling period false.....')
+                        _logger.info('Product Lot not available....')
                 else:
-                    _logger.info('Product Lot not available....')
-            else:
-                _logger.info('Auto allocate is false....')
-
-        self.env['available.product.list'].update_production_lot_list()
-        self.display_allocated_product_list()
+                    _logger.info('Auto allocate is false....')
+            if len(self.allocated_product_list) > 0:
+                self.env['available.product.list'].update_production_lot_list()
+                self.display_allocated_product_list()
+        else:
+            _logger.info('Available product lot list is zero')
 
     # get available production lot list, parameter product id.
     def get_available_product_lot_list(self):
@@ -197,7 +200,8 @@ class PrioritizationEngine(models.TransientModel):
     # get product last purchased date, parameter product id
     def get_product_last_purchased_date(self, prioritization_engine_request):
         _logger.info("In get_product_last_purchased_date()")
-        sale_orders_line = self.env['sale.order.line'].search([('product_id', '=', prioritization_engine_request['product_id'])])
+        sale_orders_line = self.env['sale.order.line'].search([('order_partner_id', '=', prioritization_engine_request['customer_id']),
+                                                               ('product_id', '=', prioritization_engine_request['product_id'])])
         sorted_sale_orders_line = sorted([line for line in sale_orders_line if line.order_id.confirmation_date],
                                          key=self._sort_by_confirmation_date, reverse=True)
         if len(sorted_sale_orders_line)> 0:
@@ -217,7 +221,8 @@ class PrioritizationEngine(models.TransientModel):
     # get product create date for to calculate length of hold, parameter product id
     def get_product_create_date(self, prioritization_engine_request):
         _logger.info("In get_product_create_date()")
-        sale_orders_line = self.env['sale.order.line'].search([('product_id', '=', prioritization_engine_request['product_id'])])
+        sale_orders_line = self.env['sale.order.line'].search([('order_partner_id', '=', prioritization_engine_request['customer_id']),
+                                                                ('product_id', '=', prioritization_engine_request['product_id'])])
 
         sorted_sale_orders_line = sorted([line for line in sale_orders_line if line.order_id.create_date], key=self._sort_by_create_date, reverse=True)
 
