@@ -19,9 +19,9 @@ class VendorOffer(models.Model):
     appraisal_no = fields.Char(string='Appraisal No#',compute="_default_appraisal_no",change_default=True,readonly=False)
     acq_user_id = fields.Many2one('res.users',string='Acq  Manager ')
     date_offered = fields.Datetime(string='Date Offered', default=fields.Datetime.now)
-    revision = fields.Char(string='Revision ')
-    max = fields.Char(string='Max', readonly=True, default=0)
-    potential_profit_margin = fields.Char(string='Potential Profit Margin', readonly=True, default=0)
+    revision = fields.Integer(string='Revision ')
+    max = fields.Char(string='Max',  default=0)
+    potential_profit_margin = fields.Char(string='Potential Profit Margin', default=0)
     accepted_date = fields.Datetime(string="Accepted Date")
     declined_date = fields.Datetime(string="Declined Date")
     retail_amt = fields.Monetary(string="Total Retail",readonly=True,default=0 ,compute='_amount_tot_all')
@@ -144,7 +144,17 @@ class VendorOffer(models.Model):
         if(self.env.context.get('vendor_offer_data') == True):
             vals['state']= 'ven_draft'
             vals['vendor_offer_data']=True
+            vals['revision'] = 0
         return super(VendorOffer, self).create(vals)
+
+    # @api.model
+    # def write(self, values):
+    #     print('===== ================================ ====================')
+    #     self.revision =self.revision + self.revision
+    #     values['revision']=self.revision
+    #     print(self.revision)
+    #     return super(VendorOffer, self).write(values)
+
 
 
 class VendorOfferProduct(models.Model):
