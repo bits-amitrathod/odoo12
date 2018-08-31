@@ -147,13 +147,13 @@ class VendorOffer(models.Model):
             vals['revision'] = 0
         return super(VendorOffer, self).create(vals)
 
-    # @api.model
-    # def write(self, values):
-    #     print('===== ================================ ====================')
-    #     self.revision =self.revision + self.revision
-    #     values['revision']=self.revision
-    #     print(self.revision)
-    #     return super(VendorOffer, self).write(values)
+    @api.multi
+    def write(self, values):
+        if (self.state == 'ven_draft'):
+            temp = self.revision + 1
+            values['revision'] = temp
+            print(self.revision)
+            return super(VendorOffer, self).write(values)
 
 
 
