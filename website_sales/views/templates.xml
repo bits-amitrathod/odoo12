@@ -91,10 +91,10 @@
 
 
     <template id="category_vender" name="category Vender">
-        <strong>Category:</strong>
+        <strong class="pull-left">Category:</strong>
         <ul class="list-inline">
             <t t-foreach="product.public_categ_ids" t-as="c">
-                <t t-call="website_sales.categories_recursive" class="linkCstm"/>
+                <t t-call="website_sales.categories_recursive"/>
             </t>
         </ul>
         <p>
@@ -106,7 +106,7 @@
 
     <template id="categories_recursive" name="Category list">
         <li t-att-class="'active' if c.id == int(category or 0) else None">
-            <a t-att-href="keep('/shop/category/' + slug(c), category=0)" t-field="c.name"></a>
+            <a t-att-href="keep('/shop/category/' + slug(c), category=0)" t-field="c.name" class="linkCstm"></a>
             <ul t-if="c.child_id" class="nav nav-pills nav-stacked nav-hierarchy">
                 <t t-foreach="c.child_id" t-as="c">
                     <t t-call="website_sales.categories_recursive"/>

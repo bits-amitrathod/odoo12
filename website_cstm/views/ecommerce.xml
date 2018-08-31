@@ -277,7 +277,7 @@
                                     </p>
 
                                      <div t-if="product.qty_available &gt; 0"
-                                         t-attf-class="availability_message_#{product_template}" style="padding-bottom: 10px;">
+                                         t-attf-class="availability_message_#{product_template}" style="padding-bottom: 10px;font-style: italic;">
                                         <t t-esc="int(product.qty_available)"/>
                                         item(s) left
                                     </div>
@@ -330,6 +330,7 @@
     <template id="product_quantity" inherit_id="website_sale.product_quantity" customize_show="True"
               name="Select Quantity">
         <xpath expr="//div[hasclass('css_quantity')]" position="replace">
+            <div style="font-weight: bold;margin-bottom: -10px;">Quantity</div>
             <div t-if="product.qty_available &gt; 0" class="css_quantity input-group oe_website_spinner pull-left"
                  contenteditable="false" style="margin-top: 15px;margin-right: 18px;">
                 <a t-attf-href="#" class="mb8 input-group-addon js_add_cart_json">
