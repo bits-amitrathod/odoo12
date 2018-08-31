@@ -10,7 +10,7 @@
           <field name="name" attrs="{'invisible':[('state', 'not in', ('ven_draft'))]}"/>
           <field name="state" invisible="1"   />
           <field name="acq_user_id" string='Acq Manager' attrs="{'invisible':[('state', 'not in', ('ven_draft'))]}"/>
-          <field name="partner_id" attrs="{'invisible':[('state', 'not in', ('ven_draft'))]}"/>
+          <field name="partner_id" attrs="{'invisible':[('state', 'not in', ('ven_draft'))]}" string ="Facility Name"/>
           <field name="offer_amount" attrs="{'invisible':[('state', 'not in', ('ven_draft'))]}"  widget="monetary"/>
           <field name="retail_amt" attrs="{'invisible':[('state', 'not in', ('ven_draft'))]}"  widget="monetary"/>
           <field name="date_offered" attrs="{'invisible':[('state', 'not in', ('ven_draft'))]}"/>
