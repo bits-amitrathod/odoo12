@@ -3,6 +3,8 @@
 from odoo import models, fields, api
 from operator import attrgetter
 import logging
+from operator import itemgetter
+
 
 _logger = logging.getLogger(__name__)
 
@@ -39,24 +41,29 @@ class SpsCustomerRequest(models.Model):
         _logger.info('len of customer request %r ', str(len(sps_customer_requests)))
         for sps_customer_request in sps_customer_requests:
             _logger.info('customer request %r, %r', sps_customer_request['customer_id'].id, sps_customer_request['product_id'].id)
-            _setting_object = self._get_settings_object(sps_customer_request['customer_id'].id,
+            if not sps_customer_request['product_id'].id is False:
+                _setting_object = self._get_settings_object(sps_customer_request['customer_id'].id,
                                                         sps_customer_request['product_id'].id)
-            if _setting_object:
-                pr_model = self.pool.get('prioritization.engine.model')
-                pr_model.customer_request_id = sps_customer_request.id
-                pr_model.customer_id = sps_customer_request['customer_id'].id
-                pr_model.product_id = sps_customer_request['product_id'].id
-                pr_model.required_quantity = sps_customer_request.required_quantity
-                pr_model.product_priority = _setting_object.priority
-                pr_model.auto_allocate = _setting_object.auto_allocate
-                pr_model.cooling_period = _setting_object.cooling_period
-                pr_model.length_of_hold = _setting_object.length_of_hold
-                pr_model.partial_order = _setting_object.partial_ordering
-                pr_model.expiration_tolerance = _setting_object.expiration_tolerance
-                _logger.info('customer request1 %r, %r, %r', pr_model.customer_request_id,pr_model.customer_id,
-                             pr_model.product_id)
+                if _setting_object:
+                    pr_model = dict(customer_request_id=sps_customer_request.id,
+                                    customer_id=sps_customer_request['customer_id'].id,
+                                    product_id=sps_customer_request['product_id'].id,
+                                    required_quantity=sps_customer_request.required_quantity,
+                                    product_priority=_setting_object.priority,
+                                    auto_allocate=_setting_object.auto_allocate,
+                                    cooling_period=_setting_object.cooling_period,
+                                    length_of_hold=_setting_object.length_of_hold,
+                                    partial_order=_setting_object.partial_ordering,
+                                    expiration_tolerance=_setting_object.expiration_tolerance)
 
-                pr_models.append(pr_model)
+                    _logger.info('customer request1 %r, %r, %r', pr_model['customer_request_id'], pr_model['customer_id'],
+                                 pr_model['product_id'])
+                    pr_models.append(pr_model)
+
+        _logger.info('Length **** %r', str(len(pr_models)))
+        # Sort list by product priority
+        pr_models = sorted(pr_models, key=itemgetter('product_priority'))
+
         self.env['prioritization.engine.model'].allocate_product_by_priority(pr_models)
 
 
@@ -81,3 +88,5 @@ class SpsCustomerRequest(models.Model):
                     _logger.info('Customer prioritization setting is False. Customer id is :%r',
                                  str(global_level_setting.id))
                     return False
+
+
