@@ -183,7 +183,6 @@
                                                          <field name="margin"    />
                                                          <field name="multiplier"   />
                                                          <field name="product_note"  readonly="1" />
-                                                         <!--<field name="product_qty"  invisible="1" />-->
                                                          <field name="date_planned"  invisible="1" />
                                                          <field name="product_uom"  invisible="1" />
                                                      </group>
@@ -204,7 +203,6 @@
                                                          <field name="product_sales_count_90"    />
                                                          <field name="product_sales_count_yrs"   />
                                                          <field name="expired_inventory"   />
-                                                         <!--<field name="premium" />-->
                                                          <field name="product_unit_price"  />
                                                          <field name="product_offer_price"   />
                                                          <field name="product_retail"   />
@@ -212,8 +210,6 @@
 
                                                          <field name="margin" />
                                                          <field name="multiplier"   />
-                                                        <!--<field name="product_qty"  invisible="1" />-->
-                                                         <!--<field name="product_uom_qty"   invisible="1"  />-->
                                                          <field name="date_planned"  invisible="1"  />
                                                          <field name="product_uom"    invisible="1"/>
                                                          <field name="order_id"   invisible="1"  />
@@ -262,7 +258,7 @@
             <field name="model">purchase.order</field>
             <field name="inherit_id" ref="purchase.purchase_order_form"></field>
             <field name="arch" type="xml">
-                <!--<form string="Purchase Order">-->
+
                      <xpath expr="//group/group/field[@name='company_id']" position="after">
                     <field name="carrier_info"></field>
                     <field name="carrier_acc_no"></field>
@@ -300,13 +296,7 @@
                         <field name="vendor_offer_data" invisible="1"/>
                     </xpath>
 
-                <!--<xpath expr="//notebook/page/field/tree/field[@name='price_unit']" position="after">-->
-                <!--<field name="product_offer_price" attrs="{'readonly': [('vendor_offer_data', '=', False)]}"></field>-->
-                <!--<field name="vendor_offer_data" invisible="1"/>-->
-                <!--</xpath>-->
 
-
-                <!--</form>-->
             </field>
         </record>
 
