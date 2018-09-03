@@ -86,6 +86,7 @@ class SaleSalespersonReport(models.TransientModel):
             return upper(data)
         else:
             return " "
+
     @api.multi
     def print_compbymonth_vise_report(self):
         sale_orders = self.env['sale.order'].search([])

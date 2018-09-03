@@ -9,5 +9,14 @@
                 file="sr_sales_report_product_bymonth.salesbymonth_temp"
                 name="sr_sales_report_product_bymonth.salesbymonth_temp"
         />
+
+        <report
+                id="action_report_sales_salesbycount_wise"
+                string="Sales By Month"
+                model="sale.productbymonth.report"
+                report_type="qweb-html"
+                file="sr_sales_report_product_bymonth.salesbycount_temp"
+                name="sr_sales_report_product_bymonth.salesbycount_temp"
+        />
     </data>
 </odoo>
