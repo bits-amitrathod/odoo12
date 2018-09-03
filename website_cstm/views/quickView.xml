@@ -15,7 +15,7 @@
                             </div>
                             <div class="modal-body">
                                 <div class="row">
-                                    <div class="col-md-6 product_img">
+                                    <div class="col-md-6 col-sm-6 product_img">
                                         <!--   <img
                                               class="img-responsive" />-->
                                         <span itemprop="image"
@@ -28,7 +28,7 @@
                                         <!--t-att-src="'data:image/png;base64,'+product.image if product.image else -->
 
                                     </div>
-                                    <div class="col-md-6 product_content">
+                                    <div class="col-md-6 col-sm-6 product_content">
                                         <div class="col-sm-12 col-lg-12" id="product_details">
                                             <h4>
                                                 <span t-esc="product.default_code"></span>
@@ -51,44 +51,47 @@
                                             <h3 itemprop="name" t-field="product.name">Product Name</h3>
                                             <span itemprop="url" style="display:none;"
                                                   t-esc="'/shop/product/%s' % slug(product)"/>
+
+                                            <p>
+                                                <a t-att-href="keep('/shop/brands', brand=product.product_brand_id.id)"
+                                                   t-field="product.product_brand_id.name" class="linkCstm"></a>
+                                            </p>
+
+
                                             <t t-call="website_sale.product_price"/>
                                             <p t-if="len(product.product_variant_ids) &gt; 1"
                                                class="css_not_available_msg bg-danger" style="padding: 15px;">Product
                                                 not available
                                             </p>
                                             <a id="add_to_cart"
-                                               class="btn btn-primary btn-lg mt8 js_check_product a-submit"
-                                               t-att-href="'/shop/product/%s' % (slug(product))">Add to Cart
+                                               class="btn btn-lg mt8 js_check_product a-submit btn-link linkCstm"
+                                               t-att-href="'/shop/product/%s' % (slug(product))" style="padding: 0px">View full product details
                                             </a>
                                             <hr/>
-                                            <t t-call="website_sales.category_vender"/>
-                                            <t t-call="website_sales.productExpirationDate"/>
+                                            <!--<t t-call="website_sales.category_vender"/>-->
+                                            <!--<t t-call="website_sales.productExpirationDate"/>-->
                                             <div>
-                                                <div t-if="product.qty_available >= 1" class="alert alert-success">
-                                                    <span class="fa fa-check"/>
-                                                    <span>In Stock
-                                                        <span t-esc="int(product.qty_available)"/>
-                                                        Unit(s) available
+                                                <div t-if="product.qty_available >= 1">
+                                                    <!--<span class="fa fa-check"/>-->
+                                                    <span>
+                                                        <span t-esc="int(product.qty_available)"
+                                                              style="font-style: italic;"/>
+                                                        item(s) left
                                                     </span>
                                                 </div>
-                                                <div t-if="product.qty_available == 0" class="alert alert-warning">
+                                                <div t-if="product.qty_available == 0">
                                                     <span class="fa fa-warning"/>
-                                                    <span>Out Of Stock</span>
+                                                    <span>Temporarily out of stock</span>
                                                     <!--<span t-field="product.availability_warning" />-->
                                                 </div>
                                             </div>
-                                            <hr t-if="product.description_sale"/>
-                                            <div>
-                                                <p t-field="product.description_sale" class="text-muted"/>
-                                            </div>
-                                            <hr/>
-                                            <!--<p class="text-muted">-->
-                                                <!--30-day money-back guarantee-->
-                                                <!--<br/>-->
-                                                <!--Free Shipping in U.S.-->
-                                                <!--<br/>-->
-                                                <!--Buy now, get in 2 days-->
-                                            <!--</p>-->
+                                            <!--<hr t-if="product.description_sale"/>-->
+                                            <!--<div>-->
+                                            <!--<p t-field="product.description_sale" class="text-muted"/>-->
+                                            <!--</div>-->
+                                            <!--<hr/>-->
+
+
                                         </div>
                                     </div>
                                 </div>

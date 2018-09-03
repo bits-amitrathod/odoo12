@@ -77,6 +77,8 @@ class SaleSalespersonReport(models.TransientModel):
             'end_date': fields.Datetime.from_string(str(self.end_date)).date().strftime('%m/%d/%Y'),
 
         }
-        return self.env.ref('sr_sales_report_product_groupby.action_report_sales_saleperson_wise').report_action([],
+        action = self.env.ref('sr_sales_report_product_groupby.action_report_sales_saleperson_wise').report_action([],
                                                                                                                     data=datas)
+        action.update({'target': 'main'})
+        return action
 

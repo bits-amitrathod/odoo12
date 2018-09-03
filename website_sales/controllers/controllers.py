@@ -56,9 +56,9 @@ class WebsiteSales(WebsiteSale):
         productMaxMinDates = {}
         request.env.cr.execute(
                 "SELECT min(use_date), max (use_date) FROM public.stock_production_lot where product_id = %s",
-                (payload['product'].id,))
+                (payload['product'].product_variant_id.id,))
         query_result = request.env.cr.dictfetchone()
-        productMaxMinDates[payload['product'].id] = {"min": fields.Datetime.from_string(query_result['min']),
+        productMaxMinDates[payload['product'].product_variant_id.id] = {"min": fields.Datetime.from_string(query_result['min']),
                                                           "max": fields.Datetime.from_string(query_result['max'])}
 
         payload['productExpiration'] = productMaxMinDates;

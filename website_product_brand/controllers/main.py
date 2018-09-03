@@ -1,7 +1,7 @@
 # See LICENSE file for full copyright and licensing details.
 
 import werkzeug
-from odoo import http
+from odoo import fields,http
 from odoo.http import request
 import odoo.addons.website_sale.controllers.main
 from odoo.addons.http_routing.models.ir_http import slug

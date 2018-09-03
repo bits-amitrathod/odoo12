@@ -26,7 +26,7 @@
                                     <th style="border: 1px solid black;text-align: center !important;white-space: nowrap;">Product SKU</th>
                                     <th style="border: 1px solid black;text-align: center !important;white-space: nowrap;">Product Name</th>
                                     <th style="border: 1px solid black;text-align: center !important;white-space: nowrap;">Quantity</th>
-                                    <th style="border: 1px solid black;text-align: center !important;white-space: nowrap;">Price</th>
+                                    <th style="border: 1px solid black;text-align: center !important;white-space: nowrap;width:125px;">Price</th>
                                     <th style="border: 1px solid black;text-align: center !important;white-space: nowrap;">Min Exp Date</th>
                                     <th style="border: 1px solid black;text-align: center !important;white-space: nowrap;">Max Exp Date</th>
                                 </tr>

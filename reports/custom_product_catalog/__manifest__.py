@@ -35,7 +35,7 @@
         'report/product_catalog_report.xml',
         'report/product_catalog_temp.xml'
     ],
-    # 'images': ['static/description/banner.png'],
+
     'auto_install': False,
     'installable': True,
     'application': False,
