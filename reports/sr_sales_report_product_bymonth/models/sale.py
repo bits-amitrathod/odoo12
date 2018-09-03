@@ -103,3 +103,36 @@ class SaleSalespersonReport(models.TransientModel):
         action.update({'target': 'main'})
         return action
 
+    @api.multi
+    def print_salesbycount_vise_report(self):
+        sale_orders = self.env['sale.order'].search([])
+        groupby_dict = {}
+        # for user in self.product_id:
+        # filtered_order = list(filter(lambda x: x.product_id == user, sale_orders))
+        filtered_by_date = sale_orders
+        groupby_dict = salebymonth().addObject(filtered_by_date)
+
+        final_dict = {}
+        temp = []
+        for user in groupby_dict.keys():
+            order = groupby_dict[user]
+            temp_2 = []
+            temp_2.append(order.sku)
+            temp_2.append(order.product_name)
+            temp_2.append(float_repr(order.current_month_total_amount, precision_digits=2))
+            temp_2.append(int(order.current_month_total_qty))
+            temp.append(temp_2)
+        final_dict['data'] = temp
+        final_dict['data'].sort(key=lambda x: self.check(x[0]))
+        datas = {
+            'ids': self,
+            'model': 'sale.product.report',
+            'form': final_dict,
+            'start_date': fields.date.today(),
+            'end_date': fields.date.today(),
+
+        }
+        action = self.env.ref('sr_sales_report_product_bymonth.action_report_sales_salesbycount_wise').report_action([],
+                                                                                                                     data=datas)
+        action.update({'target': 'main'})
+        return action

@@ -36,7 +36,7 @@
                         <div class="table-responsive">
                             <table class="table table-condensed table-bordered" style="border: 1px solid #000;">
                                 <tr>
-                                    <th style="border: 1px solid black;text-align: center;">Product SKU</th>
+                                    <th style="border: 1px solid black;text-align: center;">Product</th>
                                     <th style="border: 1px solid black;text-align: center;">Manufacturer</th>
                                     <th style="border: 1px solid black;text-align: center;">Customer</th>
                                     <th style="border: 1px solid black;text-align: center;width: 220px;">Product Name</th>

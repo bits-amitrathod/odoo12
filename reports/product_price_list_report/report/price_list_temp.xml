@@ -33,7 +33,7 @@
                         <table class="table table-condensed" style="border: 1px solid black;">
                             <thead>
                                 <tr style="border: 1px solid black;">
-                                    <th style="border: 1px solid black;text-align:  center !important;width:200px;"> Product SKU</th>
+                                    <th style="border: 1px solid black;text-align:  center !important;width:200px;"> Product</th>
                                     <th style="border: 1px solid black;text-align:  center !important;"> Product Name</th>
                                     <th style="border: 1px solid black;text-align:  center !important;">Cost</th>
 
@@ -92,7 +92,7 @@
                         <table class="table table-condensed" style="border: 1px solid black;">
                             <thead>
                                 <tr style="border: 1px solid black;">
-                                    <th style="border: 1px solid black;text-align: center;width:200px;"> Product SKU</th>
+                                    <th style="border: 1px solid black;text-align: center;width:200px;"> Product</th>
                                     <th style="border: 1px solid black;text-align: center;"> Product Name</th>
                                     <th style="border: 1px solid black;text-align: center;">Cost</th>
 
