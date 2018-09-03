@@ -41,7 +41,7 @@ class SpsCustomerRequest(models.Model):
         _logger.info('len of customer request %r ', str(len(sps_customer_requests)))
         for sps_customer_request in sps_customer_requests:
             _logger.info('customer request %r, %r', sps_customer_request['customer_id'].id, sps_customer_request['product_id'].id)
-            if not sps_customer_request['product_id'].id is False:
+            if sps_customer_request['product_id'].id and not sps_customer_request['product_id'].id is False:
                 _setting_object = self._get_settings_object(sps_customer_request['customer_id'].id,
                                                         sps_customer_request['product_id'].id)
                 if _setting_object:
@@ -61,10 +61,10 @@ class SpsCustomerRequest(models.Model):
                     pr_models.append(pr_model)
 
         _logger.info('Length **** %r', str(len(pr_models)))
-        # Sort list by product priority
-        pr_models = sorted(pr_models, key=itemgetter('product_priority'))
-
-        self.env['prioritization.engine.model'].allocate_product_by_priority(pr_models)
+        if len(pr_models) > 0:
+            # Sort list by product priority
+            pr_models = sorted(pr_models, key=itemgetter('product_priority'))
+            self.env['prioritization.engine.model'].allocate_product_by_priority(pr_models)
 
 
     def _get_settings_object(self, customer_id, product_id):

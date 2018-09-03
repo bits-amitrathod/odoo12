@@ -38,7 +38,7 @@
         'report/price_list_temp.xml'
     ],
     'images': ['static/description/banner.png'],
-    'auto_install': True,
+    'auto_install': False,
     'installable': True,
     'application': True,
 }

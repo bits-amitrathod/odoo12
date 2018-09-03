@@ -27,10 +27,10 @@
                                 <tr align="center" style="border: 1px solid black;">
                                     <th style="border: 1px solid black;text-align: center;">Product SKU </th>
                                     <th style="border: 1px solid black;text-align: center;">Product Name </th>
-                                    <th style="border: 1px solid black;text-align: center;">Last Month Qty</th>
-                                    <th style="border: 1px solid black;text-align: center;">Last Month Price</th>
-                                    <th style="border: 1px solid black;text-align: center;">Current Month Qty</th>
-                                    <th style="border: 1px solid black;text-align: center;">Current Month Price</th>
+                                    <th style="border: 1px solid black;text-align: center;width: 120px">Last Month Qty</th>
+                                    <th style="border: 1px solid black;text-align: center;width: 120px">Last Month Price</th>
+                                    <th style="border: 1px solid black;text-align: center;width: 120px">Current Month Qty</th>
+                                    <th style="border: 1px solid black;text-align: center;width: 120px ">Current Month Price</th>
                                 </tr>
                                     <tr t-foreach="data" t-as="order">
                                         <td style="border: 1px solid black;">

@@ -18,8 +18,9 @@
                 <br/>
 
                 Min -
-                <t t-if="'product.product_variant_id.id' in productExpiration and productExpiration[product.product_variant_id.id]['min'] is None">
-                    <span t-esc="productExpiration[product.product_variant_id.id]['min']" t-options="{'widget': 'date'}"/>
+                <t t-if="product.product_variant_id.id in productExpiration and productExpiration[product.product_variant_id.id]['min'] is not None">
+                    <span t-esc="productExpiration[product.product_variant_id.id]['min']"
+                          t-options="{'widget': 'date'}"/>
                 </t>
                 <t t-else="">
                     N/A
@@ -28,17 +29,31 @@
                 <br/>
 
                 Max -
-                <t t-if="'product.product_variant_id.id' in productExpiration and productExpiration[product.product_variant_id.id]['max'] is None">
-                    <span t-esc="productExpiration[product.product_variant_id.id]['max']" t-options="{'widget': 'date'}"/>
+                <t t-if="product.product_variant_id.id in productExpiration and productExpiration[product.product_variant_id.id]['max'] is not None">
+                    <span t-esc="productExpiration[product.product_variant_id.id]['max']"
+                          t-options="{'widget': 'date'}"/>
                 </t>
                 <t t-else="">
                     N/A
                 </t>
-                           <!--<span t-esc="productExpiration"/>-->
+                <!--<span t-esc="productExpiration"/>-->
                 <!--product-->
-                  <!--<span t-esc="product.id"/> <span t-esc="product.product_variant_id.id"/>-->
+                <!--<span t-esc="product.id"/> <span t-esc="product.product_variant_id.id"/>-->
             </div>
         </t>
+    </template>
+
+    <template id="products_categories" name="eCommerce Categories" inherit_id="website_sale.products_categories">
+        <xpath expr="//div[@id='products_grid_before']/ul" position="replace">
+            <ul class="nav nav-pills nav-stacked mt16">
+                <li t-att-class=" '' if category else 'active' ">
+                    <a t-att-href="keep('/shop',category=0)" class="o_not_editable">ALL CATEGORIES</a>
+                </li>
+                <t t-foreach="categories" t-as="c">
+                    <t t-call="website_sale.categories_recursive"/>
+                </t>
+            </ul>
+        </xpath>
     </template>
 
     <record id="res_config_settings_view_form" model="ir.ui.view">
@@ -91,22 +106,30 @@
 
 
     <template id="category_vender" name="category Vender">
-        <strong>Category:</strong>
-        <ul class="list-inline">
-            <t t-foreach="product.public_categ_ids" t-as="c">
-                <t t-call="website_sales.categories_recursive"/>
-            </t>
-        </ul>
-        <p>
-            <strong>Vendor:</strong>
-            <a t-att-href="keep('/shop/brands', brand=product.product_brand_id.id)"
-               t-field="product.product_brand_id.name"></a>
-        </p>
+        <div class="row">
+            <div class="col-sm-12">
+                <strong class="pull-left">Category:</strong>
+                <ul class="list-inline">
+                    <t t-foreach="product.public_categ_ids" t-as="c">
+                        <t t-call="website_sales.categories_recursive"/>
+                    </t>
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <p>
+                    <strong>Vendor:</strong>
+                    <a t-att-href="keep('/shop/brands', brand=product.product_brand_id.id)"
+                       t-field="product.product_brand_id.name" class="linkCstm"></a>
+                </p>
+            </div>
+        </div>
     </template>
 
     <template id="categories_recursive" name="Category list">
         <li t-att-class="'active' if c.id == int(category or 0) else None">
-            <a t-att-href="keep('/shop/category/' + slug(c), category=0)" t-field="c.name"></a>
+            <a t-att-href="keep('/shop/category/' + slug(c), category=0)" t-field="c.name" class="linkCstm"></a>
             <ul t-if="c.child_id" class="nav nav-pills nav-stacked nav-hierarchy">
                 <t t-foreach="c.child_id" t-as="c">
                     <t t-call="website_sales.categories_recursive"/>

@@ -38,25 +38,25 @@ class SaleOrder(models.Model):
         return models.Model.unlink(self)
 
     def action_validate(self):
-        self = self.env['stock.picking'].search([('sale_id', '=', self.id)])
-        if self.id:
-            return self.button_validate()
+        multi = self.env['stock.picking'].search([('sale_id', '=', self.id)])
+        if len(multi) >= 1:
+            return multi.button_validate()
 
     def action_assign(self):
-        self = self.env['stock.picking'].search([('sale_id', '=', self.id)])
-        if self.id:
-            return self.action_assign()
+        multi = self.env['stock.picking'].search([('sale_id', '=', self.id)])
+        if len(multi) >= 1:
+            return multi.action_assign()
 
     def _compute_show_validate(self):
-        self = self.env['stock.picking'].search([('sale_id', '=', self.id)])
-        if self.id:
-            self._compute_show_validate()
+        multi = self.env['stock.picking'].search([('sale_id', '=', self.id)])
+        if len(multi)>=1:
+            multi._compute_show_validate()
 
     @api.multi
     def do_unreserve(self):
-        self = self.env['stock.picking'].search([('sale_id', '=', self.id)])
-        if self.id:
-            return self.do_unreserve()
+        multi = self.env['stock.picking'].search([('sale_id', '=', self.id)])
+        if len(multi) >= 1:
+            return multi.do_unreserve()
 
 class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
@@ -72,7 +72,6 @@ class StockPicking(models.Model):
     @api.multi
     def button_validate(self):
         _logger.info("stock :stock_picking_prioritization  button_validate called.....")
-        _logger.info("stock :stock_picking_prioritization parnter hold status %r :",self.partner_id)
 
         self.ensure_one()
         if not self.move_lines and not self.move_line_ids:
