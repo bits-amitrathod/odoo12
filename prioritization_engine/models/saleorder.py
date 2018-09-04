@@ -18,9 +18,9 @@ class SaleOrder(models.Model):
         ('cancel', 'Cancelled'),
         ('void', 'Voided'),
     ], string='Status', readonly=True, copy=False, index=True, track_visibility='onchange', default='draft')
-    '''show_validate = fields.Boolean(
+    show_validate = fields.Boolean(
         compute='_compute_show_validate',
-        help='Technical field used to compute whether the validate should be shown.')'''
+        help='Technical field used to compute whether the validate should be shown.')
     shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
     preferred_method = fields.Selection(string='Preferred Invoice Delivery Method', related='partner_id.preferred_method', readonly=True)
     carrier_info = fields.Char("Carrier Info",related='partner_id.carrier_info',readonly=True)
@@ -38,7 +38,7 @@ class SaleOrder(models.Model):
                     'You can not delete a sent quotation or a sales order! Try to cancel or void it before.')
         return models.Model.unlink(self)
 
-    '''def action_validate(self):
+    def action_validate(self):
         multi = self.env['stock.picking'].search([('sale_id', '=', self.id)])
         if len(multi) == 1 and self.delivery_count ==1:
             return multi.button_validate()
@@ -59,7 +59,7 @@ class SaleOrder(models.Model):
     def do_unreserve(self):
         multi = self.env['stock.picking'].search([('sale_id', '=', self.id)])
         if len(multi) >= 1:
-            return multi.do_unreserve()'''
+            return multi.do_unreserve()
 
 '''class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
