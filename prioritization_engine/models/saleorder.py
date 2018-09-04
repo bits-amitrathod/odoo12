@@ -64,10 +64,10 @@ class SaleOrder(models.Model):
 class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
 
-    def action_show_details(self):
+    '''def action_show_details(self):
        self= self.env['stock.move'].search([('sale_line_id', '=', self.id)])
        if self.id:
-           return self.action_show_details()
+           return self.action_show_details()'''
 
 class StockPicking(models.Model):
     _inherit = "stock.picking"
