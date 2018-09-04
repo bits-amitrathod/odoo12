@@ -38,11 +38,9 @@ class SaleOrder(models.Model):
                     'You can not delete a sent quotation or a sales order! Try to cancel or void it before.')
         return models.Model.unlink(self)
 
-    def action_validate(self):
+    '''def action_validate(self):
         multi = self.env['stock.picking'].search([('sale_id', '=', self.id)])
-        print(multi)
-        print(self.delivery_count)
-        if len(multi) == 1 and self.delivery_count==1:
+        if len(multi) == 1 and self.delivery_count ==1:
             return multi.button_validate()
         elif self.delivery_count>1:
             raise ValidationError(_('Validate is not possible for multiple delivery please do validate one by one'))
@@ -61,7 +59,7 @@ class SaleOrder(models.Model):
     def do_unreserve(self):
         multi = self.env['stock.picking'].search([('sale_id', '=', self.id)])
         if len(multi) >= 1:
-            return multi.do_unreserve()
+            return multi.do_unreserve()'''
 
 class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
