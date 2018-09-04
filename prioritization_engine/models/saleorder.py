@@ -1,6 +1,7 @@
 from odoo import models, fields, api,_
-from odoo.exceptions import UserError, AccessError
+from odoo.exceptions import UserError, AccessError,ValidationError
 from odoo.tools.float_utils import float_compare, float_is_zero, float_round
+
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -39,8 +40,12 @@ class SaleOrder(models.Model):
 
     def action_validate(self):
         multi = self.env['stock.picking'].search([('sale_id', '=', self.id)])
-        if len(multi) >= 1:
+        print(multi)
+        print(self.delivery_count)
+        if len(multi) == 1 and self.delivery_count==1:
             return multi.button_validate()
+        elif self.delivery_count>1:
+            raise ValidationError(_('Validate is not possible for multiple delivery please do validate one by one'))
 
     def action_assign(self):
         multi = self.env['stock.picking'].search([('sale_id', '=', self.id)])
@@ -72,6 +77,7 @@ class StockPicking(models.Model):
     @api.multi
     def button_validate(self):
         _logger.info("stock :stock_picking_prioritization  button_validate called.....")
+        _logger.info("stock :stock_picking_prioritization parnter hold status %r :",self.partner_id)
 
         self.ensure_one()
         if not self.move_lines and not self.move_line_ids:

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields, api
+from odoo import models, fields, api,_
 import logging
+from odoo.exceptions import ValidationError, AccessError
 
 _logger = logging.getLogger(__name__)
 
@@ -41,7 +42,7 @@ class Customer(models.Model):
         ('2', 'Prepaid'),
         (3,'Freight Collect')], string='Shipping Terms')
 
-    '''@api.model
+    ''' @api.model
     def create(self, vals):
         self.on_hold_changes(vals)
         return super(Customer, self).create(vals)
@@ -70,14 +71,57 @@ class Customer(models.Model):
         action['res_id'] = self.id
         return action
 
+    # constraint
+    @api.constrains('expiration_tolerance')
+    @api.one
+    def _check_expiration_tolerance(self):
+        expiration_tolerance = self.expiration_tolerance
+        if expiration_tolerance and len(str(abs(expiration_tolerance))) > 3:
+            raise ValidationError(_('Global Priority Configuration->Expiration Tolerance field must be less than 3 digit'))
 
+    @api.constrains('length_of_hold')
+    @api.one
+    def _check_length_of_hold(self):
+        length_of_hold = self.length_of_hold
+        if length_of_hold and len(str(abs(length_of_hold))) > 5:
+            raise ValidationError(_('Global Priority Configuration->Length of Holding field must be less than 5 digit'))
+
+    @api.constrains('priority')
+    @api.one
+    def _check_priority(self):
+        priority = self.priority
+        if priority and len(str(abs(priority))) > 5:
+            raise ValidationError(_('Global Priority Configuration->Priority field must be less than 5 digit'))
+
+    @api.constrains('cooling_period')
+    @api.one
+    def _check_cooling_period(self):
+        cooling_period = self.cooling_period
+        if cooling_period and cooling_period <=366:
+            raise ValidationError(_('Global Priority Configuration->Cooling Period field must be less 365 days'))
+
+    @api.constrains('max_threshold')
+    @api.one
+    def _check_max_threshold(self):
+        max_threshold = self.max_threshold
+        if max_threshold and max_threshold <= 999:
+            raise ValidationError(_('Global Priority Configuration->Max Threshold field must be less 999'))
+        if max_threshold and max_threshold <=self.min_threshold:
+            raise ValidationError(_('Global Priority Configuration->Max Threshold field must be greater than Min Threshold field'))
+
+    @api.constrains('min_threshold')
+    @api.one
+    def _check_min_threshold(self):
+        min_threshold = self.min_threshold
+        if min_threshold and min_threshold < 999:
+            raise ValidationError(_('Global Priority Configuration->Min Threshold field must be less 999'))
 
 
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
     location = fields.Char("Location")
     premium = fields.Boolean("Premium")
-    sku_code = fields.Char('SKU / Catalog No')
+    sku_code = fields.Char('SKU / Catalog No',required=True)
     manufacturer_pref = fields.Char(string='Manuf. Catalog No')
 
 
@@ -114,9 +158,55 @@ class Prioritization(models.Model):
     sales_channel = fields.Selection([('1','Manual'),('2','Prioritization Engine')], String="Sales Channel",readonly=False)# get team id = sales channel like 3 = Manual, 4 = Prioritization Engine
 
     _sql_constraints = [
-        ('prioritization_engine_company_uniq', 'unique(customer_id,product_id)', 'Product must be unique for customer!!!!'),
+        ('prioritization_engine_company_uniq', 'UNIQUE(product_id)', 'Product must be unique for customer!!!!'),
     ]
+    # constraint
+    @api.constrains('expiration_tolerance')
+    @api.one
+    def _check_expiration_tolerance(self):
+        expiration_tolerance = self.expiration_tolerance
+        if expiration_tolerance and len(str(abs(expiration_tolerance))) > 3:
+            raise ValidationError(
+                _('Customer Priority Configuration->Expiration Tolerance field must be less than 3 digit'))
 
+    @api.constrains('length_of_hold')
+    @api.one
+    def _check_length_of_hold(self):
+        length_of_hold = self.length_of_hold
+        if length_of_hold and len(str(abs(length_of_hold))) > 5:
+            raise ValidationError(_('Customer Priority Configuration->Length of Holding field must be less than 5 digit'))
+
+    @api.constrains('priority')
+    @api.one
+    def _check_priority(self):
+        priority = self.priority
+        if priority and len(str(abs(priority))) > 5:
+            raise ValidationError(_('Customer Priority Configuration->Priority field must be less than 5 digit'))
+
+
+    @api.constrains('cooling_period')
+    @api.one
+    def _check_cooling_period(self):
+        cooling_period = self.cooling_period
+        if cooling_period and cooling_period <= 366:
+            raise ValidationError(_('Customer Priority Configuration->Cooling Period field must be less 365 days'))
+
+    @api.constrains('max_threshold')
+    @api.one
+    def _check_max_threshold(self):
+        max_threshold = self.max_threshold
+        if max_threshold and max_threshold <= 999:
+            raise ValidationError(_('Customer Priority Configuration->Max Threshold field must be less 999'))
+        if max_threshold and max_threshold <= self.min_threshold:
+            raise ValidationError(
+                _('Global Priority Configuration->Max Threshold field must be greater than Min Threshold field'))
+
+    @api.constrains('min_threshold')
+    @api.one
+    def _check_min_threshold(self):
+        min_threshold = self.min_threshold
+        if min_threshold and min_threshold < 999:
+            raise ValidationError(_('Customer Priority Configuration->Min Threshold field must be less 999'))
 
 class PrioritizationTransient(models.TransientModel):
     _name = 'prioritization.transient'

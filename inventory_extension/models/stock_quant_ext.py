@@ -19,3 +19,4 @@ class StockQuantExt(models.Model):
             if record.lot_id and record.lot_id.use_date:
                 final_date = fields.Datetime.from_string(record.lot_id.use_date)
                 record.use_date = final_date.date()
+
