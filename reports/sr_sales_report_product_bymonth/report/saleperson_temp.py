@@ -21,8 +21,21 @@
 from odoo import api, models
 
 
-class ReportSalesSalespersonWise(models.AbstractModel):
+class  SalesSByMonth(models.AbstractModel):
     _name = 'report.sr_sales_report_product_bymonth.salesbymonth_temp'
+
+    @api.model
+    def get_report_values(self, docids, data=None):
+        return {
+            'doc_ids': data.get('ids'),
+            'doc_model': data.get('model'),
+            'data': data['form'],
+            'start_date': data['start_date'],
+            'end_date': data['end_date'],
+        }
+
+class SalesByCount(models.AbstractModel):
+    _name = 'report.sr_sales_report_product_bymonth.salesbycount_temp'
 
     @api.model
     def get_report_values(self, docids, data=None):

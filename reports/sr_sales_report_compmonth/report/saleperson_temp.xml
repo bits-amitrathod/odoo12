@@ -25,7 +25,7 @@
                                 </tr>
 
                                 <tr align="center" style="border: 1px solid black;">
-                                    <th style="border: 1px solid black;text-align: center;">Product SKU </th>
+                                    <th style="border: 1px solid black;text-align: center;">Product </th>
                                     <th style="border: 1px solid black;text-align: center;">Product Name </th>
                                     <th style="border: 1px solid black;text-align: center;width: 120px">Last Month Qty</th>
                                     <th style="border: 1px solid black;text-align: center;width: 120px">Last Month Price</th>
@@ -60,4 +60,6 @@
             </t>
         </t>
     </template>
+
+
 </odoo>

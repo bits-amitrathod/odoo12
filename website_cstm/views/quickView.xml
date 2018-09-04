@@ -30,10 +30,7 @@
                                     </div>
                                     <div class="col-md-6 col-sm-6 product_content">
                                         <div class="col-sm-12 col-lg-12" id="product_details">
-                                            <h4>
-                                                <span t-esc="product.default_code"></span>
-                                            </h4>
-                                            <br/>
+
                                             <!--<div class="rating hidden-sm rating_ext">-->
                                             <!--<t t-set="rating" t-value="0"/>-->
                                             <!--<t t-set="count" t-value="0"/>-->
@@ -56,6 +53,9 @@
                                                 <a t-att-href="keep('/shop/brands', brand=product.product_brand_id.id)"
                                                    t-field="product.product_brand_id.name" class="linkCstm"></a>
                                             </p>
+                                             <h4>
+                                                <span t-esc="product.default_code"></span>
+                                            </h4>
 
 
                                             <t t-call="website_sale.product_price"/>
@@ -64,8 +64,10 @@
                                                 not available
                                             </p>
                                             <a id="add_to_cart"
-                                               class="btn btn-lg mt8 js_check_product a-submit btn-link linkCstm"
+                                               class="btn mt8 js_check_product a-submit btn-link linkCstm"
                                                t-att-href="'/shop/product/%s' % (slug(product))" style="padding: 0px">View full product details
+                                                <span class="glyphicon glyphicon-menu-right" style="font-size: 10px;">  </span>
+                                                <span class="glyphicon glyphicon-menu-right" style="font-size: 10px;right: 10px;">  </span>
                                             </a>
                                             <hr/>
                                             <!--<t t-call="website_sales.category_vender"/>-->

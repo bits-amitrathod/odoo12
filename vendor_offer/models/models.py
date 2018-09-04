@@ -26,7 +26,7 @@ class VendorOffer(models.Model):
     declined_date = fields.Datetime(string="Declined Date")
     retail_amt = fields.Monetary(string="Total Retail",readonly=True,default=0 ,compute='_amount_tot_all')
     offer_amount = fields.Monetary(string="Total  Offer",readonly=True,default=0,compute='_amount_tot_all')
-    date_planned = fields.Datetime(string='Scheduled Date')
+    # date_planned = fields.Datetime(string='Scheduled Date')
     possible_competition = fields.Many2one('competition.competition', string="Possible Competition")
     offer_type = fields.Selection([
         ('cash', 'Cash'),
@@ -128,6 +128,7 @@ class VendorOffer(models.Model):
 
     @api.multi
     def action_confirm_vendor_offer(self):
+        print('======================================== =================')
         self.write({'state': 'purchase'})
         self.write({'status': 'purchase'})
         self.write({'accepted_date': fields.date.today()})
@@ -153,7 +154,7 @@ class VendorOffer(models.Model):
             temp = self.revision + 1
             values['revision'] = temp
             print(self.revision)
-            return super(VendorOffer, self).write(values)
+        return super(VendorOffer, self).write(values)
 
 
 
@@ -214,7 +215,7 @@ class VendorOfferProduct(models.Model):
 
             self.product_sales_count=total
             sale_orders = self.env['sale.order'].search([('product_id', '=', self.product_id.id),('state','=','sale')])
-            date_planned = fields.Datetime(string='Scheduled Date', compute='_compute_date_planned', store=True, index=True)
+            # date_planned = fields.Datetime(string='Scheduled Date', compute='_compute_date_planned', store=True, index=True)
 
             filtered_by_date = list(
                         filter(lambda x: fields.Datetime.from_string(x.confirmation_date).date() >= (fields.date.today() - datetime.timedelta(days=30)), sale_orders))
