@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "reports",
+    'name': "Reports",
 
     'summary': """
         Short (1 phrase/line) summary of the module's purpose, used as
@@ -21,7 +21,7 @@
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'purchase_history_custome', 'inventory_adjustment_report',
-                'custom_product_catalog', 'product_price_list_report', 'purchased_products',
+                'custom_product_catalog', 'product_price_list_report',
                 'sales_report_discount_summary', 'sr_sales_report_compmonth','lot_history',
                 'sr_sales_report_product_bymonth', 'sr_sales_report_product_groupby','sr_sales_report_saleperson_groupby','tps_report_sale'],
 
@@ -36,6 +36,6 @@
         'demo/demo.xml',
     ],
     'installable': True,
-    'auto_install': True,
-    'application': True,
+    'auto_install': False,
+    'application': False,
 }
