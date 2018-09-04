@@ -33,11 +33,7 @@
         'demo/demo.xml',
     ],
    'installable': True,
-<<<<<<< HEAD
    'auto_install': False,
    'application': True,
-=======
-   'auto_install': True,
-   'application': False,
->>>>>>> c5281a6589f338f2ae92832ca648b31ad2be9b2a
+
 }

@@ -33,7 +33,6 @@
              'report/product_report.xml',
              'report/product_template.xml',
              ],
-    'images': ['static/description/banner.png'],
     'installable': True,
     'application': True,
     'auto_install': False,
