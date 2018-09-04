@@ -21,7 +21,7 @@
 
 {
     'name': "Purchase Receiving Report",
-    'author': 'By Tushar Godase',
+    'author': 'Benchmark It Solutions',
     'category': 'purchase',
 #     'summary': """Reports of Purchase Receiving Report""",
 #     'description': """

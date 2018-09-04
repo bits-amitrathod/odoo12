@@ -6,9 +6,9 @@
     'category': 'Hidden/Dependency',
     'version': '11.0.1.0.1',
     'depends': ['web'],
-    'author': "Camptocamp, Therp BV, Odoo Community Association (OCA)",
+    'author': "Benchmark It Solutions",
     'license': 'AGPL-3',
-    'website': 'https://github.com/OCA/web',
+    'website': 'http://www.benchmarkitsolutions.com',
     'demo': [
         "demo/res_users.xml",
     ],

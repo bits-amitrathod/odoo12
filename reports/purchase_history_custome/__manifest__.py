@@ -10,8 +10,8 @@
         Long description of module's purpose
     """,
 
-    'author': "Akash Ingole",
-    'website': "http://www.akcompany.com",
+    'author': "Benchmark It Solutions",
+    'website': "http://www.benchmarkitsolutions.com",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/master/odoo/addons/base/module/module_data.xml
@@ -33,6 +33,11 @@
         'demo/demo.xml',
     ],
    'installable': True,
+<<<<<<< HEAD
    'auto_install': False,
    'application': True,
+=======
+   'auto_install': True,
+   'application': False,
+>>>>>>> c5281a6589f338f2ae92832ca648b31ad2be9b2a
 }
