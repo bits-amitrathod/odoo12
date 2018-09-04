@@ -158,8 +158,9 @@ class Prioritization(models.Model):
     sales_channel = fields.Selection([('1','Manual'),('2','Prioritization Engine')], String="Sales Channel",readonly=False)# get team id = sales channel like 3 = Manual, 4 = Prioritization Engine
 
     _sql_constraints = [
-        ('prioritization_engine_company_uniq', 'UNIQUE(product_id)', 'Product must be unique for customer!!!!'),
+        ('priority_engine_uniq', 'unique (product_id)', 'This Product attribute value already exists !')
     ]
+
     # constraint
     @api.constrains('expiration_tolerance')
     @api.one
