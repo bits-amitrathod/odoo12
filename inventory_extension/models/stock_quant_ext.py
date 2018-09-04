@@ -17,6 +17,5 @@ class StockQuantExt(models.Model):
         for record in self:
             _logger.info(record.lot_id)
             if record.lot_id and record.lot_id.use_date:
-		final_date = fields.Datetime.from_string(record.lot_id.use_date)
-                final_date = datetime.datetime.strptime(record.lot_id.use_date, '%Y-%m-%d %H:%M:%S')
+                final_date = fields.Datetime.from_string(record.lot_id.use_date)
                 record.use_date = final_date.date()

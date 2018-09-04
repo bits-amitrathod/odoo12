@@ -15,6 +15,7 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
+
 class StockMoveExtension(models.Model):
     _inherit = "stock.move"
 
@@ -82,8 +83,10 @@ class StockMoveExtension(models.Model):
             propagated_date_field = 'date'
 
         if not self._context.get('do_not_propagate', False) and (propagated_date_field or propagated_changes_dict):
+            _logger.info("(stock) stock_move : write if(_context.get) calledd....")
             #any propagation is (maybe) needed
             for move in self:
+                _logger.info("(stock) stock_move : write if(_context.get move) calledd....")
                 if move.move_dest_ids and move.propagate:
                     if 'date_expected' in propagated_changes_dict:
                         propagated_changes_dict.pop('date_expected')
@@ -107,6 +110,7 @@ class StockMoveExtension(models.Model):
             to_track_picking_ids = list(to_track_picking_ids)
             pickings = Picking.browse(to_track_picking_ids)
             initial_values = dict((picking.id, {'state': picking.state}) for picking in pickings)
+        _logger.info("(stock) stock_move : write super calledd....")
         res = super(StockMoveExtension, self).write(vals)
         if track_pickings:
             pickings.message_track(pickings.fields_get(['state']), initial_values)

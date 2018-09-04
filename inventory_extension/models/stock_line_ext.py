@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from collections import Counter
 
 from odoo import api, fields, models, _
@@ -9,6 +8,7 @@ from odoo.tools.pycompat import izip
 from odoo import models, fields, api
 import logging
 import datetime
+
 
 _logger = logging.getLogger(__name__)
 from odoo.tools.float_utils import float_round, float_compare, float_is_zero
@@ -24,7 +24,9 @@ class inventory_exe(models.Model):
             - automatically switch `qty_done` to 1.0
             - warn if he has already encoded `lot_name` in another move line
         """
+        _logger.info("move_line_onchange sewrial number calledd.")
         res = {}
+
         if self.lot_id :
             self._compute_show_lot_user_date()
         if self.product_id.tracking == 'serial':
@@ -36,6 +38,9 @@ class inventory_exe(models.Model):
 
                 move_lines_to_check = self._get_similar_move_lines() - self
                 if self.lot_name:
+                    if self.lot_expired_date is False:
+                      res['warning'] = {'title': _('Warning'), 'message': "expired date required"}
+                      return res
                     counter = Counter(move_lines_to_check.mapped('lot_name'))
                     if counter.get(self.lot_name) and counter[self.lot_name] > 1:
                         message = _(
