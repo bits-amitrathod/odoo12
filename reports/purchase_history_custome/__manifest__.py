@@ -32,7 +32,7 @@
     'demo': [
         'demo/demo.xml',
     ],
-   'installable': False,
+   'installable': True,
    'auto_install': True,
-   'application': True,
+   'application': False,
 }
