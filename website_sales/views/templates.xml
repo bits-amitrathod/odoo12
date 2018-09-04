@@ -94,7 +94,11 @@
         <xpath expr="//div[@id='payment_method']" position="before">
             <div class="row" id="order_customer_referance_so">
                 <div id="cart_totala" class="col-xs-12 col-sm-6">
+<<<<<<< HEAD
                     <span class="col-xs-5 text-right h5 mt0">Purchase Order #:</span>
+=======
+                    <span class="col-xs-5 text-right h5 mt0" style="padding-top: 7px;">Purchase Order #:</span>
+>>>>>>> 26f42cc09949001267993f313a424a3ed8918050
                     <span class="col-xs-6 text-right-not-xs text-left-xs h4 mt0" style="white-space: nowrap;">
                         <input type="text" class="form-control" name="customerReferenceSO"
                                t-att-value="website_sale_order.client_order_ref"/>
@@ -108,7 +112,11 @@
         <xpath expr="//div[hasclass('oe_structure')]" position="before">
             <div id="purchaseOrderConfirmation" class="row">
                 <div class="col-xs-12 col-sm-6">
+<<<<<<< HEAD
                     Purchase Order #:
+=======
+                     <strong>Purchase Order #:</strong>
+>>>>>>> 26f42cc09949001267993f313a424a3ed8918050
                     <t t-esc="order.client_order_ref"/>
                 </div>
             </div>
