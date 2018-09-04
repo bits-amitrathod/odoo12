@@ -22,11 +22,7 @@
     # any module necessary for this one to work correctly
     'depends': ['base', 'purchase_history_custome', 'inventory_adjustment_report',
                 'custom_product_catalog', 'product_price_list_report', 'purchased_products',
-<<<<<<< HEAD
-                'sales_report_discount_summary', 'sr_sales_report_compmonth',
-=======
                 'sales_report_discount_summary', 'sr_sales_report_compmonth','lot_history',
->>>>>>> c5281a6589f338f2ae92832ca648b31ad2be9b2a
                 'sr_sales_report_product_bymonth', 'sr_sales_report_product_groupby','sr_sales_report_saleperson_groupby','tps_report_sale'],
 
     # always loaded
