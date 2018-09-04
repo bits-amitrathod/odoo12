@@ -9,7 +9,7 @@
         Long description of module's purpose
     """,
 
-    'author': "Amit Rathod",
+    'author': "Benchmark It Solutions",
     'website': "http://www.benchmarkitsolutions.com",
 
     # Categories can be used to filter modules in modules listing
