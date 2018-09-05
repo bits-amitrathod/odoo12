@@ -48,6 +48,7 @@ class SpsCustomerRequest(models.Model):
                     pr_model = dict(customer_request_id=sps_customer_request.id,
                                     customer_id=sps_customer_request['customer_id'].id,
                                     product_id=sps_customer_request['product_id'].id,
+                                    status=sps_customer_request['status'],
                                     required_quantity=sps_customer_request.required_quantity,
                                     product_priority=_setting_object.priority,
                                     auto_allocate=_setting_object.auto_allocate,
