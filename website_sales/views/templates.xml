@@ -43,9 +43,20 @@
         </t>
     </template>
 
+    <template id="sort" inherit_id="website_sale.sort" active="True" customize_show="True" name="Show Sort by">
+        <xpath expr="//div[hasclass('dropdown_sorty_by')]" position="after">
+            <button type="button" class="categoriesCollapseBtn btn btn-default" data-toggle="collapse"
+                    data-target="#categories-collapse">
+                <span>Categories</span>
+                <span class="caret"/>
+            </button>
+        </xpath>
+    </template>
+
     <template id="products_categories" name="eCommerce Categories" inherit_id="website_sale.products_categories">
         <xpath expr="//div[@id='products_grid_before']/ul" position="replace">
-            <ul class="nav nav-pills nav-stacked mt16">
+
+            <ul id="categories-collapse" class="nav nav-pills nav-stacked mt16 collapse">
                 <li t-att-class=" '' if category else 'active' ">
                     <a t-att-href="keep('/shop',category=0)" class="o_not_editable">ALL CATEGORIES</a>
                 </li>
@@ -53,6 +64,12 @@
                     <t t-call="website_sale.categories_recursive"/>
                 </t>
             </ul>
+        </xpath>
+        <xpath expr="//div[@id='products_grid_before']" position="attributes">
+            <attribute name="class">col-md-3 col-sm-4</attribute>
+        </xpath>
+        <xpath expr="//div[@id='products_grid']" position="attributes">
+            <attribute name="class">col-md-9 col-sm-8</attribute>
         </xpath>
     </template>
 
@@ -108,7 +125,7 @@
         <xpath expr="//div[hasclass('oe_structure')]" position="before">
             <div id="purchaseOrderConfirmation" class="row">
                 <div class="col-xs-12 col-sm-6">
-                     <strong>Purchase Order #:</strong>
+                    <strong>Purchase Order #:</strong>
                     <t t-esc="order.client_order_ref"/>
                 </div>
             </div>

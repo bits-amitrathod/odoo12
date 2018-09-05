@@ -1,7 +1,7 @@
 # See LICENSE file for full copyright and licensing details.
 
 import werkzeug
-from odoo import fields,http
+from odoo import fields, http
 from odoo.http import request
 import odoo.addons.website_sale.controllers.main
 from odoo.addons.http_routing.models.ir_http import slug
@@ -9,6 +9,7 @@ from odoo.addons.website_sale.controllers.main import TableCompute, QueryURL
 
 PPG = 20
 PPR = 4
+
 
 #
 # '/shop', '/shop/page/<int:page>',
@@ -72,13 +73,13 @@ class WebsiteSale(odoo.addons.website_sale.controllers.main.WebsiteSale):
         if search:
             post['search'] = search
         if category:
-            category = request.env['product.public.category'].\
+            category = request.env['product.public.category']. \
                 browse(int(category))
             url = '/shop/category/%s' % slug(category)
-        pager = request.website.\
+        pager = request.website. \
             pager(url=url, total=product_count, page=page, step=PPG,
                   scope=7, url_args=post)
-        products = product_obj.\
+        products = product_obj. \
             search(domain, limit=PPG, offset=pager['offset'],
                    order='website_published desc, website_sequence desc')
         style_obj = request.env['product.style']
@@ -88,7 +89,7 @@ class WebsiteSale(odoo.addons.website_sale.controllers.main.WebsiteSale):
         categs = filter(lambda x: not x.parent_id, categories)
         if category:
             selected_id = int(category)
-            children_ids = category_obj.\
+            children_ids = category_obj. \
                 search([('parent_id', '=', selected_id)])
             values.update({'child_list': children_ids})
         attributes_obj = request.env['product.attribute']
@@ -116,8 +117,7 @@ class WebsiteSale(odoo.addons.website_sale.controllers.main.WebsiteSale):
                        'attrib_encode': lambda attribs: werkzeug.url_encode
                        ([('attrib', i) for i in attribs])})
 
-
-
+        # ---------------------- CSTM ------------------------
 
         productMaxMinDates = {}
         productProduct = request.env['product.product'].search([('product_tmpl_id', 'in', products.ids)])
@@ -132,6 +132,17 @@ class WebsiteSale(odoo.addons.website_sale.controllers.main.WebsiteSale):
         values['productExpiration'] = productMaxMinDates;
         values['isVisibleWebsiteExpirationDate'] = request.env['ir.config_parameter'].sudo().get_param(
             'website_sales.default_website_expiration_date')
+
+        porductRows = []
+        porductRows.append([])
+        i = 1
+        for val in products:
+            porductRows[-1].append(val)
+            if i % 4 == 0:
+                porductRows.append([])
+            i += 1
+
+        values['porductRows'] = porductRows
 
         return request.render('website_sale.products', values)
 
