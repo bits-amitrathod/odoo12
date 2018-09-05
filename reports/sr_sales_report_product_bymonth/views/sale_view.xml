@@ -51,11 +51,11 @@
                   parent="sale.menu_sale_report"
                   sequence="1"/>
 
-        <menuitem id="sr_menu_sale_report_salebycount_wizard"
+       <!-- <menuitem id="sr_menu_sale_report_salebycount_wizard"
                   name="Sales By Count"
                   action="sr_action_sale_report_salesbycount_wizard"
                   parent="sale.menu_sale_report"
-                  sequence="1"/>
+                  sequence="1"/>-->
 
     </data>
 </odoo>

@@ -56,7 +56,7 @@
                                     <td style="border: 1px solid black;text-align: right;">
                                         <b>Total</b>
                                     </td>
-                                    <td  align="right" style="border: 1px solid black;">
+                                    <td  align="right" style="border: 1px solid black;white-space: nowrap;">
                                        $ <span t-esc="total_sum"/>
                                     </td>
                                 </tr>
