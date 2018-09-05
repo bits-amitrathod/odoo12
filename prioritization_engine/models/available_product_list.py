@@ -24,9 +24,17 @@ class AvailableProductList(models.TransientModel):
                                         use_date = production_lot.lot_id.use_date)
 
                 self.available_production_lot_list_to_be_returned.append(available_product)
-        # sort list by latest expiry date(life date)
+        # sort list by latest expiry date(use date)
         available_production_lot_list_to_be_returned = sorted(self.available_production_lot_list_to_be_returned, key=itemgetter('use_date'))
         return available_production_lot_list_to_be_returned
+
+    def update_production_lot(self, stock_quant_id, available_quantity, reserved_quantity):
+        _logger.info('In update db()')
+
+        updated_dict = {'quantity': available_quantity,
+                            'reserved_quantity': reserved_quantity}
+        self.env['stock.quant'].search([('id', '=', stock_quant_id)]).write(
+                 dict(updated_dict))
 
     def update_production_lot_list(self):
         _logger.info('In update db()')
