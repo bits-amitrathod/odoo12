@@ -12,22 +12,24 @@
                     </button>
                 </button>
                   <field name="vat" position="after">
-                      <field name="sku_preconfig"/>
-                      <field name="sku_postconfig"/>
-                      <field name="quickbook_id"/>
-                      <field name="preferred_method"/>
+                      <field name="sku_preconfig" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                      <field name="sku_postconfig" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                      <field name="quickbook_id" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                      <field name="preferred_method" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                      <field name="allow_purchase" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                   </field>
                   <field name="lang" position="after">
-                     <field name="prioritization"/>
-                     <field name="on_hold"/>
-                     <field name="is_broker"/>
-                     <field name="having_carrier"/>
-                     <field name="carrier_info"  attrs="{'invisible':[('having_carrier', '==', False)]}"/>
-                     <field name="carrier_acc_no" attrs="{'invisible':[('having_carrier', '==', False)]}"/>
-                      <field name="shipping_terms"/>
+                     <field name="prioritization" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                     <field name="on_hold" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                     <field name="is_broker" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                     <field name="is_parent" invisible="1"/>
+                     <field name="having_carrier" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                     <field name="carrier_info"  attrs="{'invisible':[('having_carrier', '==', False)],'readonly':[('is_parent', '==', False)]}"/>
+                     <field name="carrier_acc_no" attrs="{'invisible':[('having_carrier', '==', False)],'readonly':[('is_parent', '==', False)]}"/>
+                      <field name="shipping_terms" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                   </field>
                   <xpath expr="/form/sheet/notebook/page[@name='sales_purchases']" position="after">
-                      <page name="prioritization" string="Customer Priority Configuration">
+                      <page name="prioritization" string="Customer Priority Configuration" attrs="{'invisible':['|', '|', ('is_parent', '==', False),('prioritization', '==', False)]}">
                                 <field name="prioritization_ids" widget="one2many_selectable"/>
                        </page>
                        <page name="CustomerOrder" string="Customer Order">
@@ -44,7 +46,7 @@
                                     </tree>
                             </field>
                       </page>
-                      <page name="prioritization" string="Global Priority Configuration">
+                      <page name="prioritization" string="Global Priority Configuration" attrs="{'invisible':['|', '|', ('is_parent', '==', False),('prioritization', '==', False)]}">
                       <group>
                         <group>
                             <field name="auto_allocate" />
