@@ -40,7 +40,7 @@ class Customer(models.Model):
     shipping_terms = fields.Selection([
         ('1', 'Prepaid & Billed'),
         ('2', 'Prepaid'),
-        (3,'Freight Collect')], string='Shipping Terms')
+        ('3','Freight Collect')], string='Shipping Terms')
 
     @api.model
     def create(self, vals):
