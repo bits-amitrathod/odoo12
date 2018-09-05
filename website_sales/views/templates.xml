@@ -136,10 +136,15 @@
     <template id="category_vender" name="category Vender">
         <div class="row">
             <div class="col-sm-12">
-                <strong class="pull-left">Category:</strong>
+                <strong class="pull-left" style="padding-right: 5px;">Category:</strong>
                 <ul class="list-inline">
+                    <t t-set="commas" t-value="len(product.public_categ_ids)"/>
+                    <t t-set="commaCount" t-value="1"/>
                     <t t-foreach="product.public_categ_ids" t-as="c">
-                        <t t-call="website_sales.categories_recursive"/>
+                        <li t-att-class="'active' if c.id == int(category or 0) else None" style="padding: 0px;">
+                            <a t-att-href="keep('/shop/category/' + slug(c), category=0)" class="linkCstm"><span t-field="c.name" /><t t-if="commas &gt; commaCount">,</t></a>
+                        </li>
+                        <t t-set="commaCount" t-value="commaCount+1"/>
                     </t>
                 </ul>
             </div>

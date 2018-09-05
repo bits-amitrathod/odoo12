@@ -65,6 +65,10 @@
                            t-att-href="keep('/shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']&gt;1 else None))"
                            t-att-content="product.name" t-field="product.name"/>
                     </h5>
+                    <h5>
+                        <strong t-esc="product.product_brand_id.name"/>
+                    </h5>
+
                     <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer"
                          class="product_price" t-if="product.product_variant_ids"
                          style="position: relative;">

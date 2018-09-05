@@ -126,7 +126,7 @@ class WebsiteSale(odoo.addons.website_sale.controllers.main.WebsiteSale):
                 "SELECT min(use_date), max (use_date) FROM public.stock_production_lot where product_id = %s",
                 (val.id,))
             query_result = val.env.cr.dictfetchone()
-            productMaxMinDates[val.product_tmpl_id.id] = {"min": fields.Datetime.from_string(query_result['min']),
+            productMaxMinDates[val.id] = {"min": fields.Datetime.from_string(query_result['min']),
                                                           "max": fields.Datetime.from_string(query_result['max'])}
 
         values['productExpiration'] = productMaxMinDates;
