@@ -25,34 +25,38 @@ class StockMoveExtension(models.Model):
         global serialNumber;
         global serialNumberExDate;
         lotNumbers = []
-        try:
-            serialNumber = False;
-            serialNumberExDate = False;
-            for ml in vals.get('move_line_ids', {}):
-                if ('lot_id' in ml[2] and not ml[2].get('lot_id')):
-                    if (not 'lot_name' in ml[2] or not ml[2].get('lot_name')):
-                        serialNumber = True
-                    elif(not 'lot_expired_date' in ml[2] or not ml[2].get('lot_expired_date')):
-                        lotNumbers.append(ml[2].get('lot_name'))
-                    if (not 'lot_expired_date' in ml[2] or not ml[2].get('lot_expired_date')):
-                        serialNumberExDate = True
-        except KeyError:
-            print("key error pass:")
-            pass;
-        if serialNumber and serialNumberExDate:
-            raise UserError(_('Lot/Serial Number and Expiration Date is required.'))
-        elif serialNumberExDate:
-            msg="Expiration Date for Lot/Serial Numbers " if len(lotNumbers)>1 else "Expiration Date for Lot/Serial Number "
-            row=0;
-            for number in lotNumbers:
-                if row>0:
-                 msg=msg+","+number
-                else:
-                    msg = msg + number
-                row=row+1
-            raise UserError(_(msg + " "+ "is required."))
-        elif serialNumber:
-            raise UserError(_('Lot/Serial Number is required.'))
+        product_tmpl=self.env['product.template'].search([('id', '=', int(self.product_id.product_tmpl_id))])
+        last_id = self.env['res.config.settings'].search([],order='id desc', limit=1)
+        if product_tmpl.tracking =='lot' and last_id.group_stock_production_lot:
+            try:
+                serialNumber = False;
+                serialNumberExDate = False;
+                for ml in vals.get('move_line_ids', {}):
+                    if ('lot_id' in ml[2] and not ml[2].get('lot_id')):
+                        if (not 'lot_name' in ml[2] or not ml[2].get('lot_name')):
+                            serialNumber = True
+                        elif(last_id.module_product_expiry is True and ( not 'lot_expired_date' in ml[2] or not ml[2].get('lot_expired_date'))):
+                            lotNumbers.append(ml[2].get('lot_name'))
+                            serialNumberExDate = True
+                        if (last_id.module_product_expiry is True and not serialNumberExDate and  (not 'lot_expired_date' in ml[2] or not ml[2].get('lot_expired_date'))):
+                            serialNumberExDate = True
+            except KeyError:
+                print("key error pass:")
+                pass;
+            if serialNumber and serialNumberExDate:
+                raise UserError(_('Lot/Serial Number and Expiration Date is required.'))
+            elif serialNumberExDate:
+                msg="Expiration Date for Lot/Serial Numbers " if len(lotNumbers)>1 else "Expiration Date for Lot/Serial Number "
+                row=0;
+                for number in lotNumbers:
+                    if row>0:
+                     msg=msg+","+number
+                    else:
+                        msg = msg + number
+                    row=row+1
+                raise UserError(_(msg + " "+ "is required."))
+            elif serialNumber:
+                raise UserError(_('Lot/Serial Number is required.'))
 
 
         # FIXME: pim fix your crap
@@ -83,10 +87,8 @@ class StockMoveExtension(models.Model):
             propagated_date_field = 'date'
 
         if not self._context.get('do_not_propagate', False) and (propagated_date_field or propagated_changes_dict):
-            _logger.info("(stock) stock_move : write if(_context.get) calledd....")
             #any propagation is (maybe) needed
             for move in self:
-                _logger.info("(stock) stock_move : write if(_context.get move) calledd....")
                 if move.move_dest_ids and move.propagate:
                     if 'date_expected' in propagated_changes_dict:
                         propagated_changes_dict.pop('date_expected')
@@ -110,7 +112,6 @@ class StockMoveExtension(models.Model):
             to_track_picking_ids = list(to_track_picking_ids)
             pickings = Picking.browse(to_track_picking_ids)
             initial_values = dict((picking.id, {'state': picking.state}) for picking in pickings)
-        _logger.info("(stock) stock_move : write super calledd....")
         res = super(StockMoveExtension, self).write(vals)
         if track_pickings:
             pickings.message_track(pickings.fields_get(['state']), initial_values)
