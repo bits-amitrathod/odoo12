@@ -35,6 +35,16 @@ class WebsiteSales(WebsiteSale):
 
             payload['productExpiration'] = productMaxMinDates;
 
+        porductRows = [[]]
+        i = 1
+        for val in payload['products']:
+            porductRows[-1].append(val)
+            if i % 4 == 0:
+                porductRows.append([])
+            i += 1
+
+        payload['porductRows'] = porductRows
+
         return request.render("website_sale.products", payload)
 
     @http.route(['/shop/cart/updatePurchaseOrderNumber'], type='json', auth="public", methods=['POST'], website=True, csrf=False)
