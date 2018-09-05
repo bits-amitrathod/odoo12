@@ -40,9 +40,9 @@ class Customer(models.Model):
     shipping_terms = fields.Selection([
         ('1', 'Prepaid & Billed'),
         ('2', 'Prepaid'),
-        (3,'Freight Collect')], string='Shipping Terms')
+        ('3','Freight Collect')], string='Shipping Terms')
 
-    ''' @api.model
+    @api.model
     def create(self, vals):
         self.on_hold_changes(vals)
         return super(Customer, self).create(vals)
@@ -57,7 +57,7 @@ class Customer(models.Model):
         for child_id in self.child_ids:
             print(child_id.on_hold);
             child_id.write({'on_hold':self.on_hold});
-            print(child_id.on_hold)'''
+            print(child_id.on_hold)
 
     def action_view_notification(self):
         '''
@@ -158,8 +158,9 @@ class Prioritization(models.Model):
     sales_channel = fields.Selection([('1','Manual'),('2','Prioritization Engine')], String="Sales Channel",readonly=False)# get team id = sales channel like 3 = Manual, 4 = Prioritization Engine
 
     _sql_constraints = [
-        ('prioritization_engine_company_uniq', 'UNIQUE(product_id)', 'Product must be unique for customer!!!!'),
+        ('priority_engine_uniq', 'unique (product_id)', 'This Product attribute value already exists !')
     ]
+
     # constraint
     @api.constrains('expiration_tolerance')
     @api.one

@@ -26,7 +26,7 @@
                             <thead>
                                 <tr style="border: 1px solid black;">
                                     <th style="border: 1px solid black;text-align: center;"> Product </th>
-                                    <th style="border: 1px solid black;text-align: center;">Products Name</th>
+                                    <th style="border: 1px solid black;text-align: center;width:500px;">Products Name</th>
                                     <th style="border: 1px solid black;text-align: center;">Total Quantity</th>
                                     <th style="border: 1px solid black;text-align: center;">Total Amount</th>
                                 </tr>
@@ -42,7 +42,7 @@
                                     <td align="right" class="text-right" style="border: 1px solid black;">
                                         <span t-esc="a['qty']" />
                                     </td>
-                                    <td align="right" class="text-right" style="border: 1px solid black;">
+                                    <td align="right" class="text-right" style="border: 1px solid black;white-space: nowrap;">
                                       $ <span t-esc="a['sale_amt']" />
                                     </td>
                                 </tr>
