@@ -9,6 +9,7 @@ _logger = logging.getLogger(__name__)
 class SaleOrder(models.Model):
     _inherit = "sale.order"
     cust_po = fields.Char("Customer PO", readonly=False)
+    client_order_ref = fields.Char(string='Purchase Order#', copy=False)
     state = fields.Selection([
         ('draft', 'Quotation'),
         ('engine', 'Prioritization'),
@@ -64,10 +65,10 @@ class SaleOrder(models.Model):
 class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
 
-    '''def action_show_details(self):
-       self= self.env['stock.move'].search([('sale_line_id', '=', self.id)])
-       if self.id:
-           return self.action_show_details()'''
+    def action_show_details(self):
+       multi= self.env['stock.move'].search([('sale_line_id', '=', self.id)])
+       if len(multi) >= 1:
+           return multi.action_show_details()
 
 class StockPicking(models.Model):
     _inherit = "stock.picking"
