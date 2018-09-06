@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "product_expiry_extension",
+    'name': "Product Expiry Extension",
 
     'summary': """
         Short (1 phrase/line) summary of the module's purpose, used as
