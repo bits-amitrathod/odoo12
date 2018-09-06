@@ -20,7 +20,6 @@ class Customer(models.Model):
     auto_allocate = fields.Boolean("Allow Auto Allocation?", readonly=False)
     length_of_hold = fields.Integer("Length Of Hold in hours", readonly=False)
     expiration_tolerance = fields.Integer("Expiration Tolerance in Months", readonly=False)
-
     partial_ordering = fields.Boolean("Allow Partial Ordering?", readonly=False)
     partial_UOM = fields.Boolean("Allow Partial UOM?", readonly=False)
     order_ids = fields.One2many('sale.order', 'partner_id')
@@ -51,8 +50,9 @@ class Customer(models.Model):
     @api.multi
     def write(self, vals):
         res = super(Customer, self).write(vals)
-        #print(res)
-        self.copy_parent_date(vals)
+        print(res)
+        res2=self.copy_parent_date(vals)
+        print(res2)
         return res
 
     def copy_parent_date(self, vals):
@@ -167,7 +167,6 @@ class NotificationSetting(models.Model):
 class Prioritization(models.Model):
     _name = 'prioritization_engine.prioritization'
     _inherits = {'product.product':'product_id'}
-    #sps_sku = fields.Char("SPS SKU",readonly=False)
     min_threshold = fields.Integer("Min Threshold",readonly=False)
     max_threshold = fields.Integer("Max Threshold",readonly=False)
     priority = fields.Integer("Product Priority",readonly=False)
@@ -177,7 +176,6 @@ class Prioritization(models.Model):
     expiration_tolerance = fields.Integer("Expiration Tolerance in months",readonly=False)
     partial_ordering = fields.Boolean("Allow Partial Ordering?",readonly=False)
     partial_UOM = fields.Boolean("Allow Partial UOM?",readonly=False)
-    length_of_holding = fields.Integer("Length Of Holding",readonly=False)
     customer_id = fields.Many2one('res.partner', string='GlobalPrioritization',required=True, ondelete="cascade")
     product_id = fields.Many2one('product.product', string='Product',required=True, ondelete="cascade")
     sales_channel = fields.Selection([('1','Manual'),('2','Prioritization Engine')], String="Sales Channel",readonly=False)# get team id = sales channel like 3 = Manual, 4 = Prioritization Engine
@@ -245,7 +243,6 @@ class PrioritizationTransient(models.TransientModel):
     expiration_tolerance = fields.Integer("Expiration Tolerance days")
     partial_ordering = fields.Boolean("Allow Partial Ordering?")
     partial_UOM = fields.Boolean("Allow Partial UOM?")
-    length_of_hold = fields.Integer("Lenght Of Holding")
 
     def action_confirm(self,arg):
         for selected in arg["selected_ids"]:

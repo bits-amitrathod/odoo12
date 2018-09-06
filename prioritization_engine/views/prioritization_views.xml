@@ -55,10 +55,10 @@
                             <field name="length_of_hold"/>
                         </group>
                         <group>
-                            <field name="min_threshold" min="1" max="999"/>
-                             <field name="max_threshold" min="1" max="999"/>
-                            <field name="cooling_period" min="1" max="365"/>
-                             <field name="partial_ordering" />
+                            <field name="min_threshold"/>
+                            <field name="max_threshold"/>
+                            <field name="cooling_period"/>
+                             <field name="partial_ordering"/>
                             <field name="partial_UOM"/>
                       </group>
                       </group>
@@ -74,14 +74,14 @@
             <field name="mode">primary</field>
             <field name="arch" type="xml">
               <tree editable="bottom">
-                    <field name="sequence" widget="handle"/>
-                    <field name="product_id"/>
-                    <field name="sku_code" readonly="True" />
-                    <field name="lst_price" readonly="True"/>
-                    <field name="auto_allocate" />
+                  <field name="sequence" widget="handle"/>
+                  <field name="product_id"/>
+                  <field name="sku_code" readonly="True" />
+                  <field name="lst_price" readonly="True"/>
+                  <field name="auto_allocate" />
                   <field name="priority"/>
-                   <field name="expiration_tolerance" />
-                  <field name="length_of_holding"/>
+                  <field name="expiration_tolerance" />
+                  <field name="length_of_hold"/>
                   <field name="min_threshold"/>
                   <field name="max_threshold"/>
                   <field name="cooling_period"/>
