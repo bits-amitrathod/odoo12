@@ -26,8 +26,10 @@ class StockMoveExtension(models.Model):
         global serialNumberExDate;
         lotNumbers = []
         product_tmpl=self.env['product.template'].search([('id', '=', int(self.product_id.product_tmpl_id))])
-        last_id = self.env['res.config.settings'].search([],order='id desc', limit=1)
-        if product_tmpl.tracking =='lot' and last_id.group_stock_production_lot:
+        params = self.env['ir.config_parameter'].sudo()
+        group_stock_production_lot = params.get_param('inventory_extension.group_stock_production_lot')
+        module_product_expiry = params.get_param('inventory_extension.module_product_expiry')
+        if product_tmpl.tracking =='lot' and group_stock_production_lot:
             try:
                 serialNumber = False;
                 serialNumberExDate = False;
@@ -35,10 +37,10 @@ class StockMoveExtension(models.Model):
                     if ('lot_id' in ml[2] and not ml[2].get('lot_id')):
                         if (not 'lot_name' in ml[2] or not ml[2].get('lot_name')):
                             serialNumber = True
-                        elif(last_id.module_product_expiry is True and ( not 'lot_expired_date' in ml[2] or not ml[2].get('lot_expired_date'))):
+                        elif(module_product_expiry is True and ( not 'lot_expired_date' in ml[2] or not ml[2].get('lot_expired_date'))):
                             lotNumbers.append(ml[2].get('lot_name'))
                             serialNumberExDate = True
-                        if (last_id.module_product_expiry is True and not serialNumberExDate and  (not 'lot_expired_date' in ml[2] or not ml[2].get('lot_expired_date'))):
+                        if (module_product_expiry is True and not serialNumberExDate and  (not 'lot_expired_date' in ml[2] or not ml[2].get('lot_expired_date'))):
                             serialNumberExDate = True
             except KeyError:
                 print("key error pass:")

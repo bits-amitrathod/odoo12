@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Inventory Extension",
+    'name': "product_expiry_extension",
 
     'summary': """
         Short (1 phrase/line) summary of the module's purpose, used as
@@ -20,13 +20,22 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','base_setup', 'stock'],
+    'depends': ['base','product_expiry','inventory_extension'],
 
     # always loaded
-    'data': [# 'security/ir.model.access.csv',
-         'views/res_config_setting_views.xml','views/templates.xml', ],
+    'data': [
+        # 'security/ir.model.access.csv',
+        'views/scrap_scheduler_views.xml',
+        'views/views.xml',
+        'views/templates.xml',
+        'views/production_lot.xml',
+        'views/stock_move_line_extension.xml',
+        'views/stock_quant_ext.xml'
+    ],
     # only loaded in demonstration mode
-    'demo': ['demo/demo.xml', ],
+    'demo': [
+        'demo/demo.xml',
+    ],
     'installable': True,
     'application': True,
     'auto_install': True,
