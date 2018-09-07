@@ -8,36 +8,20 @@
 
     <template id="products_item_cstm" name="Products item" inherit_id="website_sale.products">
         <xpath expr="//table" position="replace">
-            <div class="table-responsive">
-                <table width="100%" class="cstmCss table">
-                    <tbody>
-                        <tr t-ignore="true">
-                            <td t-foreach="range(0,rows)" t-as="row" t-attf-width="#{100/rows}%"></td>
-                        </tr>
-                        <tr t-foreach="bins" t-as="tr_product">
-                            <t t-foreach="tr_product" t-as="td_product">
-                                <t t-if="td_product">
-                                    <t t-set="product" t-value="td_product['product']"/>
-                                    <!--
-                                    t-attf-class="oe_product oe_grid oe-height-#{td_product['y']*2} #{ td_product['class'] }"
-                                    -->
-                                    <td t-att-colspan="td_product['x'] != 1 and td_product['x']"
-                                        t-att-rowspan="td_product['y'] != 1 and td_product['y']"
-                                        t-attf-class="oe_product"
-                                        style="border-style: none;padding-bottom: 10px;vertical-align: top;">
-                                        <div class="oe_product_cart"
-                                             t-att-data-publish="product.website_published and 'on' or 'off'">
-                                            <t t-set="product_image_big"
-                                               t-value="td_product['x']+td_product['y'] &gt; 2"/>
-                                            <t t-call="website_sales.products_item"/>
-                                        </div>
-                                    </td>
-                                </t>
-                                <td t-if="not td_product" class="oe-height-2"/>
-                            </t>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="row" t-foreach="porductRows" t-as="tr_product">
+                <t t-foreach="tr_product" t-as="td_product">
+                    <t t-if="td_product">
+                        <t t-set="product" t-value="td_product"/>
+                        <div t-attf-class="col-md-3 col-sm-6 col-xs-6"
+                             style="border-style: none;padding-bottom: 10px;vertical-align: top;">
+                            <div class="oe_product_cart"
+                                 t-att-data-publish="product.website_published and 'on' or 'off'">
+                                <t t-call="website_sales.products_item"/>
+                            </div>
+                        </div>
+                    </t>
+                    <div t-if="not td_product" class="oe-height-2 col-md-3 col-sm-6"/>
+                </t>
             </div>
         </xpath>
     </template>
@@ -50,16 +34,16 @@
     <template id="products_item" name="Products item" inherit_id="website_sale.products_item">
         <xpath expr="//div[@itemscope='itemscope']" position="replace">
             <div itemscope="itemscope" itemtype="http://schema.org/Product">
-                <div class="ribbon-wrapper">
-                    <div class="ribbon btn btn-danger">Sale</div>
-                </div>
+                <!--<div class="ribbon-wrapper">-->
+                <!--<div class="ribbon btn btn-danger">Sale</div>-->
+                <!--</div>-->
                 <div class="oe_product_image" style="position: relative;left: 0;">
                     <a itemprop="url"
                        t-att-href="keep('/shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']&gt;1 else None))">
                         <span itemprop="image"
                               t-attf-content="{{request.httprequest.url_root}}web/image/product.template/{{product.id}}/image"
                               t-field="product.image"
-                              t-options="{'widget': 'image', 'resize': None if product_image_big else '300x300', 'zoom': 'image'}"
+                              t-options="{'widget': 'image', 'resize': '300x300', 'zoom': 'image'}"
                               t-att-alt="product.name" style="position: relative;"/>
                     </a>
                 </div>
@@ -81,6 +65,10 @@
                            t-att-href="keep('/shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']&gt;1 else None))"
                            t-att-content="product.name" t-field="product.name"/>
                     </h5>
+                    <h5>
+                        <strong t-esc="product.product_brand_id.name"/>
+                    </h5>
+
                     <div itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer"
                          class="product_price" t-if="product.product_variant_ids"
                          style="position: relative;">

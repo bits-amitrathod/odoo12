@@ -81,7 +81,7 @@
                                                         item(s) left
                                                     </span>
                                                 </div>
-                                                <div t-if="product.qty_available == 0">
+                                                <div t-if="product.qty_available == 0" class="linkCstm">
                                                     <span class="fa fa-warning"/>
                                                     <span>Temporarily out of stock</span>
                                                     <!--<span t-field="product.availability_warning" />-->
