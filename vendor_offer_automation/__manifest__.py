@@ -28,6 +28,15 @@
         'views/views.xml',
         'views/templates.xml',
     ],
+
+    'qweb': [
+         'static/src/xml/offer_template_widget.xml'
+    ],
+
+    'js': [
+         'static/src/js/offer_template_widget.js'
+    ],
+
     # only loaded in demonstration mode
     'demo': [
         'demo/demo.xml',
