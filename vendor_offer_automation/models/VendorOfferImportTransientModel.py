@@ -121,7 +121,7 @@ class VendorOfferImportTransientModel(models.TransientModel):
             # _logger.info('headers %r', headers)
             # Match should have consumed the first row (iif headers), get
             # the ``count`` next rows for preview
-            self.columns_from_template = ".".join(sorted(headers))
+            self.columns_from_template = ",".join(sorted(headers))
             preview = list(itertools.islice(rows, count))
             assert preview, "CSV file seems to have no content"
             header_types = self._find_type_from_preview(options, preview)
