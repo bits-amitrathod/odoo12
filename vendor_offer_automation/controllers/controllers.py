@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
 from odoo import http
 
-# class VendorOfferAutomation(http.Controller):
-#     @http.route('/vendor_offer_automation/vendor_offer_automation/', auth='public')
-#     def index(self, **kw):
-#         return "Hello, world"
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, pycompat, misc
+import json
+from odoo.http import Controller, request, route
 
-#     @http.route('/vendor_offer_automation/vendor_offer_automation/objects/', auth='public')
-#     def list(self, **kw):
-#         return http.request.render('vendor_offer_automation.listing', {
-#             'root': '/vendor_offer_automation/vendor_offer_automation',
-#             'objects': http.request.env['vendor_offer_automation.vendor_offer_automation'].search([]),
-#         })
 
-#     @http.route('/vendor_offer_automation/vendor_offer_automation/objects/<model("vendor_offer_automation.vendor_offer_automation"):obj>/', auth='public')
-#     def object(self, obj, **kw):
-#         return http.request.render('vendor_offer_automation.object', {
-#             'object': obj
-#         })
+class VendorOfferAutomation(http.Controller):
+
+    @http.route('/offer_template_import/set_file', methods=['POST'])
+    def set_file(self, file, import_id, customer, jsonp='callback'):
+        import_id = int(import_id)
+
+        written = request.env['sps.vendor.offer.template.transient'].browse(import_id).write({
+            'file': file.read(),
+            'file_name': file.filename,
+            'file_type': file.content_type,
+        })
+
+        return 'window.top.%s(%s)' % (misc.html_escape(jsonp), json.dumps({'result': written}))

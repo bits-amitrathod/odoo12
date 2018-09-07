@@ -117,7 +117,7 @@ var DataImport = Widget.extend(ControlPanelMixin, {
     init: function (parent, action) {
         this._super.apply(this, arguments);
         this.action_manager = parent;
-        this.res_model =  action.params[0].request_model;//action.params.model;
+        this.res_model =  ''; //action.params[0].request_model;//action.params.model;
         this.parent_context = action.params.context || {};
         // import object id
         this.id = null;
@@ -298,7 +298,7 @@ var DataImport = Widget.extend(ControlPanelMixin, {
         }
         this.$el.find('.oe_import_toggle').toggle(import_toggle);
         jsonp(this.$el, {
-            url: '/template_import/set_file'
+            url: '/offer_template_import/set_file'
         }, this.proxy('settings_changed'));
     },
     onpreviewing: function () {

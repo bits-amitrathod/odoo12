@@ -4,8 +4,7 @@
             <field name="name">Customer Import Template</field>
             <field name="type">ir.actions.client</field>
             <field name="tag">import_offer_template</field>
-            <field name="params">[{'model': 'sps.vendor_offer_automation.template', 'user_type': 'supplier', 'request_model':
-                'sps.customer.requests'}]
+            <field name="params">[{'model': 'sps.vendor_offer_automation.template', 'user_type': 'supplier'}]
             </field>
         </record>
 
@@ -15,6 +14,21 @@
                 <script type="text/javascript" src="/vendor_offer_automation/static/src/js/offer_template_widget.js"></script>
             </xpath>
         </template>
+
+        <record model="ir.ui.view" id="purchase_order_line_file_field">
+            <field name="name">Vendor Offer File Field</field>
+            <field name="model">purchase.order</field>
+            <field eval="40" name="priority"/>
+            <field name="inherit_id" ref="vendor_offer.view_vendor_offer_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='new_customer']" position="after">
+                    <field name="template_name" states="ven_draft" attrs="{'invisible':[('template_exists','=',True)]}"/>
+                    <field name="template_exists" invisible="1"/>
+                    <field name="filename" invisible="1" />
+                    <field widget="file" name="document" filename="filename" states="ven_draft" attrs="{'invisible':[('template_exists','=',True)], 'required':[('template_exists','=',True)]}" />
+                </xpath>
+            </field>
+        </record>
 
        <menuitem
             id="menu_product_offer_template_import" name="Import Template" action="vendor_offer_automation.vendor_template_client_action"
