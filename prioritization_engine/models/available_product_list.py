@@ -5,42 +5,38 @@ from operator import itemgetter
 _logger = logging.getLogger(__name__)
 
 
-class AvailableProductList(models.TransientModel):
-    _name = "available.product.list"
+class AvailableProductDict(models.TransientModel):
+    _name = "available.product.dict"
 
-    available_production_lot_list_to_be_returned = []
+    available_production_lot_dict_to_be_returned = {}
 
     # get available production lot list, parameter product id.
-    def get_available_production_lot_list(self):
+    def get_available_production_lot_dict(self):
         production_lot_list = self.env['stock.quant'].search([('quantity', '>', 0), ('location_id.usage', '=', 'internal'), ('location_id.active', '=', 'true')])
 
         for production_lot in production_lot_list:
             if production_lot.id and production_lot.lot_id and production_lot.product_id and production_lot.quantity and production_lot.lot_id.use_date:
-                available_product = dict(stock_quant_id = production_lot.id,
-                                        lot_id = production_lot.lot_id,
-                                        product_id = production_lot.product_id,
-                                        available_quantity = production_lot.quantity,
-                                        reserved_quantity = production_lot.reserved_quantity,
-                                        use_date = production_lot.lot_id.use_date)
+                available_product = {production_lot.lot_id.id : {'stock_quant_id':production_lot.id,
+                                        'available_quantity':production_lot.quantity,
+                                        'reserved_quantity':production_lot.reserved_quantity,
+                                        'use_date':production_lot.lot_id.use_date}}
+                if production_lot.product_id.id in self.available_production_lot_dict_to_be_returned.keys():
+                    self.available_production_lot_dict_to_be_returned.get(production_lot.product_id.id,{}).append(available_product)
+                else:
+                    dict = {production_lot.product_id.id: [available_product]}
+                    self.available_production_lot_dict_to_be_returned.update(dict)
 
-                self.available_production_lot_list_to_be_returned.append(available_product)
-        # sort list by latest expiry date(use date)
-        available_production_lot_list_to_be_returned = sorted(self.available_production_lot_list_to_be_returned, key=itemgetter('use_date'))
-        return available_production_lot_list_to_be_returned
+                    # sort list by latest expiry date(use date)
+        #available_production_lot_list_to_be_returned = sorted(self.available_production_lot_list_to_be_returned, key=itemgetter('use_date'))
+        return self.available_production_lot_dict_to_be_returned
 
-    def update_production_lot(self, stock_quant_id, available_quantity, reserved_quantity):
-        _logger.info('In update db()')
+    def update_production_lot_dict(self):
+        _logger.info('In update db() %r', self.available_production_lot_dict_to_be_returned)
 
-        updated_dict = {'quantity': available_quantity,
-                            'reserved_quantity': reserved_quantity}
-        self.env['stock.quant'].search([('id', '=', stock_quant_id)]).write(
-                 dict(updated_dict))
+        for product_id_key in self.available_production_lot_dict_to_be_returned.keys():
+            for available_production_lot in self.available_production_lot_dict_to_be_returned.get(product_id_key, {}):
+                updated_dict = {'quantity': available_production_lot.get(list(available_production_lot.keys()).pop(0), {})['available_quantity'],
+                                'reserved_quantity': available_production_lot.get(list(available_production_lot.keys()).pop(0), {})['reserved_quantity']}
 
-    def update_production_lot_list(self):
-        _logger.info('In update db()')
-
-        for production_lot in self.available_production_lot_list_to_be_returned:
-            updated_dict = {'quantity': production_lot['available_quantity'],
-                            'reserved_quantity': production_lot['reserved_quantity']}
-            self.env['stock.quant'].search([('id', '=', production_lot['stock_quant_id'])]).write(
-                 dict(updated_dict))
+                self.env['stock.quant'].search([('id', '=', available_production_lot.get(list(available_production_lot.keys()).pop(0), {})['stock_quant_id'])]).write(
+                     dict(updated_dict))

@@ -42,6 +42,7 @@ class Customer(models.Model):
     allow_purchase=fields.Boolean("Purchase Order Method")
     is_parent=fields.Boolean("Purchase Order Method" ,default=True)
 
+
     @api.model
     def create(self, vals):
         self.copy_parent_date(vals)

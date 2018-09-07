@@ -125,6 +125,7 @@
         <xpath expr="//div[hasclass('oe_structure')]" position="before">
             <div id="purchaseOrderConfirmation" class="row">
                 <div class="col-xs-12 col-sm-6">
+
                     <strong>Purchase Order #:</strong>
                     <t t-esc="order.client_order_ref"/>
                 </div>

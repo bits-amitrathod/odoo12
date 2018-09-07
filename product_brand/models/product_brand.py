@@ -33,6 +33,10 @@ class ProductBrand(models.Model):
         compute='_get_products_count',
     )
 
+    _sql_constraints = [
+        ('product_brand_uniq', 'unique (partner_id)', 'This Manufacture value already exists !')
+    ]
+
     @api.multi
     @api.depends('product_ids')
     def _get_products_count(self):
