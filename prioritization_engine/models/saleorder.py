@@ -39,7 +39,7 @@ class SaleOrder(models.Model):
                     'You can not delete a sent quotation or a sales order! Try to cancel or void it before.')
         return models.Model.unlink(self)
 
-    '''def action_validate(self):
+    def action_validate(self):
         multi = self.env['stock.picking'].search([('sale_id', '=', self.id)])
         if len(multi) == 1 and self.delivery_count ==1:
             return multi.button_validate()
@@ -60,9 +60,9 @@ class SaleOrder(models.Model):
     def do_unreserve(self):
         multi = self.env['stock.picking'].search([('sale_id', '=', self.id)])
         if len(multi) >= 1:
-            return multi.do_unreserve()'''
+            return multi.do_unreserve()
 
-'''class SaleOrderLine(models.Model):
+class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
 
     def action_show_details(self):
