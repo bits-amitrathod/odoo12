@@ -24,7 +24,6 @@ class inventory_exe(models.Model):
             - automatically switch `qty_done` to 1.0
             - warn if he has already encoded `lot_name` in another move line
         """
-        _logger.info("move_line_onchange sewrial number calledd.")
         res = {}
 
         if self.lot_id :

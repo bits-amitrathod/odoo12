@@ -42,6 +42,7 @@ class Customer(models.Model):
     allow_purchase=fields.Boolean("Purchase Order Method")
     is_parent=fields.Boolean("Purchase Order Method" ,default=True)
 
+
     @api.model
     def create(self, vals):
         self.copy_parent_date(vals)
@@ -146,7 +147,7 @@ class ProductTemplate(models.Model):
     _inherit = 'product.template'
     location = fields.Char("Location")
     premium = fields.Boolean("Premium")
-    sku_code = fields.Char('SKU / Catalog No',required=True)
+    sku_code = fields.Char('SKU / Catalog No')
     manufacturer_pref = fields.Char(string='Manuf. Catalog No')
 
 
@@ -181,7 +182,7 @@ class Prioritization(models.Model):
     sales_channel = fields.Selection([('1','Manual'),('2','Prioritization Engine')], String="Sales Channel",readonly=False)# get team id = sales channel like 3 = Manual, 4 = Prioritization Engine
 
     _sql_constraints = [
-        ('priority_engine_uniq', 'unique (product_id)', 'In Customer Priority Configuration Product Value Repeated !')
+        ('priority_engine_uniq', 'unique (product_id,customer_id)', 'In Customer Priority Configuration Product Value Repeated !')
     ]
 
     # constraint
@@ -218,12 +219,12 @@ class Prioritization(models.Model):
     @api.constrains('max_threshold')
     @api.one
     def _check_max_threshold(self):
-        max_threshold = self.max_threshold
-        if max_threshold and max_threshold >= 999:
+        #max_threshold = self.max_threshold
+        if self.max_threshold and self.max_threshold >= 999:
             raise ValidationError(_('Customer Priority Configuration->Max Threshold field must be less 999'))
-        if max_threshold and max_threshold <= self.min_threshold:
+        if self.min_threshold and self.max_threshold <= self.min_threshold:
             raise ValidationError(
-                _('Global Priority Configuration->Max Threshold field must be greater than Min Threshold field'))
+                _('Customer Priority Configuration->Max Threshold field must be greater than Min Threshold field'))
 
     @api.constrains('min_threshold')
     @api.one
@@ -247,7 +248,7 @@ class PrioritizationTransient(models.TransientModel):
     def action_confirm(self,arg):
         for selected in arg["selected_ids"]:
             record = self.env['prioritization_engine.prioritization'].search([('id', '=', selected)])[0]
-            record.write({'min_threshold': self.min_threshold,'max_threshold': self.min_threshold,'priority': self.priority,'cooling_period': self.cooling_period,'auto_allocate': self.auto_allocate,
+            record.write({'min_threshold': self.min_threshold,'max_threshold': self.max_threshold,'priority': self.priority,'cooling_period': self.cooling_period,'auto_allocate': self.auto_allocate,
                         'expiration_tolerance': self.expiration_tolerance,'partial_ordering': self.partial_ordering,'partial_UOM': self.partial_UOM,
                         'length_of_hold': self.length_of_hold})
         return {'type': 'ir.actions.act_close_wizard_and_reload_view'}

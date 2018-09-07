@@ -57,7 +57,7 @@
                                         <b>Total</b>
                                     </td>
                                     <td  align="right" style="border: 1px solid black;white-space: nowrap;">
-                                       $ <span t-esc="total_sum"/>
+                                       $ <span t-esc="float(total_sum)" t-options="{'widget': 'float', 'precision': currency_precision}"/>
                                     </td>
                                 </tr>
                             </thead>
