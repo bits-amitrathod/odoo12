@@ -36,7 +36,8 @@ class ProductBrand(models.Model):
     @api.multi
     @api.depends('product_ids')
     def _get_products_count(self):
-        self.products_count = len(self.product_ids)
+        if len(self)==1:
+            self.products_count = len(self.product_ids)
 
 
 class ProductTemplate(models.Model):
