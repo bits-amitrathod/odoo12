@@ -101,8 +101,24 @@
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet/notebook/page[@name='internal_notes']" position="after">
-                    <page name="importdocument" string="Import Document">
+                    <page name="importdocument" string="Import Document" attrs="{'invisible':[('customer','=',False), ('parent_id','!=',None)]}">
                         <field name="document_ids"/>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_form_api_credentials" model="ir.ui.view">
+            <field name="name">API Credentials customer form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/sheet/notebook/page[@name='internal_notes']" position="after">
+                    <page name="apicredentials" string="API Credentials" attrs="{'invisible':[('customer','=',False), ('parent_id','!=',None)]}">
+                        <group>
+                            <field name="email" readonly="1" string="Username"/>
+                            <field name="api_secret" string="Password" password="True"/>
+                        </group>
                     </page>
                 </xpath>
             </field>
@@ -114,7 +130,7 @@
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet/notebook/page[@name='internal_notes']" position="after">
-                    <page name="importedtemplate" string="Imported Templates">
+                    <page name="importedtemplate" string="Imported Templates" attrs="{'invisible':[('customer','=',False), ('parent_id','!=',None)]}">
                         <field name="template_ids"/>
                     </page>
                 </xpath>

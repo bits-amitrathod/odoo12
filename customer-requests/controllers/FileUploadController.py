@@ -66,7 +66,7 @@ class FileUploadController(Controller):
     def _get_users_list(self, **post):
         # cr, context, pool, uid = request.cr, request.context, request.registry, request.uid
         input_data = post['input_data']
-        records = request.env['res.partner'].sudo().search([[input_data, '=', True]])
+        records = request.env['res.partner'].sudo().search([(input_data, '=', True), ('parent_id', '=', None)])
         response_data = [dict(name=record['name'], id=record['id']) for record in records]
         return str(json.dumps(response_data))
 

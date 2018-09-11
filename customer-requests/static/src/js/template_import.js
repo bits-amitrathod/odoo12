@@ -158,8 +158,11 @@ var DataImport = Widget.extend(ControlPanelMixin, {
                     for(var index = 0; index < jsonArray.length; index++){
                         var jsonObject = jsonArray[index];
                         self.$('#customers_list').append("<option value='" + jsonObject.id + "'>" + jsonObject.name + "</option>");
-                    }}
-                , "json");
+                    }
+                    self.$( "#loadingimg" ).hide();
+                 }, "json").fail(function() {
+                     self.$( "#loadingimg" ).hide();
+                 });
 
 
 
