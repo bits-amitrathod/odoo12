@@ -10,8 +10,8 @@
         Long description of module's purpose
     """,
 
-    'author': "Benchmark It Solutions",
-    'website': "http://www.benchmarkitsolutions.com",
+    'author': "My Company",
+    'website': "http://www.yourcompany.com",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/master/odoo/addons/base/module/module_data.xml
@@ -27,9 +27,11 @@
         # 'security/ir.model.access.csv',
         'views/views.xml',
         'views/templates.xml',
-        'demo/data.xml',
     ],
-
+    # only loaded in demonstration mode
+    'demo': [
+        'demo/demo.xml',
+    ],
     'application' :True,
     'auto-install': True,
     'installable': True,
