@@ -24,6 +24,7 @@ class inventory_exe(models.Model):
             - automatically switch `qty_done` to 1.0
             - warn if he has already encoded `lot_name` in another move line
         """
+        _logger.info("move_line_onchange sewrial number calledd.")
         res = {}
 
         if self.lot_id :
@@ -57,6 +58,7 @@ class inventory_exe(models.Model):
 
 
     def _compute_show_lot_user_date(self):
+            _logger.info("_compute_show_lot_user_date")
             for ml in self:
                 ml.lot_use_date= ml.lot_id.use_date
 
