@@ -24,7 +24,7 @@
     'category': 'sale',
     'version': '11.0.0.1',
     # 'summary': 'This module provides Sales Report Discount Summary.',
-    'author': 'Tushar Godase',
+    'author': 'Benchmark It Solutions',
     # 'description': '''This module provides Sales Report Discount Summary.
     #                   With the help of this moudule you can print sales reportDiscount Summary.
     #                   '''

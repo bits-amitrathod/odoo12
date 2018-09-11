@@ -25,31 +25,31 @@
                                 </tr>
 
                                 <tr align="center" style="border: 1px solid black;">
-                                    <th style="border: 1px solid black;text-align: center;">Product SKU </th>
+                                    <th style="border: 1px solid black;text-align: center;">Product </th>
                                     <th style="border: 1px solid black;text-align: center;">Product Name </th>
-                                    <th style="border: 1px solid black;text-align: center;width: 120px">Last Month Qty</th>
-                                    <th style="border: 1px solid black;text-align: center;width: 120px">Last Month Price</th>
-                                    <th style="border: 1px solid black;text-align: center;width: 120px">Current Month Qty</th>
-                                    <th style="border: 1px solid black;text-align: center;width: 120px ">Current Month Price</th>
+                                    <th style="border: 1px solid black;text-align: center;white-space: nowrap;">Last Month Qty</th>
+                                    <th style="border: 1px solid black;text-align: center;white-space: nowrap;">Last Month Price</th>
+                                    <th style="border: 1px solid black;text-align: center;white-space: nowrap;">Current Month Qty</th>
+                                    <th style="border: 1px solid black;text-align: center;white-space: nowrap;">Current Month Price</th>
                                 </tr>
                                     <tr t-foreach="data" t-as="order">
                                         <td style="border: 1px solid black;">
                                             <span t-esc="order[5]"/>
                                         </td>
-                                        <td style="border: 1px solid black;">
+                                        <td style="border: 1px solid black;width: 250px;">
                                             <span t-esc="order[0]"/>
                                         </td>
                                          <td align="right" style="border: 1px solid black;">
                                             <span t-esc="order[3]"/>
                                         </td>
-                                        <td align="right" style="border: 1px solid black;">
+                                        <td align="right" style="border: 1px solid black;white-space: nowrap;">
                                             $ <span t-esc="order[4]"/>
                                         </td>
 
                                         <td align="right" style="border: 1px solid black;">
                                             <span t-esc="order[1]"/>
                                         </td>
-                                        <td align="right" style="border: 1px solid black;">
+                                        <td align="right" style="border: 1px solid black;white-space: nowrap;">
                                             $ <span t-esc="order[2]"/>
                                         </td>
                                     </tr>
@@ -60,4 +60,6 @@
             </t>
         </t>
     </template>
+
+
 </odoo>
