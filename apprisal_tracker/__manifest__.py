@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Product Expiry Extension",
+    'name': "apprisal_tracker",
 
     'summary': """
         Short (1 phrase/line) summary of the module's purpose, used as
@@ -20,23 +20,20 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','product_expiry','inventory_extension'],
+    'depends': ['base','purchase','vendor_offer','web_tree_dynamic_colored_field'],
 
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
-        'views/scrap_scheduler_views.xml',
         'views/views.xml',
         'views/templates.xml',
-        'views/production_lot.xml',
-        'views/stock_move_line_extension.xml',
-        'views/stock_quant_ext.xml'
+        'report/apprisal_tracker_report_temp.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
         'demo/demo.xml',
     ],
-    'installable': True,
     'application': True,
-    'auto_install': True,
+    'auto-install': True,
+    'installable': True,
 }
