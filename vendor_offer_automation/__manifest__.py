@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Vendor Offer",
+    'name': "Vendor Offer Automation",
 
     'summary': """
         Short (1 phrase/line) summary of the module's purpose, used as
@@ -10,7 +10,7 @@
         Long description of module's purpose
     """,
 
-    'author': "Benchmark It Solutions",
+    'author': "Benchmark IT Solutions (I) Pvt. Ltd",
     'website': "http://www.benchmarkitsolutions.com",
 
     # Categories can be used to filter modules in modules listing
@@ -20,17 +20,27 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'purchase','sale','product_brand','prioritization_engine','product_expiry_extension'],
+    'depends': ['base', 'vendor_offer'],
 
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
         'views/views.xml',
         'views/templates.xml',
-        'demo/data.xml',
     ],
 
-    'application' :True,
-    'auto-install': True,
-    'installable': True,
+    'qweb': [
+         'static/src/xml/offer_template_widget.xml'
+    ],
+
+    'js': [
+         'static/src/js/offer_template_widget.js'
+    ],
+
+    # only loaded in demonstration mode
+    'demo': [
+        'demo/demo.xml',
+    ],
+    'application': True,
+    'auto_install': True
 }
