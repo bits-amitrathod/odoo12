@@ -290,7 +290,7 @@
                                     <field name="qty_received" invisible="not context.get('show_purchase', True)"/>
                                     <field name="qty_invoiced" invisible="not context.get('show_purchase', True)"/>
                                     <field name="product_uom" groups="product.group_uom" attrs="{'readonly': [('state', 'in', ('purchase', 'done', 'cancel'))]}" force_save="1"/>
-                                    <field name="list_price" attrs="{'readonly': [('vendor_offer_data', '=', True)]}"/>
+                                    <field name="price_unit" attrs="{'readonly': [('vendor_offer_data', '=', True)]}"/>
                                     <field name="product_offer_price" attrs="{'readonly': [('vendor_offer_data', '=', True)],'invisible': [('vendor_offer_data', '=', False)]}"></field>
                                     <field name="vendor_offer_data" invisible="1"/>
                                     <field name="taxes_id" widget="many2many_tags" domain="[('type_tax_use','=','purchase')]" context="{'default_type_tax_use': 'purchase'}" options="{'no_create': True}"/>
