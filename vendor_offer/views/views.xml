@@ -10,7 +10,7 @@
           <field name="name" attrs="{'invisible':[('state', 'not in', ('ven_draft'))]}"/>
           <field name="state" invisible="1"   />
           <field name="acq_user_id" string='Acq Manager' attrs="{'invisible':[('state', 'not in', ('ven_draft'))]}"/>
-          <field name="partner_id" attrs="{'invisible':[('state', 'not in', ('ven_draft'))]}"/>
+          <field name="partner_id" attrs="{'invisible':[('state', 'not in', ('ven_draft'))]}" string ="Facility Name"/>
           <field name="offer_amount" attrs="{'invisible':[('state', 'not in', ('ven_draft'))]}"  widget="monetary"/>
           <field name="retail_amt" attrs="{'invisible':[('state', 'not in', ('ven_draft'))]}"  widget="monetary"/>
           <field name="date_offered" attrs="{'invisible':[('state', 'not in', ('ven_draft'))]}"/>
@@ -175,21 +175,22 @@
                                                          <field name="product_sales_count_90"   />
                                                          <field name="product_sales_count_yrs" />
                                                          <field name="expired_inventory"   />
-                                                         <field name="price_unit"  invisible="1" />
+                                                         <field name="list_price"    invisible="1" />
+                                                         <field name="price_unit"    invisible="1" />
                                                          <field name="product_unit_price"  />
                                                          <field name="product_offer_price"   />
                                                          <field name="product_retail"   />
                                                          <field name="price_subtotal"  string="Total Offer Price" />
                                                          <field name="margin"    />
                                                          <field name="multiplier"   />
-                                                         <field name="product_note"  readonly="1" />
-                                                         <!--<field name="product_qty"  invisible="1" />-->
+                                                         <field name="product_note"   />
                                                          <field name="date_planned"  invisible="1" />
                                                          <field name="product_uom"  invisible="1" />
                                                      </group>
                                                 </group>
                                             </form>
-                                <tree   >
+                                <!--editable="bottom"-->
+                                <tree    >
                                                          <field name="currency_id" invisible="1"/>
                                                          <field name="product_id" />
                                                          <field name="sku_code"  readonly="1" />
@@ -203,8 +204,9 @@
                                                          <field name="product_sales_count_month"  />
                                                          <field name="product_sales_count_90"    />
                                                          <field name="product_sales_count_yrs"   />
+                                                         <field name="price_unit"    invisible="1" />
+                                                         <field name="list_price"    invisible="1" />
                                                          <field name="expired_inventory"   />
-                                                         <!--<field name="premium" />-->
                                                          <field name="product_unit_price"  />
                                                          <field name="product_offer_price"   />
                                                          <field name="product_retail"   />
@@ -212,8 +214,6 @@
 
                                                          <field name="margin" />
                                                          <field name="multiplier"   />
-                                                        <!--<field name="product_qty"  invisible="1" />-->
-                                                         <!--<field name="product_uom_qty"   invisible="1"  />-->
                                                          <field name="date_planned"  invisible="1"  />
                                                          <field name="product_uom"    invisible="1"/>
                                                          <field name="order_id"   invisible="1"  />
@@ -262,7 +262,7 @@
             <field name="model">purchase.order</field>
             <field name="inherit_id" ref="purchase.purchase_order_form"></field>
             <field name="arch" type="xml">
-                <!--<form string="Purchase Order">-->
+
                      <xpath expr="//group/group/field[@name='company_id']" position="after">
                     <field name="carrier_info"></field>
                     <field name="carrier_acc_no"></field>
@@ -290,7 +290,7 @@
                                     <field name="qty_received" invisible="not context.get('show_purchase', True)"/>
                                     <field name="qty_invoiced" invisible="not context.get('show_purchase', True)"/>
                                     <field name="product_uom" groups="product.group_uom" attrs="{'readonly': [('state', 'in', ('purchase', 'done', 'cancel'))]}" force_save="1"/>
-                                    <field name="price_unit" attrs="{'readonly': [('vendor_offer_data', '=', True)]}"/>
+                                    <field name="list_price" attrs="{'readonly': [('vendor_offer_data', '=', True)]}"/>
                                     <field name="product_offer_price" attrs="{'readonly': [('vendor_offer_data', '=', True)],'invisible': [('vendor_offer_data', '=', False)]}"></field>
                                     <field name="vendor_offer_data" invisible="1"/>
                                     <field name="taxes_id" widget="many2many_tags" domain="[('type_tax_use','=','purchase')]" context="{'default_type_tax_use': 'purchase'}" options="{'no_create': True}"/>
@@ -300,13 +300,7 @@
                         <field name="vendor_offer_data" invisible="1"/>
                     </xpath>
 
-                <!--<xpath expr="//notebook/page/field/tree/field[@name='price_unit']" position="after">-->
-                <!--<field name="product_offer_price" attrs="{'readonly': [('vendor_offer_data', '=', False)]}"></field>-->
-                <!--<field name="vendor_offer_data" invisible="1"/>-->
-                <!--</xpath>-->
 
-
-                <!--</form>-->
             </field>
         </record>
 
