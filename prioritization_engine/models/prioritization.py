@@ -57,7 +57,7 @@ class Customer(models.Model):
         return res
 
     def copy_parent_date(self, vals):
-        print(self)
+        #print(self)
         #self.ensure_one()
         for child_id in self.child_ids:
             print(child_id.child_ids)
