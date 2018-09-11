@@ -1,24 +1,11 @@
 <templates>
-    <t t-name="ImportTemplateViewInner">
+    <t t-name="ImportOfferTemplateViewInner">
         <t t-set="_id" t-value="_.uniqueId('export')"/>
         <form id="import-form" action="" method="post" enctype="multipart/form-data" class="oe_import">
             <input type="hidden" name="csrf_token" t-att-value="csrf_token"/>
             <input type="hidden" name="session_id"
                    t-att-value="widget.session.session_id"/>
             <input type="hidden" name="import_id"/>
-            <div class="oe_import_box col-sm-9" id="template_type_container">
-                <div class="col-sm-12">
-                    <p id="template_type_label">Template Type</p>
-                </div>
-                <div class="col-sm-10">
-                    <div class="input-group" style="width:100%">
-                        <select class="form-control template-type" name="template_type" id="template_type_list">
-                            <option value="Inventory">Inventory</option>
-                            <option value="Requirement">Requirement</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
 
             <div class="oe_import_box col-sm-9">
                 <div class="col-sm-12">
@@ -115,9 +102,9 @@
                     <label for="oe_import_has_header">The first row
                         contains the label of the column
                     </label>
-                    <!--<input type="checkbox" class="oe_import_advanced_mode" checked="checked"-->
-                           <!--id="oe_import_advanced_mode"/>-->
-                    <!--<label for="oe_import_advanced_mode">Show fields of relation fields (advanced)</label>-->
+                    <input type="checkbox" class="oe_import_advanced_mode" checked="checked"
+                           id="oe_import_advanced_mode"/>
+                    <label for="oe_import_advanced_mode">Show fields of relation fields (advanced)</label>
                     <p class="oe_import_noheaders">If the file contains
                         the column names, Odoo can try auto-detecting the
                         field corresponding to the column. This makes imports
@@ -133,10 +120,10 @@
         </form>
     </t>
 
-    <t t-name="ImportTemplateView">
+    <t t-name="ImportOfferTemplateView">
 
         <t t-extend="ImportView">
-            <t t-call="ImportTemplateViewInner"/>
+            <t t-call="ImportOfferTemplateViewInner"/>
         </t>
 
     </t>

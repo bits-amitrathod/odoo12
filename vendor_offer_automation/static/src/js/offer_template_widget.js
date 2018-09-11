@@ -1,4 +1,4 @@
-odoo.define('customer-requests.importtemplate', function (require) {
+odoo.define('vendor_offer_automation.import_offer_template', function (require) {
 "use strict";
 
 var ControlPanelMixin = require('web.ControlPanelMixin');
@@ -46,7 +46,7 @@ function jsonp(form, attributes, callback) {
 }
 
 var DataImport = Widget.extend(ControlPanelMixin, {
-    template: 'ImportTemplateView',
+    template: 'ImportOfferTemplateView',
     opts: [
         {name: 'encoding', label: _lt("Encoding:"), value: 'utf-8'},
         {name: 'separator', label: _lt("Separator:"), value: ','},
@@ -74,10 +74,7 @@ var DataImport = Widget.extend(ControlPanelMixin, {
                  this.customer = Number(this.$('#customers_list').val());
             }
         },
-        'change #template_type_list' : function(e){
-             e.preventDefault();
-             this.template_type = this.$('#template_type_list').val();
-        },
+
         'change .oe_import_file': 'loaded_file',
         'click .oe_import_file_reload': 'loaded_file',
         'change input.oe_import_has_header, .js_import_options input': 'settings_changed',
@@ -120,7 +117,7 @@ var DataImport = Widget.extend(ControlPanelMixin, {
     init: function (parent, action) {
         this._super.apply(this, arguments);
         this.action_manager = parent;
-        this.res_model =  action.params[0].request_model;//action.params.model;
+        this.res_model =  ''; //action.params[0].request_model;//action.params.model;
         this.parent_context = action.params.context || {};
         // import object id
         this.id = null;
@@ -128,7 +125,7 @@ var DataImport = Widget.extend(ControlPanelMixin, {
         action.display_name = _t('Import Template'); // Displayed in the breadcrumbs
         this.do_not_change_match = false;
         this.customer = null;
-        this.user_type = action.params[0].user_type;
+
         this.parent_model = action.params[0].model;
         this.template_type = 'Inventory';
     },
@@ -143,16 +140,12 @@ var DataImport = Widget.extend(ControlPanelMixin, {
             self.create_model().done(function (id) {
                 self.id = id;
                 self.$('input[name=import_id]').val(id);
-                if(self.user_type== 'supplier'){
-                   self.$('#template_type_container').hide();
-                } else{
-                   self.$('#template_type_container').show();
-                }
+
 
                 self.$('#file_selection_widget').hide();
-                self.$('p#user_type_label').html(self.toTitleCase(self.user_type));
+                self.$('p#user_type_label').html('Partner');
 
-                $.post( "/userslist", 'input_data='+self.user_type, function( data ) {
+                $.post( "/userslist", 'input_data=supplier', function( data ) {
                     var jsonArray = JSON.parse(JSON.stringify(data));
                     self.$('#customers_list').append("<option value='0'></option>");
                     for(var index = 0; index < jsonArray.length; index++){
@@ -174,7 +167,7 @@ var DataImport = Widget.extend(ControlPanelMixin, {
     },
     create_model: function() {
         return this._rpc({
-                model: 'sps.template.transient',
+                model: 'sps.vendor.offer.template.transient',
                 method: 'create',
                 args: [{res_model: this.res_model}],
                 kwargs: {context: session.user_context},
@@ -260,7 +253,7 @@ var DataImport = Widget.extend(ControlPanelMixin, {
         var self = this;
         var options = {
             headers: this.$('input.oe_import_has_header').prop('checked'),
-            advanced: false,
+            advanced: this.$('input.oe_import_advanced_mode').prop('checked'),
             keep_matches: this.do_not_change_match,
             customer_id: this.$('#customer_list').val()
         };
@@ -305,7 +298,7 @@ var DataImport = Widget.extend(ControlPanelMixin, {
         }
         this.$el.find('.oe_import_toggle').toggle(import_toggle);
         jsonp(this.$el, {
-            url: '/template_import/set_file'
+            url: '/offer_template_import/set_file'
         }, this.proxy('settings_changed'));
     },
     onpreviewing: function () {
@@ -319,7 +312,7 @@ var DataImport = Widget.extend(ControlPanelMixin, {
             'oe_import_noheaders',
             !this.$('input.oe_import_has_header').prop('checked'));
         this._rpc({
-                model: 'sps.template.transient',
+                model: 'sps.vendor.offer.template.transient',
                 method: 'parse_preview',
                 args: [this.id, this.import_options()],
                 kwargs: {context: session.user_context},
@@ -406,7 +399,7 @@ var DataImport = Widget.extend(ControlPanelMixin, {
         var headers_type = root.headers_type;
         function traverse(field, ancestors, collection, type) {
             var subfields = field.fields;
-            var advanced_mode = false;
+            var advanced_mode = self.$('input.oe_import_advanced_mode').prop('checked');
             var field_path = ancestors.concat(field);
             var label = _(field_path).pluck('string').join(' / ');
             var id = _(field_path).pluck('name').join('/');
@@ -504,9 +497,9 @@ var DataImport = Widget.extend(ControlPanelMixin, {
         );
 
         return this._rpc({
-                model: 'sps.template.transient',
+                model: 'sps.vendor.offer.template.transient',
                 method: 'do',
-                args: [this.id, fields, this.import_options(), this.parent_model, this.customer, this.template_type],
+                args: [this.id, fields, this.import_options(), this.parent_model, this.customer],
                 kwargs : kwargs,
             }).fail(function (error, event) {
                 if (event) { event.preventDefault(); }
@@ -614,7 +607,7 @@ var DataImport = Widget.extend(ControlPanelMixin, {
 	    return str.join(' ');
     },
 });
-core.action_registry.add('importtemplate', DataImport);
+core.action_registry.add('import_offer_template', DataImport);
 
 // FSM-ize DataImport
 StateMachine.create({

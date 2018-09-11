@@ -7,6 +7,8 @@
     <orderEntry type="module" module-name="customer_sps" />
     <orderEntry type="module" module-name="testtemp" />
     <orderEntry type="module" module-name="customer_sps" />
+    <orderEntry type="library" name="R User Library" level="project" />
+    <orderEntry type="library" name="R Skeletons" level="application" />
   </component>
   <component name="TestRunnerService">
     <option name="PROJECT_TEST_RUNNER" value="Unittests" />
