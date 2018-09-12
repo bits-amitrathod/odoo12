@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../apprisal_tracker/.idea/apprisal_tracker.iml" filepath="$PROJECT_DIR$/../apprisal_tracker/.idea/apprisal_tracker.iml" />
       <module fileurl="file://$PROJECT_DIR$/../../../../addons-sps/customer_sps/.idea/customer_sps.iml" filepath="$PROJECT_DIR$/../../../../addons-sps/customer_sps/.idea/customer_sps.iml" />
       <module fileurl="file://$PROJECT_DIR$/../customer_sps/.idea/customer_sps.iml" filepath="$PROJECT_DIR$/../customer_sps/.idea/customer_sps.iml" />
       <module fileurl="file://$PROJECT_DIR$/../testtemp/.idea/testtemp.iml" filepath="$PROJECT_DIR$/../testtemp/.idea/testtemp.iml" />
