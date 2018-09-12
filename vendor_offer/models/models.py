@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api, SUPERUSER_ID
+from odoo import models, fields, api, SUPERUSER_ID,_
 from odoo.addons import decimal_precision as dp
+from odoo.exceptions import UserError, AccessError,ValidationError
 import datetime
 import math
 from random import randint
@@ -16,7 +17,7 @@ class VendorOffer(models.Model):
     carrier_info = fields.Char("Carrier Info", related='partner_id.carrier_info', readonly=True)
     carrier_acc_no = fields.Char("Carrier Account No", related='partner_id.carrier_acc_no', readonly=True)
     shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
-    appraisal_no = fields.Char(string='Appraisal No#',compute="_default_appraisal_no",change_default=True,readonly=False)
+    appraisal_no = fields.Char(string='Appraisal No#',compute="_default_appraisal_no",readonly=False,store=True)
     acq_user_id = fields.Many2one('res.users',string='Acq  Manager ')
     date_offered = fields.Datetime(string='Date Offered', default=fields.Datetime.now)
     revision = fields.Integer(string='Revision ')
@@ -73,22 +74,52 @@ class VendorOffer(models.Model):
         ('cancel', 'Cancelled')
     ], string='Status', readonly=True, index=True, copy=False, default='draft', track_visibility='onchange')
 
+    def action_validate(self):
+        multi = self.env['stock.picking'].search([('purchase_id', '=', self.id)])
+        if len(multi) == 1 and self.picking_count ==1:
+            return multi.button_validate()
+        elif self.picking_count > 1:
+            raise ValidationError(_('Validate is not possible for multiple Shipping please do validate one by one'))
+
+    def action_assign(self):
+        multi = self.env['stock.picking'].search([('purchase_id', '=', self.id)])
+        if len(multi) >= 1:
+            return multi.action_assign()
+
+    def _compute_show_validate(self):
+        multi = self.env['stock.picking'].search([('purchase_id', '=', self.id)])
+        if len(multi)>=1:
+            multi._compute_show_validate()
+
+    @api.multi
+    def do_unreserve(self):
+        multi = self.env['stock.picking'].search([('purchase_id', '=', self.id)])
+        if len(multi) >= 1:
+            return multi.do_unreserve()
+
     def test_00_purchase_order_flow(self):
         pass
 
     @api.onchange('appraisal_no')
     def _default_appraisal_no(self):
-        self.appraisal_no = 'AP' + str(randint(11111, 99999))
+        for order in self:
+            if(order.appraisal_no == False):
+                order.appraisal_no = 'AP' + str(randint(11111, 99999))
 
 
-    @api.depends('order_line.offer_price','order_line.product_offer_price')
+    @api.depends('order_line.product_offer_price')
     def _amount_tot_all(self):
-
+        print('=order_line.product_offer_price =======================')
         for order in self:
             retail_amt = offer_amount = 0.0
             for line in order.order_line:
+                print('=line.product_retail =======================')
+                print(line.product_retail)
+                print(line.price_subtotal)
                 retail_amt += float(line.product_retail)
                 offer_amount += float(line.price_subtotal)
+            # order.retail_amt =retail_amt
+            # order.offer_amount = offer_amount
             order.update({
                 'retail_amt': retail_amt,
                 'offer_amount': offer_amount,
@@ -102,7 +133,7 @@ class VendorOffer(models.Model):
                 multiplier_list = self.env['multiplier.multiplier'].search([('id', '=', line.multiplier.id)])
                 possible_competition_list = self.env['competition.competition'].search([('id', '=', self.possible_competition.id)])
                 line.product_unit_price = math.ceil(
-                    round(float(line.price_unit) * (float(multiplier_list.retail) / 100), 2))
+                    round(float(line.list_price) * (float(multiplier_list.retail) / 100), 2))
                 line.product_offer_price = math.ceil(round(float(line.product_unit_price) * (
                             float(multiplier_list.margin) / 100 + float(possible_competition_list.margin) / 100), 2))
 
@@ -128,7 +159,6 @@ class VendorOffer(models.Model):
 
     @api.multi
     def action_confirm_vendor_offer(self):
-        print('======================================== =================')
         self.write({'state': 'purchase'})
         self.write({'status': 'purchase'})
         self.write({'accepted_date': fields.date.today()})
@@ -182,7 +212,13 @@ class VendorOfferProduct(models.Model):
     product_retail = fields.Char(string="Total Retail Price")
     product_unit_price = fields.Char(string="Retail Price")
 
-    @api.depends('product_qty', 'price_unit', 'taxes_id','product_offer_price')
+    def action_show_details(self):
+
+        multi = self.env['stock.move'].search([('purchase_line_id', '=', self.id)])
+        if len(multi) >= 1:
+            return multi.action_show_details()
+
+    @api.depends('product_qty', 'list_price', 'taxes_id','product_offer_price')
     def _compute_amount(self):
         for line in self:
             super(VendorOfferProduct, self)._compute_amount()
@@ -277,14 +313,15 @@ class VendorOfferProduct(models.Model):
                 for line in order:
                     if (line.product_qty == False):
                         line.product_qty = '1'
-                        line.price_subtotal = line.price_unit
-                        line.product_unit_price = line.price_unit
+                        line.price_subtotal = line.list_price
+                        line.product_unit_price = line.list_price
 
             multiplier_list = self.env['multiplier.multiplier'].search([('id', '=', self.multiplier.id)])
             possible_competition_list = self.env['competition.competition'].search([('id', '=', self.possible_competition.id)])
             self.margin = multiplier_list.margin
-            self.product_unit_price=math.ceil(round(float(self.price_unit) * (float(multiplier_list.retail) / 100),2))
+            self.product_unit_price=math.ceil(round(float(self.list_price) * (float(multiplier_list.retail) / 100),2))
             self.product_offer_price =math.ceil(round(float(self.product_unit_price) * (float(multiplier_list.margin) / 100 + float(possible_competition_list.margin) / 100),2))
+            self.product_tier=self.product_id.tier
 
 
     def expired_inventory_cal(self):

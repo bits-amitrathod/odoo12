@@ -9,19 +9,19 @@ class PrioritizationEngine(models.TransientModel):
 
     _name = 'prioritization.engine.model'
 
-    allocated_product_list = []
+    allocated_product_dict = {}
 
     def allocate_product_by_priority(self, prioritization_engine_request_list):
         _logger.info('In product_allocation_by_priority')
         # get available production lot list.
-        available_product_lot_list = self.get_available_product_lot_list()
-        if len(available_product_lot_list) > 0:
+        available_product_lot_dict = self.get_available_product_lot_dict()
+        if len(available_product_lot_dict) > 0:
             for prioritization_engine_request in prioritization_engine_request_list:
                 # auto allocate True/False
                 if prioritization_engine_request['auto_allocate']:
                     _logger.info('Auto allocate is true....')
-                    filter_available_product_lot_list = self.filter_available_product_lot_list(available_product_lot_list, prioritization_engine_request)
-                    if len(filter_available_product_lot_list) >= 1:
+                    filter_available_product_lot_dict = self.filter_available_product_lot_dict(available_product_lot_dict, prioritization_engine_request)
+                    if len(filter_available_product_lot_dict) >= 1:
                         # check cooling period- method return True/False
                         if self.calculate_cooling_priod_in_days(prioritization_engine_request):
                             _logger.info('successed cooling period')
@@ -29,7 +29,7 @@ class PrioritizationEngine(models.TransientModel):
                             if self.calculate_length_of_holds_in_hours(prioritization_engine_request):
                                 _logger.info('successed length of hold')
                                 # allocate product
-                                self.allocate_product(prioritization_engine_request, filter_available_product_lot_list)
+                                self.allocate_product(prioritization_engine_request, filter_available_product_lot_dict)
                             else:
                                 _logger.info('length of hold false....')
                         else:
@@ -38,121 +38,119 @@ class PrioritizationEngine(models.TransientModel):
                         _logger.info('Product Lot not available....')
                 else:
                     _logger.info('Auto allocate is false....')
-            if len(self.allocated_product_list) > 0:
-                #self.env['available.product.list'].update_production_lot_list()
-                self.display_allocated_product_list()
+            if len(self.allocated_product_dict) > 0:
+                self.env['available.product.dict'].update_production_lot_dict()
+                self.generate_sale_order()
         else:
             _logger.info('Available product lot list is zero')
 
     # get available production lot list, parameter product id.
-    def get_available_product_lot_list(self):
-        production_lot_list = self.env['available.product.list'].get_available_production_lot_list()
-        _logger.info('Available production lot list : %r', production_lot_list)
-        return production_lot_list
+    def get_available_product_lot_dict(self):
+        production_lot_dict = self.env['available.product.dict'].get_available_production_lot_dict()
+        return production_lot_dict
 
-    def filter_available_product_lot_list(self, available_production_lot_list, prioritization_engine_request):
-        filtered_production_lot_list_to_be_returned = []
-        for available_production_lot in available_production_lot_list:
-            if available_production_lot['product_id']['id'] == prioritization_engine_request['product_id']:
-                if datetime.strptime(available_production_lot['use_date'],'%Y-%m-%d %H:%M:%S') >= self.get_product_expiration_tolerance_date(prioritization_engine_request):
-                    filtered_production_lot_list_to_be_returned.append(available_production_lot)
-        _logger.info('Filtered production lot list to be returned %r', str(filtered_production_lot_list_to_be_returned))
-        return filtered_production_lot_list_to_be_returned
+    def filter_available_product_lot_dict(self, available_production_lot_dict, prioritization_engine_request):
+        filtered_production_lot_dict_to_be_returned = {}
+        for available_production_lot in available_production_lot_dict.get(prioritization_engine_request['product_id'],{}):
+            if datetime.strptime(available_production_lot.get(list(available_production_lot.keys()).pop(0), {}).get('use_date'),
+                    '%Y-%m-%d %H:%M:%S') >= self.get_product_expiration_tolerance_date(prioritization_engine_request):
+
+                if prioritization_engine_request['product_id'] in filtered_production_lot_dict_to_be_returned.keys():
+                    filtered_production_lot_dict_to_be_returned.get(prioritization_engine_request['product_id'],
+                                                                         {}).append(available_production_lot)
+                else:
+                    dict = {prioritization_engine_request['product_id']: [available_production_lot]}
+                    filtered_production_lot_dict_to_be_returned.update(dict)
+
+        _logger.info('Filtered production lot list to be returned %r', str(filtered_production_lot_dict_to_be_returned))
+        return filtered_production_lot_dict_to_be_returned
 
     # calculate cooling period
     def calculate_cooling_priod_in_days(self, prioritization_engine_request):
+        flag = True
         # get product last purchased date
         confirmation_date = self.get_product_last_purchased_date(prioritization_engine_request)
         if not confirmation_date is None:
             # get current datetime
-            current_datetime = datetime.datetime.now()
+            current_datetime = datetime.now()
+            confirmation_date = datetime.strptime(self.change_date_format(confirmation_date), '%Y,%m,%d,%H,%M,%S.%f')
             # calculate datetime difference.
             duration = current_datetime - confirmation_date  # For build-in functions
             duration_in_days = self.return_duration_in_days(duration)
-            _logger.info("duration_in_days is " + str(duration_in_days))
-            if int(self.cooling_period) < int(duration_in_days):
+            if int(prioritization_engine_request['cooling_period']) <= int(duration_in_days):
                 if prioritization_engine_request['status'].lower().strip() != 'inprocess':
                     # update status In Process
                     self.update_customer_status(prioritization_engine_request, 'Inprocess')
-                    return True
-            else:
-                if prioritization_engine_request['status'].lower().strip() != 'incoolingperiod':
+                    flag = True
+            elif prioritization_engine_request['status'].lower().strip() != 'incoolingperiod':
                     # update status In cooling period
                     self.update_customer_status(prioritization_engine_request, 'InCoolingPeriod')
-                    return False
+                    flag = False
         else:
-            return True
+            flag = True
+        return flag
 
     # calculate length of hold(In hours)
     def calculate_length_of_holds_in_hours(self, prioritization_engine_request):
+        flag = True
         # get product create date
         create_date = self.get_product_create_date(prioritization_engine_request)
 
         if not create_date is None:
             # get current datetime
-            current_datetime = datetime.datetime.now()
+            current_datetime = datetime.now()
+            create_date = datetime.strptime(self.change_date_format(create_date), '%Y,%m,%d,%H,%M,%S.%f')
             # calculate datetime difference.
             duration = current_datetime - create_date  # For build-in functions
             duration_in_hours = self.return_duration_in_hours(duration)
-            _logger.info("duration_in_hours is " + str(duration_in_hours))
-            if int(self.length_of_hold) < int(duration_in_hours):
+            if int(prioritization_engine_request['length_of_hold']) <= int(duration_in_hours):
                 if prioritization_engine_request['status'].lower().strip() != 'inprocess':
                     # update status In Process
                     self.update_customer_status(prioritization_engine_request, 'Inprocess')
-                    return True
-            else:
-                if prioritization_engine_request['status'].lower().strip() != 'unprocessed':
+                    flag = True
+            elif prioritization_engine_request['status'].lower().strip() != 'unprocessed':
                     # update status In Process
                     self.update_customer_status(prioritization_engine_request, 'Unprocessed')
-                    return False
+                    flag = False
         else:
-            return True
+            flag = True
+        return flag
 
-    # get product expiration tolerance date, expiration tolerance in months(3/6/12)
+
+        # get product expiration tolerance date, expiration tolerance in months(3/6/12)
     def get_product_expiration_tolerance_date(self,prioritization_engine_request):
         expiration_tolerance_date = datetime.today() + relativedelta(months=+int(prioritization_engine_request['expiration_tolerance']))
         return expiration_tolerance_date
 
     # Allocate product
-    def allocate_product(self, prioritization_engine_request, filter_available_product_lot_list):
+    def allocate_product(self, prioritization_engine_request, filter_available_product_lot_dict):
         remaining_product_allocation_quantity = prioritization_engine_request['required_quantity']
-        for product_lot in filter_available_product_lot_list:
-            if remaining_product_allocation_quantity >= product_lot['available_quantity']:
+        for product_lot in filter_available_product_lot_dict.get(prioritization_engine_request['product_id'],{}):
+            _logger.info('**** %r',product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity'))
+            if remaining_product_allocation_quantity >= product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity'):
                 if prioritization_engine_request['partial_order']:
-                    _logger.info('product allocated from lot %r %r %r', product_lot['lot_id'])
+                    _logger.info('product allocated from lot %r %r %r', product_lot.get(list(product_lot.keys()).pop(0), {}))
 
-                    remaining_product_allocation_quantity = int(remaining_product_allocation_quantity) - int(product_lot['available_quantity'])
+                    remaining_product_allocation_quantity = int(remaining_product_allocation_quantity) - int(product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'])
 
-                    product_lot['reserved_quantity'] = int(product_lot['reserved_quantity']) + int(product_lot['available_quantity'])
-                    product_lot['available_quantity'] = 0
+                    self.allocated_product_to_customer(prioritization_engine_request['customer_id'],
+                                                       prioritization_engine_request['required_quantity'],
+                                                       list(product_lot.keys()).pop(0),
+                                                       prioritization_engine_request['product_id'],
+                                                       product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'])
 
-                    self.update_production_lot(product_lot['stock_quant_id'], product_lot['available_quantity'],
-                                               product_lot['reserved_quantity'])
+                    product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0),{})['reserved_quantity']) + int(product_lot.get(list(product_lot.keys()).pop(0),{})['available_quantity'])
+                    product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'] = 0
 
-                    allocated_product = dict(customer_id=prioritization_engine_request['customer_id'],
-                                             customer_required_quantity=prioritization_engine_request['required_quantity'],
-                                             lot_id=product_lot['lot_id'],
-                                             product_id=prioritization_engine_request['product_id'],
-                                             allocated_product_from_lot=product_lot['available_quantity'])
-                    self.allocated_product_list.append(allocated_product)
+                    _logger.info('Quantity Updated')
+            elif remaining_product_allocation_quantity < product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity'):
+                    _logger.info('product allocated from lot %r', list(product_lot.keys()).pop(0))
 
-                _logger.info('Quantity Updated')
-            else:
-                if remaining_product_allocation_quantity < product_lot['available_quantity']:
-                    _logger.info('product allocated from lot %r %r %r', product_lot['lot_id'])
+                    product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0),{})['reserved_quantity']) + int(remaining_product_allocation_quantity)
+                    product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0),{})['available_quantity']) - int(remaining_product_allocation_quantity)
 
-                    product_lot['reserved_quantity'] = int(product_lot['reserved_quantity']) + int(remaining_product_allocation_quantity)
-                    product_lot['available_quantity'] = int(product_lot['available_quantity']) - int(remaining_product_allocation_quantity)
-
-                    self.update_production_lot(product_lot['stock_quant_id'], product_lot['available_quantity'],
-                                               product_lot['reserved_quantity'])
-
-                    allocated_product = dict(customer_id=prioritization_engine_request['customer_id'],
-                                             customer_required_quantity=prioritization_engine_request['required_quantity'],
-                                             lot_id=product_lot['lot_id'],
-                                             product_id=prioritization_engine_request['product_id'],
-                                             allocated_product_from_lot=remaining_product_allocation_quantity)
-                    self.allocated_product_list.append(allocated_product)
+                    self.allocated_product_to_customer(prioritization_engine_request['customer_id'], prioritization_engine_request['required_quantity'],
+                                                       list(product_lot.keys()).pop(0), prioritization_engine_request['product_id'], remaining_product_allocation_quantity)
 
                     _logger.info('Quantity Updated')
 
@@ -163,7 +161,7 @@ class PrioritizationEngine(models.TransientModel):
             _logger.info('Partial ordering flag is False')
 
         elif remaining_product_allocation_quantity == 0:
-            _logger.info("Allocated Partial order of product id " + str(
+            _logger.info("Allocated product id " + str(
                 prioritization_engine_request['product_id']) + ". Total required product quantity is " + str(
                 prioritization_engine_request['required_quantity']))
             self.update_customer_status(prioritization_engine_request,'Completed')
@@ -185,9 +183,10 @@ class PrioritizationEngine(models.TransientModel):
         _logger.info("In get_product_last_purchased_date()")
 
         self.env.cr.execute(
-            "SELECT max(order_id.confirmation_date) as confirmation_date FROM public.sale.order.line WHERE order_partner_id = " + str(
-                prioritization_engine_request['customer_id']) +
-            "and product_id = " + str(prioritization_engine_request['product_id']))
+            "SELECT max(saleorder.confirmation_date) as confirmation_date FROM public.sale_order_line saleorderline "
+            "INNER JOIN public.sale_order saleorder ON saleorder.id = saleorderline.order_id "
+            "WHERE saleorderline.order_partner_id = " + str(prioritization_engine_request['customer_id']) +
+            " and saleorderline.product_id = " + str(prioritization_engine_request['product_id']))
 
         query_result = self.env.cr.dictfetchone()
 
@@ -201,9 +200,10 @@ class PrioritizationEngine(models.TransientModel):
         _logger.info("In get_product_create_date()")
 
         self.env.cr.execute(
-            "SELECT max(order_id.create_date) as create_date FROM public.sale.order.line WHERE order_partner_id = " + str(
-                prioritization_engine_request['customer_id']) +
-            "and product_id = " + str(prioritization_engine_request['product_id']))
+            "SELECT max(saleorder.create_date) as create_date FROM public.sale_order_line saleorderline "
+            "INNER JOIN public.sale_order saleorder ON saleorder.id = saleorderline.order_id "
+            " WHERE saleorderline.order_partner_id = " + str(prioritization_engine_request['customer_id']) +
+            " and saleorderline.product_id = " + str(prioritization_engine_request['product_id']))
         query_result = self.env.cr.dictfetchone()
 
         if query_result['create_date'] != None:
@@ -211,21 +211,47 @@ class PrioritizationEngine(models.TransientModel):
         else:
             return None
 
+    # allocated product to customer
+    def allocated_product_to_customer(self, customer_id, required_quantity, lot_id, product_id, allocated_product_from_lot):
+        allocated_product = {lot_id : {'customer_required_quantity':required_quantity,
+                                 'product_id':product_id, 'allocated_product_quantity':allocated_product_from_lot}}
+        if customer_id in self.allocated_product_dict.keys():
+            self.allocated_product_dict.get(customer_id, {}).append(allocated_product)
+        else:
+            dict = {customer_id: [allocated_product]}
+            self.allocated_product_dict.update(dict)
+
 
     # return duration in days
     def return_duration_in_days(self, duration):
         duration_in_seconds = duration.total_seconds()
         duration_in_hours = duration_in_seconds / 3600
-        duration_in_days = duration_in_hours / 24
-        return duration_in_days
+        duration_in_days = int(duration_in_hours) / 24
+        return int(duration_in_days)
 
     # return duration in hours
     def return_duration_in_hours(self,duration):
         duration_in_seconds = duration.total_seconds()
         duration_in_hours = duration_in_seconds / 3600
-        return duration_in_hours
+        return int(duration_in_hours)
 
     # display allocated product list
-    def display_allocated_product_list(self):
-        for allocated_product in self.allocated_product_list:
-            _logger.info('In display allocated product list %r, %r, %r', str(allocated_product['customer_id']), str(allocated_product['product_id']), str(allocated_product['allocated_product_quantity']))
+    def generate_sale_order(self):
+        _logger.info('In generate sale order %r', self.allocated_product_dict)
+
+        for partner_id_key in self.allocated_product_dict.keys():
+            sale_order_dict = {'partner_id': partner_id_key, 'state': 'engine'}
+
+            sale_order = self.env['sale.order'].create(dict(sale_order_dict))
+            _logger.info('sale order : %r ',sale_order['id'])
+
+            for allocated_product in self.allocated_product_dict.get(partner_id_key, {}):
+                sale_order_line_dict = {'order_id': sale_order['id'], 'product_id': allocated_product.get(list(allocated_product.keys()).pop(0), {})['product_id'],
+                                        'order_partner_id' : partner_id_key, 'product_uom_qty' : allocated_product.get(list(allocated_product.keys()).pop(0), {})['allocated_product_quantity']}
+
+                self.env['sale.order.line'].create(dict(sale_order_line_dict))
+
+    # Change date format to calculate date difference (2018-06-25 23:08:15) to (2018, 6, 25, 23, 8, 15)
+    def change_date_format(self, date):
+        formatted_date = date.replace("-", ",").replace(" ", ",").replace(":", ",")
+        return formatted_date

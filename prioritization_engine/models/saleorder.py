@@ -9,6 +9,7 @@ _logger = logging.getLogger(__name__)
 class SaleOrder(models.Model):
     _inherit = "sale.order"
     cust_po = fields.Char("Customer PO", readonly=False)
+    client_order_ref = fields.Char(string='Purchase Order#', copy=False)
     state = fields.Selection([
         ('draft', 'Quotation'),
         ('engine', 'Prioritization'),
@@ -18,8 +19,8 @@ class SaleOrder(models.Model):
         ('cancel', 'Cancelled'),
         ('void', 'Voided'),
     ], string='Status', readonly=True, copy=False, index=True, track_visibility='onchange', default='draft')
+
     show_validate = fields.Boolean(
-        compute='_compute_show_validate',
         help='Technical field used to compute whether the validate should be shown.')
     shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
     preferred_method = fields.Selection(string='Preferred Invoice Delivery Method', related='partner_id.preferred_method', readonly=True)
@@ -65,9 +66,11 @@ class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
 
     def action_show_details(self):
-       self= self.env['stock.move'].search([('sale_line_id', '=', self.id)])
-       if self.id:
-           return self.action_show_details()
+
+       multi= self.env['stock.move'].search([('sale_line_id', '=', self.id)])
+       if len(multi) >= 1:
+           return multi.action_show_details()
+
 
 class StockPicking(models.Model):
     _inherit = "stock.picking"
@@ -138,3 +141,10 @@ class AccountInvoice(models.Model):
         shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
         preferred_method = fields.Selection(string='Preferred Invoice Delivery Method',
                                             related='partner_id.preferred_method', readonly=True)
+        name = fields.Char(string='Purchase Order#', index=True,
+                           readonly=True, states={'draft': [('readonly', False)]}, copy=False,
+                           help='The name that will be used on account move lines')
+
+        origin = fields.Char(string='Sale Order#',
+                             help="Reference of the document that produced this invoice.",
+                             readonly=True, states={'draft': [('readonly', False)]})

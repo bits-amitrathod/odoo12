@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+ <record id="view_extension_move_stock_line_operation_tree" model="ir.ui.view">
+    <field name="name">stock.move.line.operations.tree</field>
+    <field name="model">stock.move.line</field>
+    <field name="inherit_id" ref="stock.view_stock_move_line_operation_tree" />
+    <field name="arch" type="xml">
+        <field name="picking_id" invisible="1"/>
+        <field name="product_id" invisible="1"/>
+        <field name="in_entire_package" invisible="1"/>
+        <field name="lot_id" position="after">
+            <field name="lot_use_date" attrs="{'readonly': [('in_entire_package', '=', False)]}" invisible="not context.get('show_lots_m2o')" domain="[('product_id', '=', parent.product_id)]" groups="stock.group_production_lot" context="{'default_product_id': parent.product_id, 'active_picking_id': picking_id}" />
+        </field>
+         <field name="lot_name"  position="after" >
+              <field name="lot_expired_date" widget="inventory_purchase"  attrs="{'readonly': [('in_entire_package', '=', True)]}"  invisible="not context.get('show_lots_text')" groups="stock.group_production_lot"/>
+         </field>
+    </field>
+</record>
+</odoo>

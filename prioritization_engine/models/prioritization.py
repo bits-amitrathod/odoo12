@@ -13,7 +13,6 @@ class Customer(models.Model):
     sku_preconfig=fields.Char("SKU PreConfig")
     sku_postconfig = fields.Char("SKU PostConfig")
     prioritization_ids = fields.One2many('prioritization_engine.prioritization', 'customer_id')
-    sps_sku = fields.Char("SPS SKU", readonly=False)
     min_threshold = fields.Integer("Product Min Threshold", readonly=False)
     max_threshold = fields.Integer("Product Max Threshold", readonly=False)
     priority = fields.Integer("Product Priority", readonly=False)
@@ -21,7 +20,6 @@ class Customer(models.Model):
     auto_allocate = fields.Boolean("Allow Auto Allocation?", readonly=False)
     length_of_hold = fields.Integer("Length Of Hold in hours", readonly=False)
     expiration_tolerance = fields.Integer("Expiration Tolerance in Months", readonly=False)
-
     partial_ordering = fields.Boolean("Allow Partial Ordering?", readonly=False)
     partial_UOM = fields.Boolean("Allow Partial UOM?", readonly=False)
     order_ids = fields.One2many('sale.order', 'partner_id')
@@ -40,24 +38,52 @@ class Customer(models.Model):
     shipping_terms = fields.Selection([
         ('1', 'Prepaid & Billed'),
         ('2', 'Prepaid'),
-        (3,'Freight Collect')], string='Shipping Terms')
+        ('3', 'Freight Collect')], string='Shipping Terms')
+    allow_purchase=fields.Boolean("Purchase Order Method")
+    is_parent=fields.Boolean("Purchase Order Method" ,default=True)
+
 
     @api.model
     def create(self, vals):
-        self.on_hold_changes(vals)
+        self.copy_parent_date(vals)
         return super(Customer, self).create(vals)
 
     @api.multi
     def write(self, vals):
         res = super(Customer, self).write(vals)
-        self.on_hold_changes(vals)
+        print(res)
+        res2=self.copy_parent_date(vals)
+        print(res2)
         return res
 
-    def on_hold_changes(self, vals):
+    def copy_parent_date(self, vals):
+        #print(self)
+        #self.ensure_one()
         for child_id in self.child_ids:
-            print(child_id.on_hold);
-            child_id.write({'on_hold':self.on_hold});
-            print(child_id.on_hold)
+            print(child_id.child_ids)
+            child_id.write({'on_hold':self.on_hold,
+                            'is_broker':self.is_broker,
+                            'carrier_info':self.carrier_info,
+                            'carrier_acc_no':self.carrier_acc_no,
+                            'quickbook_id':self.quickbook_id,
+                            'having_carrier': self.having_carrier,
+                            'preferred_method': self.preferred_method,
+                            'shipping_terms': self.shipping_terms,
+                            'allow_purchase': self.allow_purchase,
+                            'sku_preconfig': self.sku_preconfig,
+                            'sku_postconfig': self.sku_postconfig,
+                            'is_parent':False,
+                            'prioritization': self.prioritization,
+                            'prioritization_ids':self.prioritization_ids,
+                            'min_threshold':self.min_threshold,
+                            'priority':self.priority,
+                            'partial_UOM':self.partial_UOM,
+                            'partial_ordering':self.partial_ordering,
+                            'auto_allocate':self.auto_allocate,
+                            'length_of_hold':self.length_of_hold,
+                            'expiration_tolerance':self.expiration_tolerance,
+                            'cooling_period':self.cooling_period,
+                            'max_threshold':self.max_threshold});
 
     def action_view_notification(self):
         '''
@@ -97,14 +123,14 @@ class Customer(models.Model):
     @api.one
     def _check_cooling_period(self):
         cooling_period = self.cooling_period
-        if cooling_period and cooling_period <=366:
+        if cooling_period and cooling_period >=366:
             raise ValidationError(_('Global Priority Configuration->Cooling Period field must be less 365 days'))
 
     @api.constrains('max_threshold')
     @api.one
     def _check_max_threshold(self):
         max_threshold = self.max_threshold
-        if max_threshold and max_threshold <= 999:
+        if max_threshold and max_threshold >= 999:
             raise ValidationError(_('Global Priority Configuration->Max Threshold field must be less 999'))
         if max_threshold and max_threshold <=self.min_threshold:
             raise ValidationError(_('Global Priority Configuration->Max Threshold field must be greater than Min Threshold field'))
@@ -113,7 +139,7 @@ class Customer(models.Model):
     @api.one
     def _check_min_threshold(self):
         min_threshold = self.min_threshold
-        if min_threshold and min_threshold < 999:
+        if min_threshold and min_threshold > 999:
             raise ValidationError(_('Global Priority Configuration->Min Threshold field must be less 999'))
 
 
@@ -121,7 +147,7 @@ class ProductTemplate(models.Model):
     _inherit = 'product.template'
     location = fields.Char("Location")
     premium = fields.Boolean("Premium")
-    sku_code = fields.Char('SKU / Catalog No',required=True)
+    sku_code = fields.Char('SKU / Catalog No')
     manufacturer_pref = fields.Char(string='Manuf. Catalog No')
 
 
@@ -142,7 +168,6 @@ class NotificationSetting(models.Model):
 class Prioritization(models.Model):
     _name = 'prioritization_engine.prioritization'
     _inherits = {'product.product':'product_id'}
-    #sps_sku = fields.Char("SPS SKU",readonly=False)
     min_threshold = fields.Integer("Min Threshold",readonly=False)
     max_threshold = fields.Integer("Max Threshold",readonly=False)
     priority = fields.Integer("Product Priority",readonly=False)
@@ -152,14 +177,14 @@ class Prioritization(models.Model):
     expiration_tolerance = fields.Integer("Expiration Tolerance in months",readonly=False)
     partial_ordering = fields.Boolean("Allow Partial Ordering?",readonly=False)
     partial_UOM = fields.Boolean("Allow Partial UOM?",readonly=False)
-    length_of_holding = fields.Integer("Length Of Holding",readonly=False)
     customer_id = fields.Many2one('res.partner', string='GlobalPrioritization',required=True, ondelete="cascade")
     product_id = fields.Many2one('product.product', string='Product',required=True, ondelete="cascade")
     sales_channel = fields.Selection([('1','Manual'),('2','Prioritization Engine')], String="Sales Channel",readonly=False)# get team id = sales channel like 3 = Manual, 4 = Prioritization Engine
 
     _sql_constraints = [
-        ('prioritization_engine_company_uniq', 'UNIQUE(product_id)', 'Product must be unique for customer!!!!'),
+        ('priority_engine_uniq', 'unique (product_id,customer_id)', 'In Customer Priority Configuration Product Value Repeated !')
     ]
+
     # constraint
     @api.constrains('expiration_tolerance')
     @api.one
@@ -188,24 +213,24 @@ class Prioritization(models.Model):
     @api.one
     def _check_cooling_period(self):
         cooling_period = self.cooling_period
-        if cooling_period and cooling_period <= 366:
+        if cooling_period and cooling_period >= 366:
             raise ValidationError(_('Customer Priority Configuration->Cooling Period field must be less 365 days'))
 
     @api.constrains('max_threshold')
     @api.one
     def _check_max_threshold(self):
-        max_threshold = self.max_threshold
-        if max_threshold and max_threshold <= 999:
+        #max_threshold = self.max_threshold
+        if self.max_threshold and self.max_threshold >= 999:
             raise ValidationError(_('Customer Priority Configuration->Max Threshold field must be less 999'))
-        if max_threshold and max_threshold <= self.min_threshold:
+        if self.min_threshold and self.max_threshold <= self.min_threshold:
             raise ValidationError(
-                _('Global Priority Configuration->Max Threshold field must be greater than Min Threshold field'))
+                _('Customer Priority Configuration->Max Threshold field must be greater than Min Threshold field'))
 
     @api.constrains('min_threshold')
     @api.one
     def _check_min_threshold(self):
         min_threshold = self.min_threshold
-        if min_threshold and min_threshold < 999:
+        if min_threshold and min_threshold > 999:
             raise ValidationError(_('Customer Priority Configuration->Min Threshold field must be less 999'))
 
 class PrioritizationTransient(models.TransientModel):
@@ -219,12 +244,11 @@ class PrioritizationTransient(models.TransientModel):
     expiration_tolerance = fields.Integer("Expiration Tolerance days")
     partial_ordering = fields.Boolean("Allow Partial Ordering?")
     partial_UOM = fields.Boolean("Allow Partial UOM?")
-    length_of_hold = fields.Integer("Lenght Of Holding")
 
     def action_confirm(self,arg):
         for selected in arg["selected_ids"]:
             record = self.env['prioritization_engine.prioritization'].search([('id', '=', selected)])[0]
-            record.write({'min_threshold': self.min_threshold,'max_threshold': self.min_threshold,'priority': self.priority,'cooling_period': self.cooling_period,'auto_allocate': self.auto_allocate,
+            record.write({'min_threshold': self.min_threshold,'max_threshold': self.max_threshold,'priority': self.priority,'cooling_period': self.cooling_period,'auto_allocate': self.auto_allocate,
                         'expiration_tolerance': self.expiration_tolerance,'partial_ordering': self.partial_ordering,'partial_UOM': self.partial_UOM,
                         'length_of_hold': self.length_of_hold})
         return {'type': 'ir.actions.act_close_wizard_and_reload_view'}

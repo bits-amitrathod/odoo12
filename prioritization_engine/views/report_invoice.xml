@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="report_invoice_document_ext" inherit_id="account.report_invoice_document">
+            <xpath expr="//t/div[1]/div[2]/div[1]" position="replace">
+                         <div class="col-xs-2" t-if="o.name">
+                            <strong>Purchase Order#:</strong>
+                            <p t-field="o.name"/>
+                        </div>
+            </xpath>
+            <xpath expr="//t/div[1]/div[2]/div[4]" position="replace">
+                         <div class="col-xs-2" t-if="o.name">
+                            <strong>Sale Order#:</strong>
+                            <p t-field="o.name"/>
+                        </div>
+            </xpath>
+        </template>
+    </data>
+</odoo>

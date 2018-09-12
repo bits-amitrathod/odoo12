@@ -135,18 +135,7 @@
             <field name="params">[{'model': 'sps.customer.template', 'user_type': 'customer', 'request_model': 'sps.customer.requests'}]</field>
         </record>
 
-        <record id="vendor-template-client-action" model="ir.actions.client">
-            <field name="name">Vendor Offer</field>
-             <field name="type">ir.actions.client</field>
-            <field name="tag">importtemplate</field>
-            <field name="params">[{'model': 'sps.customer.template', 'user_type': 'supplier', 'request_model': 'product.supplierinfo'}]</field>
-        </record>
-
-
         <menuitem name="Import" id="prioritization_engine.prioritization_imenu" parent="prioritization_engine.menu_root"/>
-
-        <menuitem name="Vendor Offer" id="prioritization_engine.prioritization_vendor_template_menu" parent="prioritization_engine.prioritization_imenu"
-                  action="vendor-template-client-action"/>
 
         <menuitem name="Customer Template" id="prioritization_engine.prioritization_customer_template_menu" parent="prioritization_engine.prioritization_imenu"
                   action="customer-template-client-action"/>

@@ -260,7 +260,7 @@ var DataImport = Widget.extend(ControlPanelMixin, {
         var self = this;
         var options = {
             headers: this.$('input.oe_import_has_header').prop('checked'),
-            advanced: this.$('input.oe_import_advanced_mode').prop('checked'),
+            advanced: false,
             keep_matches: this.do_not_change_match,
             customer_id: this.$('#customer_list').val()
         };
@@ -406,7 +406,7 @@ var DataImport = Widget.extend(ControlPanelMixin, {
         var headers_type = root.headers_type;
         function traverse(field, ancestors, collection, type) {
             var subfields = field.fields;
-            var advanced_mode = self.$('input.oe_import_advanced_mode').prop('checked');
+            var advanced_mode = false;
             var field_path = ancestors.concat(field);
             var label = _(field_path).pluck('string').join(' / ');
             var id = _(field_path).pluck('name').join('/');
