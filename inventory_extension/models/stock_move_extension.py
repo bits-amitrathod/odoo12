@@ -19,46 +19,58 @@ _logger = logging.getLogger(__name__)
 class StockMoveExtension(models.Model):
     _inherit = "stock.move"
 
-
+    def _get_lot_name(self,id):
+        lot_id = self.env['stock.move.line'].search([('id', '=', id)])
+        if lot_id:
+         return lot_id.lot_name
+        return False
 
     def write(self, vals):
         global serialNumber;
         global serialNumberExDate;
-        lotNumbers = []
-        product_tmpl=self.env['product.template'].search([('id', '=', int(self.product_id.product_tmpl_id))])
-        params = self.env['ir.config_parameter'].sudo()
-        group_stock_production_lot = params.get_param('inventory_extension.group_stock_production_lot')
-        module_product_expiry = params.get_param('inventory_extension.module_product_expiry')
-        if product_tmpl.tracking =='lot' and group_stock_production_lot:
-            try:
-                serialNumber = False;
-                serialNumberExDate = False;
-                for ml in vals.get('move_line_ids', {}):
-                    if ('lot_id' in ml[2] and not ml[2].get('lot_id')):
-                        if (not 'lot_name' in ml[2] or not ml[2].get('lot_name')):
-                            serialNumber = True
-                        elif(module_product_expiry is True and ( not 'lot_expired_date' in ml[2] or not ml[2].get('lot_expired_date'))):
-                            lotNumbers.append(ml[2].get('lot_name'))
-                            serialNumberExDate = True
-                        if (module_product_expiry is True and not serialNumberExDate and  (not 'lot_expired_date' in ml[2] or not ml[2].get('lot_expired_date'))):
-                            serialNumberExDate = True
-            except KeyError:
-                print("key error pass:")
-                pass;
-            if serialNumber and serialNumberExDate:
-                raise UserError(_('Lot/Serial Number and Expiration Date is required.'))
-            elif serialNumberExDate:
-                msg="Expiration Date for Lot/Serial Numbers " if len(lotNumbers)>1 else "Expiration Date for Lot/Serial Number "
-                row=0;
-                for number in lotNumbers:
-                    if row>0:
-                     msg=msg+","+number
-                    else:
-                        msg = msg + number
-                    row=row+1
-                raise UserError(_(msg + " "+ "is required."))
-            elif serialNumber:
-                raise UserError(_('Lot/Serial Number is required.'))
+        for this in  self:
+            lotNumbers = []
+            product_tmpl=self.env['product.template'].search([('id', '=', int(this.product_id.product_tmpl_id))])
+            params = self.env['ir.config_parameter'].sudo()
+            group_stock_production_lot = params.get_param('inventory_extension.group_stock_production_lot')
+            module_product_expiry = params.get_param('inventory_extension.module_product_expiry')
+            if product_tmpl.tracking =='lot' and group_stock_production_lot:
+                try:
+                    serialNumber = False;
+                    serialNumberExDate = False;
+                    for ml in vals.get('move_line_ids', {}):
+                        if ('lot_id' in ml[2] and not ml[2].get('lot_id') ):
+                            if (not 'lot_name' in ml[2] and not self._get_lot_name(ml[1])):
+                                 serialNumber = True
+                            elif('lot_name' in ml[2] and not ml[2].get('lot_name')):
+                                serialNumber = True
+                            elif(module_product_expiry and  not 'lot_expired_date' in ml[2] and not self._get_lot_name(ml[1])):
+                                    lotNumbers.append(ml[2].get('lot_name'))
+                                    serialNumberExDate = True
+                            elif(module_product_expiry and 'lot_expired_date' in ml[2] and not ml[2].get('lot_expired_date')):
+                                lotNumbers.append(self._get_lot_name(ml[1]))
+                                serialNumberExDate = True
+                            if (module_product_expiry  and not serialNumberExDate and  (not 'lot_expired_date' in ml[2] or not ml[2].get('lot_expired_date'))):
+                                lotNumbers.append( ml[2].get('lot_name') if  ml[2].get('lot_name') else self._get_lot_name(ml[1]) )
+                                serialNumberExDate = True
+                except KeyError:
+                    print("key error pass:")
+                    pass;
+                if serialNumber and serialNumberExDate:
+                    raise UserError(_('Lot/Serial Number and Expiration Date is required.'))
+                elif serialNumberExDate:
+                    msg="Expiration Date for Lot/Serial Numbers " if len(lotNumbers)>1 else "Expiration Date for Lot/Serial Number "
+                    row=0;
+                    for number in lotNumbers:
+                        if row>0:
+                         msg=msg+","+number
+                        else:
+                            _logger.info("lot number in msg  : %r", number)
+                            msg = msg + number
+                        row=row+1
+                    raise UserError(_(msg + " "+ "is required."))
+                elif serialNumber:
+                    raise UserError(_('Lot/Serial Number is required.'))
 
 
         # FIXME: pim fix your crap
