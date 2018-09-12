@@ -6,6 +6,7 @@
         Provide feature for product expiration lot
         
         """,
+    'author': 'Benchmark It Solutions',
 
     'description': """
         Provide feature for product expiration lot
