@@ -66,6 +66,9 @@ class vendor_offer_automation(models.Model):
                         [('customer_id', '=', self.partner_id.id), ('template_status', '=', 'Active')])
                     if len(vendor_offer_automation_template) > 0:
                         sorted_excel_columns = ','.join(sorted(excel_columns))
+                        _logger.info('vendor_offer_automation_template.columns_from_template %r',
+                                     vendor_offer_automation_template.columns_from_template)
+                        _logger.info('sorted_excel_columns %r', sorted_excel_columns)
                         if vendor_offer_automation_template.columns_from_template != sorted_excel_columns:
                             raise ValidationError(
                                 _('Document columns are not matching active offer template ' + self.template_name))

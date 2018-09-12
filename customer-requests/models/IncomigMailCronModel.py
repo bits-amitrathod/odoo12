@@ -145,7 +145,7 @@ class IncomingMailCronModel(models.Model):
                                         if not email_from is None:
                                             users_model = self.env['res.partner'].search(
                                                 [("email", "=", email_from)])
-                                            if users_model:
+                                            if users_model and users_model.prioritization:
                                                 user_attachment_dir = ATTACHMENT_DIR + str(
                                                     datetime.now().strftime("%d%m%Y")) + "/" + str(
                                                     users_model.id) + "/"
@@ -170,7 +170,8 @@ class IncomingMailCronModel(models.Model):
                                                         except Exception as e:
                                                             _logger.info(str(e))
                                             else:
-                                                _logger.info('user not found for %r', email_from)
+                                                _logger.info('either prioritization is off or user not found for %r',
+                                                             email_from)
                                         else:
                                             _logger.info('domain not matched for forwarded email')
                                     else:
