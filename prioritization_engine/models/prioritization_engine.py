@@ -73,7 +73,7 @@ class PrioritizationEngine(models.TransientModel):
         if not confirmation_date is None:
             # get current datetime
             current_datetime = datetime.now()
-            confirmation_date = datetime.strptime(self.change_date_format(confirmation_date), '%Y,%m,%d,%H,%M,%S.%f')
+            confirmation_date = datetime.strptime(self.change_date_format(confirmation_date), '%Y,%m,%d,%H,%M,%S')
             # calculate datetime difference.
             duration = current_datetime - confirmation_date  # For build-in functions
             duration_in_days = self.return_duration_in_days(duration)
