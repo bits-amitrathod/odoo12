@@ -101,7 +101,7 @@
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet/notebook/page[@name='internal_notes']" position="after">
-                    <page name="importdocument" string="Import Document" attrs="{'invisible':[('customer','=',False), ('parent_id','!=',None)]}">
+                    <page name="importdocument" string="Import Document" attrs="{'invisible':[('customer','=',False), ('parent_id','!=',None), ('prioritization', '=', False)]}">
                         <field name="document_ids"/>
                     </page>
                 </xpath>
@@ -114,9 +114,9 @@
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet/notebook/page[@name='internal_notes']" position="after">
-                    <page name="apicredentials" string="API Credentials" attrs="{'invisible':[('customer','=',False), ('parent_id','!=',None)]}">
+                    <page name="apicredentials" string="API Credentials" attrs="{'invisible':[('customer','=',False), ('parent_id','!=',None), ('prioritization', '=', False)]}">
                         <group>
-                            <field name="email" readonly="1" string="Username"/>
+                            <field name="api_username" string="Username"/>
                             <field name="api_secret" string="Password" password="True"/>
                         </group>
                     </page>
@@ -130,7 +130,7 @@
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet/notebook/page[@name='internal_notes']" position="after">
-                    <page name="importedtemplate" string="Imported Templates" attrs="{'invisible':[('customer','=',False), ('parent_id','!=',None)]}">
+                    <page name="importedtemplate" string="Imported Templates" attrs="{'invisible':[('customer','=',False), ('parent_id','!=',None), ('prioritization', '=', False)]}">
                         <field name="template_ids"/>
                     </page>
                 </xpath>
