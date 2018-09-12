@@ -272,8 +272,22 @@
                                     </div>
                                     <div t-if="product.qty_available &lt;= 0"
                                          t-attf-class="availability_message_#{product_template} linkCstm mt16">
-                                        <i class="fa fa-exclamation-triangle"/>
-                                        Temporarily out of stock
+                                        <div style="color: #666;padding-bottom: 5px;"> Get notification as soon as the product is available again.</div>
+                                        <div class="input-group notifcationGroup" style="width: 90%;padding-bottom: 10px;">
+                                            <input type="text" class="form-control" aria-label="..."
+                                                   t-att-value="userEmail" name="notificationEmail" t-att-data-productid="product.id"/>
+                                            <div class="input-group-btn">
+                                                <button type="button" class="btn btn-danger dropdown-toggle"
+                                                        data-toggle="dropdown" aria-haspopup="true" id="notifyMe"
+                                                        aria-expanded="false">Notify me
+                                                </button>
+                                            </div><!-- /btn-group -->
+                                        </div><!-- /input-group -->
+                                        <div class="alert alert-success notifcationAlert" style="display: none;">You will be notified when this is available.</div>
+
+                                        <p>
+                                            <i class="fa fa-exclamation-triangle"/> Temporarily out of stock
+                                        </p>
                                     </div>
                                     <a t-if="product.qty_available &gt; 0" id="add_to_cart"
                                        class="btn btn-primary btn-lg mt8 js_check_product a-submit" href="#">Add to Cart

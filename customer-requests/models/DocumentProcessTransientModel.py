@@ -38,9 +38,10 @@ class DocumentProcessTransientModel(models.TransientModel):
         templates_list = self.env['sps.customer.template'].search(
             [['customer_id', '=', user_id], ['template_status', '=', 'Active']])
         if len(templates_list) > 0:
-            mappings, non_mapped_columns = DocumentProcessTransientModel._get_column_mappings(mapping_field_list,
-                                                                                              templates_list,
-                                                                                              uploaded_file_path)
+            mappings, non_mapped_columns, template_type = DocumentProcessTransientModel._get_column_mappings(
+                mapping_field_list,
+                templates_list,
+                uploaded_file_path)
             if len(mappings) == 0:
                 response = dict(errorCode=4, message='Mappings Not Found')
             else:
@@ -52,7 +53,7 @@ class DocumentProcessTransientModel(models.TransientModel):
                 if file_acceptable is None and len(requests) > 0:
                     today_date = datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
                     file_upload_record = dict(token=DocumentProcessTransientModel.random_string_generator(30),
-                                              customer_id=user_id,
+                                              customer_id=user_id, template_type=template_type,
                                               document_name=DocumentProcessTransientModel.random_string_generator(10),
                                               file_location=uploaded_file_path, source=document_source, status='draft',
                                               create_uid=1, create_date=today_date, write_uid=1,
@@ -75,7 +76,7 @@ class DocumentProcessTransientModel(models.TransientModel):
                             product_sku = product_sku[:-len(user_model.sku_postconfig)]
                         _logger.info('customer_sku %r product sku %r', customer_sku, product_sku)
                         product_tmpl = self.env['product.template'].search(
-                            ['|', ('sku_code', '=', product_sku), ('manufacturer_pref', '=', customer_sku)])
+                            ['|', ('sku_code', '=', customer_sku), ('manufacturer_pref', '=', product_sku)])
                         sps_product_id = 0
                         if len(product_tmpl) > 0:
                             product_model = self.env['product.product'].search(
@@ -128,6 +129,7 @@ class DocumentProcessTransientModel(models.TransientModel):
     @staticmethod
     def _get_column_mappings(mapping_field_list, templates_list, file_path):
         column_mappings = []
+        template_type = None
         non_selected_columns = []
         for customer_template in templates_list:
             if customer_template.non_selected_columns:
@@ -148,8 +150,9 @@ class DocumentProcessTransientModel(models.TransientModel):
             compare = lambda x, y: collections.Counter(x) == collections.Counter(y)
             if compare(template_column_list, columns):
                 column_mappings = mapped_columns
+                template_type = customer_template.template_type
                 break
-        return column_mappings, non_selected_columns
+        return column_mappings, non_selected_columns, template_type
 
     @staticmethod
     def _read_xls_book(book, read_data=False):

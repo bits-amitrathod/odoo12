@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api, SUPERUSER_ID
+from odoo import models, fields, api, SUPERUSER_ID,_
 from odoo.addons import decimal_precision as dp
+from odoo.exceptions import UserError, AccessError,ValidationError
 import datetime
 import math
 from random import randint
@@ -72,6 +73,29 @@ class VendorOffer(models.Model):
         ('done', 'Locked'),
         ('cancel', 'Cancelled')
     ], string='Status', readonly=True, index=True, copy=False, default='draft', track_visibility='onchange')
+
+    def action_validate(self):
+        multi = self.env['stock.picking'].search([('purchase_id', '=', self.id)])
+        if len(multi) == 1 and self.picking_count ==1:
+            return multi.button_validate()
+        elif self.picking_count > 1:
+            raise ValidationError(_('Validate is not possible for multiple Shipping please do validate one by one'))
+
+    def action_assign(self):
+        multi = self.env['stock.picking'].search([('purchase_id', '=', self.id)])
+        if len(multi) >= 1:
+            return multi.action_assign()
+
+    def _compute_show_validate(self):
+        multi = self.env['stock.picking'].search([('purchase_id', '=', self.id)])
+        if len(multi)>=1:
+            multi._compute_show_validate()
+
+    @api.multi
+    def do_unreserve(self):
+        multi = self.env['stock.picking'].search([('purchase_id', '=', self.id)])
+        if len(multi) >= 1:
+            return multi.do_unreserve()
 
     def test_00_purchase_order_flow(self):
         pass
@@ -187,6 +211,12 @@ class VendorOfferProduct(models.Model):
     product_note = fields.Text(string="Notes")
     product_retail = fields.Char(string="Total Retail Price")
     product_unit_price = fields.Char(string="Retail Price")
+
+    def action_show_details(self):
+
+        multi = self.env['stock.move'].search([('purchase_line_id', '=', self.id)])
+        if len(multi) >= 1:
+            return multi.action_show_details()
 
     @api.depends('product_qty', 'list_price', 'taxes_id','product_offer_price')
     def _compute_amount(self):

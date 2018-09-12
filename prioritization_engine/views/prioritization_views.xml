@@ -283,10 +283,10 @@
         </record>
 
       <!-- Top menu item -->
-    <menuitem name="Prioritization Engine" id="prioritization_engine.menu_root"/>
+    <menuitem name="Prioritization Engine" id="prioritization_engine.menu_root" web_icon="prioritization_engine,static/description/icon.png"/>
 
       <!-- menu categories -->
-    <menuitem name="Customer" id="prioritization_engine.prioritization_cmenu" parent="prioritization_engine.menu_root"/>
+    <menuitem name="Customer" id="prioritization_engine.prioritization_cmenu"  parent="prioritization_engine.menu_root"/>
 
       <!-- actions -->
     <menuitem name="Customer" id="prioritization_engine.prioritization_cust_menu" parent="prioritization_engine.prioritization_cmenu"
@@ -305,6 +305,10 @@
          <!-- actions -->
     <menuitem name="Import Document" id="prioritization_engine.prioritization_import_menu" parent="prioritization_engine.prioritization_imenu"
               action="action_notification_setting"/>
+
+      <!--<menuitem name="menu_name" id="unique_id" web_icon="module_name,path_of_icon" sequence="1"/>-->
+
+
 
   </data>
 </odoo>
