@@ -20,9 +20,10 @@ class StockMoveExtension(models.Model):
     _inherit = "stock.move"
 
     def _get_lot_name(self,id):
-        lot_id = self.env['stock.move.line'].search([('id', '=', id)])
-        if lot_id:
-         return lot_id.lot_name
+        if isinstance(id, int):
+            lot_id = self.env['stock.move.line'].search([('id', '=', id)])
+            if lot_id:
+             return lot_id.lot_name
         return False
 
     def write(self, vals):
@@ -30,7 +31,6 @@ class StockMoveExtension(models.Model):
         global serialNumberExDate;
         for this in  self:
             lotNumbers = []
-            lotName=""
             product_tmpl=self.env['product.template'].search([('id', '=', int(this.product_id.product_tmpl_id))])
             params = self.env['ir.config_parameter'].sudo()
             group_stock_production_lot = params.get_param('inventory_extension.group_stock_production_lot')
@@ -43,15 +43,14 @@ class StockMoveExtension(models.Model):
                         if ('lot_id' in ml[2] and not ml[2].get('lot_id') ):
                             if (not 'lot_name' in ml[2] and not self._get_lot_name(ml[1])):
                                  serialNumber = True
-                                 lotName = self._get_lot_name(ml[1])
                             elif('lot_name' in ml[2] and not ml[2].get('lot_name')):
                                 serialNumber = True
-                                lotName=self._get_lot_name(ml[1])
                             elif(module_product_expiry and  not 'lot_expired_date' in ml[2] and not self._get_lot_name(ml[1])):
-                                    lotNumbers.append(ml[2].get('lot_name'))
-                                    serialNumberExDate = True
+                                lotNumbers.append(
+                                    ml[2].get('lot_name') if ml[2].get('lot_name') else self._get_lot_name(ml[1]))
+                                serialNumberExDate = True
                             elif(module_product_expiry and 'lot_expired_date' in ml[2] and not ml[2].get('lot_expired_date')):
-                                lotNumbers.append(self._get_lot_name(ml[1]))
+                                lotNumbers.append( ml[2].get('lot_name') if ml[2].get('lot_name') else self._get_lot_name(ml[1]))
                                 serialNumberExDate = True
                             if (module_product_expiry  and not serialNumberExDate and  (not 'lot_expired_date' in ml[2] or not ml[2].get('lot_expired_date'))):
                                 lotNumbers.append( ml[2].get('lot_name') if  ml[2].get('lot_name') else self._get_lot_name(ml[1]) )
@@ -68,7 +67,6 @@ class StockMoveExtension(models.Model):
                         if row>0:
                          msg=msg+","+number
                         else:
-                            _logger.info("lot number in msg  : %r", number)
                             msg = msg + number
                         row=row+1
                     raise UserError(_(msg + " "+ "is required."))
