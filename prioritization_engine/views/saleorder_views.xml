@@ -5,7 +5,14 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
+
                  <button name="action_quotation_send"  position="after">
+                     <button name="action_quotation_send" string="Send by Email" type="object" states="engine" class="btn-primary"/>
+                     <button name="print_quotation" string="Print" type="object" states="engine" class="btn-primary o_sale_print"/>
+                     <button name="action_confirm" id="action_confirm"
+                        string="Confirm Sale" class="btn-primary" type="object"
+                        attrs="{'invisible': [('state', 'not in', ['engine'])]}"/>
+                     <button name="action_cancel" states="engine" type="object" string="Cancel"/>
 
                  <field name="show_validate" invisible="1"/>
                  <!--<field name="show_check_availability" invisible="1"/>
