@@ -8,7 +8,7 @@
     'description': """
        Provide 'Shop by Manufacturer' Feature
     """,
-
+    'author': 'Benchmark It Solutions',
     'sequence': 60,
     'category': 'e-commerce',
     'version': '1.0',
