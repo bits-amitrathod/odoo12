@@ -22,6 +22,7 @@ class SpsCustomerRequest(models.Model):
     status = fields.Char()
     un_mapped_data = fields.Text()
     contact_id = fields.Integer()
+    qty_to_show = fields.Char(compute="_get_qty_to_show")
 
     vendor_pricing = fields.Char()
     quantity = fields.Integer()
@@ -67,7 +68,6 @@ class SpsCustomerRequest(models.Model):
             pr_models = sorted(pr_models, key=itemgetter('product_priority'))
             self.env['prioritization.engine.model'].allocate_product_by_priority(pr_models)
 
-
     def _get_settings_object(self, customer_id, product_id):
         customer_level_setting = self.env['prioritization_engine.prioritization'].search(
             [('customer_id', '=', customer_id),
@@ -90,4 +90,11 @@ class SpsCustomerRequest(models.Model):
                                  str(global_level_setting.id))
                     return False
 
-
+    @api.multi
+    @api.depends('document_id')
+    def _get_qty_to_show(self):
+        for record in self:
+            if record.document_id.template_type == 'Requirement':
+                record.qty_to_show = str(record.required_quantity)
+            else:
+                record.qty_to_show = str(record.quantity)
