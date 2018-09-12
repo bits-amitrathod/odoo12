@@ -8,12 +8,13 @@
     'description': """
          Website Theme and Features
     """,
-
+    'author': 'Benchmark It Solutions',
     'sequence': 57,
     'category': 'website',
     'version': '0.1',
 
-    'depends': ['website_sales','stock','website_product_brand','web_search'],
+    'depends': ['website_sales','stock','website_product_brand','web_search','website_crm'],
+# 'mass_mailing',
 
     'data': [
         'security/ir.model.access.csv',
@@ -30,7 +31,8 @@
         'views/product-types.xml',
         'views/login.xml',
         'views/search.xml',
-        'views/quickView.xml'
+        'views/quickView.xml',
+        'views/in_stock_notification.xml'
     ],
 
     # 'auto_install': True,

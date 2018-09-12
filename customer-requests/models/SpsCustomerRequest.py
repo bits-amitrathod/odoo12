@@ -39,9 +39,9 @@ class SpsCustomerRequest(models.Model):
 
     def process_requests(self, sps_customer_requests):
         pr_models = []
-        _logger.info('len of customer request %r ', str(len(sps_customer_requests)))
+        _logger.debug('len of customer request %r ', str(len(sps_customer_requests)))
         for sps_customer_request in sps_customer_requests:
-            _logger.info('customer request %r, %r', sps_customer_request['customer_id'].id, sps_customer_request['product_id'].id)
+            _logger.debug('customer request %r, %r', sps_customer_request['customer_id'].id, sps_customer_request['product_id'].id)
             if sps_customer_request['product_id'].id and not sps_customer_request['product_id'].id is False:
                 _setting_object = self._get_settings_object(sps_customer_request['customer_id'].id,
                                                         sps_customer_request['product_id'].id)
@@ -58,11 +58,11 @@ class SpsCustomerRequest(models.Model):
                                     partial_order=_setting_object.partial_ordering,
                                     expiration_tolerance=_setting_object.expiration_tolerance)
 
-                    _logger.info('customer request1 %r, %r, %r', pr_model['customer_request_id'], pr_model['customer_id'],
+                    _logger.debug('customer request1 %r, %r, %r', pr_model['customer_request_id'], pr_model['customer_id'],
                                  pr_model['product_id'])
                     pr_models.append(pr_model)
 
-        _logger.info('Length **** %r', str(len(pr_models)))
+        #_logger.debug('Length **** %r', str(len(pr_models)))
         if len(pr_models) > 0:
             # Sort list by product priority
             pr_models = sorted(pr_models, key=itemgetter('product_priority'))
@@ -76,7 +76,7 @@ class SpsCustomerRequest(models.Model):
             if customer_level_setting.customer_id.prioritization:
                 return customer_level_setting
             else:
-                _logger.info('Customer prioritization setting is False. Customer id is :%r',
+                _logger.debug('Customer prioritization setting is False. Customer id is :%r',
                              str(customer_level_setting.customer_id.id))
                 return False
         else:
@@ -86,7 +86,7 @@ class SpsCustomerRequest(models.Model):
                 if global_level_setting.prioritization:
                     return global_level_setting
                 else:
-                    _logger.info('Customer prioritization setting is False. Customer id is :%r',
+                    _logger.debug('Customer prioritization setting is False. Customer id is :%r',
                                  str(global_level_setting.id))
                     return False
 

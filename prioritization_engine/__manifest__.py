@@ -24,12 +24,13 @@
 
 
 
-    'depends': ['base','product','product_brand','sale_management','stock','web_one2many_selectable'],
+    'depends': ['base','product','product_brand','sale_management','stock','web_one2many_selectable','account'],
 
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
         'views/saleorder_views.xml',
+        'views/report_invoice.xml',
         'views/prioritization_views.xml',
         'views/web_assets.xml',
         'views/templates.xml',

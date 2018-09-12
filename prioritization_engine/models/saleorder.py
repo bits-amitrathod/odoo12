@@ -141,3 +141,10 @@ class AccountInvoice(models.Model):
         shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
         preferred_method = fields.Selection(string='Preferred Invoice Delivery Method',
                                             related='partner_id.preferred_method', readonly=True)
+        name = fields.Char(string='Purchase Order#', index=True,
+                           readonly=True, states={'draft': [('readonly', False)]}, copy=False,
+                           help='The name that will be used on account move lines')
+
+        origin = fields.Char(string='Sale Order#',
+                             help="Reference of the document that produced this invoice.",
+                             readonly=True, states={'draft': [('readonly', False)]})
