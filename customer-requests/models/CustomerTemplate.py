@@ -21,7 +21,7 @@ import os
 import errno
 
 _logger = logging.getLogger(__name__)
-ATTACHMENT_DIR = "/home/odoo/templates/"
+ATTACHMENT_DIR = "/home/odoo/templates/customer/"
 
 
 class CustomerTemplate(models.Model):
@@ -42,27 +42,13 @@ class CustomerTemplate(models.Model):
     COL_SELECTION = []
 
 
-    @api.model
-    @api.depends('template_file')
-    def _get_selections(self):
-        _logger.info(' selection %r', self.COL_SELECTION)
-        if not hasattr(self, 'COL_SELECTION'):
-            self.COL_SELECTION = []
-        return self.COL_SELECTION
-
-
-    @api.model
-    @api.depends('template_file')
-    def _get_selections(self):
-        if not hasattr(self, 'COL_SELECTION'):
-            self.COL_SELECTION = []
-        return self.COL_SELECTION
-
     @staticmethod
     def _read_xls_book(book):
         sheet = book.sheet_by_index(0)
         values = []
+        _logger.info('sheet.nrows %r', str(sheet.nrows))
         for row in pycompat.imap(sheet.row, range(sheet.nrows)):
+            _logger.info("Row........... %r", row)
             for cell in row:
                 if cell.ctype is xlrd.XL_CELL_NUMBER:
                     is_float = cell.value % 1 != 0.0
@@ -105,10 +91,6 @@ class CustomerTemplate(models.Model):
             _logger.info(str(ue))
         return column_row
 
-    def attr_list(self):
-        b = [(k, v) for k, v in self.__dict__.items()]
-        return b
-
     @api.model
     def create(self, vals):
         template_type = vals['template_type']
@@ -116,7 +98,7 @@ class CustomerTemplate(models.Model):
         if template_type in template_type_list:
             try:
                 file_name = vals['file_name']
-                file_extension = file_name[file_name.index('.') + 1:]
+                file_extension = file_name[file_name.rindex('.') + 1:]
                 directory_path = ATTACHMENT_DIR + str(vals['customer_id']) + "/" + template_type + "/"
                 if not os.path.exists(os.path.dirname(directory_path)):
                     try:
@@ -134,7 +116,8 @@ class CustomerTemplate(models.Model):
                     self.COL_SELECTION = CustomerTemplate._read_xls_book(book)
                 elif file_extension == 'csv':
                     self.COL_SELECTION = CustomerTemplate._parse_csv(myfile_path)
-                vals['file_name'] = myfile_path;
+                vals['file_name'] = myfile_path
+                _logger.info('self.COL_SELECTION  %r', file_extension )
 
                 template_model = super(CustomerTemplate, self).create(vals)
                 selected_elements, un_selected_columns = self._get_selected_un_selected_columns(template_model)
@@ -153,39 +136,6 @@ class CustomerTemplate(models.Model):
                 'message': 'Invalid Template Type',
                 'record': False,
             }]
-
-    # @api.multi
-    # def write(self, vals):
-    #     current_model = False
-    #
-    #     for record in self:
-    #         current_model = record
-    #         break
-    #
-    #     if current_model:
-    #         old_items = CustomerTemplate._get_list_for_dict(current_model, vals)
-    #
-    #     res = super(CustomerTemplate, self).write(vals)
-    #
-    #     new_items = CustomerTemplate._get_list_for_dict(current_model, vals)
-    #
-    #     _logger.info('%r , %r', old_items, new_items)
-    #
-    #     if res and current_model:
-    #          new_items = CustomerTemplate._get_list_for_dict(current_model, vals)
-    #          if len(old_items) > 0 and len(new_items) > 0 and current_model.non_selected_columns:
-    #              un_selected_columns = current_model.non_selected_columns.split(',')
-    #              for new_item in new_items:
-    #                  try:
-    #                      un_selected_columns.remove(new_item)
-    #                  except:
-    #                      _logger.info('')
-    #              if not un_selected_columns:
-    #                  un_selected_columns = []
-    #              for old_item in old_items:
-    #                  un_selected_columns.append(old_item)
-    #              current_model.write(dict(non_selected_columns=','.join(un_selected_columns)))
-    #     return res
 
     def _get_selected_un_selected_columns(self, template_model):
         selected_elements = []

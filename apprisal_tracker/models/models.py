@@ -24,6 +24,7 @@ class apprisal_tracker_vendor(models.Model):
     tier1_retail = fields.Char(compute="_value_tier1_retail", store=False)
     tier2_retail = fields.Char(compute="_value_tier2_retail", store=False)
     broker_margin = fields.Char(compute="_value_broker_margin", store=False)
+    color = fields.Char(compute="_value_color", store=False)
 
     @api.onchange('tier1_retail')
     def _value_tier1_retail(self):
@@ -36,16 +37,24 @@ class apprisal_tracker_vendor(models.Model):
         for order in self:
             order.tier2_retail="200"
 
+    @api.onchange('color')
+    def _value_color(self):
+        return 'red'
+
     @api.onchange('broker_margin')
     def _value_broker_margin(self):
         for order in self:
-            if(float(((order.offer_amount)/float(order.retail_amt))-1) < 0.4):
-                order.broker_margin='Margin < 40%'
-            if(order.partner_id.is_broker):
-                if(float(order.offer_amount/order.retail_amt) < 0.52):
-                    order.broker_margin = 'T1 BROKER'
-                elif(float(order.offer_amount/order.retail_amt) > 0.52):
-                    order.broker_margin = 'T2 BROKER'
+            if(order.retail_amt!=0):
+                if(abs(float(((order.offer_amount)/float(order.retail_amt))-1)) < 0.4):
+                    order.broker_margin='Margin < 40%'
+                    order.color="red"
+                elif(order.partner_id.is_broker):
+                    if(abs(float(order.offer_amount/order.retail_amt)) < 0.52):
+                        order.broker_margin = 'T1 BROKER'
+                        order.color = "blue"
+                    elif(abs(float(order.offer_amount/order.retail_amt)) > 0.52):
+                        order.broker_margin = 'T2 BROKER'
+                        order.color = "yellow"
 
 
 
