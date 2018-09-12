@@ -26,12 +26,12 @@ class AvailableProductDict(models.TransientModel):
                     dict = {production_lot.product_id.id: [available_product]}
                     self.available_production_lot_dict_to_be_returned.update(dict)
 
-                    # sort list by latest expiry date(use date)
+        # sort list by latest expiry date(use date)
         #available_production_lot_list_to_be_returned = sorted(self.available_production_lot_list_to_be_returned, key=itemgetter('use_date'))
         return self.available_production_lot_dict_to_be_returned
 
     def update_production_lot_dict(self):
-        _logger.info('In update db() %r', self.available_production_lot_dict_to_be_returned)
+        _logger.debug('In update db() %r', self.available_production_lot_dict_to_be_returned)
 
         for product_id_key in self.available_production_lot_dict_to_be_returned.keys():
             for available_production_lot in self.available_production_lot_dict_to_be_returned.get(product_id_key, {}):
