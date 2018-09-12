@@ -33,6 +33,28 @@
             </field>
         </record>
 
+        <record id="view_form_requests_normal" model="ir.ui.view">
+            <field name="name">Customer Request</field>
+            <field name="model">sps.customer.requests</field>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+                <form create="false" edit="false">
+                    <group>
+                        <field name="product_id"/>
+                        <field name="customer_id"/>
+                        <field name="status"/>
+                    </group>
+                    <group>
+                        <field name="customer_sku"/>
+                        <field name="qty_to_show" string="Quantity"/>
+                    </group>
+                    <group>
+                        <field name="un_mapped_data" />
+                    </group>
+                </form>
+            </field>
+        </record>
+
 
         <record id="view_form_documents_normal" model="ir.ui.view">
             <!--<field name="sequence" eval="1"/>-->
