@@ -34,6 +34,7 @@
         'views/prioritization_views.xml',
         'views/web_assets.xml',
         'views/templates.xml',
+        'views/prioritization_schedular_views.xml',
     ],
 
     # only loaded in demonstration mode
