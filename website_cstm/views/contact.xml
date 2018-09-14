@@ -7,7 +7,7 @@
 
     <template id="contactus_form" name="Contact Form" inherit_id="website.contactus" customize_show="True">
         <xpath expr="//div[@id='wrap']" position="replace">
-            <t t-call="website.layout">
+
                 <div id="wrap">
                     <div class="oe_structure"/>
                     <section class="about-us-section mb0">
@@ -177,7 +177,7 @@
                     </section>
                     <div class="oe_structure"/>
                 </div>
-            </t>
+
         </xpath>
     </template>
 </odoo>

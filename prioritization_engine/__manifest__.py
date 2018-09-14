@@ -20,10 +20,6 @@
 
     # any module necessary for this one to work correctly
 
-
-
-
-
     'depends': ['base','product','product_brand','sale_management','stock','web_one2many_selectable','account'],
 
     # always loaded
