@@ -49,7 +49,7 @@
                         <field name="qty_to_show" string="Quantity"/>
                     </group>
                     <group>
-                        <field name="un_mapped_data" />
+                        <field name="un_mapped_data"/>
                     </group>
                 </form>
             </field>
@@ -67,7 +67,7 @@
                         <field name="customer_id"/>
                         <field name="source"/>
                         <field name="status"/>
-                        <field name="template_type" string="Document Type" />
+                        <field name="template_type" string="Document Type"/>
                     </group>
                     <group>
                         <field name="request_ids"/>
@@ -100,7 +100,7 @@
             </field>
         </record>
 
-         <record id="view_tree_templates_normal" model="ir.ui.view">
+        <record id="view_tree_templates_normal" model="ir.ui.view">
             <field name="sequence" eval="1"/>
             <field name="name">Imported Templates normal tree</field>
             <field name="model">sps.customer.template</field>
@@ -109,8 +109,8 @@
                 <tree create="false" edit="false">
                     <field name="create_date"/>
                     <field name="file_name"/>
-                    <field name="template_status" />
-                    <field name="template_type" />
+                    <field name="template_status"/>
+                    <field name="template_type"/>
                     <field name="mf_customer_sku"/>
                     <field name="mf_quantity"/>
                     <field name="mf_uom"/>
@@ -125,7 +125,8 @@
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet/notebook/page[@name='internal_notes']" position="after">
-                    <page name="importdocument" string="Import Document" attrs="{'invisible':[('customer','=',False), ('parent_id','!=',None), ('prioritization', '=', False)]}">
+                    <page name="importdocument" string="Import Document"
+                          attrs="{'invisible':['|', '|', '|', ('customer', '==', False), ('is_parent', '==', False),  ('prioritization', '==', False)]}">
                         <field name="document_ids"/>
                     </page>
                 </xpath>
@@ -138,7 +139,8 @@
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet/notebook/page[@name='internal_notes']" position="after">
-                    <page name="apicredentials" string="API Credentials" attrs="{'invisible':[('customer','=',False), ('parent_id','!=',None), ('prioritization', '=', False)]}">
+                    <page name="apicredentials" string="API Credentials"
+                          attrs="{'invisible':['|', '|', '|', ('customer', '==', False), ('is_parent', '==', False), ('prioritization', '==', False)]}">
                         <group>
                             <field name="api_username" string="Username"/>
                             <field name="api_secret" string="Password" password="True"/>
@@ -154,7 +156,8 @@
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet/notebook/page[@name='internal_notes']" position="after">
-                    <page name="importedtemplate" string="Imported Templates" attrs="{'invisible':[('customer','=',False), ('parent_id','!=',None), ('prioritization', '=', False)]}">
+                    <page name="importedtemplate" string="Imported Templates"
+                          attrs="{'invisible':['|',('customer', '==', False), '|', ('is_parent', '==', False), '|', ('prioritization', '==', False)]}">
                         <field name="template_ids"/>
                     </page>
                 </xpath>
@@ -163,7 +166,8 @@
 
         <template id="assets_backend" name="base_import assets" inherit_id="web.assets_backend">
             <xpath expr="." position="inside">
-                <script type="text/javascript" src="/base_import/static/lib/javascript-state-machine/state-machine.js"></script>
+                <script type="text/javascript"
+                        src="/base_import/static/lib/javascript-state-machine/state-machine.js"></script>
                 <script type="text/javascript" src="/customer-requests/static/src/js/template_import.js"></script>
             </xpath>
         </template>
@@ -172,7 +176,9 @@
             <field name="name">Customer Import Template</field>
             <field name="type">ir.actions.client</field>
             <field name="tag">importtemplate</field>
-            <field name="params">[{'model': 'sps.customer.template', 'user_type': 'customer', 'request_model': 'sps.customer.requests'}]</field>
+            <field name="params">[{'model': 'sps.customer.template', 'user_type': 'customer', 'request_model':
+                'sps.customer.requests'}]
+            </field>
         </record>
 
 
@@ -183,11 +189,14 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <menuitem name="Import" id="prioritization_engine.prioritization_imenu" parent="prioritization_engine.menu_root"/>
+        <menuitem name="Import" id="prioritization_engine.prioritization_imenu"
+                  parent="prioritization_engine.menu_root"/>
 
-        <menuitem name="Documents" id="prioritization_engine.prioritization_documents_imenu" parent="prioritization_engine.menu_root" action="customer_documents_form_action"/>
+        <menuitem name="Documents" id="prioritization_engine.prioritization_documents_imenu"
+                  parent="prioritization_engine.menu_root" action="customer_documents_form_action"/>
 
-        <menuitem name="Customer Template" id="prioritization_engine.prioritization_customer_template_menu" parent="prioritization_engine.prioritization_imenu"
+        <menuitem name="Customer Template" id="prioritization_engine.prioritization_customer_template_menu"
+                  parent="prioritization_engine.prioritization_imenu"
                   action="customer-template-client-action"/>
 
     </data>

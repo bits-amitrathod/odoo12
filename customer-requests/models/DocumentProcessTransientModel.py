@@ -31,6 +31,15 @@ class DocumentProcessTransientModel(models.TransientModel):
     _name = 'sps.document.process'
 
     def process_document(self, user_model, uploaded_file_path, document_source='api'):
+        if not user_model.prioritization:
+            return dict(errorCode=6, message='Prioritization is Not Enabled')
+
+        if not user_model.customer:
+            return dict(errorCode=7, message='Not a Customer')
+
+        if user_model.parent_id in None:
+            return dict(errorCode=8, message='Child Customer not allowed to upload request')
+
         user_id = user_model.id
         mapping_field_list = list(self.env['sps.customer.template'].fields_get().keys())
         mapping_field_list = [mapping_field for mapping_field in mapping_field_list if

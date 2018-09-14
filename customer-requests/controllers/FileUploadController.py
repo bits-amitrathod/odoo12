@@ -54,7 +54,7 @@ class FileUploadController(Controller):
                 uploaded_file_path = str(directory_path + file_name)
                 file_storage.save(uploaded_file_path)
                 response = request.env['sps.document.process'].sudo().process_document(user_api_settings,
-                                                                                             uploaded_file_path)
+                                                                                       uploaded_file_path)
             else:
                 response = dict(errorCode=3, message='UnAuthorized Access')
 
