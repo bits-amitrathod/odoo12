@@ -43,22 +43,18 @@ class FileUploadController(Controller):
                 [('email', '=', username), ('api_secret', '=', password)])
             if len(user_api_settings) == 1:
                 user_id = user_api_settings[0].id
-                is_prioritization_on = user_api_settings[0].prioritization
-                if is_prioritization_on:
-                    directory_path = UPLOAD_DIR + str(datetime.now().strftime("%d%m%Y")) + "/" + str(user_id) + "/"
-                    file_name = FileUploadController.random_string_generator(10) + request.params['file'].filename
-                    if not os.path.exists(os.path.dirname(directory_path)):
-                        try:
-                            os.makedirs(os.path.dirname(directory_path))
-                        except OSError as exc:
-                            if exc.errno != errno.EEXIST:
-                                raise
-                    uploaded_file_path = str(directory_path + file_name)
-                    file_storage.save(uploaded_file_path)
-                    response = request.env['sps.document.process'].sudo().process_document(user_api_settings,
-                                                                                           uploaded_file_path)
-                else:
-                    response = dict(errorCode=4, message='UnAuthorized Access')
+                directory_path = UPLOAD_DIR + str(datetime.now().strftime("%d%m%Y")) + "/" + str(user_id) + "/"
+                file_name = FileUploadController.random_string_generator(10) + request.params['file'].filename
+                if not os.path.exists(os.path.dirname(directory_path)):
+                    try:
+                        os.makedirs(os.path.dirname(directory_path))
+                    except OSError as exc:
+                        if exc.errno != errno.EEXIST:
+                            raise
+                uploaded_file_path = str(directory_path + file_name)
+                file_storage.save(uploaded_file_path)
+                response = request.env['sps.document.process'].sudo().process_document(user_api_settings,
+                                                                                       uploaded_file_path)
             else:
                 response = dict(errorCode=3, message='UnAuthorized Access')
 
