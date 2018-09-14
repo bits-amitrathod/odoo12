@@ -35,6 +35,7 @@
         'views/web_assets.xml',
         'views/templates.xml',
         'views/prioritization_schedular_views.xml',
+        'data/sales_team_data_prioritization.xml',
     ],
 
     # only loaded in demonstration mode
