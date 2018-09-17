@@ -10,7 +10,6 @@ _logger = logging.getLogger(__name__)
 
 
 class SpsCustomerRequest(models.Model):
-
     _name = 'sps.customer.requests'
 
     customer_id = fields.Many2one('res.partner', string='Customer', required=True)
@@ -30,6 +29,7 @@ class SpsCustomerRequest(models.Model):
     frequency_of_refill = fields.Integer()
     threshold = fields.Integer()
     uom = fields.Char()
+    customer_request_logs = fields.Char(string='Customer Request Logs')
 
     # Get Customer Requests
     def get_customer_requests(self):
@@ -45,8 +45,11 @@ class SpsCustomerRequest(models.Model):
         for sps_customer_request in sps_customer_requests:
             _logger.debug('customer request %r, %r', sps_customer_request['customer_id'].id, sps_customer_request['product_id'].id)
             if sps_customer_request['product_id'].id and not sps_customer_request['product_id'].id is False:
-                _setting_object = self._get_settings_object(sps_customer_request['customer_id'].id,
-                                                        sps_customer_request['product_id'].id)
+                _setting_object = self._get_settings_object(sps_customer_request)
+                if _setting_object:
+                    sps_customer_request.write({'customer_request_logs': 'Customer prioritization setting is True'})
+                else:
+                    sps_customer_request.write({'customer_request_logs': 'Customer prioritization setting is False'})
                 if _setting_object:
                     pr_model = dict(customer_request_id=sps_customer_request.id,
                                     customer_id=sps_customer_request['customer_id'].id,
@@ -58,7 +61,8 @@ class SpsCustomerRequest(models.Model):
                                     cooling_period=_setting_object.cooling_period,
                                     length_of_hold=_setting_object.length_of_hold,
                                     partial_order=_setting_object.partial_ordering,
-                                    expiration_tolerance=_setting_object.expiration_tolerance)
+                                    expiration_tolerance=_setting_object.expiration_tolerance,
+                                    customer_request_logs = sps_customer_request.customer_request_logs)
 
                     _logger.debug('customer request1 %r, %r, %r', pr_model['customer_request_id'], pr_model['customer_id'],
                                  pr_model['product_id'])
@@ -68,6 +72,7 @@ class SpsCustomerRequest(models.Model):
         if len(pr_models) > 0:
             # Sort list by product priority
             pr_models = sorted(pr_models, key=itemgetter('product_priority'))
+
             self.env['prioritization.engine.model'].allocate_product_by_priority(pr_models)
 
     def _get_settings_object(self, sps_customer_request):

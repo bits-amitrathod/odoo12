@@ -51,6 +51,9 @@
                     <group>
                         <field name="un_mapped_data"/>
                     </group>
+                    <group>
+                        <field name="customer_request_logs"/>
+                    </group>
                 </form>
             </field>
         </record>

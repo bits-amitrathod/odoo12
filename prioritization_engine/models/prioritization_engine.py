@@ -21,25 +21,33 @@ class PrioritizationEngine(models.TransientModel):
             for prioritization_engine_request in prioritization_engine_request_list:
                 # auto allocate True/False
                 if prioritization_engine_request['auto_allocate']:
+                    prioritization_engine_request['customer_request_logs'] += 'Auto allocate is true....'
                     _logger.info('Auto allocate is true....')
                     filter_available_product_lot_dict = self.filter_available_product_lot_dict(available_product_lot_dict, prioritization_engine_request)
                     if len(filter_available_product_lot_dict) >= 1:
                         # check cooling period- method return True/False
                         if self.calculate_cooling_priod_in_days(prioritization_engine_request):
+                            prioritization_engine_request['customer_request_logs'] += 'successed cooling period.....'
                             _logger.info('successed cooling period')
                             # check length of holds- method return True/False
                             if self.calculate_length_of_holds_in_hours(prioritization_engine_request):
+                                prioritization_engine_request['customer_request_logs'] += 'successed length of hold....'
                                 _logger.info('successed length of hold')
                                 # allocate product
                                 self.allocate_product(prioritization_engine_request, filter_available_product_lot_dict)
                             else:
+                                prioritization_engine_request['customer_request_logs'] += 'length of hold false....'
                                 _logger.info('length of hold false....')
                         else:
+                            prioritization_engine_request['customer_request_logs'] += 'Cooling period false.....'
                             _logger.info('Cooling period false.....')
                     else:
+                        prioritization_engine_request['customer_request_logs'] += 'Product Lot not available....'
                         _logger.info('Product Lot not available....')
                 else:
+                    prioritization_engine_request['customer_request_logs'] += 'Auto allocate is false....'
                     _logger.info('Auto allocate is false....')
+                self.update_customer_request_logs(prioritization_engine_request)
             if len(self.allocated_product_dict) > 0:
                 self.env['available.product.dict'].update_production_lot_dict()
                 self.generate_sale_order()
@@ -180,6 +188,10 @@ class PrioritizationEngine(models.TransientModel):
         self.env['sps.customer.requests'].search(
             [('id', '=', prioritization_engine_request['customer_request_id'])]).write(dict(status=status))
 
+    def update_customer_request_logs(self, prioritization_engine_request):
+        self.env['sps.customer.requests'].search(
+            [('id', '=', prioritization_engine_request['customer_request_id'])]).write(dict(customer_request_logs=prioritization_engine_request['customer_request_logs']))
+
     # get product last purchased date, parameter product id
     def get_product_last_purchased_date(self, prioritization_engine_request):
         _logger.debug("In get_product_last_purchased_date()")
@@ -240,9 +252,11 @@ class PrioritizationEngine(models.TransientModel):
     # display allocated product list
     def generate_sale_order(self):
         _logger.debug('In generate sale order %r', self.allocated_product_dict)
+        #get team id
+        crm_team = self.env['crm.team'].search([('team_type', '=', 'engine')])
 
         for partner_id_key in self.allocated_product_dict.keys():
-            sale_order_dict = {'partner_id': partner_id_key, 'state': 'engine', 'team_id' : 4}
+            sale_order_dict = {'partner_id': partner_id_key, 'state': 'engine', 'team_id' : crm_team['id']}
 
             sale_order = self.env['sale.order'].create(dict(sale_order_dict))
             _logger.debug('sale order : %r ',sale_order['id'])
