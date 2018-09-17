@@ -18,7 +18,7 @@ _logger = logging.getLogger(__name__)
 
 class StockMoveExtension(models.Model):
     _inherit = "stock.move"
-
+    
 
 
     def write(self, vals):
