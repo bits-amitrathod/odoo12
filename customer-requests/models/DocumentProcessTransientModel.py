@@ -37,7 +37,9 @@ class DocumentProcessTransientModel(models.TransientModel):
         if not user_model.customer:
             return dict(errorCode=7, message='Not a Customer')
 
-        if user_model.parent_id in None:
+        _logger.info('user_model.parent_id %r', user_model.parent_id.id)
+
+        if user_model.parent_id.id:
             return dict(errorCode=8, message='Child Customer not allowed to upload request')
 
         user_id = user_model.id
@@ -46,93 +48,95 @@ class DocumentProcessTransientModel(models.TransientModel):
                               mapping_field.startswith('mf_')]
         templates_list = self.env['sps.customer.template'].search(
             [['customer_id', '=', user_id], ['template_status', '=', 'Active']])
-        if len(templates_list) > 0:
-            mappings, non_mapped_columns, template_type = DocumentProcessTransientModel._get_column_mappings(
-                mapping_field_list,
-                templates_list,
-                uploaded_file_path)
-            if len(mappings) == 0:
-                response = dict(errorCode=4, message='Mappings Not Found')
-            else:
-                requests, file_acceptable = DocumentProcessTransientModel._parse_csv(uploaded_file_path, mappings,
-                                                                                     non_mapped_columns)
-                if not file_acceptable is None:
-                    requests, file_acceptable = DocumentProcessTransientModel._parse_excel(uploaded_file_path, mappings,
-                                                                                           non_mapped_columns)
-                if file_acceptable is None and len(requests) > 0:
-                    today_date = datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
-                    file_upload_record = dict(token=DocumentProcessTransientModel.random_string_generator(30),
-                                              customer_id=user_id, template_type=template_type,
-                                              document_name=DocumentProcessTransientModel.random_string_generator(10),
-                                              file_location=uploaded_file_path, source=document_source, status='draft',
-                                              create_uid=1, create_date=today_date, write_uid=1,
-                                              write_date=today_date)
-                    file_uploaded_record = self.env['sps.cust.uploaded.documents'].create(
-                        file_upload_record)
-                    document_id = file_uploaded_record.id
-                    ref = str(document_id) + "_" + file_uploaded_record.token
-                    response = dict(errorCode=0, message='File Uploaded Successfully', ref=ref)
-                    high_priority_requests = []
-                    for req in requests:
-                        high_priority_product = False
-                        customer_sku = req['customer_sku']
-                        product_sku = customer_sku
-                        if user_model.sku_preconfig and product_sku.startswith(
-                                user_model.sku_preconfig):
-                            product_sku = product_sku[len(user_model.sku_preconfig):]
-                        if user_model.sku_postconfig and product_sku.endswith(
-                                user_model.sku_postconfig):
-                            product_sku = product_sku[:-len(user_model.sku_postconfig)]
-                        _logger.info('customer_sku %r product sku %r', customer_sku, product_sku)
-                        product_tmpl = self.env['product.template'].search(
-                            ['|', ('sku_code', '=', customer_sku), ('manufacturer_pref', '=', product_sku)])
-                        sps_product_id = 0
-                        if len(product_tmpl) > 0:
-                            product_model = self.env['product.product'].search(
-                                [['product_tmpl_id', '=', product_tmpl.id]])
-                            if len(product_model) > 0:
-                                sps_product_id = product_model[0].id
-                        if sps_product_id:
-                            sps_product_priotization = self.env[
-                                'prioritization_engine.prioritization'].search(
-                                [['customer_id', '=', user_id], ['product_id', '=', sps_product_id]])
-                            if len(sps_product_priotization) >= 1:
-                                sps_product = sps_product_priotization[0]
-                                sps_product_id = sps_product.product_id.id
-                                sps_customer_product_priority = sps_product.priority
-                                _logger.info('sps_customer_product_priority %r user_model.priority %r',
-                                             str(sps_customer_product_priority), str(user_model.priority))
-                                if not sps_customer_product_priority:
-                                    high_priority_product = True
-                                    req.update(dict(product_id=sps_product_id, status='Inprocess'))
-                                else:
-                                    req.update(dict(product_id=sps_product_id, status='New'))
-                            else:
-                                if not user_model.priority:
-                                    high_priority_product = True
-                                    req.update(dict(product_id=sps_product_id, status='Inprocess'))
-                                else:
-                                    req.update(dict(product_id=None, status='Voided'))
+
+        if len(templates_list) <= 0:
+            return dict(errorCode=5, message='Template Not Found')
+
+        mappings, non_mapped_columns, template_type = DocumentProcessTransientModel._get_column_mappings(
+            mapping_field_list,
+            templates_list,
+            uploaded_file_path)
+
+        if len(mappings) == 0:
+            return dict(errorCode=4, message='Mappings Not Found')
+
+        requests, file_acceptable = DocumentProcessTransientModel._parse_csv(uploaded_file_path, mappings,
+                                                                             non_mapped_columns)
+        if not file_acceptable is None:
+            requests, file_acceptable = DocumentProcessTransientModel._parse_excel(uploaded_file_path, mappings,
+                                                                                   non_mapped_columns)
+        if file_acceptable is None and len(requests) > 0:
+            today_date = datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+            file_upload_record = dict(token=DocumentProcessTransientModel.random_string_generator(30),
+                                      customer_id=user_id, template_type=template_type,
+                                      document_name=DocumentProcessTransientModel.random_string_generator(10),
+                                      file_location=uploaded_file_path, source=document_source, status='draft',
+                                      create_uid=1, create_date=today_date, write_uid=1,
+                                      write_date=today_date)
+            file_uploaded_record = self.env['sps.cust.uploaded.documents'].create(
+                file_upload_record)
+            document_id = file_uploaded_record.id
+            ref = str(document_id) + "_" + file_uploaded_record.token
+            response = dict(errorCode=0, message='File Uploaded Successfully', ref=ref)
+            high_priority_requests = []
+            for req in requests:
+                high_priority_product = False
+                customer_sku = req['customer_sku']
+                product_sku = customer_sku
+                if user_model.sku_preconfig and product_sku.startswith(
+                        user_model.sku_preconfig):
+                    product_sku = product_sku[len(user_model.sku_preconfig):]
+                if user_model.sku_postconfig and product_sku.endswith(
+                        user_model.sku_postconfig):
+                    product_sku = product_sku[:-len(user_model.sku_postconfig)]
+                _logger.info('customer_sku %r product sku %r', customer_sku, product_sku)
+                product_tmpl = self.env['product.template'].search(
+                    ['|', ('sku_code', '=', customer_sku), ('manufacturer_pref', '=', product_sku)])
+                sps_product_id = 0
+                if len(product_tmpl) > 0:
+                    product_model = self.env['product.product'].search(
+                        [['product_tmpl_id', '=', product_tmpl.id]])
+                    if len(product_model) > 0:
+                        sps_product_id = product_model[0].id
+                if sps_product_id:
+                    sps_product_priotization = self.env[
+                        'prioritization_engine.prioritization'].search(
+                        [['customer_id', '=', user_id], ['product_id', '=', sps_product_id]])
+                    if len(sps_product_priotization) >= 1:
+                        sps_product = sps_product_priotization[0]
+                        sps_product_id = sps_product.product_id.id
+                        sps_customer_product_priority = sps_product.priority
+                        _logger.info('sps_customer_product_priority %r user_model.priority %r',
+                                     str(sps_customer_product_priority), str(user_model.priority))
+                        if not sps_customer_product_priority:
+                            high_priority_product = True
+                            req.update(dict(product_id=sps_product_id, status='Inprocess'))
                         else:
-                            req.update(dict(product_id=None, status='Voided'))
-                        sps_customer_request = dict(document_id=document_id, customer_id=user_id, create_uid=1,
-                                                        create_date=today_date, write_uid=1, write_date=today_date)
-                        for key in req.keys():
-                            sps_customer_request.update({key: req[key]})
-                        saved_sps_customer_request = self.env['sps.customer.requests'].create(
-                            sps_customer_request)
-                        if high_priority_product:
-                            high_priority_requests.append(saved_sps_customer_request)
-                    try:
-                        if len(high_priority_requests) > 0:
-                            self.env['sps.customer.requests'].process_requests(high_priority_requests)
-                    except Exception as exc:
-                        _logger.info("Error procesing high priority requests %r", exc)
+                            req.update(dict(product_id=sps_product_id, status='New'))
+                    else:
+                        if not user_model.priority:
+                            high_priority_product = True
+                            req.update(dict(product_id=sps_product_id, status='Inprocess'))
+                        else:
+                            req.update(dict(product_id=sps_product_id, status='New'))
                 else:
-                    _logger.info('file is not acceptable')
-                    response = dict(errorCode=2, message='Invalid File extension')
+                    req.update(dict(product_id=None, status='Voided'))
+                sps_customer_request = dict(document_id=document_id, customer_id=user_id, create_uid=1,
+                                            create_date=today_date, write_uid=1, write_date=today_date)
+                for key in req.keys():
+                    sps_customer_request.update({key: req[key]})
+                saved_sps_customer_request = self.env['sps.customer.requests'].create(
+                    sps_customer_request)
+                if high_priority_product:
+                    high_priority_requests.append(saved_sps_customer_request)
+            try:
+                if len(high_priority_requests) > 0:
+                    self.env['sps.customer.requests'].process_requests(high_priority_requests)
+            except Exception as exc:
+                _logger.info("Error procesing high priority requests %r", exc)
         else:
-            response = dict(errorCode=5, message='Template Not Found')
+            _logger.info('file is not acceptable')
+            response = dict(errorCode=2, message='Invalid File extension')
         return response
 
     @staticmethod
@@ -253,7 +257,7 @@ class DocumentProcessTransientModel(models.TransientModel):
             excel_data_rows_with_columns = DocumentProcessTransientModel._read_xls_book(book, read_data=True)
             if len(excel_data_rows_with_columns) > 1:
                 excel_data_rows = [excel_data_rows_with_columns[idx] for idx in
-                                   range(1, len(excel_data_rows_with_columns) - 1)]
+                                   range(1, len(excel_data_rows_with_columns))]
                 excel_columns = excel_data_rows_with_columns[0]
                 for excel_data_row in excel_data_rows:
                     un_mapped_data = {}

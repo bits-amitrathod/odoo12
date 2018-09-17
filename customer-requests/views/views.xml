@@ -126,8 +126,9 @@
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet/notebook/page[@name='internal_notes']" position="after">
                     <page name="importdocument" string="Import Document"
-                          attrs="{'invisible':['|', '|', '|', ('customer', '==', False), ('is_parent', '==', False),  ('prioritization', '==', False)]}">
+                          attrs="{'invisible':['|', '|', '|', ('customer', '==', False), ('is_parent_assigned', '==', False),  ('prioritization', '==', False)]}">
                         <field name="document_ids"/>
+                        <field name="is_parent_assigned" string="Username" invisible="1"/>
                     </page>
                 </xpath>
             </field>
@@ -140,10 +141,11 @@
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet/notebook/page[@name='internal_notes']" position="after">
                     <page name="apicredentials" string="API Credentials"
-                          attrs="{'invisible':['|', '|', '|', ('customer', '==', False), ('is_parent', '==', False), ('prioritization', '==', False)]}">
+                          attrs="{'invisible':['|', '|', '|', ('customer', '==', False), ('is_parent_assigned', '==', False), ('prioritization', '==', False)]}">
                         <group>
                             <field name="api_username" string="Username"/>
                             <field name="api_secret" string="Password" password="True"/>
+                            <field name="is_parent_assigned" string="Username" invisible="1"/>
                         </group>
                     </page>
                 </xpath>
@@ -157,8 +159,9 @@
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet/notebook/page[@name='internal_notes']" position="after">
                     <page name="importedtemplate" string="Imported Templates"
-                          attrs="{'invisible':['|',('customer', '==', False), '|', ('is_parent', '==', False), '|', ('prioritization', '==', False)]}">
+                          attrs="{'invisible':['|',('customer', '==', False), '|', ('is_parent_assigned', '==', False), '|', ('prioritization', '==', False)]}">
                         <field name="template_ids"/>
+                        <field name="is_parent_assigned" string="Username" invisible="1"/>
                     </page>
                 </xpath>
             </field>
