@@ -106,19 +106,14 @@ class DocumentProcessTransientModel(models.TransientModel):
                         sps_product = sps_product_priotization[0]
                         sps_product_id = sps_product.product_id.id
                         sps_customer_product_priority = sps_product.priority
-                        _logger.info('sps_customer_product_priority %r user_model.priority %r',
-                                     str(sps_customer_product_priority), str(user_model.priority))
-                        if not sps_customer_product_priority:
-                            high_priority_product = True
-                            req.update(dict(product_id=sps_product_id, status='Inprocess'))
-                        else:
-                            req.update(dict(product_id=sps_product_id, status='New'))
                     else:
-                        if not user_model.priority:
-                            high_priority_product = True
-                            req.update(dict(product_id=sps_product_id, status='Inprocess'))
-                        else:
-                            req.update(dict(product_id=sps_product_id, status='New'))
+                        sps_customer_product_priority = user_model.priority
+
+                    if not sps_customer_product_priority:
+                        high_priority_product = True
+                        req.update(dict(product_id=sps_product_id, status='Inprocess'))
+                    else:
+                        req.update(dict(product_id=sps_product_id, status='New'))
                 else:
                     req.update(dict(product_id=None, status='Voided'))
                 sps_customer_request = dict(document_id=document_id, customer_id=user_id, create_uid=1,
