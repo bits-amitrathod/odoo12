@@ -20,8 +20,7 @@ class SaleOrder(models.Model):
         ('void', 'Voided'),
     ], string='Status', readonly=True, copy=False, index=True, track_visibility='onchange', default='draft')
 
-    show_validate = fields.Boolean(
-        help='Technical field used to compute whether the validate should be shown.')
+
     shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
     preferred_method = fields.Selection(string='Preferred Invoice Delivery Method', related='partner_id.preferred_method', readonly=True)
     carrier_info = fields.Char("Carrier Info",related='partner_id.carrier_info',readonly=True)
@@ -46,15 +45,12 @@ class SaleOrder(models.Model):
         elif self.delivery_count>1:
             raise ValidationError(_('Validate is not possible for multiple delivery please do validate one by one'))
 
+
     def action_assign(self):
         multi = self.env['stock.picking'].search([('sale_id', '=', self.id)])
         if len(multi) >= 1:
             return multi.action_assign()
 
-    def _compute_show_validate(self):
-        multi = self.env['stock.picking'].search([('sale_id', '=', self.id)])
-        if len(multi)>=1:
-            multi._compute_show_validate()
 
     @api.multi
     def do_unreserve(self):
