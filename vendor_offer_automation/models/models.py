@@ -66,10 +66,12 @@ class vendor_offer_automation(models.Model):
                         [('customer_id', '=', self.partner_id.id), ('template_status', '=', 'Active')])
                     if len(vendor_offer_automation_template) > 0:
                         sorted_excel_columns = ','.join(sorted(excel_columns))
+                        _logger.info('vendor_offer_automation_template.columns_from_template %r',
+                                     vendor_offer_automation_template.columns_from_template)
+                        _logger.info('sorted_excel_columns %r', sorted_excel_columns)
                         if vendor_offer_automation_template.columns_from_template != sorted_excel_columns:
                             raise ValidationError(
                                 _('Document columns are not matching active offer template ' + self.template_name))
-                    _logger.info(excel_columns)
                     model_fields = self.env['sps.vendor_offer_automation.template'].fields_get()
                     mapping_fields = dict()
                     for name, field in model_fields.items():
@@ -83,23 +85,38 @@ class vendor_offer_automation(models.Model):
                         sku_index = excel_columns.index(mapping_fields['mf_customer_sku'])
                     if not sku_index is None:
                         todays_date = datetime.datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+                        product_skus = []
                         for excel_data_row in excel_data_rows:
                             sku_code = excel_data_row[sku_index]
-                            product_template = self.env['product.template'].search([('sku_code', '=', sku_code)])
-                            if product_template:
-                                products = self.env['product.product'].search(
-                                    [('product_tmpl_id', '=', product_template.id)])
-                                if len(products) > 0:
-                                    order_list_list.append(
-                                        dict(name=product_template.name, product_qty=1, date_planned=todays_date,
-                                             product_uom=1,
-                                             order_id=self.id,
-                                             product_id=products.id, price_unit=product_template.list_price,
-                                             product_unit_price=product_template.list_price))
-                        for order_line_object in order_list_list:
-                            order_line_model = self.env['purchase.order.line'].with_context(order_line_object)
-                            order_line_model.create(order_line_object)
-                            # _logger.info('products_list %r', order_line_object)
+                            product_sku = sku_code
+                            if self.partner_id.sku_preconfig and product_sku.startswith(
+                                    self.partner_id.sku_preconfig):
+                                product_sku = product_sku[len(self.partner_id.sku_preconfig):]
+                            if self.partner_id.sku_postconfig and product_sku.endswith(
+                                    self.partner_id.sku_postconfig):
+                                product_sku = product_sku[:-len(self.partner_id.sku_postconfig)]
+                            if not sku_code in product_skus:
+                                product_template = self.env['product.template'].search(
+                                    ['|', ('sku_code', '=', sku_code), ('manufacturer_pref', '=', product_sku)])
+                                if product_template:
+                                    products = self.env['product.product'].search(
+                                        [('product_tmpl_id', '=', product_template.id)])
+                                    product_unit_price = product_template.list_price
+                                    if len(products) > 0:
+                                        order_list_list.append(
+                                            dict(name=product_template.name, product_qty=1, date_planned=todays_date,
+                                                 product_uom=1, product_tier=product_template.tier.id,
+                                                 order_id=self.id, product_unit_price=product_unit_price,
+                                                 product_id=products.id, price_unit=product_template.list_price
+                                                 ))
+                                product_skus.append(sku_code)
+                        if len(order_list_list) > 0:
+                            for order_line_object in order_list_list:
+                                order_line_model = self.env['purchase.order.line'].with_context(order_line_object)
+                                order_line_model.create(order_line_object)
+                            for purchase_order_line in self.order_line:
+                                purchase_order_line.onchange_product_id_vendor_offer()
+
             except UnicodeDecodeError as ue:
                 _logger.info(ue)
 
@@ -124,20 +141,12 @@ class vendor_offer_automation(models.Model):
                 break
         return data
 
-    @staticmethod
-    def _get_unit_price(default_code, ven_product_prices_list):
-        unit_price = None
-        descptn = None
-        for ven_product_price in ven_product_prices_list:
-            if ven_product_price['sku_code'] == default_code:
-                unit_price = ven_product_price['unit_price']
-                descptn = ven_product_price['description']
-                break
-        return unit_price, descptn
-
     @api.multi
     def write(self, vals):
         res = super(vendor_offer_automation, self).write(vals)
+        if 'document' in vals:
+            self.env["purchase.order.line"].search([('order_id', '=', self.id)]).unlink()
+            self.map_customer_sku_with_catelog_number()
         return res
 
     def update_template_name(self):

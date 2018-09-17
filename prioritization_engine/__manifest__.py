@@ -20,10 +20,6 @@
 
     # any module necessary for this one to work correctly
 
-
-
-
-
     'depends': ['base','product','product_brand','sale_management','stock','web_one2many_selectable','account'],
 
     # always loaded
@@ -34,6 +30,8 @@
         'views/prioritization_views.xml',
         'views/web_assets.xml',
         'views/templates.xml',
+        'views/prioritization_schedular_views.xml',
+        'data/sales_team_data_prioritization.xml',
     ],
 
     # only loaded in demonstration mode

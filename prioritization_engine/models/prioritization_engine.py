@@ -6,13 +6,15 @@ from datetime import datetime
 _logger = logging.getLogger(__name__)
 
 class PrioritizationEngine(models.TransientModel):
-
+    _inherit = 'crm.team'
     _name = 'prioritization.engine.model'
+
+    team_type = fields.Selection([('prioritization', 'Prioritization')])
 
     allocated_product_dict = {}
 
     def allocate_product_by_priority(self, prioritization_engine_request_list):
-        _logger.info('In product_allocation_by_priority')
+        _logger.debug('In product_allocation_by_priority')
         # get available production lot list.
         available_product_lot_dict = self.get_available_product_lot_dict()
         if len(available_product_lot_dict) > 0:
@@ -62,7 +64,7 @@ class PrioritizationEngine(models.TransientModel):
                     dict = {prioritization_engine_request['product_id']: [available_production_lot]}
                     filtered_production_lot_dict_to_be_returned.update(dict)
 
-        _logger.info('Filtered production lot list to be returned %r', str(filtered_production_lot_dict_to_be_returned))
+        _logger.debug('Filtered production lot list to be returned %r', str(filtered_production_lot_dict_to_be_returned))
         return filtered_production_lot_dict_to_be_returned
 
     # calculate cooling period
@@ -73,7 +75,7 @@ class PrioritizationEngine(models.TransientModel):
         if not confirmation_date is None:
             # get current datetime
             current_datetime = datetime.now()
-            confirmation_date = datetime.strptime(self.change_date_format(confirmation_date), '%Y,%m,%d,%H,%M,%S.%f')
+            confirmation_date = datetime.strptime(self.change_date_format(confirmation_date), '%Y,%m,%d,%H,%M,%S')
             # calculate datetime difference.
             duration = current_datetime - confirmation_date  # For build-in functions
             duration_in_days = self.return_duration_in_days(duration)
@@ -126,10 +128,10 @@ class PrioritizationEngine(models.TransientModel):
     def allocate_product(self, prioritization_engine_request, filter_available_product_lot_dict):
         remaining_product_allocation_quantity = prioritization_engine_request['required_quantity']
         for product_lot in filter_available_product_lot_dict.get(prioritization_engine_request['product_id'],{}):
-            _logger.info('**** %r',product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity'))
+            _logger.debug('**** %r',product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity'))
             if remaining_product_allocation_quantity >= product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity'):
                 if prioritization_engine_request['partial_order']:
-                    _logger.info('product allocated from lot %r %r %r', product_lot.get(list(product_lot.keys()).pop(0), {}))
+                    _logger.debug('product allocated from lot %r %r %r', product_lot.get(list(product_lot.keys()).pop(0), {}))
 
                     remaining_product_allocation_quantity = int(remaining_product_allocation_quantity) - int(product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'])
 
@@ -142,7 +144,7 @@ class PrioritizationEngine(models.TransientModel):
                     product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0),{})['reserved_quantity']) + int(product_lot.get(list(product_lot.keys()).pop(0),{})['available_quantity'])
                     product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'] = 0
 
-                    _logger.info('Quantity Updated')
+                    _logger.debug('Quantity Updated')
             elif remaining_product_allocation_quantity < product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity'):
                     _logger.info('product allocated from lot %r', list(product_lot.keys()).pop(0))
 
@@ -152,7 +154,7 @@ class PrioritizationEngine(models.TransientModel):
                     self.allocated_product_to_customer(prioritization_engine_request['customer_id'], prioritization_engine_request['required_quantity'],
                                                        list(product_lot.keys()).pop(0), prioritization_engine_request['product_id'], remaining_product_allocation_quantity)
 
-                    _logger.info('Quantity Updated')
+                    _logger.debug('Quantity Updated')
 
                     remaining_product_allocation_quantity = 0
                     break
@@ -161,7 +163,7 @@ class PrioritizationEngine(models.TransientModel):
             _logger.info('Partial ordering flag is False')
 
         elif remaining_product_allocation_quantity == 0:
-            _logger.info("Allocated product id " + str(
+            _logger.debug("Allocated product id " + str(
                 prioritization_engine_request['product_id']) + ". Total required product quantity is " + str(
                 prioritization_engine_request['required_quantity']))
             self.update_customer_status(prioritization_engine_request,'Completed')
@@ -180,7 +182,7 @@ class PrioritizationEngine(models.TransientModel):
 
     # get product last purchased date, parameter product id
     def get_product_last_purchased_date(self, prioritization_engine_request):
-        _logger.info("In get_product_last_purchased_date()")
+        _logger.debug("In get_product_last_purchased_date()")
 
         self.env.cr.execute(
             "SELECT max(saleorder.confirmation_date) as confirmation_date FROM public.sale_order_line saleorderline "
@@ -197,7 +199,7 @@ class PrioritizationEngine(models.TransientModel):
 
     # get product create date for to calculate length of hold, parameter product id
     def get_product_create_date(self, prioritization_engine_request):
-        _logger.info("In get_product_create_date()")
+        _logger.debug("In get_product_create_date()")
 
         self.env.cr.execute(
             "SELECT max(saleorder.create_date) as create_date FROM public.sale_order_line saleorderline "
@@ -237,13 +239,13 @@ class PrioritizationEngine(models.TransientModel):
 
     # display allocated product list
     def generate_sale_order(self):
-        _logger.info('In generate sale order %r', self.allocated_product_dict)
+        _logger.debug('In generate sale order %r', self.allocated_product_dict)
 
         for partner_id_key in self.allocated_product_dict.keys():
-            sale_order_dict = {'partner_id': partner_id_key, 'state': 'engine'}
+            sale_order_dict = {'partner_id': partner_id_key, 'state': 'engine', 'team_id' : 4}
 
             sale_order = self.env['sale.order'].create(dict(sale_order_dict))
-            _logger.info('sale order : %r ',sale_order['id'])
+            _logger.debug('sale order : %r ',sale_order['id'])
 
             for allocated_product in self.allocated_product_dict.get(partner_id_key, {}):
                 sale_order_line_dict = {'order_id': sale_order['id'], 'product_id': allocated_product.get(list(allocated_product.keys()).pop(0), {})['product_id'],

@@ -54,7 +54,7 @@ class FileUploadController(Controller):
                 uploaded_file_path = str(directory_path + file_name)
                 file_storage.save(uploaded_file_path)
                 response = request.env['sps.document.process'].sudo().process_document(user_api_settings,
-                                                                                             uploaded_file_path)
+                                                                                       uploaded_file_path)
             else:
                 response = dict(errorCode=3, message='UnAuthorized Access')
 
@@ -66,7 +66,7 @@ class FileUploadController(Controller):
     def _get_users_list(self, **post):
         # cr, context, pool, uid = request.cr, request.context, request.registry, request.uid
         input_data = post['input_data']
-        records = request.env['res.partner'].sudo().search([[input_data, '=', True]])
+        records = request.env['res.partner'].sudo().search([(input_data, '=', True), ('parent_id', '=', None)])
         response_data = [dict(name=record['name'], id=record['id']) for record in records]
         return str(json.dumps(response_data))
 

@@ -253,3 +253,8 @@ class PrioritizationTransient(models.TransientModel):
                         'length_of_hold': self.length_of_hold})
         return {'type': 'ir.actions.act_close_wizard_and_reload_view'}
 
+class SalesChannelPrioritization(models.Model):
+    _inherit = "crm.team"
+    team_type = fields.Selection([('engine', 'Prioritization'), ('sales', 'Sales'), ('website', 'Website')], string='Channel Type', default='sales',
+                                 required=True,
+                                 help="The type of this channel, it will define the resources this channel uses.")
