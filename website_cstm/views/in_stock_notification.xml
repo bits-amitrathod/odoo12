@@ -31,7 +31,7 @@
         <!-- Email template -->
         <record id="mail_template_product_instock_notification_email" model="mail.template">
             <field name="name">eCommerce: Product Availability Email</field>
-            <field name="model_id" ref="purchase.model_product_template"/>
+            <field name="model_id" ref="website_sale.model_product_template"/>
             <field name="email_from">
                 <![CDATA["${object.company_id.name|safe}" <${(object.company_id.email or user.email)|safe}>]]></field>
             <field name="email_to">${ctx['email']}</field>
@@ -81,8 +81,8 @@
             <field name="model_id" ref="model_website_cstm_product_instock_notify"/>
             <field name="state">code</field>
             <field name="code">model.send_email_product_instock()</field>
-            <field name='interval_number'>1</field>
-            <field name='interval_type'>days</field>
+            <field name='interval_number'>4</field>
+            <field name='interval_type'>hours</field>
             <field name="numbercall">-1</field>
         </record>
 
