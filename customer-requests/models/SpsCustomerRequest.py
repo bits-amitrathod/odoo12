@@ -33,11 +33,13 @@ class SpsCustomerRequest(models.Model):
 
     # Get Customer Requests
     def get_customer_requests(self):
-        _logger.info('In get_customer_requests()')
         sps_customer_requests = self.env['sps.customer.requests'].search(
             [('status', 'in', ('Inprocess', 'Incomplete', 'Unprocessed', 'InCoolingPeriod', 'New'))])
         if len(sps_customer_requests)>0:
-            self.process_requests(sps_customer_requests)
+            try:
+                self.process_requests(sps_customer_requests)
+            except Exception as exc:
+                _logger.info("Error procesing requests %r", exc)
 
     def process_requests(self, sps_customer_requests):
         pr_models = []
@@ -64,15 +66,12 @@ class SpsCustomerRequest(models.Model):
                                     expiration_tolerance=_setting_object.expiration_tolerance,
                                     customer_request_logs = sps_customer_request.customer_request_logs)
 
-                    _logger.debug('customer request1 %r, %r, %r', pr_model['customer_request_id'], pr_model['customer_id'],
-                                 pr_model['product_id'])
                     pr_models.append(pr_model)
 
         #_logger.debug('Length **** %r', str(len(pr_models)))
         if len(pr_models) > 0:
             # Sort list by product priority
             pr_models = sorted(pr_models, key=itemgetter('product_priority'))
-
             allocated_products = self.env['prioritization.engine.model'].allocate_product_by_priority(pr_models)
 
         return allocated_products
