@@ -33,11 +33,13 @@ class SpsCustomerRequest(models.Model):
 
     # Get Customer Requests
     def get_customer_requests(self):
-        _logger.info('In get_customer_requests()')
         sps_customer_requests = self.env['sps.customer.requests'].search(
             [('status', 'in', ('Inprocess', 'Incomplete', 'Unprocessed', 'InCoolingPeriod', 'New'))])
         if len(sps_customer_requests)>0:
-            self.process_requests(sps_customer_requests)
+            try:
+                self.process_requests(sps_customer_requests)
+            except Exception as exc:
+                _logger.info("Error procesing requests %r", exc)
 
     def process_requests(self, sps_customer_requests):
         pr_models = []
@@ -46,11 +48,9 @@ class SpsCustomerRequest(models.Model):
             _logger.debug('customer request %r, %r', sps_customer_request['customer_id'].id, sps_customer_request['product_id'].id)
             if sps_customer_request['product_id'].id and not sps_customer_request['product_id'].id is False:
                 _setting_object = self._get_settings_object(sps_customer_request)
+
                 if _setting_object:
-                    sps_customer_request.write({'customer_request_logs': 'Customer prioritization setting is True'})
-                else:
-                    sps_customer_request.write({'customer_request_logs': 'Customer prioritization setting is False'})
-                if _setting_object:
+                    sps_customer_request.write({'customer_request_logs': 'Customer prioritization setting is True, '})
                     pr_model = dict(customer_request_id=sps_customer_request.id,
                                     customer_id=sps_customer_request['customer_id'].id,
                                     product_id=sps_customer_request['product_id'].id,
@@ -64,15 +64,12 @@ class SpsCustomerRequest(models.Model):
                                     expiration_tolerance=_setting_object.expiration_tolerance,
                                     customer_request_logs = sps_customer_request.customer_request_logs)
 
-                    _logger.debug('customer request1 %r, %r, %r', pr_model['customer_request_id'], pr_model['customer_id'],
-                                 pr_model['product_id'])
                     pr_models.append(pr_model)
 
         #_logger.debug('Length **** %r', str(len(pr_models)))
         if len(pr_models) > 0:
             # Sort list by product priority
             pr_models = sorted(pr_models, key=itemgetter('product_priority'))
-
             allocated_products = self.env['prioritization.engine.model'].allocate_product_by_priority(pr_models)
 
         return allocated_products
@@ -87,7 +84,7 @@ class SpsCustomerRequest(models.Model):
             else:
                 _logger.debug('Customer prioritization setting is False. Customer id is :%r',
                              str(customer_level_setting.customer_id.id))
-                self.update_customer_status(sps_customer_request)
+                self.update_customer_status(sps_customer_request, "Customer prioritization setting is False.")
                 return False
         else:
             global_level_setting = self.env['res.partner'].search(
@@ -98,16 +95,14 @@ class SpsCustomerRequest(models.Model):
                 else:
                     _logger.debug('Customer prioritization setting is False. Customer id is :%r',
                                  str(global_level_setting.id))
-                    self.update_customer_status(sps_customer_request)
+                    self.update_customer_status(sps_customer_request, "Customer prioritization setting is False.")
                     return False
 
-
-    def update_customer_status(self,sps_customer_request):
+    def update_customer_status(self,sps_customer_request, log):
         if sps_customer_request['status'].lower().strip() != 'unprocessed':
             # update status Unprocessed
             self.env['sps.customer.requests'].search(
-                [('id', '=', sps_customer_request['id'])]).write(dict(status="Unprocessed"))
-
+                [('id', '=', sps_customer_request['id'])]).write(dict(status="Unprocessed",customer_request_logs=log))
 
     @api.multi
     @api.depends('document_id')
