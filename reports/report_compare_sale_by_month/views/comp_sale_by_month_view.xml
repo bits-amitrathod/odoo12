@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_popup_view" model="ir.ui.view">
+            <field name="name">Compare Sale By Month</field>
+            <field name="model">compbysale.popup</field>
+            <field name="arch" type="xml">
+                <form string="Choose your date">
+                    <group>
+                        <group>
+                            <field name="compute_at_date" widget="radio"/>
+                            <field name="current_start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                            <field name="current_end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                            <field name="last_start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                            <field name="last_end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_comp_sale_valuation" model="ir.actions.act_window">
+            <field name="name">Compare Sale By Month</field>
+            <field name="res_model">compbysale.popup</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_popup_view"/>
+            <field name="target">new</field>
+            <field name="context">{'default_compute_at_date': 0, 'valuation': True}</field>
+        </record>
+
+
+        <record model="ir.ui.view" id="list_view">
+              <field name="name">compare.sale.by.month.view.list</field>
+              <field name="model">product.template</field>
+              <field name="priority">20</field>
+              <field name="arch" type="xml">
+                <tree>
+                    <field name="sku_code"/>
+                    <field name="product_name"/>
+                    <field name="last_month_total_qty"/>
+                    <field name="last_month_total_amount" widget="monetary" />
+                    <field name="current_month_total_qty" />
+                    <field name="current_month_total_amount" widget="monetary"/>
+                    <field name="currency_id"  invisible="1" />
+
+                </tree>
+              </field>
+        </record>
+
+
+
+        <menuitem id="sr_menu_sale_report_salesperson_wizard"
+                  name="Compare Sales By Month"
+                  action="action_comp_sale_valuation"
+                  parent="sale.menu_sale_report"
+                  sequence="1"/>
+    </data>
+
+</odoo>
