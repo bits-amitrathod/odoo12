@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="product_list_view">
+              <field name="name">product.price.list</field>
+              <field name="model">product.template</field>
+              <field name="priority">20</field>
+              <field name="arch" type="xml">
+                <tree>
+                    <field name="sku_code"/>
+                    <field name="name"/>
+                    <field name="standard_price" widget="monetary" />
+                    <field name="currency_id"  invisible="1" />
+                </tree>
+              </field>
+        </record>
+
+        <record id="action_product_price_list" model="ir.actions.act_window">
+            <field name="name">Product Price List</field>
+            <field name="res_model">product.template</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form,tree</field>
+            <field name="view_id" ref="product_list_view"/>
+        </record>
+
+         <record model="ir.ui.view" id="custom_list_view">
+              <field name="name">product.price.list</field>
+              <field name="model">product.template</field>
+              <field name="priority">20</field>
+              <field name="arch" type="xml">
+                <tree>
+                    <field name="sku_code"/>
+                    <field name="name"/>
+                    <field name="list_price" widget="monetary" />
+                    <field name="currency_id"  invisible="1" />
+                </tree>
+              </field>
+        </record>
+
+        <record id="action_customer_price_list" model="ir.actions.act_window">
+            <field name="name">Customer Price List</field>
+            <field name="res_model">product.template</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form,tree</field>
+            <field name="view_id" ref="custom_list_view"/>
+        </record>
+
+        <menuitem id="menu_sale_report_product_list_wizard"
+                  name="Product Price List"
+                  action="action_product_price_list"
+                  parent="stock.menu_warehouse_report"
+                  sequence="1"/>
+
+        <menuitem id="menu_sale_report_product_list_wizard1"
+                  name="Customer Price List"
+                  action="action_customer_price_list"
+                  parent="stock.menu_warehouse_report"
+                  sequence="1"/>
+
+    </data>
+</odoo>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report
+                id="action_report_price_list_wise"
+                string="Product Price List"
+                model="product.template"
+                report_type="qweb-html"
+                file="report_price_list.price_list_temp"
+                name="report_price_list.price_list_temp"
+        />
+
+        <report
+                id="action_report_cust_price_list_wise"
+                string="Customer Price List"
+                model="product.template"
+                report_type="qweb-html"
+                file="report_price_list.cust_price_list_temp"
+                name="report_price_list.cust_price_list_temp"
+        />
+    </data>
+</odoo>
