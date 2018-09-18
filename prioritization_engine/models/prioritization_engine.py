@@ -53,6 +53,7 @@ class PrioritizationEngine(models.TransientModel):
                 self.generate_sale_order()
         else:
             _logger.info('Available product lot list is zero')
+        return self.allocated_product_dict
 
     # get available production lot list, parameter product id.
     def get_available_product_lot_dict(self):

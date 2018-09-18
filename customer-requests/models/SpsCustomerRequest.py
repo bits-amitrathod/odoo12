@@ -73,7 +73,9 @@ class SpsCustomerRequest(models.Model):
             # Sort list by product priority
             pr_models = sorted(pr_models, key=itemgetter('product_priority'))
 
-            self.env['prioritization.engine.model'].allocate_product_by_priority(pr_models)
+            allocated_products = self.env['prioritization.engine.model'].allocate_product_by_priority(pr_models)
+
+        return allocated_products
 
     def _get_settings_object(self, sps_customer_request):
         customer_level_setting = self.env['prioritization_engine.prioritization'].search(
