@@ -40,7 +40,7 @@ class FileUploadController(Controller):
             response = dict(errorCode=1, message='Bad Request')
         if response is None:
             user_api_settings = request.env['res.partner'].sudo().search(
-                [('email', '=', username), ('api_secret', '=', password)])
+                [('api_username', '=', username), ('api_secret', '=', password)])
             if len(user_api_settings) == 1:
                 user_id = user_api_settings[0].id
                 directory_path = UPLOAD_DIR + str(datetime.now().strftime("%d%m%Y")) + "/" + str(user_id) + "/"

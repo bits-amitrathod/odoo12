@@ -95,6 +95,16 @@ class VendorOfferImportTransientModel(models.TransientModel):
                 for template_resource in template_resources:
                     template_resource.write(dict(template_status='InActive'))
                 resource_model.create(resource_model_dict)
+
+                vendor_contacts_list = self.env['res.partner'].search(
+                    [('supplier', '=', True), ('parent_id', '=', customer_id)])
+                for vendor_contact in vendor_contacts_list:
+                    template_resources = resource_model.search(
+                        [('customer_id', '=', vendor_contact.id), ('template_status', '=', 'Active')])
+                    for template_resource in template_resources:
+                        template_resource.write(dict(template_status='InActive'))
+                    resource_model_dict.update(customer_id=vendor_contact.id)
+                    resource_model.create(resource_model_dict)
                 try:
                     if dryrun:
                         self._cr.execute('ROLLBACK TO SAVEPOINT import')

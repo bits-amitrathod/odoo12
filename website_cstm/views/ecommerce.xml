@@ -283,9 +283,10 @@
                                                 </button>
                                             </div><!-- /btn-group -->
                                         </div><!-- /input-group -->
+                                        <p style="display: none;" class="invalidEmail"><i class="fa fa-exclamation-triangle"></i> Email address is invalid </p>
                                         <div class="alert alert-success notifcationAlert" style="display: none;">You will be notified when this is available.</div>
 
-                                        <p>
+                                        <p style="font-size: 16px;">
                                             <i class="fa fa-exclamation-triangle"/> Temporarily out of stock
                                         </p>
                                     </div>

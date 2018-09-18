@@ -138,7 +138,7 @@
                         <h6>Footer</h6>
                         <ul class="footer_menu">
                             <li>
-                                <a href="/website_cstm/static/src/download/SPS_product_listing.xlsm"
+                                <a href="/downloadCatalog"
                                    title="Download Catalog">Download Catalog
                                 </a>
                             </li>

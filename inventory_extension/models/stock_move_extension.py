@@ -18,7 +18,6 @@ _logger = logging.getLogger(__name__)
 
 class StockMoveExtension(models.Model):
     _inherit = "stock.move"
-
     def _get_lot_name(self,id):
         if isinstance(id, int):
             lot_id = self.env['stock.move.line'].search([('id', '=', id)])
