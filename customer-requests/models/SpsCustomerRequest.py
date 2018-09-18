@@ -48,11 +48,9 @@ class SpsCustomerRequest(models.Model):
             _logger.debug('customer request %r, %r', sps_customer_request['customer_id'].id, sps_customer_request['product_id'].id)
             if sps_customer_request['product_id'].id and not sps_customer_request['product_id'].id is False:
                 _setting_object = self._get_settings_object(sps_customer_request)
+
                 if _setting_object:
-                    sps_customer_request.write({'customer_request_logs': 'Customer prioritization setting is True'})
-                else:
-                    sps_customer_request.write({'customer_request_logs': 'Customer prioritization setting is False'})
-                if _setting_object:
+                    sps_customer_request.write({'customer_request_logs': 'Customer prioritization setting is True, '})
                     pr_model = dict(customer_request_id=sps_customer_request.id,
                                     customer_id=sps_customer_request['customer_id'].id,
                                     product_id=sps_customer_request['product_id'].id,
@@ -86,7 +84,7 @@ class SpsCustomerRequest(models.Model):
             else:
                 _logger.debug('Customer prioritization setting is False. Customer id is :%r',
                              str(customer_level_setting.customer_id.id))
-                self.update_customer_status(sps_customer_request)
+                self.update_customer_status(sps_customer_request, "Customer prioritization setting is False.")
                 return False
         else:
             global_level_setting = self.env['res.partner'].search(
@@ -97,16 +95,14 @@ class SpsCustomerRequest(models.Model):
                 else:
                     _logger.debug('Customer prioritization setting is False. Customer id is :%r',
                                  str(global_level_setting.id))
-                    self.update_customer_status(sps_customer_request)
+                    self.update_customer_status(sps_customer_request, "Customer prioritization setting is False.")
                     return False
 
-
-    def update_customer_status(self,sps_customer_request):
+    def update_customer_status(self,sps_customer_request, log):
         if sps_customer_request['status'].lower().strip() != 'unprocessed':
             # update status Unprocessed
             self.env['sps.customer.requests'].search(
-                [('id', '=', sps_customer_request['id'])]).write(dict(status="Unprocessed"))
-
+                [('id', '=', sps_customer_request['id'])]).write(dict(status="Unprocessed",customer_request_logs=log))
 
     @api.multi
     @api.depends('document_id')
