@@ -109,32 +109,6 @@
             </field>
       </record>
 
-<!--      <record id="view_tree_prioritization_normal" model="ir.ui.view">
-            <field name="sequence" eval="1"/>
-            <field name="name">Prioritization normal tree</field>
-            <field name="model">prioritization_engine.prioritization</field>
-            <field name="mode">primary</field>
-            <field name="arch" type="xml">
-              <tree editable="bottom">
-                  <field name="sequence" widget="handle"/>
-                  <field name="product_id"/>
-                  <field name="sku_code" readonly="True" />
-                  <field name="lst_price" readonly="True"/>
-                  <field name="auto_allocate" />
-                  <field name="priority"/>
-                  <field name="expiration_tolerance" />
-                  <field name="length_of_hold"/>
-                  <field name="min_threshold"/>
-                  <field name="max_threshold"/>
-                  <field name="cooling_period"/>
-                  <field name="partial_ordering" />
-                  <field name="partial_UOM"/>
-                    &lt;!&ndash;<field name="price" invisible="not context.get('pricelist',False)" readonly="True"/>&ndash;&gt;
-                    &lt;!&ndash;<field name="uom_id" options="{'no_open': True, 'no_create': True}" groups="product.group_uom"/>&ndash;&gt;
-                </tree>
-            </field>
-      </record>-->
-
       <record id="view_form_prioritization_normal" model="ir.ui.view">
             <field name="sequence" eval="1"/>
             <field name="name">Prioritization normal form</field>
@@ -303,8 +277,8 @@
          <!-- menu categories -->
     <menuitem name="Import Document" id="prioritization_engine.prioritization_imenu" parent="prioritization_engine.menu_root"/>
          <!-- actions -->
-    <menuitem name="Import Document" id="prioritization_engine.prioritization_import_menu" parent="prioritization_engine.prioritization_imenu"
-              action="action_notification_setting"/>
+   <!-- <menuitem name="Import Document" id="prioritization_engine.prioritization_import_menu" parent="prioritization_engine.prioritization_imenu"
+              action="action_notification_setting"/>-->
 
       <!--<menuitem name="menu_name" id="unique_id" web_icon="module_name,path_of_icon" sequence="1"/>-->
 
