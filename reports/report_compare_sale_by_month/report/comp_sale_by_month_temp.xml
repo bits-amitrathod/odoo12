@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="compsalebymonth_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <page>
+                    <div class="oe_structure"/>
+                    <div class="row">
+                    <center>
+                        <b>
+                            <h2> Surgical Product Solutions </h2>
+                            <h4>Compare Sales By Month</h4>
+                        </b>
+                    </center>
+                    </div>
+                    <br/>
+                    <div class="table-responsive">
+                    <table class="table table-condensed" style="border: 1px solid black;">
+                            <thead>
+                                <!--<tr style="border: 0px;">
+                                    <th style="border: 0px;"></th>
+                                    <th style="border: 0px;"></th>
+                                    &lt;!&ndash;<th align="center" colspan="2" style="border: 0px;text-align: center;"> <span t-esc="last_start_date"/> - <span t-esc="last_end_date"/> </th>
+                                    <th align="center" colspan="2" style="border: 0px;text-align: center;"> <span t-esc="current_start_date"/> - <span t-esc="current_end_date"/> </th> &ndash;&gt;
+                                </tr>-->
+
+                                <tr align="center" style="border: 1px solid black;">
+                                    <th style="border: 1px solid black;text-align: center;">Product </th>
+                                    <th style="border: 1px solid black;text-align: center;">Product Name </th>
+                                    <th style="border: 1px solid black;text-align: center;white-space: nowrap;">Last Month Qty</th>
+                                    <th style="border: 1px solid black;text-align: center;white-space: nowrap;">Last Month Price</th>
+                                    <th style="border: 1px solid black;text-align: center;white-space: nowrap;">Current Month Qty</th>
+                                    <th style="border: 1px solid black;text-align: center;white-space: nowrap;">Current Month Price</th>
+                                </tr>
+                                    <tr t-foreach="data" t-as="order">
+                                        <td style="border: 1px solid black;">
+                                            <span t-esc="order.sku_name"/>
+                                        </td>
+                                        <td style="border: 1px solid black;width: 250px;">
+                                            <span t-esc="order.product_name"/>
+                                        </td>
+                                         <td align="right" style="border: 1px solid black;">
+                                            <span t-esc="order.last_month_total_qty"/>
+                                        </td>
+                                        <td align="right" style="border: 1px solid black;white-space: nowrap;">
+                                            <span t-esc="order.last_month_total_amount"  t-options='{"widget": "monetary","display_currency": order.currency_id}'/>
+                                        </td>
+
+                                        <td align="right" style="border: 1px solid black;">
+                                            <span t-esc="order.current_month_total_qty"/>
+                                        </td>
+                                        <td align="right" style="border: 1px solid black;white-space: nowrap;">
+                                              <span t-esc="order.current_month_total_amount"  t-options='{"widget": "monetary","display_currency": order.currency_id}'/>
+                                        </td>
+                                    </tr>
+                            </thead>
+                    </table>
+                    </div>
+                </page>
+            </t>
+        </t>
+  </template>
+</odoo>

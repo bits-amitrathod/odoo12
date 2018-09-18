@@ -42,8 +42,6 @@ poplib._MAXLINE = 65536
 
 ATTACHMENT_DIR = "/home/odoo/attachments/"
 
-INCOMING_EMAIL_ID = "bits.qa10@gmail.com"
-
 
 class IncomingMailCronModel(models.Model):
     _inherit = 'fetchmail.server'
