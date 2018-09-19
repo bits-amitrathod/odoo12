@@ -539,11 +539,21 @@ var DataImport = Widget.extend(ControlPanelMixin, {
         this.exit();
     },
     exit: function () {
-       this.do_action({
-           type: 'ir.actions.client',
-            tag: 'reload',
-
-       });
+        var action = {
+            type:'ir.actions.act_window',
+            view_type: 'form',
+            view_mode: 'form',
+            res_model: 'res.partner',
+            views: [[false, 'form']],
+            res_id: this.customer,
+            target: 'main',
+        };
+        this.do_action(action);
+//       this.do_action({
+//           type: 'ir.actions.client',
+//            tag: 'reload',
+//
+//       });
     },
     onresults: function (event, from, to, message) {
         var no_messages = _.isEmpty(message);
