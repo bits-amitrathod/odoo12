@@ -57,9 +57,9 @@ class FileUploadController(Controller):
                                                                                        uploaded_file_path)
             else:
                 response = dict(errorCode=3, message='UnAuthorized Access')
-
-        self.send_mail(
-            "Sending API Response as " + str(response['message']) + " for user " + username)
+        if response['errorCode']:
+            self.send_mail(
+                "Sending API Response as " + str(response['message']) + " for user " + username)
 
         return json.JSONEncoder().encode(response)
 
