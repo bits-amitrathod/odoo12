@@ -22,7 +22,7 @@ except ImportError:
 
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, pycompat, misc
 
-from odoo import api, fields, models, tools, _
+from odoo import api, fields, models, tools, _, SUPERUSER_ID
 
 from odoo.http import Controller, request, route
 
@@ -88,3 +88,16 @@ class TestingController(Controller):
             if not read_data:
                 break
         return data
+
+    @route('/testing', type='http', auth='public', csrf=False)
+    def testing_api(self):
+        res_user = request.env['res.users'].sudo().search([('id', '=', SUPERUSER_ID)])
+        self.send_mail(res_user.partner_id.id, str({'message' : 'OK'}))
+        return "OK " + str(SUPERUSER_ID)
+
+    def send_mail(self, user_target, body):
+        template = request.env.ref('customer-requests.set_log_email')
+        local_context = {'body': body}
+        template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True,force_send=True,)
+
+

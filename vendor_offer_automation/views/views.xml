@@ -22,10 +22,10 @@
             <field name="inherit_id" ref="vendor_offer.view_vendor_offer_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='new_customer']" position="after">
-                    <field name="template_name" states="ven_draft" attrs="{'invisible':[('template_exists','=',True)]}"/>
+                    <field name="template_name" states="ven_draft" attrs="{'invisible':[('template_exists','==', False)]}"/>
                     <field name="template_exists" invisible="1"/>
                     <field name="filename" invisible="1" />
-                    <field widget="file" name="document" filename="filename" states="ven_draft" attrs="{'invisible':[('template_exists','=',True)], 'required':[('template_exists','=',True)]}" />
+                    <field widget="file" name="document" filename="filename" states="ven_draft" attrs="{'invisible':[('template_exists','==', False)], 'required':[('template_exists','==', False)]}" />
                 </xpath>
             </field>
         </record>

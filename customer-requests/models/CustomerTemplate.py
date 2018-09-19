@@ -117,7 +117,6 @@ class CustomerTemplate(models.Model):
                 elif file_extension == 'csv':
                     self.COL_SELECTION = CustomerTemplate._parse_csv(myfile_path)
                 vals['file_name'] = myfile_path
-                _logger.info('self.COL_SELECTION  %r', file_extension )
 
                 template_model = super(CustomerTemplate, self).create(vals)
                 selected_elements, un_selected_columns = self._get_selected_un_selected_columns(template_model)

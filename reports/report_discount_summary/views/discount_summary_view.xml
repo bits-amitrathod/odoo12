@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_popup_view" model="ir.ui.view">
+            <field name="name">Discount Summary</field>
+            <field name="model">discountsummary.popup</field>
+            <field name="arch" type="xml">
+                <form string="Choose your date">
+                    <group>
+                        <group>
+                            <field name="compute_at_date" widget="radio"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_discount_summary_valuation" model="ir.actions.act_window">
+            <field name="name">Discount Summary</field>
+            <field name="res_model">discountsummary.popup</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_popup_view"/>
+            <field name="target">new</field>
+            <field name="context">{'default_compute_at_date': 0, 'valuation': True}</field>
+        </record>
+
+        <record model="ir.ui.view" id="form_list">
+              <field name="name">discount.summary.view.list</field>
+              <field name="model">sale.order</field>
+              <field name="priority">20</field>
+              <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="confirmation_date"/>
+                    <field name="r_discount" widget="monetary"/>
+                    <field name="r_amount" widget="monetary"/>
+                    <field name="r_total" widget="monetary"/>
+                    <field name="currency_id"  invisible="1" />
+                    <field name="state"/>
+                </tree>
+              </field>
+        </record>
+
+        <menuitem id="menu_sale_test_report"
+                  name="Discount Summary Report"
+                  action="action_discount_summary_valuation"
+                  parent="sale.menu_sale_report"
+                  sequence="1"/>
+
+    </data>
+
+</odoo>
