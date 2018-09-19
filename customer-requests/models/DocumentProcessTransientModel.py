@@ -91,7 +91,7 @@ class DocumentProcessTransientModel(models.TransientModel):
                     product_sku = product_sku[:-len(user_model.sku_postconfig)]
                 _logger.info('customer_sku %r product sku %r', customer_sku, product_sku)
                 product_tmpl = self.env['product.template'].search(
-                    ['|', ('sku_code', '=', customer_sku), ('manufacturer_pref', '=', product_sku)])
+                    ['|', ('sku_code', '=', product_sku), ('manufacturer_pref', '=', customer_sku)])
                 sps_product_id = 0
                 if len(product_tmpl) > 0:
                     product_model = self.env['product.product'].search(

@@ -98,7 +98,7 @@ class vendor_offer_automation(models.Model):
                                 product_sku = product_sku[:-len(self.partner_id.sku_postconfig)]
                             if not sku_code in product_skus:
                                 product_template = self.env['product.template'].search(
-                                    ['|', ('sku_code', '=', sku_code), ('manufacturer_pref', '=', product_sku)])
+                                    ['|', ('sku_code', '=', product_sku), ('manufacturer_pref', '=', sku_code)])
                                 if product_template:
                                     products = self.env['product.product'].search(
                                         [('product_tmpl_id', '=', product_template.id)])
