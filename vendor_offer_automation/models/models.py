@@ -5,6 +5,7 @@ import datetime
 
 import logging
 import base64
+import math
 from odoo.exceptions import ValidationError
 
 try:
@@ -106,25 +107,124 @@ class vendor_offer_automation(models.Model):
                                         [('product_tmpl_id', '=', product_template.id)])
                                     product_unit_price = product_template.list_price
                                     if len(products) > 0:
-                                        order_list_list.append(
-                                            dict(name=product_template.name, product_qty=1, date_planned=todays_date,
-                                                 product_uom=1, product_tier=product_template.tier.id,
-                                                 order_id=self.id, product_unit_price=product_unit_price,
-                                                 product_id=products[0].id, price_unit=product_template.list_price,
-                                                 expiration_date=product_expiration_date
-                                                 ))
+                                        order_line_obj = dict(name=product_template.name, product_qty=1,
+                                                              date_planned=todays_date,
+                                                              product_uom=1, product_tier=product_template.tier.id,
+                                                              order_id=self.id, product_unit_price=product_unit_price,
+                                                              product_id=products[0].id, price_unit=product_unit_price,
+                                                              product_retail=product_unit_price,
+                                                              list_price=product_unit_price,
+                                                              qty_in_stock=self.qty_in_stocks(products[0].id),
+                                                              expiration_date=product_expiration_date)
+                                        order_line_obj.update(self.get_product_sales_count(products[0].id))
+                                        multiplier_id = self.get_order_line_multiplier(
+                                            order_line_obj, product_template.premium)
+                                        order_line_obj.update({'multiplier': multiplier_id})
+                                        multiplier_list = self.env['multiplier.multiplier'].search(
+                                            [('id', '=', multiplier_id)])
+                                        possible_competition_list = self.env['competition.competition'].search(
+                                            [('id', '=', self.possible_competition.id)])
+                                        order_line_obj.update({'margin': multiplier_list.margin})
+                                        # order_line_obj.update({'product_unit_price': math.ceil(
+                                        #     round(float(product_unit_price) * (float(multiplier_list.retail) / 100),
+                                        #           2))})
+                                        order_line_obj.update(
+                                            {'product_offer_price': math.ceil(round(float(product_unit_price) * (
+                                                    float(multiplier_list.margin) / 100 + float(
+                                                possible_competition_list.margin) / 100), 2))})
+                                        order_list_list.append(order_line_obj)
+                                        _logger.info("order_line_obj %r", order_line_obj)
                                 product_skus.append(sku_code)
                         if len(order_list_list) > 0:
                             for order_line_object in order_list_list:
                                 order_line_model = self.env['purchase.order.line'].with_context(order_line_object)
                                 order_line_model.create(order_line_object)
-                            for purchase_order_line in self.order_line:
-                                purchase_order_line.onchange_product_id_vendor_offer()
+                            # for purchase_order_line in self.order_line:
+                            #     purchase_order_line.onchange_product_id_vendor_offer()
 
             except UnicodeDecodeError as ue:
                 _logger.info(ue)
 
+    def get_order_line_multiplier(self, order_line_obj, premium):
+        multiplier_list = None
+        if not order_line_obj['product_tier']:
+            multiplier_list = self.env['multiplier.multiplier'].search([('code', '=', 'out of scope')])
+        elif int(order_line_obj['product_sales_count']) == 0:
+            multiplier_list = self.env['multiplier.multiplier'].search([('code', '=', 'no history')])
+        elif float(order_line_obj['qty_in_stock']) > (float(order_line_obj['product_sales_count']) * 2) and \
+                order_line_obj['product_sales_count'] != 0:
+            multiplier_list = self.env['multiplier.multiplier'].search([('code', '=', 'overstocked')])
+        elif premium is True:
+            multiplier_list = self.env['multiplier.multiplier'].search([('code', '=', 'premium')])
+        elif order_line_obj['product_tier'] == 1:
+            multiplier_list = self.env['multiplier.multiplier'].search([('code', '=', 't1 good 45')])
+        elif order_line_obj['product_tier'] == 2:
+            multiplier_list = self.env['multiplier.multiplier'].search([('code', '=', 't2 good 35')])
+        if multiplier_list is None:
+            return False
+        return multiplier_list.id
 
+    @api.multi
+    def qty_in_stocks(self, product_id):
+        domain = [
+            ('product_id', '=', product_id),
+        ]
+        moves = self.env['stock.move'].search(domain, limit=1)
+        mqty = moves.product_qty
+        return mqty
+
+    @api.multi
+    def get_product_sales_count(self, product_id):
+        product_sales_count = product_sales_count_month = product_sales_count_90 = product_sales_count_yrs = None
+        try:
+            groupby_dict = groupby_dict_month = groupby_dict_90 = groupby_dict_yr = {}
+            sale_orders_line = self.env['sale.order.line'].search(
+                [('product_id', '=', product_id), ('state', '=', 'sale')])
+            groupby_dict['data'] = sale_orders_line
+            total = total_m = total_90 = total_yr = 0
+
+            for sale_order in groupby_dict['data']:
+                total = total + sale_order.product_uom_qty
+
+            product_sales_count = total
+            sale_orders = self.env['sale.order'].search(
+                [('product_id', '=', self.product_id.id), ('state', '=', 'sale')])
+
+            filtered_by_date = list(
+                filter(lambda x: fields.Datetime.from_string(x.confirmation_date).date() >= (
+                        fields.date.today() - datetime.timedelta(days=30)), sale_orders))
+            groupby_dict_month['data'] = filtered_by_date
+            for sale_order_list in groupby_dict_month['data']:
+                for sale_order in sale_order_list.order_line:
+                    if sale_order.product_id.id == product_id:
+                        total_m = total_m + sale_order.product_uom_qty
+
+            product_sales_count_month = total_m
+
+            filtered_by_90 = list(filter(lambda x: fields.Datetime.from_string(x.confirmation_date).date() >= (
+                    fields.date.today() - datetime.timedelta(days=90)), sale_orders))
+            groupby_dict_90['data'] = filtered_by_90
+
+            for sale_order_list_90 in groupby_dict_90['data']:
+                for sale_order in sale_order_list_90.order_line:
+                    if sale_order.product_id.id == product_id:
+                        total_90 = total_90 + sale_order.product_uom_qty
+
+            product_sales_count_90 = total_90
+
+            filtered_by_yr = list(filter(lambda x: fields.Datetime.from_string(x.confirmation_date).date() >= (
+                    fields.date.today() - datetime.timedelta(days=365)), sale_orders))
+            groupby_dict_yr['data'] = filtered_by_yr
+            for sale_order_list_yr in groupby_dict_yr['data']:
+                for sale_order in sale_order_list_yr.order_line:
+                    if sale_order.product_id.id == product_id:
+                        total_yr = total_yr + sale_order.product_uom_qty
+
+            product_sales_count_yrs = total_yr
+        except:
+            pass
+        return dict(product_sales_count=product_sales_count, product_sales_count_month=product_sales_count_month,
+                    product_sales_count_90=product_sales_count_90, product_sales_count_yrs=product_sales_count_yrs)
 
 
     @staticmethod
@@ -183,9 +283,22 @@ class vendor_offer_automation(models.Model):
             else:
                 order.template_exists = False
 
+    @api.onchange('possible_competition')
+    def possible_competition_onchange(self):
+        self.state = 'ven_draft'
+        for order in self:
+            for line in order.order_line:
+                multiplier_list = self.env['multiplier.multiplier'].search([('id', '=', line.multiplier.id)])
+                possible_competition_list = self.env['competition.competition'].search(
+                    [('id', '=', self.possible_competition.id)])
+                if self.document is None:
+                    line.product_unit_price = math.ceil(
+                        round(float(line.list_price) * (float(multiplier_list.retail) / 100), 2))
+                line.product_offer_price = math.ceil(round(float(line.product_unit_price) * (
+                        float(multiplier_list.margin) / 100 + float(possible_competition_list.margin) / 100), 2))
+
 
 class VendorOfferProductAuto(models.Model):
-
     _inherit = "purchase.order.line"
 
     def update_product_expiration_date(self):
