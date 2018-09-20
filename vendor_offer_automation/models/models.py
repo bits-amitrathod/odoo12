@@ -45,8 +45,6 @@ class vendor_offer_automation(models.Model):
 
     @api.model
     def create(self, vals):
-        if 'document' in vals and not self.template_exists:
-            raise ValidationError(_('Template Not Found for Vendor, Please Import Template in Settings Menu'))
         record = super(vendor_offer_automation, self).create(vals)
         record.map_customer_sku_with_catelog_number()
         return record
@@ -166,9 +164,6 @@ class vendor_offer_automation(models.Model):
 
     @api.multi
     def write(self, vals):
-        for order in self:
-            if 'document' in vals and not order.template_exists:
-                raise ValidationError(_('Template Not Found for Vendor, Please Import Template in Settings Menu'))
         res = super(vendor_offer_automation, self).write(vals)
         if 'document' in vals:
             self.env["purchase.order.line"].search([('order_id', '=', self.id)]).unlink()
