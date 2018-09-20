@@ -113,8 +113,8 @@ class WebsiteCstm(ExcelExport, http.Controller):
         else:
             return False
 
-    @http.route('/downloadCatalog', type='http', auth="user")
-    def testexport(self):
+    @http.route('/downloadCatalog', type='http', auth="public", website=True)
+    def downloadCatalog(self):
         data = '{"model":"product.template","fields":[],"ids":false,"domain":[["type","in",["consu","product"]],["type","in",["consu","product"]]],"context":{"lang":"en_US","tz":"Europe/Brussels","uid":1,"search_default_consumable":1,"default_type":"product","params":{"action":515}},"import_compat":false}'
         token = '1536750697732';
         return self.export(data, token)
@@ -136,7 +136,7 @@ class WebsiteCstm(ExcelExport, http.Controller):
 
             {"name": "list_price", "label": "SPS Price Per Unit"},
             {"name": "standard_price", "label": "SPS SALES PRICE"},
-            {"name": "product_variant_ids/.id", "label": "Min Expiration Date"}
+            {"name": "product_variant_id/.id", "label": "Min Expiration Date"}
         ]
 
         model, fieldsa, ids, import_compat = operator.itemgetter('model', 'fields', 'ids',

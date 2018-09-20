@@ -52,6 +52,7 @@ class IncomingMailCronModel(models.Model):
             count, failed = 0, 0
             pop_server = None
             if server.type == 'pop':
+                _logger.info('Server tpye is POP')
                 try:
                     while True:
                         pop_server = server.connect()

@@ -19,6 +19,8 @@ except ImportError:
 
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, pycompat, misc
 
+from odoo.exceptions import ValidationError, AccessError
+
 _logger = logging.getLogger(__name__)
 
 
@@ -56,19 +58,13 @@ class vendor_offer_automation(models.Model):
                     pricing_index = book.sheet_names().index('PPVendorPricing')
                 except:
                     pricing_index = 0
-                _logger.info("books %r", book.sheet_names())
-                excel_data_rows_with_columns = vendor_offer_automation._read_xls_book(book, pricing_index, read_data=True)
-                if len(excel_data_rows_with_columns) > 1:
-                    excel_data_rows = [excel_data_rows_with_columns[idx] for idx in
-                                       range(1, len(excel_data_rows_with_columns) - 1)]
-                    excel_columns = excel_data_rows_with_columns[0]
+                excel_columns = vendor_offer_automation._read_xls_book(book, pricing_index, read_data=False)
+                if len(excel_columns) == 1:
+                    excel_columns = excel_columns[0]
                     vendor_offer_automation_template = self.env['sps.vendor_offer_automation.template'].search(
                         [('customer_id', '=', self.partner_id.id), ('template_status', '=', 'Active')])
                     if len(vendor_offer_automation_template) > 0:
                         sorted_excel_columns = ','.join(sorted(excel_columns))
-                        _logger.info('vendor_offer_automation_template.columns_from_template %r',
-                                     vendor_offer_automation_template.columns_from_template)
-                        _logger.info('sorted_excel_columns %r', sorted_excel_columns)
                         if vendor_offer_automation_template.columns_from_template != sorted_excel_columns:
                             raise ValidationError(
                                 _('Document columns are not matching active offer template ' + self.template_name))
@@ -81,13 +77,20 @@ class vendor_offer_automation(models.Model):
                                 mapping_fields.update({name: value})
                     sku_index = None
                     order_list_list = []
+                    expiration_date_index = -1
                     if 'mf_customer_sku' in mapping_fields:
                         sku_index = excel_columns.index(mapping_fields['mf_customer_sku'])
+                    if 'mf_expiration_date' in mapping_fields:
+                        expiration_date_index = excel_columns.index(mapping_fields['mf_expiration_date'])
+
                     if not sku_index is None:
                         todays_date = datetime.datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
                         product_skus = []
+                        excel_data_rows = vendor_offer_automation._read_xls_book(book, pricing_index, read_data=True,
+                                                                                 expiration_date_index=expiration_date_index)
                         for excel_data_row in excel_data_rows:
                             sku_code = excel_data_row[sku_index]
+                            product_expiration_date = excel_data_row[expiration_date_index]
                             product_sku = sku_code
                             if self.partner_id.sku_preconfig and product_sku.startswith(
                                     self.partner_id.sku_preconfig):
@@ -97,7 +100,7 @@ class vendor_offer_automation(models.Model):
                                 product_sku = product_sku[:-len(self.partner_id.sku_postconfig)]
                             if not sku_code in product_skus:
                                 product_template = self.env['product.template'].search(
-                                    ['|', ('sku_code', '=', sku_code), ('manufacturer_pref', '=', product_sku)])
+                                    ['|', ('sku_code', '=', product_sku), ('manufacturer_pref', '=', sku_code)])
                                 if product_template:
                                     products = self.env['product.product'].search(
                                         [('product_tmpl_id', '=', product_template.id)])
@@ -107,7 +110,8 @@ class vendor_offer_automation(models.Model):
                                             dict(name=product_template.name, product_qty=1, date_planned=todays_date,
                                                  product_uom=1, product_tier=product_template.tier.id,
                                                  order_id=self.id, product_unit_price=product_unit_price,
-                                                 product_id=products.id, price_unit=product_template.list_price
+                                                 product_id=products[0].id, price_unit=product_template.list_price,
+                                                 expiration_date=product_expiration_date
                                                  ))
                                 product_skus.append(sku_code)
                         if len(order_list_list) > 0:
@@ -120,25 +124,45 @@ class vendor_offer_automation(models.Model):
             except UnicodeDecodeError as ue:
                 _logger.info(ue)
 
+
+
+
     @staticmethod
-    def _read_xls_book(book, pricing_index, read_data=False):
+    def _read_xls_book(book, pricing_index, read_data=False, expiration_date_index=-1):
         sheet = book.sheet_by_index(pricing_index)
         data = []
+        row_index = 0
         for row in pycompat.imap(sheet.row, range(sheet.nrows)):
+            if read_data is True and row_index == 0:
+                row_index = row_index + 1
+                continue
             values = []
+            cell_index = 0
             for cell in row:
-                if cell.ctype is xlrd.XL_CELL_NUMBER:
-                    is_float = cell.value % 1 != 0.0
+                if expiration_date_index == cell_index and not cell.value is None and str(cell.value) != '':
+                    is_datetime = cell.value % 1 != 0.0
+                    # emulate xldate_as_datetime for pre-0.9.3
+                    dt = datetime.datetime(*xlrd.xldate.xldate_as_tuple(cell.value, book.datemode))
                     values.append(
-                        pycompat.text_type(cell.value)
-                        if is_float
-                        else pycompat.text_type(int(cell.value))
+                        dt.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+                        if is_datetime
+                        else dt.strftime(DEFAULT_SERVER_DATE_FORMAT)
                     )
                 else:
-                    values.append(cell.value)
+                    if cell.ctype is xlrd.XL_CELL_NUMBER:
+                        is_float = cell.value % 1 != 0.0
+                        values.append(
+                            pycompat.text_type(cell.value)
+                            if is_float
+                            else pycompat.text_type(int(cell.value))
+                        )
+                    else:
+                        values.append(cell.value)
+                cell_index = cell_index + 1
             data.append(values)
             if not read_data:
                 break
+            row_index = row_index + 1
         return data
 
     @api.multi
@@ -156,7 +180,23 @@ class vendor_offer_automation(models.Model):
             if len(vendor_offer_templates) > 0:
                 order.template_name = vendor_offer_templates[0].file_name
                 order.template_exists = True
-                _logger.info('order.template_name %r %r', order.partner_id.id, order.template_name)
             else:
                 order.template_exists = False
+
+
+class VendorOfferProductAuto(models.Model):
+
+    _inherit = "purchase.order.line"
+
+    def update_product_expiration_date(self):
+        if self.order_id.document is None:
+            for order in self:
+                order.env.cr.execute(
+                    "SELECT min(use_date), max(use_date) FROM public.stock_production_lot where product_id =" + str(
+                        order.product_id.id))
+                query_result = order.env.cr.dictfetchone()
+                if query_result['max'] != None:
+                    self.expiration_date = fields.Datetime.from_string(str(query_result['max'])).date()
+
+
 

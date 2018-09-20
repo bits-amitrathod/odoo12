@@ -29,15 +29,8 @@ class PrioritizationEngine(models.TransientModel):
                         if self.calculate_cooling_priod_in_days(prioritization_engine_request):
                             prioritization_engine_request['customer_request_logs'] += 'successed cooling period, '
                             _logger.debug('successed cooling period')
-                            # check length of holds- method return True/False
-                            if self.calculate_length_of_holds_in_hours(prioritization_engine_request):
-                                prioritization_engine_request['customer_request_logs'] += 'successed length of hold, '
-                                _logger.debug('successed length of hold')
-                                # allocate product
-                                self.allocate_product(prioritization_engine_request, filter_available_product_lot_dict)
-                            else:
-                                prioritization_engine_request['customer_request_logs'] += 'length of hold false.'
-                                _logger.debug('length of hold false....')
+                            # allocate product
+                            self.allocate_product(prioritization_engine_request, filter_available_product_lot_dict)
                         else:
                             prioritization_engine_request['customer_request_logs'] += 'Cooling period false.'
                             _logger.debug('Cooling period false.....')
