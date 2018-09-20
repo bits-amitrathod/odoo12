@@ -38,6 +38,7 @@ class CustomerTemplate(models.Model):
     mf_required_quantity = fields.Char(string='Required Quantity')
     mf_quantity = fields.Char(string='Stock')
     mf_uom = fields.Char(string='Unit Of Measurement')
+    mf_product_description = fields.Char(string='Product Description')
 
     COL_SELECTION = []
 

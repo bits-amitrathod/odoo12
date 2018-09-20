@@ -51,9 +51,6 @@ class vendor_offer_automation(models.Model):
         record.map_customer_sku_with_catelog_number()
         return record
 
-    def validate_document_and_template(self, vals):
-
-
     @api.model
     def map_customer_sku_with_catelog_number(self):
         if not self.document is None:

@@ -29,6 +29,7 @@ class SpsCustomerRequest(models.Model):
     frequency_of_refill = fields.Integer()
     threshold = fields.Integer()
     uom = fields.Char()
+    product_description = fields.Char(string='Product Description')
     customer_request_logs = fields.Char(string='Customer Request Logs')
 
     # Get Customer Requests
