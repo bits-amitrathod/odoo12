@@ -12,7 +12,7 @@ import random
 
 import string
 
-from odoo import http
+from odoo import http, SUPERUSER_ID
 
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, pycompat, misc
 
@@ -24,7 +24,7 @@ from odoo.http import Controller, request, route
 
 _logger = logging.getLogger(__name__)
 
-UPLOAD_DIR = "/home/odoouser/uploads/"
+UPLOAD_DIR = "/home/odoo/uploads/"
 
 
 class FileUploadController(Controller):
@@ -57,6 +57,9 @@ class FileUploadController(Controller):
                                                                                        uploaded_file_path)
             else:
                 response = dict(errorCode=3, message='UnAuthorized Access')
+        if response['errorCode']:
+            self.send_mail(
+                "Sending API Response as " + str(response['message']) + " for user " + username)
 
         return json.JSONEncoder().encode(response)
 
@@ -101,3 +104,8 @@ class FileUploadController(Controller):
     @staticmethod
     def random_string_generator(size=10, chars=string.ascii_lowercase + string.digits):
         return ''.join(random.choice(chars) for _ in range(size))
+
+    def send_mail(self, body):
+        template = request.env.ref('customer-requests.set_log_email').sudo()
+        local_context = {'body': body}
+        template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True,force_send=True,)
