@@ -19,6 +19,8 @@ except ImportError:
 
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, pycompat, misc
 
+from odoo.exceptions import ValidationError, AccessError
+
 _logger = logging.getLogger(__name__)
 
 
@@ -43,9 +45,14 @@ class vendor_offer_automation(models.Model):
 
     @api.model
     def create(self, vals):
+        if 'document' in vals and not self.template_exists:
+            raise ValidationError(_('Template Not Found for Vendor, Please Import Template in Settings Menu'))
         record = super(vendor_offer_automation, self).create(vals)
         record.map_customer_sku_with_catelog_number()
         return record
+
+    def validate_document_and_template(self, vals):
+
 
     @api.model
     def map_customer_sku_with_catelog_number(self):
@@ -162,6 +169,9 @@ class vendor_offer_automation(models.Model):
 
     @api.multi
     def write(self, vals):
+        for order in self:
+            if 'document' in vals and not order.template_exists:
+                raise ValidationError(_('Template Not Found for Vendor, Please Import Template in Settings Menu'))
         res = super(vendor_offer_automation, self).write(vals)
         if 'document' in vals:
             self.env["purchase.order.line"].search([('order_id', '=', self.id)]).unlink()
