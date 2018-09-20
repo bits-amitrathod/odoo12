@@ -8,9 +8,9 @@
         <field name="arch" type="xml">
             <tree create="false">
                 <field name="customer_id"/>
-                <field name="customer_sku"/>
+                <field name="customer_sku" string="Customer SKU"/>
+                <field name="product_description" string="Customer Product Description"/>
                 <field name="qty_to_show" string="Quantity"/>
-                <!--<field name="required_quantity"/>-->
                 <field name="status"/>
                 <!--<field name="template_type" invisible="1" />-->
             </tree>
