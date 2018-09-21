@@ -129,13 +129,20 @@ class VendorOffer(models.Model):
     def possible_competition_onchange(self):
         self.state = 'ven_draft'
         for order in self:
+            possible_competition_list = self.env['competition.competition'].search(
+                [('id', '=', self.possible_competition.id)])
             for line in order.order_line:
                 multiplier_list = self.env['multiplier.multiplier'].search([('id', '=', line.multiplier.id)])
-                possible_competition_list = self.env['competition.competition'].search([('id', '=', self.possible_competition.id)])
-                line.product_unit_price = math.ceil(
-                    round(float(line.list_price) * (float(multiplier_list.retail) / 100), 2))
-                line.product_offer_price = math.ceil(round(float(line.product_unit_price) * (
-                            float(multiplier_list.margin) / 100 + float(possible_competition_list.margin) / 100), 2))
+                product_unit_price_multiplier = math.ceil(
+                    round(float(line.product_id.product_tmpl_id[0].list_price) * (float(multiplier_list.retail) / 100),
+                          2))
+                line.product_unit_price = product_unit_price_multiplier
+                line.retail_price = math.ceil(round((float(line.product_qty) * float(line.product_unit_price)), 2))
+                mrgin = float((float(multiplier_list.margin) / 100) + (float(possible_competition_list.margin) / 100))
+                line.product_offer_price = math.ceil(round((float(line.product_unit_price) * mrgin), 2))
+                line.offer_price = math.ceil(round((float(line.product_qty) * float(line.product_offer_price)), 2))
+
+
 
     @api.onchange('offer_amount', 'retail_amt')
     def cal_potentail_profit_margin(self):
@@ -317,8 +324,8 @@ class VendorOfferProduct(models.Model):
             multiplier_list = self.env['multiplier.multiplier'].search([('id', '=', self.multiplier.id)])
             possible_competition_list = self.env['competition.competition'].search([('id', '=', self.possible_competition.id)])
             self.margin = multiplier_list.margin
-            self.product_unit_price=math.ceil(round(float(self.list_price) * (float(multiplier_list.retail) / 100),2))
-            self.product_offer_price =math.ceil(round(float(self.product_unit_price) * (float(multiplier_list.margin) / 100 + float(possible_competition_list.margin) / 100),2))
+            self.product_unit_price= math.ceil(round(float(self.list_price) * (float(multiplier_list.retail) / 100),2))
+            self.product_offer_price = math.ceil(round(float(self.product_unit_price) * (float(multiplier_list.margin) / 100 + float(possible_competition_list.margin) / 100),2))
             self.product_tier=self.product_id.tier
 
     def update_product_expiration_date(self):

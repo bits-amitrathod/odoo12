@@ -6,7 +6,6 @@ import datetime
 import logging
 import base64
 import math
-from odoo.exceptions import ValidationError
 
 try:
     import xlrd
@@ -108,11 +107,10 @@ class vendor_offer_automation(models.Model):
                                     product_unit_price = product_template.list_price
                                     if len(products) > 0:
                                         order_line_obj = dict(name=product_template.name, product_qty=1,
-                                                              date_planned=todays_date,
+                                                              date_planned=todays_date, state='ven_draft',
                                                               product_uom=1, product_tier=product_template.tier.id,
-                                                              order_id=self.id, product_unit_price=product_unit_price,
+                                                              order_id=self.id,
                                                               product_id=products[0].id, price_unit=product_unit_price,
-                                                              product_retail=product_unit_price,
                                                               list_price=product_unit_price,
                                                               qty_in_stock=self.qty_in_stocks(products[0].id),
                                                               expiration_date=product_expiration_date)
@@ -125,15 +123,17 @@ class vendor_offer_automation(models.Model):
                                         possible_competition_list = self.env['competition.competition'].search(
                                             [('id', '=', self.possible_competition.id)])
                                         order_line_obj.update({'margin': multiplier_list.margin})
-                                        # order_line_obj.update({'product_unit_price': math.ceil(
-                                        #     round(float(product_unit_price) * (float(multiplier_list.retail) / 100),
-                                        #           2))})
+                                        product_unit_price_wtih_multiplier = math.ceil(
+                                            round(float(product_unit_price) * (float(multiplier_list.retail) / 100), 2))
+                                        order_line_obj.update({
+                                                'product_retail':product_unit_price_wtih_multiplier,
+                                                'product_unit_price': product_unit_price_wtih_multiplier})
+                                        product_offer_price_comp = math.ceil(round(float(product_unit_price_wtih_multiplier) * (
+                                                float(multiplier_list.margin) / 100 + float(
+                                            possible_competition_list.margin) / 100), 2))
                                         order_line_obj.update(
-                                            {'product_offer_price': math.ceil(round(float(product_unit_price) * (
-                                                    float(multiplier_list.margin) / 100 + float(
-                                                possible_competition_list.margin) / 100), 2))})
+                                            {'product_offer_price': product_offer_price_comp, 'offer_price': product_offer_price_comp})
                                         order_list_list.append(order_line_obj)
-                                        _logger.info("order_line_obj %r", order_line_obj)
                                 product_skus.append(sku_code)
                         if len(order_list_list) > 0:
                             for order_line_object in order_list_list:
@@ -221,11 +221,10 @@ class vendor_offer_automation(models.Model):
                         total_yr = total_yr + sale_order.product_uom_qty
 
             product_sales_count_yrs = total_yr
-        except:
-            pass
+        except Exception as ex:
+            _logger.error("Error", ex)
         return dict(product_sales_count=product_sales_count, product_sales_count_month=product_sales_count_month,
                     product_sales_count_90=product_sales_count_90, product_sales_count_yrs=product_sales_count_yrs)
-
 
     @staticmethod
     def _read_xls_book(book, pricing_index, read_data=False, expiration_date_index=-1):
@@ -283,21 +282,7 @@ class vendor_offer_automation(models.Model):
             else:
                 order.template_exists = False
 
-    @api.onchange('possible_competition')
-    def possible_competition_onchange(self):
-        self.state = 'ven_draft'
-        for order in self:
-            for line in order.order_line:
-                multiplier_list = self.env['multiplier.multiplier'].search([('id', '=', line.multiplier.id)])
-                possible_competition_list = self.env['competition.competition'].search(
-                    [('id', '=', self.possible_competition.id)])
-                if self.document is None:
-                    line.product_unit_price = math.ceil(
-                        round(float(line.list_price) * (float(multiplier_list.retail) / 100), 2))
-                else:
-                    line.product_unit_price = line.product_id.product_tmpl_id[0].list_price
-                line.product_offer_price = math.ceil(round(float(line.product_unit_price) * (
-                        float(multiplier_list.margin) / 100 + float(possible_competition_list.margin) / 100), 2))
+
 
 
 class VendorOfferProductAuto(models.Model):
