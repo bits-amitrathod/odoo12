@@ -294,6 +294,8 @@ class vendor_offer_automation(models.Model):
                 if self.document is None:
                     line.product_unit_price = math.ceil(
                         round(float(line.list_price) * (float(multiplier_list.retail) / 100), 2))
+                else:
+                    line.product_unit_price = line.product_id.product_tmpl_id[0].list_price
                 line.product_offer_price = math.ceil(round(float(line.product_unit_price) * (
                         float(multiplier_list.margin) / 100 + float(possible_competition_list.margin) / 100), 2))
 
