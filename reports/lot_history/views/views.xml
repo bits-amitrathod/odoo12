@@ -1,48 +1,43 @@
 <odoo>
-  <data>
+    <data>
 
-
-     <record id="sr_sale_salesbymonth_report_form_view11" model="ir.ui.view">
-            <field name="name">sr.sale.salesperson.report.form.view</field>
-            <field name="model">lot_history.lot_history</field>
+        <record model="ir.ui.view" id="form_list1">
+            <field name="name">lot.history.view.list</field>
+            <field name="model">stock.production.lot</field>
+            <field name="priority">20</field>
             <field name="arch" type="xml">
-                <form string="Lot History Report">
-                    <group>
-                        <group>
-                            <field name="start_date"/>
-                            <field name="product_id" widget="many2many_tags"/>
-                        </group>
-                        <group>
-                            <field name="end_date"/>
-                        </group>
-                    </group>
-
-                    <footer>
-                        <button name="get_report_values" string="View Report" class="oe_highlight"
-                                type="object" />
-
-                        <button string="Cancel" class="btn-default" special="cancel"/>
-                    </footer>
-                </form>
-
-
+                <tree>
+                    <field name="pr_sku"/>
+                    <field name="name"/>
+                    <field name="pr_name"/>
+                    <field name="pr_type"/>
+                    <field name="cr_date"/>
+                    <field name="vend"/>
+                    <field name="ph"/>
+                    <field name="email"/>
+                </tree>
             </field>
         </record>
 
 
+        <record model="ir.actions.act_window" id="action_stock_quantity_history1">
+            <field name="name">Lot History</field>
+            <field name="res_model">stock.production.lot</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+        (0, 0, {'view_mode': 'tree', 'view_id': ref('form_list1')},),
+        (0, 0, {'view_mode': 'form', 'view_id': ref('stock.view_production_lot_form')})
+        ]"/>
 
-     <record id="open_top_sales_action1" model="ir.actions.act_window">
-            <field name="name">Lot History Report </field>
-            <field name="res_model">lot_history.lot_history</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">form</field>
-            <field name="target">new</field>
         </record>
 
-    <menuitem id="purchase_history_report"
-            action="open_top_sales_action1"
-            name="Lot History"
-            parent="stock.menu_warehouse_report"
-            sequence="4"/>
-  </data>
+
+        <menuitem id="purchase_history_report1"
+                  action="action_stock_quantity_history1"
+                  name="Lot History"
+                  parent="stock.menu_warehouse_report"
+                  sequence="4"/>
+
+
+    </data>
 </odoo>

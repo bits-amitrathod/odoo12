@@ -26,7 +26,7 @@ class PrioritizationEngine(models.TransientModel):
                     filter_available_product_lot_dict = self.filter_available_product_lot_dict(available_product_lot_dict, prioritization_engine_request)
                     if len(filter_available_product_lot_dict) >= 1:
                         # check cooling period- method return True/False
-                        if self.calculate_cooling_priod_in_days(prioritization_engine_request):
+                        if self.check_cooling_period(prioritization_engine_request):
                             prioritization_engine_request['customer_request_logs'] += 'successed cooling period, '
                             _logger.debug('successed cooling period')
                             # allocate product
@@ -70,26 +70,35 @@ class PrioritizationEngine(models.TransientModel):
         return filtered_production_lot_dict_to_be_returned
 
     # calculate cooling period
-    def calculate_cooling_priod_in_days(self, prioritization_engine_request):
+    def check_cooling_period(self, prioritization_engine_request):
         flag = True
-        # get product last purchased date
+        # get product last purchased date(confirmation date)
         confirmation_date = self.get_product_last_purchased_date(prioritization_engine_request)
-        if not confirmation_date is None:
-            # get current datetime
-            current_datetime = datetime.now()
-            confirmation_date = datetime.strptime(self.change_date_format(confirmation_date), '%Y,%m,%d,%H,%M,%S')
-            # calculate datetime difference.
-            duration = current_datetime - confirmation_date  # For build-in functions
-            duration_in_days = self.return_duration_in_days(duration)
-            if int(prioritization_engine_request['cooling_period']) <= int(duration_in_days):
-                if prioritization_engine_request['status'].lower().strip() != 'inprocess':
-                    # update status In Process
-                    self.update_customer_status(prioritization_engine_request, 'Inprocess')
-                    flag = True
-            elif prioritization_engine_request['status'].lower().strip() != 'incoolingperiod':
-                    # update status In cooling period
-                    self.update_customer_status(prioritization_engine_request, 'InCoolingPeriod')
-                    flag = False
+        if confirmation_date is None:
+            # get product create date
+            create_date = self.get_product_create_date(prioritization_engine_request)
+            if not create_date is None:
+                # get current datetime
+                current_datetime = datetime.now()
+                create_date = datetime.strptime(self.change_date_format(create_date), '%Y,%m,%d,%H,%M,%S')
+                #convert cooling period days into hours
+                cooling_period_in_hours = int(prioritization_engine_request['cooling_period']) * 24;
+                length_of_hold_in_hours = int(prioritization_engine_request['length_of_hold'])
+                total_hours = cooling_period_in_hours + length_of_hold_in_hours
+                # calculate datetime difference.
+                duration = current_datetime - create_date  # For build-in functions
+                duration_in_hours = self.return_duration_in_hours(duration)
+                if int(total_hours) <= int(duration_in_hours):
+                    if prioritization_engine_request['status'].lower().strip() != 'inprocess':
+                        # update status In Process
+                        self.update_customer_status(prioritization_engine_request, 'Inprocess')
+                        flag = True
+                elif prioritization_engine_request['status'].lower().strip() != 'incoolingperiod':
+                        # update status In cooling period
+                        self.update_customer_status(prioritization_engine_request, 'InCoolingPeriod')
+                        flag = False
+            else:
+                flag = True
         else:
             flag = True
         return flag
@@ -120,8 +129,7 @@ class PrioritizationEngine(models.TransientModel):
             flag = True
         return flag
 
-
-        # get product expiration tolerance date, expiration tolerance in months(3/6/12)
+    # get product expiration tolerance date, expiration tolerance in months(3/6/12)
     def get_product_expiration_tolerance_date(self,prioritization_engine_request):
         expiration_tolerance_date = datetime.today() + relativedelta(months=+int(prioritization_engine_request['expiration_tolerance']))
         return expiration_tolerance_date
@@ -196,7 +204,8 @@ class PrioritizationEngine(models.TransientModel):
             "SELECT max(saleorder.confirmation_date) as confirmation_date FROM public.sale_order_line saleorderline "
             "INNER JOIN public.sale_order saleorder ON saleorder.id = saleorderline.order_id "
             "WHERE saleorderline.order_partner_id = " + str(prioritization_engine_request['customer_id']) +
-            " and saleorderline.product_id = " + str(prioritization_engine_request['product_id']))
+            " and saleorderline.product_id = " + str(prioritization_engine_request['product_id'])+
+            " and saleorder.state = 'engine'")
 
         query_result = self.env.cr.dictfetchone()
 
@@ -211,7 +220,8 @@ class PrioritizationEngine(models.TransientModel):
             "SELECT max(saleorder.create_date) as create_date FROM public.sale_order_line saleorderline "
             "INNER JOIN public.sale_order saleorder ON saleorder.id = saleorderline.order_id "
             " WHERE saleorderline.order_partner_id = " + str(prioritization_engine_request['customer_id']) +
-            " and saleorderline.product_id = " + str(prioritization_engine_request['product_id']))
+            " and saleorderline.product_id = " + str(prioritization_engine_request['product_id'])+
+            " and saleorder.state = 'engine'")
         query_result = self.env.cr.dictfetchone()
 
         if query_result['create_date'] != None:

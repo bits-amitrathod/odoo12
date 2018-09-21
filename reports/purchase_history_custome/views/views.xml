@@ -1,46 +1,59 @@
 <odoo>
   <data>
+      <record model="ir.ui.view" id="form_list">
+          <field name="name">purchase.history.view.list</field>
+          <field name="model">purchase.order.line</field>
+          <field name="priority">20</field>
+          <field name="arch" type="xml">
+              <tree>
+                  <field name="sku"/>
+                  <field name="manufacturer_rep"/>
+                  <field name="vendor"/>
+                  <field name="product_name"/>
+                  <field name="qty"/>
+                  <field name="unit_price" widget="monetary"/>
+                  <field name="minExpDate"/>
+                  <field name="maxExpDate"/>
+                  <field name="currency_id" invisible="1"/>
+              </tree>
+          </field>
+      </record>
 
 
-     <record id="sr_sale_salesbymonth_report_form_view11" model="ir.ui.view">
-            <field name="name">sr.sale.salesperson.report.form.view</field>
-            <field name="model">purchase.history.cust</field>
-            <field name="arch" type="xml">
-                <form string="Purchase History Report">
+
+
+      <record id="view_stock_quantity_history" model="ir.ui.view">
+        <field name="name">Purchsase Report</field>
+        <field name="model">popup.view.model</field>
+        <field name="arch" type="xml">
+            <form string="Choose your date">
+                <group>
                     <group>
-                        <group>
-                            <field name="start_date"/>
-                            <field name="product_id" widget="many2many_tags"/>
-                        </group>
-                        <group>
-                            <field name="end_date"/>
-                        </group>
+                        <field name="compute_at_date" widget="radio"/>
+                        <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                        <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                        <field name="product_id" widget="many2many_tags" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
                     </group>
-
-                    <footer>
-                        <button name="get_report_values" string="View Report" class="oe_highlight"
-                                type="object" />
-
-                        <button string="Cancel" class="btn-default" special="cancel"/>
-                    </footer>
-                </form>
-
-
-            </field>
-        </record>
-
-
-
-     <record id="open_top_sales_action1" model="ir.actions.act_window">
-            <field name="name">Purchase History Report </field>
-            <field name="res_model">purchase.history.cust</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">form</field>
-            <field name="target">new</field>
-        </record>
+                </group>
+                <footer>
+                    <button name="open_table" string="Retrieve the Inventory Quantities" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-default" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="action_stock_quantity_history" model="ir.actions.act_window">
+        <field name="name">Purchase Report</field>
+        <field name="res_model">popup.view.model</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_stock_quantity_history"/>
+        <field name="target">new</field>
+        <field name="context">{'default_compute_at_date': 0}</field>
+    </record>
 
     <menuitem id="purchase_history_report"
-            action="open_top_sales_action1"
+            action="action_stock_quantity_history"
             name="Purchase History"
             parent="purchase.purchase_report"
             sequence="4"/>
