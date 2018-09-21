@@ -27,7 +27,7 @@
             <field name="view_mode">form</field>
             <field name="view_id" ref="broker_view_popup_view"/>
             <field name="target">new</field>
-            <!--<field name="context">{'default_compute_at_date': 0, 'valuation': True}</field>-->
+
         </record>
 
         <record model="ir.ui.view" id="broker_form_list">
@@ -36,31 +36,14 @@
               <field name="priority">20</field>
               <field name="arch" type="xml">
                 <tree create="false" edit="false" >
-                    <!--<field name="total_retail_broker" widget="monetary"/>-->
-                    <!--<field name="bonus_eligible" widget="monetary"/>-->
-                    <!--<field name="hospital_total" widget="monetary"/>-->
-                    <!--<field name="broker_total" widget="monetary" />-->
-                    <!--<field name="broker_greater_40_total" widget="monetary"/>-->
-                    <!--<field name="broker_less_40_total" widget="monetary"/>-->
+
                      <field name="broker_desc" />
                      <field name="total_retail_broker" />
                      <field name="bonus_eligible" />
                      <field name="hospital_total" />
                      <field name="broker_greater_40_total" />
                      <field name="broker_less_40_total" />
-                    <!-- <field name="broker_desc" />
-                     <field name="broker_desc" />
-                     <field name="broker_desc" />
-                     <field name="broker_desc" />
-                     <field name="broker_desc" />
-                     <field name="broker_desc" />
-                     <field name="broker_desc" />
-                     <field name="broker_desc" />
-                     <field name="broker_desc" />-->
 
-
-                    <!--<field name="currency_id" invisible="1"/>-->
-                    <!--<field name="state" invisible="1" />-->
                 </tree>
               </field>
         </record>
