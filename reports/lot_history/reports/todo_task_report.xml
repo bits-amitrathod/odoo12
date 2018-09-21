@@ -2,7 +2,7 @@
 
     <report id="action_todo_model_report"
             string="Lot History"
-            model="lot_history.lot_history"
+            model="stock.production.lot"
             report_type="qweb-html"
             file="lot_history.purchase_report"
             name="lot_history.purchase_report"
@@ -24,13 +24,13 @@
                             </b>
                         </center>
                         <center>
-                            <b>Date Range:
-                                <span t-esc="start_date"/>
+                            <!--<b>Date Range:-->
+                                <!--<span t-esc="start_date"/>-->
 
-                                -
+                                 <!-- - -->
 
-                                <span t-esc="end_date"/>
-                            </b>
+                                <!--<span t-esc="end_date"/>-->
+                            <!--</b>-->
                         </center>
                         <!-- Report page content -->
                         <div class="table-responsive">
@@ -46,38 +46,38 @@
                                     <th style="border: 1px solid black;text-align: center; width: 220px;">Email</th>
                                 </tr>
 
-                                <t t-foreach="data.keys()" t-as="user">
-                                    <t t-foreach="data[user]" t-as="o">
+
+                                    <t t-foreach="data" t-as="o">
                                         <tr>
                                             <td  align="left" class="col-xs-2" style="border: 1px solid #000;">
-                                                <span t-esc="o[0]"/>
+                                                <span t-esc="o.pr_sku"/>
                                             </td>
                                             <td align="left" class="col-xs-2" style="border: 1px solid #000;">
-                                                <span t-esc="o[1]"/>
+                                                <span t-esc="o.name"/>
                                             </td>
                                             <td align="left" class="col-xs-2" style="border: 1px solid #000;">
-                                                <span t-esc="o[2]"/>
+                                                <span t-esc="o.pr_name"/>
                                             </td>
                                             <td align="left" class="col-xs-2" style="border: 1px solid #000;">
-                                                <span t-esc="o[3]"/>
+                                                <span t-esc="o.pr_type"/>
                                             </td>
                                             <td align="center" class="col-xs-2" style="border: 1px solid #000;">
-                                                <span t-esc="o[4]"/>
+                                                <span t-esc="o.cr_date"/>
                                             </td>
                                             <td align="left" class="col-xs-2" style="border: 1px solid #000;">
-                                                <span t-esc="o[5]"/>
+                                                <span t-esc="o.vend"/>
                                             </td>
                                             <td align="left" class="col-xs-2" style="border: 1px solid #000;">
-                                                <span t-esc="o[6]"/>
+                                                <span t-esc="o.ph"/>
                                             </td>
                                             <td align="left" class="col-xs-2" style="border: 1px solid #000;">
-                                                <span t-esc="o[7]"/>
+                                                <span t-esc="o.email"/>
                                             </td>
 
 
                                         </tr>
                                     </t>
-                                </t>
+
                             </table>
                         </div>
                     </div>

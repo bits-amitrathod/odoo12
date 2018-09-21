@@ -1,45 +1,58 @@
 <odoo>
   <data>
 
-     <record id="adjustment_report_form_view1" model="ir.ui.view">
-            <field name="name">adjustment.report.form.view</field>
-            <field name="model">inventory.adjustment.report</field>
-            <field name="arch" type="xml">
-                <form string="Adjustment Report">
+    <record model="ir.ui.view" id="form_list_adjustment">
+          <field name="name">adjustment.report.view.list</field>
+          <field name="model">stock.inventory</field>
+          <field name="priority">20</field>
+          <field name="arch" type="xml">
+              <tree>
+                  <field name="p_sku"/>
+                  <field name="date_cal"/>
+                  <field name="date_posted"/>
+                  <field name="type"/>
+                  <field name="p_qty" />
+                  <field name="amount" widget="monetary"/>
+                  <field name="total_amt" widget="monetary"/>
+                  <field name="currency_id" invisible="1"/>
+
+              </tree>
+          </field>
+      </record>
+
+       <record id="view_stock_quantity_history" model="ir.ui.view">
+        <field name="name">Adjustment Report</field>
+        <field name="model">popup.view.model1</field>
+        <field name="arch" type="xml">
+            <form string="Choose your date">
+                <group>
                     <group>
-                        <group>
-                            <field name="start_date"/>
-
-                        </group>
-                        <group>
-                            <field name="end_date"/>
-                        </group>
+                        <field name="compute_at_date" widget="radio"/>
+                        <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                        <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                        <!--<field name="product_id" widget="many2many_tags" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>-->
                     </group>
+                </group>
+                <footer>
+                    <button name="open_table" string="Retrieve the Inventory Adjustment" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-default" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
 
-                    <footer>
-                        <button name="get_report_values" string="View Report" class="oe_highlight"
-                                type="object" />
-
-                        <button string="Cancel" class="btn-default" special="cancel"/>
-                    </footer>
-                </form>
-
-
-            </field>
-        </record>
-
-
-
-     <record id="open_top_sales_action1" model="ir.actions.act_window">
-            <field name="name">Adjustment Report </field>
-            <field name="res_model">inventory.adjustment.report</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">form</field>
-            <field name="target">new</field>
-        </record>
+      <record id="action_stock_quantity_history" model="ir.actions.act_window">
+        <field name="name">Adjustment Report</field>
+        <field name="res_model">popup.view.model1</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_stock_quantity_history"/>
+        <field name="target">new</field>
+        <field name="context">{'default_compute_at_date': 0}</field>
+    </record>
 
     <menuitem id="adjustment_rep"
-            action="open_top_sales_action1"
+            action="action_stock_quantity_history"
             name="Adjustment Report"
             parent="stock.menu_warehouse_report"
             sequence="4"/>
