@@ -42,8 +42,6 @@ poplib._MAXLINE = 65536
 
 ATTACHMENT_DIR = "/home/odoo/attachments/"
 
-INCOMING_EMAIL_ID = "bits.qa10@gmail.com"
-
 
 class IncomingMailCronModel(models.Model):
     _inherit = 'fetchmail.server'
@@ -54,6 +52,7 @@ class IncomingMailCronModel(models.Model):
             count, failed = 0, 0
             pop_server = None
             if server.type == 'pop':
+                _logger.info('Server tpye is POP')
                 try:
                     while True:
                         pop_server = server.connect()
@@ -170,7 +169,8 @@ class IncomingMailCronModel(models.Model):
                                                         except Exception as e:
                                                             _logger.info(str(e))
                                             else:
-                                                _logger.info('user not found for %r', email_from)
+                                                _logger.info('user not found for %r',
+                                                             email_from)
                                         else:
                                             _logger.info('domain not matched for forwarded email')
                                     else:

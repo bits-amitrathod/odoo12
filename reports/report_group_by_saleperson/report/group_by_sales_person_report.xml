@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report
+                id="action_report_sales_saleperson_wise"
+                string="Gross Sales By Salesperson"
+                model="sale.order"
+                report_type="qweb-html"
+                file="report_group_by_saleperson.saleperson_temp"
+                name="report_group_by_saleperson.saleperson_temp"
+        />
+    </data>
+</odoo>

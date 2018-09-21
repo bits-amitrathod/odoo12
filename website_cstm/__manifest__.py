@@ -13,8 +13,7 @@
     'category': 'website',
     'version': '0.1',
 
-    'depends': ['website_sales','stock','website_product_brand','web_search','website_crm'],
-# 'mass_mailing',
+    'depends': ['website_sales','website_product_brand','web_search','website_crm','prioritization_engine','mass_mailing'],
 
     'data': [
         'security/ir.model.access.csv',

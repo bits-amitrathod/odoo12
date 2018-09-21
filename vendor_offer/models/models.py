@@ -306,11 +306,9 @@ class VendorOfferProduct(models.Model):
 
             self.cal_offer_price()
             self.expired_inventory_cal()
-            for order in self:
-                order.env.cr.execute("SELECT min(use_date), max(use_date) FROM public.stock_production_lot where product_id =" + str(order.product_id.id))
-                query_result = order.env.cr.dictfetchone()
-                if query_result['max'] != None:
-                    self.expiration_date=fields.Datetime.from_string(str(query_result['max'])).date()
+
+            self.update_product_expiration_date()
+
 
             for order in self:
                 for line in order:
@@ -326,6 +324,14 @@ class VendorOfferProduct(models.Model):
             self.product_offer_price =math.ceil(round(float(self.product_unit_price) * (float(multiplier_list.margin) / 100 + float(possible_competition_list.margin) / 100),2))
             self.product_tier=self.product_id.tier
 
+    def update_product_expiration_date(self):
+        for order in self:
+            order.env.cr.execute(
+                "SELECT min(use_date), max(use_date) FROM public.stock_production_lot where product_id =" + str(
+                    order.product_id.id))
+            query_result = order.env.cr.dictfetchone()
+            if query_result['max'] != None:
+                self.expiration_date = fields.Datetime.from_string(str(query_result['max'])).date()
 
     def expired_inventory_cal(self):
         expired_lot_count = 0

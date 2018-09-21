@@ -61,9 +61,6 @@ class SpsTransientBaseImport(models.TransientModel):
             mapper = operator.itemgetter(*indices)
         import_fields = [f for f in fields if f]
 
-        if 'customer_sku' not in import_fields:
-            raise ValueError(_("You must configure Customer Sku field to import"))
-
         rows_to_import = self._read_file(options)
         if options.get('headers'):
             rows_to_import = itertools.islice(rows_to_import, 0, None)
@@ -78,8 +75,18 @@ class SpsTransientBaseImport(models.TransientModel):
         self.ensure_one()
         import_result = {'messages': []}
         try:
-            self._cr.execute('SAVEPOINT import')
             data, import_fields, col = self._convert_import_data(fields, options)
+
+            if 'customer_sku' not in import_fields:
+                raise ValueError(_("You must configure Customer Sku field to import"))
+
+            if template_type == 'Inventory' and 'quantity' not in import_fields:
+                raise ValueError(_("You must configure Stock field to import"))
+
+            if template_type == 'Requirement' and 'required_quantity' not in import_fields:
+                raise ValueError(_("You must configure Required Quantity field to import"))
+
+            self._cr.execute('SAVEPOINT import')
             if len(col) == 1:
                 resource_model = self.env[parent_model]
                 columns = col[0]
@@ -111,27 +118,11 @@ class SpsTransientBaseImport(models.TransientModel):
 
     @api.multi
     def parse_preview(self, options, count=10):
-        """ Generates a preview of the uploaded files, and performs
-            fields-matching between the import's file data and the model's
-            columns.
-
-            If the headers are not requested (not options.headers),
-            ``matches`` and ``headers`` are both ``False``.
-
-            :param int count: number of preview lines to generate
-            :param options: format-specific options.
-                            CSV: {encoding, quoting, separator, headers}
-            :type options: {str, str, str, bool}
-            :returns: {fields, matches, headers, preview} | {error, preview}
-            :rtype: {dict(str: dict(...)), dict(int, list(str)), list(str), list(list(str))} | {str, str}
-        """
         self.ensure_one()
         fields = self.get_fields(self.res_model)
         try:
             rows = self._read_file(options)
             headers, matches = self._match_headers(rows, fields, options)
-            # Match should have consumed the first row (iif headers), get
-            # the ``count`` next rows for preview
             self.columns_from_template = ".".join(headers)
             preview = list(itertools.islice(rows, count))
             assert preview, "CSV file seems to have no content"
@@ -152,18 +143,65 @@ class SpsTransientBaseImport(models.TransientModel):
                 'debug': self.user_has_groups('base.group_no_one'),
             }
         except Exception as error:
-            # Due to lazy generators, UnicodeDecodeError (for
-            # instance) may only be raised when serializing the
-            # preview to a list in the return.
             _logger.debug("Error during parsing preview", exc_info=True)
             preview = None
             if self.file_type == 'text/csv':
                 preview = self.file[:ERROR_PREVIEW_BYTES].decode('iso-8859-1')
             return {
                 'error': str(error),
-                # iso-8859-1 ensures decoding will always succeed,
-                # even if it yields non-printable characters. This is
-                # in case of UnicodeDecodeError (or csv.Error
-                # compounded with UnicodeDecodeError)
                 'preview': preview,
             }
+
+    @api.model
+    def get_fields(self, model, depth=FIELDS_RECURSION_LIMIT):
+        Model = self.env['sps.customer.template']
+        importable_fields = [{
+            'id': 'id',
+            'name': 'id',
+            'string': _("External ID"),
+            'required': False,
+            'fields': [],
+            'type': 'id',
+        }]
+        model_fields = Model.fields_get()
+        blacklist = models.MAGIC_COLUMNS + [Model.CONCURRENCY_CHECK_FIELD]
+        for name, field in model_fields.items():
+            if name in blacklist:
+                continue
+            if field.get('deprecated', False) is not False:
+                continue
+            if field.get('readonly'):
+                states = field.get('states')
+                if not states:
+                    continue
+                if not any(attr == 'readonly' and value is False
+                           for attr, value in itertools.chain.from_iterable(states.values())):
+                    continue
+            if not name.startswith('mf_'):
+                continue
+            field_value = {
+                'id': name[3:],
+                'name': name[3:],
+                'string': field['string'],
+                # Y U NO ALWAYS HAS REQUIRED
+                'required': bool(field.get('required')),
+                'fields': [],
+                'type': field['type'],
+            }
+
+            # if field['type'] in ('many2many', 'many2one'):
+            #     field_value['fields'] = [
+            #         dict(field_value, name='id', string=_("External ID"), type='id'),
+            #         dict(field_value, name='.id', string=_("Database ID"), type='id'),
+            #     ]
+            # elif field['type'] == 'one2many' and depth:
+            #     field_value['fields'] = self.get_fields(field['relation'], depth=depth - 1)
+            #     if self.user_has_groups('base.group_no_one'):
+            #         field_value['fields'].append(
+            #             {'id': '.id', 'name': '.id', 'string': _("Database ID"), 'required': False, 'fields': [],
+            #              'type': 'id'})
+
+            importable_fields.append(field_value)
+
+        # TODO: cache on model?
+        return importable_fields

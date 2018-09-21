@@ -1,60 +1,33 @@
 <odoo>
-  <data>
-    <!-- explicit list view definition -->
-    <!--
-    <record model="ir.ui.view" id="website_sales.list">
-      <field name="name">website_sales list</field>
-      <field name="model">website_sales.website_sales</field>
-      <field name="arch" type="xml">
-        <tree>
-          <field name="name"/>
-          <field name="value"/>
-          <field name="value2"/>
-        </tree>
-      </field>
-    </record>
-    -->
+    <data noupdate="1">
+        <template id="default_acquirer_button">
+            <input type="hidden" name="data_set" t-att-data-action-url="tx_url"/>
+            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+            <t t-if="return_url">
+                <input type="hidden" name="return_url" t-att-value="return_url"/>
+            </t>
+            <input type="hidden" name="reference" t-att-value="reference"/>
+            <input type="hidden" name="amount" t-att-value="amount"/>
+            <input type="hidden" name="currency" t-att-value="currency.name"/>
+        </template>
 
-    <!-- actions opening views on models -->
-    <!--
-    <record model="ir.actions.act_window" id="website_sales.action_window">
-      <field name="name">website_sales window</field>
-      <field name="res_model">website_sales.website_sales</field>
-      <field name="view_mode">tree,form</field>
-    </record>
-    -->
-
-    <!-- server action to the one above -->
-    <!--
-    <record model="ir.actions.server" id="website_sales.action_server">
-      <field name="name">website_sales server</field>
-      <field name="model_id" ref="model_website_sales_website_sales"/>
-      <field name="state">code</field>
-      <field name="code">
-        action = {
-          "type": "ir.actions.act_window",
-          "view_mode": "tree,form",
-          "res_model": self._name,
-        }
-      </field>
-    </record>
-    -->
-
-    <!-- Top menu item -->
-    <!--
-    <menuitem name="website_sales" id="website_sales.menu_root"/>
-    -->
-    <!-- menu categories -->
-    <!--
-    <menuitem name="Menu 1" id="website_sales.menu_1" parent="website_sales.menu_root"/>
-    <menuitem name="Menu 2" id="website_sales.menu_2" parent="website_sales.menu_root"/>
-    -->
-    <!-- actions -->
-    <!--
-    <menuitem name="List" id="website_sales.menu_1_list" parent="website_sales.menu_1"
-              action="website_sales.action_window"/>
-    <menuitem name="Server to list" id="website_sales" parent="website_sales.menu_2"
-              action="website_sales.action_server"/>
-    -->
-  </data>
+        <record id="payment_acquirer_po_number_custom" model="payment.acquirer">
+            <field name="name">By Purches Order number</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="view_template_id" ref="default_acquirer_button"/>
+            <field name="module_id" ref="base.module_payment_transfer"/>
+            <!--<field name="provider">manual</field>-->
+            <!--<field name="website_published">True</field>-->
+            <field name="journal_id"></field>
+            <field name="description" type="html">
+                <p>
+                    A generic payment acquirer on purchase order number
+                </p>
+                <ul class="list-inline">
+                    <li><i class="fa fa-check"/>Online Payment
+                    </li>
+                </ul>
+            </field>
+        </record>
+    </data>
 </odoo>

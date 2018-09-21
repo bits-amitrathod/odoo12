@@ -12,7 +12,7 @@ import random
 
 import string
 
-from odoo import http
+from odoo import http, SUPERUSER_ID
 
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, pycompat, misc
 
@@ -24,7 +24,7 @@ from odoo.http import Controller, request, route
 
 _logger = logging.getLogger(__name__)
 
-UPLOAD_DIR = "/home/odoouser/uploads/"
+UPLOAD_DIR = "/home/odoo/uploads/"
 
 
 class FileUploadController(Controller):
@@ -40,7 +40,7 @@ class FileUploadController(Controller):
             response = dict(errorCode=1, message='Bad Request')
         if response is None:
             user_api_settings = request.env['res.partner'].sudo().search(
-                [('email', '=', username), ('api_secret', '=', password)])
+                [('api_username', '=', username), ('api_secret', '=', password)])
             if len(user_api_settings) == 1:
                 user_id = user_api_settings[0].id
                 directory_path = UPLOAD_DIR + str(datetime.now().strftime("%d%m%Y")) + "/" + str(user_id) + "/"
@@ -54,9 +54,12 @@ class FileUploadController(Controller):
                 uploaded_file_path = str(directory_path + file_name)
                 file_storage.save(uploaded_file_path)
                 response = request.env['sps.document.process'].sudo().process_document(user_api_settings,
-                                                                                             uploaded_file_path)
+                                                                                       uploaded_file_path)
             else:
                 response = dict(errorCode=3, message='UnAuthorized Access')
+        if response['errorCode']:
+            self.send_mail(
+                "Sending API Response as " + str(response['message']) + " for user " + username)
 
         return json.JSONEncoder().encode(response)
 
@@ -66,7 +69,7 @@ class FileUploadController(Controller):
     def _get_users_list(self, **post):
         # cr, context, pool, uid = request.cr, request.context, request.registry, request.uid
         input_data = post['input_data']
-        records = request.env['res.partner'].sudo().search([[input_data, '=', True]])
+        records = request.env['res.partner'].sudo().search([(input_data, '=', True), ('parent_id', '=', None)])
         response_data = [dict(name=record['name'], id=record['id']) for record in records]
         return str(json.dumps(response_data))
 
@@ -101,3 +104,8 @@ class FileUploadController(Controller):
     @staticmethod
     def random_string_generator(size=10, chars=string.ascii_lowercase + string.digits):
         return ''.join(random.choice(chars) for _ in range(size))
+
+    def send_mail(self, body):
+        template = request.env.ref('customer-requests.set_log_email').sudo()
+        local_context = {'body': body}
+        template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True,force_send=True,)

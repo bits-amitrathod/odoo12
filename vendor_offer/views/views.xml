@@ -166,7 +166,9 @@
                                                          <field name="name"    invisible="1" />
                                                          <field name="tier"  readonly="1" />
                                                          <field name="product_qty"  />
-                                                         <field name="expiration_date"  />
+                                                        <field name="expiration_date" widget="date">
+
+                                                        </field>
                                                          <field name="qty_in_stock"    />
                                                          <field name="product_sales_count"  />
                                                          <field name="product_sales_count_month"  />
@@ -198,7 +200,7 @@
                                                          <field name="name"  invisible="1" />
                                                          <field name="tier"  readonly="1" />
                                                          <field name="product_qty"  />
-                                                         <field name="expiration_date"    />
+                                                         <field name="expiration_date"  widget="date"  />
                                                          <field name="qty_in_stock"  />
                                                          <field name="product_sales_count" />
                                                          <field name="product_sales_count_month"  />
@@ -263,9 +265,7 @@
             <field name="inherit_id" ref="purchase.purchase_order_form"></field>
             <field name="arch" type="xml">
                 <button name="button_unlock" position="after">
-                     <button name="action_assign"  string="Check Availability" type="object" class="oe_highlight" groups="base.group_user" states="purchase"/>
                      <button name="action_validate" string="Validate" groups="stock.group_stock_user" type="object" class="oe_highlight" states="purchase"/>
-                     <button name="do_unreserve" string="Unreserve" groups="base.group_user" type="object" states="purchase"/>
                 </button>
 
                      <xpath expr="//group/group/field[@name='company_id']" position="after">
