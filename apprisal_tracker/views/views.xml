@@ -9,7 +9,7 @@
         <tree create="false" delete="false" >
           <field name="appraisal_no" attrs="{'invisible':[('state', 'not in', ('purchase','cancel'))]}"/>
           <field name="priority" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"/>
-          <field name="revision" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"/>
+          <field name="revision" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"  class="text-center" />
           <field name="status" invisible="1"   />
           <field name="state" invisible="1"   />
           <field name="acq_user_id" string='Acq Manager' attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"/>
@@ -26,7 +26,9 @@
           <!--<field name="tier2_retail"   string="Tier 2 Retail" attrs="{'invisible':[('status', 'not in', ('purchase'))]}" />-->
           <field name="new_customer" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}" />
           <!--<field name="broker_margin"  string="Margin Detail" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"  >-->
-            <field name="broker_margin" options='{"bg_color": "yellow : broker_margin!= False "}' string="Margin Detail" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"  ></field>
+            <field name="broker_margin" options='{"bg_color": "#f3f397 : color"+"==3;"+"#c9fbcf : color"+"==2;"+"#ff7098 : color"+"==1"}'  string="Margin Detail" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"  ></field>
+            <field name="status_ven" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}" />
+             <!--<field name="broker_margin"  string="Margin Detail" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"  ></field>-->
 
              <field name="color" invisible="1" />
 
@@ -209,6 +211,20 @@
                 file="apprisal_tracker.apprisal_tracker_report"
                 name="apprisal_tracker.apprisal_tracker_report"
         />
+
+          <record id="apprisal_tracker_view_purchase_order_filter" model="ir.ui.view">
+            <field name="name">request.quotation.select</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.view_purchase_order_filter"></field>
+            <field name="arch" type="xml">
+                 <!--<xpath expr="//group[@name='order_line']" >-->
+                 <group expand="0" string="Group By" >
+                        <filter string="Status" domain="[]" context="{'group_by':'status_ven'}"/>
+                        <!--<filter string="Product" domain="[]" context="{'group_by':'product_id','vendor_offer_data': True}"/>-->
+                    </group>
+                 <!--</xpath>-->
+            </field>
+          </record>
 
         <menuitem id="menu_procurement_management_apprisal_tracker" name="Appraisal Tracker"
             parent="purchase.menu_procurement_management"  action="apprisal_tracker.action_window" sequence="15"

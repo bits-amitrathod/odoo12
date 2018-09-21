@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report
+                id="action_report_broker_report"
+                string="Broker Report"
+                model="purchase.order"
+                report_type="qweb-html"
+                file="broker_report.brokerreport_temp_test"
+                name="broker_report.brokerreport_temp_test"
+        />
+    </data>
+</odoo>
