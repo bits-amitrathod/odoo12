@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="brokerreport_temp_test">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <page>
+                    <div class="oe_structure"/>
+                    <div class="row">
+                    <center>
+                        <b>
+                            <h2> Surgical Product Solutions </h2>
+                            <h4> Broker Report</h4>
+                        </b>
+                    </center>
+                    <center>
+                    </center>
+                    </div>
+                    <br/>
+                    <div class="table-responsive">
+                    <table class="table table-condensed" style="border: 1px solid black;">
+                            <thead>
+                                <tr style="border: 1px solid black;">
+                                    <th style="border: 1px solid black;text-align: center;">Desc</th>
+                                    <th style="border: 1px solid black;text-align: center;">Total Retail</th>
+                                    <th style="border: 1px solid black;text-align: center;">Bonus Eligible</th>
+                                    <th style="border: 1px solid black;text-align: center;">Hospital Total</th>
+                                    <th style="border: 1px solid black;text-align: center;">Broker Total</th>
+                                    <th style="border: 1px solid black;text-align: center;">Broker > 40% Total</th>
+                                    <th style="border: 1px solid black;text-align: center;">Broker less than 40% Total</th>
+                                </tr>
+                                    <tr t-foreach="data[0]" t-as="order">
+                                         <td  align="left" style="border: 1px solid black;">
+                                            <span t-esc="order.broker_desc" />
+                                        </td>
+                                        <td  align="right" style="border: 1px solid black;">
+                                            <span t-esc="order.total_retail_broker" t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                        </td>
+
+                                        <td align="right" style="border: 1px solid black;">
+                                            <span t-esc="order.bonus_eligible" t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                        </td>
+                                        <td align="right" style="border: 1px solid black;">
+                                            <span t-esc="order.hospital_total" t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                        </td>
+                                        <td  align="right" style="border: 1px solid black;white-space:nowrap;">
+                                             <span t-esc="order.broker_total" t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                        </td>
+                                         <td align="right" style="border: 1px solid black;white-space:nowrap;">
+                                             <span t-esc="order.broker_greater_40_total" t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                        </td>
+                                        <td align="right" style="border: 1px solid black;white-space:nowrap;">
+                                             <span t-esc="order.broker_less_40_total"  t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                  <tr t-foreach="data[1]" t-as="order">
+                                         <td  align="left" style="border: 1px solid black;">
+                                            <span t-esc="order.broker_desc_tot" />
+                                        </td>
+                                        <td  align="right" style="border: 1px solid black;">
+                                            <span t-esc="order.total_retail_broker_tot" />
+                                        </td>
+
+                                        <td align="right" style="border: 1px solid black;">
+                                            <span t-esc="order.bonus_eligible_tot" />
+                                        </td>
+                                        <td align="right" style="border: 1px solid black;">
+                                            <span t-esc="order.hospital_total_tot" />
+                                        </td>
+                                        <td  align="right" style="border: 1px solid black;white-space:nowrap;">
+                                             <span t-esc="order.broker_total_tot" />
+                                        </td>
+                                         <td align="right" style="border: 1px solid black;white-space:nowrap;">
+                                             <span t-esc="order.broker_greater_40_total_tot" />
+                                        </td>
+                                        <td align="right" style="border: 1px solid black;white-space:nowrap;">
+                                             <span t-esc="order.broker_less_40_total_tot"  />
+                                        </td>
+                                    </tr>
+                                <tr t-foreach="data[2]" t-as="order">
+                                         <td  align="left" style="border: 1px solid black;">
+                                            <span t-esc="order.broker_desc_mar" />
+                                        </td>
+                                        <td  align="right" style="border: 1px solid black;">
+                                            <span t-esc="order.total_retail_broker_mar" />
+                                        </td>
+
+                                        <td align="right" style="border: 1px solid black;">
+                                            <span t-esc="order.bonus_eligible_mar" />
+                                        </td>
+                                        <td align="right" style="border: 1px solid black;">
+                                            <span t-esc="order.hospital_total_mar" />
+                                        </td>
+                                        <td  align="right" style="border: 1px solid black;white-space:nowrap;">
+                                             <span t-esc="order.broker_total_mar" />
+                                        </td>
+                                         <td align="right" style="border: 1px solid black;white-space:nowrap;">
+                                             <span t-esc="order.broker_greater_40_total_mar" />
+                                        </td>
+                                        <td align="right" style="border: 1px solid black;white-space:nowrap;">
+                                             <span t-esc="order.broker_less_40_total_mar"  />
+                                        </td>
+                                    </tr>
+                            </thead>
+                    </table>
+                    </div>
+                </page>
+            </t>
+        </t>
+    </template>
+</odoo>

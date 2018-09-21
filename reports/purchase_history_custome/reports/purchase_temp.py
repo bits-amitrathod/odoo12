@@ -24,12 +24,12 @@ from odoo import api, models
 class ReportPurchaseSalespersonWise(models.AbstractModel):
     _name = 'report.purchase_history_custome.purchase_report'
 
+
     @api.model
     def get_report_values(self, docids, data=None):
+        purchase_orders = self.env['purchase.order.line'].browse(docids)
         return {
             'doc_ids': data.get('ids'),
             'doc_model': data.get('model'),
-            'data': data['form'],
-            'start_date': data['start_date'],
-            'end_date': data['end_date'],
+            'data': purchase_orders,
         }
