@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="price_list_temp">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <page>
+                    <div class="oe_structure"/>
+                    <div class="row">
+                    <center>
+                        <b>
+                            <h2> Surgical Product Solutions </h2>
+                            <h4> Product Price List </h4>
+                        </b>
+                    </center>
+
+                    </div>
+                    <br/>
+
+                        <t t-set="total_sum" t-value="0"/>
+                        <div class="table-responsive">
+                        <table class="table table-condensed" style="border: 1px solid black;">
+                            <thead>
+                                <tr style="border: 1px solid black;">
+                                    <th style="border: 1px solid black;text-align:  center !important;width:200px;"> Product</th>
+                                    <th style="border: 1px solid black;text-align:  center !important;width:500px;"> Product Name</th>
+                                    <th style="border: 1px solid black;text-align:  center !important;width:200px;">Cost</th>
+
+                                </tr>
+                                <tr t-foreach="data" t-as="order">
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="order.sku_code"/>
+                                    </td>
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="order.name"/>
+                                    </td>
+                                    <td align="right" style="border: 1px solid black;white-space: nowrap;">
+                                       <span t-esc="order.standard_price" t-options='{"widget": "monetary","display_currency": order.currency_id}' />
+                                    </td>
+                                </tr>
+                            </thead>
+                        </table>
+                        </div>
+                </page>
+            </t>
+        </t>
+    </template>
+
+
+    <template id="cust_price_list_temp">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <page>
+                    <div class="oe_structure"/>
+                    <div class="row">
+                    <center>
+                        <b>
+                            <h2> Surgical Product Solutions </h2>
+                            <h4> Customer Price List </h4>
+                        </b>
+                    </center>
+
+                    </div>
+                    <br/>
+
+                        <t t-set="total_sum" t-value="0"/>
+                        <div class="table-responsive">
+                        <table class="table table-condensed" style="border: 1px solid black;">
+                            <thead>
+                                <tr style="border: 1px solid black;">
+                                    <th style="border: 1px solid black;text-align:center !important;width:200px;"> Product</th>
+                                    <th style="border: 1px solid black;text-align:center !important;width:500px;"> Product Name</th>
+                                    <th style="border: 1px solid black;text-align: center!important;width:200px;">Cost</th>
+
+                                </tr>
+                                <tr t-foreach="data" t-as="order">
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="order.sku_code"/>
+                                    </td>
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="order.name"/>
+                                    </td>
+                                    <td align="right" style="border: 1px solid black;white-space: nowrap;">
+                                        <span t-esc="order.list_price" t-options='{"widget": "monetary","display_currency": order.currency_id}'/>
+                                    </td>
+                                </tr>
+                            </thead>
+                        </table>
+                        </div>
+                </page>
+            </t>
+        </t>
+    </template>
+
+</odoo>

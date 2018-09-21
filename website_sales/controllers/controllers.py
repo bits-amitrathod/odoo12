@@ -35,6 +35,16 @@ class WebsiteSales(WebsiteSale):
 
             payload['productExpiration'] = productMaxMinDates;
 
+        porductRows = [[]]
+        i = 1
+        for val in payload['products']:
+            porductRows[-1].append(val)
+            if i % 4 == 0:
+                porductRows.append([])
+            i += 1
+
+        payload['porductRows'] = porductRows
+
         return request.render("website_sale.products", payload)
 
     @http.route(['/shop/cart/updatePurchaseOrderNumber'], type='json', auth="public", methods=['POST'], website=True, csrf=False)
@@ -61,9 +71,15 @@ class WebsiteSales(WebsiteSale):
         productMaxMinDates[payload['product'].product_variant_id.id] = {"min": fields.Datetime.from_string(query_result['min']),
                                                           "max": fields.Datetime.from_string(query_result['max'])}
 
-        payload['productExpiration'] = productMaxMinDates;
+        payload['productExpiration'] = productMaxMinDates
+        payload['userEmail'] = request.env.user.email
         payload['isVisibleWebsiteExpirationDate'] = request.env['ir.config_parameter'].sudo().get_param('website_sales.default_website_expiration_date')
         return request.render("website_sale.product", payload)
+
+    # @http.route('/shop/payment/token', type='http', auth='public', website=True)
+    # def payment_token_cstm(self, pm_id=None, **kwargs):
+    #     return super(WebsiteSales, self).payment_token(pm_id=None, **kwargs)
+
 
 
 

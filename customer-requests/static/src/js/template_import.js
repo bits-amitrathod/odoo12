@@ -158,8 +158,11 @@ var DataImport = Widget.extend(ControlPanelMixin, {
                     for(var index = 0; index < jsonArray.length; index++){
                         var jsonObject = jsonArray[index];
                         self.$('#customers_list').append("<option value='" + jsonObject.id + "'>" + jsonObject.name + "</option>");
-                    }}
-                , "json");
+                    }
+                    self.$( "#loadingimg" ).hide();
+                 }, "json").fail(function() {
+                     self.$( "#loadingimg" ).hide();
+                 });
 
 
 
@@ -260,7 +263,7 @@ var DataImport = Widget.extend(ControlPanelMixin, {
         var self = this;
         var options = {
             headers: this.$('input.oe_import_has_header').prop('checked'),
-            advanced: this.$('input.oe_import_advanced_mode').prop('checked'),
+            advanced: false,
             keep_matches: this.do_not_change_match,
             customer_id: this.$('#customer_list').val()
         };
@@ -406,7 +409,7 @@ var DataImport = Widget.extend(ControlPanelMixin, {
         var headers_type = root.headers_type;
         function traverse(field, ancestors, collection, type) {
             var subfields = field.fields;
-            var advanced_mode = self.$('input.oe_import_advanced_mode').prop('checked');
+            var advanced_mode = false;
             var field_path = ancestors.concat(field);
             var label = _(field_path).pluck('string').join(' / ');
             var id = _(field_path).pluck('name').join('/');
@@ -536,11 +539,21 @@ var DataImport = Widget.extend(ControlPanelMixin, {
         this.exit();
     },
     exit: function () {
-       this.do_action({
-           type: 'ir.actions.client',
-            tag: 'reload',
-
-       });
+        var action = {
+            type:'ir.actions.act_window',
+            view_type: 'form',
+            view_mode: 'form',
+            res_model: 'res.partner',
+            views: [[false, 'form']],
+            res_id: this.customer,
+            target: 'main',
+        };
+        this.do_action(action);
+//       this.do_action({
+//           type: 'ir.actions.client',
+//            tag: 'reload',
+//
+//       });
     },
     onresults: function (event, from, to, message) {
         var no_messages = _.isEmpty(message);

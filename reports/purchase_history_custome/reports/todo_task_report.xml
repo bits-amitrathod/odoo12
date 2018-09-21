@@ -2,7 +2,7 @@
 
     <report id="action_todo_model_report"
             string="Purchase History"
-            model="purchase.history.cust"
+            model="purchase.order.line"
             report_type="qweb-html"
             file="purchase_history_custome.purchase_report"
             name="purchase_history_custome.purchase_report"
@@ -46,36 +46,36 @@
                                     <th style="border: 1px solid black;text-align: center;">Max Exp Date</th>
                                 </tr>
 
-                                <t t-foreach="data.keys()" t-as="user">
-                                    <t t-foreach="data[user]" t-as="o">
+                                <!--<t t-foreach="data.keys()" t-as="user">-->
+                                    <t t-foreach="data" t-as="o">
                                         <tr>
                                             <td  style="border: 1px solid #000;">
-                                                <span t-esc="o[0]"/>
+                                                <span t-esc="o.sku"/>
                                             </td>
                                             <td  style="border: 1px solid #000;">
-                                                <span t-esc="o[1]"/>
+                                                <span t-esc="o.manufacturer_rep"/>
                                             </td>
                                             <td  style="border: 1px solid #000;">
-                                                <span t-esc="o[1]"/>
+                                                <span t-esc="o.vendor"/>
                                             </td>
                                             <td style="border: 1px solid #000;">
-                                                <span t-esc="o[2]"/>
+                                                <span t-esc="o.product_name"/>
                                             </td>
                                             <td align="right"  style="border: 1px solid #000;">
-                                                <span t-esc="o[3]"/>
+                                                <span t-esc="o.qty"/>
                                             </td>
-                                            <td align="right"  style="border: 1px solid #000; white-space:nowrap;">$
-                                                <span t-esc="o[4]"/>
-                                            </td>
-                                            <td align="center"  style="border: 1px solid #000;">
-                                                <span t-esc="o[5]"/>
+                                            <td align="right"  style="border: 1px solid #000; white-space:nowrap;">
+                                                <span t-esc="o.unit_price" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                             </td>
                                             <td align="center"  style="border: 1px solid #000;">
-                                                <span t-esc="o[6]"/>
+                                                <span t-esc="o.minExpDate"/>
+                                            </td>
+                                            <td align="center"  style="border: 1px solid #000;">
+                                                <span t-esc="o.maxExpDate"/>
                                             </td>
                                         </tr>
                                     </t>
-                                </t>
+                                <!--</t>-->
                             </table>
                         </div>
                     </div>

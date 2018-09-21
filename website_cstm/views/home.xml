@@ -211,7 +211,7 @@
                                         <h1 class="headline text-center text-white">Download Our<br/>Product Inventory
                                         </h1>
                                         <div class="text-center">
-                                            <a href="/website_cstm/static/src/download/SPS_product_listing.xlsm"
+                                            <a href="/downloadCatalog"
                                                class="action_button">
                                                 Download Now
                                             </a>

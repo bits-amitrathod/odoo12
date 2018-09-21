@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_tree_voided_products" model="ir.ui.view">
+        <field name="sequence" eval="1"/>
+        <field name="name">Voided Product List</field>
+        <field name="model">sps.customer.requests</field>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <tree create="false">
+                <field name="customer_id"/>
+                <field name="customer_sku" string="Customer SKU"/>
+                <field name="product_description" string="Customer Product Description"/>
+                <field name="qty_to_show" string="Quantity"/>
+                <field name="status"/>
+                <!--<field name="template_type" invisible="1" />-->
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_form_voided_product" model="ir.ui.view">
+        <field name="name">sps.customer.requests Customer Request</field>
+        <field name="model">sps.customer.requests</field>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <form create="false" edit="false">
+                <group>
+                    <field name="customer_id"/>
+                    <field name="status"/>
+                </group>
+                <group>
+                    <field name="customer_sku"/>
+                    <field name="qty_to_show" string="Quantity"/>
+                </group>
+                <group>
+                    <field name="un_mapped_data"/>
+                </group>
+            </form>
+        </field>
+    </record>
+    <record id="voided_product_template_action" model="ir.actions.act_window">
+        <field name="name">Voided Products</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sps.customer.requests</field>
+        <field name="view_id" ref="view_tree_voided_products"/>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('status','in',['Voided'])]</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to define a new product.
+            </p><p>
+            You must define a product for everything you sell, whether it's a physical product, a consumable or a service you offer to customers.
+            </p><p>
+            The product form contains information to simplify the sale process: price, notes in the quotation, accounting data, procurement methods, etc.
+            </p>
+        </field>
+    </record>
+
+    <menuitem name="Voided Product" id="prioritization_engine.prioritization_voided_pro_menu" parent="prioritization_engine.prioritization_pmenu"
+              action="customer-requests.voided_product_template_action"/>
+
+</odoo>

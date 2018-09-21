@@ -5,16 +5,17 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
-                 <button name="action_quotation_send"  position="after">
-                 <!--<field name="show_validate" invisible="1"/>
-                 <field name="show_check_availability" invisible="1"/>
-                 <field name="picking_type_code" invisible="1"/>
-                 <button name="action_assign"  string="Check Availability" type="object" class="oe_highlight" groups="base.group_user" states="sale"/>
-                 <button name="action_validate" string="Validate" groups="stock.group_stock_user" type="object" class="oe_highlight" states="sale"/>
-                 <button name="do_unreserve" string="Unreserve" groups="base.group_user" type="object" states="sale"/>-->
-                 <!--<button name="action_validate" string="Validate" type="object" states="sale" class="btn-primary"/>
-                 <button name="action_validate" string="Validate" type="object" states="sale" class="btn-primary"/>-->
 
+                 <button name="action_quotation_send"  position="after">
+                     <button name="action_quotation_send" string="Send by Email" type="object" states="engine" class="btn-primary"/>
+                     <button name="print_quotation" string="Print" type="object" states="engine" class="btn-primary o_sale_print"/>
+                     <button name="action_confirm" id="action_confirm"
+                        string="Confirm Sale" class="btn-primary" type="object"
+                        attrs="{'invisible': [('state', 'not in', ['engine'])]}"/>
+                     <button name="action_cancel" states="engine" type="object" string="Cancel"/>
+
+
+                 <button name="action_validate" string="Validate" groups="stock.group_stock_user" type="object" class="oe_highlight" states="sale"/>
                  </button>
                  <button name="action_cancel" position="after" >
                  <button name="action_void" string="Voided" type="object" states="draft,sent"/>
@@ -27,9 +28,9 @@
                      <field name="carrier_info"/>
                      <field name="carrier_acc_no"/>
                  </field>
-                 <!--<xpath expr="/form/sheet/notebook/page[1]/field[@name='order_line']/tree/field[@name='currency_id']" position="after">
+                 <xpath expr="/form/sheet/notebook/page[1]/field[@name='order_line']/tree/field[@name='currency_id']" position="after">
                           <button name="action_show_details" string="Register lots, packs, location" type="object" icon="fa-list"  options='{"warn": true}' states="sale"/>
-                 </xpath>-->
+                 </xpath>
 
             </field>
         </record>

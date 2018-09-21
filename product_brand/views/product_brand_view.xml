@@ -99,7 +99,8 @@
                                         <field name="partner_id"/>
                                     </a>
                                 </h4>
-                                <!--<div>
+                               <!-- <div>
+
                                     <a name="%(product_brand.action_open_brand_products)d"
                                        type="action">
                                         <t t-esc="record.products_count.value"/> Products

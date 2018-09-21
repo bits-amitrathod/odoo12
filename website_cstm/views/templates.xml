@@ -33,28 +33,30 @@
 
             <div id="navbarCollapse" class="collapse navbar-collapse">
                 <t t-if="not request.httprequest.path[0:5] == '/shop'">
-                <form class="navbar-form navbar-right" role="search" t-attf-action="/shop" method="get">
-                    <div class="input-group header-searchbox">
-                        <input id="SearchBox" type="text" name="search" class="form-control search_box search-query form-control oe_search_box search_autocomplete" placeholder="Search..." t-att-value="search"/>
-                    </div>
-                </form>
+                    <form class="navbar-form navbar-right" role="search" t-attf-action="/shop" method="get">
+                        <div class="input-group header-searchbox">
+                            <input id="SearchBox" type="text" name="search"
+                                   class="form-control search_box search-query form-control oe_search_box search_autocomplete"
+                                   placeholder="Search..." t-att-value="search"/>
+                        </div>
+                    </form>
                 </t>
                 <ul class="nav navbar-nav navbar-right">
                     <li class="active">
                         <a href="#" style="color:#353b4d!important;">(412) 564-1280</a>
                     </li>
                     <!--<li>-->
-                        <!--<a href="#">Sign in</a>-->
+                    <!--<a href="#">Sign in</a>-->
                     <!--</li>-->
                     <!--<li class="dropdown currency">-->
 
-                        <!--<select class="form-control">-->
-                            <!--<option>USD</option>-->
-                            <!--<option>CAD</option>-->
-                            <!--<option>INR</option>-->
-                            <!--<option>GBP</option>-->
-                            <!--<option>AUD</option>-->
-                        <!--</select>-->
+                    <!--<select class="form-control">-->
+                    <!--<option>USD</option>-->
+                    <!--<option>CAD</option>-->
+                    <!--<option>INR</option>-->
+                    <!--<option>GBP</option>-->
+                    <!--<option>AUD</option>-->
+                    <!--</select>-->
                     <!--</li>-->
                 </ul>
             </div>
@@ -72,25 +74,38 @@
                 <div class="row">
                     <div class="col-md-5 col-sm-12 newsletter">
                         <h6>Sign Up for our Newsletter</h6>
-                        <div class="newsletter ">
-                            <p class="message"/>
-                            <form action="#" method="post" name="mc-embedded-subscribe-form" class="contact-form"
-                                  target="_blank">
-                                <div class="row">
-                                    <div class="col-md-8 col-sm-8">
-                                        <input type="email" value="" name="EMAIL" class="contact_email"
-                                               placeholder="Enter your email address..."/>
-                                    </div>
-                                    <div class="col-md-4 col-sm-4">
-                                        <input type="" value="Sign Up" class="action_button sign_up"
-                                               name="subscribe"/>
-                                    </div>
-                                </div>
-                            </form>
+                        <!--<div class="newsletter ">-->
+                            <!--<p class="message"/>-->
+                            <!--<form action="#" method="post" name="mc-embedded-subscribe-form" class="contact-form"-->
+                                  <!--target="_blank">-->
+                                <!--<div class="row">-->
+                                    <!--<div class="col-md-8 col-sm-8">-->
+                                        <!--<input type="email" value="" name="EMAIL" class="contact_email"-->
+                                               <!--placeholder="Enter your email address..."/>-->
+                                    <!--</div>-->
+                                    <!--<div class="col-md-4 col-sm-4">-->
+                                        <!--<input type="" value="Sign Up" class="action_button sign_up"-->
+                                               <!--name="subscribe"/>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</form>-->
+                        <!--</div>-->
+                        <div class="oe_snippet_body input-group js_subscribe" data-list-id="1">
+                            <input type="email" name="email" class="js_subscribe_email form-control contact_email"
+                                   placeholder="your email..."/>
+                            <span class="input-group-btn">
+                                <a href="#" class="btn btn-primary js_subscribe_btn action_button" style="width: 130px;">Subscribe</a>
+                                <a href="#" class="btn btn-success js_subscribed_btn hidden action_button" disabled="disabled" style="width: 130px;">
+                                    Thanks
+                                </a>
+                            </span>
+                            <div class="alert alert-success hidden">Thanks for your subscription!</div>
                         </div>
+
                         <p>Sign up to get the latest on sales, new releases and more …</p>
                         <div class="">
-                            <a href="https://www.bbb.org/us/pa/pittsburgh/profile/surgical-supplies/surgical-product-solutions-llc-0141-71017485#bbbonlineclick" target="_blank" title="SPS Accredited Business Review">
+                            <a href="https://www.bbb.org/us/pa/pittsburgh/profile/surgical-supplies/surgical-product-solutions-llc-0141-71017485#bbbonlineclick"
+                               target="_blank" title="SPS Accredited Business Review">
                                 <img src="/website_cstm/static/src/img//black-seal-96-50-surgical-product-solutions-llc-71017485_large.png"
                                      alt=""/>
                             </a>
@@ -123,7 +138,9 @@
                         <h6>Footer</h6>
                         <ul class="footer_menu">
                             <li>
-                                <a href="/website_cstm/static/src/download/SPS_product_listing.xlsm" title="Download Catalog">Download Catalog</a>
+                                <a href="/downloadCatalog"
+                                   title="Download Catalog">Download Catalog
+                                </a>
                             </li>
                             <li>
                                 <a href="/search" title="Search">Search</a>
@@ -135,12 +152,15 @@
                                 <a href="/faqs" title="FAQs">FAQs</a>
                             </li>
                             <li>
-                                <a href="/quality_assurance" title="Quality Assurance and Service Guarantee">Quality Assurance and Service
+                                <a href="/quality_assurance" title="Quality Assurance and Service Guarantee">Quality
+                                    Assurance and Service
                                     Guarantee
                                 </a>
                             </li>
                             <li>
-                                <a href="http://www.surgicalproductsolutions.com/" title="SurgicalProductSolutions.com">SurgicalProductSolutions.com</a>
+                                <a href="http://www.surgicalproductsolutions.com/" title="SurgicalProductSolutions.com">
+                                    SurgicalProductSolutions.com
+                                </a>
                             </li>
                         </ul>
                     </div>
@@ -148,7 +168,8 @@
                         <h6 class="social">Social</h6>
                         <ul class="social_icons">
                             <li class="linkedin">
-                                <a href="https://www.linkedin.com/company/2706681?trk=tyah" title="Surgical Product Solutions on LinkedIn" rel="me" target="_blank">
+                                <a href="https://www.linkedin.com/company/2706681?trk=tyah"
+                                   title="Surgical Product Solutions on LinkedIn" rel="me" target="_blank">
                                     <i class="fa fa-linkedin" aria-hidden="true"/>
                                 </a>
                             </li>
@@ -161,7 +182,7 @@
 
                     <div class="col-md-5 col-sm-5">
                         <p class="credits">
-                         	<![CDATA[&copy;]]> 2018 <a href="#" title="">Surgical Product Solutions</a>.
+                            <![CDATA[&copy;]]> 2018 <a href="#" title="">Surgical Product Solutions</a>.
 
                         </p>
                     </div>

@@ -43,9 +43,20 @@
         </t>
     </template>
 
+    <template id="sort" inherit_id="website_sale.sort" active="True" customize_show="True" name="Show Sort by">
+        <xpath expr="//div[hasclass('dropdown_sorty_by')]" position="after">
+            <button type="button" class="categoriesCollapseBtn btn btn-default" data-toggle="collapse"
+                    data-target="#categories-collapse">
+                <span>Categories</span>
+                <span class="caret"/>
+            </button>
+        </xpath>
+    </template>
+
     <template id="products_categories" name="eCommerce Categories" inherit_id="website_sale.products_categories">
         <xpath expr="//div[@id='products_grid_before']/ul" position="replace">
-            <ul class="nav nav-pills nav-stacked mt16">
+
+            <ul id="categories-collapse" class="nav nav-pills nav-stacked mt16 collapse">
                 <li t-att-class=" '' if category else 'active' ">
                     <a t-att-href="keep('/shop',category=0)" class="o_not_editable">ALL CATEGORIES</a>
                 </li>
@@ -53,6 +64,12 @@
                     <t t-call="website_sale.categories_recursive"/>
                 </t>
             </ul>
+        </xpath>
+        <xpath expr="//div[@id='products_grid_before']" position="attributes">
+            <attribute name="class">col-md-3 col-sm-4</attribute>
+        </xpath>
+        <xpath expr="//div[@id='products_grid']" position="attributes">
+            <attribute name="class">col-md-9 col-sm-8</attribute>
         </xpath>
     </template>
 
@@ -90,28 +107,42 @@
         </xpath>
     </template>
 
+    <!-- ~~~~~~~~~~~~~~ Confirm Order~~~~~~~~~~~~ -->
     <template id="customerReferenceSO" name="customerReferenceSO" inherit_id="website_sale.payment">
         <xpath expr="//div[@id='payment_method']" position="before">
-            <div class="row" id="order_customer_referance_so">
-                <div id="cart_totala" class="col-xs-12 col-sm-6">
-                    <span class="col-xs-5 text-right h5 mt0" style="padding-top: 7px;">Purchase Order #:</span>
-                    <span class="col-xs-6 text-right-not-xs text-left-xs h4 mt0" style="white-space: nowrap;">
-                        <input type="text" class="form-control" name="customerReferenceSO"
-                               t-att-value="website_sale_order.client_order_ref"/>
-                    </span>
+            <t t-if="website_sale_order.partner_id.allow_purchase">
+                <div class="row" id="order_customer_referance_so">
+                    <div id="cart_totala" class="col-xs-12 col-sm-6">
+                        <span class="col-xs-5 text-right h5 mt0" style="padding-top: 7px;">Purchase Order #:</span>
+                        <span class="col-xs-6 text-right-not-xs text-left-xs h4 mt0" style="white-space: nowrap;">
+                            <input type="text" class="form-control" name="customerReferenceSO"
+                                   t-att-value="website_sale_order.client_order_ref"/>
+                        </span>
+                    </div>
                 </div>
-            </div>
+            </t>
         </xpath>
     </template>
 
+
     <template id="confirmationCstm" name="confirmation cstm" inherit_id="website_sale.confirmation">
         <xpath expr="//div[hasclass('oe_structure')]" position="before">
-            <div id="purchaseOrderConfirmation" class="row">
-                <div class="col-xs-12 col-sm-6">
-                     <strong>Purchase Order #:</strong>
-                    <t t-esc="order.client_order_ref"/>
+            <t t-if="order.client_order_ref">
+                <div id="purchaseOrderConfirmation" class="row">
+                    <div class="col-xs-12 col-sm-6">
+
+                        <strong>Purchase Order #:</strong>
+                        <t t-esc="order.client_order_ref"/>
+                    </div>
                 </div>
-            </div>
+            </t>
+        </xpath>
+    </template>
+
+    <!--Report-->
+    <template id="report_shop_saleorder_document" inherit_id="sale.report_saleorder_document">
+        <xpath expr="//div[@id='informations']/div[1]/strong" position="replace">
+            <strong>Purchase Order #:</strong>
         </xpath>
     </template>
 
@@ -119,10 +150,18 @@
     <template id="category_vender" name="category Vender">
         <div class="row">
             <div class="col-sm-12">
-                <strong class="pull-left">Category:</strong>
+                <strong class="pull-left" style="padding-right: 5px;">Category:</strong>
                 <ul class="list-inline">
+                    <t t-set="commas" t-value="len(product.public_categ_ids)"/>
+                    <t t-set="commaCount" t-value="1"/>
                     <t t-foreach="product.public_categ_ids" t-as="c">
-                        <t t-call="website_sales.categories_recursive"/>
+                        <li t-att-class="'active' if c.id == int(category or 0) else None" style="padding: 0px;">
+                            <a t-att-href="keep('/shop/category/' + slug(c), category=0)" class="linkCstm">
+                                <span t-field="c.name"/>
+                                <t t-if="commas &gt; commaCount">,</t>
+                            </a>
+                        </li>
+                        <t t-set="commaCount" t-value="commaCount+1"/>
                     </t>
                 </ul>
             </div>
@@ -149,11 +188,5 @@
         </li>
     </template>
 
-
-    <template id="report_shop_saleorder_document" inherit_id="sale.report_saleorder_document">
-        <xpath expr="//div[@id='informations']/div[1]/strong" position="replace">
-            <strong>Purchase Order #:</strong>
-        </xpath>
-    </template>
 
 </odoo>

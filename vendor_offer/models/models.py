@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api, SUPERUSER_ID
+from odoo import models, fields, api, SUPERUSER_ID,_
 from odoo.addons import decimal_precision as dp
+from odoo.exceptions import UserError, AccessError,ValidationError
 import datetime
 import math
 from random import randint
@@ -13,6 +14,7 @@ class VendorOffer(models.Model):
     _inherit = "purchase.order"
 
     vendor_offer_data = fields.Boolean()
+    status_ven = fields.Char( store=True, string="Status")
     carrier_info = fields.Char("Carrier Info", related='partner_id.carrier_info', readonly=True)
     carrier_acc_no = fields.Char("Carrier Account No", related='partner_id.carrier_acc_no', readonly=True)
     shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
@@ -73,6 +75,29 @@ class VendorOffer(models.Model):
         ('cancel', 'Cancelled')
     ], string='Status', readonly=True, index=True, copy=False, default='draft', track_visibility='onchange')
 
+    def action_validate(self):
+        multi = self.env['stock.picking'].search([('purchase_id', '=', self.id)])
+        if len(multi) == 1 and self.picking_count ==1:
+            return multi.button_validate()
+        elif self.picking_count > 1:
+            raise ValidationError(_('Validate is not possible for multiple Shipping please do validate one by one'))
+
+    def action_assign(self):
+        multi = self.env['stock.picking'].search([('purchase_id', '=', self.id)])
+        if len(multi) >= 1:
+            return multi.action_assign()
+
+    def _compute_show_validate(self):
+        multi = self.env['stock.picking'].search([('purchase_id', '=', self.id)])
+        if len(multi)>=1:
+            multi._compute_show_validate()
+
+    @api.multi
+    def do_unreserve(self):
+        multi = self.env['stock.picking'].search([('purchase_id', '=', self.id)])
+        if len(multi) >= 1:
+            return multi.do_unreserve()
+
     def test_00_purchase_order_flow(self):
         pass
 
@@ -85,7 +110,6 @@ class VendorOffer(models.Model):
 
     @api.depends('order_line.product_offer_price')
     def _amount_tot_all(self):
-        print('=order_line.product_offer_price =======================')
         for order in self:
             retail_amt = offer_amount = 0.0
             for line in order.order_line:
@@ -105,13 +129,19 @@ class VendorOffer(models.Model):
     def possible_competition_onchange(self):
         self.state = 'ven_draft'
         for order in self:
+            possible_competition_list = self.env['competition.competition'].search(
+                [('id', '=', self.possible_competition.id)])
             for line in order.order_line:
                 multiplier_list = self.env['multiplier.multiplier'].search([('id', '=', line.multiplier.id)])
-                possible_competition_list = self.env['competition.competition'].search([('id', '=', self.possible_competition.id)])
-                line.product_unit_price = math.ceil(
-                    round(float(line.list_price) * (float(multiplier_list.retail) / 100), 2))
-                line.product_offer_price = math.ceil(round(float(line.product_unit_price) * (
-                            float(multiplier_list.margin) / 100 + float(possible_competition_list.margin) / 100), 2))
+                product_unit_price_multiplier = math.ceil(
+                    round(float(line.product_id.product_tmpl_id[0].list_price) * (float(multiplier_list.retail) / 100),
+                          2))
+                line.product_unit_price = product_unit_price_multiplier
+                line.retail_price = math.ceil(round((float(line.product_qty) * float(line.product_unit_price)), 2))
+                mrgin = float((float(multiplier_list.margin) / 100) + (float(possible_competition_list.margin) / 100))
+                line.product_offer_price = math.ceil(round((float(line.product_unit_price) * mrgin), 2))
+                line.offer_price = math.ceil(round((float(line.product_qty) * float(line.product_offer_price)), 2))
+
 
     @api.onchange('offer_amount', 'retail_amt')
     def cal_potentail_profit_margin(self):
@@ -137,14 +167,21 @@ class VendorOffer(models.Model):
     def action_confirm_vendor_offer(self):
         self.write({'state': 'purchase'})
         self.write({'status': 'purchase'})
+        self.write({'status_ven': 'Accepted'})
         self.write({'accepted_date': fields.date.today()})
+        if (self.revision > 0):
+            temp = self.revision - 1
+            self.revision = temp
         return True
 
     @api.multi
     def action_cancel_vendor_offer(self):
         self.write({'state': 'cancel'})
         self.write({'status': 'cancel'})
+        self.write({'status_ven': 'Declined'})
         self.write({'declined_date': fields.date.today()})
+
+
 
     @api.model
     def create(self, vals):
@@ -159,7 +196,6 @@ class VendorOffer(models.Model):
         if (self.state == 'ven_draft'):
             temp = self.revision + 1
             values['revision'] = temp
-            print(self.revision)
         return super(VendorOffer, self).write(values)
 
 
@@ -187,6 +223,12 @@ class VendorOfferProduct(models.Model):
     product_note = fields.Text(string="Notes")
     product_retail = fields.Char(string="Total Retail Price")
     product_unit_price = fields.Char(string="Retail Price")
+
+    def action_show_details(self):
+
+        multi = self.env['stock.move'].search([('purchase_line_id', '=', self.id)])
+        if len(multi) >= 1:
+            return multi.action_show_details()
 
     @api.depends('product_qty', 'list_price', 'taxes_id','product_offer_price')
     def _compute_amount(self):
@@ -273,11 +315,9 @@ class VendorOfferProduct(models.Model):
 
             self.cal_offer_price()
             self.expired_inventory_cal()
-            for order in self:
-                order.env.cr.execute("SELECT min(use_date), max(use_date) FROM public.stock_production_lot where product_id =" + str(order.product_id.id))
-                query_result = order.env.cr.dictfetchone()
-                if query_result['max'] != None:
-                    self.expiration_date=fields.Datetime.from_string(str(query_result['max'])).date()
+
+            self.update_product_expiration_date()
+
 
             for order in self:
                 for line in order:
@@ -289,10 +329,19 @@ class VendorOfferProduct(models.Model):
             multiplier_list = self.env['multiplier.multiplier'].search([('id', '=', self.multiplier.id)])
             possible_competition_list = self.env['competition.competition'].search([('id', '=', self.possible_competition.id)])
             self.margin = multiplier_list.margin
-            self.product_unit_price=math.ceil(round(float(self.list_price) * (float(multiplier_list.retail) / 100),2))
-            self.product_offer_price =math.ceil(round(float(self.product_unit_price) * (float(multiplier_list.margin) / 100 + float(possible_competition_list.margin) / 100),2))
+
+            self.product_unit_price= math.ceil(round(float(self.list_price) * (float(multiplier_list.retail) / 100),2))
+            self.product_offer_price = math.ceil(round(float(self.product_unit_price) * (float(multiplier_list.margin) / 100 + float(possible_competition_list.margin) / 100),2))
             self.product_tier=self.product_id.tier
 
+    def update_product_expiration_date(self):
+        for order in self:
+            order.env.cr.execute(
+                "SELECT min(use_date), max(use_date) FROM public.stock_production_lot where product_id =" + str(
+                    order.product_id.id))
+            query_result = order.env.cr.dictfetchone()
+            if query_result['max'] != None:
+                self.expiration_date = fields.Datetime.from_string(str(query_result['max'])).date()
 
     def expired_inventory_cal(self):
         expired_lot_count = 0

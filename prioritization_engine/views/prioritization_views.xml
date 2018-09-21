@@ -12,23 +12,66 @@
                     </button>
                 </button>
                   <field name="vat" position="after">
-                      <field name="sku_preconfig"/>
-                      <field name="sku_postconfig"/>
-                      <field name="quickbook_id"/>
-                      <field name="preferred_method"/>
+                      <field name="sku_preconfig" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                      <field name="sku_postconfig" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                      <field name="quickbook_id" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                      <field name="preferred_method" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                      <field name="allow_purchase" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                   </field>
                   <field name="lang" position="after">
-                     <field name="prioritization"/>
-                     <field name="on_hold"/>
-                     <field name="is_broker"/>
-                     <field name="having_carrier"/>
-                     <field name="carrier_info"  attrs="{'invisible':[('having_carrier', '==', False)]}"/>
-                     <field name="carrier_acc_no" attrs="{'invisible':[('having_carrier', '==', False)]}"/>
-                      <field name="shipping_terms"/>
+                     <field name="prioritization" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                     <field name="on_hold" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                     <field name="is_broker" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                     <field name="is_parent" invisible="1"/>
+                     <field name="having_carrier" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                     <field name="carrier_info"  attrs="{'invisible':[('having_carrier', '==', False)],'readonly':[('is_parent', '==', False)]}"/>
+                     <field name="carrier_acc_no" attrs="{'invisible':[('having_carrier', '==', False)],'readonly':[('is_parent', '==', False)]}"/>
+                      <field name="shipping_terms" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                   </field>
                   <xpath expr="/form/sheet/notebook/page[@name='sales_purchases']" position="after">
-                      <page name="prioritization" string="Customer Priority Configuration">
-                                <field name="prioritization_ids" widget="one2many_selectable"/>
+                      <page name="prioritization" string="Customer Priority Configuration" attrs="{'invisible':['|', '|', ('is_parent', '==', False),('prioritization', '==', False)]}">
+                          <field name="prioritization_ids" mode="tree,form" widget="one2many_selectable">
+                              <form>
+                                  <group>
+                                      <group>
+                                           <field name="product_id"/>
+                                           <field name="sku_code" readonly="True" />
+                                           <field name="lst_price" readonly="True"/>
+                                           <field name="auto_allocate" />
+                                           <field name="priority"/>
+                                           <field name="partial_UOM"/>
+                                      </group>
+                                      <group>
+                                          <field name="expiration_tolerance" />
+                                          <field name="length_of_hold"/>
+                                          <field name="min_threshold"/>
+                                          <field name="max_threshold"/>
+                                          <field name="cooling_period"/>
+                                          <field name="partial_ordering" />
+
+                                      </group>
+                                  </group>
+                                    <!--<field name="price" invisible="not context.get('pricelist',False)" readonly="True"/>-->
+                                    <!--<field name="uom_id" options="{'no_open': True, 'no_create': True}" groups="product.group_uom"/>-->
+                              </form>
+                              <tree editable="bottom">
+                                  <field name="sequence" widget="handle"/>
+                                  <field name="product_id"/>
+                                  <field name="sku_code" readonly="True" />
+                                  <field name="lst_price" readonly="True"/>
+                                  <field name="auto_allocate" />
+                                  <field name="priority"/>
+                                  <field name="expiration_tolerance" />
+                                  <field name="length_of_hold"/>
+                                  <field name="min_threshold"/>
+                                  <field name="max_threshold"/>
+                                  <field name="cooling_period"/>
+                                  <field name="partial_ordering" />
+                                  <field name="partial_UOM"/>
+                                    <!--<field name="price" invisible="not context.get('pricelist',False)" readonly="True"/>-->
+                                    <!--<field name="uom_id" options="{'no_open': True, 'no_create': True}" groups="product.group_uom"/>-->
+                                </tree>
+                          </field>
                        </page>
                        <page name="CustomerOrder" string="Customer Order">
                             <field name="order_ids" mode="tree">
@@ -44,50 +87,25 @@
                                     </tree>
                             </field>
                       </page>
-                      <page name="prioritization" string="Global Priority Configuration">
+                      <page name="prioritization" string="Global Priority Configuration" attrs="{'invisible':['|', '|', ('is_parent', '==', False),('prioritization', '==', False)]}">
                       <group>
                         <group>
                             <field name="auto_allocate" />
                             <field name="priority"/>
                              <field name="expiration_tolerance" />
                             <field name="length_of_hold"/>
+                            <field name="gl_account"/>
                         </group>
                         <group>
-                            <field name="min_threshold" min="1" max="999"/>
-                             <field name="max_threshold" min="1" max="999"/>
-                            <field name="cooling_period" min="1" max="365"/>
-                             <field name="partial_ordering" />
+                            <field name="min_threshold"/>
+                            <field name="max_threshold"/>
+                            <field name="cooling_period"/>
+                             <field name="partial_ordering"/>
                             <field name="partial_UOM"/>
                       </group>
                       </group>
                       </page>
                   </xpath>
-            </field>
-      </record>
-
-      <record id="view_tree_prioritization_normal" model="ir.ui.view">
-            <field name="sequence" eval="1"/>
-            <field name="name">Prioritization normal tree</field>
-            <field name="model">prioritization_engine.prioritization</field>
-            <field name="mode">primary</field>
-            <field name="arch" type="xml">
-              <tree editable="bottom">
-                    <field name="sequence" widget="handle"/>
-                    <field name="product_id"/>
-                    <field name="sku_code" readonly="True" />
-                    <field name="lst_price" readonly="True"/>
-                    <field name="auto_allocate" />
-                  <field name="priority"/>
-                   <field name="expiration_tolerance" />
-                  <field name="length_of_holding"/>
-                  <field name="min_threshold"/>
-                  <field name="max_threshold"/>
-                  <field name="cooling_period"/>
-                  <field name="partial_ordering" />
-                  <field name="partial_UOM"/>
-                    <!--<field name="price" invisible="not context.get('pricelist',False)" readonly="True"/>-->
-                    <!--<field name="uom_id" options="{'no_open': True, 'no_create': True}" groups="product.group_uom"/>-->
-                </tree>
             </field>
       </record>
 
@@ -177,6 +195,22 @@
             </field>
         </record>
 
+      <record id="contact_form_ex" model="ir.ui.view">
+            <field name="name">res.partner.form_ex</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/sheet/notebook/page[1]/field[@name='child_ids']/kanban/templates/t/div[1]/div[2]/field[@name='name']" position="after">
+                    <div>
+                    <field name="gl_account"/>
+                    </div>
+                </xpath>
+                <xpath expr="/form/sheet/notebook/page[1]/field[@name='child_ids']/form[1]/sheet/group/group[2]/field[@name='name']" position="after">
+                    <field name="gl_account"  placeholder=" G L Account No.."/>
+                </xpath>
+            </field>
+      </record>
+
       <record id="view_notification_setting_form" model="ir.ui.view">
             <field name="name">notification.setting.form</field>
             <field name="model">res.partner</field>
@@ -223,10 +257,10 @@
         </record>
 
       <!-- Top menu item -->
-    <menuitem name="Prioritization Engine" id="prioritization_engine.menu_root"/>
+    <menuitem name="Prioritization Engine" id="prioritization_engine.menu_root" web_icon="prioritization_engine,static/description/icon.png"/>
 
       <!-- menu categories -->
-    <menuitem name="Customer" id="prioritization_engine.prioritization_cmenu" parent="prioritization_engine.menu_root"/>
+    <menuitem name="Customer" id="prioritization_engine.prioritization_cmenu"  parent="prioritization_engine.menu_root"/>
 
       <!-- actions -->
     <menuitem name="Customer" id="prioritization_engine.prioritization_cust_menu" parent="prioritization_engine.prioritization_cmenu"
@@ -239,12 +273,15 @@
 
     <menuitem name="Product" id="prioritization_engine.prioritization_pro_menu" parent="prioritization_engine.prioritization_pmenu"
               action="product.product_template_action"/>
-
          <!-- menu categories -->
     <menuitem name="Import Document" id="prioritization_engine.prioritization_imenu" parent="prioritization_engine.menu_root"/>
          <!-- actions -->
-    <menuitem name="Import Document" id="prioritization_engine.prioritization_import_menu" parent="prioritization_engine.prioritization_imenu"
-              action="action_notification_setting"/>
+   <!-- <menuitem name="Import Document" id="prioritization_engine.prioritization_import_menu" parent="prioritization_engine.prioritization_imenu"
+              action="action_notification_setting"/>-->
+
+      <!--<menuitem name="menu_name" id="unique_id" web_icon="module_name,path_of_icon" sequence="1"/>-->
+
+
 
   </data>
 </odoo>

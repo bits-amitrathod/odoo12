@@ -166,7 +166,9 @@
                                                          <field name="name"    invisible="1" />
                                                          <field name="tier"  readonly="1" />
                                                          <field name="product_qty"  />
-                                                         <field name="expiration_date"  />
+                                                        <field name="expiration_date" widget="date">
+
+                                                        </field>
                                                          <field name="qty_in_stock"    />
                                                          <field name="product_sales_count"  />
                                                          <field name="product_sales_count_month"  />
@@ -198,7 +200,7 @@
                                                          <field name="name"  invisible="1" />
                                                          <field name="tier"  readonly="1" />
                                                          <field name="product_qty"  />
-                                                         <field name="expiration_date"    />
+                                                         <field name="expiration_date"  widget="date"  />
                                                          <field name="qty_in_stock"  />
                                                          <field name="product_sales_count" />
                                                          <field name="product_sales_count_month"  />
@@ -262,15 +264,26 @@
             <field name="model">purchase.order</field>
             <field name="inherit_id" ref="purchase.purchase_order_form"></field>
             <field name="arch" type="xml">
+                <button name="button_unlock" position="after">
+                     <button name="action_validate" string="Validate" groups="stock.group_stock_user" type="object" class="oe_highlight" states="purchase"/>
+                </button>
 
                      <xpath expr="//group/group/field[@name='company_id']" position="after">
                     <field name="carrier_info"></field>
                     <field name="carrier_acc_no"></field>
                     <field name="shipping_terms"></field>
+
                 </xpath>
                  <xpath expr="//group/group/field[@name='partner_ref']" position="after">
                     <field name="offer_type" readonly="1" attrs="{'invisible': [('vendor_offer_data','=',False)]}"></field>
 
+                </xpath>
+                  <xpath expr="//group/group/field[@name='incoterm_id']" position="after">
+                    <field name="shipping_date"></field>
+                </xpath>
+                   <xpath expr="//group/group/field[@name='invoice_status']" position="after">
+                    <field name="delivered_date"></field>
+                     <field name="expected_date"></field>
                 </xpath>
 
                         <xpath expr="//notebook/page/field[@name='order_line']" position="replace">
@@ -295,6 +308,8 @@
                                     <field name="vendor_offer_data" invisible="1"/>
                                     <field name="taxes_id" widget="many2many_tags" domain="[('type_tax_use','=','purchase')]" context="{'default_type_tax_use': 'purchase'}" options="{'no_create': True}"/>
                                     <field name="price_subtotal" widget="monetary"/>
+                                    <button name="action_show_details" string="Register lots, packs, location" type="object" icon="fa-list"  options='{"warn": true}' states="purchase"/>
+
                                 </tree>
                             </field>
                         <field name="vendor_offer_data" invisible="1"/>

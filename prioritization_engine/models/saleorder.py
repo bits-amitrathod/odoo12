@@ -9,6 +9,7 @@ _logger = logging.getLogger(__name__)
 class SaleOrder(models.Model):
     _inherit = "sale.order"
     cust_po = fields.Char("Customer PO", readonly=False)
+    client_order_ref = fields.Char(string='Purchase Order#', copy=False)
     state = fields.Selection([
         ('draft', 'Quotation'),
         ('engine', 'Prioritization'),
@@ -18,9 +19,8 @@ class SaleOrder(models.Model):
         ('cancel', 'Cancelled'),
         ('void', 'Voided'),
     ], string='Status', readonly=True, copy=False, index=True, track_visibility='onchange', default='draft')
-    '''show_validate = fields.Boolean(
-        compute='_compute_show_validate',
-        help='Technical field used to compute whether the validate should be shown.')'''
+
+
     shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
     preferred_method = fields.Selection(string='Preferred Invoice Delivery Method', related='partner_id.preferred_method', readonly=True)
     carrier_info = fields.Char("Carrier Info",related='partner_id.carrier_info',readonly=True)
@@ -38,36 +38,72 @@ class SaleOrder(models.Model):
                     'You can not delete a sent quotation or a sales order! Try to cancel or void it before.')
         return models.Model.unlink(self)
 
-    '''def action_validate(self):
+    def action_validate(self):
         multi = self.env['stock.picking'].search([('sale_id', '=', self.id)])
         if len(multi) == 1 and self.delivery_count ==1:
             return multi.button_validate()
         elif self.delivery_count>1:
             raise ValidationError(_('Validate is not possible for multiple delivery please do validate one by one'))
 
+
     def action_assign(self):
         multi = self.env['stock.picking'].search([('sale_id', '=', self.id)])
         if len(multi) >= 1:
             return multi.action_assign()
 
-    def _compute_show_validate(self):
-        multi = self.env['stock.picking'].search([('sale_id', '=', self.id)])
-        if len(multi)>=1:
-            multi._compute_show_validate()
 
     @api.multi
     def do_unreserve(self):
         multi = self.env['stock.picking'].search([('sale_id', '=', self.id)])
         if len(multi) >= 1:
-            return multi.do_unreserve()'''
+            return multi.do_unreserve()
 
-'''class SaleOrderLine(models.Model):
+    @api.multi
+    def action_quotation_send(self):
+        """
+        This function opens a window to compose an email, with the edi sale template message loaded by default
+        """
+        self.ensure_one()
+        ir_model_data = self.env['ir.model.data']
+        try:
+            template_id = ir_model_data.get_object_reference('sale', 'email_template_edi_sale')[1]
+        except ValueError:
+            template_id = False
+        try:
+            compose_form_id = ir_model_data.get_object_reference('mail', 'email_compose_message_wizard_form')[1]
+        except ValueError:
+            compose_form_id = False
+        ctx = {
+            'default_model': 'sale.order',
+            'default_res_id': self.ids[0],
+            'default_use_template': bool(template_id),
+            'default_template_id': template_id,
+            'default_composition_mode': 'comment',
+            'mark_so_as_sent': True,
+            'custom_layout': "sale.mail_template_data_notification_email_sale_order",
+            'proforma': self.env.context.get('proforma', False),
+            'force_email': True
+        }
+        return {
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'mail.compose.message',
+            'views': [(compose_form_id, 'form')],
+            'view_id': compose_form_id,
+            'target': 'new',
+            'context': ctx,
+        }
+
+class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
 
     def action_show_details(self):
-       self= self.env['stock.move'].search([('sale_line_id', '=', self.id)])
-       if self.id:
-           return self.action_show_details()'''
+
+       multi= self.env['stock.move'].search([('sale_line_id', '=', self.id)])
+       if len(multi) >= 1:
+           return multi.action_show_details()
+
 
 class StockPicking(models.Model):
     _inherit = "stock.picking"
@@ -138,3 +174,10 @@ class AccountInvoice(models.Model):
         shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
         preferred_method = fields.Selection(string='Preferred Invoice Delivery Method',
                                             related='partner_id.preferred_method', readonly=True)
+        name = fields.Char(string='Purchase Order#', index=True,
+                           readonly=True, states={'draft': [('readonly', False)]}, copy=False,
+                           help='The name that will be used on account move lines')
+
+        origin = fields.Char(string='Sale Order#',
+                             help="Reference of the document that produced this invoice.",
+                             readonly=True, states={'draft': [('readonly', False)]})

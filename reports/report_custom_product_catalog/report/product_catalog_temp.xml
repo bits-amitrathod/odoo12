@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="catalog_temp">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <page>
+                    <div class="oe_structure"/>
+                    <div class="row">
+                    <center>
+                        <b>
+                            <h2> Surgical Product Solutions </h2>
+                            <h4> Custom Product Catalog </h4>
+                        </b>
+                    </center>
+                    </div>
+                    <br/>
+                        <t t-set="total_sum" t-value="0"/>
+                        <div class="table-responsive">
+                        <table class="table table-condensed" style="border: 1px solid black;">
+                            <thead>
+                                <tr style="border: 1px solid black;">
+                                    <th style="border: 1px solid black;text-align: center !important;white-space: nowrap;width:170px;">Type</th>
+                                    <th style="border: 1px solid black;text-align: center !important;white-space: nowrap;">Manufacturer</th>
+                                    <th style="border: 1px solid black;text-align: center !important;white-space: nowrap;">Product</th>
+                                    <th style="border: 1px solid black;text-align: center !important;white-space: nowrap;">Product Name</th>
+                                    <th style="border: 1px solid black;text-align: center !important;white-space: nowrap;">Quantity</th>
+                                    <th style="border: 1px solid black;text-align: center !important;white-space: nowrap;width:125px;">Price</th>
+                                    <th style="border: 1px solid black;text-align: center !important;white-space: nowrap;">Min Exp Date</th>
+                                    <th style="border: 1px solid black;text-align: center !important;white-space: nowrap;">Max Exp Date</th>
+                                </tr>
+                                <tr t-foreach="data" t-as="order">
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="order.type"/>
+                                    </td>
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="order.product_tmpl_id.product_brand_id.name"/>
+                                    </td>
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="order.sku_code"/>
+                                    </td>
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="order.name"/>
+                                    </td>
+                                    <td align="right" style="border: 1px solid black;">
+                                        <span t-esc="order.product_qty"/>
+                                    </td>
+                                    <td  align="right" style="border: 1px solid black;white-space: nowrap;">
+                                        <span  t-esc="order.list_price" t-options='{"widget": "monetary","display_currency": order.currency_id}'/>
+                                    </td>
+                                    <td align="center" style="border: 1px solid black;">
+                                        <span t-esc="order.exp_min_date"/>
+                                    </td>
+                                    <td align="center" style="border: 1px solid black;">
+                                        <span t-esc="order.exp_max_date"/>
+                                    </td>
+                                </tr>
+                            </thead>
+                        </table>
+                        </div>
+                </page>
+            </t>
+        </t>
+    </template>
+
+    <template id="product_catalog_temp">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <page>
+                    <div class="oe_structure"/>
+                    <div class="row">
+                    <center>
+                        <b>
+                            <h2> Surgical Product Solutions </h2>
+                            <h4> Product Catalog </h4>
+                        </b>
+                    </center>
+                    </div>
+                    <br/>
+                        <t t-set="total_sum" t-value="0"/>
+                        <div class="table-responsive">
+                        <table class="table table-condensed" style="border: 1px solid black;">
+                            <thead>
+                                <tr style="border: 1px solid black;">
+                                    <th style="border: 1px solid black;text-align:center;width:200px;"> Product </th>
+                                    <th style="border: 1px solid black;text-align:center;width:500px;"> Product Name </th>
+                                    <th style="border: 1px solid black;text-align:center;width:200px;"> Price </th>
+                                </tr>
+                                <tr t-foreach="data" t-as="order">
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="order.sku_code"/>
+                                    </td>
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="order.name"/>
+                                    </td>
+                                    <td style="border: 1px solid black;text-align: right;white-space: nowrap;">
+                                        $ <span t-esc="order.list_price"/>
+                                    </td>
+                                </tr>
+                            </thead>
+                        </table>
+                        </div>
+                </page>
+            </t>
+        </t>
+    </template>
+</odoo>
