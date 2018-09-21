@@ -192,7 +192,7 @@
                                                 </group>
                                             </form>
                                 <!--editable="bottom"-->
-                                <tree    >
+                                <tree  editable="bottom"  >
                                                          <field name="currency_id" invisible="1"/>
                                                          <field name="product_id" />
                                                          <field name="sku_code"  readonly="1" />
