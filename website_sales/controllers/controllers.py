@@ -76,6 +76,11 @@ class WebsiteSales(WebsiteSale):
         payload['isVisibleWebsiteExpirationDate'] = request.env['ir.config_parameter'].sudo().get_param('website_sales.default_website_expiration_date')
         return request.render("website_sale.product", payload)
 
+    # @http.route('/shop/payment/token', type='http', auth='public', website=True)
+    # def payment_token_cstm(self, pm_id=None, **kwargs):
+    #     return super(WebsiteSales, self).payment_token(pm_id=None, **kwargs)
+
+
 
 
 
