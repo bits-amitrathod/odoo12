@@ -14,6 +14,7 @@ class VendorOffer(models.Model):
     _inherit = "purchase.order"
 
     vendor_offer_data = fields.Boolean()
+    status_ven = fields.Char( store=True, string="Status")
     carrier_info = fields.Char("Carrier Info", related='partner_id.carrier_info', readonly=True)
     carrier_acc_no = fields.Char("Carrier Account No", related='partner_id.carrier_acc_no', readonly=True)
     shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
@@ -109,13 +110,9 @@ class VendorOffer(models.Model):
 
     @api.depends('order_line.product_offer_price')
     def _amount_tot_all(self):
-        print('=order_line.product_offer_price =======================')
         for order in self:
             retail_amt = offer_amount = 0.0
             for line in order.order_line:
-                print('=line.product_retail =======================')
-                print(line.product_retail)
-                print(line.price_subtotal)
                 retail_amt += float(line.product_retail)
                 offer_amount += float(line.price_subtotal)
             # order.retail_amt =retail_amt
@@ -168,14 +165,21 @@ class VendorOffer(models.Model):
     def action_confirm_vendor_offer(self):
         self.write({'state': 'purchase'})
         self.write({'status': 'purchase'})
+        self.write({'status_ven': 'Accepted'})
         self.write({'accepted_date': fields.date.today()})
+        if (self.revision > 0):
+            temp = self.revision - 1
+            self.revision = temp
         return True
 
     @api.multi
     def action_cancel_vendor_offer(self):
         self.write({'state': 'cancel'})
         self.write({'status': 'cancel'})
+        self.write({'status_ven': 'Declined'})
         self.write({'declined_date': fields.date.today()})
+
+
 
     @api.model
     def create(self, vals):
@@ -190,7 +194,6 @@ class VendorOffer(models.Model):
         if (self.state == 'ven_draft'):
             temp = self.revision + 1
             values['revision'] = temp
-            print(self.revision)
         return super(VendorOffer, self).write(values)
 
 
