@@ -135,7 +135,7 @@ class ReportBrokerReport(models.AbstractModel):
              apprisal_list_tot_val.broker_less_40_total_tot = round(float(apprisal_list_rtl_val.broker_less_40_total)/float(apprisal_list_rtl_val.total_retail_broker)*100,2)
              apprisal_list_rtl_val.broker_desc_tot = "% OF TOTAL"
 
-             apprisal_list_mar_val.total_retail_broker_mar = str(round(abs(1- float(float(tot_offer)/apprisal_list_rtl_val.total_retail_broker))*100,2)) + ' %'
+             apprisal_list_mar_val.total_retail_broker_mar = str(round(abs( float((1-float(tot_offer))/apprisal_list_rtl_val.total_retail_broker))*100,2)) + ' %'
              apprisal_list_mar_val.bonus_eligible_mar = str(round(abs(1- float(float(apprisal_list_tot_val.bonus_eligible_tot)/float(apprisal_list_tot_val.bonus_eligible_tot)))*100,2)) + ' %'
 
              if(apprisal_list_rtl_val.total_retail_broker-nomargin_retailamount!=0):
