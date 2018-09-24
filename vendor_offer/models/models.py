@@ -14,6 +14,7 @@ class VendorOffer(models.Model):
     _inherit = "purchase.order"
 
     vendor_offer_data = fields.Boolean()
+    status_ven = fields.Char( store=True, string="Status")
     carrier_info = fields.Char("Carrier Info", related='partner_id.carrier_info', readonly=True)
     carrier_acc_no = fields.Char("Carrier Account No", related='partner_id.carrier_acc_no', readonly=True)
     shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
@@ -109,13 +110,9 @@ class VendorOffer(models.Model):
 
     @api.depends('order_line.product_offer_price')
     def _amount_tot_all(self):
-        print('=order_line.product_offer_price =======================')
         for order in self:
             retail_amt = offer_amount = 0.0
             for line in order.order_line:
-                print('=line.product_retail =======================')
-                print(line.product_retail)
-                print(line.price_subtotal)
                 retail_amt += float(line.product_retail)
                 offer_amount += float(line.price_subtotal)
             # order.retail_amt =retail_amt
@@ -129,13 +126,21 @@ class VendorOffer(models.Model):
     def possible_competition_onchange(self):
         self.state = 'ven_draft'
         for order in self:
+            possible_competition_list = self.env['competition.competition'].search(
+                [('id', '=', order.possible_competition.id)])
             for line in order.order_line:
                 multiplier_list = self.env['multiplier.multiplier'].search([('id', '=', line.multiplier.id)])
-                possible_competition_list = self.env['competition.competition'].search([('id', '=', self.possible_competition.id)])
-                line.product_unit_price = math.ceil(
-                    round(float(line.list_price) * (float(multiplier_list.retail) / 100), 2))
-                line.product_offer_price = math.ceil(round(float(line.product_unit_price) * (
-                            float(multiplier_list.margin) / 100 + float(possible_competition_list.margin) / 100), 2))
+                line.margin = multiplier_list.margin
+                product_unit_price_multiplier = math.ceil(
+                    round(float(line.product_id.product_tmpl_id[0].list_price) * (float(multiplier_list.retail) / 100),
+                          2))
+                line.product_unit_price = product_unit_price_multiplier
+                line.retail_price = math.ceil(round((float(line.product_qty) * float(line.product_unit_price)), 2))
+                line_margin = float((float(multiplier_list.margin) / 100) + (float(possible_competition_list.margin) / 100))
+                line.product_offer_price = math.ceil(round((float(product_unit_price_multiplier) * line_margin), 2))
+                line.offer_price = round((float(line.product_qty) * float(line.product_offer_price)), 2)
+                line.price_subtotal = line.offer_price
+                # line.price_unit = line.product_offer_price
 
     @api.onchange('offer_amount', 'retail_amt')
     def cal_potentail_profit_margin(self):
@@ -161,14 +166,21 @@ class VendorOffer(models.Model):
     def action_confirm_vendor_offer(self):
         self.write({'state': 'purchase'})
         self.write({'status': 'purchase'})
+        self.write({'status_ven': 'Accepted'})
         self.write({'accepted_date': fields.date.today()})
+        if (self.revision > 0):
+            temp = self.revision - 1
+            self.revision = temp
         return True
 
     @api.multi
     def action_cancel_vendor_offer(self):
         self.write({'state': 'cancel'})
         self.write({'status': 'cancel'})
+        self.write({'status_ven': 'Declined'})
         self.write({'declined_date': fields.date.today()})
+
+
 
     @api.model
     def create(self, vals):
@@ -183,7 +195,6 @@ class VendorOffer(models.Model):
         if (self.state == 'ven_draft'):
             temp = self.revision + 1
             values['revision'] = temp
-            print(self.revision)
         return super(VendorOffer, self).write(values)
 
 
@@ -218,10 +229,10 @@ class VendorOfferProduct(models.Model):
         if len(multi) >= 1:
             return multi.action_show_details()
 
-    @api.depends('product_qty', 'list_price', 'taxes_id','product_offer_price')
+    @api.depends('list_price', 'taxes_id','product_offer_price')
     def _compute_amount(self):
+        super(VendorOfferProduct, self)._compute_amount()
         for line in self:
-            super(VendorOfferProduct, self)._compute_amount()
             if(line.state=='ven_draft'):
                 multiplier_list = self.env['multiplier.multiplier'].search([('id', '=', line.multiplier.id)])
                 line.margin=multiplier_list.margin
@@ -232,6 +243,7 @@ class VendorOfferProduct(models.Model):
                     'price_tax': '0',
                     'price_subtotal': line.price_subtotal,
                 })
+
 
     @api.onchange('product_id')
     def onchange_product_id_vendor_offer(self):
@@ -317,8 +329,8 @@ class VendorOfferProduct(models.Model):
             multiplier_list = self.env['multiplier.multiplier'].search([('id', '=', self.multiplier.id)])
             possible_competition_list = self.env['competition.competition'].search([('id', '=', self.possible_competition.id)])
             self.margin = multiplier_list.margin
-            self.product_unit_price=math.ceil(round(float(self.list_price) * (float(multiplier_list.retail) / 100),2))
-            self.product_offer_price =math.ceil(round(float(self.product_unit_price) * (float(multiplier_list.margin) / 100 + float(possible_competition_list.margin) / 100),2))
+            self.product_unit_price= math.ceil(round(float(self.list_price) * (float(multiplier_list.retail) / 100),2))
+            self.product_offer_price = math.ceil(round(float(self.product_unit_price) * (float(multiplier_list.margin) / 100 + float(possible_competition_list.margin) / 100),2))
             self.product_tier=self.product_id.tier
 
     def update_product_expiration_date(self):
@@ -343,13 +355,15 @@ class VendorOfferProduct(models.Model):
     @api.onchange('multiplier','product_qty')
     def cal_offer_price(self):
         if (self.state == 'ven_draft'):
-            for order in self:
-                for line in order:
-                    multiplier_list = self.env['multiplier.multiplier'].search([('id', '=', line.multiplier.id)])
-                    line.margin=multiplier_list.margin
-                    line.offer_price=round(float(line.product_qty) * float(line.product_offer_price),2)
-                    line.product_retail = round(float(line.product_qty) * float(line.product_unit_price),2)
-                    line.price_subtotal = round(float(line.product_qty) * float(line.product_offer_price),2)
+            for line in self:
+                multiplier_list = self.env['multiplier.multiplier'].search([('id', '=', line.multiplier.id)])
+                line.margin = multiplier_list.margin
+                line.price_subtotal = line.offer_price = round(
+                    float(line.product_qty) * float(line.product_offer_price), 2)
+                line.price_unit = line.offer_price
+                line.product_retail = round(float(line.product_qty) * float(line.product_unit_price), 2)
+                # line.price_subtotal = round(float(line.product_qty) * float(line.product_offer_price),2)
+
 
     @api.multi
     def qty_in_stocks(self):

@@ -1,20 +1,22 @@
 # -*- coding: utf-8 -*-
-from odoo import http
+import json
+import logging
+from werkzeug.exceptions import Forbidden, NotFound
 
-class CustomerSps(http.Controller):
-    @http.route('/customer_sps/customer_sps/', auth='public')
-    def index(self, **kw):
-        return "Hello, world"
+from odoo import http, tools, _
+from odoo.http import request
+from odoo.addons.base.ir.ir_qweb.fields import nl2br
+from odoo.addons.http_routing.models.ir_http import slug
+from odoo.addons.website.controllers.main import QueryURL
+from odoo.exceptions import ValidationError
+from odoo.addons.website.controllers.main import Website
+from odoo.addons.website_form.controllers.main import WebsiteForm
+from odoo.osv import expression
 
-    @http.route('/customer_sps/customer_sps/objects/', auth='public')
-    def list(self, **kw):
-        return http.request.render('customer_sps.listing', {
-            'root': '/customer_sps/customer_sps',
-            'objects': http.request.env['customer_sps.customer_sps'].search([]),
-        })
+_logger = logging.getLogger(__name__)
+class WebsiteSale(http.Controller):
 
-    @http.route('/customer_sps/customer_sps/objects/<model("customer_sps.customer_sps"):obj>/', auth='public')
-    def object(self, obj, **kw):
-        return http.request.render('customer_sps.object', {
-            'object': obj
-        })
+    @http.route(['/shop/engine/update_json'], type='json', auth="public", methods=['POST'], website=True, csrf=False)
+    def cart_update_json(self, quote_id,product_id, line_id=None, add_qty=None, set_qty=None, display=True):
+        line = request.website.sale_get_engine_order(quote_id,line_id,set_qty)
+        return line.read()

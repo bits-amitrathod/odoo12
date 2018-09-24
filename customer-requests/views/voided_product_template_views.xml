@@ -37,7 +37,7 @@
             </form>
         </field>
     </record>
-    <record id="voided_product_template_action1" model="ir.actions.act_window">
+    <record id="voided_product_template_action" model="ir.actions.act_window">
         <field name="name">Voided Products</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">sps.customer.requests</field>
@@ -54,4 +54,8 @@
             </p>
         </field>
     </record>
+
+    <menuitem name="Voided Product" id="prioritization_engine.prioritization_voided_pro_menu" parent="prioritization_engine.prioritization_pmenu"
+              action="customer-requests.voided_product_template_action"/>
+
 </odoo>

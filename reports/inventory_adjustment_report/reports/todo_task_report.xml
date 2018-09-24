@@ -2,7 +2,7 @@
 
     <report id="action_todo_model_report"
             string="Adjustment Report "
-            model="inventory.adjustment.report"
+            model="stock.inventory"
             report_type="qweb-html"
             file="inventory_adjustment_report.adjustment_report1"
             name="inventory_adjustment_report.adjustment_report1"
@@ -43,34 +43,34 @@
 
                         </tr>
 
-                        <t t-foreach="data.keys()" t-as="user">
-                            <t t-foreach="data[user]" t-as="o">
+                        <!--<t t-foreach="data.keys()" t-as="user">-->
+                            <t t-foreach="data" t-as="o">
                                 <tr>
                                     <td align="left"  style="border: 1px solid #000;">
-                                        <span t-esc="o[0]"/>
+                                        <span t-esc="o.p_sku"/>
                                     </td>
 
                                     <td align="center"   style="border: 1px solid #000;">
-                                        <span t-esc="o[1]"/>
+                                        <span t-esc="o.date_cal"/>
                                     </td>
                                     <td align="center"   style="border: 1px solid #000;">
-                                        <span t-esc="o[1]"/>
+                                        <span t-esc="o.date_posted"/>
                                     </td>
                                     <td align="left"   style="border: 1px solid #000;">
-                                        <span t-esc="o[2]"/>
+                                        <span t-esc="o.p_type"/>
                                     </td>
                                     <td align="right"   style="border: 1px solid #000;">
-                                        <span t-esc="o[3]"/>
+                                        <span t-esc="o.p_qty"/>
                                     </td>
                                      <td align="right"   style="border: 1px solid #000;white-space: nowrap;">
-                                        $ <span t-esc="o[4]"/>
+                                        <span t-esc="o.amount" />
                                     </td>
                                     <td align="right"   style="border: 1px solid #000;white-space: nowrap;">
-                                        $ <span t-esc="o[5]"/>
+                                         <span t-esc="o.total_amt" />
                                     </td>
                                 </tr>
                             </t>
-                        </t>
+                        <!--</t>-->
                     </table>
                     </div>
                 </div>

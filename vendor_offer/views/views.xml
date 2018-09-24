@@ -192,7 +192,7 @@
                                                 </group>
                                             </form>
                                 <!--editable="bottom"-->
-                                <tree    >
+                                <tree>
                                                          <field name="currency_id" invisible="1"/>
                                                          <field name="product_id" />
                                                          <field name="sku_code"  readonly="1" />
@@ -272,10 +272,18 @@
                     <field name="carrier_info"></field>
                     <field name="carrier_acc_no"></field>
                     <field name="shipping_terms"></field>
+
                 </xpath>
                  <xpath expr="//group/group/field[@name='partner_ref']" position="after">
                     <field name="offer_type" readonly="1" attrs="{'invisible': [('vendor_offer_data','=',False)]}"></field>
 
+                </xpath>
+                  <xpath expr="//group/group/field[@name='incoterm_id']" position="after">
+                    <field name="shipping_date"></field>
+                </xpath>
+                   <xpath expr="//group/group/field[@name='invoice_status']" position="after">
+                    <field name="delivered_date"></field>
+                     <field name="expected_date"></field>
                 </xpath>
 
                         <xpath expr="//notebook/page/field[@name='order_line']" position="replace">
