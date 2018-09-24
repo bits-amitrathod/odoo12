@@ -41,4 +41,6 @@ class BrokerReportPopUp(models.TransientModel):
         #     }
         #     return action
 
-        return self.env.ref('broker_report.action_report_broker_report').report_action([], data={})
+        action=self.env.ref('broker_report.action_report_broker_report').report_action([], data={})
+        action.update({'target':'main'})
+        return action
