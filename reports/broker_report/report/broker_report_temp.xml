@@ -20,7 +20,7 @@
                     <table class="table table-condensed" style="border: 1px solid black;">
                             <thead>
                                 <tr style="border: 1px solid black;">
-                                    <th style="border: 1px solid black;text-align: center;">Desc</th>
+                                    <th style="border: 1px solid black;text-align: center;"> </th>
                                     <th style="border: 1px solid black;text-align: center;">Total Retail</th>
                                     <th style="border: 1px solid black;text-align: center;">Bonus Eligible</th>
                                     <th style="border: 1px solid black;text-align: center;">Hospital Total</th>

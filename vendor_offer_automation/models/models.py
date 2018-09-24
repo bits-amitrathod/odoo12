@@ -110,7 +110,7 @@ class vendor_offer_automation(models.Model):
                                                               date_planned=todays_date, state='ven_draft',
                                                               product_uom=1, product_tier=product_template.tier.id,
                                                               order_id=self.id,
-                                                              product_id=products[0].id, price_unit=product_unit_price,
+                                                              product_id=products[0].id,
                                                               list_price=product_unit_price,
                                                               qty_in_stock=self.qty_in_stocks(products[0].id),
                                                               expiration_date=product_expiration_date)
@@ -126,11 +126,13 @@ class vendor_offer_automation(models.Model):
                                         product_unit_price_wtih_multiplier = math.ceil(
                                             round(float(product_unit_price) * (float(multiplier_list.retail) / 100), 2))
                                         order_line_obj.update({
+                                            'price_unit' : product_unit_price_wtih_multiplier,
                                                 'product_retail':product_unit_price_wtih_multiplier,
                                                 'product_unit_price': product_unit_price_wtih_multiplier})
-                                        product_offer_price_comp = math.ceil(round(float(product_unit_price_wtih_multiplier) * (
-                                                float(multiplier_list.margin) / 100 + float(
-                                            possible_competition_list.margin) / 100), 2))
+                                        product_offer_price_comp = math.ceil(
+                                            round(float(product_unit_price_wtih_multiplier) * (
+                                                    float(multiplier_list.margin) / 100 + float(
+                                                possible_competition_list.margin) / 100), 2))
                                         order_line_obj.update(
                                             {'product_offer_price': product_offer_price_comp, 'offer_price': product_offer_price_comp})
                                         order_list_list.append(order_line_obj)
