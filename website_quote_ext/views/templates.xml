@@ -2,8 +2,7 @@
     <data>
         <template id="assets_frontend" inherit_id="website.assets_frontend" name="Shop">
         <xpath expr="." position="inside">
-            <!--<script type="text/javascript" src="/website_quote_ext/static/src/js/website_sale.js"></script>-->
-             <script type="text/javascript" src="/website_sale/static/src/js/website_sale.js"></script>
+           <script type="text/javascript" src="/website_quote_ext/static/src/js/website_sale.js"></script>
         </xpath>
     </template>
 
@@ -51,15 +50,15 @@
                             <a href='#' class='js_delete_product hidden-xs no-decoration'> <small><i class='fa fa-trash-o'></i> Remove</small></a>
                         </td>
                         <td class="text-center td-qty">
-                            <div class="css_quantity input-group oe_website_spinner">
-                                <a t-attf-href="#" class="mb8 input-group-addon js_add_cart_json hidden-xs">
-                                    <i class="fa fa-minus"></i>
-                                </a>
-                                <input type="text" class="js_quantity form-control quantity" t-att-data-line-id="line.id" t-att-data-product-id="line.product_id.id" t-att-value="int(line.product_uom_qty) == line.product_uom_qty and int(line.product_uom_qty) or line.product_uom_qty" />
-                                <a t-attf-href="#" class="mb8 input-group-addon float_left js_add_cart_json hidden-xs">
+                           <div class="css_quantity input-group oe_website_spinner">
+                                        <a t-attf-href="#" class="mb8 input-group-addon js_add_cart_json hidden-xs">
+                                            <i class="fa fa-minus"></i>
+                                        </a>
+                                        <input type="text"  class="js_quantity form-control quantity" t-att-data-quote-id="quotation.id"  t-att-data-line-id="line.id"  t-att-data-product-id="line.product_id.id" t-att-value="line.product_uom_qty" />
+                                        <a t-attf-href="#" class="mb8 input-group-addon float_left js_add_cart_json hidden-xs">
                                     <i class="fa fa-plus"></i>
                                 </a>
-                            </div>
+                           </div>
                         </td>
                         <td class="text-center td-price" name="price">
                               <div t-field="line.price_unit"
@@ -234,5 +233,6 @@
           <p t-field="quotation.note"/>
       </section>
     </template>
+
     </data>
 </odoo>
