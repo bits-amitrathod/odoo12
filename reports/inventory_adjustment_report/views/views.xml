@@ -10,7 +10,7 @@
                   <field name="p_sku"/>
                   <field name="date_cal"/>
                   <field name="date_posted"/>
-                  <field name="type"/>
+                  <field name="p_type"/>
                   <field name="p_qty" />
                   <field name="amount" widget="monetary"/>
                   <field name="total_amt" widget="monetary"/>

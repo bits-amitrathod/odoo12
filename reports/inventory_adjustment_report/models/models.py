@@ -16,7 +16,7 @@ class inventory_adjustment_report(models.Model):
 
 
     p_sku = fields.Char("Product SKU", store=False, compute="_calculateSKU")
-    type= fields.Char("Type", store=False)
+    p_type= fields.Char("Type", store=False)
     date_cal=fields.Date('Inventory Date',store=False)
     date_posted=fields.Date('Date Posted',store=False)
     amount= fields.Monetary("Amount", store=False)
@@ -29,22 +29,29 @@ class inventory_adjustment_report(models.Model):
     @api.multi
     def _calculateSKU(self):
 
-        for order in self:
-            ACTIONS = {
-                "product": "Stockable Product",
-                "consu": "Consumable",
-                "service": "Service",
+        ACTIONS = {
+            "product": "Stockable Product",
+            "consu": "Consumable",
+            "service": "Service",
 
-            }
+        }
+
+        for order in self:
+
             order.p_sku = order.product_id.product_tmpl_id.sku_code
-            order.type =order.product_id.product_tmpl_id.type
+            keys=order.product_id.product_tmpl_id.type
+            if keys==False:
+                keys = "product"
+            order.p_type =(ACTIONS[keys])
             order.date_cal=order.date
             order.date_posted=order.date
-            order.p_qty=order.line_ids.product_qty
+
             order.amount = (float_repr(order.product_id.product_tmpl_id.list_price, precision_digits=2))
-            # order.total_amt =(float_repr(order.product_qty * order.product_id.product_tmpl_id.list_price, precision_digits=2))
-            for order in order.line_ids.product_qty:
-                order.p_qty = order
+            for p in order.line_ids:
+                order.p_qty = p.product_qty
+                order.total_amt = (float_repr(p.product_qty * order.product_id.product_tmpl_id.list_price, precision_digits=2))
+
+
 
     # @api.model
     # def check(self, data):
