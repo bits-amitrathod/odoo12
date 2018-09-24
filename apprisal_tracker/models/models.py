@@ -3,17 +3,17 @@
 from odoo import models, fields, api
 
 
-class apprisal_tracker(models.Model):
-    _name = 'apprisal_tracker.apprisal_tracker'
-
-    name = fields.Char()
-    value = fields.Integer()
-    value2 = fields.Float(compute="_value_pc", store=True)
-    description = fields.Text()
-
-    @api.depends('value')
-    def _value_pc(self):
-        self.value2 = float(self.value) / 100
+# class apprisal_tracker(models.Model):
+#     _name = 'apprisal_tracker.apprisal_tracker'
+#
+#     name = fields.Char()
+#     value = fields.Integer()
+#     value2 = fields.Float(compute="_value_pc", store=True)
+#     description = fields.Text()
+#
+#     @api.depends('value')
+#     def _value_pc(self):
+#         self.value2 = float(self.value) / 100
 
 
 class apprisal_tracker_vendor(models.Model):
