@@ -36,12 +36,12 @@ class ProductTemplate(models.Model):
             products = self.env['product.product'].search([('product_tmpl_id', '=', ml.id)])
             for product_id in products:
                 self.env.cr.execute(
-                    "SELECT sum(qty_delivered) FROM sale_order_line WHERE product_id =%s AND state=%s AND write_date>=%s",
-                    (product_id.id, "sale", final_month))
+                    "SELECT sum(sml.product_uom_qty) FROM stock_move_line AS sml WHERE sml.product_id =%s AND sml.create_date>=%s",
+                    (product_id.id, final_month))
                 quant = self.env.cr.fetchone()
-                if quant[0] is not None:
+                if quant[0] is not None and max_inventory_level_duration>0:
                     sale_quant = sale_quant + int(quant[0])
-                    max_inventory=int(((sale_quant)*30)/90)
+                    max_inventory=int(((sale_quant)*30)/max_inventory_level_duration)
                     ml.max_inventory_level =str(int(max_inventory))
                 self.env.cr.execute(
                     "SELECT sum(product_qty) FROM purchase_order_line WHERE product_id =%s AND state=%s AND product_qty>qty_received",
