@@ -275,3 +275,21 @@ class PrioritizationEngine(models.TransientModel):
     def change_date_format(self, date):
         formatted_date = date.replace("-", ",").replace(" ", ",").replace(":", ",")
         return formatted_date
+
+    '''def get_available_product_count(self, customer_id, product_id):
+        available_production_lot_dict =self.get_available_product_lot_dict()
+        self.env['sps.customer.requests'].
+        filtered_production_lot_dict_to_be_returned = {}
+        for available_production_lot in available_production_lot_dict.get('product_id'):
+            if datetime.strptime(available_production_lot.get(list(available_production_lot.keys()).pop(0), {}).get('use_date'),
+                    '%Y-%m-%d %H:%M:%S') >= (datetime.today() + relativedelta(months=+int(prioritization_engine_request['expiration_tolerance']))):
+
+                if prioritization_engine_request['product_id'] in filtered_production_lot_dict_to_be_returned.keys():
+                    filtered_production_lot_dict_to_be_returned.get(prioritization_engine_request['product_id'],
+                                                                         {}).append(available_production_lot)
+                else:
+                    dict = {prioritization_engine_request['product_id']: [available_production_lot]}
+                    filtered_production_lot_dict_to_be_returned.update(dict)
+
+        _logger.debug('Filtered production lot list to be returned %r', str(filtered_production_lot_dict_to_be_returned))
+        return filtered_production_lot_dict_to_be_returned'''
