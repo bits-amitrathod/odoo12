@@ -191,6 +191,7 @@ class VendorOffer(models.Model):
             vals['state']= 'ven_draft'
             vals['vendor_offer_data']=True
             vals['revision'] = 0
+            # self.message_post(body="Your text")
         return super(VendorOffer, self).create(vals)
 
     @api.multi

@@ -98,6 +98,8 @@ class SaleOrder(models.Model):
 class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
 
+    document_id = fields.Many2one('sps.cust.uploaded.documents', string='Document', required=True)
+
     def action_show_details(self):
 
        multi= self.env['stock.move'].search([('sale_line_id', '=', self.id)])

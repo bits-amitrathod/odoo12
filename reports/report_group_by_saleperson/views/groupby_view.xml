@@ -43,13 +43,7 @@
             <field name="model">sale.order</field>
             <field name="mode">primary</field>
            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
-           <field name="arch" type="xml">
-                <xpath expr="//filter[@name='my_sale_orders_filter']" position="after">
-                    <separator/>
-                    <filter name="test1" domain="[]" context="{'group_by':'user_id'}"/>
-                    <separator/>
-                </xpath>
-            </field>
+           
 
         </record>
 
@@ -61,7 +55,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="search_view_id" ref="sale_order_view_search_inherit_sale1"/>
-            <field name="context">{'search_default_test1': 1}</field>
+            <field name="context">{'group_by':'user_id'}</field>
             <field name="domain">[('state', 'not in', ('draft', 'sent', 'cancel'))]</field>
 
         </record>
