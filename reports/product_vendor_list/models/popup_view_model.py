@@ -25,6 +25,7 @@ class ProductVendorListPopUp(models.TransientModel):
                 'res_model': 'purchase.order',
                 'domain': [('confirmation_date','>=', self.start_date ),('confirmation_date','<=', self.end_date ),('state','in',('purchase','done'))],
             }
+            action.update({'target': 'main'})
             return action
         else:
             action = {
@@ -35,4 +36,7 @@ class ProductVendorListPopUp(models.TransientModel):
                 'res_model': 'purchase.order',
                 'domain': [('state', 'in', ('purchase', 'done'))],
             }
+
+            action.update({'target': 'main'})
             return action
+

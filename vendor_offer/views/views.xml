@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
   <data>
     <!-- explicit list view definition -->
@@ -192,7 +193,7 @@
                                                 </group>
                                             </form>
                                 <!--editable="bottom"-->
-                                <tree  editable="bottom"  >
+                                <tree>
                                                          <field name="currency_id" invisible="1"/>
                                                          <field name="product_id" />
                                                          <field name="sku_code"  readonly="1" />
@@ -252,8 +253,10 @@
                         </page>
                     </notebook>
                 </sheet>
-                <div class="oe_chatter">
-
+               <div class="oe_chatter">
+                <field name="message_follower_ids" widget="mail_followers"/>
+                <field name="activity_ids" widget="mail_activity"/>
+                <field name="message_ids" widget="mail_thread"/>
                 </div>
                 </form>
             </field>
@@ -280,6 +283,8 @@
                 </xpath>
                   <xpath expr="//group/group/field[@name='incoterm_id']" position="after">
                     <field name="shipping_date"></field>
+                       <field name="shipping_label_issued"></field>
+
                 </xpath>
                    <xpath expr="//group/group/field[@name='invoice_status']" position="after">
                     <field name="delivered_date"></field>
