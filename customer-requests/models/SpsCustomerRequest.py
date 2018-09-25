@@ -44,7 +44,7 @@ class SpsCustomerRequest(models.Model):
                 for sale_order_line in sale_order_line_list:
                     _logger.debug('sale_order_line : %r : %r : %r',sale_order_line.id, sale_order_line.product_id.id, sale_order_line.document_id.id)
                     # get customer setting object
-                    _setting_object = self._get_settings_object(sale_order_line.order_partner_id.id, sale_order_line.product_id.id, None, None)
+                    _setting_object = self.get_settings_object(sale_order_line.order_partner_id.id, sale_order_line.product_id.id, None, None)
                     if _setting_object:
                         # check length of hold
                         length_of_hold_flag = self.env['prioritization.engine.model'].check_length_of_hold(sale_order['create_date'], _setting_object.length_of_hold)
@@ -74,7 +74,7 @@ class SpsCustomerRequest(models.Model):
         for sps_customer_request in sps_customer_requests:
             _logger.debug('customer request %r, %r', sps_customer_request['customer_id'].id, sps_customer_request['product_id'].id)
             if sps_customer_request['product_id'].id and not sps_customer_request['product_id'].id is False:
-                _setting_object = self._get_settings_object(sps_customer_request['customer_id'].id, sps_customer_request['product_id'].id,
+                _setting_object = self.get_settings_object(sps_customer_request['customer_id'].id, sps_customer_request['product_id'].id,
                                                             sps_customer_request['id'], sps_customer_request['status'])
 
                 if _setting_object:
@@ -103,7 +103,7 @@ class SpsCustomerRequest(models.Model):
 
         return allocated_products
 
-    def _get_settings_object(self, customer_id,product_id,sps_customer_request_id,status):
+    def get_settings_object(self, customer_id,product_id,sps_customer_request_id,status):
         customer_level_setting = self.env['prioritization_engine.prioritization'].search(
             [('customer_id', '=', customer_id),('product_id', '=', product_id)])
         if len(customer_level_setting) == 1:
