@@ -68,6 +68,9 @@ class vendor_offer_automation(models.Model):
                         if vendor_offer_automation_template.columns_from_template != sorted_excel_columns:
                             raise ValidationError(
                                 _('Document columns are not matching active offer template ' + self.template_name))
+                    else:
+                        raise ValidationError(
+                            _('Template Not found, Import Template For Vendor in Settings Menu'))
                     model_fields = self.env['sps.vendor_offer_automation.template'].fields_get()
                     mapping_fields = dict()
                     for name, field in model_fields.items():
@@ -98,6 +101,7 @@ class vendor_offer_automation(models.Model):
                             if self.partner_id.sku_postconfig and product_sku.endswith(
                                     self.partner_id.sku_postconfig):
                                 product_sku = product_sku[:-len(self.partner_id.sku_postconfig)]
+                            un_matched_rows = 0
                             if not sku_code in product_skus:
                                 product_template = self.env['product.template'].search(
                                     ['|', ('sku_code', '=', product_sku), ('manufacturer_pref', '=', sku_code)])
@@ -136,6 +140,8 @@ class vendor_offer_automation(models.Model):
                                         order_line_obj.update(
                                             {'product_offer_price': product_offer_price_comp, 'offer_price': product_offer_price_comp})
                                         order_list_list.append(order_line_obj)
+                                else:
+                                    un_matched_rows = un_matched_rows + 1
                                 product_skus.append(sku_code)
                         if len(order_list_list) > 0:
                             for order_line_object in order_list_list:
@@ -143,6 +149,7 @@ class vendor_offer_automation(models.Model):
                                 order_line_model.create(order_line_object)
                             # for purchase_order_line in self.order_line:
                             #     purchase_order_line.onchange_product_id_vendor_offer()
+
 
             except UnicodeDecodeError as ue:
                 _logger.info(ue)
