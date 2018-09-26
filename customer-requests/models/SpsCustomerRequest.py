@@ -15,7 +15,8 @@ class SpsCustomerRequest(models.Model):
     customer_id = fields.Many2one('res.partner', string='Customer', required=True)
     document_id = fields.Many2one('sps.cust.uploaded.documents', string='Document', required=True)
     product_id = fields.Many2one('product.product', string='Product', required=False, default=0)
-    request_id = fields.One2many('sale.order.line', 'customer_request_id', string="Request")
+    sale_order_line_id = fields.One2many('sale.order.line', 'customer_request_id', string="Request")
+    sale_order_id = fields.Char(String="Sale Order", compute="_get_sale_order_id")
 
     customer_sku = fields.Char()
     sps_sku = fields.Char()
@@ -49,10 +50,10 @@ class SpsCustomerRequest(models.Model):
                     if _setting_object:
                         # check length of hold
                         length_of_hold_flag = self.env['prioritization.engine.model'].check_length_of_hold(sale_order['create_date'], _setting_object.length_of_hold)
-
+                        _logger.info('length of hold flag : %r',length_of_hold_flag)
                         if length_of_hold_flag:
                             self.env['sps.customer.requests'].search(
-                                [('id', '=', sale_order_line['customer_request_id']['id']),('status', '=', 'completed')]).write(dict(status='InCoolingPeriod'))
+                                [('id', '=', sale_order_line['customer_request_id']['id']),('status', '=', 'Completed')]).write(dict(status='InCoolingPeriod'))
 
     # Get Customer Requests
     def get_customer_requests(self):
@@ -137,3 +138,14 @@ class SpsCustomerRequest(models.Model):
                 record.qty_to_show = str(record.required_quantity)
             else:
                 record.qty_to_show = str(record.quantity)
+
+    @api.multi
+    @api.depends('sale_order_line_id')
+    def _get_sale_order_id(self):
+        _logger.info('In _get_sale_order_id')
+        for record in self:
+            if record.sale_order_line_id.id:
+                if record.sale_order_id:
+                    record.sale_order_id = str(record.sale_order_id)+ ", " +str(record.sale_order_line_id.order_id.id)
+                else:
+                    record.sale_order_id = str(record.sale_order_line_id.order_id.id)
