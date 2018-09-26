@@ -113,6 +113,9 @@ class VendorOffer(models.Model):
         for order in self:
             retail_amt = offer_amount = 0.0
             for line in order.order_line:
+                print('=line.product_retail =======================')
+                print(line.product_retail)
+                print(line.price_subtotal)
                 retail_amt += float(line.product_retail)
                 offer_amount += float(line.price_subtotal)
             # order.retail_amt =retail_amt
@@ -330,6 +333,7 @@ class VendorOfferProduct(models.Model):
             multiplier_list = self.env['multiplier.multiplier'].search([('id', '=', self.multiplier.id)])
             possible_competition_list = self.env['competition.competition'].search([('id', '=', self.possible_competition.id)])
             self.margin = multiplier_list.margin
+
             self.product_unit_price= math.ceil(round(float(self.list_price) * (float(multiplier_list.retail) / 100),2))
             self.product_offer_price = math.ceil(round(float(self.product_unit_price) * (float(multiplier_list.margin) / 100 + float(possible_competition_list.margin) / 100),2))
             self.product_tier=self.product_id.tier
