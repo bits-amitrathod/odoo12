@@ -31,10 +31,10 @@ class ProductSaleByCount(models.Model):
             end_date = datetime.datetime.strptime(end_date, DEFAULT_SERVER_DATETIME_FORMAT).date()
 
         for product in self:
+            product.product_name = product.product_tmpl_id.name
+            product.sku_name = product.product_tmpl_id.sku_code
             sale_order_lines = self.env['sale.order.line'].search([('product_id', '=', product.id)])
             for sale_order_line in sale_order_lines:
                 if sale_order_line.order_id.confirmation_date and (start_date <= fields.Datetime.from_string(
                         sale_order_line.order_id.confirmation_date).date() <= end_date):
                     product.total_sale_qty = product.total_sale_qty + sale_order_line.product_uom_qty
-                    product.product_name = product.product_tmpl_id.name
-                    product.sku_name = product.product_tmpl_id.sku_code

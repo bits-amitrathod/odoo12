@@ -36,7 +36,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
             try:
                 cur_date_time_string = cur_date_time_string[:cur_date_time_string.index('.')]
             except ValueError:
-                _logger.info('ok')
+                error = True
             e_date = ProductSaleByCountPopUp.string_to_date(cur_date_time_string)
             s_date = e_date - datetime.timedelta(365/12)
 

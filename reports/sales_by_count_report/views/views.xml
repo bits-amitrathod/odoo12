@@ -1,7 +1,7 @@
 <odoo>
   <data>
-    <record id="view_popup_for_sale_by_count" model="ir.ui.view">
-            <field name="name">Sale By Count</field>
+    <record id="view_popup_for_sales_by_count" model="ir.ui.view">
+            <field name="name">Sales By Count</field>
             <field name="model">salebycount.popup</field>
             <field name="arch" type="xml">
                 <form string="Choose your date">
@@ -20,12 +20,12 @@
             </field>
         </record>
 
-        <record id="action_sale_by_count" model="ir.actions.act_window">
-            <field name="name">Sale By Count</field>
+        <record id="action_sales_by_count" model="ir.actions.act_window">
+            <field name="name">Sales By Count</field>
             <field name="res_model">salebycount.popup</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
-            <field name="view_id" ref="view_popup_for_sale_by_count"/>
+            <field name="view_id" ref="view_popup_for_sales_by_count"/>
             <field name="target">new</field>
             <field name="context">{'valuation': True}</field>
         </record>
@@ -43,7 +43,7 @@
                 </tree>
               </field>
         </record>
-    <menuitem name="Sale By Count" id="sale_by_count_report" parent="sale.menu_sale_report"
-              action="sale_by_count_report.action_sale_by_count"/>
+    <menuitem name="Sales By Count" id="sales_by_count_report" parent="sale.menu_sale_report"
+              action="sales_by_count_report.action_sales_by_count"/>
   </data>
 </odoo>
