@@ -26,7 +26,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
 
     def open_table(self):
         tree_view_id = self.env.ref('dormant_customers_report.list_view').id
-        # form_view_id = self.env.ref('product.product_template_only_form_view').id
+        form_view_id = self.env.ref('base.view_partner_form').id
 
         if self.compute_at_date:
             s_date = ProductSaleByCountPopUp.string_to_date(str(self.start_date))
@@ -60,8 +60,8 @@ class ProductSaleByCountPopUp(models.TransientModel):
 
         action = {
             'type': 'ir.actions.act_window',
-            'views': [(tree_view_id, 'tree')],
-            'view_mode': 'tree',
+            'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
+            'view_mode': 'tree,form',
             'name': _('Dormant Customers'),
             'res_model': 'res.partner',
             'domain': [('id', 'in', partner_ids)],
