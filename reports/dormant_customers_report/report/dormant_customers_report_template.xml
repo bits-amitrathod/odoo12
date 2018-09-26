@@ -18,9 +18,9 @@
                         <table class="table table-condensed" style="border: 1px solid black;">
                             <thead style="display: table-header-group;">
                                 <tr>
-                                    <th style="border: 1px solid black;text-align: center; width:60%;">Customer</th>
-                                    <th style="border: 1px solid black;text-align: center; width:15%">Last Purchase Date</th>
-                                    <th style="border: 1px solid black;text-align: center; white-space: nowrap; width:25%">
+                                    <th style="border: 1px solid black;text-align: center; width:35%;">Customer</th>
+                                    <th style="border: 1px solid black;text-align: center; width:20%">Last Purchase Date</th>
+                                    <th style="border: 1px solid black;text-align: center; white-space: nowrap; width:45%">
                                        Last Purchase Product
                                     </th>
                                 </tr>

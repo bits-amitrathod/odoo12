@@ -3,7 +3,7 @@
     <data>
         <report
                 id="action_report_dormant_customers"
-                string="Dormant Customer Report"
+                string="Dormant Customers"
                 model="res.partner"
                 report_type="qweb-html"
                 file="dormant_customers_report.dorm_cust_report_temp"
