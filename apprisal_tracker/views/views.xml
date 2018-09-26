@@ -7,27 +7,27 @@
       <field name="priority">21</field>
       <field name="arch" type="xml">
         <tree create="false" delete="false" >
-          <field name="appraisal_no" attrs="{'invisible':[('state', 'not in', ('purchase','cancel'))]}"/>
-          <field name="priority" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"/>
-          <field name="revision" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"  class="text-center" />
+          <field name="appraisal_no" attrs="{'invisible':[('state', 'not in', ('purchase'))]}"/>
+          <field name="priority" attrs="{'invisible':[('status', 'not in', ('purchase'))]}"/>
+          <field name="revision" attrs="{'invisible':[('status', 'not in', ('purchase'))]}"  class="text-center" />
           <field name="status" invisible="1"   />
           <field name="state" invisible="1"   />
-          <field name="acq_user_id" string='Acq Manager' attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"/>
-          <field name="partner_id" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}" string ="Facility"/>
-          <field name="offer_amount" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"  widget="monetary"/>
-          <field name="retail_amt" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"  widget="monetary"/>
-          <field name="create_date" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}" />
-          <field name="shipping_label_issued" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}" />
-          <field name="shipping_date" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}" />
-          <field name="delivered_date" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}" />
+          <field name="acq_user_id" string='Acq Manager' attrs="{'invisible':[('status', 'not in', ('purchase'))]}"/>
+          <field name="partner_id" attrs="{'invisible':[('status', 'not in', ('purchase'))]}" string ="Facility"/>
+          <field name="offer_amount" attrs="{'invisible':[('status', 'not in', ('purchase'))]}"  widget="monetary"/>
+          <field name="retail_amt" attrs="{'invisible':[('status', 'not in', ('purchase'))]}"  widget="monetary"/>
+          <field name="create_date" attrs="{'invisible':[('status', 'not in', ('purchase'))]}" />
+          <field name="shipping_label_issued" attrs="{'invisible':[('status', 'not in', ('purchase'))]}" />
+          <field name="shipping_date" attrs="{'invisible':[('status', 'not in', ('purchase'))]}" />
+          <field name="delivered_date" attrs="{'invisible':[('status', 'not in', ('purchase'))]}" />
           <!--<field name="notes_desc" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}" />-->
 
           <!--<field name="tier1_retail"   string="Tier 1 Retail" attrs="{'invisible':[('status', 'not in', ('purchase'))]}" />-->
           <!--<field name="tier2_retail"   string="Tier 2 Retail" attrs="{'invisible':[('status', 'not in', ('purchase'))]}" />-->
-          <field name="new_customer" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}" />
+          <field name="new_customer" attrs="{'invisible':[('status', 'not in', ('purchase'))]}" />
           <!--<field name="broker_margin"  string="Margin Detail" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"  >-->
-            <field name="broker_margin" options='{"bg_color": "#f3f397 : color"+"==3;"+"#c9fbcf : color"+"==2;"+"#ff7098 : color"+"==1"}'  string="Margin Detail" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"  ></field>
-            <field name="status_ven" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}" />
+            <field name="broker_margin" options='{"bg_color": "#f3f397 : color"+"==3;"+"#c9fbcf : color"+"==2;"+"#ff7098 : color"+"==1"}'  string="Margin Detail" attrs="{'invisible':[('status', 'not in', ('purchase'))]}"  ></field>
+            <field name="status_ven" attrs="{'invisible':[('status', 'not in', ('purchase'))]}" />
              <!--<field name="broker_margin"  string="Margin Detail" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"  ></field>-->
 
              <field name="color" invisible="1" />
@@ -182,7 +182,7 @@
             <field name="name">Appraisal Tracker</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">purchase.order</field>
-            <field name="domain">[('state','in',('cancel','purchase')),('status','in',('cancel','purchase'))]</field>
+            <field name="domain">[('state','in',('purchase','purchase')),('status','in',('purchase','purchase'))]</field>
             <field name="context">{'vendor_offer_data': True}</field>
             <field name="view_mode">form,tree</field>
              <field name="view_ids" eval="[(5, 0, 0),
