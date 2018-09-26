@@ -10,11 +10,13 @@ class apprisal_tracker_vendor(models.Model):
     tier1_retail = fields.Char(compute="_value_tier1_retail", store=False)
     tier2_retail = fields.Char(compute="_value_tier2_retail", store=False)
     broker_margin = fields.Char(compute="_value_broker_margin", store=False)
+
     color = fields.Integer(compute="_value_broker_margin", store=False)
 
     @api.onchange('broker_margin')
     def _value_broker_margin(self):
         for order in self:
+
             if(order.retail_amt!=0):
                 if(abs(float(((order.offer_amount)/float(order.retail_amt))-1)) < 0.4):
                     order.broker_margin='Margin < 40%'

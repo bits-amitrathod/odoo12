@@ -15,6 +15,7 @@ class SpsCustomerRequest(models.Model):
     customer_id = fields.Many2one('res.partner', string='Customer', required=True)
     document_id = fields.Many2one('sps.cust.uploaded.documents', string='Document', required=True)
     product_id = fields.Many2one('product.product', string='Product', required=False, default=0)
+    request_id = fields.One2many('sale.order.line', 'customer_request_id', string="Request")
 
     customer_sku = fields.Char()
     sps_sku = fields.Char()
@@ -38,11 +39,11 @@ class SpsCustomerRequest(models.Model):
         sale_order_list = self.env['sale.order'].search([('state', 'in', ('sent','engine')), ('team_id.team_type', '=', 'engine')])
 
         for sale_order in sale_order_list:
-            _logger.debug('sale_order : %r', sale_order.id)
+            _logger.info('sale_order : %r', sale_order.id)
             if not sale_order['create_date'] is None:
                 sale_order_line_list = self.env['sale.order.line'].search([('order_id', '=', sale_order.id)])
                 for sale_order_line in sale_order_line_list:
-                    _logger.debug('sale_order_line : %r : %r : %r',sale_order_line.id, sale_order_line.product_id.id, sale_order_line.document_id.id)
+                    _logger.info('sale_order_line : %r : %r : %r',sale_order_line.id, sale_order_line.product_id.id, sale_order_line.customer_request_id.id)
                     # get customer setting object
                     _setting_object = self.get_settings_object(sale_order_line.order_partner_id.id, sale_order_line.product_id.id, None, None)
                     if _setting_object:
@@ -50,13 +51,8 @@ class SpsCustomerRequest(models.Model):
                         length_of_hold_flag = self.env['prioritization.engine.model'].check_length_of_hold(sale_order['create_date'], _setting_object.length_of_hold)
 
                         if length_of_hold_flag:
-                            sps_customer_request = self.env['sps.customer.requests'].search(
-                                [('customer_id', '=', sale_order_line['order_partner_id']['id']), ('document_id', '=', sale_order_line['document_id']['id']),
-                                ('product_id', '=', sale_order_line['product_id']['id']),('status', '=', 'completed')])
-
-                            if len(sps_customer_request) == 1:
-                                self.env['sps.customer.requests'].search(
-                                    [('id', '=', sps_customer_request['id'])]).write(dict(status='InCoolingPeriod'))
+                            self.env['sps.customer.requests'].search(
+                                [('id', '=', sale_order_line['customer_request_id']['id']),('status', '=', 'completed')]).write(dict(status='InCoolingPeriod'))
 
     # Get Customer Requests
     def get_customer_requests(self):
@@ -80,7 +76,6 @@ class SpsCustomerRequest(models.Model):
                 if _setting_object:
                     sps_customer_request.write({'customer_request_logs': 'Customer prioritization setting is True, '})
                     pr_model = dict(customer_request_id=sps_customer_request.id,
-                                    document_id=sps_customer_request['document_id'].id,
                                     customer_id=sps_customer_request['customer_id'].id,
                                     product_id=sps_customer_request['product_id'].id,
                                     status=sps_customer_request['status'],
@@ -99,6 +94,7 @@ class SpsCustomerRequest(models.Model):
         if len(pr_models) > 0:
             # Sort list by product priority
             pr_models = sorted(pr_models, key=itemgetter('product_priority'))
+            # Allocate Product by priority.
             allocated_products = self.env['prioritization.engine.model'].allocate_product_by_priority(pr_models)
 
         return allocated_products
@@ -132,7 +128,6 @@ class SpsCustomerRequest(models.Model):
             # update status Unprocessed
             self.env['sps.customer.requests'].search(
                 [('id', '=', sps_customer_request_id)]).write(dict(status="Unprocessed",customer_request_logs=log))
-
 
     @api.multi
     @api.depends('document_id')

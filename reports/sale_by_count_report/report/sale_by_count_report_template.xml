@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="sale_by_count_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <page>
+                    <div class="oe_structure"/>
+                    <div class="row">
+                        <center>
+                            <b>
+                                <h2>Surgical Product Solutions</h2>
+                                <h4>Sales By Count</h4>
+                            </b>
+                        </center>
+                    </div>
+                    <br/>
+                    <div>
+                        <table class="table table-condensed" style="border: 1px solid black;">
+                            <thead>
+                                <tr align="center" style="border: 1px solid black;">
+                                    <th style="border: 1px solid black;text-align: center; width:15%">Product</th>
+                                    <th style="border: 1px solid black;text-align: center; width:75%">Description</th>
+                                    <th style="border: 1px solid black;text-align: center;white-space: nowrap; width:10%">
+                                       Quantity
+                                    </th>
+                                </tr>
+                                <tr t-foreach="data" t-as="order">
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="order.sku_code"/>
+                                    </td>
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="order.name"/>
+                                    </td>
+                                    <td align="right" style="border: 1px solid black;">
+                                        <span t-esc="order.total_sale_qty"/>
+                                    </td>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </page>
+            </t>
+        </t>
+    </template>
+</odoo>
