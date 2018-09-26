@@ -2,6 +2,7 @@ from odoo import models, fields, api
 import logging
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
+import re
 
 _logger = logging.getLogger(__name__)
 
@@ -104,30 +105,17 @@ class PrioritizationEngine(models.TransientModel):
         return flag
 
     # calculate length of hold(In hours)
-    def calculate_length_of_holds_in_hours(self, prioritization_engine_request):
-        flag = True
-        # get product create date
-        create_date = self.get_product_create_date(prioritization_engine_request)
-
-        if not create_date is None:
-            # get current datetime
-            current_datetime = datetime.now()
-            create_date = datetime.strptime(self.change_date_format(create_date), '%Y,%m,%d,%H,%M,%S.%f')
-            # calculate datetime difference.
-            duration = current_datetime - create_date  # For build-in functions
-            duration_in_hours = self.return_duration_in_hours(duration)
-            if int(prioritization_engine_request['length_of_hold']) <= int(duration_in_hours):
-                if prioritization_engine_request['status'].lower().strip() != 'inprocess':
-                    # update status In Process
-                    self.update_customer_status(prioritization_engine_request, 'Inprocess')
-                    flag = True
-            elif prioritization_engine_request['status'].lower().strip() != 'unprocessed':
-                    # update status In Process
-                    self.update_customer_status(prioritization_engine_request, 'Unprocessed')
-                    flag = False
+    def check_length_of_hold(self, create_date,length_of_hold):
+        # get current datetime
+        current_datetime = datetime.now()
+        create_date = datetime.strptime(self.change_date_format(create_date), '%Y,%m,%d,%H,%M,%S')
+        # calculate datetime difference.
+        duration = current_datetime - create_date  # For build-in functions
+        duration_in_hours = self.return_duration_in_hours(duration)
+        if int(length_of_hold) <= int(duration_in_hours):
+            return True
         else:
-            flag = True
-        return flag
+            return False
 
     # get product expiration tolerance date, expiration tolerance in months(3/6/12)
     def get_product_expiration_tolerance_date(self,prioritization_engine_request):
@@ -146,6 +134,7 @@ class PrioritizationEngine(models.TransientModel):
                     remaining_product_allocation_quantity = int(remaining_product_allocation_quantity) - int(product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'])
 
                     self.allocated_product_to_customer(prioritization_engine_request['customer_id'],
+                                                       prioritization_engine_request['customer_request_id'],
                                                        prioritization_engine_request['required_quantity'],
                                                        list(product_lot.keys()).pop(0),
                                                        prioritization_engine_request['product_id'],
@@ -161,7 +150,7 @@ class PrioritizationEngine(models.TransientModel):
                     product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0),{})['reserved_quantity']) + int(remaining_product_allocation_quantity)
                     product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0),{})['available_quantity']) - int(remaining_product_allocation_quantity)
 
-                    self.allocated_product_to_customer(prioritization_engine_request['customer_id'], prioritization_engine_request['required_quantity'],
+                    self.allocated_product_to_customer(prioritization_engine_request['customer_id'], prioritization_engine_request['customer_request_id'], prioritization_engine_request['required_quantity'],
                                                        list(product_lot.keys()).pop(0), prioritization_engine_request['product_id'], remaining_product_allocation_quantity)
 
                     _logger.debug('Quantity Updated')
@@ -225,13 +214,14 @@ class PrioritizationEngine(models.TransientModel):
         query_result = self.env.cr.dictfetchone()
 
         if query_result['create_date'] != None:
+            _logger.debug('create date : %r', query_result['create_date'])
             return query_result['create_date']
         else:
             return None
 
     # allocated product to customer
-    def allocated_product_to_customer(self, customer_id, required_quantity, lot_id, product_id, allocated_product_from_lot):
-        allocated_product = {lot_id : {'customer_required_quantity':required_quantity,
+    def allocated_product_to_customer(self, customer_id, customer_request_id, required_quantity, lot_id, product_id, allocated_product_from_lot):
+        allocated_product = {lot_id : {'customer_request_id':customer_request_id, 'customer_required_quantity':required_quantity,
                                  'product_id':product_id, 'allocated_product_quantity':allocated_product_from_lot}}
         if customer_id in self.allocated_product_dict.keys():
             self.allocated_product_dict.get(customer_id, {}).append(allocated_product)
@@ -266,12 +256,12 @@ class PrioritizationEngine(models.TransientModel):
             _logger.debug('sale order : %r ',sale_order['id'])
 
             for allocated_product in self.allocated_product_dict.get(partner_id_key, {}):
-                sale_order_line_dict = {'order_id': sale_order['id'], 'product_id': allocated_product.get(list(allocated_product.keys()).pop(0), {})['product_id'],
+                sale_order_line_dict = {'customer_request_id': allocated_product.get(list(allocated_product.keys()).pop(0), {})['customer_request_id'], 'order_id': sale_order['id'], 'product_id': allocated_product.get(list(allocated_product.keys()).pop(0), {})['product_id'],
                                         'order_partner_id' : partner_id_key, 'product_uom_qty' : allocated_product.get(list(allocated_product.keys()).pop(0), {})['allocated_product_quantity']}
 
                 self.env['sale.order.line'].create(dict(sale_order_line_dict))
 
     # Change date format to calculate date difference (2018-06-25 23:08:15) to (2018, 6, 25, 23, 8, 15)
     def change_date_format(self, date):
-        formatted_date = date.replace("-", ",").replace(" ", ",").replace(":", ",")
+        formatted_date = date.split(".")[0].replace("-", ",").replace(" ", ",").replace(":", ",")
         return formatted_date

@@ -97,6 +97,7 @@ class SaleOrder(models.Model):
 
 class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
+    customer_request_id = fields.Many2one('sps.customer.requests', string='Request')
 
     def action_show_details(self):
 

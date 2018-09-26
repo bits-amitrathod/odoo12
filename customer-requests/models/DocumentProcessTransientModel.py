@@ -126,7 +126,7 @@ class DocumentProcessTransientModel(models.TransientModel):
                     high_priority_requests.append(saved_sps_customer_request)
             try:
                 if len(high_priority_requests) > 0:
-                    self.env['sps.customer.requests'].process_requests(high_priority_requests)
+                    self.env['sps.customer.requests'].process_customer_requests(high_priority_requests)
             except Exception as exc:
                 _logger.info("Error procesing high priority requests %r", exc)
         else:
