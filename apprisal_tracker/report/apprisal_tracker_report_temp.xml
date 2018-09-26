@@ -2,6 +2,7 @@
 <odoo>
     <template id="apprisal_tracker_report" >
         <t t-call="web.html_container">
+
             <t t-call="web.external_layout" t-as="data" >
                 <page>
                     <div class="oe_structure"/>
@@ -16,6 +17,7 @@
                     </center>
                     </div>
                     <br/>
+
                             <!--<div class="row mt32 mb32">-->
                         <!--<div t-if="data.appraisal_no" class="col-xs-3">-->
                             <!--<strong>Our Order Reference:</strong>-->
@@ -45,6 +47,7 @@
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Shipping Label Issued</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Shipping Date</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Delivered Date</th>
+
                                     <!--<th style="border: 1px solid black;text-align: center;width: 5%;">Note</th>-->
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">New Customer</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Margin Detail</th>
@@ -84,6 +87,7 @@
                                          <td  style="border: 1px solid black;width: 5%;">
                                              <span t-esc="order.delivered_date"/>
                                         </td>
+
                                          <!--<td  style="border: 1px solid black;width: 5%;">-->
                                              <!--<span t-esc="order.notes_desc"/>-->
                                         <!--</td>-->
