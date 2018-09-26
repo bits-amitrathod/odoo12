@@ -6,9 +6,8 @@
     'category': 'Hidden/Dependency',
     'version': '11.0.1.0.1',
     'depends': ['web'],
-    'author': "Benchmark It Solutions",
-    'license': 'AGPL-3',
-    'website': 'http://www.benchmarkitsolutions.com',
+    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
+    'website': "http://www.benchmarkitsolutions.com",
     'demo': [
         "demo/res_users.xml",
     ],

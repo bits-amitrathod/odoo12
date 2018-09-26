@@ -24,7 +24,8 @@
     'category': 'sale',
     'version': '11.0.0.1',
     # 'summary': 'This module provides Sales Report By product group',
-    'author': 'Benchmark It Solutions',
+    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
+    'website': "http://www.benchmarkitsolutions.com",
     # 'description': '''This module provides Sales Report By Product.
     #                   With the help of this moudule you can print sales report with groupby Product.
     #                  sale report.
