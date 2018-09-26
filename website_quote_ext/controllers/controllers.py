@@ -18,5 +18,10 @@ class WebsiteSale(http.Controller):
 
     @http.route(['/shop/engine/update_json'], type='json', auth="public", methods=['POST'], website=True, csrf=False)
     def cart_update_json(self, quote_id,product_id, line_id=None, add_qty=None, set_qty=None, display=True):
-        line = request.website.sale_get_engine_order(quote_id,line_id,set_qty)
-        return line.read()
+        order = request.website.sale_get_engine_order(quote_id,force_create=1)
+        print("Inside Controller");
+        print(order.state);
+        if order.state != 'sent':
+            request.website.sale_reset()
+            return {}
+        return {}
