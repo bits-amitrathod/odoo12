@@ -11,9 +11,9 @@ _logger = logging.getLogger(__name__)
 class ProductSaleByCount(models.Model):
     _inherit = "product.product"
 
-    sku_name = fields.Char("Product ",store=False)
+    sku_name = fields.Char("Product ", compute='_compare_data', store=False)
     product_name = fields.Char("Product Name ", store=False)
-    total_sale_qty = fields.Float("Quantity", compute='_compare_data', store=False)
+    total_sale_qty = fields.Float("Quantity", store=False)
 
     @api.multi
     def _compare_data(self):
