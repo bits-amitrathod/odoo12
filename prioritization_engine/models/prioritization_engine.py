@@ -134,7 +134,7 @@ class PrioritizationEngine(models.TransientModel):
                     remaining_product_allocation_quantity = int(remaining_product_allocation_quantity) - int(product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'])
 
                     self.allocated_product_to_customer(prioritization_engine_request['customer_id'],
-                                                       prioritization_engine_request['document_id'],
+                                                       prioritization_engine_request['customer_request_id'],
                                                        prioritization_engine_request['required_quantity'],
                                                        list(product_lot.keys()).pop(0),
                                                        prioritization_engine_request['product_id'],
@@ -150,7 +150,7 @@ class PrioritizationEngine(models.TransientModel):
                     product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0),{})['reserved_quantity']) + int(remaining_product_allocation_quantity)
                     product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0),{})['available_quantity']) - int(remaining_product_allocation_quantity)
 
-                    self.allocated_product_to_customer(prioritization_engine_request['customer_id'], prioritization_engine_request['document_id'], prioritization_engine_request['required_quantity'],
+                    self.allocated_product_to_customer(prioritization_engine_request['customer_id'], prioritization_engine_request['customer_request_id'], prioritization_engine_request['required_quantity'],
                                                        list(product_lot.keys()).pop(0), prioritization_engine_request['product_id'], remaining_product_allocation_quantity)
 
                     _logger.debug('Quantity Updated')
@@ -220,8 +220,8 @@ class PrioritizationEngine(models.TransientModel):
             return None
 
     # allocated product to customer
-    def allocated_product_to_customer(self, customer_id, document_id, required_quantity, lot_id, product_id, allocated_product_from_lot):
-        allocated_product = {lot_id : {'document_id':document_id, 'customer_required_quantity':required_quantity,
+    def allocated_product_to_customer(self, customer_id, customer_request_id, required_quantity, lot_id, product_id, allocated_product_from_lot):
+        allocated_product = {lot_id : {'customer_request_id':customer_request_id, 'customer_required_quantity':required_quantity,
                                  'product_id':product_id, 'allocated_product_quantity':allocated_product_from_lot}}
         if customer_id in self.allocated_product_dict.keys():
             self.allocated_product_dict.get(customer_id, {}).append(allocated_product)
@@ -256,7 +256,7 @@ class PrioritizationEngine(models.TransientModel):
             _logger.debug('sale order : %r ',sale_order['id'])
 
             for allocated_product in self.allocated_product_dict.get(partner_id_key, {}):
-                sale_order_line_dict = {'document_id': allocated_product.get(list(allocated_product.keys()).pop(0), {})['document_id'], 'order_id': sale_order['id'], 'product_id': allocated_product.get(list(allocated_product.keys()).pop(0), {})['product_id'],
+                sale_order_line_dict = {'customer_request_id': allocated_product.get(list(allocated_product.keys()).pop(0), {})['customer_request_id'], 'order_id': sale_order['id'], 'product_id': allocated_product.get(list(allocated_product.keys()).pop(0), {})['product_id'],
                                         'order_partner_id' : partner_id_key, 'product_uom_qty' : allocated_product.get(list(allocated_product.keys()).pop(0), {})['allocated_product_quantity']}
 
                 self.env['sale.order.line'].create(dict(sale_order_line_dict))
