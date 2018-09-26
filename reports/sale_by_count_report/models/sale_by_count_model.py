@@ -11,10 +11,11 @@ _logger = logging.getLogger(__name__)
 class ProductSaleByCount(models.Model):
     _inherit = "product.product"
 
-    sku_name = fields.Char("Product ",store=False)
+    sku_name = fields.Char("Product ", compute='_compare_data', store=False)
     product_name = fields.Char("Product Name ", store=False)
-    total_sale_qty = fields.Float("Quantity", compute='_compare_data', store=False)
+    total_sale_qty = fields.Float("Quantity", store=False)
 
+    @api.multi
     def _compare_data(self):
         start_date = self.env.context.get('start_date')
         end_date = self.env.context.get('end_date')
@@ -29,18 +30,11 @@ class ProductSaleByCount(models.Model):
         else:
             end_date = datetime.datetime.strptime(end_date, DEFAULT_SERVER_DATETIME_FORMAT).date()
 
-        sale_orders = self.env['sale.order'].search([])
-
-        filtered_by_current_month = list(filter(
-            lambda x: x.confirmation_date and fields.Datetime.from_string(x.confirmation_date).date() >= start_date and fields.Datetime.from_string(
-                x.confirmation_date).date() <= end_date, sale_orders))
-
-        order_ids =[x.id for x in filtered_by_current_month]
-
-        sale_order_lines = self.env['sale.order.line'].search([('order_id', 'in', order_ids)])
-        # products = {}
-        for sale_order_line in sale_order_lines:
-            product = sale_order_line.product_id
-            product.total_sale_qty = product.total_sale_qty + sale_order_line.product_uom_qty
-            product.sku_name = product.product_tmpl_id.sku_code
-            product.product_name = product.name
+        for product in self:
+            sale_order_lines = self.env['sale.order.line'].search([('product_id', '=', product.id)])
+            for sale_order_line in sale_order_lines:
+                if sale_order_line.order_id.confirmation_date and (start_date <= fields.Datetime.from_string(
+                        sale_order_line.order_id.confirmation_date).date() <= end_date):
+                    product.total_sale_qty = product.total_sale_qty + sale_order_line.product_uom_qty
+                    product.product_name = product.product_tmpl_id.name
+                    product.sku_name = product.product_tmpl_id.sku_code

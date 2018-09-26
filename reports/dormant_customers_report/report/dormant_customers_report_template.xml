@@ -14,13 +14,13 @@
                         </center>
                     </div>
                     <br/>
-                    <div class="table-responsive">
+                    <div>
                         <table class="table table-condensed" style="border: 1px solid black;">
-                            <thead>
-                                <tr align="center" style="border: 1px solid black;">
-                                    <th style="border: 1px solid black;text-align: center; width:60%">Customer</th>
-                                    <th style="border: 1px solid black;text-align: center; width:15%">Last Purchase Date</th>
-                                    <th style="border: 1px solid black;text-align: center;white-space: nowrap; width:25%">
+                            <!--<thead style="display: table-header-group ">-->
+                                <tr align="center" style="border: 1px solid black;" >
+                                    <th style="border: 1px solid black;text-align: center; width:60% display: table-header-group">Customer</th>
+                                    <th style="border: 1px solid black;text-align: center; width:15% display: table-header-group">Last Purchase Date</th>
+                                    <th style="border: 1px solid black;text-align: center; white-space: nowrap; width:25% display: table-header-group">
                                        Last Purchase Product
                                     </th>
                                 </tr>
@@ -35,7 +35,7 @@
                                         <span t-esc="order.last_purchased_product"/>
                                     </td>
                                 </tr>
-                            </thead>
+                            <!--</thead>-->
                         </table>
                     </div>
                 </page>

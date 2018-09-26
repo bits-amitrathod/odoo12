@@ -21,7 +21,7 @@
         </record>
 
         <record id="action_dormant_customers" model="ir.actions.act_window">
-            <field name="name">Sale By Count</field>
+            <field name="name">Dormant Customers</field>
             <field name="res_model">dormant_customers.popup</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
@@ -38,8 +38,8 @@
               <field name="arch" type="xml">
                 <tree>
                     <field name="display_name" string="Customer" />
-                    <field name="last_purchased_product" />
                     <field name="last_purchase_date" />
+                    <field name="last_purchased_product" />
                 </tree>
               </field>
         </record>
