@@ -16,11 +16,11 @@
                     <br/>
                     <div>
                         <table class="table table-condensed" style="border: 1px solid black;">
-                            <thead>
+                            <!--<thead>-->
                                 <tr align="center" style="border: 1px solid black;">
-                                    <th style="border: 1px solid black;text-align: center; width:15%">Product</th>
-                                    <th style="border: 1px solid black;text-align: center; width:75%">Description</th>
-                                    <th style="border: 1px solid black;text-align: center;white-space: nowrap; width:10%">
+                                    <th style="border: 1px solid black;text-align: center; width:15%; display: table-header-group">Product</th>
+                                    <th style="border: 1px solid black;text-align: center; width:75%; display: table-header-group">Description</th>
+                                    <th style="border: 1px solid black;text-align: center;white-space: nowrap; width:10%; display: table-header-group">
                                        Quantity
                                     </th>
                                 </tr>
@@ -35,7 +35,7 @@
                                         <span t-esc="order.total_sale_qty"/>
                                     </td>
                                 </tr>
-                            </thead>
+                            <!--</thead>-->
                         </table>
                     </div>
                 </page>
