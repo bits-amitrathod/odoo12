@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Sale By Count Report",
+    'name': "Sales By Count",
 
     'summary': """
         Short (1 phrase/line) summary of the module's purpose, used as
@@ -23,8 +23,8 @@
     'data': [
         # 'security/ir.model.access.csv',
         'views/views.xml',
-        'report/sale_by_count_report.xml',
-        'report/sale_by_count_report_template.xml'
+        'report/sales_by_count_report.xml',
+        'report/sales_by_count_report_template.xml'
     ],
     'auto_install': False,
     'installable': True,

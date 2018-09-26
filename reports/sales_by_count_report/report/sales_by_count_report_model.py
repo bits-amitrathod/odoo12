@@ -5,7 +5,7 @@ log = logging.getLogger(__name__)
 
 
 class ReportProductSaleByCount(models.AbstractModel):
-    _name = 'report.sale_by_count_report.sale_by_count_template'
+    _name = 'report.sales_by_count_report.sales_by_count_template'
 
     @api.model
     def get_report_values(self, docids, data=None):
