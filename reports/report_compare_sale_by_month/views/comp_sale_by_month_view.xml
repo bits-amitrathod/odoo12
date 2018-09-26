@@ -42,7 +42,7 @@
               <field name="arch" type="xml">
                 <tree>
                     <field name="sku_code"/>
-                    <field name="product_name"/>
+                    <field name="name"/>
                     <field name="last_month_total_qty"/>
                     <field name="last_month_total_amount" widget="monetary" />
                     <field name="current_month_total_qty" />

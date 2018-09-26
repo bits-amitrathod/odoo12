@@ -34,10 +34,10 @@
                                 </tr>
                                     <tr t-foreach="data" t-as="order">
                                         <td style="border: 1px solid black;">
-                                            <span t-esc="order.sku_name"/>
+                                            <span t-esc="order.sku_code"/>
                                         </td>
                                         <td style="border: 1px solid black;width: 250px;">
-                                            <span t-esc="order.product_name"/>
+                                            <span t-esc="order.name"/>
                                         </td>
                                          <td align="right" style="border: 1px solid black;">
                                             <span t-esc="order.last_month_total_qty"/>
