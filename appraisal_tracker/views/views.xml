@@ -1,7 +1,7 @@
 <odoo>
   <data>
 
-    <record model="ir.ui.view" id="apprisal_tracker.list">
+    <record model="ir.ui.view" id="appraisal_tracker.list">
       <field name="name">purchase.order list3</field>
       <field name="model">purchase.order</field>
       <field name="priority">21</field>
@@ -35,7 +35,7 @@
     </record>
 
 
-      <record id="apprisal_tracker_offer_form" model="ir.ui.view">
+      <record id="appraisal_tracker_offer_form" model="ir.ui.view">
             <field name="name">purchase.order.form</field>
             <field name="model">purchase.order</field>
             <field name="context">[status: 'purchase']</field>
@@ -174,7 +174,7 @@
             </field>
         </record>
 
-     <record id="apprisal_tracker.action_window" model="ir.actions.act_window">
+     <record id="appraisal_tracker.action_window" model="ir.actions.act_window">
 
             <field name="name">Appraisal Tracker</field>
             <field name="type">ir.actions.act_window</field>
@@ -183,8 +183,8 @@
             <field name="context">{'vendor_offer_data': True}</field>
             <field name="view_mode">form,tree</field>
              <field name="view_ids" eval="[(5, 0, 0),
-        (0, 0, {'view_mode': 'tree', 'view_id': ref('apprisal_tracker.list')},),
-        (0, 0, {'view_mode': 'form', 'view_id': ref('apprisal_tracker_offer_form')})
+        (0, 0, {'view_mode': 'tree', 'view_id': ref('appraisal_tracker.list')},),
+        (0, 0, {'view_mode': 'form', 'view_id': ref('appraisal_tracker_offer_form')})
         ]"/>
             <field name="help" type="html">
             <p class="oe_view_nocontent_create">
@@ -201,17 +201,17 @@
        </record>
 
        <report
-                id="action_report_apprisal_tracker"
+                id="action_report_appraisal_tracker"
 
                 string="Appraisal Tracker"
                 model="purchase.order"
                 report_type="qweb-html"
-                file="apprisal_tracker.apprisal_tracker_report"
-                name="apprisal_tracker.apprisal_tracker_report"
+                file="appraisal_tracker.appraisal_tracker_report"
+                name="appraisal_tracker.appraisal_tracker_report"
         />
 
 
-          <record id="apprisal_tracker_view_purchase_order_filter" model="ir.ui.view">
+          <record id="appraisal_tracker_view_purchase_order_filter" model="ir.ui.view">
             <field name="name">request.quotation.select</field>
             <field name="model">purchase.order</field>
             <field name="inherit_id" ref="purchase.view_purchase_order_filter"></field>
@@ -225,8 +225,8 @@
             </field>
           </record>
 
-        <menuitem id="menu_procurement_management_apprisal_tracker" name="Appraisal Tracker"
-            parent="purchase.menu_procurement_management"  action="apprisal_tracker.action_window" sequence="15"
+        <menuitem id="menu_procurement_management_appraisal_tracker" name="Appraisal Tracker"
+            parent="purchase.menu_procurement_management"  action="appraisal_tracker.action_window" sequence="15"
            />
 
   </data>
