@@ -2,15 +2,8 @@
 {
     'name': "eCommerce CSTM",
 
-    'summary': """
-        Provide feature for product expiration lot
-        
-        """,
-    'author': 'Benchmark It Solutions',
-
-    'description': """
-        Provide feature for product expiration lot
-    """,
+    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
+    'website': "http://www.benchmarkitsolutions.com",
 
     'sequence': 59,
     'category': 'e-commerce',
