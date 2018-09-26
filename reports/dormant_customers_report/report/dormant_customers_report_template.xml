@@ -14,7 +14,7 @@
                         </center>
                     </div>
                     <br/>
-                    <div class="table-responsive">
+                    <div>
                         <table class="table table-condensed" style="border: 1px solid black;">
                             <thead>
                                 <tr align="center" style="border: 1px solid black;">
