@@ -29,3 +29,5 @@ class broker_report(models.Model):
     broker_greater_40_total_mar = fields.Char(string='Broker > 40% Total', store=False)
     broker_less_40_total_mar = fields.Char('Broker > 40% Total', store=False)
     broker_desc_mar = fields.Char('Desc', store=False)
+
+    data_state = fields.Char('', store=False)

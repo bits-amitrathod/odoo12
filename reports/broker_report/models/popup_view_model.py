@@ -20,7 +20,7 @@ class BrokerReportPopUp(models.TransientModel):
         final_dict = {}
 
         tree_view_id = self.env.ref('broker_report.broker_form_list').id
-        form_view_id = self.env.ref('apprisal_tracker.apprisal_tracker_offer_form').id
+        form_view_id = self.env.ref('appraisal_tracker.appraisal_tracker_offer_form').id
 
         # if self.compute_at_date:
         #     action = {

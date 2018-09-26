@@ -53,7 +53,8 @@ class ReportBrokerReport(models.AbstractModel):
     @api.model
     def get_report_values(self, docids, data=None):
          apprisal_list= self.env['purchase.order'].search([('state', '=', 'purchase'),('status', '=', 'purchase'),('vendor_offer_data', '=', True)])
-         if(apprisal_list!=False):
+         if(len(apprisal_list)>0):
+             data_state="open"
              apprisal_list_rtl_val = apprisal_list_tot_val = apprisal_list_mar_val = apprisal_list[0]
              apprisal_list_report=[]
              tot_offer=0
