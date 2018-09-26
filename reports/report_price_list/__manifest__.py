@@ -5,8 +5,8 @@
     'version': '11.0.0.1',
     # 'summary': 'This module provides Product Price List Report.',
     # 'website': ' ',
-    'author': 'Benchmark It Solutions',
-    'license': 'AGPL-3',
+     'author': "Benchmark IT Solutions (I) Pvt Ltd.",
+    'website': "http://www.benchmarkitsolutions.com",
     # 'description': '''This module provides Product Price List Report.
     #                   With the help of this moudule you can print Product Price List .
     #                  '''
