@@ -12,7 +12,6 @@
     'category': 'Product',
     'summary': "Product Brand Manager",
     'author': 'Benchmark It Solutions',
-    'license': 'AGPL-3',
     'depends': [
         'sale',
         ],

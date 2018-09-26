@@ -2,13 +2,6 @@
 {
     'name': "Prioritization Engine",
 
-    'summary': """
-        Prioritization Engine""",
-
-    'description': """
-        Long description of module's purpose
-    """,
-
     'author': "Benchmark It Solutions",
     'website': "http://www.benchmarkitsolutions.com",
 

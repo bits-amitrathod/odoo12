@@ -2,12 +2,6 @@
 {
     'name': "Product Brand in Website",
 
-    'summary': """
-        Provide 'Shop by Manufacturer' Feature """,
-
-    'description': """
-       Provide 'Shop by Manufacturer' Feature
-    """,
     'author': 'Benchmark It Solutions',
     'sequence': 60,
     'category': 'e-commerce',

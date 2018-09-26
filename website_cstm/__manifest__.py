@@ -2,12 +2,6 @@
 {
     'name': "website CSTM",
 
-    'summary': """
-       Website Theme and Features""",
-
-    'description': """
-         Website Theme and Features
-    """,
     'author': 'Benchmark It Solutions',
     'sequence': 57,
     'category': 'website',
