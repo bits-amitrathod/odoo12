@@ -38,14 +38,14 @@
         </record>-->
 
 
-        <record id="sale_order_view_search_inherit_sale1" model="ir.ui.view">
+        <!--<record id="sale_order_view_search_inherit_sale1" model="ir.ui.view">
             <field name="name">sale.order.search.inherit.sale</field>
             <field name="model">sale.order</field>
             <field name="mode">primary</field>
            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
            
 
-        </record>
+        </record>-->
 
 
         <record id="action_orders1" model="ir.actions.act_window">
@@ -54,7 +54,6 @@
             <field name="res_model">sale.order</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="search_view_id" ref="sale_order_view_search_inherit_sale1"/>
             <field name="context">{'group_by':'user_id'}</field>
             <field name="domain">[('state', 'not in', ('draft', 'sent', 'cancel'))]</field>
 

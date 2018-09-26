@@ -229,7 +229,6 @@ class PrioritizationEngine(models.TransientModel):
             dict = {customer_id: [allocated_product]}
             self.allocated_product_dict.update(dict)
 
-
     # return duration in days
     def return_duration_in_days(self, duration):
         duration_in_seconds = duration.total_seconds()
@@ -265,3 +264,18 @@ class PrioritizationEngine(models.TransientModel):
     def change_date_format(self, date):
         formatted_date = date.split(".")[0].replace("-", ",").replace(" ", ",").replace(":", ",")
         return formatted_date
+
+    def get_available_product_count(self, customer_id, product_id):
+        available_production_lot_dict =self.env['available.product.dict'].get_available_production_lot()
+        prioritization_engine_request=self.env['sps.customer.requests']._get_settings_object(customer_id,product_id,None,None)
+        count = 0
+        if available_production_lot_dict.get(int(product_id)) !=None and prioritization_engine_request:
+            for available_production_lot in available_production_lot_dict.get(int(product_id)):
+                temp=(datetime.today() + relativedelta(months=+int(prioritization_engine_request['expiration_tolerance'])))
+                if datetime.strptime(
+                        available_production_lot.get(list(available_production_lot.keys()).pop(0), {}).get('use_date'),
+                        '%Y-%m-%d %H:%M:%S') >= temp:
+                    for available in available_production_lot:
+                        print(available_production_lot.get(available))
+                        count = count +(available_production_lot.get(available).get('available_quantity')-available_production_lot.get(available).get('reserved_quantity'))
+        return count

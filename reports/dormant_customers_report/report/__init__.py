@@ -1,0 +1,1 @@
+from . import dormant_customers_report_model
