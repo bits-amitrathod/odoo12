@@ -57,23 +57,23 @@
                                             <span t-esc="order.broker_desc_tot" />
                                         </td>
                                         <td  align="right" style="border: 1px solid black;">
-                                            <span t-esc="order.total_retail_broker_tot" />
+                                            <span t-esc="order.total_retail_broker_tot" /> %
                                         </td>
 
                                         <td align="right" style="border: 1px solid black;">
-                                            <span t-esc="order.bonus_eligible_tot" />
+                                            <span t-esc="order.bonus_eligible_tot" /> %
                                         </td>
                                         <td align="right" style="border: 1px solid black;">
-                                            <span t-esc="order.hospital_total_tot" />
+                                            <span t-esc="order.hospital_total_tot" /> %
                                         </td>
                                         <td  align="right" style="border: 1px solid black;white-space:nowrap;">
-                                             <span t-esc="order.broker_total_tot" />
+                                             <span t-esc="order.broker_total_tot" /> %
                                         </td>
                                          <td align="right" style="border: 1px solid black;white-space:nowrap;">
-                                             <span t-esc="order.broker_greater_40_total_tot" />
+                                             <span t-esc="order.broker_greater_40_total_tot" /> %
                                         </td>
                                         <td align="right" style="border: 1px solid black;white-space:nowrap;">
-                                             <span t-esc="order.broker_less_40_total_tot"  />
+                                             <span t-esc="order.broker_less_40_total_tot"  /> %
                                         </td>
                                     </tr>
                                 <tr t-foreach="data[2]" t-as="order">
