@@ -11,7 +11,7 @@
     #                   With the help of this moudule you can print Product Price List .
     #                  '''
     #                ,
-    'depends': ['base', 'product','stock'],
+    'depends': ['base', 'product','stock','prioritization_engine'],
     'data': [
         'views/price_list_view.xml',
         'report/price_list_report.xml',
