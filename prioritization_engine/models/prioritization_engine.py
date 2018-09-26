@@ -134,7 +134,7 @@ class PrioritizationEngine(models.TransientModel):
                     remaining_product_allocation_quantity = int(remaining_product_allocation_quantity) - int(product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'])
 
                     self.allocated_product_to_customer(prioritization_engine_request['customer_id'],
-                                                       prioritization_engine_request['document_id'],
+                                                       prioritization_engine_request['customer_request_id'],
                                                        prioritization_engine_request['required_quantity'],
                                                        list(product_lot.keys()).pop(0),
                                                        prioritization_engine_request['product_id'],
@@ -150,7 +150,7 @@ class PrioritizationEngine(models.TransientModel):
                     product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0),{})['reserved_quantity']) + int(remaining_product_allocation_quantity)
                     product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0),{})['available_quantity']) - int(remaining_product_allocation_quantity)
 
-                    self.allocated_product_to_customer(prioritization_engine_request['customer_id'], prioritization_engine_request['document_id'], prioritization_engine_request['required_quantity'],
+                    self.allocated_product_to_customer(prioritization_engine_request['customer_id'], prioritization_engine_request['customer_request_id'], prioritization_engine_request['required_quantity'],
                                                        list(product_lot.keys()).pop(0), prioritization_engine_request['product_id'], remaining_product_allocation_quantity)
 
                     _logger.debug('Quantity Updated')
@@ -220,15 +220,14 @@ class PrioritizationEngine(models.TransientModel):
             return None
 
     # allocated product to customer
-    def allocated_product_to_customer(self, customer_id, document_id, required_quantity, lot_id, product_id, allocated_product_from_lot):
-        allocated_product = {lot_id : {'document_id':document_id, 'customer_required_quantity':required_quantity,
+    def allocated_product_to_customer(self, customer_id, customer_request_id, required_quantity, lot_id, product_id, allocated_product_from_lot):
+        allocated_product = {lot_id : {'customer_request_id':customer_request_id, 'customer_required_quantity':required_quantity,
                                  'product_id':product_id, 'allocated_product_quantity':allocated_product_from_lot}}
         if customer_id in self.allocated_product_dict.keys():
             self.allocated_product_dict.get(customer_id, {}).append(allocated_product)
         else:
             dict = {customer_id: [allocated_product]}
             self.allocated_product_dict.update(dict)
-
 
     # return duration in days
     def return_duration_in_days(self, duration):
@@ -256,7 +255,7 @@ class PrioritizationEngine(models.TransientModel):
             _logger.debug('sale order : %r ',sale_order['id'])
 
             for allocated_product in self.allocated_product_dict.get(partner_id_key, {}):
-                sale_order_line_dict = {'document_id': allocated_product.get(list(allocated_product.keys()).pop(0), {})['document_id'], 'order_id': sale_order['id'], 'product_id': allocated_product.get(list(allocated_product.keys()).pop(0), {})['product_id'],
+                sale_order_line_dict = {'customer_request_id': allocated_product.get(list(allocated_product.keys()).pop(0), {})['customer_request_id'], 'order_id': sale_order['id'], 'product_id': allocated_product.get(list(allocated_product.keys()).pop(0), {})['product_id'],
                                         'order_partner_id' : partner_id_key, 'product_uom_qty' : allocated_product.get(list(allocated_product.keys()).pop(0), {})['allocated_product_quantity']}
 
                 self.env['sale.order.line'].create(dict(sale_order_line_dict))
@@ -266,20 +265,17 @@ class PrioritizationEngine(models.TransientModel):
         formatted_date = date.split(".")[0].replace("-", ",").replace(" ", ",").replace(":", ",")
         return formatted_date
 
-    '''def get_available_product_count(self, customer_id, product_id):
-        available_production_lot_dict =self.get_available_product_lot_dict()
-        self.env['sps.customer.requests'].
-        filtered_production_lot_dict_to_be_returned = {}
-        for available_production_lot in available_production_lot_dict.get('product_id'):
-            if datetime.strptime(available_production_lot.get(list(available_production_lot.keys()).pop(0), {}).get('use_date'),
-                    '%Y-%m-%d %H:%M:%S') >= (datetime.today() + relativedelta(months=+int(prioritization_engine_request['expiration_tolerance']))):
-
-                if prioritization_engine_request['product_id'] in filtered_production_lot_dict_to_be_returned.keys():
-                    filtered_production_lot_dict_to_be_returned.get(prioritization_engine_request['product_id'],
-                                                                         {}).append(available_production_lot)
-                else:
-                    dict = {prioritization_engine_request['product_id']: [available_production_lot]}
-                    filtered_production_lot_dict_to_be_returned.update(dict)
-
-        _logger.debug('Filtered production lot list to be returned %r', str(filtered_production_lot_dict_to_be_returned))
-        return filtered_production_lot_dict_to_be_returned'''
+    def get_available_product_count(self, customer_id, product_id):
+        available_production_lot_dict =self.env['available.product.dict'].get_available_production_lot()
+        prioritization_engine_request=self.env['sps.customer.requests']._get_settings_object(customer_id,product_id,None,None)
+        count = 0
+        if available_production_lot_dict.get(int(product_id)) !=None and prioritization_engine_request:
+            for available_production_lot in available_production_lot_dict.get(int(product_id)):
+                temp=(datetime.today() + relativedelta(months=+int(prioritization_engine_request['expiration_tolerance'])))
+                if datetime.strptime(
+                        available_production_lot.get(list(available_production_lot.keys()).pop(0), {}).get('use_date'),
+                        '%Y-%m-%d %H:%M:%S') >= temp:
+                    for available in available_production_lot:
+                        print(available_production_lot.get(available))
+                        count = count +(available_production_lot.get(available).get('available_quantity')-available_production_lot.get(available).get('reserved_quantity'))
+        return count
