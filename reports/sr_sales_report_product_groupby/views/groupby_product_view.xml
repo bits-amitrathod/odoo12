@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_sales_order_line_filter_cstm" model="ir.ui.view">
+            <field name="name">sale.order.line.filter</field>
+            <field name="model">sale.order.line</field>
+            <field name="arch" type="xml">
+                <search string="Search Sales Order">
+                    <filter string="To Invoice" domain="[('qty_to_invoice','!=', 0)]"
+                            help="Sales Order Lines ready to be invoiced"/>
+                    <separator/>
+                    <filter string="My Sales Order Lines" domain="[('salesman_id','=',uid)]"
+                            help="Sales Order Lines related to a Sales Order of mine"/>
+                    <field name="order_id"/>
+                    <field name="order_partner_id" operator="child_of"/>
+                    <field name="product_id"/>
+                    <field name="salesman_id"/>
+                    <group expand="0" string="Group By">
+                        <filter name="product" string="Product" domain="[]" context="{'group_by':'product_id'}"/>
+                        <filter string="Order" domain="[]" context="{'group_by':'order_id'}"/>
+                        <filter string="Salesperson" domain="[]" context="{'group_by':'salesman_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="view_sales_order_line_view_cstm" model="ir.ui.view">
+            <field name="name">sale.order.line.view</field>
+            <field name="model">sale.order.line</field>
+            <field name="arch" type="xml">
+                <form create="false" edit="false">
+                    <sheet>
+                        <div class="oe_title">
+                                <h1>
+                                    <field name="order_id"/>
+                                </h1>
+                            </div>
+                        <group>
+
+                            <group>
+                                <field name="name"/>
+                                <field name="product_id"/>
+                                <field name="order_partner_id"/>
+                                <field name="company_id"/>
+
+                            </group>
+                            <group>
+                                <field name="product_uom_qty"/>
+                                <field name="product_uom"/>
+                                 <field name="price_unit" widget="monetary"/>
+                            </group>
+
+
+                        </group>
+                    </sheet>
+
+                </form>
+            </field>
+        </record>
+
+        <record id="sr_action_sale_report_bygroup" model="ir.actions.act_window">
+            <field name="name">Gross Sales By Product</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order.line</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_sales_order_line_filter_cstm"/>
+            <!--<field name="view_id" ref="view_sales_order_line_view_cstm"/>-->
+            <field name="context">{'search_default_product': 1}</field>
+        </record>
+
+        <menuitem id="sr_menu_sale_report_by_product"
+                  name="Gross Sales By Product"
+                  action="sr_action_sale_report_bygroup"
+                  parent="sale.menu_sale_report"
+                  sequence="1"/>
+    </data>
+</odoo>

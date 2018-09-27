@@ -33,9 +33,9 @@
     #                ,
     'depends': ['base', 'sale_management'],
     'data': [
-        'views/sale_view.xml',
-        'report/saleperson_report.xml',
-        'report/saleperson_temp.xml'
+        'views/groupby_product_view.xml',
+        'report/report_sales_groupby_product.xml',
+        'report/sales_groupby_product.xml'
     ],
     'images': ['static/description/banner.png'],
     'auto_install': False,
