@@ -43,6 +43,8 @@ class BrokerReportPopUp(models.TransientModel):
         #     }
         #     return action
 
-        action=self.env.ref('broker_report.action_report_broker_report').report_action([], data={})
+        action=self.env.ref('broker_report.action_report_broker_report').report_action([], data={'start_date' : self.start_date ,'end_date' : self.end_date })
         action.update({'target':'main'})
+        # action.update({'res_model': 'report.broker_report.brokerreport_temp_test'})
+        # action.update({'context': {'start_date' : self.start_date ,'end_date' : self.end_date }})
         return action
