@@ -27,7 +27,7 @@ class ReportPurchaseSalespersonWise(models.AbstractModel):
 
     @api.model
     def get_report_values(self, docids, data=None):
-        purchase_orders = self.env['purchase.order.line'].browse(docids)
+        purchase_orders = self.env['purchase.order'].browse(docids)
         return {
             'doc_ids': data.get('ids'),
             'doc_model': data.get('model'),

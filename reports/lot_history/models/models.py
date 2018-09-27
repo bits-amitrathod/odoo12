@@ -17,8 +17,9 @@ class lot_history(models.Model):
     pr_type = fields.Char("Product Type", store=False)
     cr_date = fields.Date("Creation date", store=False)
     vend=fields.Char("Vendor", store=False)
-    ph=vend=fields.Char("Phone", store=False)
+    ph=fields.Char("Phone", store=False)
     email=fields.Char("Email", store=False)
+    p_qty = fields.Integer('Qty', store=False)
     @api.multi
     def _calculateSKU(self):
         ACTIONS = {
@@ -34,6 +35,8 @@ class lot_history(models.Model):
             order.vend=order.product_id.product_tmpl_id.product_brand_id.partner_id.name
             order.ph=order.product_id.product_tmpl_id.product_brand_id.partner_id.phone
             order.email = order.product_id.product_tmpl_id.product_brand_id.partner_id.email
+            for p in order.quant_ids:
+                order.p_qty = p.quantity
     # @api.multi
     # def get_report_values(self):
     #     lots = self.env['stock.production.lot'].search([])

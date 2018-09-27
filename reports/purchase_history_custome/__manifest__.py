@@ -2,7 +2,15 @@
 {
     'name': "Purchase History Custom",
 
-     'author': "Benchmark IT Solutions (I) Pvt Ltd.",
+    'summary': """
+        Short (1 phrase/line) summary of the module's purpose, used as
+        subtitle on modules listing or apps.openerp.com""",
+
+    'description': """
+        Long description of module's purpose
+    """,
+
+    'author': "Benchmark It Solutions",
     'website': "http://www.benchmarkitsolutions.com",
 
     # Categories can be used to filter modules in modules listing

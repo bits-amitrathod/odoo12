@@ -7,10 +7,12 @@
             <field name="priority">20</field>
             <field name="arch" type="xml">
                 <tree>
-                    <field name="pr_sku"/>
+
                     <field name="name"/>
+                    <field name="pr_sku"/>
                     <field name="pr_name"/>
                     <field name="pr_type"/>
+                    <field name="p_qty"/>
                     <field name="cr_date"/>
                     <field name="vend"/>
                     <field name="ph"/>
