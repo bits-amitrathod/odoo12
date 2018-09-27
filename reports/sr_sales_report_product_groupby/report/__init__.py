@@ -19,4 +19,4 @@
 #
 ##############################################################################
 
-from . import saleperson_temp
+from . import sales_groupby_product
