@@ -1,56 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<template id="report_products">
-    <t t-call="web.html_container">
-            <t t-call="web.external_layout">
-                <page>
-                    <div class="oe_structure"/>
-                    <div class="row">
-                        <center>
-                            <b>
-                                <h2> Surgical Product Solutions </h2>
-                                <h4> Total Product Sales </h4>
-                            </b>
-                        </center>
-                        <center>
-                          <!--Date Range: <b>-->
-                                <!--<span t-esc="start_date"/>-->
-                                <!-- - -->
-                                <!--<span t-esc="end_date"/>-->
-                            <!--</b>-->
-                        </center>
-                    </div>
-                    <br/>
-                    <div class="table-responsive">
-                        <table class="table table-condensed" style="border: 1px solid black;">
-                            <thead>
-                                <tr style="border: 1px solid black;">
-                                    <th style="border: 1px solid black;text-align: center;"> Product SKU </th>
-                                    <th style="border: 1px solid black;text-align: center;width:500px;">Product Name</th>
-                                    <th style="border: 1px solid black;text-align: center;">Total Quantity</th>
-                                    <th style="border: 1px solid black;text-align: center;">Total Amount</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr t-foreach="data" t-as="a">
-                                    <td style="border: 1px solid black;">
-                                        <span t-esc="a.p_sku" />
-                                    </td>
-                                    <td style="border: 1px solid black;">
-                                        <span t-esc="a.product_name" />
-                                    </td>
-                                    <td align="right" class="text-right" style="border: 1px solid black;">
-                                        <span t-esc="a.t_qty" />
-                                    </td>
-                                    <td align="right" class="text-right" style="border: 1px solid black;white-space: nowrap;">
-                                       <span t-esc="a.t_amt" t-options='{"widget": "monetary", "display_currency": a.currency_id}' />
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </page>
-            </t>
-    </t>
-</template>
+    <template id="report_products">
+        <t t-call="web.html_container">
+        <t t-call="web.external_layout">
+            <page>
+                <div class="oe_structure"/>
+                <div class="row">
+                    <center>
+                        <b>
+                            <h2>Surgical Product Solutions</h2>
+                            <h4>Total Product Sales</h4>
+                        </b>
+                    </center>
+                    <center>
+                        <!--Date Range: <b>-->
+                        <!--<span t-esc="start_date"/>-->
+                        <!-- - -->
+                        <!--<span t-esc="end_date"/>-->
+                        <!--</b>-->
+                    </center>
+                </div>
+                <br/>
+
+
+                <div class="table-responsive">
+                    <table class="table table-condensed table-bordered" style="border: 1px solid #000;">
+                        <tr>
+                            <th style="border: 1px solid black;text-align: center;">Product SKU</th>
+                            <th style="border: 1px solid black;text-align: center;">Product Name</th>
+                            <th style="border: 1px solid black;text-align: center;">Total Quantity</th>
+                            <th style="border: 1px solid black;text-align: center;">Total Amount</th>
+
+                        </tr>
+
+
+                        <t t-foreach="data" t-as="a">
+                            <tr>
+                                <td style="border: 1px solid black;">
+                                    <span t-esc="a.p_sku"/>
+                                </td>
+                                <td style="border: 1px solid black;">
+                                    <span t-esc="a.product_name"/>
+                                </td>
+                                <td align="right" class="text-right" style="border: 1px solid black;">
+                                    <span t-esc="a.t_qty"/>
+                                </td>
+                                <td align="right" class="text-right" style="border: 1px solid black;white-space: nowrap;">
+                                    <span t-esc="a.t_amt" t-options='{"widget": "monetary", "display_currency": a.currency_id}'/>
+                                </td>
+                            </tr>
+                        </t>
+                    </table>
+                </div>
+
+
+            </page>
+        </t>
+        </t>
+
+    </template>
 </odoo>
