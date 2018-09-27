@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Inventory Extension",
+    'name': "Trending Report",
 
     'summary': """
         Short (1 phrase/line) summary of the module's purpose, used as
@@ -20,13 +20,21 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','base_setup', 'stock'],
+    'depends': ['base','product'],
 
     # always loaded
-    'data': [# 'security/ir.model.access.csv',
-         'views/res_config_setting_views.xml','views/templates.xml', ],
+    'data': [
+        # 'security/ir.model.access.csv',
+        'views/trending_report.xml',
+        'views/trending_report_print.xml',
+        'views/trending_report_pdf.xml',
+        'views/views.xml',
+        'views/templates.xml',
+    ],
     # only loaded in demonstration mode
-    'demo': ['demo/demo.xml', ],
+    'demo': [
+        'demo/demo.xml',
+    ],
     'installable': True,
     'application': True,
     'auto_install': False,

@@ -10,7 +10,7 @@
         Long description of module's purpose
     """,
 
-    'author': "Benchmarkitsolutions",
+    'author': "Benchmark It Solutions",
     'website': "http://www.benchmarkitsolutions.com",
 
     # Categories can be used to filter modules in modules listing
