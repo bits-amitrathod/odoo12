@@ -15,9 +15,9 @@
                     </div>
                     <br/>
                         <t t-set="total_sum" t-value="0"/>
-                        <div class="table-responsive">
+                        <div >
                         <table class="table table-condensed" style="border: 1px solid black;">
-                            <thead>
+                            <thead style="display: table-header-group;">
                                 <tr style="border: 1px solid black;">
                                     <th style="border: 1px solid black;text-align: center !important;white-space: nowrap;width:170px;">Type</th>
                                     <th style="border: 1px solid black;text-align: center !important;white-space: nowrap;">Manufacturer</th>
@@ -28,6 +28,8 @@
                                     <th style="border: 1px solid black;text-align: center !important;white-space: nowrap;">Min Exp Date</th>
                                     <th style="border: 1px solid black;text-align: center !important;white-space: nowrap;">Max Exp Date</th>
                                 </tr>
+                            </thead>
+                            <tbody>
                                 <tr t-foreach="data" t-as="order">
                                     <td style="border: 1px solid black;">
                                         <span t-esc="order.type"/>
@@ -54,7 +56,7 @@
                                         <span t-esc="order.exp_max_date"/>
                                     </td>
                                 </tr>
-                            </thead>
+                            </tbody>
                         </table>
                         </div>
                 </page>
@@ -77,14 +79,16 @@
                     </div>
                     <br/>
                         <t t-set="total_sum" t-value="0"/>
-                        <div class="table-responsive">
+                        <div >
                         <table class="table table-condensed" style="border: 1px solid black;">
-                            <thead>
+                            <thead style="display: table-header-group;">
                                 <tr style="border: 1px solid black;">
                                     <th style="border: 1px solid black;text-align:center;width:200px;"> Product </th>
                                     <th style="border: 1px solid black;text-align:center;width:500px;"> Product Name </th>
                                     <th style="border: 1px solid black;text-align:center;width:200px;"> Price </th>
                                 </tr>
+                            </thead>
+                            <tbody>
                                 <tr t-foreach="data" t-as="order">
                                     <td style="border: 1px solid black;">
                                         <span t-esc="order.sku_code"/>
@@ -96,7 +100,7 @@
                                         $ <span t-esc="order.list_price"/>
                                     </td>
                                 </tr>
-                            </thead>
+                            </tbody>
                         </table>
                         </div>
                 </page>
