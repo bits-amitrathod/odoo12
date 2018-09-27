@@ -37,15 +37,14 @@ class purchase_history(models.Model):
 
     @api.onchange('minExpDate')
     def _calculateDate1(self):
-        _logger.info('################')
+
         for order in self:
             _logger.info(order.product_id.id)
             order.env.cr.execute("SELECT min(use_date), max (use_date) FROM public.stock_production_lot where product_id =" + str(
                 order.product_id.id))
             query_result = self.env.cr.dictfetchone()
             order.minExpDate = query_result['min']
-            _logger.info('minExpDate')
-            _logger.info('%r',order.minExpDate)
+
 
 
     @api.onchange('maxExpDate')
@@ -55,7 +54,7 @@ class purchase_history(models.Model):
                 order.product_id.id))
             query_result = order.env.cr.dictfetchone()
             order.maxExpDate = query_result['max']
-            print(order.maxExpDate)
+
 
 
 

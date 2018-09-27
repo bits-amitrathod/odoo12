@@ -5,7 +5,7 @@
         <report 
             id="action_report_products"
             string="Total Product Sales"
-            model="report.tps_report_sale.report_products"
+            model="sale.order"
             report_type="qweb-html"
             file="tps_report_sale.report_products"
             name="tps_report_sale.report_products"
