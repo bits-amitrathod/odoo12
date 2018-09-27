@@ -51,9 +51,14 @@ class ReportBrokerReport(models.AbstractModel):
     _name = 'report.broker_report.brokerreport_temp_test'
 
     @api.model
-    def get_report_values(self, docids, data=None):
-         apprisal_list= self.env['purchase.order'].search([('state', '=', 'purchase'),('status', '=', 'purchase'),('vendor_offer_data', '=', True)])
-         if(apprisal_list!=False):
+    def get_report_values(self, docids, data):
+
+         apprisal_list={}
+         if(data['start_date']!=False and data['end_date']!=False):
+             apprisal_list= self.env['purchase.order'].search([('state', '=', 'purchase'),('status', '=', 'purchase'),('vendor_offer_data', '=', True),('date_order','>=',data['start_date']),('date_order','<=',data['end_date'])])
+         else:
+             apprisal_list = self.env['purchase.order'].search([('state', '=', 'purchase'), ('status', '=', 'purchase'), ('vendor_offer_data', '=', True) ])
+         if(len(apprisal_list)>0):
              apprisal_list_rtl_val = apprisal_list_tot_val = apprisal_list_mar_val = apprisal_list[0]
              apprisal_list_report=[]
              tot_offer=0

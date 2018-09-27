@@ -30,8 +30,9 @@
                                     <th style="border: 1px solid black;text-align: center;center;width: 327px;">Order</th>
                                     <th style="border: 1px solid black;text-align: center;center;width: 474px;">Date</th>
                                     <th style="border: 1px solid black;text-align: center;">Price</th>
-
                                 </tr>
+                               </thead>
+                            <tbody>
                                 <tr t-foreach="user[1]" t-as="order">
                                     <td style="border: 1px solid black;">
                                         <span t-esc="order[0]"/>
@@ -56,7 +57,7 @@
                                          <span t-esc="total_sum" />
                                     </td>
                                 </tr>
-                            </thead>
+                            </tbody>
                         </table>
                     </t>
                 </page>
