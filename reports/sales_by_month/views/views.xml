@@ -38,8 +38,8 @@
                 <tree>
                     <field name="sku_name" string="Product"/>
                     <field name="name" string="Description"/>
-                    <field name="product_price" widget="monetary"/>
-                    <field name="total_sale_qty"/>
+                    <field name="product_price" widget="monetary" sum="Total"/>
+                    <field name="total_sale_qty" />
                     <field name="currency_id"  invisible="1" />
                 </tree>
               </field>
