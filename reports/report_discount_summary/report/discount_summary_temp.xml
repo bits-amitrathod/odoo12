@@ -30,7 +30,7 @@
                             </thead>
                             <tbody>
                                     <tr t-foreach="data" t-as="order">
-                                        <td style="border: 1px solid black;">
+                                        <td  style="border: 1px solid black;">
                                             <span t-esc="order.name"/>
                                         </td>
 
