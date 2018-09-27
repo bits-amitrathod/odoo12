@@ -43,7 +43,6 @@
             <field name="model">sale.order</field>
             <field name="mode">primary</field>
            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
-           
 
         </record>
 
