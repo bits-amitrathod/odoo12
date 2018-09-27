@@ -337,6 +337,9 @@ class VendorOfferProduct(models.Model):
             self.product_unit_price= math.ceil(round(float(self.list_price) * (float(multiplier_list.retail) / 100),2))
             self.product_offer_price = math.ceil(round(float(self.product_unit_price) * (float(multiplier_list.margin) / 100 + float(possible_competition_list.margin) / 100),2))
             self.product_tier=self.product_id.tier
+            for order in self:
+                for line in order:
+                    line.qty_in_stock=line.product_id.qty_available
 
     def update_product_expiration_date(self):
         for order in self:
@@ -372,11 +375,13 @@ class VendorOfferProduct(models.Model):
 
     @api.multi
     def qty_in_stocks(self):
-        domain = [
-            ('product_id', '=',  self.product_id.id),
-        ]
-        moves = self.env['stock.move'].search(domain,limit=1)
-        self.qty_in_stock=moves.product_qty
+        pass
+        # domain = [
+        #     ('product_id', '=',  self.product_id.id),
+        # ]
+        # moves = self.env['stock.quant'].search(domain,limit=1)
+        # moves = self.env['stock.quant'].search([('product_id', '=', self.product_id.id), ('location_id.usage', '=', 'internal'), ('location_id.active', '=', 'true')],limit=1)
+        # self.qty_in_stock=self..quantity
 
 
 class Multiplier(models.Model):
