@@ -15,6 +15,8 @@ class SpsCustomerRequest(models.Model):
     customer_id = fields.Many2one('res.partner', string='Customer', required=True)
     document_id = fields.Many2one('sps.cust.uploaded.documents', string='Document', required=True)
     product_id = fields.Many2one('product.product', string='Product', required=False, default=0)
+    sale_order_line_id = fields.One2many('sale.order.line', 'customer_request_id', string="Request")
+    sale_order_id = fields.Char(String="Sale Order", compute="_get_sale_order_id")
 
     customer_sku = fields.Char()
     sps_sku = fields.Char()
@@ -42,21 +44,16 @@ class SpsCustomerRequest(models.Model):
             if not sale_order['create_date'] is None:
                 sale_order_line_list = self.env['sale.order.line'].search([('order_id', '=', sale_order.id)])
                 for sale_order_line in sale_order_line_list:
-                    _logger.debug('sale_order_line : %r : %r : %r',sale_order_line.id, sale_order_line.product_id.id, sale_order_line.document_id.id)
+                    _logger.debug('sale_order_line : %r : %r : %r',sale_order_line.id, sale_order_line.product_id.id, sale_order_line.customer_request_id.id)
                     # get customer setting object
-                    _setting_object = self._get_settings_object(sale_order_line.order_partner_id.id, sale_order_line.product_id.id, None, None)
+                    _setting_object = self.get_settings_object(sale_order_line.order_partner_id.id, sale_order_line.product_id.id, None, None)
                     if _setting_object:
                         # check length of hold
                         length_of_hold_flag = self.env['prioritization.engine.model'].check_length_of_hold(sale_order['create_date'], _setting_object.length_of_hold)
-
+                        _logger.debug('length of hold flag : %r',length_of_hold_flag)
                         if length_of_hold_flag:
-                            sps_customer_request = self.env['sps.customer.requests'].search(
-                                [('customer_id', '=', sale_order_line['order_partner_id']['id']), ('document_id', '=', sale_order_line['document_id']['id']),
-                                ('product_id', '=', sale_order_line['product_id']['id']),('status', '=', 'completed')])
-
-                            if len(sps_customer_request) == 1:
-                                self.env['sps.customer.requests'].search(
-                                    [('id', '=', sps_customer_request['id'])]).write(dict(status='InCoolingPeriod'))
+                            self.env['sps.customer.requests'].search(
+                                [('id', '=', sale_order_line['customer_request_id']['id']),('status', '=', 'Completed')]).write(dict(status='InCoolingPeriod'))
 
     # Get Customer Requests
     def get_customer_requests(self):
@@ -74,17 +71,20 @@ class SpsCustomerRequest(models.Model):
         for sps_customer_request in sps_customer_requests:
             _logger.debug('customer request %r, %r', sps_customer_request['customer_id'].id, sps_customer_request['product_id'].id)
             if sps_customer_request['product_id'].id and not sps_customer_request['product_id'].id is False:
-                _setting_object = self._get_settings_object(sps_customer_request['customer_id'].id, sps_customer_request['product_id'].id,
+                _setting_object = self.get_settings_object(sps_customer_request['customer_id'].id, sps_customer_request['product_id'].id,
                                                             sps_customer_request['id'], sps_customer_request['status'])
 
                 if _setting_object:
                     sps_customer_request.write({'customer_request_logs': 'Customer prioritization setting is True, '})
                     pr_model = dict(customer_request_id=sps_customer_request.id,
-                                    document_id=sps_customer_request['document_id'].id,
+                                    template_type=sps_customer_request.document_id.template_type,
                                     customer_id=sps_customer_request['customer_id'].id,
                                     product_id=sps_customer_request['product_id'].id,
                                     status=sps_customer_request['status'],
                                     required_quantity=sps_customer_request.required_quantity,
+                                    min_threshold=_setting_object.min_threshold,
+                                    max_threshold=_setting_object.max_threshold,
+                                    quantity=sps_customer_request.quantity,
                                     product_priority=_setting_object.priority,
                                     auto_allocate=_setting_object.auto_allocate,
                                     cooling_period=_setting_object.cooling_period,
@@ -99,11 +99,12 @@ class SpsCustomerRequest(models.Model):
         if len(pr_models) > 0:
             # Sort list by product priority
             pr_models = sorted(pr_models, key=itemgetter('product_priority'))
+            # Allocate Product by priority.
             allocated_products = self.env['prioritization.engine.model'].allocate_product_by_priority(pr_models)
 
         return allocated_products
 
-    def _get_settings_object(self, customer_id,product_id,sps_customer_request_id,status):
+    def get_settings_object(self, customer_id,product_id,sps_customer_request_id,status):
         customer_level_setting = self.env['prioritization_engine.prioritization'].search(
             [('customer_id', '=', customer_id),('product_id', '=', product_id)])
         if len(customer_level_setting) == 1:
@@ -133,7 +134,6 @@ class SpsCustomerRequest(models.Model):
             self.env['sps.customer.requests'].search(
                 [('id', '=', sps_customer_request_id)]).write(dict(status="Unprocessed",customer_request_logs=log))
 
-
     @api.multi
     @api.depends('document_id')
     def _get_qty_to_show(self):
@@ -142,3 +142,13 @@ class SpsCustomerRequest(models.Model):
                 record.qty_to_show = str(record.required_quantity)
             else:
                 record.qty_to_show = str(record.quantity)
+
+    @api.multi
+    @api.depends('sale_order_line_id')
+    def _get_sale_order_id(self):
+        for record in self:
+            if record.sale_order_line_id.id:
+                if record.sale_order_id:
+                    record.sale_order_id = str(record.sale_order_id)+ ", " +str(record.sale_order_line_id.order_id.id)
+                else:
+                    record.sale_order_id = str(record.sale_order_line_id.order_id.id)

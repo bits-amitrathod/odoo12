@@ -15,23 +15,16 @@ odoo.define('website_quote_ext.so_engine_content', function (require) {
 
          // hack to add and remove from cart with json
         $(engine).on('click', 'a.js_add_cart_json', function (ev) {
-            console.log("Inside Click Function");
             ev.preventDefault();
             var $link = $(ev.currentTarget);
             var $input = $link.parent().find("input");
-            console.log($input);
-            //var product_id = +$input.closest('*:has(input[name="data-product-id"])').find('input[name="data-product-id"]').val();
             var product_id = $input[0]['attributes']['data-product-id']['value'];
             var quote_id = $input[0]['attributes']['data-quote-id']['value'];
             var line_id = $input[0]['attributes']['data-line-id']['value'];
             var min = parseFloat($input.data("min") || 0);
             var max = parseFloat($input.data("max") || Infinity);
-            //console.log(parseFloat($input.val()));
             var quantity = ($link.has(".fa-minus").length ? -1 : 1) + parseFloat($input.val() || 0, 10);
-            //console.log(quantity);
             var new_qty = quantity > min ? (quantity < max ? quantity : max) : min;
-            //console.log(new_qty);
-            // if they are more of one input for this product (eg: option modal)
             $('input[name="'+$input.attr("name")+'"]').add($input).filter(function () {
                 var $prod = $(this).closest('*:has(input[name="product_id"])');
                 return !$prod.length || +$prod.find('input[name="product_id"]').val() === product_id;

@@ -52,7 +52,7 @@ class comparebymonth():
 class CompareSaleByMonth(models.Model):
     _inherit = "product.template"
 
-    sku_name = fields.Char("Product ",store=False)
+    # sku_name = fields.Char("Product ",store=False)
     product_name = fields.Char("Product Name ",store=False)
     last_month_total_qty = fields.Float("Last Month Total Qty", compute = '_compare_data', store=False)
     last_month_total_amount = fields.Monetary("Last Month Total Amount", store=False)
@@ -84,7 +84,7 @@ class CompareSaleByMonth(models.Model):
 
         for order in self :
             if order.id in dat:
-                order.sku_name = dat[order.id].sku
+                # order.sku_name = dat[order.id].sku
                 order.product_name = dat[order.id].product_name
                 order.last_month_total_qty = dat[order.id].last_month_total_qty
                 order.last_month_total_amount = dat[order.id].last_month_total_amount

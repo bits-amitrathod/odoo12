@@ -2,15 +2,7 @@
 {
     'name': "Product Expiry Extension",
 
-    'summary': """
-        Short (1 phrase/line) summary of the module's purpose, used as
-        subtitle on modules listing or apps.openerp.com""",
-
-    'description': """
-        Long description of module's purpose
-    """,
-
-    'author': "Benchmark It Solutions",
+    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
     'website': "http://www.benchmarkitsolutions.com",
 
     # Categories can be used to filter modules in modules listing
@@ -39,4 +31,10 @@
     'installable': True,
     'application': True,
     'auto_install': False,
+<<<<<<< HEAD
 }
+=======
+
+}
+
+>>>>>>> f22b74f3f9e5cfb10fa659108b1658e1f4ba25f7

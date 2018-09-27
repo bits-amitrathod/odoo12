@@ -2,15 +2,7 @@
 {
     'name': "Trending Report",
 
-    'summary': """
-        Short (1 phrase/line) summary of the module's purpose, used as
-        subtitle on modules listing or apps.openerp.com""",
-
-    'description': """
-        Long description of module's purpose
-    """,
-
-    'author': "Benchmark It Solutions",
+    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
     'website': "http://www.benchmarkitsolutions.com",
 
     # Categories can be used to filter modules in modules listing

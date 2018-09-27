@@ -24,7 +24,8 @@
     'category': 'sale',
     'version': '11.0.0.1',
     # 'summary': 'This module provides Sales Report By product group',
-    'author': 'Benchmark It Solutions',
+    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
+    'website': "http://www.benchmarkitsolutions.com",
     # 'description': '''This module provides Sales Report By Product.
     #                   With the help of this moudule you can print sales report with groupby Product.
     #                  sale report.
@@ -32,9 +33,9 @@
     #                ,
     'depends': ['base', 'sale_management'],
     'data': [
-        'views/sale_view.xml',
-        'report/saleperson_report.xml',
-        'report/saleperson_temp.xml'
+        'views/groupby_product_view.xml',
+        'report/report_sales_groupby_product.xml',
+        'report/sales_groupby_product.xml'
     ],
     'images': ['static/description/banner.png'],
     'auto_install': False,
