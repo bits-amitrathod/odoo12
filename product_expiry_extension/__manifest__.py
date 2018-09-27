@@ -31,10 +31,7 @@
     'installable': True,
     'application': True,
     'auto_install': False,
-<<<<<<< HEAD
-}
-=======
 
 }
 
->>>>>>> f22b74f3f9e5cfb10fa659108b1658e1f4ba25f7
+
