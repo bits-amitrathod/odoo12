@@ -2,7 +2,7 @@
 
     <report id="action_todo_model_report"
             string="Purchase History"
-            model="purchase.order.line"
+            model="purchase.order"
             report_type="qweb-html"
             file="purchase_history_custome.purchase_report"
             name="purchase_history_custome.purchase_report"
@@ -24,13 +24,13 @@
                             </b>
                         </center>
                         <center>
-                            <b>Date Range:
-                                <span t-esc="start_date"/>
+                            <!--<b>Date Range:-->
+                                <!--<span t-esc="start_date"/>-->
 
-                                -
+                                <!-- - -->
 
-                                <span t-esc="end_date"/>
-                            </b>
+                                <!--<span t-esc="end_date"/>-->
+                            <!--</b>-->
                         </center>
                         <!-- Report page content -->
                         <div class="table-responsive">

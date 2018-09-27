@@ -1,28 +1,24 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api
-
 import logging
 import datetime
 from odoo.tools import float_repr
-
 _logger = logging.getLogger(__name__)
 
 
 class inventory_adjustment_report(models.Model):
     _inherit = 'stock.inventory'
-    # start_date = fields.Date('Start Date', required=True)
-    # end_date = fields.Date(string="End Date", required=True)
 
 
     p_sku = fields.Char("Product SKU", store=False, compute="_calculateSKU")
     p_type= fields.Char("Type", store=False)
     date_cal=fields.Date('Inventory Date',store=False)
     date_posted=fields.Date('Date Posted',store=False)
-    amount= fields.Monetary("Amount", store=False)
-    total_amt=fields.Monetary("Total Amount", store=False)
+    amount= fields.Monetary("Amount", store=False,currency_field='currency_id')
+    total_amt=fields.Monetary("Total Amount", store=False,currency_field='currency_id')
     p_qty = fields.Integer('Qty', store=False)
-    currency_id = fields.Many2one('res.currency', 'Currency', store=False)
+    currency_id = fields.Many2one('res.currency', 'Currency', required=True, store=False, default=lambda self: self.env.user.company_id.currency_id.id)
 
 
 

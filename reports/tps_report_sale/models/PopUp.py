@@ -10,7 +10,7 @@ _logger = logging.getLogger(__name__)
 
 
 class PopUp(models.TransientModel):
-    _name = 'popup.view.model1'
+    _name = 'popup.view.model123'
 
 
     start_date = fields.Date('Start Date')
@@ -24,8 +24,8 @@ class PopUp(models.TransientModel):
 
 
     def open_table(self):
-        tree_view_id = self.env.ref('inventory_adjustment_report.form_list_adjustment').id
-        form_view_id = self.env.ref('stock.view_inventory_form').id
+        tree_view_id = self.env.ref('tps_report_sale.form_list_tps').id
+        form_view_id = self.env.ref('sale.view_order_form').id
         if self.compute_at_date:
 
 
@@ -34,9 +34,9 @@ class PopUp(models.TransientModel):
                 'type': 'ir.actions.act_window',
                 'views': [(tree_view_id, 'tree'),(form_view_id, 'form')],
                 'view_mode': 'tree,form',
-                'name': _('Inventory Adjustment'),
-                'res_model': 'stock.inventory',
-                'domain': [('date', '>=', self.start_date),('date', '<=', self.end_date)],
+                'name': _('TPS'),
+                'res_model': 'sale.order',
+                'domain': [('date_order', '>=', self.start_date),('date_order', '<=', self.end_date)],
             }
             action.update({'target': 'main'})
             return action
@@ -45,8 +45,8 @@ class PopUp(models.TransientModel):
                 'type': 'ir.actions.act_window',
                 'views': [(tree_view_id, 'tree'),(form_view_id, 'form')],
                 'view_mode': 'tree,form',
-                'name': _('Inventory Adjustment'),
-                'res_model': 'stock.inventory',
+                'name': _('TPS'),
+                'res_model': 'sale.order',
             }
             action.update({'target': 'main'})
             return action
