@@ -1,8 +1,8 @@
 <odoo>
   <data>
     <record id="view_popup_for_sale_by_count" model="ir.ui.view">
-            <field name="name">Sale By Count</field>
-            <field name="model">salebycount.popup</field>
+            <field name="name">Dormant Customers</field>
+            <field name="model">dormant_customers.popup</field>
             <field name="arch" type="xml">
                 <form string="Choose your date">
                     <group>
@@ -20,9 +20,9 @@
             </field>
         </record>
 
-        <record id="action_sale_by_count" model="ir.actions.act_window">
-            <field name="name">Sale By Count</field>
-            <field name="res_model">salebycount.popup</field>
+        <record id="action_dormant_customers" model="ir.actions.act_window">
+            <field name="name">Dormant Customers</field>
+            <field name="res_model">dormant_customers.popup</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="view_popup_for_sale_by_count"/>
@@ -32,18 +32,18 @@
 
 
         <record model="ir.ui.view" id="list_view">
-              <field name="name">product.sale.by.count.view.list</field>
-              <field name="model">product.product</field>
+              <field name="name">dornamt.customers.view.list</field>
+              <field name="model">res.partner</field>
               <field name="priority">21</field>
               <field name="arch" type="xml">
                 <tree>
-                    <field name="sku_name" string="Product" />
-                    <field name="name" string="Description"/>
-                    <field name="total_sale_qty"/>
+                    <field name="display_name" string="Customer" />
+                    <field name="last_purchase_date" />
+                    <field name="last_purchased_product" />
                 </tree>
               </field>
         </record>
-    <menuitem name="Sale By Count" id="sale_by_count_report" parent="sale.menu_sale_report"
-              action="sale_by_count_report.action_sale_by_count"/>
+    <menuitem name="Dormant Customers" id="dormant_customers_report_menu" parent="sale.menu_sale_report"
+              action="dormant_customers.action_dormant_customers"/>
   </data>
 </odoo>

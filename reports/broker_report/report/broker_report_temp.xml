@@ -28,6 +28,7 @@
                                     <th style="border: 1px solid black;text-align: center;">Broker > 40% Total</th>
                                     <th style="border: 1px solid black;text-align: center;">Broker less than 40% Total</th>
                                 </tr>
+                                <t t-if="data"  >
                                     <tr t-foreach="data[0]" t-as="order">
                                          <td  align="left" style="border: 1px solid black;">
                                             <span t-esc="order.broker_desc" />
@@ -100,6 +101,7 @@
                                              <span t-esc="order.broker_less_40_total_mar"  />
                                         </td>
                                     </tr>
+                                </t>
                             </thead>
                     </table>
                     </div>
