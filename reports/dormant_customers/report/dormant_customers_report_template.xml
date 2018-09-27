@@ -30,7 +30,7 @@
                                     <td align="left" style="border: 1px solid black;">
                                         <span t-esc="order.display_name"/>
                                     </td>
-                                    <td align="right" style="border: 1px solid black;">
+                                    <td align="left" style="border: 1px solid black;">
                                         <span t-esc="order.last_purchase_date" widget="date"/>
                                     </td>
                                     <td align="left" style="border: 1px solid black;">

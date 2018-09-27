@@ -6,8 +6,8 @@
                 string="Dormant Customers"
                 model="res.partner"
                 report_type="qweb-html"
-                file="dormant_customers_report.dorm_cust_report_temp"
-                name="dormant_customers_report.dorm_cust_report_temp"
+                file="dormant_customers.dorm_cust_report_temp"
+                name="dormant_customers.dorm_cust_report_temp"
                 />
     </data>
 </odoo>
