@@ -52,7 +52,7 @@ class WebsiteSale(http.Controller):
         count = request.website.sale_get_engine_order(quote_id, line_id, set_qty,product_id)
         return count
 
-    @http.route(['/my/orders1/<int:order>'], type='http', auth="public", website=True)
+    @http.route(['/my/orders/<int:order>'], type='http', auth="public", website=True)
     def portal_order_page(self, order=None, access_token=None, **kw):
         try:
             order_sudo = self._order_check_access(order, access_token=access_token)

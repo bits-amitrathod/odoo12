@@ -8,7 +8,7 @@
 
     <template id="so_modify_content" inherit_id="website_quote.so_quotation" name="Modify Content">
         <xpath expr="//t/t/body/div[1]/div[1]/div[2]/div[8]/a[1]" position="after">
-            <a class="btn btn-info" t-att-href="'/my/orders1/%s' % (quotation.id)" data-toggle="modal" t-if="order_valid and not quotation.require_payment">
+            <a class="btn btn-info" t-att-href="'/my/orders/%s' % (quotation.id)" data-toggle="modal" t-if="order_valid and not quotation.require_payment">
                               <i class="fa fa-check"></i> Update Quantity
             </a>
         </xpath>
