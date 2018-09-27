@@ -2,7 +2,6 @@
 {
     'name': "Vendor Offer Automation",
 
-
     'author': "Benchmark IT Solutions (I) Pvt. Ltd",
     'website': "http://www.benchmarkitsolutions.com",
 

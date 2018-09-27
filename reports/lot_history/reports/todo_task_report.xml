@@ -36,10 +36,11 @@
                         <div class="table-responsive">
                             <table class="table table-condensed table-bordered" style="border: 1px solid black;">
                                 <tr style="border: 1px solid black;">
-                                    <th style="border: 1px solid black;text-align: center;">Product</th>
                                     <th style="border: 1px solid black;text-align: center;">Lot</th>
+                                    <th style="border: 1px solid black;text-align: center;">Product</th>
                                     <th style="border: 1px solid black;text-align: center;">Product Name</th>
                                     <th style="border: 1px solid black;text-align: center;">Product Type</th>
+                                    <th style="border: 1px solid black;text-align: center;">Qty</th>
                                     <th style="border: 1px solid black;text-align: center;">Creation date</th>
                                     <th style="border: 1px solid black;text-align: center;">Vendor</th>
                                     <th style="border: 1px solid black;text-align: center;">Phone</th>
@@ -49,17 +50,23 @@
 
                                     <t t-foreach="data" t-as="o">
                                         <tr>
+
+                                             <td align="left" class="col-xs-2" style="border: 1px solid #000;">
+                                                <span t-esc="o.name"/>
+                                            </td>
+
                                             <td  align="left" class="col-xs-2" style="border: 1px solid #000;">
                                                 <span t-esc="o.pr_sku"/>
                                             </td>
-                                            <td align="left" class="col-xs-2" style="border: 1px solid #000;">
-                                                <span t-esc="o.name"/>
-                                            </td>
+
                                             <td align="left" class="col-xs-2" style="border: 1px solid #000;">
                                                 <span t-esc="o.pr_name"/>
                                             </td>
                                             <td align="left" class="col-xs-2" style="border: 1px solid #000;">
                                                 <span t-esc="o.pr_type"/>
+                                            </td>
+                                             <td align="left" class="col-xs-2" style="border: 1px solid #000;">
+                                                <span t-esc="o.p_qty"/>
                                             </td>
                                             <td align="center" class="col-xs-2" style="border: 1px solid #000;">
                                                 <span t-esc="o.cr_date"/>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="appraisal_tracker_report" >
+        <t t-call="web.html_container">
+
+            <t t-call="web.external_layout" t-as="data" >
+                <page>
+                    <div class="oe_structure"/>
+                    <div class="row">
+                    <center>
+                        <b>
+                            <h2> Surgical Product Solutions </h2>
+                            <h4> Discount Summary</h4>
+                        </b>
+                    </center>
+                    <center>
+                    </center>
+                    </div>
+                    <br/>
+
+                            <!--<div class="row mt32 mb32">-->
+                        <!--<div t-if="data.appraisal_no" class="col-xs-3">-->
+                            <!--<strong>Our Order Reference:</strong>-->
+                            <!--<p t-field="o.appraisal_no"/>-->
+                        <!--</div>-->
+                        <!--<div t-if="data.priority" class="col-xs-3">-->
+                            <!--<strong>Your Order Reference:</strong>-->
+                            <!--<p t-field="o.priority"/>-->
+                        <!--</div>-->
+                        <!--<div t-if="data.revision" class="col-xs-3">-->
+                            <!--<strong>Order Date:</strong>-->
+                            <!--<p t-field="o.revision"/>-->
+                        <!--</div>-->
+                 <!--</div>-->
+                    <div class="" style=" width: 100%;text-align: center;" >
+                    <table class="table table-condensed" style="border: 1px solid black; " >
+                            <thead>
+                                <tr style="border: 1px solid black;width: 50%;">
+                                    <th style="border: 1px solid black;text-align: center;width: 5%;">Appraisal No#</th>
+                                    <th style="border: 1px solid black;text-align: center;width: 5%;">Priority</th>
+                                    <th style="border: 1px solid black;text-align: center;width: 5%;">Revision</th>
+                                    <th style="border: 1px solid black;text-align: center;width: 5%;">Acq Manager</th>
+                                    <th style="border: 1px solid black;text-align: center;width: 5%;">Facility</th>
+                                    <th style="border: 1px solid black;text-align: center;width: 5%;">Total Offer</th>
+                                    <th style="border: 1px solid black;text-align: center;width: 5%;">Total Retail</th>
+                                    <th style="border: 1px solid black;text-align: center;width: 5%;">Created On</th>
+                                    <th style="border: 1px solid black;text-align: center;width: 5%;">Shipping Label Issued</th>
+                                    <th style="border: 1px solid black;text-align: center;width: 5%;">Shipping Date</th>
+                                    <th style="border: 1px solid black;text-align: center;width: 5%;">Delivered Date</th>
+
+                                    <!--<th style="border: 1px solid black;text-align: center;width: 5%;">Note</th>-->
+                                    <th style="border: 1px solid black;text-align: center;width: 5%;">New Customer</th>
+                                    <th style="border: 1px solid black;text-align: center;width: 5%;">Margin Detail</th>
+                                </tr>
+                                    <tr t-foreach="data" t-as="order" style="width: 50%;">
+                                        <td style="border: 1px solid black;width: 5%;">
+                                            <span t-esc="order.appraisal_no"/>
+                                        </td>
+
+                                        <td style="border: 1px solid black;width: 5%;">
+                                            <span t-esc="order.priority"/>
+                                        </td>
+                                        <td align="center" style="border: 1px solid black;width: 5%;">
+                                            <span t-esc="order.revision"/>
+                                        </td>
+                                        <td style="border: 1px solid black;width: 5%;">
+                                             <span t-esc="order.acq_user_id.name"/>
+                                        </td>
+                                        <td  style="border: 1px solid black;width: 5%;">
+                                             <span t-esc="order.partner_id.name"/>
+                                        </td>
+                                        <td align="right" style="border: 1px solid black;width: 5%;">
+                                            <span t-esc="order.offer_amount"  t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                        </td>
+                                          <td align="right" style="border: 1px solid black;width: 5%;">
+                                            <span t-esc="order.retail_amt"  t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                        </td>
+                                          <td  style="border: 1px solid black;width: 5%;">
+                                             <span t-esc="order.create_date"/>
+                                        </td>
+                                         <td  style="border: 1px solid black;width: 5%;">
+                                             <span t-esc="order.shipping_label_issued"/>
+                                        </td>
+                                         <td  style="border: 1px solid black;width: 5%;">
+                                             <span t-esc="order.shipping_date"/>
+                                        </td>
+                                         <td  style="border: 1px solid black;width: 5%;">
+                                             <span t-esc="order.delivered_date"/>
+                                        </td>
+
+                                         <!--<td  style="border: 1px solid black;width: 5%;">-->
+                                             <!--<span t-esc="order.notes_desc"/>-->
+                                        <!--</td>-->
+                                         <td  style="border: 1px solid black;width: 5%;">
+                                             <span t-esc="order.new_customer"/>
+                                        </td>
+                                         <td  style="border: 1px solid black;width: 5%;">
+                                            <span t-esc="order.broker_margin"/>
+                                        </td>
+                                    </tr>
+                            </thead>
+                    </table>
+                    </div>
+                </page>
+            </t>
+        </t>
+    </template>
+</odoo>

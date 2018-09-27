@@ -2,9 +2,8 @@
 {
     'name': "eCommerce CSTM",
 
-    'author': "Benchmarkitsolutions",
+    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
     'website': "http://www.benchmarkitsolutions.com",
-
 
     'sequence': 59,
     'category': 'e-commerce',

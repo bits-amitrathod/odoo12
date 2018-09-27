@@ -2,7 +2,8 @@
 {
     'name': "Product Brand in Website",
 
-    'author': 'Benchmark It Solutions',
+     'author': "Benchmark IT Solutions (I) Pvt Ltd.",
+    'website': "http://www.benchmarkitsolutions.com",
     'sequence': 60,
     'category': 'e-commerce',
     'version': '1.0',

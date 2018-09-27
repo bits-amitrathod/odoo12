@@ -1,3 +1,5 @@
+from pygments.lexer import default
+
 from odoo import api, fields, models ,_
 import datetime
 
@@ -8,7 +10,7 @@ class BrokerReportPopUp(models.TransientModel):
     compute_at_date = fields.Selection([
         (0, 'Show All '),
         (1, 'Date Range ')
-    ], string="Compute", help="Choose to analyze the Show Summary or from a specific date in the past.")
+    ], string="Compute", help="Choose to analyze the Show Summary or from a specific date in the past.",default=0)
     start_date = fields.Datetime('Start Date', help="Choose a date to get the Discount Summary at that  Start date", default = (fields.date.today() - datetime.timedelta(days = 31)))
     end_date = fields.Datetime('End Date', help="Choose a date to get the Discount Summary at that  End date",
                            default = fields.Datetime.now)
@@ -18,7 +20,7 @@ class BrokerReportPopUp(models.TransientModel):
         final_dict = {}
 
         tree_view_id = self.env.ref('broker_report.broker_form_list').id
-        form_view_id = self.env.ref('apprisal_tracker.apprisal_tracker_offer_form').id
+        form_view_id = self.env.ref('appraisal_tracker.appraisal_tracker_offer_form').id
 
         # if self.compute_at_date:
         #     action = {
@@ -41,6 +43,8 @@ class BrokerReportPopUp(models.TransientModel):
         #     }
         #     return action
 
-        action=self.env.ref('broker_report.action_report_broker_report').report_action([], data={})
+        action=self.env.ref('broker_report.action_report_broker_report').report_action([], data={'start_date' : self.start_date ,'end_date' : self.end_date })
         action.update({'target':'main'})
+        # action.update({'res_model': 'report.broker_report.brokerreport_temp_test'})
+        # action.update({'context': {'start_date' : self.start_date ,'end_date' : self.end_date }})
         return action

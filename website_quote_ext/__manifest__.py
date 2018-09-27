@@ -3,7 +3,7 @@
     'name': "Online Proposals for Prioritization",
 
 
-    'author': "Benchmark It solutions",
+    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
     'website': "http://www.benchmarkitsolutions.com",
 
     # Categories can be used to filter modules in modules listing

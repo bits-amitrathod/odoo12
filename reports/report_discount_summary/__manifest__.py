@@ -1,9 +1,10 @@
 
 {
-    'name': ' Report Discount Summary',
+    'name': ' Discount Summary ',
     'category': 'Report',
     'version': '11.0.0.1',
-    'author': 'Benchmark It Solutions',
+     'author': "Benchmark IT Solutions (I) Pvt Ltd.",
+    'website': "http://www.benchmarkitsolutions.com",
     'depends': ['base', 'sale'],
     'data': [
         'views/discount_summary_view.xml',

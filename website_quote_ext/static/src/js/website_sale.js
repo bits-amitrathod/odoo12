@@ -39,7 +39,14 @@ odoo.define('website_quote_ext.so_engine_content', function (require) {
             });
             return false;
         });
+
+          $('.td-quantity', engine).on('load', function () {
+                   console.log("Inside td-quantity function")
+          });
     });
+function fun(){
+    console.log("Inside Fun")
+}
 
 
 });

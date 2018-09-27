@@ -1,23 +1,4 @@
-# -*- coding: utf-8 -*-
-##############################################################################
-#
-#    This module uses OpenERP, Open Source Management Solution Framework.
-#    Copyright (C) 2017-Today Sitaram
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>
-#
-##############################################################################
+
 import logging
 from odoo import api, fields, models
 from odoo.tools import float_repr
@@ -70,9 +51,14 @@ class ReportBrokerReport(models.AbstractModel):
     _name = 'report.broker_report.brokerreport_temp_test'
 
     @api.model
-    def get_report_values(self, docids, data=None):
-         apprisal_list= self.env['purchase.order'].search([])
-         if(apprisal_list!=False):
+    def get_report_values(self, docids, data):
+
+         apprisal_list={}
+         if(data['start_date']!=False and data['end_date']!=False):
+             apprisal_list= self.env['purchase.order'].search([('state', '=', 'purchase'),('status', '=', 'purchase'),('vendor_offer_data', '=', True),('date_order','>=',data['start_date']),('date_order','<=',data['end_date'])])
+         else:
+             apprisal_list = self.env['purchase.order'].search([('state', '=', 'purchase'), ('status', '=', 'purchase'), ('vendor_offer_data', '=', True) ])
+         if(len(apprisal_list)>0):
              apprisal_list_rtl_val = apprisal_list_tot_val = apprisal_list_mar_val = apprisal_list[0]
              apprisal_list_report=[]
              tot_offer=0
@@ -135,27 +121,45 @@ class ReportBrokerReport(models.AbstractModel):
              apprisal_list_tot_val.broker_less_40_total_tot = round(float(apprisal_list_rtl_val.broker_less_40_total)/float(apprisal_list_rtl_val.total_retail_broker)*100,2)
              apprisal_list_rtl_val.broker_desc_tot = "% OF TOTAL"
 
-             apprisal_list_mar_val.total_retail_broker_mar = str(round(abs( float((1-float(tot_offer))/apprisal_list_rtl_val.total_retail_broker))*100,2)) + ' %'
-             apprisal_list_mar_val.bonus_eligible_mar = str(round(abs(1- float(float(apprisal_list_tot_val.bonus_eligible_tot)/float(apprisal_list_tot_val.bonus_eligible_tot)))*100,2)) + ' %'
+             if (apprisal_list_rtl_val.total_retail_broker!= 0):
+                apprisal_list_mar_val.total_retail_broker_mar = str(round(abs(((1-float(tot_offer))/float(apprisal_list_rtl_val.total_retail_broker)))*100,2)) + ' %'
+
+             else:
+                apprisal_list_mar_val.total_retail_broker_mar="0 %"
+
+
+             if (apprisal_list_rtl_val.bonus_eligible_tot != 0):
+                apprisal_list_mar_val.bonus_eligible_mar = str(round(abs((1-(float(apprisal_list_tot_val.bonus_eligible_tot))/float(apprisal_list_tot_val.bonus_eligible_tot)))*100,2)) + ' %'
+
+             else:
+                 apprisal_list_mar_val.bonus_eligible_mar="0 %"
 
              if(apprisal_list_rtl_val.total_retail_broker-nomargin_retailamount!=0):
-                apprisal_list_mar_val.hospital_total_mar = round(1-(float((tot_offer-margin_offeramount)/(apprisal_list_rtl_val.total_retail_broker-margin_retailamount))),2)+ ' %'
+                apprisal_list_mar_val.hospital_total_mar = round(((1-float(tot_offer-margin_offeramount))/(apprisal_list_rtl_val.total_retail_broker-margin_retailamount)),2)+ ' %'
              else:
                 apprisal_list_mar_val.hospital_total_mar='0 %'
+
+
              if(margin_retailamount!=0):
-                apprisal_list_mar_val.broker_total_mar =str(abs(round(1-float(margin_offeramount)/margin_retailamount,2))) + "%"
+                apprisal_list_mar_val.broker_total_mar =str(abs(round((1-float(margin_offeramount))/margin_retailamount,2))) + "%"
              else:
                 apprisal_list_mar_val.broker_total_mar="0 %"
 
+
+
              if(t1t2_margin_retailamount!=0):
-                apprisal_list_mar_val.broker_greater_40_total_mar = str(abs(round((1-float(tit2_margin_offeramount))/float(t1t2_margin_retailamount),2))) + "%"
+                apprisal_list_mar_val.broker_greater_40_total_mar = str(abs(round(((1-float(tit2_margin_offeramount)))/float(t1t2_margin_retailamount),2))) + "%"
              else:
                 apprisal_list_mar_val.broker_greater_40_total_mar="0 %"
+
+
 
              if (m40_margin_retailamount != 0):
                 apprisal_list_mar_val.broker_less_40_total_mar = str(abs(round((1-float(m40_margin_offeramount))/float(m40_margin_retailamount),2))) + "%"
              else:
                 apprisal_list_mar_val.broker_less_40_total_mar="0 %"
+
+
 
              apprisal_list_rtl_val.broker_desc_mar = "MARGIN %"
 

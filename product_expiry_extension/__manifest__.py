@@ -2,7 +2,7 @@
 {
     'name': "Product Expiry Extension",
 
-    'author': "Benchmarkitsolutions",
+    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
     'website': "http://www.benchmarkitsolutions.com",
 
     # Categories can be used to filter modules in modules listing
@@ -33,4 +33,5 @@
     'auto_install': False,
 
 }
+
 

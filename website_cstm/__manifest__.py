@@ -2,7 +2,8 @@
 {
     'name': "website CSTM",
 
-    'author': 'Benchmark It Solutions',
+     'author': "Benchmark IT Solutions (I) Pvt Ltd.",
+    'website': "http://www.benchmarkitsolutions.com",
     'sequence': 57,
     'category': 'website',
     'version': '0.1',
@@ -25,6 +26,7 @@
         'views/login.xml',
         'views/search.xml',
         'views/quickView.xml',
+        'views/porduct_catalog.xml',
         'views/in_stock_notification.xml'
     ],
 

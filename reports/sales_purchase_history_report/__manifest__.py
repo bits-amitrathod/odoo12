@@ -24,7 +24,8 @@
     'category': 'sale',
     'version': '11.0.0.1',
     # 'summary': 'This module provides Sales purchase History',
-    'author': 'Benchmark It Solutions',
+    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
+    'website': "http://www.benchmarkitsolutions.com",
     # 'description': '''This module provides  sale purchase History.
     #                   With the help of this moudule you can print sales purchase History .
     #                   '''

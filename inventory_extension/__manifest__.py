@@ -2,7 +2,7 @@
 {
     'name': "Inventory Extension",
 
-     'author': "Benchmark It Solutions",
+    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
     'website': "http://www.benchmarkitsolutions.com",
 
     # Categories can be used to filter modules in modules listing

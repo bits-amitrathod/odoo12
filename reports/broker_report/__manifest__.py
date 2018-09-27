@@ -2,7 +2,7 @@
 {
     'name': "Broker Report",
 
-    'author': "Benchmarkitsolutions",
+     'author': "Benchmark IT Solutions (I) Pvt Ltd.",
     'website': "http://www.benchmarkitsolutions.com",
 
     # Categories can be used to filter modules in modules listing
@@ -12,7 +12,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','apprisal_tracker'],
+    'depends': ['base','appraisal_tracker'],
 
     # always loaded
     'data': [
