@@ -9,7 +9,7 @@ _logger = logging.getLogger(__name__)
 
 
 class ProductSaleByCountPopUp(models.TransientModel):
-    _name = 'salebycount.popup'
+    _name = 'salesbycount.popup'
     _description = 'Sales By Count'
 
     compute_at_date = fields.Selection([
