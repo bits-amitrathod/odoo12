@@ -29,7 +29,7 @@ class SaleSalespersonReport(models.TransientModel):
                 temp_2 = []
                 temp_2.append(order.name)
                 temp_2.append(fields.Datetime.from_string(str(order.date_order)).date().strftime('%m/%d/%Y'))
-                temp_2.append(float_repr(order.amount_total,precision_digits=2))
+                temp_2.append(order.amount_total)
                 temp_2.append(order)
                 temp.append(temp_2)
             list1.append(user)
