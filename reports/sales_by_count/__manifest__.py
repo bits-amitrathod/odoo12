@@ -15,7 +15,7 @@
     'data': [
         # 'security/ir.model.access.csv',
         'views/views.xml',
-        'report/sales_by_count.xml',
+        'report/sales_by_count_report.xml',
         'report/sales_by_count_report_template.xml'
     ],
     'auto_install': False,
