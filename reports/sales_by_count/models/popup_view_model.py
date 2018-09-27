@@ -24,7 +24,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
 
 
     def open_table(self):
-        tree_view_id = self.env.ref('sales_by_count_report.list_view').id
+        tree_view_id = self.env.ref('sales_by_count.list_view').id
         form_view_id = self.env.ref('product.product_template_only_form_view').id
 
         if self.compute_at_date:

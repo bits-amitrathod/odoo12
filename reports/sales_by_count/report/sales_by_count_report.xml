@@ -6,8 +6,8 @@
                 string="Sales By Count"
                 model="product.product"
                 report_type="qweb-html"
-                file="sales_by_count_report.sales_by_count_template"
-                name="sales_by_count_report.sales_by_count_template"
+                file="sales_by_count.sales_by_count_template"
+                name="sales_by_count.sales_by_count_template"
                 />
     </data>
 </odoo>
