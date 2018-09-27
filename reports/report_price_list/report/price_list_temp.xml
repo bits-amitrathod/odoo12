@@ -6,26 +6,31 @@
                 <page>
                     <div class="oe_structure"/>
                     <div class="row">
-                    <center>
-                        <b>
-                            <h2> Surgical Product Solutions </h2>
-                            <h4> Product Price List </h4>
-                        </b>
-                    </center>
-
+                        <center>
+                            <b>
+                                <h2>Surgical Product Solutions</h2>
+                                <h4>Product Price List</h4>
+                            </b>
+                        </center>
                     </div>
                     <br/>
-
-                        <t t-set="total_sum" t-value="0"/>
-                        <div class="table-responsive">
+                    <t t-set="total_sum" t-value="0"/>
+                    <div>
                         <table class="table table-condensed" style="border: 1px solid black;">
-                            <thead>
-                                <tr style="border: 1px solid black;">
-                                    <th style="border: 1px solid black;text-align:  center !important;width:200px;"> Product</th>
-                                    <th style="border: 1px solid black;text-align:  center !important;width:500px;"> Product Name</th>
-                                    <th style="border: 1px solid black;text-align:  center !important;width:200px;">Cost</th>
-
+                            <thead style="display: table-header-group;">
+                                <tr>
+                                    <th style="border: 1px solid black;text-align:  center !important;width:200px;">
+                                        Product
+                                    </th>
+                                    <th style="border: 1px solid black;text-align:  center !important;width:500px;">
+                                        Product Name
+                                    </th>
+                                    <th style="border: 1px solid black;text-align:  center !important;width:200px;">
+                                        Cost
+                                    </th>
                                 </tr>
+                            </thead>
+                            <tbody>
                                 <tr t-foreach="data" t-as="order">
                                     <td style="border: 1px solid black;">
                                         <span t-esc="order.sku_code"/>
@@ -34,12 +39,13 @@
                                         <span t-esc="order.name"/>
                                     </td>
                                     <td align="right" style="border: 1px solid black;white-space: nowrap;">
-                                       <span t-esc="order.standard_price" t-options='{"widget": "monetary","display_currency": order.currency_id}' />
+                                        <span t-esc="order.standard_price"
+                                              t-options='{"widget": "monetary","display_currency": order.currency_id}'/>
                                     </td>
                                 </tr>
-                            </thead>
+                            </tbody>
                         </table>
-                        </div>
+                    </div>
                 </page>
             </t>
         </t>
@@ -52,26 +58,30 @@
                 <page>
                     <div class="oe_structure"/>
                     <div class="row">
-                    <center>
-                        <b>
-                            <h2> Surgical Product Solutions </h2>
-                            <h4> Customer Price List </h4>
-                        </b>
-                    </center>
-
+                        <center>
+                            <b>
+                                <h2>Surgical Product Solutions</h2>
+                                <h4>Customer Price List</h4>
+                            </b>
+                        </center>
                     </div>
                     <br/>
-
-                        <t t-set="total_sum" t-value="0"/>
-                        <div class="table-responsive">
+                    <t t-set="total_sum" t-value="0"/>
+                    <div>
                         <table class="table table-condensed" style="border: 1px solid black;">
-                            <thead>
+                            <thead style="display: table-header-group;">
                                 <tr style="border: 1px solid black;">
-                                    <th style="border: 1px solid black;text-align:center !important;width:200px;"> Product</th>
-                                    <th style="border: 1px solid black;text-align:center !important;width:500px;"> Product Name</th>
-                                    <th style="border: 1px solid black;text-align: center!important;width:200px;">Cost</th>
-
+                                    <th style="border: 1px solid black;text-align:center !important;width:200px;">
+                                        Product
+                                    </th>
+                                    <th style="border: 1px solid black;text-align:center !important;width:500px;">
+                                        Product Name
+                                    </th>
+                                    <th style="border: 1px solid black;text-align: center!important;width:200px;">Cost
+                                    </th>
                                 </tr>
+                            </thead>
+                            <tbody>
                                 <tr t-foreach="data" t-as="order">
                                     <td style="border: 1px solid black;">
                                         <span t-esc="order.sku_code"/>
@@ -80,12 +90,13 @@
                                         <span t-esc="order.name"/>
                                     </td>
                                     <td align="right" style="border: 1px solid black;white-space: nowrap;">
-                                        <span t-esc="order.list_price" t-options='{"widget": "monetary","display_currency": order.currency_id}'/>
+                                        <span t-esc="order.list_price"
+                                              t-options='{"widget": "monetary","display_currency": order.currency_id}'/>
                                     </td>
                                 </tr>
-                            </thead>
+                            </tbody>
                         </table>
-                        </div>
+                    </div>
                 </page>
             </t>
         </t>

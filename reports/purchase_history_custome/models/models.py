@@ -1,38 +1,39 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api
-
 import logging
 from odoo.tools import float_repr
-
 _logger = logging.getLogger(__name__)
 
 
 class purchase_history(models.Model):
 
-    _inherit = 'purchase.order.line'
+    _inherit = 'purchase.order'
 
-    # start_date=fields.Date("Start Date", store=False,compute="_startDate")
-    # end_date = fields.Date("Start Date", store=False,compute="_endDate")
-    sku = fields.Char("Product SKU", store=False, compute="_calculateSKU")
-    vendor= fields.Char("Vendor", store=False)
+
+    sku = fields.Char("Product SKU", store=False, compute="_calculateSKU1")
+    vendor = fields.Char("Vendor", store=False)
     qty = fields.Integer("Qty", store=False)
     manufacturer_rep = fields.Char("Manufacturer", store=False)
     product_name=fields.Char("Product Name", store=False)
     minExpDate = fields.Date("Min Exp Date", store=False, compute="_calculateDate1")
     maxExpDate = fields.Date("Max Exp Date", store=False, compute="_calculateDate2")
     unit_price=fields.Monetary("Price Per Stock", store=False)
-    currency_id = fields.Many2one('res.currency', 'Currency', store=False)
+
 
     @api.multi
-    def _calculateSKU(self):
+    def _calculateSKU1(self):
         for order in self:
-            order.sku = order.product_id.product_tmpl_id.sku_code
-            order.vendor = order.partner_id.name
-            order.manufacturer_rep = order.partner_id.name
-            order.product_name=order.product_id.product_tmpl_id.name
-            order.qty=order.product_qty
-            order.unit_price=(float_repr(order.price_unit, precision_digits=2))
+
+            for p in order.order_line:
+                order.sku = p.product_id.product_tmpl_id.sku_code
+                order.vendor = p.partner_id.name
+                order.manufacturer_rep = p.partner_id.name
+                order.product_name = p.product_id.product_tmpl_id.name
+                order.qty = p.product_qty
+                order.unit_price = (float_repr(p.price_unit, precision_digits=2))
+
+
 
     @api.onchange('minExpDate')
     def _calculateDate1(self):
@@ -55,6 +56,20 @@ class purchase_history(models.Model):
             query_result = order.env.cr.dictfetchone()
             order.maxExpDate = query_result['max']
             print(order.maxExpDate)
+
+
+
+
+    # _logger.info('################ABCDfffffffffffffffffffffffffffffff')
+    # for order in self:
+    #     for p1 in order.order_line:
+    #         _logger.info('################ABCDfffffffffffffffffffffffffffffff')
+    #         order.sku = p1.product_id.product_tmpl_id.sku_code
+    #         order.vendor = p1.partner_id.name
+    #         order.manufacturer_rep = p1.partner_id.name
+    #         order.product_name = p1.product_id.product_tmpl_id.name
+    #         order.qty = p1.product_qty
+    #         order.unit_price = (float_repr(p1.price_unit, precision_digits=2))
 
     # @api.onchange('start_date')
     # def _startDate(self):

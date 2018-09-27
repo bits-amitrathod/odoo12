@@ -21,9 +21,8 @@
 {
     "name": "Multi-selection for one2many fields",
     "version": "1.0",
-    "author": "Benchmark It Solutions",
-    "license": "AGPL-3",
-    "website": "www.benchmarkitsolutions.com",
+    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
+    'website': "http://www.benchmarkitsolutions.com",
     "summary": "This widget adds the capability for selecting multiple records in one2many fields and calls a python function with the recods as self argument",
     "description": '''
 Description

@@ -2,7 +2,8 @@
     'name': 'Report Custom Product Catalog',
     'category': 'sale',
     'version': '11.0.0.1',
-    'author': 'Benchmark It Solutions',
+     'author': "Benchmark IT Solutions (I) Pvt Ltd.",
+    'website': "http://www.benchmarkitsolutions.com",
     'depends': ['base', 'stock','product'],
     'data': [
         'views/catalog_view.xml',

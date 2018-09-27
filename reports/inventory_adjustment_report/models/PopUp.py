@@ -34,18 +34,23 @@ class PopUp(models.TransientModel):
                 'type': 'ir.actions.act_window',
                 'views': [(tree_view_id, 'tree'),(form_view_id, 'form')],
                 'view_mode': 'tree,form',
-                'name': _('Products'),
+                'name': _('Inventory Adjustment'),
                 'res_model': 'stock.inventory',
-                'domain': [('inventory_id.date', '>=', self.start_date),('inventory_id.date', '<=', self.end_date)],
+                'domain': [('date', '>=', self.start_date),('date', '<=', self.end_date)],
             }
+            action.update({'target': 'main'})
             return action
         else:
             action = {
                 'type': 'ir.actions.act_window',
                 'views': [(tree_view_id, 'tree'),(form_view_id, 'form')],
                 'view_mode': 'tree,form',
-                'name': _('Products'),
+                'name': _('Inventory Adjustment'),
                 'res_model': 'stock.inventory',
             }
+            action.update({'target': 'main'})
             return action
+
+
+
 

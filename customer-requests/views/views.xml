@@ -28,6 +28,7 @@
                     <field name="qty_to_show" string="Quantity"/>
                     <!--<field name="required_quantity"/>-->
                     <field name="status"/>
+                    <field name="sale_order_id"/>
                     <!--<field name="template_type" invisible="1" />-->
                 </tree>
             </field>

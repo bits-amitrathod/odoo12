@@ -1,14 +1,8 @@
 # -*- coding: utf-8 -*-
 {
     'name': "website CSTM",
-
-    'summary': """
-       Website Theme and Features""",
-
-    'description': """
-         Website Theme and Features
-    """,
-    'author': 'Benchmark It Solutions',
+     'author': "Benchmark IT Solutions (I) Pvt Ltd.",
+    'website': "http://www.benchmarkitsolutions.com",
     'sequence': 57,
     'category': 'website',
     'version': '0.1',
