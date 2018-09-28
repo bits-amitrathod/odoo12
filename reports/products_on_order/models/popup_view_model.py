@@ -83,7 +83,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
 
         action = {
             'type': 'ir.actions.act_window',
-            'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
+            'views': [(tree_view_id, 'tree')],
             'view_mode': 'tree, form',
             'name': _('Products On Order'),
             'res_model': 'products.on_order',
