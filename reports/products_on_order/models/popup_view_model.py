@@ -108,7 +108,7 @@ class ProductSaleByCountSaleModel(models.Model):
     qty_ordered = fields.Float(string="Qty Ordered", )
     qty_remaining = fields.Float(string="Qty Remaining",)
     qty_total_remaining = fields.Float(string="Total SO Items Remaining",)
-    calculate_data = fields.Boolean(default=False)
+    # calculate_data = fields.Boolean(default=False)
 
 
     @api.multi
