@@ -21,6 +21,7 @@
                             <thead>
                                 <tr style="border: 1px solid black;">
                                     <th style="border: 1px solid black;text-align: center;">Manufacturer</th>
+                                    <th style="border: 1px solid black;text-align: center;">SKU / Catalog No</th>
                                     <th style="border: 1px solid black;text-align: center;">Product Code</th>
                                     <th style="border: 1px solid black;text-align: center;">Product Name</th>
                                     <th style="border: 1px solid black;text-align: center;">Qty In Stock</th>
@@ -28,10 +29,17 @@
                                     <th style="border: 1px solid black;text-align: center;">Min. Expiration Date</th>
                                     <th style="border: 1px solid black;text-align: center;">Max. Expiration Date</th>
                                 </tr>
+                                </thead>
+                                <tbody>
                                     <tr t-foreach="data" t-as="order">
                                          <td style="border: 1px solid black;">
                                             <span t-esc="order.manufacturer"/>
                                         </td>
+
+                                        <td style="border: 1px solid black;">
+                                            <span t-esc="order.sku_reference"/>
+                                        </td>
+
                                         <td style="border: 1px solid black;">
                                             <span t-esc="order.product_code"/>
                                         </td>
@@ -54,7 +62,7 @@
                                         </td>
 
                                     </tr>
-                            </thead>
+                                </tbody>
                     </table>
                     </div>
                 </page>
