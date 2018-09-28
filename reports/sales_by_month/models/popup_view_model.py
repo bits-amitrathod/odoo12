@@ -11,7 +11,6 @@ _logger = logging.getLogger(__name__)
 class ProductSaleByCountPopUp(models.TransientModel):
     _name = 'salesbymonth.popup'
     _description = 'Sales By Count'
-    _auto = False
 
 
     compute_at_date = fields.Selection([
@@ -27,7 +26,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
 
     def open_table(self):
         tree_view_id = self.env.ref('sales_by_month.list_view').id
-        form_view_id = self.env.ref('product.product_template_only_form_view').id
+        form_view_id = self.env.ref('product.product_normal_form_view').id
 
         if self.compute_at_date:
             s_date = ProductSaleByCountPopUp.string_to_date(str(self.start_date))
