@@ -13,7 +13,7 @@ class SaleSalespersonReport(models.TransientModel):
             return " "
 
     @api.multi
-    def get_report_values(self, docids, data=None):
+    def get_report_values(self, docids, data):
         sale_orders = self.env['sale.order'].search([('state', '=', 'sale')])
         user_ids = self.env['res.users'].search([])
         groupby_dict = {}
@@ -22,6 +22,7 @@ class SaleSalespersonReport(models.TransientModel):
             filtered_by_date =  filtered_order
             groupby_dict[user.name] = filtered_by_date
         final_list = []
+        currency_id = 0
         for user in groupby_dict.keys():
             temp = []
             list1 = []
@@ -29,7 +30,7 @@ class SaleSalespersonReport(models.TransientModel):
                 temp_2 = []
                 temp_2.append(order.name)
                 temp_2.append(fields.Datetime.from_string(str(order.date_order)).date().strftime('%m/%d/%Y'))
-                temp_2.append(float_repr(order.amount_total,precision_digits=2))
+                temp_2.append(order.amount_total)
                 temp_2.append(order)
                 temp.append(temp_2)
             list1.append(user)

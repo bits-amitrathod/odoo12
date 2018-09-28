@@ -1,5 +1,5 @@
 {
-    'name': 'Report Group By Salesperson',
+    'name': 'Gross Sales By Salesperson',
     'category': 'sale',
     'version': '11.0.0.1',
     'author': 'Benchmark It Solutions',
