@@ -1,5 +1,5 @@
 {
-    'name': 'Report Custom Product Catalog',
+    'name': 'Report Product Catalog',
     'category': 'sale',
     'version': '11.0.0.1',
      'author': "Benchmark IT Solutions (I) Pvt Ltd.",

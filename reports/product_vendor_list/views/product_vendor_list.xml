@@ -12,6 +12,7 @@
                             <field name="compute_at_date" widget="radio"/>
                             <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
                             <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                            <field name="product_id" widget="many2many_tags" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
                         </group>
                     </group>
                     <footer>
@@ -29,7 +30,7 @@
             <field name="view_mode">form</field>
             <field name="view_id" ref="vendor_view_popup_view"/>
             <field name="target">new</field>
-            <!--<field name="context">{'default_compute_at_date': 0, 'valuation': True}</field>-->
+            <field name="context">{'default_compute_at_date': 0, 'valuation': True}</field>
         </record>
 
         <record model="ir.ui.view" id="vendor_form_list">

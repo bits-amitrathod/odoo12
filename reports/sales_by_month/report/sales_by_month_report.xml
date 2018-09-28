@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report
+                id="action_report_sales_by_month"
+                string="Sales By Month"
+                model="product.product"
+                report_type="qweb-html"
+                file="sales_by_month.sales_by_month_template"
+                name="sales_by_month.sales_by_month_template"
+                />
+    </data>
+</odoo>

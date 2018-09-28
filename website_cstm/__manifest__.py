@@ -25,6 +25,7 @@
         'views/login.xml',
         'views/search.xml',
         'views/quickView.xml',
+        'views/porduct_catalog.xml',
         'views/in_stock_notification.xml'
     ],
 

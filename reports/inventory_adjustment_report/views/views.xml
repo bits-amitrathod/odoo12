@@ -14,7 +14,7 @@
                   <field name="p_qty" />
                   <field name="amount" widget="monetary"/>
                   <field name="total_amt" widget="monetary"/>
-                  <field name="currency_id" />
+                  <field name="currency_id" invisible="1" />
 
               </tree>
           </field>

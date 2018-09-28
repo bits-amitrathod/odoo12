@@ -1,6 +1,6 @@
 
 {
-    'name': ' Report Discount Summary',
+    'name': ' Discount Summary ',
     'category': 'Report',
     'version': '11.0.0.1',
      'author': "Benchmark IT Solutions (I) Pvt Ltd.",

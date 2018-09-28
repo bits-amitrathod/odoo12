@@ -30,8 +30,16 @@ class PrioritizationEngine(models.TransientModel):
                         if self.check_cooling_period(prioritization_engine_request):
                             prioritization_engine_request['customer_request_logs'] += 'successed cooling period, '
                             _logger.debug('successed cooling period')
-                            # allocate product
-                            self.allocate_product(prioritization_engine_request, filter_available_product_lot_dict)
+                            if prioritization_engine_request['template_type'].lower().strip() == 'inventory':
+                                # check min-max threshold
+                                _logger.debug('Template type is Inventory.')
+                                flag, allocate_inventory_product_quantity = self.check_product_threshold(prioritization_engine_request)
+                                if flag:
+                                    #allocate product
+                                    self.allocate_product(prioritization_engine_request, filter_available_product_lot_dict, allocate_inventory_product_quantity)
+                            else:
+                                # allocate product
+                                self.allocate_product(prioritization_engine_request, filter_available_product_lot_dict, None)
                         else:
                             prioritization_engine_request['customer_request_logs'] += 'Cooling period false.'
                             _logger.debug('Cooling period false.....')
@@ -92,11 +100,11 @@ class PrioritizationEngine(models.TransientModel):
                 if int(total_hours) <= int(duration_in_hours):
                     if prioritization_engine_request['status'].lower().strip() != 'inprocess':
                         # update status In Process
-                        self.update_customer_status(prioritization_engine_request, 'Inprocess')
+                        self.update_customer_request_status(prioritization_engine_request, 'Inprocess')
                         flag = True
                 elif prioritization_engine_request['status'].lower().strip() != 'incoolingperiod':
                         # update status In cooling period
-                        self.update_customer_status(prioritization_engine_request, 'InCoolingPeriod')
+                        self.update_customer_request_status(prioritization_engine_request, 'InCoolingPeriod')
                         flag = False
             else:
                 flag = True
@@ -123,15 +131,19 @@ class PrioritizationEngine(models.TransientModel):
         return expiration_tolerance_date
 
     # Allocate product
-    def allocate_product(self, prioritization_engine_request, filter_available_product_lot_dict):
-        remaining_product_allocation_quantity = prioritization_engine_request['required_quantity']
+    def allocate_product(self, prioritization_engine_request, filter_available_product_lot_dict, allocate_inventory_product_quantity):
+        remaining_product_allocation_quantity = 0
+        if prioritization_engine_request['template_type'].lower().strip() == 'inventory':
+            self.remaining_product_allocation_quantity = allocate_inventory_product_quantity
+        else:
+            self.remaining_product_allocation_quantity = prioritization_engine_request['required_quantity']
         for product_lot in filter_available_product_lot_dict.get(prioritization_engine_request['product_id'],{}):
             _logger.debug('**** %r',product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity'))
-            if remaining_product_allocation_quantity >= product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity'):
+            if self.remaining_product_allocation_quantity >= product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity'):
                 if prioritization_engine_request['partial_order']:
                     _logger.debug('product allocated from lot %r %r %r', product_lot.get(list(product_lot.keys()).pop(0), {}))
 
-                    remaining_product_allocation_quantity = int(remaining_product_allocation_quantity) - int(product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'])
+                    self.remaining_product_allocation_quantity = int(self.remaining_product_allocation_quantity) - int(product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'])
 
                     self.allocated_product_to_customer(prioritization_engine_request['customer_id'],
                                                        prioritization_engine_request['customer_request_id'],
@@ -144,41 +156,41 @@ class PrioritizationEngine(models.TransientModel):
                     product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'] = 0
 
                     _logger.debug('Quantity Updated')
-            elif remaining_product_allocation_quantity < product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity'):
+            elif self.remaining_product_allocation_quantity < product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity'):
                     _logger.debug('product allocated from lot %r', list(product_lot.keys()).pop(0))
 
-                    product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0),{})['reserved_quantity']) + int(remaining_product_allocation_quantity)
-                    product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0),{})['available_quantity']) - int(remaining_product_allocation_quantity)
+                    product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0),{})['reserved_quantity']) + int(self.remaining_product_allocation_quantity)
+                    product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0),{})['available_quantity']) - int(self.remaining_product_allocation_quantity)
 
                     self.allocated_product_to_customer(prioritization_engine_request['customer_id'], prioritization_engine_request['customer_request_id'], prioritization_engine_request['required_quantity'],
-                                                       list(product_lot.keys()).pop(0), prioritization_engine_request['product_id'], remaining_product_allocation_quantity)
+                                                       list(product_lot.keys()).pop(0), prioritization_engine_request['product_id'], self.remaining_product_allocation_quantity)
 
                     _logger.debug('Quantity Updated')
 
-                    remaining_product_allocation_quantity = 0
+                    self.remaining_product_allocation_quantity = 0
                     break
 
-        if remaining_product_allocation_quantity == prioritization_engine_request['required_quantity']:
-            prioritization_engine_request['customer_request_logs'] += 'Partial ordering flag is False.'
-            _logger.debug('Partial ordering flag is False')
+        if prioritization_engine_request['template_type'].lower().strip() == 'inventory':
+            if self.remaining_product_allocation_quantity == allocate_inventory_product_quantity:
+                prioritization_engine_request['customer_request_logs'] += 'Partial ordering flag is False.'
+                _logger.debug('Partial ordering flag is False')
 
-        elif remaining_product_allocation_quantity == 0:
-            _logger.debug("Allocated product id " + str(
-                prioritization_engine_request['product_id']) + ". Total required product quantity is " + str(
-                prioritization_engine_request['required_quantity']))
+        elif self.remaining_product_allocation_quantity == prioritization_engine_request['required_quantity']:
+                prioritization_engine_request['customer_request_logs'] += 'Partial ordering flag is False.'
+                _logger.debug('Partial ordering flag is False')
+
+        if self.remaining_product_allocation_quantity == 0:
+            _logger.debug("Allocated all required product quantity.")
             prioritization_engine_request['customer_request_logs'] += 'Product allocated.'
-            self.update_customer_status(prioritization_engine_request,'Completed')
+            self.update_customer_request_status(prioritization_engine_request,'Completed')
 
-        elif remaining_product_allocation_quantity > 0:
-            allocated_product_quantity = int(prioritization_engine_request['required_quantity']) - int(
-                remaining_product_allocation_quantity)
-            _logger.debug(str(" We have allocated only " + str(allocated_product_quantity) + " products. " + str(
-                remaining_product_allocation_quantity) + " are pending."))
+        elif self.remaining_product_allocation_quantity > 0:
+            _logger.debug(str(" Allocated Partial order product."))
             prioritization_engine_request['customer_request_logs'] += 'Allocated Partial order product.'
-            self.update_customer_status(prioritization_engine_request, 'Partial')
+            self.update_customer_request_status(prioritization_engine_request, 'Partial')
 
     # update customer status
-    def update_customer_status(self,prioritization_engine_request,status):
+    def update_customer_request_status(self,prioritization_engine_request,status):
         self.env['sps.customer.requests'].search(
             [('id', '=', prioritization_engine_request['customer_request_id'])]).write(dict(status=status))
         prioritization_engine_request['customer_request_logs'] += 'Updated customer request status.'
@@ -267,7 +279,7 @@ class PrioritizationEngine(models.TransientModel):
 
     def get_available_product_count(self, customer_id, product_id):
         available_production_lot_dict =self.env['available.product.dict'].get_available_production_lot()
-        prioritization_engine_request=self.env['sps.customer.requests']._get_settings_object(customer_id,product_id,None,None)
+        prioritization_engine_request=self.env['sps.customer.requests'].get_settings_object(customer_id,product_id,None,None)
         count = 0
         if available_production_lot_dict.get(int(product_id)) !=None and prioritization_engine_request:
             for available_production_lot in available_production_lot_dict.get(int(product_id)):
@@ -279,3 +291,13 @@ class PrioritizationEngine(models.TransientModel):
                         print(available_production_lot.get(available))
                         count = count +(available_production_lot.get(available).get('available_quantity')-available_production_lot.get(available).get('reserved_quantity'))
         return count
+
+    def check_product_threshold(self,prioritization_engine_request):
+        if prioritization_engine_request['quantity'] < prioritization_engine_request['min_threshold']:
+            allocate_quantity = prioritization_engine_request['max_threshold'] - prioritization_engine_request['quantity']
+            return True,allocate_quantity
+        else:
+            return False,0
+
+
+
