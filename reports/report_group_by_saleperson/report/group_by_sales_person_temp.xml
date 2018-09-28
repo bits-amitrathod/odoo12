@@ -15,6 +15,7 @@
 
                     </div>
                     <br/>
+                    <t t-set="currency" t-value="0" />
                     <t t-foreach="data['form']" t-as="user">
                         <center>
                             <b>
@@ -23,7 +24,6 @@
                             </b>
                         </center>
                         <t t-set="total_sum" t-value="0"/>
-                        <t t-set="currency"  />
                         <table class="table table-condensed" style="border: 1px solid black;">
                             <thead>
                                 <tr style="border: 1px solid black;">
@@ -43,7 +43,7 @@
                                     <td align="right" style="border: 1px solid black;">
                                           <span t-esc="order[3].amount_total " t-options='{"widget": "monetary","display_currency": order[3].currency_id}'
                                     />
-                                       <t t-set="total_sum" t-value="total_sum + float(order[3].amount_total)" />
+                                       <t t-set="total_sum" t-value="total_sum + order[3].amount_total" />
                                        <t t-set="currency" t-value="order[3].currency_id" />
                                     </td>
                                 </tr>
@@ -54,7 +54,7 @@
                                         <b>Total</b>
                                     </td>
                                     <td align="right" style="border: 1px solid black;white-space: nowrap;">
-                                         <span t-esc="total_sum" />
+                                         <span t-esc="total_sum" t-options='{"widget": "monetary","display_currency":currency}' />
                                     </td>
                                 </tr>
                             </tbody>

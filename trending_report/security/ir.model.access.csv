@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_trending_report_trending_report,trending_report.trending_report,model_trending_report_trending_report,,1,0,0,0

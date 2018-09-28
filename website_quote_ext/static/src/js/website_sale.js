@@ -1,4 +1,4 @@
-odoo.define('website_quote_ext.so_engine_content', function (require) {
+odoo.define('website_quote_ext.portal_order_page_ex', function (require) {
     "use strict";
 
     require('web.dom_ready');
@@ -30,16 +30,20 @@ odoo.define('website_quote_ext.so_engine_content', function (require) {
                 return !$prod.length || +$prod.find('input[name="product_id"]').val() === product_id;
             }).val(new_qty).change();
             ajax.jsonRpc("/shop/engine/update_json", 'call', {
-                 'quote_id':quote_id,
+                'quote_id':quote_id,
                 'line_id': line_id,
                 'product_id': product_id,
                 'set_qty': new_qty
             }).then(function (data) {
                  console.log(data);
+                 window.location.reload();
             });
             return false;
         });
     });
+function fun(){
+    console.log("Inside Fun")
+}
 
 
 });

@@ -2,7 +2,6 @@
 {
     'name': "Inventory Extension",
 
-
     'author': "Benchmark IT Solutions (I) Pvt Ltd.",
     'website': "http://www.benchmarkitsolutions.com",
 

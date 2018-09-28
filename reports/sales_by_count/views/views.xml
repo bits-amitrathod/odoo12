@@ -38,7 +38,7 @@
               <field name="arch" type="xml">
                 <tree>
                     <field name="sku_name" string="Product" />
-                    <field name="name" string="Description"/>
+                    <field name="product_name" string="Description"/>
                     <field name="total_sale_qty"/>
                 </tree>
               </field>
