@@ -36,5 +36,6 @@ class ProductSaleByCount(models.Model):
             sale_order_lines = self.env['sale.order.line'].search([('product_id', '=', product.id)])
             for sale_order_line in sale_order_lines:
                 if sale_order_line.order_id.confirmation_date and (start_date <= fields.Datetime.from_string(
-                        sale_order_line.order_id.confirmation_date).date() <= end_date):
+                        sale_order_line.order_id.confirmation_date).date() <= end_date) and \
+                        sale_order_line.order_id.state not in ['cancel']:
                     product.total_sale_qty = product.total_sale_qty + sale_order_line.product_uom_qty
