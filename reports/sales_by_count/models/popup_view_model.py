@@ -27,6 +27,15 @@ class ProductSaleByCountPopUp(models.TransientModel):
         tree_view_id = self.env.ref('sales_by_count.list_view').id
         form_view_id = self.env.ref('product.product_normal_form_view').id
 
+        action = {
+            'type': 'ir.actions.act_window',
+            'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
+            'view_mode': 'tree,form',
+            'name': _('Sales By Count'),
+            'res_model': 'product.product',
+            'target': 'main'
+        }
+
         if self.compute_at_date:
             s_date = ProductSaleByCountPopUp.string_to_date(str(self.start_date))
             e_date = ProductSaleByCountPopUp.string_to_date(str(self.end_date))
@@ -43,26 +52,8 @@ class ProductSaleByCountPopUp(models.TransientModel):
 
             product_ids = list(set(product_ids))
 
-            _logger.info('ids : %r', product_ids)
+            action.update({'domain': [('id', 'in', product_ids)]})
 
-            action = {
-                'type': 'ir.actions.act_window',
-                'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
-                'view_mode': 'tree,form',
-                'name': _('Sales By Count'),
-                'res_model': 'product.product',
-                'domain': [('id', 'in', product_ids)],
-                'target': 'main'
-            }
-        else:
-            action = {
-                'type': 'ir.actions.act_window',
-                'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
-                'view_mode': 'tree,form',
-                'name': _('Sales By Count'),
-                'res_model': 'product.product',
-                'target': 'main'
-            }
         return action
 
     @staticmethod

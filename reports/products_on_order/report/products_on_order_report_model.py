@@ -9,6 +9,6 @@ class ReportProductsOnOrder(models.AbstractModel):
 
     @api.model
     def get_report_values(self, docids, data=None):
-        records = self.env['products.on_order'].browse(docids)
+        records = self.env['sale.order'].browse(docids)
         return {
             'data': records}
