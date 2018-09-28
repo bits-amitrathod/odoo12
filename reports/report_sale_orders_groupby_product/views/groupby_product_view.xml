@@ -31,10 +31,10 @@
                 <form create="false" edit="false">
                     <sheet>
                         <div class="oe_title">
-                                <h1>
-                                    <field name="order_id"/>
-                                </h1>
-                            </div>
+                            <h1>
+                                <field name="order_id"/>
+                            </h1>
+                        </div>
                         <group>
 
                             <group>
@@ -47,7 +47,7 @@
                             <group>
                                 <field name="product_uom_qty"/>
                                 <field name="product_uom"/>
-                                 <field name="price_unit" widget="monetary"/>
+                                <field name="price_unit" widget="monetary"/>
                             </group>
 
 
@@ -58,20 +58,50 @@
             </field>
         </record>
 
-        <record id="sr_action_sale_report_bygroup" model="ir.actions.act_window">
+        <record id="view_popup_view" model="ir.ui.view">
             <field name="name">Gross Sales By Product</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">sale.order.line</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-            <field name="search_view_id" ref="view_sales_order_line_filter_cstm"/>
-            <!--<field name="view_id" ref="view_sales_order_line_view_cstm"/>-->
-            <field name="context">{'search_default_product': 1}</field>
+            <field name="model">report.sale.orders.groupby.product</field>
+            <field name="arch" type="xml">
+                <form string="Choose your date">
+                    <group>
+                        <group>
+                            <field name="compute_at_date" widget="radio"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
         </record>
+
+        <record id="action_sale_order_groupby_product" model="ir.actions.act_window">
+            <field name="name">Gross Sales By Product</field>
+            <field name="res_model">report.sale.orders.groupby.product</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_popup_view"/>
+            <field name="target">new</field>
+            <field name="context">{'default_compute_at_date': 0, 'valuation': True}</field>
+        </record>
+
+        <!--<record id="sr_action_sale_report_bygroup" model="ir.actions.act_window">-->
+            <!--<field name="name">Gross Sales By Product</field>-->
+            <!--<field name="type">ir.actions.act_window</field>-->
+            <!--<field name="res_model">sale.order.line</field>-->
+            <!--<field name="view_type">form</field>-->
+            <!--<field name="view_mode">tree,form</field>-->
+            <!--<field name="search_view_id" ref="view_sales_order_line_filter_cstm"/>-->
+            <!--&lt;!&ndash;<field name="view_id" ref="view_sales_order_line_view_cstm"/>&ndash;&gt;-->
+            <!--<field name="context">{'search_default_product': 1}</field>-->
+        <!--</record>-->
 
         <menuitem id="sr_menu_sale_report_by_product"
                   name="Gross Sales By Product"
-                  action="sr_action_sale_report_bygroup"
+                  action="action_sale_order_groupby_product"
                   parent="sale.menu_sale_report"
                   sequence="1"/>
     </data>
