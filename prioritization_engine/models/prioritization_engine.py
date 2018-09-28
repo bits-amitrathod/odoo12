@@ -279,7 +279,7 @@ class PrioritizationEngine(models.TransientModel):
 
     def get_available_product_count(self, customer_id, product_id):
         available_production_lot_dict =self.env['available.product.dict'].get_available_production_lot()
-        prioritization_engine_request=self.env['sps.customer.requests']._get_settings_object(customer_id,product_id,None,None)
+        prioritization_engine_request=self.env['sps.customer.requests'].get_settings_object(customer_id,product_id,None,None)
         count = 0
         if available_production_lot_dict.get(int(product_id)) !=None and prioritization_engine_request:
             for available_production_lot in available_production_lot_dict.get(int(product_id)):

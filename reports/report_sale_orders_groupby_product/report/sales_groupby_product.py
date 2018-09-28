@@ -22,7 +22,7 @@ from odoo import api, models
 
 
 class ReportSaleOrderLineGroupByProduct(models.AbstractModel):
-    _name = 'report.sr_sales_report_product_groupby.group_by_product'
+    _name = 'report.report_sale_orders_groupby_product.group_by_product'
 
     @api.model
     def get_report_values(self, docids, data=None):

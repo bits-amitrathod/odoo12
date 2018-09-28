@@ -43,15 +43,33 @@ class ProductionLot(models.Model):
     # Assign dates according to products data
     @api.model
     def create(self, vals):
+        if 'use_date' not in vals:
+            raise UserError(_('Lot expiration date is required.'))
+        elif fields.Datetime.from_string(vals['alert_date']) >= fields.Datetime.from_string(vals['use_date']):
+            raise UserError(_('Alert date should be less than expiration date.'))
         dates = self._get_dates(vals.get('product_id') or self.env.context.get('default_product_id'))
         for d in dates:
             if not vals.get(d):
                 vals[d] = dates[d]
         return super(ProductionLot, self).create(vals)
 
+    @api.multi
+    def write(self, vals):
+        if 'use_date' in vals and 'alert_date' in vals:
+            if fields.Datetime.from_string(vals['alert_date']) >= fields.Datetime.from_string(vals['use_date']):
+                raise UserError(_('Alert date should be less than expiration date.'))
+        if 'use_date' not in vals and 'alert_date' in vals:
+            if fields.Datetime.from_string(vals['alert_date']) >= fields.Datetime.from_string(self.use_date):
+                raise UserError(_('Alert date should be less than expiration date.'))
+        if 'product_id' in vals:
+            move_lines = self.env['stock.move.line'].search([('lot_id', 'in', self.ids)])
+            if move_lines:
+                raise UserError(_(
+                    'You are not allowed to change the product linked to a serial or lot number ' + 'if some stock moves have already been created with that number. ' + 'This would lead to inconsistencies in your stock.'))
+        return super(ProductionLot, self).write(vals)
+
     @api.onchange('product_id')
     def _onchange_product(self):
         dates_dict = self._get_dates()
         for field, value in dates_dict.items():
             setattr(self, field, value)
-

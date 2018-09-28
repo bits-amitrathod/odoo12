@@ -6,8 +6,8 @@
                 string="Gross Sales By Product"
                 model="sale.order.line"
                 report_type="qweb-html"
-                file="sr_sales_report_product_groupby.group_by_product"
-                name="sr_sales_report_product_groupby.group_by_product"
+                file="report_sale_orders_groupby_product.group_by_product"
+                name="report_sale_orders_groupby_product.group_by_product"
         />
     </data>
 </odoo>
