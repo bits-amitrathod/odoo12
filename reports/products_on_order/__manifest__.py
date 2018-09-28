@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 {
     'name': "Products on Order",
+    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
+    'website': "http://www.benchmarkitsolutions.com",
 
     'category': 'Uncategorized',
     'version': '0.1',

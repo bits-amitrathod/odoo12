@@ -37,8 +37,8 @@
               <field name="priority">21</field>
               <field name="arch" type="xml">
                 <tree>
-                    <field name="sku_name" string="Product" />
-                    <field name="product_name" string="Description"/>
+                    <field name="sku_name" string="SKU / Catelog No." />
+                    <field name="product_name" string="Name"/>
                     <field name="total_sale_qty"/>
                 </tree>
               </field>
