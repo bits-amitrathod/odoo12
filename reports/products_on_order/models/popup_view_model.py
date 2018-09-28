@@ -4,17 +4,16 @@ from odoo import api, fields, models ,_
 import logging
 import datetime
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, pycompat, misc
-from dateutil.relativedelta import relativedelta
 
 _logger = logging.getLogger(__name__
                             )
 
 class ProductSaleByCountPopUp(models.TransientModel):
     _name = 'prod_on_order.popup'
-    _description = 'Dormant Customers'
+    _description = 'Products On Order'
 
     compute_at_date = fields.Selection([
-        (0, 'Last 1 Month '),
+        (0, 'This Month '),
         (1, 'Date Range ')
     ], string="Compute", default=0, help="Choose to analyze the Show Summary or from a specific date in the past.")
 
@@ -22,51 +21,78 @@ class ProductSaleByCountPopUp(models.TransientModel):
 
     end_date = fields.Datetime('End Date', default = fields.Datetime.now)
 
+    product_id = fields.Many2one('product.product', string='Product', required=False)
+
+    customer_id = fields.Many2one('res.partner', string='Customer', required=False,)
+
 
 
     def open_table(self):
-        tree_view_id = self.env.ref('dormant_customers.list_view').id
-        form_view_id = self.env.ref('base.view_partner_form').id
+        tree_view_id = self.env.ref('products_on_order.list_view').id
+        form_view_id = self.env.ref('sale.view_order_form').id
 
         if self.compute_at_date:
             s_date = ProductSaleByCountPopUp.string_to_date(str(self.start_date))
             e_date = ProductSaleByCountPopUp.string_to_date(str(self.end_date))
         else:
-            cur_date_time_string = str(datetime.datetime.now())
+            cur_date_time = str(datetime.datetime.now())
             try:
-                cur_date_time_string = cur_date_time_string[:cur_date_time_string.index('.')]
-            except ValueError:
-                error = True
-            e_date = ProductSaleByCountPopUp.string_to_date(cur_date_time_string)
-            s_date = e_date - datetime.timedelta(365/12)
+                cur_date_time.index('.')
+                cur_date_time = cur_date_time.split('.')[0]
+            except:
+                error = 1
 
-        sale_orders = self.env['sale.order'].search([])
+            e_date = ProductSaleByCountPopUp.string_to_date(cur_date_time)
 
-        filtered_sale_orders = list(filter(
-            lambda x: x.confirmation_date and \
-                      s_date <= ProductSaleByCountPopUp.string_to_date(x.confirmation_date) <= e_date, sale_orders))
+            first_date_time = str(datetime.datetime.now().replace(day=1))
+            try:
+                first_date_time.index('.')
+                first_date_time = first_date_time.split('.')[0]
+            except:
+                error = 1
 
-        non_domrant_partner_ids_within_selected_date_range = [sale_order.partner_id.id for sale_order in
-                                                              filtered_sale_orders]
+            s_date = ProductSaleByCountPopUp.string_to_date(first_date_time)
 
-        all_partners = self.env['res.partner'].search(
-            [('customer', '=', True), ('id', 'not in', non_domrant_partner_ids_within_selected_date_range)])
 
-        partner_ids = [partner.id for partner in all_partners if
-                       not partner.last_purchase_date or ProductSaleByCountPopUp.string_to_date(
-                           str(partner.last_purchase_date)) < e_date]
 
-        partner_ids = list(set(partner_ids))
+        # domain = []
+
+        context = {}
+
+        if self.product_id:
+            # domain.append(['product_id', '=', self.product_id.id])
+            context.update({'product_id' : self.product_id.id})
+
+        if self.customer_id:
+            # domain.append(['customer_id', '=', self.customer_id.id])
+            context.update({'customer_id': self.customer_id.id})
+
+        self.env['products.on_order'].with_context(context).delete_and_create()
+
+        # sale_orders = self.env['products.on_order'].search(domain)
+        #
+        # order_ids = []
+        # ids = []
+        # for sale_order in sale_orders:
+        #     if s_date <= ProductSaleByCountPopUp.string_to_date(sale_order.date_ordered) <= e_date:
+        #         try:
+        #             order_ids.index(sale_order.order_id)
+        #         except:
+        #             ids.append(sale_order.id)
+        #             order_ids.append(sale_order.order_id)
 
         action = {
             'type': 'ir.actions.act_window',
             'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
-            'view_mode': 'tree,form',
-            'name': _('Dormant Customers'),
-            'res_model': 'res.partner',
-            'domain': [('id', 'in', partner_ids)],
+            'view_mode': 'tree, form',
+            'name': _('Products On Order'),
+            'res_model': 'products.on_order',
+            # 'domain': [('id', 'in', ids)],
             'target': 'main'
         }
+
+        _logger.info('action %r', action)
+
         return action
 
     @staticmethod

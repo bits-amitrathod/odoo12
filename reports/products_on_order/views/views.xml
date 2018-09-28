@@ -1,60 +1,56 @@
 <odoo>
   <data>
-    <!-- explicit list view definition -->
-    <!--
-    <record model="ir.ui.view" id="products_on_order.list">
-      <field name="name">products_on_order list</field>
-      <field name="model">products_on_order.products_on_order</field>
-      <field name="arch" type="xml">
-        <tree>
-          <field name="name"/>
-          <field name="value"/>
-          <field name="value2"/>
-        </tree>
-      </field>
-    </record>
-    -->
+   <record id="view_products_on_order_popup" model="ir.ui.view">
+            <field name="name">Products On Order</field>
+            <field name="model">prod_on_order.popup</field>
+            <field name="arch" type="xml">
+                <form string="Choose your date">
+                    <group>
+                        <group>
+                            <field name="customer_id" />
+                            <field name="product_id" />
+                        </group>
+                        <group>
+                            <field name="compute_at_date" widget="radio"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
 
-    <!-- actions opening views on models -->
-    <!--
-    <record model="ir.actions.act_window" id="products_on_order.action_window">
-      <field name="name">products_on_order window</field>
-      <field name="res_model">products_on_order.products_on_order</field>
-      <field name="view_mode">tree,form</field>
-    </record>
-    -->
+        <record id="action_products_on_order" model="ir.actions.act_window">
+            <field name="name">Products On Order</field>
+            <field name="res_model">prod_on_order.popup</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_products_on_order_popup"/>
+            <field name="target">new</field>
+            <field name="context">{'valuation': True}</field>
+        </record>
 
-    <!-- server action to the one above -->
-    <!--
-    <record model="ir.actions.server" id="products_on_order.action_server">
-      <field name="name">products_on_order server</field>
-      <field name="model_id" ref="model_products_on_order_products_on_order"/>
-      <field name="state">code</field>
-      <field name="code">
-        action = {
-          "type": "ir.actions.act_window",
-          "view_mode": "tree,form",
-          "res_model": self._name,
-        }
-      </field>
-    </record>
-    -->
 
-    <!-- Top menu item -->
-    <!--
-    <menuitem name="products_on_order" id="products_on_order.menu_root"/>
-    -->
-    <!-- menu categories -->
-    <!--
-    <menuitem name="Menu 1" id="products_on_order.menu_1" parent="products_on_order.menu_root"/>
-    <menuitem name="Menu 2" id="products_on_order.menu_2" parent="products_on_order.menu_root"/>
-    -->
-    <!-- actions -->
-    <!--
-    <menuitem name="List" id="products_on_order.menu_1_list" parent="products_on_order.menu_1"
-              action="products_on_order.action_window"/>
-    <menuitem name="Server to list" id="products_on_order" parent="products_on_order.menu_2"
-              action="products_on_order.action_server"/>
-    -->
+        <record model="ir.ui.view" id="list_view">
+              <field name="name">product.on.order.view.list</field>
+              <field name="model">products.on_order</field>
+              <field name="priority">21</field>
+              <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="customer_name"/>
+                    <field name="date_ordered"/>
+                    <field name="date_due"/>
+                    <field name="qty_ordered"/>
+                    <field name="qty_remaining"/>
+                </tree>
+              </field>
+        </record>
+    <menuitem name="Product On Order" id="products_on_order_menu" parent="sale.menu_sale_report"
+              action="products_on_order.action_products_on_order"/>
   </data>
 </odoo>
