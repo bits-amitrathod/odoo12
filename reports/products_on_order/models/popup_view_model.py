@@ -86,16 +86,20 @@ class ProductSaleByCountPopUp(models.TransientModel):
                 qty_ordered = qty_remaining = 0
                 for sale_order_line in sale_order.order_line:
                     if product_id and sale_order_line.product_id.id == product_id.id:
-                        qty_ordered = sale_order_line.product_uom_qty
-                        qty_remaining = sale_order_line.product_uom_qty - sale_order_line.qty_delivered
+                        sale_order.qty_ordered = sale_order_line.product_uom_qty
+                        sale_order.qty_remaining = sale_order_line.product_uom_qty - sale_order_line.qty_delivered
+                        qty_remaining = qty_remaining + sale_order.qty_remaining
+                        qty_ordered = qty_ordered + sale_order.qty_ordered
                         sale_order_prod_ids.append(sale_order.id)
-                        break
+                        # break
                     else:
                         qty_ordered = qty_ordered + sale_order_line.product_uom_qty
                         qty_remaining = qty_remaining + (
                                 sale_order_line.product_uom_qty - sale_order_line.qty_delivered)
-                sale_order.qty_ordered = qty_ordered
-                sale_order.qty_remaining = qty_remaining
+                if not product_id:
+                    sale_order.qty_ordered = qty_ordered
+                    sale_order.qty_remaining = qty_remaining
+
                 sale_order.qty_total_remaining = qty_remaining
                 sale_order_ids.append(sale_order.id)
 
