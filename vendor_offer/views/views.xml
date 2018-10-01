@@ -289,6 +289,7 @@
                    <xpath expr="//group/group/field[@name='invoice_status']" position="after">
                     <field name="delivered_date"></field>
                      <field name="expected_date"></field>
+                      <field name="appraisal_no"></field>
                 </xpath>
 
                         <xpath expr="//notebook/page/field[@name='order_line']" position="replace">

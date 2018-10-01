@@ -7,6 +7,8 @@ _logger = logging.getLogger(__name__)
 
 class ProductChangeQuantity(models.TransientModel):
     _inherit = "stock.change.product.qty"
+    lot_id = fields.Many2one('stock.production.lot', 'Lot/Serial Number', required=True,
+                             domain="[('product_id','=',product_id)]")
 
     def change_product_qty(self):
         """ Changes the Product Quantity by making a Physical Inventory. """

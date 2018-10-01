@@ -55,10 +55,10 @@
                                               <span t-esc="order.product_price" t-options='{"widget": "monetary", "display_currency": order.currency_id}' />
                                         </td>
                                         <td align="right" style="border: 1px solid black;white-space:nowrap;">
-                                              <span t-esc="order.minExDate" />
+                                              <span t-esc="order.minExDate" t-options='{"widget": "date"}'/>
                                         </td>
                                         <td align="right" style="border: 1px solid black;white-space:nowrap;">
-                                              <span t-esc="order.maxExDate" />
+                                              <span t-esc="order.maxExDate" t-options='{"widget": "date"}'/>
                                         </td>
 
                                     </tr>

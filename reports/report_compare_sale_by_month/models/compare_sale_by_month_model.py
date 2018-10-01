@@ -15,7 +15,9 @@ class comparebymonth():
         dict = {}
         for record in filtered_by_current_month:
             for r1 in record.order_line:
+                #print(r1.product_id.id)
                 if r1.product_id.id in dict:
+
                     # log.info(" current_month Key available in dictionary")
                     data = dict[r1.product_id.id]
                     data.current_month_total_qty = data.current_month_total_qty + r1.product_uom_qty
@@ -32,6 +34,7 @@ class comparebymonth():
 
         for record in filtered_by_last_month:
             for r1 in record.order_line:
+                #print(r1.product_id.id)
                 if r1.product_id.id in dict:
                     # log.info(" last_month Key available in dictionary")
                     data = dict[r1.product_id.id]
@@ -61,10 +64,9 @@ class CompareSaleByMonth(models.Model):
 
     def _compare_data(self):
         sale_orders = self.env['sale.order'].search([])
-        if self.env.context.get('current_start_date') :
+        if self.env.context.get('current_start_date'):
             s_date = (fields.Datetime.from_string(self.env.context.get('current_start_date')).date())
             l_date = (fields.Datetime.from_string(self.env.context.get('current_end_date')).date())
-
             ps_date =(fields.Datetime.from_string(self.env.context.get('last_start_date')).date())
             pl_date = (fields.Datetime.from_string(self.env.context.get('last_end_date')).date())
         else :
@@ -80,13 +82,15 @@ class CompareSaleByMonth(models.Model):
         filtered_by_last_month = list(filter(
             lambda x: fields.Datetime.from_string(x.date_order).date() >= ps_date and fields.Datetime.from_string(
                 x.date_order).date() <= pl_date, sale_orders))
-        dat = comparebymonth().addObject(filtered_by_current_month, filtered_by_last_month)
 
-        for order in self :
-            if order.id in dat:
-                # order.sku_name = dat[order.id].sku
-                order.product_name = dat[order.id].product_name
-                order.last_month_total_qty = dat[order.id].last_month_total_qty
-                order.last_month_total_amount = dat[order.id].last_month_total_amount
-                order.current_month_total_qty = dat[order.id].current_month_total_qty
-                order.current_month_total_amount = dat[order.id].current_month_total_amount
+        dat = comparebymonth().addObject(filtered_by_current_month, filtered_by_last_month)
+        for template in self :
+            products = self.env['product.product'].search([('product_tmpl_id', '=', template.id)])
+            for product in products:
+                if product.id in dat:
+                    # order.sku_name = dat[product.id].sku
+                    template.product_name = dat[product.id].product_name
+                    template.last_month_total_qty = dat[product.id].last_month_total_qty
+                    template.last_month_total_amount = dat[product.id].last_month_total_amount
+                    template.current_month_total_qty = dat[product.id].current_month_total_qty
+                    template.current_month_total_amount = dat[product.id].current_month_total_amount
