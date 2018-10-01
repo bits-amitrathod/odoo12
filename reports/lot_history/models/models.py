@@ -8,7 +8,7 @@ _logger = logging.getLogger(__name__)
 class lot_history(models.Model):
     _inherit = 'stock.production.lot'
 
-    pr_sku = fields.Char("Product SKU", store=False, compute="_calculateSKU")
+    pr_sku = fields.Char("SKU/Catalog No", store=False, compute="_calculateSKU")
     pr_name= fields.Char("Product Name", store=False)
     pr_type = fields.Char("Product Type", store=False)
     cr_date = fields.Date("Creation date", store=False)

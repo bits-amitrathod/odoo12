@@ -3,7 +3,7 @@
     <data>
 
         <record id="view_popup_view" model="ir.ui.view">
-            <field name="name">Compare Sale By Month</field>
+            <field name="name">Compare Sales By Month</field>
             <field name="model">compbysale.popup</field>
             <field name="arch" type="xml">
                 <form string="Choose your date">
