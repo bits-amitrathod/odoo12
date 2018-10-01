@@ -186,18 +186,23 @@ class vendor_offer_automation(models.Model):
     def get_product_sales_count(self, product_id):
         product_sales_count = product_sales_count_month = product_sales_count_90 = product_sales_count_yrs = None
         try:
-            groupby_dict = groupby_dict_month = groupby_dict_90 = groupby_dict_yr = {}
-            sale_orders_line = self.env['sale.order.line'].search(
-                [('product_id', '=', product_id), ('state', '=', 'sale')])
-            groupby_dict['data'] = sale_orders_line
+            groupby_dict_month = groupby_dict_90 = groupby_dict_yr = {}
+
             total = total_m = total_90 = total_yr = 0
 
-            for sale_order in groupby_dict['data']:
-                total = total + sale_order.product_uom_qty
+            sale_orders = self.env['sale.order'].search(
+                [('product_id', '=', product_id), ('state', '=', 'sale')])
+
+            filtered_by_date = list(
+                filter(lambda x: not x.confirmation_date is None, sale_orders))
+
+            groupby_dict_month['data'] = filtered_by_date
+            for sale_order_list in groupby_dict_month['data']:
+                for sale_order in sale_order_list.order_line:
+                    if sale_order.product_id.id == product_id:
+                        total = total + sale_order.product_uom_qty
 
             product_sales_count = total
-            sale_orders = self.env['sale.order'].search(
-                [('product_id', '=', self.product_id.id), ('state', '=', 'sale')])
 
             filtered_by_date = list(
                 filter(lambda x: fields.Datetime.from_string(x.confirmation_date).date() >= (
@@ -230,6 +235,8 @@ class vendor_offer_automation(models.Model):
                         total_yr = total_yr + sale_order.product_uom_qty
 
             product_sales_count_yrs = total_yr
+
+            product_sales_count = product_sales_count_month + product_sales_count_90 + product_sales_count_yrs
         except Exception as ex:
             _logger.error("Error", ex)
         return dict(product_sales_count=product_sales_count, product_sales_count_month=product_sales_count_month,
