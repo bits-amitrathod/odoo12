@@ -11,6 +11,10 @@ class ReportProductsOnOrder(models.AbstractModel):
     def get_report_values(self, docids, data=None):
         records = self.env['products.on_order'].browse(docids)
 
+        group_by_list = {}
+        for record in records:
+            group_by_list[record.order_id.name] = {}
+
 
         return {
             'data': records}

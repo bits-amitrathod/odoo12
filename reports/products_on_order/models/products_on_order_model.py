@@ -26,7 +26,7 @@ class ProductsOnOrder(models.Model):
     def init_table(self):
         tools.drop_view_if_exists(self._cr, 'products_on_order')
         sql_query = """ CREATE VIEW products_on_order AS (
-                        SELECT ROW_NUMBER () OVER (ORDER BY order_id) as id, so.id as order_id, so.name as name, so.date_order as date_due, so.confirmation_date as date_ordered, r.id as partner_id, ol.product_id as product_id, ol.product_uom_qty as qty_ordered, (ol.product_uom_qty - ol.qty_delivered) as qty_remaining  FROM sale_order so INNER JOIN sale_order_line ol ON so.id = ol.order_id INNER JOIN res_partner r ON so.partner_id = r.id 
+                        SELECT ROW_NUMBER () OVER (ORDER BY order_id) as id, so.id as order_id, so.name as name, so.date_order as date_ordered, so.confirmation_date as date_due , r.id as partner_id, ol.product_id as product_id, ol.product_uom_qty as qty_ordered, (ol.product_uom_qty - ol.qty_delivered) as qty_remaining  FROM sale_order so INNER JOIN sale_order_line ol ON so.id = ol.order_id INNER JOIN res_partner r ON so.partner_id = r.id 
  WHERE so.state NOT IN ('cancel','draft') AND so.confirmation_date IS NOT NULL 
                 """
         partner_id = self.env.context.get('partner_id')

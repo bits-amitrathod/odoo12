@@ -236,7 +236,7 @@ class vendor_offer_automation(models.Model):
 
             product_sales_count_yrs = total_yr
 
-            product_sales_count = product_sales_count_month + product_sales_count_90 + product_sales_count_yrs
+            # product_sales_count = product_sales_count_month + product_sales_count_90 + product_sales_count_yrs
         except Exception as ex:
             _logger.error("Error", ex)
         return dict(product_sales_count=product_sales_count, product_sales_count_month=product_sales_count_month,
