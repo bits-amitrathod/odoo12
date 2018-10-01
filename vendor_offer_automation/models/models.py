@@ -116,7 +116,7 @@ class vendor_offer_automation(models.Model):
                                                               order_id=self.id,
                                                               product_id=products[0].id,
                                                               list_price=product_unit_price,
-                                                              qty_in_stock=self.qty_in_stocks(products[0].id),
+                                                              qty_in_stock=products[0].qty_available,
                                                               expiration_date=product_expiration_date)
                                         order_line_obj.update(self.get_product_sales_count(products[0].id))
                                         multiplier_id = self.get_order_line_multiplier(
@@ -173,14 +173,14 @@ class vendor_offer_automation(models.Model):
             return False
         return multiplier_list.id
 
-    @api.multi
-    def qty_in_stocks(self, product_id):
-        domain = [
-            ('product_id', '=', product_id),
-        ]
-        moves = self.env['stock.move'].search(domain, limit=1)
-        mqty = moves.product_qty
-        return mqty
+    # @api.multi
+    # def qty_in_stocks(self, product_id):
+    #     domain = [
+    #         ('product_id', '=', product_id),
+    #     ]
+    #     moves = self.env['product.template'].search(domain, limit=1)
+    #     mqty = moves.product_qty
+    #     return mqty
 
     @api.multi
     def get_product_sales_count(self, product_id):

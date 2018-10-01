@@ -18,19 +18,22 @@
                         <table class="table table-condensed" style="border: 1px solid black;">
                             <thead style="display: table-header-group;">
                                 <tr>
-                                    <th style="border: 1px solid black;text-align: center; width:20%;">Order #</th>
-                                    <th style="border: 1px solid black;text-align: center; width:56%">Customer Name</th>
-                                    <th style="border: 1px solid black;text-align: center; white-space: nowrap; width:10%">
+                                    <th style="border: 1px solid black;text-align: center; width:9%;">Order #</th>
+                                    <th style="border: 1px solid black;text-align: center; width:51%">Customer Name</th>
+                                    <th style="border: 1px solid black;text-align: center; white-space: nowrap; width:15%">
                                        Date
                                     </th>
                                     <th style="border: 1px solid black;text-align: center; white-space: nowrap; width:10%">
                                        Due Date
                                     </th>
-                                    <th style="border: 1px solid black;text-align: center; white-space: nowrap; width:7%">
+                                    <th style="border: 1px solid black;text-align: center; white-space: nowrap; width:5%">
                                       Qty Ordered
                                     </th>
-                                    <th style="border: 1px solid black;text-align: center; white-space: nowrap; width:7%">
+                                    <th style="border: 1px solid black;text-align: center; white-space: nowrap; width:5%">
                                       Qty Remaining
+                                    </th>
+                                    <th style="border: 1px solid black;text-align: center; white-space: nowrap; width:5%">
+                                      Total SO Items Remaining
                                     </th>
                                 </tr>
                             </thead>
@@ -43,10 +46,10 @@
                                         <span t-esc="order.customer_name"/>
                                     </td>
                                     <td align="left" style="border: 1px solid black;">
-                                        <span t-esc="order.date_ordered"/>
+                                        <span t-esc="order.confirmation_date"/>
                                     </td>
                                     <td align="left" style="border: 1px solid black;">
-                                        <span t-esc="order.date_due"/>
+                                        <span t-esc="order.validity_date"/>
                                     </td>
                                     <td align="right" style="border: 1px solid black;">
                                         <span t-esc="order.qty_ordered"/>
@@ -54,6 +57,10 @@
                                     <td align="right" style="border: 1px solid black;">
                                         <span t-esc="order.qty_remaining"/>
                                     </td>
+                                    <td align="right" style="border: 1px solid black;">
+                                        <span t-esc="order.qty_total_remaining"/>
+                                    </td>
+
                                 </tr>
                             </tbody>
                         </table>

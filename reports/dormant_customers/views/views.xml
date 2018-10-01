@@ -39,7 +39,7 @@
                 <tree>
                     <field name="display_name" string="Customer" />
                     <field name="last_purchase_date" />
-                    <field name="last_purchased_product" />
+                    <!--<field name="last_purchased_product" />-->
                 </tree>
               </field>
         </record>
