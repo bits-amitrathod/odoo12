@@ -15,6 +15,11 @@ class Website(models.Model):
         line.write(values)
         #order.write(line)
         count = self.env['prioritization.engine.model'].get_available_product_count(order.partner_id.id, product_id)
-        print(count)
+        return count;
+
+    @api.multi
+    def sale_get_engine_count(self, order_id,product_id):
+        order = self.env['sale.order'].search([('id', '=', order_id)])[0]
+        count = self.env['prioritization.engine.model'].get_available_product_count(order.partner_id.id, product_id)
         return count;
 
