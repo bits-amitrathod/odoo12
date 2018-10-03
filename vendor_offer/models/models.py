@@ -113,9 +113,6 @@ class VendorOffer(models.Model):
         for order in self:
             retail_amt = offer_amount = 0.0
             for line in order.order_line:
-                print('=line.product_retail =======================')
-                print(line.product_retail)
-                print(line.price_subtotal)
                 retail_amt += float(line.product_retail)
                 offer_amount += float(line.price_subtotal)
             # order.retail_amt =retail_amt
