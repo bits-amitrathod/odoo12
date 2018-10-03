@@ -5,7 +5,7 @@
         <record model="ir.ui.view" id="product_list_view">
               <field name="name">product.price.list</field>
               <field name="model">product.template</field>
-              <field name="priority">20</field>
+              <field name="priority">50</field>
               <field name="arch" type="xml">
                 <tree>
                     <field name="sku_code"/>
@@ -28,7 +28,7 @@
          <record model="ir.ui.view" id="custom_list_view">
               <field name="name">product.price.list</field>
               <field name="model">product.template</field>
-              <field name="priority">20</field>
+              <field name="priority">50</field>
               <field name="arch" type="xml">
                 <tree>
                     <field name="sku_code"/>
