@@ -58,6 +58,10 @@ class ReportBrokerReport(models.AbstractModel):
              apprisal_list= self.env['purchase.order'].search([('state', '=', 'purchase'),('status', '=', 'purchase'),('vendor_offer_data', '=', True),('date_order','>=',data['start_date']),('date_order','<=',data['end_date'])])
          else:
              apprisal_list = self.env['purchase.order'].search([('state', '=', 'purchase'), ('status', '=', 'purchase'), ('vendor_offer_data', '=', True) ])
+
+         print('= ==================================== =================')
+         log.info('= ==================================== =================')
+         log.info(apprisal_list)
          if(len(apprisal_list)>0):
              apprisal_list_rtl_val = apprisal_list_tot_val = apprisal_list_mar_val = apprisal_list[0]
              apprisal_list_report=[]
@@ -75,9 +79,11 @@ class ReportBrokerReport(models.AbstractModel):
 
              m40_margin_retailamount = 0
              m40_margin_offeramount = 0
+             log.info('= ==================================== =================')
 
              for order in apprisal_list:
-                 apprisal_list_rtl_val.total_retail_broker = apprisal_list_rtl_val.total_retail_broker + order.retail_amt
+                 log.info(order.retail_amt)
+                 apprisal_list_rtl_val.total_retail_broker = str(float(apprisal_list_rtl_val.total_retail_broker) + float(order.retail_amt))
                  apprisal_list_rtl_val.bonus_eligible = apprisal_list_rtl_val.bonus_eligible + order.bonus_eligible
                  apprisal_list_rtl_val.hospital_total = apprisal_list_rtl_val.hospital_total + order.hospital_total
                  apprisal_list_rtl_val.broker_total = apprisal_list_rtl_val.broker_total + order.broker_total
@@ -135,13 +141,13 @@ class ReportBrokerReport(models.AbstractModel):
                  apprisal_list_mar_val.bonus_eligible_mar="0 %"
 
              if(apprisal_list_rtl_val.total_retail_broker-nomargin_retailamount!=0):
-                apprisal_list_mar_val.hospital_total_mar = str(round(((1-float(tot_offer-margin_offeramount))/(apprisal_list_rtl_val.total_retail_broker-margin_retailamount)),2) ) + ' %'
+                apprisal_list_mar_val.hospital_total_mar = str(abs(round(((1-float(tot_offer-margin_offeramount))/(apprisal_list_rtl_val.total_retail_broker-margin_retailamount)),2)) ) + ' %'
              else:
                 apprisal_list_mar_val.hospital_total_mar='0 %'
 
 
              if(margin_retailamount!=0):
-                apprisal_list_mar_val.broker_total_mar =str(abs(round((1-float(margin_offeramount))/margin_retailamount,2))) + "%"
+                apprisal_list_mar_val.broker_total_mar =str(abs(abs(round((1-float(margin_offeramount))/margin_retailamount,2)))) + "%"
              else:
                 apprisal_list_mar_val.broker_total_mar="0 %"
 

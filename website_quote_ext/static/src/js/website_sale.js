@@ -21,8 +21,13 @@ odoo.define('website_quote_ext.portal_order_page_ex', function (require) {
             var product_id = $input[0]['attributes']['data-product-id']['value'];
             var quote_id = $input[0]['attributes']['data-quote-id']['value'];
             var line_id = $input[0]['attributes']['data-line-id']['value'];
+            ajax.jsonRpc("/shop/engine/count", 'call', {
+                'quote_id':quote_id,
+                'product_id': product_id
+            }).then(function (maxCount) {
+            console.log(maxCount);
             var min = parseFloat($input.data("min") || 0);
-            var max = parseFloat($input.data("max") || Infinity);
+            var max = parseFloat($input.data("max") || maxCount);
             var quantity = ($link.has(".fa-minus").length ? -1 : 1) + parseFloat($input.val() || 0, 10);
             var new_qty = quantity > min ? (quantity < max ? quantity : max) : min;
             $('input[name="'+$input.attr("name")+'"]').add($input).filter(function () {
@@ -38,12 +43,11 @@ odoo.define('website_quote_ext.portal_order_page_ex', function (require) {
                  console.log(data);
                  window.location.reload();
             });
+            });
             return false;
         });
     });
-function fun(){
-    console.log("Inside Fun")
-}
+
 
 
 });

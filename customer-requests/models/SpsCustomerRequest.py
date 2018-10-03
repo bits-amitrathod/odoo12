@@ -34,27 +34,6 @@ class SpsCustomerRequest(models.Model):
     product_description = fields.Char(string='Product Description')
     customer_request_logs = fields.Char(string='Customer Request Logs')
 
-    def process_sales_order_request(self):
-        _logger.debug('In process_sales_order_request')
-
-        sale_order_list = self.env['sale.order'].search([('state', 'in', ('sent','engine')), ('team_id.team_type', '=', 'engine')])
-
-        for sale_order in sale_order_list:
-            _logger.debug('sale_order : %r', sale_order.id)
-            if not sale_order['create_date'] is None:
-                sale_order_line_list = self.env['sale.order.line'].search([('order_id', '=', sale_order.id)])
-                for sale_order_line in sale_order_line_list:
-                    _logger.debug('sale_order_line : %r : %r : %r',sale_order_line.id, sale_order_line.product_id.id, sale_order_line.customer_request_id.id)
-                    # get customer setting object
-                    _setting_object = self.get_settings_object(sale_order_line.order_partner_id.id, sale_order_line.product_id.id, None, None)
-                    if _setting_object:
-                        # check length of hold
-                        length_of_hold_flag = self.env['prioritization.engine.model'].check_length_of_hold(sale_order['create_date'], _setting_object.length_of_hold)
-                        _logger.debug('length of hold flag : %r',length_of_hold_flag)
-                        if length_of_hold_flag:
-                            self.env['sps.customer.requests'].search(
-                                [('id', '=', sale_order_line['customer_request_id']['id']),('status', '=', 'Completed')]).write(dict(status='InCoolingPeriod'))
-
     # Get Customer Requests
     def get_customer_requests(self):
         sps_customer_requests = self.env['sps.customer.requests'].search(
