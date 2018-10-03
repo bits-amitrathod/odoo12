@@ -4,7 +4,7 @@
         <report
                 id="action_report_products_on_order"
                 string="Products on Order"
-                model="sale.order"
+                model="products.on_order"
                 report_type="qweb-html"
                 file="products_on_order.prod_on_order_temp"
                 name="products_on_order.prod_on_order_temp"

@@ -18,7 +18,7 @@ class website_cstm(models.Model):
 
         template = self.env.ref('website_cstm.mail_template_product_instock_notification_email')
         for subcriber in subcribers:
-            if subcribers.product_tmpl_id.qty_available > 0:
+            if subcriber.product_tmpl_id.qty_available > 0:
                 local_context = {'email': subcriber.email}
                 template.with_context(local_context).send_mail(subcriber.product_tmpl_id.id, raise_exception=True)
                 subcriber.status='done'

@@ -5,7 +5,7 @@
         <record model="ir.ui.view" id="product_list_view">
               <field name="name">product.price.list</field>
               <field name="model">product.template</field>
-              <field name="priority">20</field>
+              <field name="priority">50</field>
               <field name="arch" type="xml">
                 <tree>
                     <field name="sku_code"/>
@@ -22,12 +22,13 @@
             <field name="view_type">form</field>
             <field name="view_mode">form,tree</field>
             <field name="view_id" ref="product_list_view"/>
+            <field name="domain">[('type', 'in', ['consu', 'product'])]</field>
         </record>
 
          <record model="ir.ui.view" id="custom_list_view">
               <field name="name">product.price.list</field>
               <field name="model">product.template</field>
-              <field name="priority">20</field>
+              <field name="priority">50</field>
               <field name="arch" type="xml">
                 <tree>
                     <field name="sku_code"/>
@@ -44,6 +45,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">form,tree</field>
             <field name="view_id" ref="custom_list_view"/>
+            <field name="domain">[('type', 'in', ['consu', 'product'])]</field>
         </record>
 
         <menuitem id="menu_sale_report_product_list_wizard"

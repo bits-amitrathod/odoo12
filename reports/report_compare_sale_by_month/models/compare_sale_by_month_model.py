@@ -15,7 +15,9 @@ class comparebymonth():
         dict = {}
         for record in filtered_by_current_month:
             for r1 in record.order_line:
+                #print(r1.product_id.id)
                 if r1.product_id.id in dict:
+
                     # log.info(" current_month Key available in dictionary")
                     data = dict[r1.product_id.id]
                     data.current_month_total_qty = data.current_month_total_qty + r1.product_uom_qty
@@ -32,6 +34,7 @@ class comparebymonth():
 
         for record in filtered_by_last_month:
             for r1 in record.order_line:
+                #print(r1.product_id.id)
                 if r1.product_id.id in dict:
                     # log.info(" last_month Key available in dictionary")
                     data = dict[r1.product_id.id]
@@ -50,7 +53,7 @@ class comparebymonth():
 
 
 class CompareSaleByMonth(models.Model):
-    _inherit = "product.template"
+    _inherit = "product.product"
 
     # sku_name = fields.Char("Product ",store=False)
     product_name = fields.Char("Product Name ",store=False)
@@ -60,11 +63,10 @@ class CompareSaleByMonth(models.Model):
     current_month_total_amount = fields.Monetary("Current Month Total Amount", store=False)
 
     def _compare_data(self):
-        sale_orders = self.env['sale.order'].search([])
-        if self.env.context.get('current_start_date') :
+        sale_orders = self.env['sale.order'].search([('state','in',('sale','done'))])
+        if self.env.context.get('current_start_date'):
             s_date = (fields.Datetime.from_string(self.env.context.get('current_start_date')).date())
             l_date = (fields.Datetime.from_string(self.env.context.get('current_end_date')).date())
-
             ps_date =(fields.Datetime.from_string(self.env.context.get('last_start_date')).date())
             pl_date = (fields.Datetime.from_string(self.env.context.get('last_end_date')).date())
         else :

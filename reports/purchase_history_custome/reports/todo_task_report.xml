@@ -33,10 +33,10 @@
                             <!--</b>-->
                         </center>
                         <!-- Report page content -->
-                        <div class="table-responsive">
+
                             <table class="table table-condensed table-bordered" style="border: 1px solid #000;">
                                 <tr>
-                                    <th style="border: 1px solid black;text-align: center;">Product</th>
+                                    <th style="border: 1px solid black;text-align: center;">SKU/Catalog No</th>
                                     <th style="border: 1px solid black;text-align: center;">Manufacturer</th>
                                     <th style="border: 1px solid black;text-align: center;">Vendor</th>
                                     <th style="border: 1px solid black;text-align: center;">Product Name</th>
@@ -78,7 +78,7 @@
                                 <!--</t>-->
                             </table>
                         </div>
-                    </div>
+
                 </page>
             </t>
         </t>

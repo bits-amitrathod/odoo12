@@ -21,7 +21,7 @@ class VendorOffer(models.Model):
     appraisal_no = fields.Char(string='Appraisal No#',compute="_default_appraisal_no",readonly=False,store=True)
     acq_user_id = fields.Many2one('res.users',string='Acq  Manager ')
     date_offered = fields.Datetime(string='Date Offered', default=fields.Datetime.now)
-    revision = fields.Integer(string='Revision ')
+    revision = fields.Char(string='Revision ')
     max = fields.Char(string='Max',  default=0)
     potential_profit_margin = fields.Char(string='Potential Profit Margin', default=0)
     accepted_date = fields.Datetime(string="Accepted Date")
@@ -113,9 +113,6 @@ class VendorOffer(models.Model):
         for order in self:
             retail_amt = offer_amount = 0.0
             for line in order.order_line:
-                print('=line.product_retail =======================')
-                print(line.product_retail)
-                print(line.price_subtotal)
                 retail_amt += float(line.product_retail)
                 offer_amount += float(line.price_subtotal)
             # order.retail_amt =retail_amt
@@ -171,9 +168,9 @@ class VendorOffer(models.Model):
         self.write({'status': 'purchase'})
         self.write({'status_ven': 'Accepted'})
         self.write({'accepted_date': fields.date.today()})
-        if (self.revision > 0):
-            temp = self.revision - 1
-            self.revision = temp
+        if (int(self.revision) > 0):
+            temp = int(self.revision) - 1
+            self.revision = str(temp)
         return True
 
     @api.multi
@@ -184,21 +181,30 @@ class VendorOffer(models.Model):
         self.write({'declined_date': fields.date.today()})
 
 
+    @api.multi
+    def button_cancel(self):
+        if (self.vendor_offer_data == True):
+            self.write({'state': 'cancel'})
+            self.write({'status': 'cancel'})
+            self.write({'status_ven': 'Declined'})
+            self.write({'accepted_date': None})
+            self.write({'declined_date': fields.date.today()})
+        super(VendorOffer, self).button_cancel()
 
     @api.model
     def create(self, vals):
         if(self.env.context.get('vendor_offer_data') == True):
             vals['state']= 'ven_draft'
             vals['vendor_offer_data']=True
-            vals['revision'] = 0
+            vals['revision'] = '0'
             # self.message_post(body="Your text")
         return super(VendorOffer, self).create(vals)
 
     @api.multi
     def write(self, values):
         if (self.state == 'ven_draft'):
-            temp = self.revision + 1
-            values['revision'] = temp
+            temp = int(self.revision) + 1
+            values['revision'] = str(temp)
         return super(VendorOffer, self).write(values)
 
 
