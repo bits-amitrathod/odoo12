@@ -18,7 +18,7 @@ class DiscountSummaryPopUp(models.TransientModel):
 
     def open_table(self):
         tree_view_id = self.env.ref('report_compare_sale_by_month.list_view').id
-        form_view_id = self.env.ref('product.product_template_only_form_view').id
+        form_view_id = self.env.ref('product.product_template_form_view').id
         if self.compute_at_date:
             action = {
                 'type': 'ir.actions.act_window',
