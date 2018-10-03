@@ -63,7 +63,7 @@ class CompareSaleByMonth(models.Model):
     current_month_total_amount = fields.Monetary("Current Month Total Amount", store=False)
 
     def _compare_data(self):
-        sale_orders = self.env['sale.order'].search([])
+        sale_orders = self.env['sale.order'].search([('state','in',('sale','done'))])
         if self.env.context.get('current_start_date'):
             s_date = (fields.Datetime.from_string(self.env.context.get('current_start_date')).date())
             l_date = (fields.Datetime.from_string(self.env.context.get('current_end_date')).date())
