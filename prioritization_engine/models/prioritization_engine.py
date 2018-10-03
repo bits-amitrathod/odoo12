@@ -41,7 +41,7 @@ class PrioritizationEngine(models.TransientModel):
                                 # allocate product
                                 self.allocate_product(prioritization_engine_request, filter_available_product_lot_dict, None)
                         else:
-                            prioritization_engine_request['customer_request_logs'] += 'Cooling period false.'
+                            prioritization_engine_request['customer_request_logs'] += 'In Cooling period.'
                             _logger.debug('Cooling period false.....')
                     else:
                         prioritization_engine_request['customer_request_logs'] += 'Product Lot not available.'
@@ -81,9 +81,7 @@ class PrioritizationEngine(models.TransientModel):
     # calculate cooling period
     def check_cooling_period(self, prioritization_engine_request):
         flag = True
-        # get product last purchased date(confirmation date)
-        confirmation_date = self.get_product_last_purchased_date(prioritization_engine_request)
-        if confirmation_date is None:
+        if self.check_length_of_hold(prioritization_engine_request) :
             # get product create date
             create_date = self.get_product_create_date(prioritization_engine_request)
             if not create_date is None:
@@ -109,21 +107,31 @@ class PrioritizationEngine(models.TransientModel):
             else:
                 flag = True
         else:
-            flag = True
+            # Product is in cooling period.
+            flag = False
         return flag
 
     # calculate length of hold(In hours)
-    def check_length_of_hold(self, create_date,length_of_hold):
-        # get current datetime
-        current_datetime = datetime.now()
-        create_date = datetime.strptime(self.change_date_format(create_date), '%Y,%m,%d,%H,%M,%S')
-        # calculate datetime difference.
-        duration = current_datetime - create_date  # For build-in functions
-        duration_in_hours = self.return_duration_in_hours(duration)
-        if int(length_of_hold) <= int(duration_in_hours):
-            return True
+    def check_length_of_hold(self, prioritization_engine_request):
+        flag = True
+        # get previous sales order create date
+        create_date = self.get_product_create_date(prioritization_engine_request)
+        if not create_date is None:
+            # get current datetime
+            current_datetime = datetime.now()
+            create_date = datetime.strptime(self.change_date_format(create_date), '%Y,%m,%d,%H,%M,%S')
+            # calculate datetime difference.
+            duration = current_datetime - create_date  # For build-in functions
+            duration_in_hours = self.return_duration_in_hours(duration)
+            if int(prioritization_engine_request['length_of_hold']) <= int(duration_in_hours):
+                flag = True
+            else:
+                # update status In cooling period
+                if prioritization_engine_request['status'].lower().strip() != 'incoolingperiod':
+                    self.update_customer_request_status(prioritization_engine_request, 'InCoolingPeriod')
+                    flag = False
         else:
-            return False
+            return flag
 
     # get product expiration tolerance date, expiration tolerance in months(3/6/12)
     def get_product_expiration_tolerance_date(self,prioritization_engine_request):
@@ -134,16 +142,16 @@ class PrioritizationEngine(models.TransientModel):
     def allocate_product(self, prioritization_engine_request, filter_available_product_lot_dict, allocate_inventory_product_quantity):
         remaining_product_allocation_quantity = 0
         if prioritization_engine_request['template_type'].lower().strip() == 'inventory':
-            self.remaining_product_allocation_quantity = allocate_inventory_product_quantity
+            remaining_product_allocation_quantity = allocate_inventory_product_quantity
         else:
-            self.remaining_product_allocation_quantity = prioritization_engine_request['required_quantity']
+            remaining_product_allocation_quantity = prioritization_engine_request['required_quantity']
         for product_lot in filter_available_product_lot_dict.get(prioritization_engine_request['product_id'],{}):
             _logger.debug('**** %r',product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity'))
-            if self.remaining_product_allocation_quantity >= product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity'):
+            if remaining_product_allocation_quantity >= product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity'):
                 if prioritization_engine_request['partial_order']:
                     _logger.debug('product allocated from lot %r %r %r', product_lot.get(list(product_lot.keys()).pop(0), {}))
 
-                    self.remaining_product_allocation_quantity = int(self.remaining_product_allocation_quantity) - int(product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'])
+                    remaining_product_allocation_quantity = int(remaining_product_allocation_quantity) - int(product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'])
 
                     self.allocated_product_to_customer(prioritization_engine_request['customer_id'],
                                                        prioritization_engine_request['customer_request_id'],
@@ -156,35 +164,35 @@ class PrioritizationEngine(models.TransientModel):
                     product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'] = 0
 
                     _logger.debug('Quantity Updated')
-            elif self.remaining_product_allocation_quantity < product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity'):
+            elif remaining_product_allocation_quantity < product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity'):
                     _logger.debug('product allocated from lot %r', list(product_lot.keys()).pop(0))
 
-                    product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0),{})['reserved_quantity']) + int(self.remaining_product_allocation_quantity)
-                    product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0),{})['available_quantity']) - int(self.remaining_product_allocation_quantity)
+                    product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0),{})['reserved_quantity']) + int(remaining_product_allocation_quantity)
+                    product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0),{})['available_quantity']) - int(remaining_product_allocation_quantity)
 
                     self.allocated_product_to_customer(prioritization_engine_request['customer_id'], prioritization_engine_request['customer_request_id'], prioritization_engine_request['required_quantity'],
-                                                       list(product_lot.keys()).pop(0), prioritization_engine_request['product_id'], self.remaining_product_allocation_quantity)
+                                                       list(product_lot.keys()).pop(0), prioritization_engine_request['product_id'], remaining_product_allocation_quantity)
 
                     _logger.debug('Quantity Updated')
 
-                    self.remaining_product_allocation_quantity = 0
+                    remaining_product_allocation_quantity = 0
                     break
 
         if prioritization_engine_request['template_type'].lower().strip() == 'inventory':
-            if self.remaining_product_allocation_quantity == allocate_inventory_product_quantity:
+            if remaining_product_allocation_quantity == allocate_inventory_product_quantity:
                 prioritization_engine_request['customer_request_logs'] += 'Partial ordering flag is False.'
                 _logger.debug('Partial ordering flag is False')
 
-        elif self.remaining_product_allocation_quantity == prioritization_engine_request['required_quantity']:
+        elif remaining_product_allocation_quantity == prioritization_engine_request['required_quantity']:
                 prioritization_engine_request['customer_request_logs'] += 'Partial ordering flag is False.'
                 _logger.debug('Partial ordering flag is False')
 
-        if self.remaining_product_allocation_quantity == 0:
+        if remaining_product_allocation_quantity == 0:
             _logger.debug("Allocated all required product quantity.")
             prioritization_engine_request['customer_request_logs'] += 'Product allocated.'
             self.update_customer_request_status(prioritization_engine_request,'Completed')
 
-        elif self.remaining_product_allocation_quantity > 0:
+        elif remaining_product_allocation_quantity > 0:
             _logger.debug(str(" Allocated Partial order product."))
             prioritization_engine_request['customer_request_logs'] += 'Allocated Partial order product.'
             self.update_customer_request_status(prioritization_engine_request, 'Partial')
@@ -215,14 +223,15 @@ class PrioritizationEngine(models.TransientModel):
         else:
             return None
 
-    # get product create date for to calculate length of hold, parameter product id
+    # get product create date for to calculate length of hold and cooling period.
     def get_product_create_date(self, prioritization_engine_request):
         self.env.cr.execute(
             "SELECT max(saleorder.create_date) as create_date FROM public.sale_order_line saleorderline "
             "INNER JOIN public.sale_order saleorder ON saleorder.id = saleorderline.order_id "
-            " WHERE saleorderline.order_partner_id = " + str(prioritization_engine_request['customer_id']) +
-            " and saleorderline.product_id = " + str(prioritization_engine_request['product_id'])+
-            " and saleorder.state = 'engine'")
+            "INNER JOIN public.crm_team crmteam ON crmteam.id = saleorder.team_id"
+            "WHERE saleorderline.order_partner_id = " + str(prioritization_engine_request['customer_id']) +
+            " and saleorderline.product_id = " + str(prioritization_engine_request['product_id']) +
+            " and saleorder.state in ('engine','sent') and crmteam.team_type = 'engine'")
         query_result = self.env.cr.dictfetchone()
 
         if query_result['create_date'] != None:
