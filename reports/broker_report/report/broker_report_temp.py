@@ -60,7 +60,8 @@ class ReportBrokerReport(models.AbstractModel):
              apprisal_list = self.env['purchase.order'].search([('state', '=', 'purchase'), ('status', '=', 'purchase'), ('vendor_offer_data', '=', True) ])
 
          print('= ==================================== =================')
-         print(apprisal_list)
+         log.info('= ==================================== =================')
+         log.info(apprisal_list)
          if(len(apprisal_list)>0):
              apprisal_list_rtl_val = apprisal_list_tot_val = apprisal_list_mar_val = apprisal_list[0]
              apprisal_list_report=[]
@@ -78,10 +79,10 @@ class ReportBrokerReport(models.AbstractModel):
 
              m40_margin_retailamount = 0
              m40_margin_offeramount = 0
-             print('= ==================================== =================')
+             log.info('= ==================================== =================')
 
              for order in apprisal_list:
-                 print(order.retail_amt)
+                 log.info(order.retail_amt)
                  apprisal_list_rtl_val.total_retail_broker = str(float(apprisal_list_rtl_val.total_retail_broker) + float(order.retail_amt))
                  apprisal_list_rtl_val.bonus_eligible = apprisal_list_rtl_val.bonus_eligible + order.bonus_eligible
                  apprisal_list_rtl_val.hospital_total = apprisal_list_rtl_val.hospital_total + order.hospital_total
