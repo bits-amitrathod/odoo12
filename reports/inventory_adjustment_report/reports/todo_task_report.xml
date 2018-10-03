@@ -63,10 +63,10 @@
                                         <span t-esc="o.p_qty"/>
                                     </td>
                                      <td align="right"   style="border: 1px solid #000;white-space: nowrap;">
-                                        <span t-esc="o.amount" />
+                                      $  <span t-esc="o.amount" />
                                     </td>
                                     <td align="right"   style="border: 1px solid #000;white-space: nowrap;">
-                                         <span t-esc="o.total_amt" />
+                                      $   <span t-esc="o.total_amt" />
                                     </td>
                                 </tr>
                             </t>
