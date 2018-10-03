@@ -3,7 +3,7 @@
     <data>
 
         <record model="ir.ui.view" id="custom_list_view">
-              <field name="name">Product.Catalog.List</field>
+              <field name="name">Custom Product Catalog</field>
               <field name="model">product.product</field>
               <field name="priority">20</field>
               <field name="arch" type="xml">
@@ -34,7 +34,7 @@
         </record>
 
         <record id="action_custom_catalog_list" model="ir.actions.act_window">
-            <field name="name">Customer Price List</field>
+            <field name="name">Custom Product Catalog</field>
             <field name="res_model">product.product</field>
             <field name="view_type">form</field>
             <field name="view_mode">form,tree</field>
@@ -42,7 +42,7 @@
         </record>
 
         <record id="action_product_catalog_list" model="ir.actions.act_window">
-            <field name="name">Product Price List</field>
+            <field name="name">Product Catalog</field>
             <field name="res_model">product.product</field>
             <field name="view_type">form</field>
             <field name="view_mode">form,tree</field>

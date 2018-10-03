@@ -21,7 +21,7 @@
                             <thead>
                                 <tr style="border: 1px solid black;">
                                     <th style="border: 1px solid black;text-align: center;">Manufacture Name </th>
-                                    <th style="border: 1px solid black;text-align: center;">SKU</th>
+                                    <th style="border: 1px solid black;text-align: center;">SKU / Catalog No</th>
                                     <th style="border: 1px solid black;text-align: center;">Product Name</th>
                                     <th style="border: 1px solid black;text-align: center;">Max Inv Level</th>
                                     <th style="border: 1px solid black;text-align: center;">Current % Of Max Inv Level</th>
@@ -29,6 +29,8 @@
                                     <th style="border: 1px solid black;text-align: center;">Future % Of Max Inv Level</th>
                                     <th style="border: 1px solid black;text-align: center;">Qty On Order</th>
                                 </tr>
+                            </thead>
+                            <tbody>
                                     <tr t-foreach="data" t-as="order">
                                          <td style="border: 1px solid black;">
                                             <span t-esc="order.product_brand_id.name"/>
@@ -57,7 +59,7 @@
                                         </td>
 
                                     </tr>
-                            </thead>
+                            </tbody>
                     </table>
                     </div>
                 </page>

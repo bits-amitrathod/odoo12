@@ -26,7 +26,7 @@
                 <div class="table-responsive">
                     <table class="table table-condensed table-bordered" style="border: 1px solid #000;">
                         <tr>
-                            <th style="border: 1px solid black;text-align: center;">Product SKU</th>
+                            <th style="border: 1px solid black;text-align: center;">SKU/Catalog No</th>
                             <th style="border: 1px solid black;text-align: center;">Product Name</th>
                             <th style="border: 1px solid black;text-align: center;">Total Quantity</th>
                             <th style="border: 1px solid black;text-align: center;">Total Amount</th>
@@ -37,16 +37,16 @@
                         <t t-foreach="data" t-as="a">
                             <tr>
                                 <td style="border: 1px solid black;">
-                                    <span t-esc="a.p_sku"/>
+                                    <span t-esc="a.sku_name"/>
                                 </td>
                                 <td style="border: 1px solid black;">
                                     <span t-esc="a.product_name"/>
                                 </td>
                                 <td align="right" class="text-right" style="border: 1px solid black;">
-                                    <span t-esc="a.t_qty"/>
+                                    <span t-esc="a.total_sale_qty"/>
                                 </td>
                                 <td align="right" class="text-right" style="border: 1px solid black;white-space: nowrap;">
-                                    <span t-esc="a.t_amt" t-options='{"widget": "monetary", "display_currency": a.currency_id}'/>
+                                    <span t-esc="a.product_price" t-options='{"widget": "monetary", "display_currency": a.currency_id}'/>
                                 </td>
                             </tr>
                         </t>

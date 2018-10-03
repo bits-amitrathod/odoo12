@@ -16,6 +16,7 @@ class ProductVendorListPopUp(models.TransientModel):
 
     def open_table(self):
         tree_view_id = self.env.ref('product_vendor_list.vendor_form_list').id
+        # form_view_id = self.env.ref('product_vendor_list.product_vendor_list_form').id
         form_view_id = self.env.ref('purchase.purchase_order_form').id
         product_list=[]
         for product_list_temp in self.product_id:
