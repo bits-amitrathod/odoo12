@@ -4,7 +4,7 @@
         <report
                 id="action_report_comp_sale_by_month_wise"
                 string="Compare Sales By Month"
-                model="product.template"
+                model="product.product"
                 report_type="qweb-html"
                 file="report_compare_sale_by_month.compsalebymonth_template"
                 name="report_compare_sale_by_month.compsalebymonth_template"

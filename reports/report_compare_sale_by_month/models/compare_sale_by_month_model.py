@@ -50,7 +50,7 @@ class comparebymonth():
 
 
 class CompareSaleByMonth(models.Model):
-    _inherit = "product.template"
+    _inherit = "product.product"
 
     # sku_name = fields.Char("Product ",store=False)
     product_name = fields.Char("Product Name ",store=False)

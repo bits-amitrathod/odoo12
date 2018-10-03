@@ -25,7 +25,7 @@ class DiscountSummaryPopUp(models.TransientModel):
                 'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
                 'view_mode': 'tree,form',
                 'name': _('Compare Sales By Month'),
-                'res_model': 'product.template',
+                'res_model': 'product.product',
                 'context': {'current_start_date':self.current_start_date, 'current_end_date':self.current_end_date,
                             'last_start_date': self.last_start_date, 'last_end_date': self.last_end_date},
             }
@@ -36,7 +36,7 @@ class DiscountSummaryPopUp(models.TransientModel):
                 'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
                 'view_mode': 'tree,form',
                 'name': _('Compare Sales By Month'),
-                'res_model': 'product.template',
+                'res_model': 'product.product',
                 'context': {'current_start_date': self.current_start_date, 'current_end_date': self.current_end_date,
                             'last_start_date': self.last_start_date, 'last_end_date': self.last_end_date},
             }
