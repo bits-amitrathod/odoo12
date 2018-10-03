@@ -11,7 +11,7 @@ class purchase_history(models.Model):
     _inherit = 'purchase.order'
 
 
-    sku = fields.Char("Product SKU", store=False, compute="_calculateSKU1")
+    sku = fields.Char("SKU/Catalog No", store=False, compute="_calculateSKU1")
     vendor = fields.Char("Vendor", store=False)
     qty = fields.Integer("Qty", store=False)
     manufacturer_rep = fields.Char("Manufacturer", store=False)
@@ -39,7 +39,7 @@ class purchase_history(models.Model):
     def _calculateDate1(self):
 
         for order in self:
-            _logger.info(order.product_id.id)
+
             order.env.cr.execute("SELECT min(use_date), max (use_date) FROM public.stock_production_lot where product_id =" + str(
                 order.product_id.id))
             query_result = self.env.cr.dictfetchone()

@@ -1,14 +1,14 @@
 <odoo>
-  <data>
-   <record id="view_products_on_order_popup" model="ir.ui.view">
+    <data>
+        <record id="view_products_on_order_popup" model="ir.ui.view">
             <field name="name">Products On Order</field>
             <field name="model">prod_on_order.popup</field>
             <field name="arch" type="xml">
                 <form string="Choose your date">
                     <group>
                         <group>
-                            <field name="customer_id" />
-                            <field name="product_id" />
+                            <field name="customer_id"/>
+                            <field name="product_id"/>
                         </group>
                         <group>
                             <field name="compute_at_date" widget="radio"/>
@@ -18,7 +18,7 @@
                     </group>
                     <footer>
                         <button name="open_table" string="View Report" type="object" class="btn-primary"/>
-                        <button string="Cancel" class="btn-default" special="cancel" />
+                        <button string="Cancel" class="btn-default" special="cancel"/>
                     </footer>
                 </form>
             </field>
@@ -35,24 +35,45 @@
         </record>
 
 
-        <record model="ir.ui.view" id="list_view">
-              <field name="name">product.on.order.view.list</field>
-              <field name="model">sale.order</field>
-              <field name="priority">21</field>
-              <field name="arch" type="xml">
+        <record model="ir.ui.view" id="products_on_orderlist_view">
+            <field name="name">product.on.order.view.list</field>
+            <field name="model">products.on_order</field>
+            <field name="arch" type="xml">
                 <tree>
-                    <field name="name" string="Order #"/>
-                    <field name="customer_name" string="Customer Name"/>
-                    <field name="confirmation_date" string="Date"/>
-                    <field name="validity_date" string="Due Date"/>
+                    <field name="order_id" string="Order #" invisible="1"/>
+                    <field name="product_id" string="Product"/>
+                    <field name="partner_id" string="Customer Name"/>
+                    <field name="date_ordered" string="Date"/>
+                    <field name="date_due" string="Due Date"/>
                     <field name="qty_ordered"/>
                     <field name="qty_remaining"/>
-                    <field name="qty_total_remaining"/>
-                    <field name="state" invisible="1"/>
                 </tree>
-              </field>
+            </field>
         </record>
-    <menuitem name="Product On Order" id="products_on_order_menu" parent="sale.menu_sale_report"
-              action="products_on_order.action_products_on_order"/>
-  </data>
+
+        <record model="ir.ui.view" id="products_on_orderform_view">
+            <field name="name">product.on.order.view.list</field>
+            <field name="model">products.on_order</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="order_id" string="Order #"/>
+                            <field name="product_id" string="Product"/>
+                            <field name="partner_id" string="Customer Name"/>
+                        </group>
+                        <group>
+                            <field name="date_ordered" string="Date"/>
+                            <field name="date_due" string="Due Date"/>
+                            <field name="qty_ordered"/>
+                            <field name="qty_remaining"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <menuitem name="Products On Order" id="products_on_order_menu" parent="sale.menu_sale_report"
+                  action="products_on_order.action_products_on_order"/>
+    </data>
 </odoo>

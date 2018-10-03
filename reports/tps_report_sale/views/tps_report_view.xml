@@ -7,14 +7,14 @@
 
        <record model="ir.ui.view" id="form_list_tps">
           <field name="name">tps.report.view.list</field>
-          <field name="model">sale.order</field>
+          <field name="model">product.product</field>
           <field name="priority">20</field>
           <field name="arch" type="xml">
               <tree>
-                  <field name="p_sku"/>
+                  <field name="sku_name"/>
                   <field name="product_name"/>
-                  <field name="t_qty"/>
-                  <field name="t_amt" widget="monetary"/>
+                  <field name="total_sale_qty" />
+                  <field name="product_price" widget="monetary"/>
                   <field name="currency_id" invisible="1"/>
 
               </tree>
@@ -22,28 +22,27 @@
       </record>
 
        <record id="view_stock_quantity_history" model="ir.ui.view">
-        <field name="name">Total Product Sale</field>
+        <field name="name">Total Product Sales</field>
         <field name="model">popup.view.model123</field>
         <field name="arch" type="xml">
             <form string="Choose your date">
-                <group>
                     <group>
-                        <field name="compute_at_date" widget="radio"/>
-                        <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
-                        <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
-                        <!--<field name="product_id" widget="many2many_tags" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>-->
+                        <group>
+                            <field name="compute_at_date" widget="radio"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                        </group>
                     </group>
-                </group>
-                <footer>
-                    <button name="open_table" string="View TPS" type="object" class="btn-primary"/>
-                    <button string="Cancel" class="btn-default" special="cancel" />
-                </footer>
-            </form>
+                    <footer>
+                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel" />
+                    </footer>
+                </form>
         </field>
     </record>
 
       <record id="action_stock_quantity_history" model="ir.actions.act_window">
-        <field name="name">Total Product Sale</field>
+        <field name="name">Total Product Sales</field>
         <field name="res_model">popup.view.model123</field>
         <field name="view_type">form</field>
         <field name="view_mode">form</field>
