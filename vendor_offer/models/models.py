@@ -162,15 +162,52 @@ class VendorOffer(models.Model):
     def action_print_vendor_offer(self):
         pass
 
+    # @api.multi
+    # def action_confirm_vendor_offer(self):
+    #     self.write({'state': 'purchase'})
+    #     self.write({'status': 'purchase'})
+    #     self.write({'status_ven': 'Accepted'})
+    #     self.write({'accepted_date': fields.date.today()})
+    #     if (int(self.revision) > 0):
+    #         temp = int(self.revision) - 1
+    #         self.revision = str(temp)
+    #     record = self.env['purchase.order']
+    #     recordtemp = record.button_confirm()
+    #     return recordtemp
+
     @api.multi
-    def action_confirm_vendor_offer(self):
-        self.write({'state': 'purchase'})
-        self.write({'status': 'purchase'})
-        self.write({'status_ven': 'Accepted'})
-        self.write({'accepted_date': fields.date.today()})
-        if (int(self.revision) > 0):
-            temp = int(self.revision) - 1
-            self.revision = str(temp)
+    def action_button_confirm(self):
+        if (self.env.context.get('vendor_offer_data') == True):
+            purchase = self.env['purchase.order'].search([('id', '=', self.id)])
+            purchase.button_confirm()
+            # self.write({'state': 'purchase'})
+            self.write({'status': 'purchase'})
+            self.write({'status_ven': 'Accepted'})
+            self.write({'accepted_date': fields.date.today()})
+
+            if (int(self.revision) > 0):
+                temp = int(self.revision) - 1
+                self.revision = str(temp)
+
+
+        # else:
+        #     super(VendorOffer, self).button_confirm()
+
+    @api.multi
+    def button_confirm(self):
+        for order in self:
+            if order.state not in ['ven_draft','draft', 'sent']:
+                continue
+            order._add_supplier_to_product()
+            # Deal with double validation process
+            if order.company_id.po_double_validation == 'one_step' \
+                    or (order.company_id.po_double_validation == 'two_step' \
+                        and order.amount_total < self.env.user.company_id.currency_id.compute(
+                        order.company_id.po_double_validation_amount, order.currency_id)) \
+                    or order.user_has_groups('purchase.group_purchase_manager'):
+                order.button_approve()
+            else:
+                order.write({'state': 'to approve'})
         return True
 
     @api.multi
@@ -197,8 +234,14 @@ class VendorOffer(models.Model):
             vals['state']= 'ven_draft'
             vals['vendor_offer_data']=True
             vals['revision'] = '0'
-            # self.message_post(body="Your text")
-        return super(VendorOffer, self).create(vals)
+            record = super(VendorOffer, self).create(vals)
+            return record
+        else:
+            record = super(VendorOffer, self).create(vals)
+            # if(self.state!='draft'):
+            #     record.button_confirm()
+            return record
+
 
     @api.multi
     def write(self, values):
