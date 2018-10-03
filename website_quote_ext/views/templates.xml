@@ -340,7 +340,7 @@
               <hr/>
 
               <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-6">
                   <strong>Product</strong>
                 </div>
                 <div class="hidden-sm hidden-xs col-md-2 text-right">
@@ -349,9 +349,9 @@
                 <div class="hidden-sm hidden-xs col-md-2 text-center">
                   <strong>Quantity</strong>
                 </div>
-                <div class="hidden-sm hidden-xs col-md-2 text-center">
+              <!--  <div class="hidden-sm hidden-xs col-md-2 text-center">
                   <strong>Available Quantity</strong>
-                </div>
+                </div>-->
                 <div class="hidden-sm hidden-xs col-md-2 text-right">
                   <strong>Subtotal</strong>
                 </div>
@@ -387,9 +387,9 @@
                       </t>
                   </div>
                     </t>
-                   <div class="col-sm-2 col-xs-4 text-right">
+              <!--     <div class="col-sm-2 col-xs-4 text-right">
                     <span t-field="ol.price_subtotal" t-options='{"widget": "monetary", "display_currency": order.pricelist_id.currency_id}'/>
-                  </div>
+                  </div>-->
                   <div class="col-sm-2 col-xs-4 text-right">
                     <span t-field="ol.price_subtotal" t-options='{"widget": "monetary", "display_currency": order.pricelist_id.currency_id}'/>
                   </div>
