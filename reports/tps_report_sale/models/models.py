@@ -3,57 +3,40 @@ from odoo import models, fields, api
 import logging
 import datetime
 from odoo.tools import float_repr
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, pycompat, misc
+
 _logger = logging.getLogger(__name__)
+
+
 class tps_report_sale(models.Model):
-    _inherit = 'sale.order'
+    _inherit = "product.product"
 
-    p_sku = fields.Char("Product SKU", store=False, compute="_calculateSKU")
-    product_name = fields.Char("Product Name", store=False)
-    t_qty = fields.Integer('Total Quantity', store=False)
-    t_amt = fields.Monetary('Total Quantity', store=False)
-
+    sku_name = fields.Char("SKU/Catalog No ", compute='_compare_data', store=False)
+    product_name = fields.Char("Product Name ", store=False)
+    product_price = fields.Monetary(string='Total Amount', currency_field='currency_id', store=False)
+    total_sale_qty = fields.Float("Total Quantity", store=False)
 
     @api.multi
-    def _calculateSKU(self):
+    def _compare_data(self):
+        start_date = self.env.context.get('start_date')
+        end_date = self.env.context.get('end_date')
 
-        for order in self:
-            for p in order.order_line:
-                order.p_sku =p.product_id.product_tmpl_id.sku_code
-                order.product_name=p.product_id.product_tmpl_id.name
-                order.t_qty = p.product_uom_qty
-                order.t_amt = p.price_subtotal
+        if start_date is None:
+            start_date = (fields.date.today() - datetime.timedelta(days=30))
+        else:
+            start_date = datetime.datetime.strptime(start_date, DEFAULT_SERVER_DATETIME_FORMAT).date()
 
+        if end_date is None:
+            end_date = (fields.date.today())
+        else:
+            end_date = datetime.datetime.strptime(end_date, DEFAULT_SERVER_DATETIME_FORMAT).date()
 
-    # @api.model
-    # def get_report_values(self, docids, data):
-    #     self.model = self.env.context.get('active_model')
-    #     docs = self.env['product.detail'].browse(self.env.context.get('active_id'))
-    #     product_records = {}
-    #     sorted_product_records = []
-    #     sales = self.env['sale.order'].search([('state', 'in', ('sale', 'done')), ('date_order', '>=', docs.start_date),
-    #                                            ('date_order', '<=', docs.end_date)])
-    #     for s in sales:
-    #         orders = self.env['sale.order.line'].search([('order_id', '=', s.id)])
-    #         for order in orders:
-    #             if order.product_id:
-    #                 if order.product_id not in product_records:
-    #                     infoData = [0, 0, ' ']
-    #                     infoData[2] = order.product_id.product_tmpl_id.sku_code
-    #                     product_records.update({order.product_id: infoData})
-    #                 product_records[order.product_id][0] += order.product_uom_qty
-    #                 product_records[order.product_id][1] += order.price_subtotal
-    #
-    #     for product_id, product_uom_qty in sorted(product_records.items(), key=lambda kv: kv[1], reverse=True):
-    #         sorted_product_records.append(
-    #             {'sku': product_uom_qty[2], 'name': product_id.name, 'qty': int(product_uom_qty[0]),
-    #              'desc': 'Description', 'sale_amt': float_repr(product_uom_qty[1], precision_digits=2)})
-    #
-    #     sorted_product_records.sort(key=lambda x: self.check(x['sku']))
-    #     return {
-    #         'doc_ids': self.ids,
-    #         'doc_model': self.model,
-    #         'docs': docs,
-    #         'start_date': fields.Datetime.from_string(str(docs.start_date)).date().strftime('%m/%d/%Y'),
-    #         'end_date': fields.Datetime.from_string(str(docs.end_date)).date().strftime('%m/%d/%Y'),
-    #         'time': time,
-    #         'products': sorted_product_records
+        for product in self:
+            product.product_name = product.product_tmpl_id.name
+            product.sku_name = product.product_tmpl_id.sku_code
+            sale_order_lines = self.env['sale.order.line'].search([('product_id', '=', product.id)])
+            for sale_order_line in sale_order_lines:
+                if sale_order_line.order_id.confirmation_date and (start_date <= fields.Datetime.from_string(
+                        sale_order_line.order_id.confirmation_date).date() <= end_date):
+                    product.total_sale_qty = product.total_sale_qty + sale_order_line.product_uom_qty
+                    product.product_price = sale_order_line.price_unit
