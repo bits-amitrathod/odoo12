@@ -11,7 +11,7 @@ class DormantCustomer(models.Model):
 
     last_purchase_date = fields.Datetime("Last Purchased Date ", store=False, compute='_compute_last_purchase')
 
-    last_purchased_product = fields.Char('Last Purchased Product', store=False)
+    # last_purchased_product = fields.Char('Last Purchased Product', store=False)
 
     @api.multi
     def _compute_last_purchase(self):
@@ -21,7 +21,7 @@ class DormantCustomer(models.Model):
                 key=lambda o: o.confirmation_date)
             if len(confirmed_sales_orders) > 0:
                 customer.last_purchase_date = confirmed_sales_orders[0].confirmation_date
-                sales_order_lines = confirmed_sales_orders[0].order_line
-                for order_line in sales_order_lines:
-                    customer.last_purchased_product = order_line.product_id.product_tmpl_id.name
-                    break
+                # sales_order_lines = confirmed_sales_orders[0].order_line
+                # for order_line in sales_order_lines:
+                #     customer.last_purchased_product = order_line.product_id.product_tmpl_id.name
+                #     break

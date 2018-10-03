@@ -116,7 +116,7 @@ class vendor_offer_automation(models.Model):
                                                               order_id=self.id,
                                                               product_id=products[0].id,
                                                               list_price=product_unit_price,
-                                                              qty_in_stock=self.qty_in_stocks(products[0].id),
+                                                              qty_in_stock=products[0].qty_available,
                                                               expiration_date=product_expiration_date)
                                         order_line_obj.update(self.get_product_sales_count(products[0].id))
                                         multiplier_id = self.get_order_line_multiplier(
@@ -173,31 +173,36 @@ class vendor_offer_automation(models.Model):
             return False
         return multiplier_list.id
 
-    @api.multi
-    def qty_in_stocks(self, product_id):
-        domain = [
-            ('product_id', '=', product_id),
-        ]
-        moves = self.env['stock.move'].search(domain, limit=1)
-        mqty = moves.product_qty
-        return mqty
+    # @api.multi
+    # def qty_in_stocks(self, product_id):
+    #     domain = [
+    #         ('product_id', '=', product_id),
+    #     ]
+    #     moves = self.env['product.template'].search(domain, limit=1)
+    #     mqty = moves.product_qty
+    #     return mqty
 
     @api.multi
     def get_product_sales_count(self, product_id):
         product_sales_count = product_sales_count_month = product_sales_count_90 = product_sales_count_yrs = None
         try:
-            groupby_dict = groupby_dict_month = groupby_dict_90 = groupby_dict_yr = {}
-            sale_orders_line = self.env['sale.order.line'].search(
-                [('product_id', '=', product_id), ('state', '=', 'sale')])
-            groupby_dict['data'] = sale_orders_line
+            groupby_dict_month = groupby_dict_90 = groupby_dict_yr = {}
+
             total = total_m = total_90 = total_yr = 0
 
-            for sale_order in groupby_dict['data']:
-                total = total + sale_order.product_uom_qty
+            sale_orders = self.env['sale.order'].search(
+                [('product_id', '=', product_id), ('state', '=', 'sale')])
+
+            filtered_by_date = list(
+                filter(lambda x: not x.confirmation_date is None, sale_orders))
+
+            groupby_dict_month['data'] = filtered_by_date
+            for sale_order_list in groupby_dict_month['data']:
+                for sale_order in sale_order_list.order_line:
+                    if sale_order.product_id.id == product_id:
+                        total = total + sale_order.product_uom_qty
 
             product_sales_count = total
-            sale_orders = self.env['sale.order'].search(
-                [('product_id', '=', self.product_id.id), ('state', '=', 'sale')])
 
             filtered_by_date = list(
                 filter(lambda x: fields.Datetime.from_string(x.confirmation_date).date() >= (
@@ -230,6 +235,8 @@ class vendor_offer_automation(models.Model):
                         total_yr = total_yr + sale_order.product_uom_qty
 
             product_sales_count_yrs = total_yr
+
+            # product_sales_count = product_sales_count_month + product_sales_count_90 + product_sales_count_yrs
         except Exception as ex:
             _logger.error("Error", ex)
         return dict(product_sales_count=product_sales_count, product_sales_count_month=product_sales_count_month,
