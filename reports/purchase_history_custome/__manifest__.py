@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Purchase History Custom",
+    'name': "Purchase History",
 
     'summary': """
         Short (1 phrase/line) summary of the module's purpose, used as
