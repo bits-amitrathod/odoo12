@@ -51,6 +51,12 @@
                       <field name="note" class="oe_inline" placeholder="Customer Message....." style="width:50% !important;"/>
                       <div class="oe_clear"/>
                  </field>
+                <xpath expr="/form/sheet[1]/notebook/page[@name='other_info']/group/group[2]/field[@name='origin']" position="replace">
+                       <field name="origin" string="Sale Order#" groups="base.group_user" attrs="{'invisible': [('origin', '=', False)]}"/>
+                 </xpath>
+                <xpath expr="/form/sheet[1]/notebook/page[@name='other_info']/group/group[2]/field[@name='name']" position="replace">
+                        <field name="name" string="Purchase Order#"/>
+                 </xpath>
                 <xpath expr="/form/sheet/notebook/page[@name='other_info']/group/group[2]/field[@name='name']" position="after">
                         <field name="memo"/>
                  </xpath>
@@ -63,9 +69,9 @@
             <field name="inherit_id" ref="account.invoice_supplier_form"/>
             <field name="arch" type="xml">
                  <field name="origin" position="replace">
-                 <field name="origin" string="Purchase Order#"    attrs="{'invisible': [('origin', '=', False)]}"/>
+                    <field name="origin" string="Purchase Order#"    attrs="{'invisible': [('origin', '=', False)]}"/>
                  </field>
-                 <xpath expr="/form/sheet[1]/notebook/page[@name='other_info']/group/group[2]/field[@name='name']" position="replace">
+                 <xpath expr="/form/sheet[1]/notebook/page[@name='other_info']/group/group[1]/field[@name='name']" position="replace">
                         <field name="name" string="Sale Order#"/>
                  </xpath>
                 <xpath expr="/form/sheet[1]/notebook/page[@name='other_info']/group/group[2]/field[@name='date']" position="after">
