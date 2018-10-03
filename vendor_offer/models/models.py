@@ -181,6 +181,15 @@ class VendorOffer(models.Model):
         self.write({'declined_date': fields.date.today()})
 
 
+    @api.multi
+    def button_cancel(self):
+        if (self.vendor_offer_data == True):
+            self.write({'state': 'cancel'})
+            self.write({'status': 'cancel'})
+            self.write({'status_ven': 'Declined'})
+            self.write({'accepted_date': None})
+            self.write({'declined_date': fields.date.today()})
+        super(VendorOffer, self).button_cancel()
 
     @api.model
     def create(self, vals):
