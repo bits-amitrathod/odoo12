@@ -12,16 +12,23 @@ from odoo.exceptions import UserError
 class ReportProducts(models.AbstractModel):
     _name = 'report.tps_report_sale.report_products'
 
-
-
     @api.model
     def get_report_values(self, docids, data=None):
-        purchase_orders = self.env['sale.order'].browse(docids)
+        records = self.env['product.product'].browse(docids)
         return {
-            'doc_ids': data.get('ids'),
-            'doc_model': data.get('model'),
-            'data': purchase_orders,
-        }
+            'data': records.sorted(key=lambda r: r.total_sale_qty, reverse=True)}
+
+
+
+
+    # @api.model
+    # def get_report_values(self, docids, data=None):
+    #     purchase_orders = self.env['sale.order'].browse(docids)
+    #     return {
+    #         'doc_ids': data.get('ids'),
+    #         'doc_model': data.get('model'),
+    #         'data': purchase_orders,
+    #     }
 
 
 

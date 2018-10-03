@@ -11,14 +11,14 @@ class inventory_adjustment_report(models.Model):
     _inherit = 'stock.inventory'
 
 
-    p_sku = fields.Char("Product SKU", store=False, compute="_calculateSKU")
+    p_sku = fields.Char("SKU/Catalog No", store=False, compute="_calculateSKU")
     p_type= fields.Char("Type", store=False)
     date_cal=fields.Date('Inventory Date',store=False)
     date_posted=fields.Date('Date Posted',store=False)
     amount= fields.Monetary("Amount", store=False,currency_field='currency_id')
     total_amt=fields.Monetary("Total Amount", store=False,currency_field='currency_id')
     p_qty = fields.Integer('Qty', store=False)
-    currency_id = fields.Many2one('res.currency', 'Currency', required=True, store=False, default=lambda self: self.env.user.company_id.currency_id.id)
+    currency_id = fields.Many2one('res.currency', 'Currency', store=False)
 
 
 

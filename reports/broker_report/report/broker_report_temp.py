@@ -113,8 +113,8 @@ class ReportBrokerReport(models.AbstractModel):
              apprisal_list_rtl_val.broker_greater_40_total = t1t2_margin_retailamount
              apprisal_list_rtl_val.broker_less_40_total = m40_margin_retailamount
 
-             apprisal_list_tot_val.total_retail_broker_tot = str(round(float(apprisal_list_rtl_val.total_retail_broker/ apprisal_list_rtl_val.total_retail_broker)*100,2))
-             apprisal_list_tot_val.bonus_eligible_tot =  str(round((apprisal_list_rtl_val.bonus_eligible/apprisal_list_rtl_val.total_retail_broker)*100,2))
+             apprisal_list_tot_val.total_retail_broker_tot = round(float(apprisal_list_rtl_val.total_retail_broker/ apprisal_list_rtl_val.total_retail_broker)*100,2)
+             apprisal_list_tot_val.bonus_eligible_tot =  round((apprisal_list_rtl_val.bonus_eligible/apprisal_list_rtl_val.total_retail_broker)*100,2)
              apprisal_list_tot_val.hospital_total_tot =round((float(apprisal_list_tot_val.hospital_total_tot)/float(apprisal_list_rtl_val.total_retail_broker))*100,2)
              apprisal_list_tot_val.broker_total_tot =  round(float(apprisal_list_tot_val.broker_total_tot)/float(apprisal_list_rtl_val.total_retail_broker) * 100,2)
              apprisal_list_tot_val.broker_greater_40_total_tot =round(float(apprisal_list_rtl_val.broker_greater_40_total)/float(apprisal_list_rtl_val.total_retail_broker)*100,2)
@@ -135,7 +135,7 @@ class ReportBrokerReport(models.AbstractModel):
                  apprisal_list_mar_val.bonus_eligible_mar="0 %"
 
              if(apprisal_list_rtl_val.total_retail_broker-nomargin_retailamount!=0):
-                apprisal_list_mar_val.hospital_total_mar = round(((1-float(tot_offer-margin_offeramount))/(apprisal_list_rtl_val.total_retail_broker-margin_retailamount)),2)+ ' %'
+                apprisal_list_mar_val.hospital_total_mar = str(round(((1-float(tot_offer-margin_offeramount))/(apprisal_list_rtl_val.total_retail_broker-margin_retailamount)),2) ) + ' %'
              else:
                 apprisal_list_mar_val.hospital_total_mar='0 %'
 
