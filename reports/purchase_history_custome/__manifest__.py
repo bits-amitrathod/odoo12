@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Purchase History Custom",
+
+    'name': "Purchase History",
+
     'author': "Benchmark It Solutions",
     'website': "http://www.benchmarkitsolutions.com",
 
