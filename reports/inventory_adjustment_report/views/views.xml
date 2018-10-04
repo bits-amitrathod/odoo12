@@ -21,7 +21,7 @@
 
        <record id="view_stock_quantity_history" model="ir.ui.view">
         <field name="name">Adjustment Report</field>
-        <field name="model">popup.view.model1</field>
+        <field name="model">adj_popup.view.model</field>
         <field name="arch" type="xml">
             <form string="Choose your date">
                 <group>
@@ -42,7 +42,7 @@
 
       <record id="action_stock_quantity_history" model="ir.actions.act_window">
         <field name="name">Adjustment Report</field>
-        <field name="res_model">popup.view.model1</field>
+        <field name="res_model">adj_popup.view.model</field>
         <field name="view_type">form</field>
         <field name="view_mode">form</field>
         <field name="view_id" ref="view_stock_quantity_history"/>

@@ -50,7 +50,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
                 'type': 'ir.actions.act_window',
                 'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
                 'view_mode': 'tree,form',
-                'name': _('Sales By Count'),
+                'name': _('Sales By Month'),
                 'res_model': 'product.product',
                 'domain': [('id', 'in', product_ids)],
                 'target': 'main'
@@ -60,7 +60,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
                 'type': 'ir.actions.act_window',
                 'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
                 'view_mode': 'tree,form',
-                'name': _('Sales By Count'),
+                'name': _('Sales By Month'),
                 'res_model': 'product.product',
                 'target': 'main'
             }
