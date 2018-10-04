@@ -211,8 +211,8 @@ class PrioritizationEngine(models.TransientModel):
     def get_product_last_purchased_date(self, prioritization_engine_request):
         self.env.cr.execute(
             "SELECT max(saleorder.confirmation_date) as confirmation_date FROM public.sale_order_line saleorderline "
-            "INNER JOIN public.sale_order saleorder ON saleorder.id = saleorderline.order_id "
-            "WHERE saleorderline.order_partner_id = " + str(prioritization_engine_request['customer_id']) +
+            " INNER JOIN public.sale_order saleorder ON saleorder.id = saleorderline.order_id "
+            " WHERE saleorderline.order_partner_id = " + str(prioritization_engine_request['customer_id']) +
             " and saleorderline.product_id = " + str(prioritization_engine_request['product_id'])+
             " and saleorder.state = 'engine'")
 
@@ -227,9 +227,9 @@ class PrioritizationEngine(models.TransientModel):
     def get_product_create_date(self, prioritization_engine_request):
         self.env.cr.execute(
             "SELECT max(saleorder.create_date) as create_date FROM public.sale_order_line saleorderline "
-            "INNER JOIN public.sale_order saleorder ON saleorder.id = saleorderline.order_id "
-            "INNER JOIN public.crm_team crmteam ON crmteam.id = saleorder.team_id"
-            "WHERE saleorderline.order_partner_id = " + str(prioritization_engine_request['customer_id']) +
+            " INNER JOIN public.sale_order saleorder ON saleorder.id = saleorderline.order_id "
+            " INNER JOIN public.crm_team crmteam ON crmteam.id = saleorder.team_id"
+            " WHERE saleorderline.order_partner_id = " + str(prioritization_engine_request['customer_id']) +
             " and saleorderline.product_id = " + str(prioritization_engine_request['product_id']) +
             " and saleorder.state in ('engine','sent') and crmteam.team_type = 'engine'")
         query_result = self.env.cr.dictfetchone()
