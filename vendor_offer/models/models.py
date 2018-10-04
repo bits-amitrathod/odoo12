@@ -189,9 +189,19 @@ class VendorOffer(models.Model):
                 temp = int(self.revision) - 1
                 self.revision = str(temp)
 
+    @api.multi
+    def action_button_confirm_api(self,product_id):
+        print('============= ==============')
+        purchase = self.env['purchase.order'].search([('id', '=', product_id)])
+        purchase.button_confirm()
+        purchase.write({'status': 'purchase'})
+        purchase.write({'status_ven': 'Accepted'})
+        purchase.write({'accepted_date': fields.date.today()})
 
-        # else:
-        #     super(VendorOffer, self).button_confirm()
+        if (int(purchase.revision) > 0):
+            temp = int(purchase.revision) - 1
+            purchase.revision = str(temp)
+
 
     @api.multi
     def button_confirm(self):
@@ -216,6 +226,14 @@ class VendorOffer(models.Model):
         self.write({'status': 'cancel'})
         self.write({'status_ven': 'Declined'})
         self.write({'declined_date': fields.date.today()})
+
+    @api.multi
+    def action_cancel_vendor_offer_api(self,product_id):
+        purchase = self.env['purchase.order'].search([('id', '=', product_id)])
+        purchase.write({'state': 'cancel'})
+        purchase.write({'status': 'cancel'})
+        purchase.write({'status_ven': 'Declined'})
+        purchase.write({'declined_date': fields.date.today()})
 
 
     @api.multi
