@@ -40,7 +40,7 @@ class SpsCustomerRequest(models.Model):
             [('status', 'in', ('Inprocess', 'Incomplete', 'Unprocessed', 'InCoolingPeriod', 'New'))])
         if len(sps_customer_requests)>0:
             try:
-                self.process_requests(sps_customer_requests)
+                self.process_customer_requests(sps_customer_requests)
             except Exception as exc:
                 _logger.debug("Error procesing requests %r", exc)
 
