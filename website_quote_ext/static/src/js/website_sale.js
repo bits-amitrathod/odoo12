@@ -25,24 +25,26 @@ odoo.define('website_quote_ext.portal_order_page_ex', function (require) {
                 'quote_id':quote_id,
                 'product_id': product_id
             }).then(function (maxCount) {
-            console.log(maxCount);
-            var min = parseFloat($input.data("min") || 0);
-            var max = parseFloat($input.data("max") || maxCount);
-            var quantity = ($link.has(".fa-minus").length ? -1 : 1) + parseFloat($input.val() || 0, 10);
-            var new_qty = quantity > min ? (quantity < max ? quantity : max) : min;
-            $('input[name="'+$input.attr("name")+'"]').add($input).filter(function () {
-                var $prod = $(this).closest('*:has(input[name="product_id"])');
-                return !$prod.length || +$prod.find('input[name="product_id"]').val() === product_id;
-            }).val(new_qty).change();
-            ajax.jsonRpc("/shop/engine/update_json", 'call', {
-                'quote_id':quote_id,
-                'line_id': line_id,
-                'product_id': product_id,
-                'set_qty': new_qty
-            }).then(function (data) {
-                 console.log(data);
-                 window.location.reload();
-            });
+                 console.log("inside count");
+                console.log(maxCount);
+                var min = parseFloat($input.data("min") || 0);
+                var max = parseFloat($input.data("max") || maxCount);
+                var quantity = ($link.has(".fa-minus").length ? -1 : 1) + parseFloat($input.val() || 0, 10);
+                var new_qty = quantity > min ? (quantity < max ? quantity : max) : min;
+                $('input[name="'+$input.attr("name")+'"]').add($input).filter(function () {
+                    var $prod = $(this).closest('*:has(input[name="product_id"])');
+                    return !$prod.length || +$prod.find('input[name="product_id"]').val() === product_id;
+                }).val(new_qty).change();
+                ajax.jsonRpc("/shop/engine/update_json", 'call', {
+                    'quote_id':quote_id,
+                    'line_id': line_id,
+                    'product_id': product_id,
+                    'set_qty': new_qty
+                }).then(function (data) {
+                     console.log("inside update_json");
+                     console.log(data);
+                     window.location.reload();
+                });
             });
             return false;
         });

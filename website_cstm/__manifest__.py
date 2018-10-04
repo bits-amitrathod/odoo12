@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': "website CSTM",
+
      'author': "Benchmark IT Solutions (I) Pvt Ltd.",
     'website': "http://www.benchmarkitsolutions.com",
     'sequence': 57,
