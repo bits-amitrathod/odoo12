@@ -11,6 +11,7 @@
     'version': '11.0.1.0.2',
     'category': 'Product',
     'summary': "Product Brand Manager",
+
      'author': "Benchmark IT Solutions (I) Pvt Ltd.",
     'website': "http://www.benchmarkitsolutions.com",
     'license': 'AGPL-3',

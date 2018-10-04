@@ -336,9 +336,7 @@
                   </div>
                 </div>
               </div>
-
               <hr/>
-
               <div class="row">
                 <div class="col-md-6">
                   <strong>Product</strong>
@@ -369,14 +367,12 @@
                   </div>
                     <t t-if="ol._name == 'sale.order.line'">
                   <div class="col-xs-2 text-right">
-                    <t t-if="order.state == 'sent'">
-                      <!--<span t-esc="ol.product_uom_qty"/>-->
+                    <t t-if="order.state == 'sent' and order.team_id == 'Prioritization'">
                       <div class="css_quantity input-group oe_website_spinner">
                         <a t-attf-href="#" class="mb8 input-group-addon js_add_cart_json hidden-xs">
                             <i class="fa fa-minus"></i>
                         </a>
-                                        <!--<input type="text"  class="js_quantity form-control quantity"  t-att-data-line-id="ol.id"   t-att-value="ol.product_uom_qty" />-->
-                      <input type="text"  class="js_quantity form-control quantity" t-att-data-quote-id="ol.order_id.id"  t-att-data-line-id="ol.id"  t-att-data-product-id="ol.product_id.id" t-att-value="ol.product_uom_qty" />
+                        <input type="text"  class="js_quantity form-control quantity" t-att-data-quote-id="ol.order_id.id"  t-att-data-line-id="ol.id"  t-att-data-product-id="ol.product_id.id" t-att-value="ol.product_uom_qty" />
                         <a t-attf-href="#" class="mb8 input-group-addon float_left js_add_cart_json hidden-xs">
                             <i class="fa fa-plus"></i>
                         </a>
@@ -387,9 +383,6 @@
                       </t>
                   </div>
                     </t>
-              <!--     <div class="col-sm-2 col-xs-4 text-right">
-                    <span t-field="ol.price_subtotal" t-options='{"widget": "monetary", "display_currency": order.pricelist_id.currency_id}'/>
-                  </div>-->
                   <div class="col-sm-2 col-xs-4 text-right">
                     <span t-field="ol.price_subtotal" t-options='{"widget": "monetary", "display_currency": order.pricelist_id.currency_id}'/>
                   </div>
