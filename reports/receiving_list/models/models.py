@@ -86,18 +86,6 @@ class ProductSaleByCountPopUp(models.TransientModel):
             if not qty_to_receive is None and not received_qty is None:
                 lines.append([line.product_id.product_tmpl_id.sku_code, line.product_id.product_tmpl_id.name,
                               qty_to_receive, received_qty])
-        #     qty_to_receive = received_qty = 0
-        #     return_move_found = False
-        #     for stock_move in line.move_ids:
-        #         if stock_move.origin_returned_move_id and not stock_move.scrapped and stock_move.state != 'cancel':
-        #             return_move_found = True
-        #             for move_line in stock_move.move_line_ids:
-        #                 qty_to_receive = qty_to_receive + move_line.product_qty
-        #                 received_qty = received_qty + move_line.qty_done
-        #
-        #     if return_move_found:
-        #         lines.append([line.product_id.product_tmpl_id.sku_code, line.product_id.product_tmpl_id.name,
-        #                       qty_to_receive, received_qty])
         response.update({'lines': lines})
 
         return response
