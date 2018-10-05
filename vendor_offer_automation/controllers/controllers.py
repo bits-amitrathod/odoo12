@@ -9,7 +9,7 @@ from odoo.http import Controller, request, route
 class VendorOfferAutomation(http.Controller):
 
     @http.route('/offer_template_import/set_file', methods=['POST'])
-    def set_file(self, file, import_id, customer, jsonp='callback'):
+    def set_file(self, file, import_id, jsonp='callback'):
         import_id = int(import_id)
 
         written = request.env['sps.vendor.offer.template.transient'].browse(import_id).write({

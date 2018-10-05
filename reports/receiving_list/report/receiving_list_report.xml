@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report
+                id="action_report_receiving_list"
+                string="Receiving List"
+                model="receiving_list.popup"
+                report_type="qweb-html"
+                file="receiving_list.receiving_list_temp"
+                name="receiving_list.receiving_list_temp"
+                />
+    </data>
+</odoo>
