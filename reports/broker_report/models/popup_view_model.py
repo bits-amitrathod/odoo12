@@ -17,34 +17,6 @@ class BrokerReportPopUp(models.TransientModel):
 
     def open_table(self):
 
-        final_dict = {}
-
-        tree_view_id = self.env.ref('broker_report.broker_form_list').id
-        form_view_id = self.env.ref('appraisal_tracker.appraisal_tracker_offer_form').id
-
-        # if self.compute_at_date:
-        #     action = {
-        #         'type': 'ir.actions.act_window',
-        #         'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
-        #         'view_mode': 'tree,form',
-        #         'name': _('Product Vendor'),
-        #         'res_model': 'purchase.order',
-        #         'domain': [('confirmation_date','>=', self.start_date ),('confirmation_date','<=', self.end_date ),('state','in',('purchase','done'))],
-        #     }
-        #     return action
-        # else:
-        #     action = {
-        #         'type': 'ir.actions.act_window',
-        #         'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
-        #         'view_mode': 'tree,form',
-        #         'name': _('Product Vendor'),
-        #         'res_model': 'purchase.order',
-        #         'domain': [('state', 'in', ('purchase', 'done'))],
-        #     }
-        #     return action
-
         action=self.env.ref('broker_report.action_report_broker_report').report_action([], data={'start_date' : self.start_date ,'end_date' : self.end_date })
         action.update({'target':'main'})
-        # action.update({'res_model': 'report.broker_report.brokerreport_temp_test'})
-        # action.update({'context': {'start_date' : self.start_date ,'end_date' : self.end_date }})
         return action

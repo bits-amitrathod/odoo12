@@ -7,6 +7,7 @@
     'name': 'Website Automatic Workflow',
     'version': '11.0.1.0.0',
     'category': 'Sales Management',
+
     'license': 'AGPL-3',
        'author': "Benchmark IT Solutions (I) Pvt Ltd.",
     'website': "http://www.benchmarkitsolutions.com",

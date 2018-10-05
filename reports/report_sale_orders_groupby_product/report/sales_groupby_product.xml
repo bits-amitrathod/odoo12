@@ -6,7 +6,11 @@
                 <page>
                     <style>
                         .noborders {
-                        border: 0;
+                            border: 0;
+                        }
+
+                        .table-bordered > tbody > tr > td,.table-bordered > tbody > tr > th {
+                            border: 1px solid #000;
                         }
                     </style>
                     <div class="oe_structure"/>
@@ -21,35 +25,36 @@
                     </div>
                     <br/>
                     <t t-foreach="data" t-as="product">
-                        <b>
+                       <center> <b>
                             <span>Product :</span>
                             <span t-esc="product['name']"/>
                         </b>
-                        <table class="table table-striped table-condensed">
-                            <tr>1
-                                <th>#</th>
-                                <th>Sales Order</th>
-                                <th>Date Order</th>
-                                <th>Amount</th>
+                       </center>
+                        <table class="table table-condensed table-bordered table-bordered">
+                            <tr>
+                                <th class="text-right" style="width:10%">#</th>
+                                <th class="text-center">Sales Order</th>
+                                <th class="text-center">Date Order</th>
+                                <th class="text-center">Amount</th>
                             </tr>
                             <t t-set="index" t-value="1"/>
                             <t t-set="totalAmount" t-value="0"/>
 
                             <tr t-foreach="product['table']" t-as="saleOrder">
                                 <t t-set="amount" t-value="float(saleOrder[2])"/>
-                                <td t-esc="index"/>
-                                <td t-esc="saleOrder[0]"/>
-                                <td t-esc="saleOrder[1]"/>
-                                <td>$<span t-esc="amount"/></td>
+                                <td class="text-right" t-esc="index"/>
+                                <td class="text-center" t-esc="saleOrder[0]"/>
+                                <td class="text-center" t-esc="saleOrder[1]"/>
+                                <td class="text-right">$ <span t-esc="'{:.2f}'.format(amount)"/></td>
                                 <t t-set="index" t-value="index+1"/>
                                 <t t-set="totalAmount" t-value="totalAmount+amount"/>
                             </tr>
                             <tr>
                                 <td colspan="2" class="noborders"/>
                                 <th class="text-right" scope="row">TOTAL</th>
-                                <th class="text-right">
-                                    $<span t-esc="totalAmount"/>
-                                </th>
+                                <td class="text-right">
+                                    $ <span t-esc="'{:.2f}'.format(totalAmount)"/>
+                                </td>
                             </tr>
                         </table>
 

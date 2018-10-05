@@ -37,6 +37,7 @@ class vendor_offer_automation(models.Model):
 
     @api.model
     def create(self, vals):
+
         record = super(vendor_offer_automation, self).create(vals)
         record.map_customer_sku_with_catelog_number()
         return record

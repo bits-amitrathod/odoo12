@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="bonusreport_temp_test">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <page>
+                    <div class="oe_structure"/>
+                    <div class="row">
+                    <center>
+                        <b>
+                            <h2> Surgical Product Solutions </h2>
+                            <h4> Bonus Report</h4>
+                        </b>
+                    </center>
+                    <center>
+                    </center>
+                    </div>
+                    <br/>
+                    <div class="">
+                    <table class="table table-condensed" style="border: 1px solid black;">
+                            <thead>
+                                <tr style="border: 1px solid black;">
+                                    <th style="border: 1px solid black;text-align: center;">Appraisal No#</th>
+                                    <th style="border: 1px solid black;text-align: center;">Priority</th>
+                                    <th style="border: 1px solid black;text-align: center;">Revision</th>
+                                    <th style="border: 1px solid black;text-align: center;">Acq Manager</th>
+                                    <th style="border: 1px solid black;text-align: center;">Facility</th>
+                                    <th style="border: 1px solid black;text-align: center;">Total Offer</th>
+                                    <th style="border: 1px solid black;text-align: center;">Total Retail</th>
+                                    <th style="border: 1px solid black;text-align: center;">Created On</th>
+                                    <th style="border: 1px solid black;text-align: center;">Shipping label Issued</th>
+                                    <th style="border: 1px solid black;text-align: center;">Shipping Date</th>
+                                    <th style="border: 1px solid black;text-align: center;">Delivered Date</th>
+                                    <th style="border: 1px solid black;text-align: center;">New Customer</th>
+                                    <th style="border: 1px solid black;text-align: center;">Margin</th>
+                                    <th style="border: 1px solid black;text-align: center;">Status</th>
+
+                                </tr>
+                                    <tr t-foreach="data" t-as="order">
+                                        <td style="border: 1px solid black;">
+                                            <span t-esc="order.appraisal_no"/>
+                                        </td>
+
+                                        <td style="border: 1px solid black;">
+                                            <span t-esc="order.priority"/>
+                                        </td>
+                                        <td align="center" style="border: 1px solid black;">
+                                            <span t-esc="order.revision"/>
+                                        </td>
+                                        <td style="border: 1px solid black;white-space:nowrap;">
+                                             <span t-esc="order.acq_user_id.name"/>
+                                        </td>
+                                        <td style="border: 1px solid black;white-space:nowrap;">
+                                             <span t-esc="order.partner_id.name"/>
+                                        </td>
+                                        <td style="border: 1px solid black;white-space:nowrap;">
+                                             <span t-esc="order.offer_amount" t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                        </td>
+                                        <td style="border: 1px solid black;white-space:nowrap;">
+                                             <span t-esc="order.retail_amt" t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                        </td>
+                                        <td style="border: 1px solid black;white-space:nowrap;">
+                                             <span t-esc="order.create_date"/>
+                                        </td>
+                                        <td style="border: 1px solid black;white-space:nowrap;">
+                                             <span t-esc="order.shipping_label_issued"/>
+                                        </td>
+                                        <td style="border: 1px solid black;white-space:nowrap;">
+                                             <span t-esc="order.shipping_date"/>
+                                        </td>
+                                        <td style="border: 1px solid black;white-space:nowrap;">
+                                             <span t-esc="order.delivered_date"/>
+                                        </td>
+                                         <td style="border: 1px solid black;white-space:nowrap;">
+                                             <span t-esc="order.new_customer"/>
+                                        </td>
+                                         <td style="border: 1px solid black;white-space:nowrap;">
+                                             <span t-esc="order.broker_margin"/>
+                                        </td>
+                                         <td style="border: 1px solid black;white-space:nowrap;">
+                                             <span t-esc="order.status_ven"/>
+                                        </td>
+
+                                    </tr>
+                            </thead>
+                    </table>
+                    </div>
+                </page>
+            </t>
+        </t>
+    </template>
+</odoo>

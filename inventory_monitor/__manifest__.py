@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': "Inventory Monitor",
+
     'author': "Benchmark IT Solutions (I) Pvt Ltd.",
     'website': "http://www.benchmarkitsolutions.com",
 
