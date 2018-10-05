@@ -47,14 +47,16 @@ class SpsCustomerRequest(models.Model):
 
     # update document processed count
     def update_document_processed_count(self):
-        sps_cust_uploaded_documents = self.env.cr.execute("SELECT DISTINCT document_id,document_processed_count FROM public.sps_customer_requests scr "
+        self.env.cr.execute("SELECT DISTINCT document_id,document_processed_count FROM public.sps_customer_requests scr "
                                         "INNER JOIN public.sps_cust_uploaded_documents scud ON scr.document_id = scud.id "
                                         "WHERE scr.status IN ('Inprocess', 'Incomplete', 'Unprocessed', 'InCoolingPeriod', 'New', 'Partial')")
-
-        if len(sps_cust_uploaded_documents)>0:
+        sps_cust_uploaded_documents = self.env.cr.fetchall()
+        if sps_cust_uploaded_documents:
             for sps_cust_uploaded_document in sps_cust_uploaded_documents:
-                document_processed_count = sps_cust_uploaded_document.document_processed_count + 1
-                self.env['sps.cust.uploaded.documents'].search([('id', '=', sps_cust_uploaded_document.document_id)]).write(
+                _logger.info('sps_cust_uploaded_document.document_id : %r',sps_cust_uploaded_document[0])
+                _logger.info('sps_cust_uploaded_document.document_processed_count : %r', sps_cust_uploaded_document[1])
+                document_processed_count = int(sps_cust_uploaded_document[1]) + 1
+                self.env['sps.cust.uploaded.documents'].search([('id', '=', sps_cust_uploaded_document[0])]).write(
                     dict(document_processed_count=document_processed_count))
 
     def process_customer_requests(self, sps_customer_requests):
