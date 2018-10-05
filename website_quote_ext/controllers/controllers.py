@@ -48,7 +48,7 @@ class WebsiteSale(http.Controller):
 
 
     @http.route(['/shop/engine/update_json'], type='json', auth="public", methods=['POST'], website=True, csrf=False)
-    def cart_update_json(self, quote_id,product_id, line_id=None, add_qty=None, set_qty=None, display=True):
+    def update_engine_json(self, quote_id,product_id, line_id=None, add_qty=None, set_qty=None, display=True):
         count = request.website.sale_get_engine_order(quote_id, line_id, set_qty,product_id)
         return count
 

@@ -16,6 +16,10 @@ class PrioritizationScheduler(models.Model):
         _logger.info('In PrioritizationScheduler')
         self.env['sps.customer.requests'].get_customer_requests()
 
+    def process_prioritization_scheduler_manually(self):
+        _logger.info('In process_prioritization_scheduler_manually')
+        self.env['sps.customer.requests'].get_customer_requests()
+
 
 
 

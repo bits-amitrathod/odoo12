@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 {
     'name': "Prioritization Engine",
-
-
     'author': "Benchmark IT Solutions (I) Pvt Ltd.",
     'website': "http://www.benchmarkitsolutions.com",
 

@@ -162,18 +162,18 @@ class VendorOffer(models.Model):
     def action_print_vendor_offer(self):
         pass
 
-    # @api.multi
-    # def action_confirm_vendor_offer(self):
-    #     self.write({'state': 'purchase'})
-    #     self.write({'status': 'purchase'})
-    #     self.write({'status_ven': 'Accepted'})
-    #     self.write({'accepted_date': fields.date.today()})
-    #     if (int(self.revision) > 0):
-    #         temp = int(self.revision) - 1
-    #         self.revision = str(temp)
-    #     record = self.env['purchase.order']
-    #     recordtemp = record.button_confirm()
-    #     return recordtemp
+    @api.multi
+    def action_confirm_vendor_offer(self):
+         self.write({'state': 'purchase'})
+         self.write({'status': 'purchase'})
+         self.write({'status_ven': 'Accepted'})
+         self.write({'accepted_date': fields.date.today()})
+         if (int(self.revision) > 0):
+             temp = int(self.revision) - 1
+             self.revision = str(temp)
+         record = self.env['purchase.order']
+         recordtemp = record.button_confirm()
+         return recordtemp
 
     @api.multi
     def action_button_confirm(self):

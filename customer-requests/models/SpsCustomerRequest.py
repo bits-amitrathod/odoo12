@@ -37,10 +37,10 @@ class SpsCustomerRequest(models.Model):
     # Get Customer Requests
     def get_customer_requests(self):
         sps_customer_requests = self.env['sps.customer.requests'].search(
-            [('status', 'in', ('Inprocess', 'Incomplete', 'Unprocessed', 'InCoolingPeriod', 'New'))])
+            [('status', 'in', ('Inprocess', 'Incomplete', 'Unprocessed', 'InCoolingPeriod', 'New', 'Partial'))])
         if len(sps_customer_requests)>0:
             try:
-                self.process_requests(sps_customer_requests)
+                self.process_customer_requests(sps_customer_requests)
             except Exception as exc:
                 _logger.debug("Error procesing requests %r", exc)
 
@@ -52,6 +52,14 @@ class SpsCustomerRequest(models.Model):
             if sps_customer_request['product_id'].id and not sps_customer_request['product_id'].id is False:
                 _setting_object = self.get_settings_object(sps_customer_request['customer_id'].id, sps_customer_request['product_id'].id,
                                                             sps_customer_request['id'], sps_customer_request['status'])
+                # if status is partial check the remaining quantity to allocate to customer
+                if sps_customer_request['status'].lower().strip() == 'partial':
+                    sale_order_line = self.env['sale.order.line'].search([('customer_request_id', '=', sps_customer_request.id)])
+                    _logger.debug('sale_order_line.product_uom_qty : %r', sale_order_line.product_uom_qty)
+                    required_quantity = sps_customer_request.required_quantity - sale_order_line.product_uom_qty
+                    _logger.debug('required_quantity : %r', required_quantity)
+                else:
+                    required_quantity = sps_customer_request.required_quantity
 
                 if _setting_object:
                     sps_customer_request.write({'customer_request_logs': 'Customer prioritization setting is True, '})
@@ -60,7 +68,7 @@ class SpsCustomerRequest(models.Model):
                                     customer_id=sps_customer_request['customer_id'].id,
                                     product_id=sps_customer_request['product_id'].id,
                                     status=sps_customer_request['status'],
-                                    required_quantity=sps_customer_request.required_quantity,
+                                    required_quantity=required_quantity,
                                     min_threshold=_setting_object.min_threshold,
                                     max_threshold=_setting_object.max_threshold,
                                     quantity=sps_customer_request.quantity,
