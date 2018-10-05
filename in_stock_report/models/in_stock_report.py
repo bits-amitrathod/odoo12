@@ -68,7 +68,7 @@ class ProductTemplate(models.Model):
 
 
 class TrendingReport(models.AbstractModel):
-    _name = 'report.trending_report.trending_report_print'
+    _name = 'report.in_stock_report.in_stock_report_print'
     @api.model
     def get_report_values(self, docids, data=None):
          _logger.info("print report called...")

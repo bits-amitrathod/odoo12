@@ -54,9 +54,51 @@
         <!-- ids = -->      <value eval="[ref('inventory_monitor.product_max_inventory_settings')]"/>
         <!-- context = -->  <value eval="{}"/>
     </function>
+    <record id="product_form_ex" model="ir.ui.view">
+        <field name="name">product.product.form_ex</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+             <xpath expr="//field[@name='purchase_ok']/parent::div/parent::div" position="after"  >
+                 <field name="inventory_monitor"/>
+                 <label for="inventory_monitor"/>
+             </xpath>
+        </field>
+    </record>
+     <record id="product_template_monitor_search_view" model="ir.ui.view">
+        <field name="name">product.template.search</field>
+        <field name="model">product.template</field>
+        <field name="arch" type="xml">
+            <search string="Product">
+                <field name="name" string="Product" filter_domain="['|','|',('default_code','ilike',self),('name','ilike',self),('barcode','ilike',self)]"/>
+                <field name="categ_id" filter_domain="[('categ_id', 'child_of', raw_value)]"/>
+                <separator/>
+                <filter string="Services" name="services" domain="[('type','=','service')]"/>
+                <filter string="Products" name="consumable" domain="[('type', 'in', ['consu', 'product'])]"/>
+                <separator/>
+                <filter string="Can be Sold" name="filter_to_sell" domain="[('sale_ok','=',1)]"/>
+                <filter string="Can be Purchased" name="filter_to_purchase" domain="[('purchase_ok', '=', 1)]"/>
+                <filter string="Can be Monitor" name="filter_to_monitor" domain="[('inventory_monitor', '=', 1)]"/>
+                <separator/>
+                <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
+                <field string="Attributes" name="attribute_line_ids" groups="product.group_product_variant"/>
+                <field name="pricelist_id" widget="selection" context="{'pricelist': self}" filter_domain="[]" groups="product.group_sale_pricelist"/> <!-- Keep widget=selection on this field to pass numeric `self` value, which is not the case for regular m2o widgets! -->
+                <separator/>
+                <filter string="Late Activities" name="activities_overdue"
+                    domain="[('activity_ids.date_deadline', '&lt;', context_today().strftime('%Y-%m-%d'))]"
+                    help="Show all records which has next action date is before today"/>
+                <filter string="Today Activities" name="activities_today"
+                    domain="[('activity_ids.date_deadline', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter string="Future Activities" name="activities_upcoming_all"
+                    domain="[('activity_ids.date_deadline', '&gt;', context_today().strftime('%Y-%m-%d'))
+                    ]"/>
+            </search>
+        </field>
+    </record>
     <record id="view_inventory_moniter_line_tree" model="ir.ui.view">
         <field name="name">product.template.tree</field>
         <field name="model">product.template</field>
+        <field name="context">{"inventory_monitor":1}</field>
         <field name="arch" type="xml">
             <tree string="Inventory Monitor">
                 <field name="product_brand_id"/>
@@ -69,6 +111,7 @@
                 <field name="future_percent_color" invisible="1"/>
                 <field name="max_inventory_future_percent"  options='{"bg_color": "#f3b8b4:future_percent_color&lt;"+"75;"+"#f5e5b8:future_percent_color&gt;"+"=75;"+"#c9f3c9:future_percent_color&gt;"+"125"}'/>
                 <field name="qty_on_order"/>
+                <field name="inventory_monitor" invisible="1" eval="True"/>
                 <field name="type"/>
             </tree>
         </field>
@@ -78,9 +121,10 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">product.template</field>
         <field name="view_type">form</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">tree,form,search</field>
         <field name="domain">[('type', '=', 'product')]</field>
-        <field name="search_view_id" eval="False"/> <!-- Force empty --><!-- Force empty -->
+        <field name="context">{"search_default_filter_to_monitor":1}</field>
+        <field name="search_view_id" ref="product_template_monitor_search_view"/>
         <field name="view_id" ref="view_inventory_moniter_line_tree"/>
         <field name="help" type="html">
           <p class="oe_view_nocontent_create">
