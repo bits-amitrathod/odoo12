@@ -73,9 +73,19 @@ class ProductSaleByCountPopUp(models.TransientModel):
     def _format_sale_order_data(self, sales_order):
         response = {'order_id': sales_order.name, 'name': sales_order.partner_id.display_name,
                     'state': sales_order.state, 'type': 'Sales'}
-
-        # lines = []
-        # for line in sales_order.order_line:
+        lines = []
+        for line in sales_order.order_line:
+            sql_query = """
+                     SELECT SUM(l.product_qty) as qty_to_receive, SUM(l.qty_done) as qty_received FROM stock_move_line l INNER JOIN stock_move m 
+                     ON l.move_id = m.id WHERE m.sale_line_id = """ + str(line.id) + """ AND m.state IN ('assigned', 'done') AND m.origin_returned_move_id IS NOT NULL 
+                     """
+            self._cr.execute(sql_query)
+            moves = self._cr.fetchall()
+            qty_to_receive = moves[0][0]
+            received_qty = moves[0][1]
+            if not qty_to_receive is None and not received_qty is None:
+                lines.append([line.product_id.product_tmpl_id.sku_code, line.product_id.product_tmpl_id.name,
+                              qty_to_receive, received_qty])
         #     qty_to_receive = received_qty = 0
         #     return_move_found = False
         #     for stock_move in line.move_ids:
@@ -88,7 +98,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
         #     if return_move_found:
         #         lines.append([line.product_id.product_tmpl_id.sku_code, line.product_id.product_tmpl_id.name,
         #                       qty_to_receive, received_qty])
-        # response.update({'lines': lines})
+        response.update({'lines': lines})
 
         return response
 
