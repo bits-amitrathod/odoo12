@@ -15,6 +15,7 @@ class PrioritizationEngine(models.TransientModel):
     allocated_product_dict = {}
 
     def allocate_product_by_priority(self, prioritization_engine_request_list):
+        self.allocated_product_dict = {}
         _logger.debug('In product_allocation_by_priority')
         # get available production lot list.
         available_product_lot_dict = self.get_available_product_lot_dict()
