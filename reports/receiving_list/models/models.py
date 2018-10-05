@@ -64,7 +64,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
         lines = []
         for line in purchase_order.order_line:
             lines.append([line.product_id.product_tmpl_id.sku_code, line.product_id.product_tmpl_id.name,
-                          line.qty_received, line.product_qty - line.qty_received])
+                          line.product_qty - line.qty_received, line.qty_received])
 
         response.update({'lines': lines})
 
@@ -74,21 +74,21 @@ class ProductSaleByCountPopUp(models.TransientModel):
         response = {'order_id': sales_order.name, 'name': sales_order.partner_id.display_name,
                     'state': sales_order.state, 'type': 'Sales'}
 
-        lines = []
-        for line in sales_order.order_line:
-            qty_to_receive = received_qty = 0
-            return_move_found = False
-            for stock_move in line.move_ids:
-                if stock_move.origin_returned_move_id and not stock_move.scrapped and stock_move.state != 'cancel':
-                    return_move_found = True
-                    for move_line in stock_move.move_line_ids:
-                        qty_to_receive = qty_to_receive + move_line.product_qty
-                        received_qty = received_qty + move_line.qty_done
-
-            if return_move_found:
-                lines.append([line.product_id.product_tmpl_id.sku_code, line.product_id.product_tmpl_id.name,
-                              received_qty, qty_to_receive])
-        response.update({'lines': lines})
+        # lines = []
+        # for line in sales_order.order_line:
+        #     qty_to_receive = received_qty = 0
+        #     return_move_found = False
+        #     for stock_move in line.move_ids:
+        #         if stock_move.origin_returned_move_id and not stock_move.scrapped and stock_move.state != 'cancel':
+        #             return_move_found = True
+        #             for move_line in stock_move.move_line_ids:
+        #                 qty_to_receive = qty_to_receive + move_line.product_qty
+        #                 received_qty = received_qty + move_line.qty_done
+        #
+        #     if return_move_found:
+        #         lines.append([line.product_id.product_tmpl_id.sku_code, line.product_id.product_tmpl_id.name,
+        #                       qty_to_receive, received_qty])
+        # response.update({'lines': lines})
 
         return response
 
@@ -118,10 +118,10 @@ class ProductSaleByCountPopUp(models.TransientModel):
         return datetime.datetime.strptime(date_string, DEFAULT_SERVER_DATE_FORMAT).date()
 
 
-class SaleOrderLineExt(models.Model):
-    _inherit = "sale.order.line"
-
-    move_ids = fields.One2many('stock.move', 'sale_line_id', string='Moves')
+# class SaleOrderLineExt(models.Model):
+#     _inherit = "sale.order.line"
+#
+#     move_ids = fields.One2many('stock.move', 'sale_line_id', string='Moves')
 
 
 

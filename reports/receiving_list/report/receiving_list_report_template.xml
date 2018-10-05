@@ -47,8 +47,8 @@
                                         <tr style="">
                                             <th style="text-align: center;center; border: 1px solid black; width: 10%;">SKU/Catalog No.</th>
                                             <th style="text-align: center; border: 1px solid black; center;width: 70%;">Product</th>
-                                            <th style="text-align: center; border: 1px solid black; width: 10%">Qty Received</th>
-                                            <th style="text-align: center; border: 1px solid black; width:10%">Qty To Receive</th>
+                                            <th style="text-align: center; border: 1px solid black; width: 10%">Qty To Receive</th>
+                                            <th style="text-align: center; border: 1px solid black; width:10%">Qty Received</th>
                                         </tr>
                                     </thead>
                                     <tbody>
