@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="prod_on_order_temp">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <page>
+                    <div class="oe_structure"/>
+                    <div class="row">
+                    <center>
+                        <b>
+                            <h2> Surgical Product Solutions </h2>
+                            <h4> Products On Order </h4>
+                        </b>
+                    </center>
+
+                    </div>
+                    <br/>
+                    <t t-set="currency" t-value="0" />
+                    <t t-foreach="data['form']" t-as="products_on_order">
+                        <center>
+                            <b>
+                                <span>Order# :</span>
+                                <span t-esc="products_on_order[0]"/>
+                            </b>
+                        </center>
+                        <table class="table table-condensed" style="">
+                            <thead>
+                                <tr style="">
+                                    <th style="text-align: center;center;width: 327px;">Product</th>
+                                    <th style="text-align: center;center;width: 474px;">Customer</th>
+                                    <th style="text-align: center;">Qty Ordered</th>
+                                    <th style="text-align: center;">Qty Remaining</th>
+                                </tr>
+                               </thead>
+                            <tbody>
+                                <tr t-foreach="products_on_order[1]" t-as="order">
+                                    <td style="">
+                                        <span t-esc="order[0]"/>
+                                    </td>
+                                    <td align="center" style="">
+                                        <span t-esc="order[1]"/>
+                                    </td>
+                                    <td align="right" style="">
+                                          <span t-esc="order[2]"/>
+                                    </td>
+                                    <td align="right" style="">
+                                          <span t-esc="order[3]"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="">
+                                    </td>
+                                    <td style="">
+                                    </td>
+                                    <td style="text-align: right;">
+                                        <b>Total SO Items Remaining</b>
+                                    </td>
+                                    <td align="right" style="white-space: nowrap;">
+                                        <span t-esc="products_on_order[2]"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </t>
+                </page>
+            </t>
+        </t>
+    </template>
+</odoo>

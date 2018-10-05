@@ -1,0 +1,80 @@
+<odoo>
+    <data>
+        <record id="view_returned_sales_popup" model="ir.ui.view">
+            <field name="name">Returned Sales</field>
+            <field name="model">returned_sales.popup</field>
+            <field name="arch" type="xml">
+                <form string="Choose your date">
+                    <group>
+                        <group>
+                            <field name="sale_person_id" domain="[('sales_person','=', 1)]"/>
+                            <field name="customer_id"/>
+                            <field name="product_id"/>
+                        </group>
+                        <group>
+                            <field name="compute_at_date" widget="radio"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_returned_sales" model="ir.actions.act_window">
+            <field name="name">Returned Sales</field>
+            <field name="res_model">returned_sales.popup</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_returned_sales_popup"/>
+            <field name="target">new</field>
+            <field name="context">{'valuation': True}</field>
+        </record>
+
+
+        <record model="ir.ui.view" id="returned_saleslist_view">
+            <field name="name">product.on.order.view.list</field>
+            <field name="model">returned_sales.order</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="order_id" string="Order #" invisible="1"/>
+                    <field name="product_id" string="Product"/>
+                    <field name="partner_id" string="Customer Name"/>
+                    <field name="date_ordered" string="Date"/>
+                    <field name="date_due" string="Due Date"/>
+                    <field name="qty_ordered"/>
+                    <field name="qty_remaining"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="returned_salesform_view">
+            <field name="name">product.on.order.view.list</field>
+            <field name="model">returned_sales.order</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="order_id" string="Order #"/>
+                            <field name="product_id" string="Product"/>
+                            <field name="partner_id" string="Customer Name"/>
+                        </group>
+                        <group>
+                            <field name="date_ordered" string="Date"/>
+                            <field name="date_due" string="Due Date"/>
+                            <field name="qty_ordered"/>
+                            <field name="qty_remaining"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <menuitem name="Returned Sales" id="returned_sales_menu" parent="sale.menu_sale_report"
+                  action="returned_sales.action_returned_sales"/>
+    </data>
+</odoo>
