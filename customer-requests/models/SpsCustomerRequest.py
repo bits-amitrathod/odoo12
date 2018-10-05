@@ -40,9 +40,22 @@ class SpsCustomerRequest(models.Model):
             [('status', 'in', ('Inprocess', 'Incomplete', 'Unprocessed', 'InCoolingPeriod', 'New', 'Partial'))])
         if len(sps_customer_requests)>0:
             try:
+                self.update_document_processed_count()
                 self.process_customer_requests(sps_customer_requests)
             except Exception as exc:
                 _logger.debug("Error procesing requests %r", exc)
+
+    # update document processed count
+    def update_document_processed_count(self):
+        sps_cust_uploaded_documents = self.env.cr.execute("SELECT DISTINCT document_id,document_processed_count FROM public.sps_customer_requests scr "
+                                        "INNER JOIN public.sps_cust_uploaded_documents scud ON scr.document_id = scud.id "
+                                        "WHERE scr.status IN ('Inprocess', 'Incomplete', 'Unprocessed', 'InCoolingPeriod', 'New', 'Partial')")
+
+        if len(sps_cust_uploaded_documents)>0:
+            for sps_cust_uploaded_document in sps_cust_uploaded_documents:
+                document_processed_count = sps_cust_uploaded_document.document_processed_count + 1
+                self.env['sps.cust.uploaded.documents'].search([('id', '=', sps_cust_uploaded_document.document_id)]).write(
+                    dict(document_processed_count=document_processed_count))
 
     def process_customer_requests(self, sps_customer_requests):
         pr_models = []
