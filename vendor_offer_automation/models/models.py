@@ -78,7 +78,7 @@ class vendor_offer_automation(models.Model):
                                                                                  expiration_date_index=expiration_date_index)
                         for excel_data_row in excel_data_rows:
                             sku_code = excel_data_row[sku_index]
-                            product_expiration_date = excel_data_row[expiration_date_index]
+
                             product_sku = sku_code
                             if self.partner_id.sku_preconfig and product_sku.startswith(
                                     self.partner_id.sku_preconfig):
@@ -102,7 +102,10 @@ class vendor_offer_automation(models.Model):
                                                               product_id=products[0].id,
                                                               list_price=product_unit_price,
                                                               qty_in_stock=products[0].qty_available,
-                                                              expiration_date=product_expiration_date)
+                                                              )
+                                        if expiration_date_index >= 0:
+                                            order_line_obj.update(
+                                                dict(expiration_date=excel_data_row[expiration_date_index]))
                                         order_line_obj.update(self.get_product_sales_count(products[0].id))
                                         multiplier_id = self.get_order_line_multiplier(
                                             order_line_obj, product_template.premium)
