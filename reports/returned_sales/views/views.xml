@@ -41,13 +41,11 @@
             <field name="model">returned_sales.order</field>
             <field name="arch" type="xml">
                 <tree>
-                    <field name="order_id" string="Order #" invisible="1"/>
+                    <field name="order_id" string="Order #"/>
                     <field name="product_id" string="Product"/>
-                    <field name="partner_id" string="Customer Name"/>
-                    <field name="date_ordered" string="Date"/>
-                    <field name="date_due" string="Due Date"/>
-                    <field name="qty_ordered"/>
-                    <field name="qty_remaining"/>
+                    <!--<field name="partner_id" string="Customer Name"/>-->
+                    <field name="done_qty" string="Quantity"/>
+                    <field name="cost_price" string="Cost"/>
                 </tree>
             </field>
         </record>
@@ -64,10 +62,8 @@
                             <field name="partner_id" string="Customer Name"/>
                         </group>
                         <group>
-                            <field name="date_ordered" string="Date"/>
-                            <field name="date_due" string="Due Date"/>
-                            <field name="qty_ordered"/>
-                            <field name="qty_remaining"/>
+                            <field name="done_qty" string="Quantity"/>
+                            <field name="cost_price" string="Cost"/>
                         </group>
                     </group>
                 </form>
