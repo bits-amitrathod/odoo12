@@ -9,6 +9,7 @@
           <field name="priority">20</field>
           <field name="arch" type="xml">
               <tree>
+                  <field name="name"/>
                   <field name="sku"/>
                   <field name="manufacturer_rep"/>
                   <field name="vendor"/>
