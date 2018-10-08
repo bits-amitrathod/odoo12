@@ -7,6 +7,7 @@
           <field name="priority">20</field>
           <field name="arch" type="xml">
               <tree>
+                  <field name="id"/>
                   <field name="p_sku"/>
                   <field name="date_cal"/>
                   <field name="date_posted"/>

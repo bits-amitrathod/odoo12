@@ -11,6 +11,7 @@ class purchase_history(models.Model):
     _inherit = 'purchase.order'
 
 
+
     sku = fields.Char("SKU/Catalog No", store=False, compute="_calculateSKU1")
     vendor = fields.Char("Vendor", store=False)
     qty = fields.Integer("Qty", store=False)
