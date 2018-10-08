@@ -28,20 +28,12 @@ class vendor_offer_automation(models.Model):
     _description = "Vendor Offer Automation"
     _inherit = "purchase.order"
 
-    template_name = fields.Char(compute="_value_pc", store=True, reqiured=True)
+    # template_name = fields.Char(compute="_value_pc", store=True, reqiured=True)
     document = fields.Binary()
-    filename = fields.Char(string='File')
-    template_exists = fields.Boolean(default=False)
+    # filename = fields.Char(string='File')
+    # template_exists = fields.Boolean(default=False)
+    template_id = fields.Many2one('sps.vendor_offer_automation.template', string='Template',)
 
-    @api.multi
-    @api.depends('partner_id')
-    def _value_pc(self):
-       self.update_template_name()
-
-    @api.multi
-    @api.onchange('partner_id')
-    def on_partner_changed(self):
-        self.update_template_name()
 
     @api.model
     def create(self, vals):
@@ -54,7 +46,7 @@ class vendor_offer_automation(models.Model):
     def map_customer_sku_with_catelog_number(self):
         if not self.document is None:
             try:
-                book = xlrd.open_workbook(file_contents=base64.b64decode(self.document))
+                book = xlrd.open_workbook(file_contents=self.document)
                 try:
                     pricing_index = book.sheet_names().index('PPVendorPricing')
                 except:
@@ -63,15 +55,7 @@ class vendor_offer_automation(models.Model):
                 if len(excel_columns) == 1:
                     excel_columns = excel_columns[0]
                     vendor_offer_automation_template = self.env['sps.vendor_offer_automation.template'].search(
-                        [('customer_id', '=', self.partner_id.id), ('template_status', '=', 'Active')])
-                    if len(vendor_offer_automation_template) > 0:
-                        sorted_excel_columns = ','.join(sorted(excel_columns))
-                        if vendor_offer_automation_template.columns_from_template != sorted_excel_columns:
-                            raise ValidationError(
-                                _('Document columns are not matching active offer template ' + self.template_name))
-                    else:
-                        raise ValidationError(
-                            _('Template Not found, Import Template For Vendor in Settings Menu'))
+                        [('id', '=', self.template_id.id)])
                     model_fields = self.env['sps.vendor_offer_automation.template'].fields_get()
                     mapping_fields = dict()
                     for name, field in model_fields.items():
@@ -94,7 +78,7 @@ class vendor_offer_automation(models.Model):
                                                                                  expiration_date_index=expiration_date_index)
                         for excel_data_row in excel_data_rows:
                             sku_code = excel_data_row[sku_index]
-                            product_expiration_date = excel_data_row[expiration_date_index]
+
                             product_sku = sku_code
                             if self.partner_id.sku_preconfig and product_sku.startswith(
                                     self.partner_id.sku_preconfig):
@@ -118,7 +102,10 @@ class vendor_offer_automation(models.Model):
                                                               product_id=products[0].id,
                                                               list_price=product_unit_price,
                                                               qty_in_stock=products[0].qty_available,
-                                                              expiration_date=product_expiration_date)
+                                                              )
+                                        if expiration_date_index >= 0:
+                                            order_line_obj.update(
+                                                dict(expiration_date=excel_data_row[expiration_date_index]))
                                         order_line_obj.update(self.get_product_sales_count(products[0].id))
                                         multiplier_id = self.get_order_line_multiplier(
                                             order_line_obj, product_template.premium)
@@ -148,12 +135,19 @@ class vendor_offer_automation(models.Model):
                             for order_line_object in order_list_list:
                                 order_line_model = self.env['purchase.order.line'].with_context(order_line_object)
                                 order_line_model.create(order_line_object)
-                            # for purchase_order_line in self.order_line:
-                            #     purchase_order_line.onchange_product_id_vendor_offer()
-
 
             except UnicodeDecodeError as ue:
                 _logger.info(ue)
+
+    def action_import_order_lines(self):
+        tree_view_id = self.env.ref('vendor_offer_automation.vendor_template_client_action').id
+        return {
+            'type': 'ir.actions.client',
+            'views': [(tree_view_id, 'form')],
+            'view_mode': 'form',
+            'tag': 'import_offer_template',
+            'params': [{'model': 'sps.vendor_offer_automation.template', 'offer_id': self.id, 'vendor_id': self.partner_id.id, 'user_type': 'supplier'}],
+        }
 
     def get_order_line_multiplier(self, order_line_obj, premium):
         multiplier_list = None
@@ -174,14 +168,6 @@ class vendor_offer_automation(models.Model):
             return False
         return multiplier_list.id
 
-    # @api.multi
-    # def qty_in_stocks(self, product_id):
-    #     domain = [
-    #         ('product_id', '=', product_id),
-    #     ]
-    #     moves = self.env['product.template'].search(domain, limit=1)
-    #     mqty = moves.product_qty
-    #     return mqty
 
     @api.multi
     def get_product_sales_count(self, product_id):
@@ -285,22 +271,13 @@ class vendor_offer_automation(models.Model):
     def write(self, vals):
         res = super(vendor_offer_automation, self).write(vals)
         if 'document' in vals:
-            self.env["purchase.order.line"].search([('order_id', '=', self.id)]).unlink()
+            self.unlink_lines()
             self.map_customer_sku_with_catelog_number()
         return res
 
-    def update_template_name(self):
-        for order in self:
-            vendor_offer_templates = order.env['sps.vendor_offer_automation.template'].search(
-                [('customer_id', '=', order.partner_id.id), ('template_status', '=', 'Active')])
-            if len(vendor_offer_templates) > 0:
-                order.template_name = vendor_offer_templates[0].file_name
-                order.template_exists = True
-            else:
-                order.template_exists = False
-
-
-
+    @api.model
+    def unlink_lines(self):
+        self.env["purchase.order.line"].search([('order_id', '=', self.id)]).unlink()
 
 class VendorOfferProductAuto(models.Model):
     _inherit = "purchase.order.line"

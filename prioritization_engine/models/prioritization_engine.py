@@ -15,6 +15,7 @@ class PrioritizationEngine(models.TransientModel):
     allocated_product_dict = {}
 
     def allocate_product_by_priority(self, prioritization_engine_request_list):
+        self.allocated_product_dict = {}
         _logger.debug('In product_allocation_by_priority')
         # get available production lot list.
         available_product_lot_dict = self.get_available_product_lot_dict()
@@ -211,8 +212,8 @@ class PrioritizationEngine(models.TransientModel):
     def get_product_last_purchased_date(self, prioritization_engine_request):
         self.env.cr.execute(
             "SELECT max(saleorder.confirmation_date) as confirmation_date FROM public.sale_order_line saleorderline "
-            "INNER JOIN public.sale_order saleorder ON saleorder.id = saleorderline.order_id "
-            "WHERE saleorderline.order_partner_id = " + str(prioritization_engine_request['customer_id']) +
+            " INNER JOIN public.sale_order saleorder ON saleorder.id = saleorderline.order_id "
+            " WHERE saleorderline.order_partner_id = " + str(prioritization_engine_request['customer_id']) +
             " and saleorderline.product_id = " + str(prioritization_engine_request['product_id'])+
             " and saleorder.state = 'engine'")
 
@@ -227,9 +228,9 @@ class PrioritizationEngine(models.TransientModel):
     def get_product_create_date(self, prioritization_engine_request):
         self.env.cr.execute(
             "SELECT max(saleorder.create_date) as create_date FROM public.sale_order_line saleorderline "
-            "INNER JOIN public.sale_order saleorder ON saleorder.id = saleorderline.order_id "
-            "INNER JOIN public.crm_team crmteam ON crmteam.id = saleorder.team_id"
-            "WHERE saleorderline.order_partner_id = " + str(prioritization_engine_request['customer_id']) +
+            " INNER JOIN public.sale_order saleorder ON saleorder.id = saleorderline.order_id "
+            " INNER JOIN public.crm_team crmteam ON crmteam.id = saleorder.team_id"
+            " WHERE saleorderline.order_partner_id = " + str(prioritization_engine_request['customer_id']) +
             " and saleorderline.product_id = " + str(prioritization_engine_request['product_id']) +
             " and saleorder.state in ('engine','sent') and crmteam.team_type = 'engine'")
         query_result = self.env.cr.dictfetchone()

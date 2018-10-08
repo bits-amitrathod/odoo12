@@ -37,12 +37,27 @@ class SpsCustomerRequest(models.Model):
     # Get Customer Requests
     def get_customer_requests(self):
         sps_customer_requests = self.env['sps.customer.requests'].search(
-            [('status', 'in', ('Inprocess', 'Incomplete', 'Unprocessed', 'InCoolingPeriod', 'New'))])
+            [('status', 'in', ('Inprocess', 'Incomplete', 'Unprocessed', 'InCoolingPeriod', 'New', 'Partial'))])
         if len(sps_customer_requests)>0:
             try:
-                self.process_requests(sps_customer_requests)
+                self.update_document_processed_count()
+                self.process_customer_requests(sps_customer_requests)
             except Exception as exc:
                 _logger.debug("Error procesing requests %r", exc)
+
+    # update document processed count
+    def update_document_processed_count(self):
+        self.env.cr.execute("SELECT DISTINCT document_id,document_processed_count FROM public.sps_customer_requests scr "
+                                        "INNER JOIN public.sps_cust_uploaded_documents scud ON scr.document_id = scud.id "
+                                        "WHERE scr.status IN ('Inprocess', 'Incomplete', 'Unprocessed', 'InCoolingPeriod', 'New', 'Partial')")
+        sps_cust_uploaded_documents = self.env.cr.fetchall()
+        if sps_cust_uploaded_documents:
+            for sps_cust_uploaded_document in sps_cust_uploaded_documents:
+                _logger.info('sps_cust_uploaded_document.document_id : %r',sps_cust_uploaded_document[0])
+                _logger.info('sps_cust_uploaded_document.document_processed_count : %r', sps_cust_uploaded_document[1])
+                document_processed_count = int(sps_cust_uploaded_document[1]) + 1
+                self.env['sps.cust.uploaded.documents'].search([('id', '=', sps_cust_uploaded_document[0])]).write(
+                    dict(document_processed_count=document_processed_count))
 
     def process_customer_requests(self, sps_customer_requests):
         pr_models = []
@@ -52,6 +67,14 @@ class SpsCustomerRequest(models.Model):
             if sps_customer_request['product_id'].id and not sps_customer_request['product_id'].id is False:
                 _setting_object = self.get_settings_object(sps_customer_request['customer_id'].id, sps_customer_request['product_id'].id,
                                                             sps_customer_request['id'], sps_customer_request['status'])
+                # if status is partial check the remaining quantity to allocate to customer
+                if sps_customer_request['status'].lower().strip() == 'partial':
+                    sale_order_line = self.env['sale.order.line'].search([('customer_request_id', '=', sps_customer_request.id)])
+                    _logger.debug('sale_order_line.product_uom_qty : %r', sale_order_line.product_uom_qty)
+                    required_quantity = sps_customer_request.required_quantity - sale_order_line.product_uom_qty
+                    _logger.debug('required_quantity : %r', required_quantity)
+                else:
+                    required_quantity = sps_customer_request.required_quantity
 
                 if _setting_object:
                     sps_customer_request.write({'customer_request_logs': 'Customer prioritization setting is True, '})
@@ -60,7 +83,7 @@ class SpsCustomerRequest(models.Model):
                                     customer_id=sps_customer_request['customer_id'].id,
                                     product_id=sps_customer_request['product_id'].id,
                                     status=sps_customer_request['status'],
-                                    required_quantity=sps_customer_request.required_quantity,
+                                    required_quantity=required_quantity,
                                     min_threshold=_setting_object.min_threshold,
                                     max_threshold=_setting_object.max_threshold,
                                     quantity=sps_customer_request.quantity,

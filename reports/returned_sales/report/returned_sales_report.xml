@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report
+                id="action_report_returned_sales"
+                string="Returned Sales"
+                model="returned_sales.order"
+                report_type="qweb-html"
+                file="returned_sales.returned_sales_temp"
+                name="returned_sales.returned_sales_temp"
+                />
+    </data>
+</odoo>

@@ -72,6 +72,7 @@
                         <field name="source"/>
                         <field name="status"/>
                         <field name="template_type" string="Document Type"/>
+                        <field name="document_processed_count" string="Document Processed Count"/>
                     </group>
                     <group>
                         <field name="request_ids"/>

@@ -7,7 +7,7 @@ class VendorOfferAutomationTemplate(models.Model):
     _description = "Vendor Offer Automation Template"
     _name = "sps.vendor_offer_automation.template"
 
-    customer_id = fields.Many2one('res.partner', string='Customer', required=True)
+    # customer_id = fields.Many2one('res.partner', string='Customer', required=True)
     file_name = fields.Char('File Name')
     template_status = fields.Char('Template Status')
     columns_from_template = fields.Char('Columns of Template')

@@ -26,6 +26,7 @@
                 <!--<div class="table-responsive">-->
                     <table class="table table-condensed table-bordered" style="border: 1px solid #000;">
                         <tr>
+                            <th style="border: 1px solid black;text-align: center;">Internal Reference</th>
                             <th style="border: 1px solid black;text-align: center;">SKU/Catalog No</th>
                             <th style="border: 1px solid black;text-align: center;">Product Name</th>
                             <th style="border: 1px solid black;text-align: center;">Total Quantity</th>
@@ -36,6 +37,9 @@
 
                         <t t-foreach="data" t-as="a">
                             <tr>
+                                <td style="border: 1px solid black;">
+                                    <span t-esc="a.default_code"/>
+                                </td>
                                 <td style="border: 1px solid black;">
                                     <span t-esc="a.sku_name"/>
                                 </td>
