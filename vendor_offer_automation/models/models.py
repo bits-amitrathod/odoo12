@@ -73,7 +73,7 @@ class vendor_offer_automation(models.Model):
 
                     if not sku_index is None:
                         product_uom_id = 6
-                        product_uom = self.env['product_uom'].search([('name', '=', 'Each')])
+                        product_uom = self.env['product.uom'].search([('name', '=', 'Each')])
                         if len(product_uom) == 1:
                             product_uom_id = product_uom[0].id
                         todays_date = datetime.datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
