@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 {
+
     'name': "Sales By Count",
 
     'author': "Benchmark IT Solutions (I) Pvt Ltd.",

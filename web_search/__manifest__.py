@@ -13,5 +13,4 @@
         'views/header.xml'
     ],
     'installable': True,
-    'license': 'OPL-1',
 }

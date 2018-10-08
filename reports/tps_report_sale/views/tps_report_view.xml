@@ -11,6 +11,7 @@
           <field name="priority">20</field>
           <field name="arch" type="xml">
               <tree>
+                  <field name="default_code"/>
                   <field name="sku_name"/>
                   <field name="product_name"/>
                   <field name="total_sale_qty" />

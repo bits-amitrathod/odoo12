@@ -9,6 +9,7 @@
           <field name="priority">20</field>
           <field name="arch" type="xml">
               <tree>
+                  <field name="name"/>
                   <field name="sku"/>
                   <field name="manufacturer_rep"/>
                   <field name="vendor"/>
@@ -38,7 +39,7 @@
                     </group>
                 </group>
                 <footer>
-                    <button name="open_table" string="View Purchase History" type="object" class="btn-primary"/>
+                    <button name="open_table" string="View Report" type="object" class="btn-primary"/>
                     <button string="Cancel" class="btn-default" special="cancel" />
                 </footer>
             </form>

@@ -60,20 +60,20 @@ var DataImport = Widget.extend(ControlPanelMixin, {
     ],
     events: {
         // 'change .oe_import_grid input': 'import_dryrun',
-        'change #customers_list' : function(e){
-            e.preventDefault();
-            if(this.$('#customers_list').val() == '0'){
-//                 $(':input','#import-form').not(':button, :submit, :reset, :hidden').val('');
-//                 this.$('#file_selection_widget').hide();
-                   this.do_action({
-                   type: 'ir.actions.client',
-                   tag: 'reload',
-            });
-            } else{
-                 this.$('#file_selection_widget').show();
-                 this.customer = Number(this.$('#customers_list').val());
-            }
-        },
+//        'change #customers_list' : function(e){
+//            e.preventDefault();
+//            if(this.$('#customers_list').val() == '0'){
+////                 $(':input','#import-form').not(':button, :submit, :reset, :hidden').val('');
+////                 this.$('#file_selection_widget').hide();
+//                   this.do_action({
+//                   type: 'ir.actions.client',
+//                   tag: 'reload',
+//            });
+//            } else{
+//                 this.$('#file_selection_widget').show();
+//                 this.customer = Number(this.$('#customers_list').val());
+//            }
+//        },
 
         'change .oe_import_file': 'loaded_file',
         'click .oe_import_file_reload': 'loaded_file',
@@ -124,7 +124,8 @@ var DataImport = Widget.extend(ControlPanelMixin, {
         this.session = session;
         action.display_name = _t('Import Template'); // Displayed in the breadcrumbs
         this.do_not_change_match = false;
-        this.customer = null;
+        this.customer = action.params[0].vendor_id;
+        this.offer_id = action.params[0].offer_id;
 
         this.parent_model = action.params[0].model;
         this.template_type = 'Inventory';
@@ -142,17 +143,17 @@ var DataImport = Widget.extend(ControlPanelMixin, {
                 self.$('input[name=import_id]').val(id);
 
 
-                self.$('#file_selection_widget').hide();
-                self.$('p#user_type_label').html('Partner');
+//                self.$('#file_selection_widget').hide();
+//                self.$('p#user_type_label').html('Partner');
 
-                $.post( "/userslist", 'input_data=supplier', function( data ) {
-                    var jsonArray = JSON.parse(JSON.stringify(data));
-                    self.$('#customers_list').append("<option value='0'></option>");
-                    for(var index = 0; index < jsonArray.length; index++){
-                        var jsonObject = jsonArray[index];
-                        self.$('#customers_list').append("<option value='" + jsonObject.id + "'>" + jsonObject.name + "</option>");
-                    }}
-                , "json");
+//                $.post( "/userslist", 'input_data=supplier', function( data ) {
+//                    var jsonArray = JSON.parse(JSON.stringify(data));
+//                    self.$('#customers_list').append("<option value='0'></option>");
+//                    for(var index = 0; index < jsonArray.length; index++){
+//                        var jsonObject = jsonArray[index];
+//                        self.$('#customers_list').append("<option value='" + jsonObject.id + "'>" + jsonObject.name + "</option>");
+//                    }}
+//                , "json");
 
 
 
@@ -255,7 +256,7 @@ var DataImport = Widget.extend(ControlPanelMixin, {
             headers: this.$('input.oe_import_has_header').prop('checked'),
             advanced: this.$('input.oe_import_advanced_mode').prop('checked'),
             keep_matches: this.do_not_change_match,
-            customer_id: this.$('#customer_list').val()
+            customer_id: self.customer,
         };
         _(this.opts).each(function (opt) {
             options[opt.name] =
@@ -499,7 +500,7 @@ var DataImport = Widget.extend(ControlPanelMixin, {
         return this._rpc({
                 model: 'sps.vendor.offer.template.transient',
                 method: 'do',
-                args: [this.id, fields, this.import_options(), this.parent_model, this.customer],
+                args: [this.id, fields, this.import_options(), this.parent_model, this.customer, this.offer_id],
                 kwargs : kwargs,
             }).fail(function (error, event) {
                 if (event) { event.preventDefault(); }
@@ -529,11 +530,15 @@ var DataImport = Widget.extend(ControlPanelMixin, {
         this.exit();
     },
     exit: function () {
-       this.do_action({
-           type: 'ir.actions.client',
-            tag: 'reload',
-
-       });
+//       this.do_action({
+//           type: 'ir.actions.client',
+//            tag: 'reload',
+//
+//       });
+        this.do_action({
+            type: 'ir.actions.client',
+            tag: 'history_back'
+        });
     },
     onresults: function (event, from, to, message) {
         var no_messages = _.isEmpty(message);

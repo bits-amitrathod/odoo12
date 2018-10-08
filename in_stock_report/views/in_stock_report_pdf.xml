@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report
+                id="action_print_in_stock_report"
+                string="In Stock Report"
+                model="product.product"
+                report_type="qweb-html"
+                file="in_stock_report.in_stock_report_print"
+                name="in_stock_report.in_stock_report_print"
+        />
+    </data>
+</odoo>

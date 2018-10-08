@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="returned_sales_temp">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <page>
+                    <div class="oe_structure"/>
+                    <div class="row">
+                    <center>
+                        <b>
+                            <h2> Surgical Product Solutions </h2>
+                            <h4> Returned Sales </h4>
+                        </b>
+                    </center>
+
+                    </div>
+                    <br/>
+                    <t t-set="currency" t-value="0" />
+                    <t t-foreach="data['form']" t-as="returned_sales">
+                        <center>
+                            <b>
+                                <span>Product #:</span>
+                                <span t-esc="returned_sales[0]"/>
+                            </b>
+                        </center>
+                        <table class="table table-condensed" style="">
+                            <thead>
+                                <tr style="">
+                                    <th style="text-align: left;center;width: 474px;">Customer</th>
+                                    <th style="text-align: right;">Qty</th>
+                                    <th style="text-align: right;">Price</th>
+                                </tr>
+                               </thead>
+                            <tbody>
+                                <tr t-foreach="returned_sales[1]" t-as="order">
+                                    <td>
+                                        <span t-esc="order[0]"/>
+                                    </td>
+                                    <td align="center" style="text-align: right;">
+                                        <span t-esc="order[1]"/>
+                                    </td>
+                                    <td align="right" style="text-align: right;">
+                                          <span t-esc="order[2]"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style=""><b>Total</b>
+                                    </td>
+                                    <td style="text-align: right;">
+                                        <span t-esc="returned_sales[2]"/>
+                                    </td>
+                                    <td align="right" style="white-space: nowrap;">
+                                        <span t-esc="returned_sales[3]"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </t>
+                </page>
+            </t>
+        </t>
+    </template>
+</odoo>

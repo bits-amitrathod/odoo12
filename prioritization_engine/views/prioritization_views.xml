@@ -256,6 +256,31 @@
             </field>
         </record>
 
+      <record id="prioritization_run_schedular_views" model="ir.ui.view">
+        <field name="name">Run Schedulers Manually</field>
+        <field name="model">prioritization.cron.schedular</field>
+        <field name="arch" type="xml">
+            <form string="Parameters">
+                <p>
+                When you run the schedulers, Prioritization engine will start and allocate product by priority as well as it will create the
+                    sales order.
+                </p>
+                <footer>
+                    <button name="process_prioritization_scheduler_manually" string="Run Schedulers" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-default" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="prioritization_run_schedular" model="ir.actions.act_window">
+        <field name="name">Run Scheduler</field>
+        <field name="res_model">prioritization.cron.schedular</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
       <!-- Top menu item -->
     <menuitem name="Prioritization Engine" id="prioritization_engine.menu_root" web_icon="prioritization_engine,static/description/icon.png"/>
 
@@ -275,6 +300,11 @@
               action="product.product_template_action"/>
          <!-- menu categories -->
     <menuitem name="Import Document" id="prioritization_engine.prioritization_imenu" parent="prioritization_engine.menu_root"/>
+
+      <menuitem name="Operation" id="prioritization_operation_menu" parent="prioritization_engine.menu_root"/>
+
+      <menuitem name="Run Schedular" id="prioritization_run_schedular_menu" parent="prioritization_operation_menu"
+      action="prioritization_run_schedular"/>
          <!-- actions -->
    <!-- <menuitem name="Import Document" id="prioritization_engine.prioritization_import_menu" parent="prioritization_engine.prioritization_imenu"
               action="action_notification_setting"/>-->

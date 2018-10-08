@@ -11,7 +11,7 @@ _logger = logging.getLogger(__name__)
 
 class PopUp(models.TransientModel):
     _name = 'adj_popup.view.model'
-    # _auto = False
+
 
     start_date = fields.Date('Start Date')
     end_date = fields.Date(string="End Date")
