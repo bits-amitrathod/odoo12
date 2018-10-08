@@ -1,0 +1,81 @@
+<odoo>
+    <template id="purchase_order_page" name="Purchase order Confirmation">
+        <t t-name="website.product_types_page">
+            <t t-call="website.layout">
+                <div id="wrap" class="oe_structure oe_empty"/>
+                <section class="shop-by-manufacturer">
+                    <div class="container">
+                        <h1 class="header-label">Payment by purchase order</h1>
+                    </div>
+                    <div class="container">
+                        <div class="">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <form method="post">
+
+                                        <div t-att-class="'form-group has-error' if error else 'form-group'">
+                                            <label class="control-label">Purchase Order</label>
+                                            <input type="text" name="purchase_order" required="required"
+                                                   class="form-control" placeholder="Purchase order"/>
+                                            <span t-if="error" class="help-block">
+                                                <t t-esc="error"/>
+                                            </span>
+                                        </div>
+                                        <button type="submit" class="btn btn-default">Submit</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </t>
+        </t>
+    </template>
+
+    <template id="assets_frontend" inherit_id="web.assets_frontend" name="Website Assets">
+        <xpath expr="//script[last()]" position="after">
+            <script type="text/javascript" src="/payment_aquirer_cstm/static/src/js/script.js"/>
+        </xpath>
+    </template>
+
+
+    <!-- ~~~~~~~~~~~~~~ Confirm Order~~~~~~~~~~~~ -->
+    <template id="customerReferenceSO" name="customerReferenceSO" inherit_id="website_sale.payment">
+        <xpath expr="//div[@id='payment_method']" position="before">
+            <t t-if="website_sale_order.partner_id.allow_purchase">
+                <div class="row" id="order_customer_referance_so">
+                    <div id="cart_totala" class="col-xs-12 col-sm-6">
+                        <span class="col-xs-5 text-right h5 mt0" style="padding-top: 7px;">Purchase Order #:</span>
+                        <span class="col-xs-6 text-right-not-xs text-left-xs h4 mt0" style="white-space: nowrap;">
+                            <input type="text" class="form-control" name="customerReferenceSO"
+                                   t-att-value="website_sale_order.client_order_ref"/>
+                        </span>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </template>
+
+
+    <template id="confirmationCstm" name="confirmation cstm" inherit_id="website_sale.confirmation">
+        <xpath expr="//div[hasclass('oe_structure')]" position="before">
+            <t t-if="order.client_order_ref">
+                <div id="purchaseOrderConfirmation" class="row">
+                    <div class="col-xs-12 col-sm-6">
+
+                        <strong>Purchase Order #:</strong>
+                        <t t-esc="order.client_order_ref"/>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </template>
+
+    <!--Report-->
+    <template id="report_shop_saleorder_document" inherit_id="sale.report_saleorder_document">
+        <xpath expr="//div[@id='informations']/div[1]/strong" position="replace">
+            <strong>Purchase Order #:</strong>
+        </xpath>
+    </template>
+
+</odoo>

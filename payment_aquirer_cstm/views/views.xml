@@ -1,0 +1,49 @@
+<odoo>
+    <data>
+        <template id="default_acquirer_button">
+            <input type="hidden" name="data_set" t-att-data-action-url="tx_url"/>
+            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+            <t t-if="return_url">
+                <input type="hidden" name="return_url" t-att-value="return_url"/>
+            </t>
+            <input type="hidden" name="reference" t-att-value="reference"/>
+            <input type="hidden" name="amount" t-att-value="amount"/>
+            <input type="hidden" name="currency" t-att-value="currency.name"/>
+            <input type="hidden" name="txid" t-att-value="tx_id"/>
+        </template>
+
+        <!--<template id="purchaseorder_form">-->
+            <!--<input type="hidden" name="data_set" t-att-data-action-url="tx_url" data-remove-me=""/>-->
+            <!--<input type="hidden" name="key" t-att-value='key'/>-->
+            <!--<input type="hidden" name="txnid" t-att-value='txnid'/>-->
+            <!--<input type="hidden" name="amount" t-att-value='amount'/>-->
+            <!--<input type="hidden" name="productinfo" t-att-value='productinfo'/>-->
+            <!--<input type="hidden" name="firstname" t-att-value='firstname'/>-->
+            <!--<input type="hidden" name="email" t-att-value='email'/>-->
+            <!--<input type="hidden" name="phone" t-att-value='phone'/>-->
+            <!--<input type="hidden" name="service_provider" t-att-value='service_provider'/>-->
+            <!--<input type="hidden" name="hash" t-att-value='hash'/>-->
+            <!--<input type="hidden" name="surl" t-att-value='surl'/>-->
+            <!--<input type="hidden" name="furl" t-att-value='furl'/>-->
+            <!--<input type="hidden" name="curl" t-att-value='curl'/>-->
+            <!--<input type="hidden" name="udf1" t-att-value='udf1'/>-->
+        <!--</template>-->
+
+
+        <record id="payment_acquirer_purchaseorder" model="payment.acquirer">
+            <field name="name">Purchase Order</field>
+            <field name="view_template_id" ref="default_acquirer_button"/>
+            <field name="module_id" ref="base.module_payment_aquirer_cstm"/>
+            <field name="journal_id"></field>
+            <field name="description" type="html">
+                <p>
+                    Payment by Purchase Order
+                </p>
+                <ul class="list-inline">
+                    <li><i class="fa fa-check"/>Online Payment
+                    </li>
+                </ul>
+            </field>
+        </record>
+    </data>
+</odoo>
