@@ -72,6 +72,10 @@ class vendor_offer_automation(models.Model):
                         expiration_date_index = excel_columns.index(mapping_fields['mf_expiration_date'])
 
                     if not sku_index is None:
+                        product_uom_id = 6
+                        product_uom = self.env['product_uom'].search([('name', '=', 'Each')])
+                        if len(product_uom) == 1:
+                            product_uom_id = product_uom[0].id
                         todays_date = datetime.datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
                         product_skus = []
                         excel_data_rows = vendor_offer_automation._read_xls_book(book, pricing_index, read_data=True,
@@ -97,7 +101,7 @@ class vendor_offer_automation(models.Model):
                                     if len(products) > 0:
                                         order_line_obj = dict(name=product_template.name, product_qty=1,
                                                               date_planned=todays_date, state='ven_draft',
-                                                              product_uom=1, product_tier=product_template.tier.id,
+                                                              product_uom=product_uom_id, product_tier=product_template.tier.id,
                                                               order_id=self.id,
                                                               product_id=products[0].id,
                                                               list_price=product_unit_price,
