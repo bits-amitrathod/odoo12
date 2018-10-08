@@ -92,7 +92,7 @@
                         <!--</div>-->
                         <div class="oe_snippet_body input-group js_subscribe" data-list-id="1">
                             <input type="email" name="email" class="js_subscribe_email form-control contact_email"
-                                   placeholder="your email..."/>
+                                   placeholder="Enter your email address..."/>
                             <span class="input-group-btn">
                                 <a href="#" class="btn btn-primary js_subscribe_btn action_button" style="width: 130px;">Subscribe</a>
                                 <a href="#" class="btn btn-success js_subscribed_btn hidden action_button" disabled="disabled" style="width: 130px;">

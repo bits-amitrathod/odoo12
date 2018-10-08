@@ -47,17 +47,6 @@ class WebsiteSales(WebsiteSale):
 
         return request.render("website_sale.products", payload)
 
-    @http.route(['/shop/cart/updatePurchaseOrderNumber'], type='json', auth="public", methods=['POST'], website=True, csrf=False)
-    def cart_update(self, purchase_order, **kw):
-        salesOrderContext = {
-            'client_order_ref': purchase_order
-        }
-
-        value = {'success': request.env['sale.order'].sudo().browse(request.session['sale_order_id']).write(
-            salesOrderContext)}
-
-        return value
-
     @http.route(['/shop/product/<model("product.template"):product>'], type='http', auth="public", website=True)
     def product(self, product, category='', search='', **kwargs):
         responce = super(WebsiteSales, self).product(product, category='', search='', **kwargs)

@@ -101,52 +101,6 @@
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Customer Reference As sales Order ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     -->
 
-    <template id="assets_frontend" inherit_id="web.assets_frontend" name="Website Assets">
-        <xpath expr="//script[last()]" position="after">
-            <script type="text/javascript" src="/website_sales/static/src/js/script.js"/>
-        </xpath>
-    </template>
-
-    <!-- ~~~~~~~~~~~~~~ Confirm Order~~~~~~~~~~~~ -->
-    <template id="customerReferenceSO" name="customerReferenceSO" inherit_id="website_sale.payment">
-        <xpath expr="//div[@id='payment_method']" position="before">
-            <t t-if="website_sale_order.partner_id.allow_purchase">
-                <div class="row" id="order_customer_referance_so">
-                    <div id="cart_totala" class="col-xs-12 col-sm-6">
-                        <span class="col-xs-5 text-right h5 mt0" style="padding-top: 7px;">Purchase Order #:</span>
-                        <span class="col-xs-6 text-right-not-xs text-left-xs h4 mt0" style="white-space: nowrap;">
-                            <input type="text" class="form-control" name="customerReferenceSO"
-                                   t-att-value="website_sale_order.client_order_ref"/>
-                        </span>
-                    </div>
-                </div>
-            </t>
-        </xpath>
-    </template>
-
-
-    <template id="confirmationCstm" name="confirmation cstm" inherit_id="website_sale.confirmation">
-        <xpath expr="//div[hasclass('oe_structure')]" position="before">
-            <t t-if="order.client_order_ref">
-                <div id="purchaseOrderConfirmation" class="row">
-                    <div class="col-xs-12 col-sm-6">
-
-                        <strong>Purchase Order #:</strong>
-                        <t t-esc="order.client_order_ref"/>
-                    </div>
-                </div>
-            </t>
-        </xpath>
-    </template>
-
-    <!--Report-->
-    <template id="report_shop_saleorder_document" inherit_id="sale.report_saleorder_document">
-        <xpath expr="//div[@id='informations']/div[1]/strong" position="replace">
-            <strong>Purchase Order #:</strong>
-        </xpath>
-    </template>
-
-
     <template id="category_vender" name="category Vender">
         <div class="row">
             <div class="col-sm-12">
