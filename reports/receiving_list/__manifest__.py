@@ -8,7 +8,7 @@
     'category': 'Uncategorized',
     'version': '0.1',
 
-    'depends': ['base', 'sale'],
+    'depends': ['base', 'purchase', 'sale'],
 
     'data': [
         'views/views.xml',

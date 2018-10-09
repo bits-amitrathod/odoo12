@@ -126,10 +126,10 @@ class DocumentProcessTransientModel(models.TransientModel):
                     high_priority_requests.append(saved_sps_customer_request)
             try:
                 if len(high_priority_requests) > 0:
-                    file_uploaded_record.write({'document_processed_count': 1})
+                    #file_uploaded_record.write({'document_processed_count': 1})
                     self.env['sps.customer.requests'].process_customer_requests(high_priority_requests)
-                else:
-                    file_uploaded_record.write({'document_processed_count': 0})
+                #else:
+                    #file_uploaded_record.write({'document_processed_count': 0})
             except Exception as exc:
                 _logger.info("Error procesing high priority requests %r", exc)
         else:

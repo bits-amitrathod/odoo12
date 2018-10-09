@@ -8,13 +8,11 @@
     'sequence': 59,
     'category': 'e-commerce',
     'version': '1.0',
-    'depends': ['website_sale'],
+    'depends': ['website_sale','payment_aquirer_cstm'],
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
         'views/views.xml',
         'views/templates.xml',
-        # 'data/website_data.xml',
     ],
     'installable': True,
     'application': True,
