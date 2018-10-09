@@ -47,6 +47,14 @@
                                                 <span t-esc="product[5]"/>
                                             </td>
                                         </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>Total</td>
+                                            <td style="border: 1px solid black;"><span t-esc="data['total_qty']"/></td>
+                                            <td style="border: 1px solid black;"><span t-esc="data['total_assets_value']"/></td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </t>
