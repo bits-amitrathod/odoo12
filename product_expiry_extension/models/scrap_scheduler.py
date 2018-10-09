@@ -12,7 +12,6 @@ _logger = logging.getLogger(__name__)
 class ScrapScheduler(models.TransientModel):
     _name = 'stock.scrap.scheduler'
 
-
     @api.model
     @api.multi
     def process_scrap_scheduler(self):
@@ -41,7 +40,6 @@ class ScrapScheduler(models.TransientModel):
                         'lot_id': int(stock.lot_id)}
                     ml=self.env['stock.scrap'].create(val)
                     ml.action_validate()
-
 
     def process_manual_scrap_scheduler(self):
         _logger.info("process_manual_scrap_scheduler called..")
