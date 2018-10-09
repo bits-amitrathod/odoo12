@@ -2,7 +2,7 @@ from odoo import api, models
 
 
 class ReportSalesSalespersonWise(models.AbstractModel):
-    _name = 'report.receiving_list.receiving_list_temp'
+    _name = 'report.on_hand_by_date.on_hand_by_date_temp'
 
     @api.model
     def get_report_values(self, docids, data=None):

@@ -26,7 +26,7 @@
                         <table class="table table-condensed" style="">
                             <thead>
                                 <tr style="">
-                                    <th style="text-align: left;center;width: 474px;">Customer</th>
+                                    <th style="text-align: left;">Customer</th>
                                     <th style="text-align: right;">Qty</th>
                                     <th style="text-align: right;">Price</th>
                                 </tr>

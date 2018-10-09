@@ -10,6 +10,7 @@ from odoo.tools import float_compare
 _logger = logging.getLogger(__name__)
 
 class ScrapScheduler(models.Model):
+    _inherit = 'stock.scrap'
     _name = 'stock.scrap.scheduler'
 
     @api.model
@@ -41,10 +42,10 @@ class ScrapScheduler(models.Model):
                     self=self.create(val)
                     self.action_validate()
 
-    
+
     def process_manual_scrap_scheduler(self):
         _logger.info("process_manual_scrap_scheduler called..")
-        self.process_scrap_scheduler()
+        return self.process_scrap_scheduler()
 
 
 
