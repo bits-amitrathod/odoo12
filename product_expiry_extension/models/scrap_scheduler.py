@@ -12,7 +12,6 @@ _logger = logging.getLogger(__name__)
 class ScrapScheduler(models.TransientModel):
     _name = 'stock.scrap.scheduler'
 
-
     @api.model
     @api.multi
     def process_scrap_scheduler(self):
