@@ -40,7 +40,7 @@ class ScrapScheduler(models.TransientModel):
                         'state': 'draft', 'product_id': int(stock.product_id), 'scrap_location_id': scrap_id, 'owner_id': False,
                         'product_uom_id': int(stock_product_lot.product_uom_id), 'package_id': False, 'picking_id': False, 'origin': False,
                         'lot_id': int(stock.lot_id)}
-                    ml=self.env['stock.production.lot'].create(val)
+                    ml=self.env['stock.scrap'].create(val)
                     ml.action_validate()
 
 
