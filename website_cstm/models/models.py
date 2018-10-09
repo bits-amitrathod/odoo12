@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from typing import Dict, Any
 
 from odoo import models, fields, api
 
@@ -15,13 +16,19 @@ class website_cstm(models.Model):
         subcribers = StockNotifcation.search([
             ('status', '=', 'pending'),
         ])
-
+        notificationList = {}
         template = self.env.ref('website_cstm.mail_template_product_instock_notification_email')
         for subcriber in subcribers:
             if subcriber.product_tmpl_id.qty_available > 0:
-                local_context = {'email': subcriber.email}
-                template.with_context(local_context).send_mail(subcriber.product_tmpl_id.id, raise_exception=True)
-                subcriber.status='done'
+                if not subcriber.email in notificationList :
+                    notificationList[subcriber.email] = []
+                notificationList[subcriber.email].append(subcriber)
+                subcriber.status = 'done'
+
+        for email in notificationList:
+            products = notificationList[email]
+            local_context = {'email': email,'products': products}
+            template.with_context(local_context).send_mail(products[0].product_tmpl_id.id, raise_exception=True)
 
 
 class website_product_download_catelog_cstm(models.Model):

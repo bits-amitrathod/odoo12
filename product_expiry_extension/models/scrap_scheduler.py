@@ -9,7 +9,7 @@ from odoo.tools import float_compare
 
 _logger = logging.getLogger(__name__)
 
-class ScrapScheduler(models.Model):
+class ScrapScheduler(models.TransientModel):
     _name = 'stock.scrap.scheduler'
 
     @api.model
@@ -38,10 +38,9 @@ class ScrapScheduler(models.Model):
                         'state': 'draft', 'product_id': int(stock.product_id), 'scrap_location_id': scrap_id, 'owner_id': False,
                         'product_uom_id': int(stock_product_lot.product_uom_id), 'package_id': False, 'picking_id': False, 'origin': False,
                         'lot_id': int(stock.lot_id)}
-                    self=self.create(val)
-                    self.action_validate()
+                    ml=self.env['stock.scrap'].create(val)
+                    ml.action_validate()
 
-    
     def process_manual_scrap_scheduler(self):
         _logger.info("process_manual_scrap_scheduler called..")
         self.process_scrap_scheduler()
