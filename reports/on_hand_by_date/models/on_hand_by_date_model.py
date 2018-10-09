@@ -42,7 +42,7 @@ class OnHandByDate(models.Model):
         SELECT  
             ROW_NUMBER () OVER (ORDER BY product_id) as id, p.id as product_id, 
             q.qty_on_hand, b.name as vendor_name, t.name as name, 
-            t.sku_code as sku_code, b.partner_id as partner_id, """ + str(report_date) + """ as report_date
+            t.sku_code as sku_code, b.partner_id as partner_id, '""" + str(report_date) + """' as report_date
         FROM (
                 SELECT 
                     sq.product_id as product_id, SUM(sq.quantity) as qty_on_hand
