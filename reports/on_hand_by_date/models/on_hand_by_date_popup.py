@@ -16,9 +16,10 @@ class ProductsOnHandByDatePopUp(models.TransientModel):
     report_date = fields.Datetime('Report On Date', default=fields.Datetime.now, required=True)
 
     costing_method = fields.Selection([
-        (0, 'Average Cost '),
-        (1, 'FIFO ')
-    ], string="Costing Method", default=0, help="Choose to analyze the Show Summary or from a specific date in the past.")
+        (1, 'Standard Costing '),
+        (2, 'Average Costing'),
+        (3, 'FIFO Costing')
+    ], string="Costing Method", default=1, help="Choose to analyze the Show Summary or from a specific date in the past.")
 
     vendor_id = fields.Many2one('res.partner', string='Vendor', required=False, )
 
@@ -34,7 +35,11 @@ class ProductsOnHandByDatePopUp(models.TransientModel):
 
     def open_table(self):
 
-        tree_view_id = self.env.ref('on_hand_by_date.on_hand_by_datelist_view').id
+        if self.show_cost:
+            tree_view_id = self.env.ref('on_hand_by_date.on_hand_by_date_list_view').id
+        else:
+            tree_view_id = self.env.ref('on_hand_by_date.on_hand_by_datelist_view').id
+
         form_view_id = self.env.ref('on_hand_by_date.on_hand_by_dateform_view').id
 
         on_hand_by_date_context = {'report_date': self.report_date}
@@ -44,6 +49,11 @@ class ProductsOnHandByDatePopUp(models.TransientModel):
 
         if self.product_id.id:
             on_hand_by_date_context.update({'product_id': self.product_id.id})
+
+        if self.show_cost:
+            on_hand_by_date_context.update({'costing_method': self.costing_method})
+        else:
+            on_hand_by_date_context.update({'costing_method': 0})
 
         on_hand_by_date_context.update({'show_only_zero_quantities': self.show_only_zero_quantities})
 
@@ -59,6 +69,18 @@ class ProductsOnHandByDatePopUp(models.TransientModel):
             on_hand_by_date_context.update({'include_zero_quanities': True})
 
         self.env['on_hand_by_date.stock'].with_context(on_hand_by_date_context).delete_and_create()
+
+        # stocks = self.env['on_hand_by_date.stock'].search([])
+
+        # for record in stocks:
+        #     if self.costing_method == 1:
+        #         record.unit_price = record.product_id.product_tmpl_id.standard_price
+        #     elif self.costing_method == 2:
+        #         record.unit_price = record.product_id.product_tmpl_id.standard_price
+        #     elif self.costing_method == 3:
+        #         record.unit_price = record.product_id.product_tmpl_id.standard_price
+        #     _logger.info('Costing for %r : %r', record.product_id.product_tmpl_id.name, str(record.unit_price))
+        #     record.assets_value = record.unit_price * record.qty_on_hand
 
         return {
             'type': 'ir.actions.act_window',
