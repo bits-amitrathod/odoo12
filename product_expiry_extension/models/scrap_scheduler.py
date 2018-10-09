@@ -10,7 +10,7 @@ from odoo.tools import float_compare
 _logger = logging.getLogger(__name__)
 
 class ScrapScheduler(models.Model):
-    _name = 'stock.scrap.scheduler'
+    #_name = 'stock.scrap.scheduler'
 
     @api.model
     @api.multi
@@ -39,6 +39,7 @@ class ScrapScheduler(models.Model):
                         'product_uom_id': int(stock_product_lot.product_uom_id), 'package_id': False, 'picking_id': False, 'origin': False,
                         'lot_id': int(stock.lot_id)}
                     self=self.create(val)
+
                     self.action_validate()
 
     
