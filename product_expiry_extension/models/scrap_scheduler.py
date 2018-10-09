@@ -41,7 +41,6 @@ class ScrapScheduler(models.TransientModel):
                     ml=self.env['stock.scrap'].create(val)
                     ml.action_validate()
 
-
     def process_manual_scrap_scheduler(self):
         _logger.info("process_manual_scrap_scheduler called..")
         self.process_scrap_scheduler()

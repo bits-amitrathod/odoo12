@@ -12,7 +12,7 @@
     'category': 'e-commerce',
     'version': '0.1',
 
-    'depends': ['base','payment'],
+    'depends': ['base','payment','website_sale'],
 
     # always loaded
     'data': [
