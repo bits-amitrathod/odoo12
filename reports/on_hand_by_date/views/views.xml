@@ -16,7 +16,7 @@
                         <group>
                             <group>
                                 <field name="show_inactive_products" widget="checkbox"/>
-                                <field name="include_zero_quanities" widget="checkbox"/>
+                                <field name="include_zero_quantities" widget="checkbox"/>
                             </group>
                             <group>
                                 <field name="show_cost" widget="checkbox"/>
