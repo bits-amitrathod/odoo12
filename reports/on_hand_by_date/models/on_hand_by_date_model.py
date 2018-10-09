@@ -31,7 +31,7 @@ class OnHandByDate(models.Model):
         if report_date is None:
             report_date = datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
 
-            include_zero_quantities = self.env.context.get('include_zero_quantities')
+        include_zero_quantities = self.env.context.get('include_zero_quantities')
 
         if not include_zero_quantities is None and include_zero_quantities:
             include_zero_quantities = " FULL JOIN "
