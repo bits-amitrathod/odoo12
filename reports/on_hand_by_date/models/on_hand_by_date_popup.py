@@ -49,6 +49,8 @@ class ProductsOnHandByDatePopUp(models.TransientModel):
 
         on_hand_by_date_context.update({'include_zero_quantities': self.include_zero_quantities})
 
+        on_hand_by_date_context.update({'show_cost': self.show_cost})
+
         domain = [('product_id.active', '=', True)]
         #
         if self.show_inactive_products:
