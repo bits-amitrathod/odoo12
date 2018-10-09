@@ -8,11 +8,11 @@
     'category': 'Uncategorized',
     'version': '0.1',
 
-    'depends': ['base', 'sale'],
+    'depends': ['base', 'purchase', 'sale'],
 
     'data': [
         'views/views.xml',
-        'report/on_hand_by_date_report.xml',
-        'report/on_hand_by_date_report_template.xml'
+        'report/receiving_list_report.xml',
+        'report/receiving_list_report_template.xml'
     ],
 }

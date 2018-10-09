@@ -71,7 +71,7 @@
             </field>
         </record>
 
-        <menuitem name="On Hand By Date" id="on_hand_by_date_menu" parent="sale.menu_sale_report"
+        <menuitem name="On Hand By Date" id="on_hand_by_date_menu" parent="stock.menu_warehouse_report"
                   action="on_hand_by_date.action_on_hand_by_date"/>
     </data>
 </odoo>
