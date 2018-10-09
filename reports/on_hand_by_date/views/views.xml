@@ -9,13 +9,14 @@
                         <group>
                             <field name="report_date"/>
                             <field name="vendor_id"/>
-                            <field name="product_id" domain="[('active','!=', show_inactive_products)]"/>
+                            <field name="product_id" />
+                            <!--domain="[('active','!=', show_inactive_products)]"-->
                             <field name="costing_method" attrs="{'invisible': [('show_cost', '=', False)]}"/>
                         </group>
                         <group>
                             <group>
                                 <field name="show_inactive_products" widget="checkbox"/>
-                                <field name="include_zero_quanities" widget="checkbox"/>
+                                <field name="include_zero_quantities" widget="checkbox"/>
                             </group>
                             <group>
                                 <field name="show_cost" widget="checkbox"/>
@@ -70,7 +71,7 @@
             </field>
         </record>
 
-        <menuitem name="On Hand By Date" id="on_hand_by_date_menu" parent="sale.menu_sale_report"
+        <menuitem name="On Hand By Date" id="on_hand_by_date_menu" parent="stock.menu_warehouse_report"
                   action="on_hand_by_date.action_on_hand_by_date"/>
     </data>
 </odoo>

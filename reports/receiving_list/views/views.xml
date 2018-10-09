@@ -41,7 +41,7 @@
         </record>
 
 
-        <menuitem name="Receiving List" id="receiving_list_menu" parent="sale.menu_sale_report"
+        <menuitem name="Receiving List" id="receiving_list_menu" parent="purchase.purchase_report"
                   action="receiving_list.action_receiving_list"/>
     </data>
 </odoo>

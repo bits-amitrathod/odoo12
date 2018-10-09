@@ -26,7 +26,7 @@ class ProductsOnHandByDatePopUp(models.TransientModel):
 
     show_inactive_products = fields.Boolean('Show Inactive Products', default=True, required=False)
 
-    include_zero_quanities = fields.Boolean('Include Zero Quantities', default=False, required=False)
+    include_zero_quantities = fields.Boolean('Include Zero Quantities', default=False, required=False)
 
     show_cost = fields.Boolean('Show Cost', default=False, required=False)
 
@@ -45,20 +45,20 @@ class ProductsOnHandByDatePopUp(models.TransientModel):
         if self.product_id.id:
             on_hand_by_date_context.update({'product_id': self.product_id.id})
 
-        self.env['on_hand_by_date.stock'].with_context(on_hand_by_date_context).delete_and_create()
+        on_hand_by_date_context.update({'show_only_zero_quantities': self.show_only_zero_quantities})
+
+        on_hand_by_date_context.update({'include_zero_quantities': self.include_zero_quantities})
 
         domain = [('product_id.active', '=', True)]
-
+        #
         if self.show_inactive_products:
             domain.clear()
 
         if self.show_only_zero_quantities:
-            domain.append(('qty_on_hand', '=', 0))
-        else:
-            if self.include_zero_quanities:
-                domain.append(('qty_on_hand', '>=', 0))
-            else:
-                domain.append(('qty_on_hand', '>', 0))
+            domain.append(('qty_on_hand', '=', None))
+            on_hand_by_date_context.update({'include_zero_quanities': True})
+
+        self.env['on_hand_by_date.stock'].with_context(on_hand_by_date_context).delete_and_create()
 
         return {
             'type': 'ir.actions.act_window',
