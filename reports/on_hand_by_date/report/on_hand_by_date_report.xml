@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report
+                id="action_report_on_hand_by_date"
+                string="On Hand By Date"
+                model="on_hand_by_date.stock"
+                report_type="qweb-html"
+                file="on_hand_by_date.on_hand_by_date_temp"
+                name="on_hand_by_date.on_hand_by_date_temp"
+                />
+    </data>
+</odoo>

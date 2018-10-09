@@ -4,22 +4,22 @@
         <!-- Menu -->
 
         <record id="action_product_catalog_download" model="ir.actions.act_window">
-            <field name="name">Product Catelog Download</field>
+            <field name="name">Product Catalog Download</field>
             <field name="res_model">website_cstm.product_download_catelog</field>
             <field name="view_mode">tree,form</field>
         </record>
 
 
-        <menuitem id="menu_product_instock_notification" name="Product Catelog Download"
+        <menuitem id="menu_product_instock_notification" name="Product Catalog Download"
 
                   parent="website.menu_website_global_configuration" sequence="10"/>
 
-        <menuitem id="menu_product_catalog_download" name="Product Catelog Download"
+        <menuitem id="menu_product_catalog_download" name="Product Catalog Download"
                   action="action_product_catalog_download"
                   parent="website.menu_website_global_configuration"/>
 
         <record model="ir.ui.view" id="purchase_order_line_file_field">
-            <field name="name">Product Catelog Download</field>
+            <field name="name">Product Catalog Download</field>
             <field name="model">website_cstm.product_download_catelog</field>
             <field name="arch" type="xml">
                 <form>

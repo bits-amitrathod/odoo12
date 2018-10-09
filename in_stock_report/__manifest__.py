@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Trending Report",
+    'name': "In Stock Report",
 
     'author': "Benchmark IT Solutions (I) Pvt Ltd.",
     'website': "http://www.benchmarkitsolutions.com",
@@ -17,9 +17,9 @@
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
-        'views/trending_report.xml',
-        'views/trending_report_print.xml',
-        'views/trending_report_pdf.xml',
+        'views/in_stock_report.xml',
+        'views/in_stock_report_print.xml',
+        'views/in_stock_report_pdf.xml',
         'views/views.xml',
         'views/templates.xml',
     ],

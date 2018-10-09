@@ -1,4 +1,4 @@
-odoo.define('website_sales.website_sales', function (require) {
+odoo.define('payment_aquirer_cstm.payment_aquirer_cstm', function (require) {
     "use strict";
     require('web.dom_ready');
     var ajax = require('web.ajax');

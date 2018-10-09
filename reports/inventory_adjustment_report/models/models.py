@@ -21,10 +21,9 @@ class inventory_adjustment_report(models.Model):
     currency_id = fields.Many2one('res.currency', 'Currency', store=False)
 
 
-
     @api.multi
     def _calculateSKU(self):
-
+        scraps = self.env['stock.scrap'].search([])
         ACTIONS = {
             "product": "Stockable Product",
             "consu": "Consumable",
@@ -41,12 +40,23 @@ class inventory_adjustment_report(models.Model):
             order.p_type =(ACTIONS[keys])
             order.date_cal=order.date
             order.date_posted=order.date
-
             order.amount = (float_repr(order.product_id.product_tmpl_id.list_price, precision_digits=2))
             for p in order.line_ids:
                 order.p_qty = p.product_qty
                 order.total_amt = (float_repr(p.product_qty * order.product_id.product_tmpl_id.list_price, precision_digits=2))
 
+            for user in scraps:
+                order.p_sku = user.product_id.product_tmpl_id.sku_code
+                keys = user.product_id.product_tmpl_id.type
+                if keys == False:
+                    keys = "product"
+                order.p_type = (ACTIONS[keys])
+                order.date_cal = user.create_date
+                order.date_posted = user.create_date
+                order.p_qty = user.scrap_qty
+                order.amount = (float_repr(user.product_id.product_tmpl_id.list_price, precision_digits=2))
+                order.total_amt = (
+                    float_repr(user.scrap_qty * user.product_id.product_tmpl_id.list_price, precision_digits=2))
 
 
     # @api.model

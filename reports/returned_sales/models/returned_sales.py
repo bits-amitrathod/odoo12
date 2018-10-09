@@ -47,9 +47,12 @@ class ProductSaleByCountPopUp(models.TransientModel):
         if self.product_id.id:
             returned_sales_context.update({'product_id': self.product_id.id})
 
-        self.env['products.on_order'].with_context(returned_sales_context).delete_and_create()
+        if self.sale_person_id.id:
+            returned_sales_context.update({'sales_partner_id': self.sale_person_id.partner_id.id})
 
-        domain = [('date_ordered', '>=', s_date), ('date_ordered', '<=', e_date)]
+        self.env['returned_sales.order'].with_context(returned_sales_context).delete_and_create()
+
+        domain = [('moved_date', '>=', s_date), ('moved_date', '<=', e_date)]
 
         return {
             'type': 'ir.actions.act_window',
@@ -57,7 +60,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
             'view_mode': 'tree,form',
             'name': _('Returned Sales'),
             'res_model': 'returned_sales.order',
-            'context': {'group_by': 'order_id',},
+            'context': {'group_by': 'product_id',},
             'domain' : domain,
             'target': 'main',
         }
