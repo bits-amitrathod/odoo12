@@ -20,14 +20,38 @@ class OnHandByDate(models.Model):
     sku_code = fields.Char()
     vendor_name = fields.Char()
     report_date = fields.Char()
+    costing_method = fields.Integer()
+    unit_price = fields.Float("Unit Price", compute='_get_product_price', store=False)
+    assets_value = fields.Float("Assets Value", compute='_get_asset_value', store=False)
+
+    def _get_product_price(self):
+        for record in self:
+            if record.costing_method == 1:
+                record.unit_price = record.product_id.product_tmpl_id.standard_price
+            elif record.costing_method == 2:
+                record.unit_price = record.product_id.product_tmpl_id.standard_price
+            elif record.costing_method == 3:
+                record.unit_price = record.product_id.product_tmpl_id.standard_price
+            record.assets_value = record.unit_price * record.qty_on_hand
+
+    def _get_asset_value(self):
+        pass
 
     @api.model_cr
     def init(self):
         self.init_table()
 
     def init_table(self):
+
         tools.drop_view_if_exists(self._cr, 'on_hand_by_date_stock')
+
         report_date = self.env.context.get('report_date')
+
+        costing_method = self.env.context.get('costing_method')
+
+        if costing_method is None:
+            costing_method = 0
+
         if report_date is None:
             report_date = datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
 
@@ -41,7 +65,8 @@ class OnHandByDate(models.Model):
         sql_query = """  CREATE VIEW on_hand_by_date_stock AS ( 
         SELECT  
             ROW_NUMBER () OVER (ORDER BY product_id) as id, p.id as product_id, 
-            q.qty_on_hand, b.name as vendor_name, t.name as name, 
+            q.qty_on_hand, b.name as vendor_name, t.name as name, """ + str(costing_method) + """ as costing_method,
+            0.0 as assets_value, 0.0 as unit_price,
             t.sku_code as sku_code, b.partner_id as partner_id, '""" + str(report_date) + """' as report_date
         FROM (
                 SELECT 
@@ -53,7 +78,8 @@ class OnHandByDate(models.Model):
                 WHERE 
                     (lc.create_date <= '""" + str(report_date) + """' AND l.create_date <= '""" + str(report_date) + """') 
                     AND 
-                    sq.quantity >= 0  GROUP BY (sq.product_id)
+                    sq.quantity >= 0 AND l.use_date >= '""" + str(report_date) + """'  
+                    GROUP BY (sq.product_id)
             ) q """ + include_zero_quantities + """ 
             product_product p ON p.id = q.product_id
         LEFT JOIN 

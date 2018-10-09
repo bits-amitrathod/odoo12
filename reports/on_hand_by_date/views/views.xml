@@ -43,6 +43,22 @@
         </record>
 
 
+        <record model="ir.ui.view" id="on_hand_by_date_list_view">
+            <field name="name">product.on.order.view.list</field>
+            <field name="model">on_hand_by_date.stock</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="sku_code" string="SKU/Catalog No."/>
+                    <field name="product_id" string="Product"/>
+                    <field name="vendor_name" string="Vendor"/>
+                    <field name="unit_price" />
+                    <field name="qty_on_hand" string="Quantity" sum="qty_on_hand"/>
+                    <field name="assets_value" sum="assets_value" />
+                    <field name="costing_method" invisible="1" />
+                </tree>
+            </field>
+        </record>
+
         <record model="ir.ui.view" id="on_hand_by_datelist_view">
             <field name="name">product.on.order.view.list</field>
             <field name="model">on_hand_by_date.stock</field>
