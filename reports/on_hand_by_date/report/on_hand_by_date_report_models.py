@@ -23,7 +23,7 @@ class OnHandByDateReportModel(models.AbstractModel):
         datas = {
             'form': group_by_list,
         }
-        action = self.env.ref('returned_sales.action_report_returned_sales').report_action([], data=group_by_list)
+        action = self.env.ref('on_hand_by_date.action_report_on_hand_by_date').report_action([], data=group_by_list)
         action.update({'target': 'main'})
 
         return action
