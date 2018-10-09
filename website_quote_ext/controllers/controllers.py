@@ -103,7 +103,7 @@ class CustomerPortal(CustomerPortal):
         return groups
 
     @http.route(['/my/vendor', '/my/vendor/page/<int:page>'], type='http', auth="user", website=True)
-    def portal_my_vendor_offer(self, page=1, date_begin=None, date_end=None, sortby=None, filterby=None, **kw):
+    def portal_my_vendor_offers(self, page=1, date_begin=None, date_end=None, sortby=None, filterby=None, **kw):
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
         PurchaseOrder = request.env['purchase.order']
@@ -129,7 +129,7 @@ class CustomerPortal(CustomerPortal):
         order = searchbar_sortings[sortby]['order']
 
         searchbar_filters = {
-            'all': {'label': _('All'), 'domain': [('state', 'in', ['purchase', 'done', 'cancel'])]},
+            'all': {'label': _('All'), 'domain': [('state', 'in', ['ven_draft', 'done', 'cancel'])]},
             'vendor offer': {'label': _('Vendor Offer'), 'domain': [('state', '=', 'ven_draft')]},
             'cancel': {'label': _('Cancelled'), 'domain': [('state', '=', 'cancel')]},
             'done': {'label': _('Locked'), 'domain': [('state', '=', 'done')]},
@@ -171,3 +171,18 @@ class CustomerPortal(CustomerPortal):
             'default_url': '/my/vendor',
         })
         return request.render("website_quote_ext.portal_my_vendor_offers", values)
+
+    @http.route(['/my/vendor/<int:order_id>'], type='http', auth="user", website=True)
+    def portal_my_vendor_offer(self, order_id=None, **kw):
+        order = request.env['purchase.order'].browse(order_id)
+        try:
+            order.check_access_rights('read')
+            order.check_access_rule('read')
+        except AccessError:
+            return request.redirect('/my')
+        #history = request.session.get('my_purchases_history', [])
+        values = {
+            'order': order.sudo(),
+        }
+        #values.update(get_records_pager(history, order))
+        return request.render("website_quote_ext.portal_my_vendor_offer", values)
