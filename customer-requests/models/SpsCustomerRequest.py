@@ -56,42 +56,16 @@ class SpsCustomerRequest(models.Model):
                                 str(sps_customer_request['customer_id'].id))
             query_result = self.env.cr.dictfetchone()
 
-            if int(query_result['document_id']) == int(sps_customer_request.document_id.id):
-                self.update_document_processed_count(sps_customer_request['document_id'].id,sps_customer_request['document_id'].document_processed_count)
-                _logger.debug('customer request %r, %r', sps_customer_request['customer_id'].id, sps_customer_request['product_id'].id)
-                if sps_customer_request['product_id'].id and not sps_customer_request['product_id'].id is False:
-                    _setting_object = self.get_settings_object(sps_customer_request['customer_id'].id, sps_customer_request['product_id'].id,
-                                                                sps_customer_request['id'], sps_customer_request['status'])
-
-                    # if status is partial check the remaining quantity to allocate to customer
-                    if sps_customer_request['status'].lower().strip() == 'partial':
-                        sale_order_line = self.env['sale.order.line'].search([('customer_request_id', '=', sps_customer_request.id)])
-                        _logger.debug('sale_order_line.product_uom_qty : %r', sale_order_line.product_uom_qty)
-                        required_quantity = sps_customer_request.required_quantity - sale_order_line.product_uom_qty
-                        _logger.debug('required_quantity : %r', required_quantity)
-                    else:
-                        required_quantity = sps_customer_request.required_quantity
-
-                    if _setting_object:
-                        sps_customer_request.write({'customer_request_logs': 'Customer prioritization setting is True, '})
-                        pr_model = dict(customer_request_id=sps_customer_request.id,
-                                        template_type=sps_customer_request.document_id.template_type,
-                                        customer_id=sps_customer_request['customer_id'].id,
-                                        product_id=sps_customer_request['product_id'].id,
-                                        status=sps_customer_request['status'],
-                                        required_quantity=required_quantity,
-                                        min_threshold=_setting_object.min_threshold,
-                                        max_threshold=_setting_object.max_threshold,
-                                        quantity=sps_customer_request.quantity,
-                                        product_priority=_setting_object.priority,
-                                        auto_allocate=_setting_object.auto_allocate,
-                                        cooling_period=_setting_object.cooling_period,
-                                        length_of_hold=_setting_object.length_of_hold,
-                                        partial_order=_setting_object.partial_ordering,
-                                        expiration_tolerance=_setting_object.expiration_tolerance,
-                                        customer_request_logs = sps_customer_request.customer_request_logs)
-
+            if sps_customer_request.document_id.template_type.lower().strip() == 'requirement':
+                # following condition use for process only latest uploaded document.
+                if int(query_result['document_id']) == int(sps_customer_request.document_id.id):
+                    pr_model = self.add_customer_request_data(sps_customer_request)
+                    if pr_model:
                         pr_models.append(pr_model)
+            else:
+                pr_model = self.add_customer_request_data(sps_customer_request)
+                if pr_model:
+                    pr_models.append(pr_model)
 
         #_logger.debug('Length **** %r', str(len(pr_models)))
         if len(pr_models) > 0:
@@ -101,6 +75,47 @@ class SpsCustomerRequest(models.Model):
             allocated_products = self.env['prioritization.engine.model'].allocate_product_by_priority(pr_models)
 
         return allocated_products
+
+    def add_customer_request_data(self,sps_customer_request,):
+        self.update_document_processed_count(sps_customer_request['document_id'].id,
+                                             sps_customer_request['document_id'].document_processed_count)
+        _logger.debug('customer request %r, %r', sps_customer_request['customer_id'].id,
+                      sps_customer_request['product_id'].id)
+        if sps_customer_request['product_id'].id and not sps_customer_request['product_id'].id is False:
+            _setting_object = self.get_settings_object(sps_customer_request['customer_id'].id,
+                                                       sps_customer_request['product_id'].id,
+                                                       sps_customer_request['id'], sps_customer_request['status'])
+
+            # if status is partial check the remaining quantity to allocate to customer
+            if sps_customer_request['status'].lower().strip() == 'partial':
+                sale_order_line = self.env['sale.order.line'].search(
+                    [('customer_request_id', '=', sps_customer_request.id)])
+                _logger.debug('sale_order_line.product_uom_qty : %r', sale_order_line.product_uom_qty)
+                required_quantity = sps_customer_request.required_quantity - sale_order_line.product_uom_qty
+                _logger.debug('required_quantity : %r', required_quantity)
+            else:
+                required_quantity = sps_customer_request.required_quantity
+
+            if _setting_object:
+                sps_customer_request.write({'customer_request_logs': 'Customer prioritization setting is True, '})
+                pr_model = dict(customer_request_id=sps_customer_request.id,
+                                template_type=sps_customer_request.document_id.template_type,
+                                customer_id=sps_customer_request['customer_id'].id,
+                                product_id=sps_customer_request['product_id'].id,
+                                status=sps_customer_request['status'],
+                                required_quantity=required_quantity,
+                                min_threshold=_setting_object.min_threshold,
+                                max_threshold=_setting_object.max_threshold,
+                                quantity=sps_customer_request.quantity,
+                                product_priority=_setting_object.priority,
+                                auto_allocate=_setting_object.auto_allocate,
+                                cooling_period=_setting_object.cooling_period,
+                                length_of_hold=_setting_object.length_of_hold,
+                                partial_order=_setting_object.partial_ordering,
+                                expiration_tolerance=_setting_object.expiration_tolerance,
+                                customer_request_logs=sps_customer_request.customer_request_logs)
+                return pr_model
+        return False
 
     def get_settings_object(self, customer_id,product_id,sps_customer_request_id,status):
         customer_level_setting = self.env['prioritization_engine.prioritization'].search(

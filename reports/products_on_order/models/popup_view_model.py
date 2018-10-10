@@ -55,7 +55,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
             'view_mode': 'tree,form',
             'name': _('Products On Order'),
             'res_model': 'products.on_order',
-            'context': {'group_by': 'order_id',},
+            'context': {'group_by': 'product_id',},
             'domain' : domain,
             'target': 'main',
         }
