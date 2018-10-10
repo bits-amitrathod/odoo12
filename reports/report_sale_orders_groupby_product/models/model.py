@@ -29,6 +29,7 @@ class ReportSaleOrdersGroupbyProduct(models.TransientModel):
             'name': _('Gross Sales By Product'),
             'res_model': 'sale.order.line',
             'context': {'search_default_product': 1},
+            'domain': [('state', 'in', ['sale', 'done'])]
         }
 
         if self.compute_at_date:

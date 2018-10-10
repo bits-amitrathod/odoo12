@@ -19,14 +19,14 @@
                     <t t-foreach="data['form']" t-as="products_on_order">
                         <center>
                             <b>
-                                <span>Order# :</span>
+                                <span>Product# :</span>
                                 <span t-esc="products_on_order[0]"/>
                             </b>
                         </center>
                         <table class="table table-condensed" style="">
                             <thead>
                                 <tr style="">
-                                    <th style="text-align: center;center;width: 327px;">Product</th>
+                                    <th style="text-align: center;center;width: 327px;">Order #</th>
                                     <th style="text-align: center;center;width: 474px;">Customer</th>
                                     <th style="text-align: center;">Qty Ordered</th>
                                     <th style="text-align: center;">Qty Remaining</th>

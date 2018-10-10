@@ -9,7 +9,7 @@
                         <center>
                             <b>
                                 <h2>Surgical Product Solutions</h2>
-                                <h4>Receiving List</h4>
+                                <h4>On Hand By Date</h4>
                                 <h4>Reporting Date: <span t-esc="data['report_date']"/></h4>
                             </b>
                         </center>
