@@ -114,12 +114,3 @@ class ProductSaleByCountPopUp(models.TransientModel):
     @staticmethod
     def string_to_date(date_string):
         return datetime.datetime.strptime(date_string, DEFAULT_SERVER_DATE_FORMAT).date()
-
-
-# class SaleOrderLineExt(models.Model):
-#     _inherit = "sale.order.line"
-#
-#     move_ids = fields.One2many('stock.move', 'sale_line_id', string='Moves')
-
-
-
