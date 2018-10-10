@@ -17,9 +17,8 @@ class ReportProductsOnOrder(models.AbstractModel):
                           products_on_order.qty_ordered, products_on_order.qty_remaining]
             key = ""
             if products_on_order.product_id.product_tmpl_id.sku_code:
-                key = str(products_on_order.product_id.product_tmpl_id.sku_code)
-            key = key + str(
-                " - ") + str(products_on_order.product_id.product_tmpl_id.name)
+                key = str(products_on_order.product_id.product_tmpl_id.sku_code) + str(" - ")
+            key = key + str(products_on_order.product_id.product_tmpl_id.name)
             try:
                 group_by_list[key].append(order_line)
             except KeyError:
@@ -38,7 +37,6 @@ class ReportProductsOnOrder(models.AbstractModel):
         log.info('final list: %r', final_list)
 
         datas = {
-            'ids': self,
             'form': final_list,
 
         }
