@@ -23,9 +23,12 @@ class OnHandByDate(models.Model):
     costing_method = fields.Integer()
     unit_price = fields.Float("Unit Price", compute='_get_product_price', store=False)
     assets_value = fields.Float("Assets Value", compute='_get_asset_value', store=False)
+    currency_id = fields.Many2one('res.currency', string='Currency')
 
     def _get_product_price(self):
         for record in self:
+            # record.currency_id = record.env.user.company_id.currency_id
+            _logger.info('currency_id: %r', str(record.currency_id))
             if record.costing_method == 1:
                 record.unit_price = record.product_id.product_tmpl_id.standard_price
             elif record.costing_method == 2:
@@ -64,28 +67,29 @@ class OnHandByDate(models.Model):
 
         sql_query = """  CREATE VIEW on_hand_by_date_stock AS ( 
         SELECT  
-            ROW_NUMBER () OVER (ORDER BY product_id) as id, p.id as product_id, 
+            ROW_NUMBER () OVER (ORDER BY product_id) as id, p.id as product_id, c.currency_id as currency_id, 
             q.qty_on_hand, b.name as vendor_name, t.name as name, """ + str(costing_method) + """ as costing_method,
             0.0 as assets_value, 0.0 as unit_price,
             t.sku_code as sku_code, b.partner_id as partner_id, '""" + str(report_date) + """' as report_date
         FROM (
                 SELECT 
-                    sq.product_id as product_id, SUM(sq.quantity) as qty_on_hand
+                    sq.product_id as product_id, SUM(sq.quantity) as qty_on_hand, sq.company_id as company_id
                 FROM 
                     stock_quant sq LEFT JOIN stock_production_lot l ON sq.lot_id = l.id LEFT JOIN stock_location lc 
                 ON 
                     lc.id = sq.location_id 
                 WHERE 
                     (lc.create_date <= '""" + str(report_date) + """' AND l.create_date <= '""" + str(report_date) + """') 
-                    AND 
+                    AND sq.company_id IS NOT NULL AND
                     sq.quantity >= 0 AND l.use_date >= '""" + str(report_date) + """'  
-                    GROUP BY (sq.product_id)
+                    GROUP BY (sq.product_id, sq.company_id) 
             ) q """ + include_zero_quantities + """ 
             product_product p ON p.id = q.product_id
         LEFT JOIN 
             product_template t ON t.id = p.product_tmpl_id
         LEFT JOIN 
-            product_brand b ON b.id = t.product_brand_id                      
+            product_brand b ON b.id = t.product_brand_id 
+        LEFT JOIN res_company c ON c.id = q.company_id                   
         WHERE 
             p.create_date <= '""" + str(report_date) + "' "
 
