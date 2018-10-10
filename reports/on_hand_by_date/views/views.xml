@@ -11,7 +11,7 @@
                             <field name="vendor_id"/>
                             <field name="product_id" />
                             <!--domain="[('active','!=', show_inactive_products)]"-->
-                            <field name="costing_method" attrs="{'invisible': [('show_cost', '=', False)]}"/>
+                            <!--<field name="costing_method" attrs="{'invisible': [('show_cost', '=', False)]}"/>-->
                         </group>
                         <group>
                             <group>
