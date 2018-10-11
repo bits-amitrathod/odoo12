@@ -1,0 +1,74 @@
+<odoo>
+    <data>
+        <record id="view_on_hand_by_expiry_popup" model="ir.ui.view">
+            <field name="name">On Hand By Expiration</field>
+            <field name="model">on_hand_by_expiry.popup</field>
+            <field name="arch" type="xml">
+                <form string="Filter">
+                    <group>
+                        <group>
+                            <field name="state"/>
+                            <field name="location_id"/>
+                            <field name="product_id"/>
+                        </group>
+                        <group>
+                            <field name="date_range" widget="radio"/>
+                            <field name="start_date" attrs="{'invisible': [('date_range', '=', 0)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('date_range', '=', 0)]}"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_on_hand_by_expiry" model="ir.actions.act_window">
+            <field name="name">On Hand By Expiration</field>
+            <field name="res_model">on_hand_by_expiry.popup</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_on_hand_by_expiry_popup"/>
+            <field name="target">new</field>
+            <field name="context">{'valuation': True}</field>
+        </record>
+
+
+        <record model="ir.ui.view" id="on_hand_by_expiry_list_view">
+            <field name="name">product.on.order.view.list</field>
+            <field name="model">on_hand_by_expiry</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="product_id"/>
+                    <field name="location_id"/>
+                    <field name="status"/>
+                    <field name="qty"/>
+                    <field name="expiration_date"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="on_hand_by_expiryform_view">
+            <field name="name">product.on.order.view.form</field>
+            <field name="model">on_hand_by_expiry</field>
+            <field name="arch" type="xml">
+                <form create="false" update="false">
+                    <group>
+                        <field name="name"/>
+                        <field name="product_id"/>
+                        <field name="location_id"/>
+                        <field name="status"/>
+                        <field name="qty"/>
+                        <field name="expiration_date"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <menuitem name="On Hand By Expiration" id="on_hand_by_expiry_menu" parent="stock.menu_warehouse_report"
+                  action="on_hand_by_expiry.action_on_hand_by_expiry"/>
+    </data>
+</odoo>

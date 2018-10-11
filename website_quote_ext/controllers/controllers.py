@@ -103,7 +103,7 @@ class CustomerPortal(CustomerPortal):
         return groups
 
     @http.route(['/my/vendor', '/my/vendor/page/<int:page>'], type='http', auth="user", website=True)
-    def portal_my_vendor_offer(self, page=1, date_begin=None, date_end=None, sortby=None, filterby=None, **kw):
+    def portal_my_vendor_offers(self, page=1, date_begin=None, date_end=None, sortby=None, filterby=None, **kw):
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
         PurchaseOrder = request.env['purchase.order']
@@ -172,7 +172,7 @@ class CustomerPortal(CustomerPortal):
         })
         return request.render("website_quote_ext.portal_my_vendor_offers", values)
 
-    '''@http.route(['/my/vendor/<int:order_id>'], type='http', auth="user", website=True)
+    @http.route(['/my/vendor/<int:order_id>'], type='http', auth="user", website=True)
     def portal_my_vendor_offer(self, order_id=None, **kw):
         order = request.env['purchase.order'].browse(order_id)
         try:
@@ -180,9 +180,9 @@ class CustomerPortal(CustomerPortal):
             order.check_access_rule('read')
         except AccessError:
             return request.redirect('/my')
-        history = request.session.get('my_purchases_history', [])
+        #history = request.session.get('my_purchases_history', [])
         values = {
             'order': order.sudo(),
         }
-        values.update(get_records_pager(history, order))
-        return request.render("website_quote_ext.portal_my_vendor_offer", values)'''
+        #values.update(get_records_pager(history, order))
+        return request.render("website_quote_ext.portal_my_vendor_offer", values)

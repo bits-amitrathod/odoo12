@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report
+                id="action_report_on_hand_by_expiry"
+                string="On Hand By Expiry"
+                model="on_hand_by_expiry"
+                report_type="qweb-html"
+                file="on_hand_by_expiry.templ"
+                name="on_hand_by_expiry.templ"
+                />
+    </data>
+</odoo>

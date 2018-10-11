@@ -5,7 +5,7 @@
      'author': "Benchmark IT Solutions (I) Pvt Ltd.",
     'website': "http://www.benchmarkitsolutions.com",
     'sequence': 57,
-    'category': 'website',
+    'category': 'Theme',
     'version': '0.1',
 
     'depends': ['website_sales','website_product_brand','web_search','website_crm','prioritization_engine','mass_mailing'],
@@ -30,7 +30,11 @@
         'views/in_stock_notification.xml'
     ],
 
+    'images': [
+        'static/description/sps_screenshot.jpg',
+    ],
+
     # 'auto_install': True,
-    'application': True,
+    # 'application': True,
     'installable': True,
 }
