@@ -30,7 +30,8 @@ _logger = logging.getLogger(__name__)
 class DocumentProcessTransientModel(models.TransientModel):
     _name = 'sps.document.process'
 
-    def process_document(self, user_model, uploaded_file_path, document_source='api'):
+    def process_document(self, user_model, uploaded_file_path, template_type_from_user, document_source='api',
+                         ):
         if not user_model.prioritization:
             return dict(errorCode=6, message='Prioritization is Not Enabled')
 
@@ -55,9 +56,11 @@ class DocumentProcessTransientModel(models.TransientModel):
         mappings, non_mapped_columns, template_type = DocumentProcessTransientModel._get_column_mappings(
             mapping_field_list,
             templates_list,
-            uploaded_file_path)
+            uploaded_file_path, template_type_from_user)
 
         if len(mappings) == 0:
+            if not template_type:
+                return dict(errorCode=9, message='Ambiguity in Template Type')
             return dict(errorCode=4, message='Mappings Not Found')
 
         requests, file_acceptable = DocumentProcessTransientModel._parse_csv(uploaded_file_path, mappings,
@@ -138,10 +141,11 @@ class DocumentProcessTransientModel(models.TransientModel):
         return response
 
     @staticmethod
-    def _get_column_mappings(mapping_field_list, templates_list, file_path):
+    def _get_column_mappings(mapping_field_list, templates_list, file_path, template_type_from_user):
         column_mappings = []
         template_type = None
         non_selected_columns = []
+        matched_templates = {}
         for customer_template in templates_list:
             if customer_template.non_selected_columns:
                 non_selected_columns = customer_template.non_selected_columns.split(',')
@@ -162,8 +166,14 @@ class DocumentProcessTransientModel(models.TransientModel):
             if compare(template_column_list, columns):
                 column_mappings = mapped_columns
                 template_type = customer_template.template_type
-                break
-        return column_mappings, non_selected_columns, template_type
+                matched_templates.update({template_type: [column_mappings, non_selected_columns, template_type]})
+        _logger.info('template_type_from_user: %r', template_type_from_user)
+        if len(matched_templates) > 1:
+            if template_type_from_user is None:
+                return [], [], False
+            matched_template = matched_templates.get(template_type_from_user)
+            return matched_template[0], matched_template[1], matched_template[2]
+        return column_mappings, non_selected_columns, template_type_from_user
 
     @staticmethod
     def _read_xls_book(book, read_data=False):

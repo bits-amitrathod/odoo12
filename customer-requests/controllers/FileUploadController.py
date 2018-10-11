@@ -35,9 +35,11 @@ class FileUploadController(Controller):
         try:
             username = post['username']
             password = post['password']
+            # template_type_from_user = post['template_type']
             file_storage = FileStorage(post['file'])
         except Exception:
             response = dict(errorCode=1, message='Bad Request')
+        template_type_from_user = post.get('template_type', None)
         if response is None:
             user_api_settings = request.env['res.partner'].sudo().search(
                 [('api_username', '=', username), ('api_secret', '=', password)])
@@ -54,12 +56,14 @@ class FileUploadController(Controller):
                 uploaded_file_path = str(directory_path + file_name)
                 file_storage.save(uploaded_file_path)
                 response = request.env['sps.document.process'].sudo().process_document(user_api_settings,
-                                                                                       uploaded_file_path)
+                                                                                       uploaded_file_path,
+                                                                                       template_type_from_user)
             else:
                 response = dict(errorCode=3, message='UnAuthorized Access')
-        if response['errorCode']:
-            self.send_mail(
-                "Sending API Response as " + str(response['message']) + " for user " + username)
+                
+        # if response['errorCode']:
+        #     self.send_mail(
+        #         "Sending API Response as " + str(response['message']) + " for user " + username)
 
         return json.JSONEncoder().encode(response)
 
