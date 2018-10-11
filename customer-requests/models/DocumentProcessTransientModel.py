@@ -41,9 +41,10 @@ class DocumentProcessTransientModel(models.TransientModel):
         _logger.info('user_model.parent_id %r', user_model.parent_id.id)
 
         if user_model.parent_id.id:
-            return dict(errorCode=8, message='Child Customer not allowed to upload request')
-
-        user_id = user_model.id
+            user_id = user_model.parent_id.id
+            #return dict(errorCode=8, message='Child Customer not allowed to upload request')
+        else:
+            user_id = user_model.id
         mapping_field_list = list(self.env['sps.customer.template'].fields_get().keys())
         mapping_field_list = [mapping_field for mapping_field in mapping_field_list if
                               mapping_field.startswith('mf_')]
