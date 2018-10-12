@@ -17,6 +17,7 @@
                       <field name="quickbook_id" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                       <field name="preferred_method" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                       <field name="allow_purchase" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                      <field name="saleforce_ac"  placeholder="Sale Force A/C."/>
                   </field>
                   <field name="lang" position="after">
                      <field name="prioritization" attrs="{'readonly':[('is_parent', '==', False)]}"/>
@@ -207,6 +208,7 @@
                 </xpath>
                 <xpath expr="/form/sheet/notebook/page[1]/field[@name='child_ids']/form[1]/sheet/group/group[2]/field[@name='name']" position="after">
                     <field name="gl_account"  placeholder=" G L Account No.."/>
+
                 </xpath>
             </field>
       </record>
