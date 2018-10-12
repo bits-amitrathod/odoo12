@@ -54,6 +54,7 @@ class PrioritizationEngine(models.TransientModel):
             if len(self.allocated_product_dict) > 0:
                 self.env['available.product.dict'].update_production_lot_dict()
                 self.generate_sale_order()
+                self._update_uploaded_document_status()
         else:
             _logger.debug('Available product lot list is zero')
         return self.allocated_product_dict
@@ -308,6 +309,25 @@ class PrioritizationEngine(models.TransientModel):
             return True,allocate_quantity
         else:
             return False,0
+
+    # Update uploaded document status
+    def _update_uploaded_document_status(self):
+        # get all document whose status is draft
+        sps_cust_uploaded_documents = self.env['sps.cust.uploaded.documents'].search([('status', 'in', ('draft','In Process'))])
+
+        for sps_cust_uploaded_document in sps_cust_uploaded_documents:
+            _logger.info('Document Id :%r',sps_cust_uploaded_document.id)
+            sps_customer_requirements = self.env['sps.customer.requests'].search([('document_id','=',sps_cust_uploaded_document.id),
+                                        ('status','in',('Partial','InCoolingPeriod','New','Inprocess','Incomplete','Unprocessed'))])
+            if len(sps_customer_requirements)>0:
+                self.env['sps.cust.uploaded.documents'].search([('id','=',sps_cust_uploaded_document.id)]).write(dict(status='In Process'))
+            else:
+                self.env['sps.cust.uploaded.documents'].search([('id','=',sps_cust_uploaded_document.id)]).write(dict(status='Processed'))
+
+
+
+
+
 
 
 
