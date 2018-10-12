@@ -96,17 +96,3 @@ class ProductsOnHandByDatePopUp(models.TransientModel):
     def string_to_date(date_string):
         return datetime.strptime(date_string, DEFAULT_SERVER_DATE_FORMAT).date()
 
-
-class ResPartnerExtension(models.Model):
-    _inherit = 'res.users'
-
-    sales_person = fields.Integer(default=0, compute='_check_sales_person', store=True)
-
-
-    @api.multi
-    def _check_sales_person(self):
-        for record in self:
-            if record.sale_team_id and record.sale_team_id.team_type == 'sales':
-                record.sales_person = 1
-            else:
-                record.sales_person = 0

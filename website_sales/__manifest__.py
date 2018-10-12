@@ -15,5 +15,5 @@
         'views/templates.xml',
     ],
     'installable': True,
-    'application': True,
+    # 'application': True,
 }

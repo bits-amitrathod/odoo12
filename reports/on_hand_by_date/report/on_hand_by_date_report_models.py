@@ -16,6 +16,7 @@ class OnHandByDateReportModel(models.AbstractModel):
             if not i:
                 group_by_list.update({'report_date' : stock.report_date})
                 group_by_list.update({'items' : []})
+                show_cost = bool(stock.costing_method)
             i = i + 1
             group_by_list['items'].append([stock.sku_code, stock.product_id.product_tmpl_id.name, stock.vendor_name,
                                            stock.qty_on_hand, stock.unit_price, stock.assets_value, stock.vendor_name])
@@ -25,6 +26,8 @@ class OnHandByDateReportModel(models.AbstractModel):
         group_by_list.update({'total_qty': total_qty})
 
         group_by_list.update({'total_assets_value': total_assets_value})
+
+        group_by_list.update({'show_cost': show_cost})
 
         action = self.env.ref('on_hand_by_date.action_report_on_hand_by_date').report_action([], data=group_by_list)
         action.update({'target': 'main'})

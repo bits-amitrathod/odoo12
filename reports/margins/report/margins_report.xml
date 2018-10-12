@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report
+                id="action_report_margins"
+                string="Margins"
+                model="margins"
+                report_type="qweb-html"
+                file="margins.margins_temp"
+                name="margins.margins_temp"
+                />
+    </data>
+</odoo>

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
-from odoo import http
+from odoo import http, _
 from odoo.http import request
+from odoo.addons.portal.controllers.mail import _message_post_helper
+import base64
 
 class VendorOffer(http.Controller):
     @http.route('/vendor_offer/vendor_offer/', auth='public')
@@ -20,13 +22,39 @@ class VendorOffer(http.Controller):
             'object': obj
         })
 
-    @http.route('/vendor_offer/accept/',  type='http', auth="public", website=True, csrf=False)
-    def vendor_offer_accept(self,product_id,**kw):
-        val = request.vendorOffer.action_button_confirm_api(product_id)
-        return "accepted"
+    @http.route('/vendor_offer/accept/',  type='json', auth="public", website=True, csrf=False)
+    def vendor_offer_accept(self, res_id, order_id=None, partner_name=None, signature=None,access_token=None):
+        order = request.env['purchase.order'].search([('id', '=', res_id)])
+        order_sudo = order.sudo()
+        if not signature:
+            return {'error': _('Signature is missing.')}
+        val = order_sudo.action_button_confirm_api(res_id)
+        _message_post_helper(
+            res_model='purchase.order',
+            res_id=order_sudo.id,
+            message=_('Order signed by %s') % (partner_name,),
+            attachments=[('signature.png', base64.b64decode(signature))] if signature else [],
+            **({'token': access_token} if access_token else {}))
+        return {
+            'success': _('Your Order has been confirmed.'),
+            'redirect_url': '/my/home',
+        }
 
 
-    @http.route('/vendor_offer/reject/', type='http', auth="public", website=True, csrf=False)
-    def vendor_offer_reject(self,product_id,**kw):
-        val = request.vendorOffer.action_cancel_vendor_offer_api(product_id)
-        return "rejected"
+    @http.route('/vendor_offer/reject/', type='json', auth="public", website=True, csrf=False)
+    def vendor_offer_reject(self, res_id,order_id=None, partner_name=None, signature=None,access_token=None):
+        if not signature:
+            return {'error': _('Signature is missing.')}
+        order = request.env['purchase.order'].browse(res_id)
+        order_sudo = order.sudo()
+        val = order_sudo.action_cancel_vendor_offer_api(res_id)
+        _message_post_helper(
+            res_model='purchase.order',
+            res_id=order_sudo.id,
+            message=_('Order rejected by %s') % (partner_name,),
+            attachments=[('signature.png', base64.b64decode(signature))] if signature else [],
+            **({'token': access_token} if access_token else {}))
+        return {
+            'success': _('Your Order has been rejected.'),
+            'redirect_url': '/my/home',
+        }

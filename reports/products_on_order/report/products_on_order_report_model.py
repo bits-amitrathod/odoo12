@@ -13,17 +13,21 @@ class ReportProductsOnOrder(models.AbstractModel):
 
         group_by_list = {}
         for products_on_order in products_on_order_list:
-            order_line = [products_on_order.product_id.product_tmpl_id.name, products_on_order.partner_id.display_name,
+            order_line = [products_on_order.order_id.name, products_on_order.partner_id.display_name,
                           products_on_order.qty_ordered, products_on_order.qty_remaining]
+            key = ""
+            if products_on_order.product_id.product_tmpl_id.sku_code:
+                key = str(products_on_order.product_id.product_tmpl_id.sku_code) + str(" - ")
+            key = key + str(products_on_order.product_id.product_tmpl_id.name)
             try:
-                group_by_list[products_on_order.name].append(order_line)
+                group_by_list[key].append(order_line)
             except KeyError:
-                group_by_list[products_on_order.name] = [order_line]
+                group_by_list[key] = [order_line]
 
 
         final_list = []
-        for order_name, line_list in group_by_list.items():
-            inner_list = [order_name, line_list]
+        for product_name, line_list in group_by_list.items():
+            inner_list = [product_name, line_list]
             remainig_so_qty = 0
             for line in line_list:
                 remainig_so_qty = remainig_so_qty + line[3]
@@ -33,7 +37,6 @@ class ReportProductsOnOrder(models.AbstractModel):
         log.info('final list: %r', final_list)
 
         datas = {
-            'ids': self,
             'form': final_list,
 
         }

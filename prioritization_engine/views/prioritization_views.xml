@@ -17,6 +17,7 @@
                       <field name="quickbook_id" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                       <field name="preferred_method" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                       <field name="allow_purchase" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                      <field name="saleforce_ac"  placeholder="Sale Force A/C."/>
                   </field>
                   <field name="lang" position="after">
                      <field name="prioritization" attrs="{'readonly':[('is_parent', '==', False)]}"/>
@@ -207,6 +208,7 @@
                 </xpath>
                 <xpath expr="/form/sheet/notebook/page[1]/field[@name='child_ids']/form[1]/sheet/group/group[2]/field[@name='name']" position="after">
                     <field name="gl_account"  placeholder=" G L Account No.."/>
+
                 </xpath>
             </field>
       </record>
@@ -256,7 +258,7 @@
             </field>
         </record>
 
-      <record id="prioritization_run_schedular_views" model="ir.ui.view">
+      <record id="prioritization_run_scheduler_views" model="ir.ui.view">
         <field name="name">Run Schedulers Manually</field>
         <field name="model">prioritization.cron.schedular</field>
         <field name="arch" type="xml">
@@ -266,20 +268,31 @@
                     sales order.
                 </p>
                 <footer>
-                    <button name="process_prioritization_scheduler_manually" string="Run Schedulers" type="object" class="btn-primary"/>
+                    <button name="process_prioritization_scheduler_manually" string="Run Scheduler" type="object" class="btn-primary"/>
                     <button string="Cancel" class="btn-default" special="cancel" />
                 </footer>
             </form>
         </field>
     </record>
 
-    <record id="prioritization_run_schedular" model="ir.actions.act_window">
+    <record id="prioritization_run_scheduler" model="ir.actions.act_window">
         <field name="name">Run Scheduler</field>
         <field name="res_model">prioritization.cron.schedular</field>
         <field name="view_type">form</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>
+
+      <record id="inherited_view_stock_move_operations" model="ir.ui.view">
+            <field name="name">stock.move.operations.form</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_stock_move_operations"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/group/group/div[2]" position="after">
+                    <field name="partial_UOM"/>
+                </xpath>
+            </field>
+      </record>
 
       <!-- Top menu item -->
     <menuitem name="Prioritization Engine" id="prioritization_engine.menu_root" web_icon="prioritization_engine,static/description/icon.png"/>
@@ -303,8 +316,8 @@
 
       <menuitem name="Operation" id="prioritization_operation_menu" parent="prioritization_engine.menu_root"/>
 
-      <menuitem name="Run Schedular" id="prioritization_run_schedular_menu" parent="prioritization_operation_menu"
-      action="prioritization_run_schedular"/>
+      <menuitem name="Run Scheduler" id="prioritization_run_scheduler_menu" parent="prioritization_operation_menu"
+      action="prioritization_run_scheduler"/>
          <!-- actions -->
    <!-- <menuitem name="Import Document" id="prioritization_engine.prioritization_import_menu" parent="prioritization_engine.prioritization_imenu"
               action="action_notification_setting"/>-->
