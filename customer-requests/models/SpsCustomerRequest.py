@@ -56,16 +56,24 @@ class SpsCustomerRequest(models.Model):
                                 str(sps_customer_request['customer_id'].id))
             query_result = self.env.cr.dictfetchone()
 
-            if sps_customer_request.document_id.template_type.lower().strip() == 'requirement':
+            # For Inventory Template
+            if sps_customer_request.document_id.template_type.lower().strip() == 'inventory':
                 # following condition use for process only latest uploaded document.
                 if int(query_result['document_id']) == int(sps_customer_request.document_id.id):
                     pr_model = self.add_customer_request_data(sps_customer_request)
                     if pr_model:
                         pr_models.append(pr_model)
-            else:
-                pr_model = self.add_customer_request_data(sps_customer_request)
-                if pr_model:
-                    pr_models.append(pr_model)
+            # For Requirement Template, Process old document maximum 3 times and for new(latest) document processing no limit.
+            elif sps_customer_request.document_id.template_type.lower().strip() == 'requirement':
+                # following condition use for process only latest uploaded document.
+                if int(query_result['document_id']) == int(sps_customer_request.document_id.id):
+                    pr_model = self.add_customer_request_data(sps_customer_request)
+                    if pr_model:
+                        pr_models.append(pr_model)
+                elif int(sps_customer_request.document_id.document_processed_count) < 3:
+                    pr_model = self.add_customer_request_data(sps_customer_request)
+                    if pr_model:
+                        pr_models.append(pr_model)
 
         #_logger.debug('Length **** %r', str(len(pr_models)))
         if len(pr_models) > 0:
@@ -75,12 +83,12 @@ class SpsCustomerRequest(models.Model):
             self.env['prioritization.engine.model'].allocate_product_by_priority(pr_models)
 
 
-    def add_customer_request_data(self,sps_customer_request,):
-        self.update_document_processed_count(sps_customer_request['document_id'].id,
-                                             sps_customer_request['document_id'].document_processed_count)
+    def add_customer_request_data(self,sps_customer_request):
         _logger.debug('customer request %r, %r', sps_customer_request['customer_id'].id,
                       sps_customer_request['product_id'].id)
         if sps_customer_request['product_id'].id and not sps_customer_request['product_id'].id is False:
+            self.update_document_processed_count(sps_customer_request['document_id'].id,
+                                                 sps_customer_request['document_id'].document_processed_count)
             _setting_object = self.get_settings_object(sps_customer_request['customer_id'].id,
                                                        sps_customer_request['product_id'].id,
                                                        sps_customer_request['id'], sps_customer_request['status'])
