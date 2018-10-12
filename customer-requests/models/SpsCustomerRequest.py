@@ -72,9 +72,8 @@ class SpsCustomerRequest(models.Model):
             # Sort list by product priority
             pr_models = sorted(pr_models, key=itemgetter('product_priority'))
             # Allocate Product by priority.
-            allocated_products = self.env['prioritization.engine.model'].allocate_product_by_priority(pr_models)
+            self.env['prioritization.engine.model'].allocate_product_by_priority(pr_models)
 
-        return allocated_products
 
     def add_customer_request_data(self,sps_customer_request,):
         self.update_document_processed_count(sps_customer_request['document_id'].id,
