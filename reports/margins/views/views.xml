@@ -86,6 +86,26 @@
             <field name="target">new</field>
         </record>
 
+        <record model="ir.ui.view" id="margins_grp_by_cust_list_view">
+            <field name="name">product.on.order.view.list</field>
+            <field name="model">margins.group_by_cust</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="product_id" invisible="1"/>
+                    <field name="sku_code" invisible="1"/>
+                    <!--<field name="partner_id"/>-->
+                    <field name="order_id"/>
+                    <field name="unit_cost"/>
+                    <field name="qty"/>
+                    <field name="unit_price"/>
+                    <field name="total_unit_price" sum="total_unit_price"/>
+                    <field name="total_unit_cost" sum="total_unit_cost"/>
+                    <field name="margin" sum="margin"/>
+                    <field name="margin_percentage" avg="margin_percentage"/>
+                </tree>
+            </field>
+        </record>
+
         <menuitem name="Margins" id="margins_menu" parent="stock.menu_warehouse_report"
                   action="margins.action_margins"/>
     </data>

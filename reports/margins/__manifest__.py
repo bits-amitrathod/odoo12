@@ -13,6 +13,7 @@
     'data': [
         'views/views.xml',
         'report/margins_report.xml',
-        'report/margins_report_template.xml'
+        'report/margins_report_template.xml',
+        'report/margins_report_by_cust_template.xml'
     ],
 }

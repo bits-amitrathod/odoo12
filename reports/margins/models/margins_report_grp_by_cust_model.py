@@ -7,7 +7,7 @@ _logger = logging.getLogger(__name__)
 
 
 class MarginsReport(models.Model):
-    _name = "margins"
+    _name = "margins.group_by_cust"
     _auto = False
 
     name = fields.Char(string="Name")
@@ -29,11 +29,12 @@ class MarginsReport(models.Model):
 
     @api.model_cr
     def init(self):
-        self.init_table()
+        # self.init_table()
+        pass
 
     def init_table(self):
 
-        tools.drop_view_if_exists(self._cr, 'margins')
+        tools.drop_view_if_exists(self._cr, 'margins_group_by_cust')
 
         partner_id = self.env.context.get('partner_id')
         product_id = self.env.context.get('product_id')
@@ -91,7 +92,7 @@ class MarginsReport(models.Model):
         if len(date_range) > 0:
             select_query = select_query + ", " + str(date_range) + " as date_range "
 
-        sql_query = "CREATE VIEW margins AS ( " + select_query + from_clause + where_clause + " )"
+        sql_query = "CREATE VIEW margins_group_by_cust AS ( " + select_query + from_clause + where_clause + " )"
 
         self._cr.execute(sql_query)
 

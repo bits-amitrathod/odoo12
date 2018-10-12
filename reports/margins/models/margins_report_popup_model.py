@@ -49,8 +49,8 @@ class MarginsReportPopup(models.TransientModel):
             e_date = datetime.date.today()
             s_date = datetime.date.today().replace(day=1)
 
-        margins_context = {'s_date': s_date, 'e_date' : e_date, 'include_returns': self.include_returns,
-                           'group_by': self.group_by ,'include_shipping' : self.include_shipping}
+        margins_context = {'s_date': s_date, 'e_date': e_date, 'include_returns': self.include_returns,
+                           'group_by': self.group_by,'include_shipping': self.include_shipping}
 
         if self.customer_id.id:
             margins_context.update({'partner_id': self.customer_id.id})
@@ -61,12 +61,18 @@ class MarginsReportPopup(models.TransientModel):
         if self.sale_order_id.id:
             margins_context.update({'sale_order_id': self.sale_order_id.id})
 
-        self.env['margins'].with_context(margins_context).delete_and_create()
+        # self.env['margins'].with_context(margins_context).delete_and_create()
 
         group_by_domain = ['product_id']
 
+        x_res_model = 'margins'
+
         if self.group_by == 'partner_id':
             group_by_domain.insert(0, 'partner_id')
+            x_res_model = 'margins.group_by_cust'
+            tree_view_id = self.env.ref('margins.margins_grp_by_cust_list_view').id
+
+        self.env[x_res_model].with_context(margins_context).delete_and_create()
 
 
         return {
@@ -74,7 +80,7 @@ class MarginsReportPopup(models.TransientModel):
             'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
             'view_mode': 'tree,form',
             'name': _('Margins'),
-            'res_model': 'margins',
+            'res_model': x_res_model,
             'context': {'group_by': group_by_domain, 'order_by': group_by_domain},
             'target': 'main',
         }
