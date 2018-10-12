@@ -54,6 +54,7 @@ class PrioritizationEngine(models.TransientModel):
             if len(self.allocated_product_dict) > 0:
                 self.env['available.product.dict'].update_production_lot_dict()
                 self.generate_sale_order()
+                self._check_uploaded_document_status()
         else:
             _logger.debug('Available product lot list is zero')
         return self.allocated_product_dict
@@ -308,6 +309,55 @@ class PrioritizationEngine(models.TransientModel):
             return True,allocate_quantity
         else:
             return False,0
+
+    # Update uploaded document status
+    def _check_uploaded_document_status(self):
+        # get all document whose status is draft and In Process.
+        sps_cust_uploaded_documents = self.env['sps.cust.uploaded.documents'].search([('status', 'in', ('draft','In Process'))])
+
+        for sps_cust_uploaded_document in sps_cust_uploaded_documents:
+            _logger.info('Document Id :%r',sps_cust_uploaded_document.id)
+            # get latest customer uploaded document id
+            self.env.cr.execute("SELECT max(id) document_id FROM public.sps_cust_uploaded_documents WHERE customer_id=" +
+                                    str(sps_cust_uploaded_document.customer_id.id))
+            query_result = self.env.cr.dictfetchone()
+            if sps_cust_uploaded_document.template_type.lower().strip() == 'requirement':
+                if int(query_result['document_id']) == int(sps_cust_uploaded_document.id):
+                    sps_customer_requirements = self.env['sps.customer.requests'].search(
+                        [('document_id', '=', sps_cust_uploaded_document.id),
+                         ('status', 'in', ('Partial', 'InCoolingPeriod', 'New', 'Inprocess', 'Incomplete', 'Unprocessed'))])
+                    if len(sps_customer_requirements) > 0:
+                        self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'In Process')
+                    else:
+                        self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
+                elif int(sps_cust_uploaded_document.document_processed_count) >=3:
+                    self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
+                else:
+                    self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'In Process')
+
+            elif sps_cust_uploaded_document.template_type.lower().strip() == 'inventory':
+                if int(query_result['document_id']) == int(sps_cust_uploaded_document.id):
+                    sps_customer_requirements = self.env['sps.customer.requests'].search(
+                        [('document_id', '=', sps_cust_uploaded_document.id),
+                         ('status', 'in',
+                          ('Partial', 'InCoolingPeriod', 'New', 'Inprocess', 'Incomplete', 'Unprocessed'))])
+                    if len(sps_customer_requirements) > 0:
+                        self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'In Process')
+                    else:
+                        self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
+                else:
+                    self._update_uploaded_document_status(sps_cust_uploaded_document.id,'Completed')
+
+    def _update_uploaded_document_status(self,document_id,status):
+        self.env['sps.cust.uploaded.documents'].search(
+            [('id', '=', document_id)]).write(dict(status=status))
+
+
+
+
+
+
+
 
 
 
