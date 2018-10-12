@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="margins_temp">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <page>
+                    <div class="oe_structure"/>
+                    <div class="row">
+                        <center>
+                            <b>
+                                <h2>Surgical Product Solutions</h2>
+                                <h4>On Hand By Date</h4>
+                                <h4>Reporting Date: <span t-esc="data['report_date']"/></h4>
+                            </b>
+                        </center>
+                        <br/>
+                            <t>
+                                <table class="table table-condensed" style="border: 1px solid black;">
+                                    <thead>
+                                        <tr style="">
+                                            <th style="text-align: center;center; border: 1px solid black;">SKU/Catalog No.</th>
+                                            <th style="text-align: center; border: 1px solid black; center;">Product</th>
+                                            <th style="text-align: center; border: 1px solid black;">Vendor</th>
+                                            <th style="text-align: center; border: 1px solid black;">Qty</th>
+                                            <th style="text-align: center; border: 1px solid black;">Unit Price</th>
+                                            <th style="text-align: right; border: 1px solid black;">Assets Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="data['items']" t-as="product">
+                                            <td style="border: 1px solid black; width: 10%;">
+                                                <span t-esc="product[0]"/>
+                                            </td>
+                                            <td align="left" style="border: 1px solid black;width: 70%;">
+                                                <span t-esc="product[1]"/>
+                                            </td>
+                                            <td align="left" style="border: 1px solid black;width: 10%;">
+                                                <span t-esc="product[2]"/>
+                                            </td>
+                                            <td align="left" style="border: 1px solid black;width: 10%;">
+                                                <span t-esc="product[3]"/>
+                                            </td>
+                                            <td align="right" style="border: 1px solid black;width: 10%;">
+                                                <span t-esc="product[4]"/>
+                                            </td>
+                                            <td align="right" style="border: 1px solid black;width: 10%;">
+                                                <span t-esc="product[5]"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>Total</td>
+                                            <td style="text-align: right; border: 1px solid black;"><span t-esc="data['total_qty']"/></td>
+                                            <td style="text-align: right;  border: 1px solid black;"><span t-esc="data['total_assets_value']"/></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </t>
+                    </div>
+                    <!--<br/>-->
+                </page>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -40,7 +40,7 @@ MAIL_TIMEOUT = 60
 
 poplib._MAXLINE = 65536
 
-ATTACHMENT_DIR = "/home/odoo/attachments/"
+ATTACHMENT_DIR = "attachments/"
 
 
 class IncomingMailCronModel(models.Model):
@@ -84,6 +84,11 @@ class IncomingMailCronModel(models.Model):
                                 match = re.search(r'[\w\.-]+@[\w\.-]+', email_from)
                                 email_from = str(match.group(0))
                                 subject = tools.decode_message_header(message, 'Subject')
+                                tmpl_type = None
+                                if 'Inventory' in subject:
+                                    tmpl_type = "Inventory"
+                                elif 'Requirement' in subject:
+                                    tmpl_type = "Requirement"
                                 if message.get_content_maintype() != 'text':
                                     alternative = False
                                     for part in message.walk():
@@ -165,7 +170,7 @@ class IncomingMailCronModel(models.Model):
                                                             file_ref.close()
                                                             self.env[
                                                                 'sps.document.process'].process_document(
-                                                                users_model, file_path, 'email')
+                                                                users_model, file_path, tmpl_type, 'email')
                                                         except Exception as e:
                                                             _logger.info(str(e))
                                             else:
