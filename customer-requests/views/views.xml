@@ -11,7 +11,7 @@
                     <field name="create_date" string="Uploaded On"/>
                     <field name="customer_id"/>
                     <field name="source"/>
-                    <!--<field name="document_processed_count"/>-->
+                    <field name="document_processed_count"/>
                     <field name="status"/>
                 </tree>
             </field>
