@@ -12,8 +12,8 @@ class MarginsReport(models.Model):
 
     name = fields.Char(string="Name")
     qty = fields.Float(string="Qty")
-    product_id = fields.Many2one('product.product', string='Product',)
-    partner_id = fields.Many2one('res.partner', string='Customer',)
+    product_id = fields.Many2one('product.product', string='Product', )
+    partner_id = fields.Many2one('res.partner', string='Customer', )
     order_id = fields.Many2one('sale.order', string='Order #', )
     sku_code = fields.Char(string="SKU/Catalog No.")
     unit_price = fields.Float(string="Unit Price")
@@ -22,10 +22,9 @@ class MarginsReport(models.Model):
     total_unit_cost = fields.Float(string="COGS")
     margin = fields.Float(string="Margins")
     margin_percentage = fields.Float(string="Margins %", group_operator='avg')
-    date_range = fields.Char(string='Date Range')
+    date_from = fields.Date(string='Date From')
+    date_to = fields.Date(string='Date To')
     group_by = fields.Char()
-    # currency_id = fields.Many2one("res.currency", related='user_id.company_id.currency_id', string="Currency",
-    #                               readonly=True)
 
     @api.model_cr
     def init(self):
@@ -38,6 +37,7 @@ class MarginsReport(models.Model):
 
         partner_id = self.env.context.get('partner_id')
         product_id = self.env.context.get('product_id')
+        sale_order_id = self.env.context.get('sale_order_id')
         s_date = self.env.context.get('s_date')
         e_date = self.env.context.get('e_date')
         group_by = self.env.context.get('group_by')
@@ -63,7 +63,7 @@ class MarginsReport(models.Model):
         END as margin_percentage """\
 
         if not group_by is None:
-            select_query = select_query + ", " + str(group_by) + " as group_by "
+            select_query = select_query + ", '" + str(group_by) + "' as group_by "
 
         from_clause = """ FROM 
             sale_order_line ol INNER JOIN  product_product p ON ol.product_id = p.id
@@ -76,11 +76,11 @@ class MarginsReport(models.Model):
         AND = " AND "
         date_range = ""
         if not s_date is None:
-            date_range = date_range + s_date.strftime('%Y-%m-%d')
+            select_query = select_query + ", '" + str(s_date) + "' as date_from "
             where_clause = where_clause + AND + " o.confirmation_date >= '" + str(s_date) + "'"
 
         if not e_date is None:
-            date_range = date_range + " - " + e_date.strftime('%Y-%m-%d')
+            select_query = select_query + ", '" + str(e_date) + "' as date_to "
             where_clause = where_clause + AND + " o.confirmation_date <= '" + str(e_date) + "'"
 
         if not partner_id is None:
@@ -89,8 +89,10 @@ class MarginsReport(models.Model):
         if not product_id is None:
             where_clause = where_clause + AND + " ol.product_id = " + str(product_id)
 
-        if len(date_range) > 0:
-            select_query = select_query + ", " + str(date_range) + " as date_range "
+        if not sale_order_id is None:
+            where_clause = where_clause + AND + " ol.order_id = " + str(sale_order_id)
+
+        _logger.info('date_range %r', date_range)
 
         sql_query = "CREATE VIEW margins_group_by_cust AS ( " + select_query + from_clause + where_clause + " )"
 

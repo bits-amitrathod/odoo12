@@ -20,7 +20,8 @@ class MarginsRerpotGroupByCustomer(models.AbstractModel):
         date_range = False
         for margins in margins_list:
             if not date_range:
-                date_range = margins.date_range
+                date_from = margins.date_from
+                date_to = margins.date_to
             product_name = str(
                 margins.product_id.product_tmpl_id.sku_code) + " - " + margins.product_id.product_tmpl_id.name
             customer_name = str(
@@ -55,7 +56,8 @@ class MarginsRerpotGroupByCustomer(models.AbstractModel):
         # _logger.info('final list: %r', final_list)
 
         action = self.env.ref('margins.action_report_margins_group_by_customer').report_action([], data={
-            'date_range': date_range,
+            'date_from': date_from,
+            'date_to': date_to,
             'items': final_list
             })
         action.update({'target': 'main'})
@@ -69,7 +71,7 @@ class MarginsRerpotGroupByCustomer(models.AbstractModel):
                 return item
         return None
 
-    def _get_product_dictionary(self,product_name, final_list):
+    def _get_product_dictionary(self, product_name, final_list):
         for item in final_list:
             if item['product_name'] == product_name:
                 return item

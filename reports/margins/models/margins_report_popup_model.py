@@ -61,8 +61,6 @@ class MarginsReportPopup(models.TransientModel):
         if self.sale_order_id.id:
             margins_context.update({'sale_order_id': self.sale_order_id.id})
 
-        # self.env['margins'].with_context(margins_context).delete_and_create()
-
         group_by_domain = ['product_id']
 
         x_res_model = 'margins'
@@ -88,21 +86,3 @@ class MarginsReportPopup(models.TransientModel):
     @staticmethod
     def string_to_date(date_string):
         return datetime.datetime.strptime(date_string, DEFAULT_SERVER_DATE_FORMAT).date()
-
-
-class SaleOrderLineExtenstion(models.Model):
-
-    _inherit = 'sale.order.line'
-
-    total_unit_cost = fields.Float(string='COGS', compute='_compute_total_unit_cost', store=False)
-    margins = fields.Float(string='Margins', store=False)
-    margins_percentage = fields.Float(string='Margins %', store=False)
-
-    @api.multi
-    def _compute_total_unit_cost(self):
-        for record in self:
-            record.total_unit_cost = record.product_uom_qty * record.purchase_price
-            margins = record.price_subtotal - record.total_unit_cost
-            margins_percentage = ((float(margins)) / record.price_subtotal ) * 100
-            record.write({'margins' : margins, 'margins_percentage' : margins_percentage})
-

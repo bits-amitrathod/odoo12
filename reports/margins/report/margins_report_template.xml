@@ -11,7 +11,7 @@
                                 <h2>Surgical Product Solutions</h2>
                                 <h4>Margins Report</h4>
                                 <h6>Date Range:
-                                    <span t-esc="data['date_range']"/>
+                                    <span t-esc="data['date_from']"/> - <span t-esc="data['date_to']"/>
                                 </h6>
                             </b>
                         </center>
@@ -42,25 +42,25 @@
                                             <span t-esc="order[0]"/>
                                         </td>
                                         <td align="center" style="text-align: right;">
-                                            <b>$</b> <span t-esc="order[1]"/>
+                                            <b>$</b> <span t-esc="'{:.2f}'.format(order[1])"/>
                                         </td>
                                         <td align="right" style="text-align: right;">
                                             <span t-esc="order[2]"/> <b>ea</b>
                                         </td>
                                         <td align="right" style="text-align: right;">
-                                           <b>$</b> <span t-esc="order[3]"/>
+                                           <b>$</b> <span t-esc="'{:.2f}'.format(order[3])"/>
                                         </td>
                                         <td align="center" style="text-align: right;">
-                                            <b>$</b> <span t-esc="order[4]"/>
+                                            <b>$</b> <span t-esc="'{:.2f}'.format(order[4])"/>
                                         </td>
                                         <td align="right" style="text-align: right;">
-                                            <b>$</b> <span t-esc="order[5]"/>
+                                            <b>$</b> <span t-esc="'{:.2f}'.format(order[5])"/>
                                         </td>
                                         <td align="right" style="text-align: right;">
-                                            <b>$</b> <span t-esc="order[6]"/>
+                                            <b>$</b> <span t-esc="'{:.2f}'.format(order[6])"/>
                                         </td>
                                          <td align="right" style="text-align: right;">
-                                             <span t-esc="order[7]"/><b>%</b>
+                                             <span t-esc="'{:.2f}'.format(order[7])"/><b>%</b>
                                         </td>
                                     </tr>
                                     <tr>
@@ -75,16 +75,16 @@
                                             <b>Totals </b>
                                         </td>
                                         <td align="center" style="text-align: right;">
-                                            <b>$</b> <span t-esc="product['totals'][0]"/>
+                                            <b>$</b> <span t-esc="'{:.2f}'.format(product['totals'][0])"/>
                                         </td>
                                         <td align="right" style="text-align: right;">
-                                            <b>$</b> <span t-esc="product['totals'][1]"/>
+                                            <b>$</b> <span t-esc="'{:.2f}'.format(product['totals'][1])"/>
                                         </td>
                                         <td align="right" style="text-align: right;">
-                                            <b>$</b> <span t-esc="product['totals'][2]"/>
+                                            <b>$</b> <span t-esc="'{:.2f}'.format(product['totals'][2])"/>
                                         </td>
                                          <td align="right" style="text-align: right;">
-                                             <span t-esc="product['totals'][3]"/><b>%</b>
+                                             <span t-esc="'{:.2f}'.format(float(product['totals'][3]))"/><b>%</b>
                                         </td>
                                     </tr>
                                 </tbody>

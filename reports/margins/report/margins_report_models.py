@@ -18,7 +18,7 @@ class OnHandByDateReportModel(models.AbstractModel):
 
         for margins in margins_list:
             if insert_date_range:
-                group_by_list.update({'date_range': margins.date_range, 'items': []})
+                group_by_list.update({'date_from': margins.date_from, 'date_to': margins.date_to, 'items': []})
                 insert_date_range = False
             product_name = str(margins.product_id.product_tmpl_id.sku_code) + str(' - ') + str(
                 margins.product_id.product_tmpl_id.name)
