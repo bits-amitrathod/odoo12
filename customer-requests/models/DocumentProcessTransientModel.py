@@ -128,14 +128,8 @@ class DocumentProcessTransientModel(models.TransientModel):
                     sps_customer_request)
                 if high_priority_product:
                     high_priority_requests.append(saved_sps_customer_request)
-            try:
-                if len(high_priority_requests) > 0:
-                    #file_uploaded_record.write({'document_processed_count': 1})
-                    self.env['sps.customer.requests'].process_customer_requests(high_priority_requests)
-                #else:
-                    #file_uploaded_record.write({'document_processed_count': 0})
-            except Exception as exc:
-                _logger.info("Error procesing high priority requests %r", exc)
+            self.env['sps.customer.requests'].process_customer_requests(high_priority_requests)
+
         else:
             _logger.info('file is not acceptable')
             response = dict(errorCode=2, message='Invalid File extension')
@@ -174,7 +168,7 @@ class DocumentProcessTransientModel(models.TransientModel):
                 return [], [], False
             matched_template = matched_templates.get(template_type_from_user)
             return matched_template[0], matched_template[1], matched_template[2]
-        return column_mappings, non_selected_columns, template_type_from_user
+        return column_mappings, non_selected_columns, template_type
 
     @staticmethod
     def _read_xls_book(book, read_data=False):
