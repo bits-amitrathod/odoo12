@@ -1,0 +1,70 @@
+<odoo>
+    <data>
+
+        <record id="view_mtd_sales_popup" model="ir.ui.view">
+            <field name="name">Margins</field>
+            <field name="model">mtd_sales.popup</field>
+            <field name="arch" type="xml">
+                <form string="Filter">
+                    <group>
+                       <field name="selected_date" />
+                    </group>
+                    <footer>
+                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_mtd_sales" model="ir.actions.act_window">
+            <field name="name">MTD Sales</field>
+            <field name="res_model">mtd_sales.popup</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_mtd_sales_popup"/>
+            <field name="target">new</field>
+        </record>
+
+        <record model="ir.ui.view" id="mtd_sales_graph_view">
+            <field name="name">mtd_sales.view.graph</field>
+            <field name="model">mtd_sales</field>
+            <field name="type">graph</field>
+            <field name="arch" type="xml">
+                <graph string="MTD Sales" orientation="horizontal" stacked="True" type="bar">
+                    <field name="day_of_month" type="row" string="Day"/>
+                    <field name="amount_total" type="measure" string="Sales" widget='monetary'  options="{'currency_field': 'currency_id'}"/>
+                </graph>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="mtd_sales_tree_view">
+            <field name="name">mtd_sales.view.tree</field>
+            <field name="model">mtd_sales</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="MTD Sales">
+                    <field name="day_of_month"/>
+                    <field name="amount_total" widget='monetary'/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="mtd_sales_form_view">
+            <field name="name">mtd_sales.view.form</field>
+            <field name="model">mtd_sales</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <from string="MTD Sales" create="False" update="False" delete="False">
+                    <group>
+                        <field name="day_of_month"/>
+                        <field name="amount_total" widget='monetary'/>
+                    </group>
+                </from>
+            </field>
+        </record>
+
+        <menuitem name="MTD Sales" id="mtd_sales_menu" parent="sale.menu_sale_report"
+                  action="mtd_sales.action_mtd_sales"/>
+    </data>
+</odoo>
