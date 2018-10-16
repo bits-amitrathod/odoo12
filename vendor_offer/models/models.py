@@ -233,6 +233,7 @@ class VendorOffer(models.Model):
         purchase = self.env['purchase.order'].search([('id', '=', product_id)])
         purchase.button_confirm()
         purchase.write({'status': 'purchase'})
+        purchase.write({'state': 'purchase'})
         purchase.write({'status_ven': 'Accepted'})
         purchase.write({'accepted_date': fields.date.today()})
         if (int(purchase.revision) > 0):
