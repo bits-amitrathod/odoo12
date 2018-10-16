@@ -17,6 +17,7 @@ class SpsCustomerRequest(models.Model):
     product_id = fields.Many2one('product.product', string='Product', required=False, default=0)
     sale_order_line_id = fields.One2many('sale.order.line', 'customer_request_id', string="Request")
     sale_order_id = fields.Char(String="Sale Order", compute="_get_sale_order_id")
+    gl_account_id = fields.Many2one('res.partner', string='GL Account Id')
 
     customer_sku = fields.Char()
     sps_sku = fields.Char()
@@ -26,8 +27,8 @@ class SpsCustomerRequest(models.Model):
     qty_to_show = fields.Char(compute="_get_qty_to_show")
 
     vendor_pricing = fields.Char()
-    quantity = fields.Integer()
-    required_quantity = fields.Integer()
+    quantity = fields.Float()
+    required_quantity = fields.Float()
     frequency_of_refill = fields.Integer()
     threshold = fields.Integer()
     uom = fields.Char()
