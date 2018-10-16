@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report
+                id="action_report_mtd_sales"
+                string="MTD Sales"
+                model="mtd_sales"
+                report_type="qweb-html"
+                file="mtd_sales.mtd_temp"
+                name="mtd_sales.mtd_temp"
+                />
+
+    </data>
+</odoo>

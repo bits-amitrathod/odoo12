@@ -7,13 +7,13 @@ _logger = logging.getLogger(__name__)
 
 
 class MarginsReport(models.Model):
-    _name = "margins"
+    _name = "margins.group_by_cust"
     _auto = False
 
     name = fields.Char(string="Name")
     qty = fields.Float(string="Qty")
-    product_id = fields.Many2one('product.product', string='Product',)
-    partner_id = fields.Many2one('res.partner', string='Customer',)
+    product_id = fields.Many2one('product.product', string='Product', )
+    partner_id = fields.Many2one('res.partner', string='Customer', )
     order_id = fields.Many2one('sale.order', string='Order #', )
     sku_code = fields.Char(string="SKU/Catalog No.")
     unit_price = fields.Float(string="Unit Price")
@@ -25,16 +25,15 @@ class MarginsReport(models.Model):
     date_from = fields.Date(string='Date From')
     date_to = fields.Date(string='Date To')
     group_by = fields.Char()
-    # currency_id = fields.Many2one("res.currency", related='user_id.company_id.currency_id', string="Currency",
-    #                               readonly=True)
 
     @api.model_cr
     def init(self):
-        self.init_table()
+        # self.init_table()
+        pass
 
     def init_table(self):
 
-        tools.drop_view_if_exists(self._cr, 'margins')
+        tools.drop_view_if_exists(self._cr, 'margins_group_by_cust')
 
         partner_id = self.env.context.get('partner_id')
         product_id = self.env.context.get('product_id')
@@ -95,7 +94,7 @@ class MarginsReport(models.Model):
 
         _logger.info('date_range %r', date_range)
 
-        sql_query = "CREATE VIEW margins AS ( " + select_query + from_clause + where_clause + " )"
+        sql_query = "CREATE VIEW margins_group_by_cust AS ( " + select_query + from_clause + where_clause + " )"
 
         self._cr.execute(sql_query)
 

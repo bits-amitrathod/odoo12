@@ -49,8 +49,8 @@ class MarginsReportPopup(models.TransientModel):
             e_date = datetime.date.today()
             s_date = datetime.date.today().replace(day=1)
 
-        margins_context = {'s_date': s_date, 'e_date' : e_date, 'include_returns': self.include_returns,
-                           'group_by': self.group_by ,'include_shipping' : self.include_shipping}
+        margins_context = {'s_date': s_date, 'e_date': e_date, 'include_returns': self.include_returns,
+                           'group_by': self.group_by,'include_shipping': self.include_shipping}
 
         if self.customer_id.id:
             margins_context.update({'partner_id': self.customer_id.id})
@@ -61,12 +61,16 @@ class MarginsReportPopup(models.TransientModel):
         if self.sale_order_id.id:
             margins_context.update({'sale_order_id': self.sale_order_id.id})
 
-        self.env['margins'].with_context(margins_context).delete_and_create()
-
         group_by_domain = ['product_id']
+
+        x_res_model = 'margins'
 
         if self.group_by == 'partner_id':
             group_by_domain.insert(0, 'partner_id')
+            x_res_model = 'margins.group_by_cust'
+            tree_view_id = self.env.ref('margins.margins_grp_by_cust_list_view').id
+
+        self.env[x_res_model].with_context(margins_context).delete_and_create()
 
 
         return {
@@ -74,7 +78,7 @@ class MarginsReportPopup(models.TransientModel):
             'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
             'view_mode': 'tree,form',
             'name': _('Margins'),
-            'res_model': 'margins',
+            'res_model': x_res_model,
             'context': {'group_by': group_by_domain, 'order_by': group_by_domain},
             'target': 'main',
         }
@@ -82,21 +86,3 @@ class MarginsReportPopup(models.TransientModel):
     @staticmethod
     def string_to_date(date_string):
         return datetime.datetime.strptime(date_string, DEFAULT_SERVER_DATE_FORMAT).date()
-
-
-class SaleOrderLineExtenstion(models.Model):
-
-    _inherit = 'sale.order.line'
-
-    total_unit_cost = fields.Float(string='COGS', compute='_compute_total_unit_cost', store=False)
-    margins = fields.Float(string='Margins', store=False)
-    margins_percentage = fields.Float(string='Margins %', store=False)
-
-    @api.multi
-    def _compute_total_unit_cost(self):
-        for record in self:
-            record.total_unit_cost = record.product_uom_qty * record.purchase_price
-            margins = record.price_subtotal - record.total_unit_cost
-            margins_percentage = ((float(margins)) / record.price_subtotal ) * 100
-            record.write({'margins' : margins, 'margins_percentage' : margins_percentage})
-
