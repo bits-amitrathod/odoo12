@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="report_vendorofferdraft_document">
+
+    <t t-call="web.external_layout">
+        <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})"/>
+        <div><strong>SURGICAL SURPLUS PURCHASE OFFER</strong></div>
+        <div class="page">
+            <div class="oe_structure"/>
+            <div style="color:red" ><Strong>TO ENSURE SAFE DELIVERY PLEASE INCLUDE A HARD COPY OF THIS PURCHASE OFFER IN EACH SHIPMENT BOX</Strong></div>
+            <div class="row mt32 mb32">
+                <div class="col-xs-6">
+                     <strong>BUYER NAME / ADDRESS:</strong>
+                    <div t-if="o.dest_address_id" style="font-size:15px!important;" >
+                        <div t-field="o.dest_address_id" style="font-size:15px!important;"
+                            t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True, "phone_icons": True}'/>
+                    </div>
+                    <div t-if="not o.dest_address_id and o.picking_type_id.warehouse_id" style="font-size:15px!important;">
+                        <span t-field="o.picking_type_id.warehouse_id.name" style="font-size:15px!important;"/>
+                        <div t-field="o.picking_type_id.warehouse_id.partner_id"  style="font-size:15px!important;"
+                            t-options='{"widget": "contact", "fields": ["address", "phone"], "no_marker": True, "phone_icons": True}'/>
+                    </div>
+                </div>
+                <div class="col-xs-5 col-xs-offset-1">
+                      <strong>SELLER NAME / ADDRESS:</strong>
+                    <div t-field="o.partner_id" style="font-size:15px!important;"
+                        t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True, "phone_icons": True}'/>
+                        <p t-if="o.partner_id.vat"><t t-esc="o.company_id.country_id.vat_label or 'TIN'"/>: <span t-field="o.partner_id.vat"/></p>
+                </div>
+            </div>
+            <h2 style="color:red;font-size:16px;" align="center" ><strong>***CONFIDENTIAL***</strong></h2><hr></hr>
+            <div><p><span style="font-weight:600;font-size:16px !important;">OFFER PRICE: </span><span style="font-weight:600;font-size:18px !important;" t-field="o.offer_amount"/> <span style="font-weight:600;font-size:18px!important;">Cash Back</span></p></div>
+            <div><p>This offer must be accepted within 3 business days of delivery date unless otherwise noted.</p></div>
+              <div><p>Once the offer is accepted, the offer price is contingent upon requirements detailed below.</p></div>
+              <div><p><strong>OFFER PRICE CONDITIONAL UPON</strong>:</p></div>
+              <div><p>Speedy Delivery to Buyer within 5 days  Please included this purchase offer inside each shipment</p></div>
+              <div><p>Quality Control Inspection within 10 days upon receipt of goods</p></div>
+              <div><p><strong>PREFERRED SETTLEMENT PERIOD:</strong> 30 days from completion of SPS quality control inspection</p></div>
+              <div><p><strong>SPS RESERVES THE RIGHT TO ADJUST THIS PURCHASE OFFER IN THE EVENT THAT SPSS QUALITY CONTROL PROCESS INDENTIFIES ANY DAMAGES OR DISCREPENCIES WITH THE PRODUCT FURNISHED.SELLER WILL BE NOTIFIED IMMEDIATELY IF AND WHEN THIS OFFER IS ADJUSTED.</strong></p></div>
+              <div><p><strong>ALL ITEMS MUST BE IN THE ORIGINAL MANUFACTURERS PACKAGING AND NOT REPROCESSED. NO SALES SAMPLES OR CPT PRODUCTS.</strong></p></div>
+              <div><p><strong>YOU WARRANT THAT YOU ARE THE LAWFUL OWNER OF THE AFOREMENTIONED GOODS, THAT THEY ARE FREE FROM ALL ENCUMBRANCES, AND THAT WE HAVE THE RIGHT TO SELL THESE GOODS. SELLER BINDS ITSELF, ITS SUCCESSORS AND ASSIGNS, TO WARRANT AND DEFEND SPS TITLE TO THESE GOODS AGAINST CLAIMS AND DEMANDS OF ALL PERSONS.</strong></p></div>
+              <div><p><strong><br /> </strong><strong></strong>By checking the box to the left, you agree that: (1) you are a licensed facility with legitimate title ownership of the merchandise being sold; (2) you have quality system procedures to ensure the maintenance of safety, storage and distribution is properly being enforced; and (3) you are willing to demonstrate this to SPS upon request.</p></div>
+              <div><p>PRINT NAME:<strong><span t-field="o.partner_id.name"/> </strong></p></div>
+            <div><p>SELLER SIGNATURE:  __________________________________<span style="float:right;position:relative;right:119px;">DATE:</span></p></div>
+              <div><p>PRINT NAME:<strong><span t-field="o.name"/> </strong></p></div>
+            <div><p>BUYER SIGNATURE: <u>________________________________</u>_<span style="float:right;position:relative;right:50px;">DATE: 1/02/1234</span></p></div>
+              <h2><p>SURGICAL SURPLUS PURCHASE OFFER <span t-field="o.name"/></p></h2>
+              <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th class="text-center"><strong>Manufacturer</strong></th>
+                        <th class="text-center"><strong>Catalog Number</strong></th>
+                        <th class="text-right"><strong>Qty. (Each counts)</strong></th>
+                        <th class="text-right"><strong>Offer</strong></th>
+                         <th class="text-right"><strong>Total Offer</strong></th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="o.order_line" t-as="order_line">
+                        <td class="text-center">
+                            <span t-field="order_line.product_brand_id"/>
+                        </td>
+                        <td class="text-center">
+                            <span t-field="order_line.sku_code"/>
+                        </td>
+                        <td class="text-right">
+                            <span t-field="order_line.product_qty"/>
+                            <span t-field="order_line.product_uom" groups="product.group_uom"/>
+                        </td>
+                        <td class="text-right">
+                            <span t-field="order_line.product_offer_price"/>
+                        </td>
+                        <td class="text-right">
+                            <span t-field="order_line.price_subtotal" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="oe_structure"/>
+        </div>
+    </t>
+</template>
+
+<template id="report_vendorofferdraft">
+    <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="vendor_offer.report_vendorofferdraft_document" t-lang="o.partner_id.lang"/>
+        </t>
+    </t>
+</template>
+</odoo>
+    
