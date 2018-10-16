@@ -156,11 +156,49 @@ class VendorOffer(models.Model):
 
     @api.multi
     def action_send_offer_email(self):
-        pass
+        '''
+               This function opens a window to compose an email, with the edi purchase template message loaded by default
+               '''
+        self.ensure_one()
+        ir_model_data = self.env['ir.model.data']
+        try:
+            if self.env.context.get('send_rfq', False):
+                template_id = ir_model_data.get_object_reference('vendor_offer', 'email_template_edi_vendor_offer')[1]
+            else:
+                template_id = ir_model_data.get_object_reference('vendor_offer', 'email_template_edi_vendor_offer')[1]
+        except ValueError:
+            template_id = False
+        try:
+            compose_form_id = ir_model_data.get_object_reference('mail', 'email_compose_message_wizard_form')[1]
+        except ValueError:
+            compose_form_id = False
+        ctx = dict(self.env.context or {})
+        ctx.update({
+            'default_model': 'purchase.order',
+            'default_res_id': self.ids[0],
+            'default_use_template': bool(template_id),
+            'default_template_id': template_id,
+            'default_composition_mode': 'comment',
+            'custom_layout': "vendor_offer.mail_template_data_notification_email_vendor_offer",
+            'force_email': True
+        })
+        self.write({'status': 'ven_sent','state': 'ven_sent'})
+        return {
+            'name': _('Compose Email'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'mail.compose.message',
+            'views': [(compose_form_id, 'form')],
+            'view_id': compose_form_id,
+            'target': 'new',
+            'context': ctx,
+        }
 
     @api.multi
     def action_print_vendor_offer(self):
-        pass
+        self.write({'status': 'ven_sent','state': 'ven_sent'})
+        return self.env.ref('vendor_offer.action_report_vendor_offer').report_action(self)
 
     @api.multi
     def action_confirm_vendor_offer(self):
@@ -177,6 +215,7 @@ class VendorOffer(models.Model):
 
     @api.multi
     def action_button_confirm(self):
+
         if (self.env.context.get('vendor_offer_data') == True):
             purchase = self.env['purchase.order'].search([('id', '=', self.id)])
             purchase.button_confirm()
@@ -191,13 +230,12 @@ class VendorOffer(models.Model):
 
     @api.multi
     def action_button_confirm_api(self,product_id):
-        print('============= ==============')
         purchase = self.env['purchase.order'].search([('id', '=', product_id)])
         purchase.button_confirm()
         purchase.write({'status': 'purchase'})
+        purchase.write({'state': 'purchase'})
         purchase.write({'status_ven': 'Accepted'})
         purchase.write({'accepted_date': fields.date.today()})
-
         if (int(purchase.revision) > 0):
             temp = int(purchase.revision) - 1
             purchase.revision = str(temp)
@@ -230,6 +268,7 @@ class VendorOffer(models.Model):
     @api.multi
     def action_cancel_vendor_offer_api(self,product_id):
         purchase = self.env['purchase.order'].search([('id', '=', product_id)])
+        purchase.button_cancel()
         purchase.write({'state': 'cancel'})
         purchase.write({'status': 'cancel'})
         purchase.write({'status_ven': 'Declined'})

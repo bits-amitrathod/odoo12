@@ -22,7 +22,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">form,tree</field>
             <field name="view_id" ref="product_list_view"/>
-            <field name="domain">[('type', 'in', ['consu', 'product'])]</field>
+            <field name="domain">[('type', 'in', ['product'])]</field>
         </record>
 
          <record model="ir.ui.view" id="custom_list_view">
@@ -45,7 +45,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">form,tree</field>
             <field name="view_id" ref="custom_list_view"/>
-            <field name="domain">[('type', 'in', ['consu', 'product'])]</field>
+            <field name="domain">[('type', 'in', ['product'])]</field>
         </record>
 
         <menuitem id="menu_sale_report_product_list_wizard"

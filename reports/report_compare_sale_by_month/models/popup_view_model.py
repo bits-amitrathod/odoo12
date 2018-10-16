@@ -28,6 +28,7 @@ class DiscountSummaryPopUp(models.TransientModel):
                 'res_model': 'product.product',
                 'context': {'current_start_date':self.current_start_date, 'current_end_date':self.current_end_date,
                             'last_start_date': self.last_start_date, 'last_end_date': self.last_end_date},
+                'domain': [('type', 'in', ['product'])],
             }
             return action
         else:
@@ -39,5 +40,6 @@ class DiscountSummaryPopUp(models.TransientModel):
                 'res_model': 'product.product',
                 'context': {'current_start_date': self.current_start_date, 'current_end_date': self.current_end_date,
                             'last_start_date': self.last_start_date, 'last_end_date': self.last_end_date},
+                'domain': [('type', 'in', ['product'])],
             }
             return action

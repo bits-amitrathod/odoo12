@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report
+                id="action_pick_report"
+                string="Pick Report"
+                model="pick_report.popup"
+                report_type="qweb-html"
+                file="pick_report.pick_tmpl"
+                name="pick_report.pick_tmpl"
+                />
+    </data>
+</odoo>

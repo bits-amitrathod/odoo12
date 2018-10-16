@@ -1,0 +1,112 @@
+<odoo>
+    <data>
+        <record id="view_margins_popup" model="ir.ui.view">
+            <field name="name">Margins</field>
+            <field name="model">margins.popup</field>
+            <field name="arch" type="xml">
+                <form string="Filter">
+                    <group>
+                        <group>
+                            <field name="group_by"/>
+                            <field name="customer_id" domain="[('customer','=', True)]"/>
+                            <field name="product_id"/>
+                            <field name="sale_order_id"/>
+                        </group>
+                        <group>
+                            <field name="date_range" widget="radio"/>
+                            <field name="start_date" attrs="{'invisible': [('date_range', '=', 0)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('date_range', '=', 0)]}"/>
+                        </group>
+                    </group>
+                    <!--<group>-->
+                    <!--<field name="include_returns" widget="checkbox"/>-->
+                    <!--<field name="include_shipping" widget="checkbox"/>                        -->
+                    <!--</group>-->
+                    <footer>
+                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_margins" model="ir.actions.act_window">
+            <field name="name">Margins</field>
+            <field name="res_model">margins.popup</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_margins_popup"/>
+            <field name="target">new</field>
+        </record>
+
+        <record model="ir.ui.view" id="margins_list_view">
+            <field name="name">product.on.order.view.list</field>
+            <field name="model">margins</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="product_id" invisible="1"/>
+                    <field name="sku_code" invisible="1"/>
+                    <!--<field name="partner_id"/>-->
+                    <field name="order_id"/>
+                    <field name="unit_cost"/>
+                    <field name="qty"/>
+                    <field name="unit_price"/>
+                    <field name="total_unit_price" sum="total_unit_price"/>
+                    <field name="total_unit_cost" sum="total_unit_cost"/>
+                    <field name="margin" sum="margin"/>
+                    <field name="margin_percentage" avg="margin_percentage"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="margins_form_view">
+            <field name="name">product.on.order.view.form</field>
+            <field name="model">margins</field>
+            <field name="arch" type="xml">
+                <form create="false" update="false">
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="product_id"/>
+                            <field name="sku_code"/>
+                            <field name="order_id"/>
+                            <field name="qty"/>
+                        </group>
+                        <group>
+                            <field name="unit_price"/>
+                            <field name="unit_cost"/>
+                            <field name="total_unit_price"/>
+                            <field name="total_unit_cost"/>
+                            <field name="margin"/>
+                            <field name="margin_percentage"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+            <field name="target">new</field>
+        </record>
+
+        <record model="ir.ui.view" id="margins_grp_by_cust_list_view">
+            <field name="name">product.on.order.view.list</field>
+            <field name="model">margins.group_by_cust</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="product_id" invisible="1"/>
+                    <field name="sku_code" invisible="1"/>
+                    <!--<field name="partner_id"/>-->
+                    <field name="order_id"/>
+                    <field name="unit_cost"/>
+                    <field name="qty"/>
+                    <field name="unit_price"/>
+                    <field name="total_unit_price" sum="total_unit_price"/>
+                    <field name="total_unit_cost" sum="total_unit_cost"/>
+                    <field name="margin" sum="margin"/>
+                    <field name="margin_percentage" avg="margin_percentage"/>
+                </tree>
+            </field>
+        </record>
+
+        <menuitem name="Margins" id="margins_menu" parent="sale.menu_sale_report"
+                  action="margins.action_margins"/>
+    </data>
+</odoo>

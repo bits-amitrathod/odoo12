@@ -31,6 +31,7 @@ class Customer(models.Model):
     quickbook_id=fields.Char("Quickbook Id")
     having_carrier = fields.Boolean("Having Carrier?")
     notification_email=fields.Char("Notification Email")
+    saleforce_ac=fields.Char("SF A/C No#")
     preferred_method=fields.Selection([
        ('mail', 'Mail'),
        ('email', 'E Mail'),
@@ -258,3 +259,18 @@ class SalesChannelPrioritization(models.Model):
     team_type = fields.Selection([('engine', 'Prioritization'), ('sales', 'Sales'), ('website', 'Website')], string='Channel Type', default='sales',
                                  required=True,
                                  help="The type of this channel, it will define the resources this channel uses.")
+
+
+class StockMove(models.Model):
+    _inherit = "stock.move"
+    partial_UOM = fields.Boolean("Allow Partial UOM?", compute="_get_partial_UOM", readonly=True)
+
+    @api.multi
+    @api.depends('partial_UOM')
+    def _get_partial_UOM(self):
+        _logger.info('partner id : %r, product id : %r',self.partner_id.id,self.product_id.id)
+        if self.partner_id and self.product_id:
+            setting = self.env['sps.customer.requests'].get_settings_object(self.partner_id.id,self.product_id.id,None,None)
+            _logger.info('partial UOM** : %r', setting.partial_UOM)
+            self.partial_UOM = setting.partial_UOM
+

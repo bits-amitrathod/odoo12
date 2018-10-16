@@ -72,8 +72,13 @@ class CustomerPortal(CustomerPortal):
 
     def _prepare_portal_layout_values(self):
         # get customer sales rep
+        PuchaseOrder = request.env['purchase.order']
         sales_user = False
         partner = request.env.user.partner_id
+        vendor_count = PuchaseOrder.search_count([
+            ('message_partner_ids', 'child_of', [partner.commercial_partner_id.id]),
+            ('state', 'in', ['ven_sent', 'cancel'])
+        ])
         if partner.user_id and not partner.user_id._is_public():
             sales_user = partner.user_id
 
@@ -81,6 +86,7 @@ class CustomerPortal(CustomerPortal):
             'sales_user': sales_user,
             'page_name': 'home',
             'archive_groups': [],
+            'vendor_count':vendor_count,
         }
 
     def _get_archive_groups(self, model, domain=None, fields=None, groupby="create_date", order="create_date desc"):
@@ -103,7 +109,7 @@ class CustomerPortal(CustomerPortal):
         return groups
 
     @http.route(['/my/vendor', '/my/vendor/page/<int:page>'], type='http', auth="user", website=True)
-    def portal_my_vendor_offer(self, page=1, date_begin=None, date_end=None, sortby=None, filterby=None, **kw):
+    def portal_my_vendor_offers(self, page=1, date_begin=None, date_end=None, sortby=None, filterby=None, **kw):
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
         PurchaseOrder = request.env['purchase.order']
@@ -129,10 +135,9 @@ class CustomerPortal(CustomerPortal):
         order = searchbar_sortings[sortby]['order']
 
         searchbar_filters = {
-            'all': {'label': _('All'), 'domain': [('state', 'in', ['ven_draft', 'done', 'cancel'])]},
-            'vendor offer': {'label': _('Vendor Offer'), 'domain': [('state', '=', 'ven_draft')]},
+            'all': {'label': _('All'), 'domain': [('state', 'in', ['ven_sent', 'done', 'cancel'])]},
+            'vendor offer': {'label': _('Vendor Offer'), 'domain': [('state', '=', 'ven_sent')]},
             'cancel': {'label': _('Cancelled'), 'domain': [('state', '=', 'cancel')]},
-            'done': {'label': _('Locked'), 'domain': [('state', '=', 'done')]},
         }
         # default filter by value
         if not filterby:
@@ -172,7 +177,7 @@ class CustomerPortal(CustomerPortal):
         })
         return request.render("website_quote_ext.portal_my_vendor_offers", values)
 
-    '''@http.route(['/my/vendor/<int:order_id>'], type='http', auth="user", website=True)
+    @http.route(['/my/vendor/<int:order_id>'], type='http', auth="user", website=True)
     def portal_my_vendor_offer(self, order_id=None, **kw):
         order = request.env['purchase.order'].browse(order_id)
         try:
@@ -180,9 +185,9 @@ class CustomerPortal(CustomerPortal):
             order.check_access_rule('read')
         except AccessError:
             return request.redirect('/my')
-        history = request.session.get('my_purchases_history', [])
+        #history = request.session.get('my_purchases_history', [])
         values = {
             'order': order.sudo(),
         }
-        values.update(get_records_pager(history, order))
-        return request.render("website_quote_ext.portal_my_vendor_offer", values)'''
+        #values.update(get_records_pager(history, order))
+        return request.render("website_quote_ext.portal_my_vendor_offer", values)
