@@ -1,6 +1,6 @@
 <odoo>
     <data>
-        <template id="assets_frontend" inherit_id="website.assets_frontend" name="Shop">
+    <template id="assets_frontend" inherit_id="website.assets_frontend" name="Shop">
         <xpath expr="." position="inside">
            <script type="text/javascript" src="/website_quote_ext/static/src/js/website_sale.js"></script>
         </xpath>
@@ -13,11 +13,6 @@
             </a>
         </xpath>
     </template>
-    <!--<template id="so_engine_content" inherit_id="website_quote.so_quotation_content" name="Prioritization Content">
-        <xpath expr="//t[@t-call='website_quote.pricing']" position="replace">
-             <t t-call="website_quote_ext.cart_lines"/>
-        </xpath>
-    </template>-->
 
     <template id="cart_lines" name="Shopping Cart Lines">
         <!--<div t-if="not website_sale_order or not website_sale_order.website_order_line" class="js_cart_lines well well-lg">
@@ -463,17 +458,17 @@
       </t>
     </template>
 
-     <template id="portal_my_home_vendor_offer" name="Portal My Home : vendor offer entry" inherit_id="portal.portal_my_home" priority="25">
+    <template id="portal_my_home_vendor_offer" name="Portal My Home : vendor offer entry" inherit_id="portal.portal_my_home" priority="25">
         <xpath expr="//ul[hasclass('o_portal_docs')]" position="inside">
-            <li  class="list-group-item">
-              <span class="badge" t-esc="vendor_offer_count"/>
-              <a href="/my/vendor">Vendor offer</a>
+            <li  t-if="vendor_count" class="list-group-item">
+              <span class="badge" t-esc="vendor_count"/>
+              <a href="/my/vendor">Vendor Offer</a>
             </li>
         </xpath>
      </template>
 
-     <template id="portal_my_vendor_offers" name="Portal: My Vendor Offers">
-        <t t-call="portal.portal_layout">
+    <template id="portal_my_vendor_offers" name="Portal: My Vendor Offers">
+       <t t-call="portal.portal_layout">
           <h3>Vendor Offers
             <t t-call="portal.portal_searchbar"/>
           </h3>
@@ -508,9 +503,9 @@
           </div>
           </div>
         </t>
-     </template>
+    </template>
 
-       <template id="portal_my_vendor_offer" name="Portal: My Vendor Offer">
+    <template id="portal_my_vendor_offer" name="Portal: My Vendor Offer">
         <t t-call="portal.portal_layout">
           <t t-set="vendor_offer" t-value="order"/>
           <div id="optional_placeholder"></div>
@@ -597,20 +592,6 @@
                   </div>
                 </div>
               </div>
-              <!-- <div class="container o_website_quote">
-                  <div class="hidden-print">
-                      <div class="text-center"  style="padding: 10px">
-                          <a class="btn btn-primary btn-block" data-toggle="modal" data-target="#modalaccept">
-                              <i class="fa fa-check"></i> Accept Order
-                          </a>
-                      </div>
-                      <div class="text-center"  style="padding: 10px">
-                          <a class="btn btn-primary btn-block" data-toggle="modal" data-target="#modalaccept">
-                              <i class="fa fa-check"></i> Reject
-                          </a>
-                      </div>
-                  </div>
-               </div>-->
               <div t-if="order.state != 'cancel'" class="text-center hidden-print mt16 mb16" id="quotation_toolbar">
                   <a class="btn btn-success" data-target="#modalaccept" data-toggle="modal">
                       <i class="fa fa-check"></i> Accept
@@ -619,7 +600,7 @@
                                   <i class="fa fa-times"></i> Reject
                  </a>
              </div>
-               <div class="modal fade" id="modalaccept" role="dialog" aria-hidden="true">
+              <div class="modal fade" id="modalaccept" role="dialog" aria-hidden="true">
                     <div class="modal-dialog">
                        <form id="accept" method="POST" t-att-data-order-id="order.id" class="js_accept_json modal-content js_website_submit_form">
                         <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
@@ -671,9 +652,18 @@
                       </form>
                     </div>
                 </div>
-
           </div>
         </t>
-      </template>
+    </template>
+
+
+    <template id="portal_my_home_menu_vendor" name="Portal layout : vendor menu entries" inherit_id="portal.portal_layout" priority="20">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="vendor_offer and vendor_offer.state in ('ven_sent', 'cancel')">
+                <a t-if="vendor_offer" t-attf-href="/my/vendor?{{ keep_query() }}">Vendor Offer</a>
+                <t t-else="">Vendor Offer </t>
+            </li>
+        </xpath>
+    </template>
     </data>
 </odoo>
