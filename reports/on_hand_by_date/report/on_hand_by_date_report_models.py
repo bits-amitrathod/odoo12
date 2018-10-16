@@ -16,7 +16,7 @@ class OnHandByDateReportModel(models.AbstractModel):
             if not i:
                 group_by_list.update({'report_date' : stock.report_date})
                 group_by_list.update({'items' : []})
-                show_cost = bool(stock.costing_method)
+                show_cost = stock.costing_method
             i = i + 1
             group_by_list['items'].append([stock.sku_code, stock.product_id.product_tmpl_id.name, stock.vendor_name,
                                            stock.qty_on_hand, stock.unit_price, stock.assets_value, stock.vendor_name])

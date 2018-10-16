@@ -126,7 +126,7 @@ class SpsTransientBaseImport(models.TransientModel):
             self.columns_from_template = ".".join(headers)
             preview = list(itertools.islice(rows, count))
             assert preview, "CSV file seems to have no content"
-            header_types = self._find_type_from_preview(options, preview)
+            # header_types = self._find_type_from_preview(options, preview)
             if options.get('keep_matches', False) and len(options.get('fields', [])):
                 matches = {}
                 for index, match in enumerate(options.get('fields')):
@@ -137,7 +137,7 @@ class SpsTransientBaseImport(models.TransientModel):
                 'fields': fields,
                 'matches': matches or False,
                 'headers': headers or False,
-                'headers_type': header_types or False,
+                'headers_type': False,
                 'preview': preview,
                 'options': options,
                 'debug': self.user_has_groups('base.group_no_one'),
@@ -183,7 +183,6 @@ class SpsTransientBaseImport(models.TransientModel):
                 'id': name[3:],
                 'name': name[3:],
                 'string': field['string'],
-                # Y U NO ALWAYS HAS REQUIRED
                 'required': bool(field.get('required')),
                 'fields': [],
                 'type': field['type'],
