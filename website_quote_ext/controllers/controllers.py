@@ -72,8 +72,13 @@ class CustomerPortal(CustomerPortal):
 
     def _prepare_portal_layout_values(self):
         # get customer sales rep
+        PuchaseOrder = request.env['purchase.order']
         sales_user = False
         partner = request.env.user.partner_id
+        vendor_count = PuchaseOrder.search_count([
+            ('message_partner_ids', 'child_of', [partner.commercial_partner_id.id]),
+            ('state', 'in', ['ven_sent', 'cancel'])
+        ])
         if partner.user_id and not partner.user_id._is_public():
             sales_user = partner.user_id
 
@@ -81,6 +86,7 @@ class CustomerPortal(CustomerPortal):
             'sales_user': sales_user,
             'page_name': 'home',
             'archive_groups': [],
+            'vendor_count':vendor_count,
         }
 
     def _get_archive_groups(self, model, domain=None, fields=None, groupby="create_date", order="create_date desc"):
@@ -129,10 +135,9 @@ class CustomerPortal(CustomerPortal):
         order = searchbar_sortings[sortby]['order']
 
         searchbar_filters = {
-            'all': {'label': _('All'), 'domain': [('state', 'in', ['ven_draft', 'done', 'cancel'])]},
-            'vendor offer': {'label': _('Vendor Offer'), 'domain': [('state', '=', 'ven_draft')]},
+            'all': {'label': _('All'), 'domain': [('state', 'in', ['ven_sent', 'done', 'cancel'])]},
+            'vendor offer': {'label': _('Vendor Offer'), 'domain': [('state', '=', 'ven_sent')]},
             'cancel': {'label': _('Cancelled'), 'domain': [('state', '=', 'cancel')]},
-            'done': {'label': _('Locked'), 'domain': [('state', '=', 'done')]},
         }
         # default filter by value
         if not filterby:
