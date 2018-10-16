@@ -1,0 +1,33 @@
+<odoo>
+    <data>
+        <record id="view_pick_report_popup" model="ir.ui.view">
+            <field name="name">Pick Report</field>
+            <field name="model">pick_report.popup</field>
+            <field name="arch" type="xml">
+                <form string="Filter">
+                    <group>
+                            <field name="picking_id"/>
+                    </group>
+                    <footer>
+                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_pick_report" model="ir.actions.act_window">
+            <field name="name">Pick Report Window Action</field>
+            <field name="res_model">pick_report.popup</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_pick_report_popup"/>
+            <field name="target">new</field>
+            <field name="context">{'valuation': True}</field>
+        </record>
+
+
+        <menuitem name="Pick Report" id="pick_report_menu" parent="stock.menu_warehouse_report"
+                  action="pick_report.action_pick_report"/>
+    </data>
+</odoo>
