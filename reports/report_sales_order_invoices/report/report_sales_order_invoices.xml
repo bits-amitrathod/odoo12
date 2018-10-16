@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report
+                id="action_report_sales_order_invoices"
+                string="Sales Order Invoice"
+                model="account.invoice"
+                report_type="qweb-html"
+                file="report_sales_order_invoices.sales_order_invoices"
+                name="report_sales_order_invoices.sales_order_invoices"
+        />
+    </data>
+</odoo>
