@@ -143,14 +143,12 @@ class Customer(models.Model):
         if min_threshold and min_threshold > 999:
             raise ValidationError(_('Global Priority Configuration->Min Threshold field must be less 999'))
 
-
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
     location = fields.Char("Location")
     premium = fields.Boolean("Premium")
     sku_code = fields.Char('SKU / Catalog No')
     manufacturer_pref = fields.Char(string='Manuf. Catalog No')
-
 
 class NotificationSetting(models.Model):
     _inherit = 'res.partner'
@@ -259,7 +257,6 @@ class SalesChannelPrioritization(models.Model):
     team_type = fields.Selection([('engine', 'Prioritization'), ('sales', 'Sales'), ('website', 'Website')], string='Channel Type', default='sales',
                                  required=True,
                                  help="The type of this channel, it will define the resources this channel uses.")
-
 
 class StockMove(models.Model):
     _inherit = "stock.move"
