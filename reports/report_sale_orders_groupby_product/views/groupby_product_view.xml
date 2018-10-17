@@ -58,7 +58,7 @@
             </field>
         </record>
 
-        <record id="view_popup_view" model="ir.ui.view">
+        <record id="sale_orders_groupby_product_popup_view" model="ir.ui.view">
             <field name="name">Gross Sales By Product</field>
             <field name="model">report.sale.orders.groupby.product</field>
             <field name="arch" type="xml">
@@ -83,21 +83,10 @@
             <field name="res_model">report.sale.orders.groupby.product</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
-            <field name="view_id" ref="view_popup_view"/>
+            <field name="view_id" ref="view_sales_order_line_view_cstm"/>
             <field name="target">new</field>
             <field name="context">{'default_compute_at_date': 0, 'valuation': True}</field>
         </record>
-
-        <!--<record id="sr_action_sale_report_bygroup" model="ir.actions.act_window">-->
-            <!--<field name="name">Gross Sales By Product</field>-->
-            <!--<field name="type">ir.actions.act_window</field>-->
-            <!--<field name="res_model">sale.order.line</field>-->
-            <!--<field name="view_type">form</field>-->
-            <!--<field name="view_mode">tree,form</field>-->
-            <!--<field name="search_view_id" ref="view_sales_order_line_filter_cstm"/>-->
-            <!--&lt;!&ndash;<field name="view_id" ref="view_sales_order_line_view_cstm"/>&ndash;&gt;-->
-            <!--<field name="context">{'search_default_product': 1}</field>-->
-        <!--</record>-->
 
         <menuitem id="sr_menu_sale_report_by_product"
                   name="Gross Sales By Product"

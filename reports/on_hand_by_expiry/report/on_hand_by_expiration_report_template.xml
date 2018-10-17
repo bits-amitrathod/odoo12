@@ -10,7 +10,7 @@
                             <b>
                                 <h2>Surgical Product Solutions</h2>
                                 <h4>On Hand By Expiration Date</h4>
-                                <!--<h4>Reporting Date: <span t-esc="data['report_date']"/></h4>-->
+                                <h4>Reporting Date: <span t-esc="data['report_date']"/></h4>
                             </b>
                         </center>
                         <br/>
@@ -27,20 +27,20 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr t-foreach="data" t-as="product">
-                                            <td style="border: 1px solid black; width: 10%;">
+                                        <tr t-foreach="data['items']" t-as="product">
+                                            <td style="border: 1px solid black; width: 15%;">
                                                 <span t-esc="product.name"/>
                                             </td>
-                                            <td align="left" style="border: 1px solid black;width: 70%;">
+                                            <td align="left" style="border: 1px solid black;width: 35%;">
                                                 <span t-esc="product.product_id.product_tmpl_id.name"/>
                                             </td>
                                             <td align="right" style="border: 1px solid black;width: 10%;">
                                                 <span t-esc="product.qty"/>
                                             </td>
-                                            <td align="left" style="border: 1px solid black;width: 10%;">
+                                            <td align="left" style="border: 1px solid black;width: 15%;">
                                                 <span t-esc="product.location_id.complete_name"/>
                                             </td>
-                                            <td align="right" style="border: 1px solid black;width: 10%;">
+                                            <td align="right" style="border: 1px solid black;width: 15%;">
                                                 <span t-esc="product.expiration_date"/>
                                             </td>
                                             <td align="left" style="border: 1px solid black;width: 10%;">

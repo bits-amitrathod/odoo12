@@ -60,7 +60,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
 
     def _format_purchase_order_data(self, purchase_order):
         response = {'order_id': purchase_order.name, 'name': purchase_order.partner_id.display_name,
-                    'state': purchase_order.state, 'type': 'Purchase'}
+                    'state': purchase_order.state.capitalize(), 'type': 'Purchase'}
         lines = []
         for line in purchase_order.order_line:
             lines.append([line.product_id.product_tmpl_id.sku_code, line.product_id.product_tmpl_id.name,
@@ -72,7 +72,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
 
     def _format_sale_order_data(self, sales_order):
         response = {'order_id': sales_order.name, 'name': sales_order.partner_id.display_name,
-                    'state': sales_order.state, 'type': 'Sales'}
+                    'state': sales_order.state.capitalize(), 'type': 'Sales'}
         lines = []
         for line in sales_order.order_line:
             sql_query = """
