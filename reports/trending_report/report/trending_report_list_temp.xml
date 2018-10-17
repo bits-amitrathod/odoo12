@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="trendingreportlist_temp_test">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <page>
+                    <div class="oe_structure"/>
+                    <div class="row">
+                    <center>
+                        <b>
+                            <h2> Surgical Product Solutions </h2>
+                            <h4> Trending Report</h4>
+                        </b>
+                    </center>
+                    <center>
+                    </center>
+                    </div>
+                    <br/>
+                    <div class="table-responsive">
+                    <table class="table table-condensed" style="border: 1px solid black;">
+                            <thead>
+                                <tr style="border: 1px solid black;">
+                                    <th style="border: 1px solid black;text-align: center;">Trending</th>
+                                    <th style="border: 1px solid black;text-align: center;">Product</th>
+                                    <th style="border: 1px solid black;text-align: center;">Vendor</th>
+                                    <th style="border: 1px solid black;text-align: center;">last Sold</th>
+                                    <th style="border: 1px solid black;text-align: center;">Cost</th>
+                                </tr>
+                                    <tr t-foreach="data" t-as="order">
+                                        <td style="border: 1px solid black;">
+                                            <span t-esc="order.name"/>
+                                        </td>
+
+                                        <!--<td style="border: 1px solid black;">-->
+                                            <!--<span t-esc="order.product_id.name"/>-->
+                                        <!--</td>-->
+                                        <!--<td align="center" style="border: 1px solid black;">-->
+                                            <!--<span t-esc="order.partner_id.name"/>-->
+                                        <!--</td>-->
+                                        <!--<td style="border: 1px solid black;white-space:nowrap;">-->
+                                             <!--<span t-esc="order.last_sold"/>-->
+                                        <!--</td>-->
+                                        <!--<td align="right" style="border: 1px solid black;white-space:nowrap;">-->
+                                             <!--<span t-esc="order.cost"  t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>-->
+                                        <!--</td>-->
+                                    </tr>
+                            </thead>
+                    </table>
+                    </div>
+                </page>
+            </t>
+        </t>
+    </template>
+</odoo>

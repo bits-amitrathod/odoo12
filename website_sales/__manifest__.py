@@ -11,6 +11,7 @@
     'depends': ['website_sale','payment_aquirer_cstm'],
     # always loaded
     'data': [
+        'security/ir.model.access.csv',
         'views/views.xml',
         'views/templates.xml',
     ],
