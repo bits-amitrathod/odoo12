@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report 
+            string="Vendor Offer"
+            id="action_report_vendor_offer"
+            model="purchase.order" 
+            report_type="qweb-pdf"
+            name="vendor_offer.report_vendorofferdraft"
+            file="vendor_offer.report_vendorofferdraft"
+            print_report_name="
+                ('Vendor Offer- %s' % (object.name))"
+        />
+
+    </data>
+</odoo>

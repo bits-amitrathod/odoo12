@@ -31,6 +31,7 @@ class Customer(models.Model):
     quickbook_id=fields.Char("Quickbook Id")
     having_carrier = fields.Boolean("Having Carrier?")
     notification_email=fields.Char("Notification Email")
+    saleforce_ac=fields.Char("SF A/C No#")
     preferred_method=fields.Selection([
        ('mail', 'Mail'),
        ('email', 'E Mail'),

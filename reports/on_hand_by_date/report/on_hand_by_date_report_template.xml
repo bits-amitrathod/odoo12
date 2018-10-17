@@ -14,7 +14,7 @@
                             </b>
                         </center>
                         <br/>
-                            <t>
+                            <t t-if="data['show_cost'] != 0">
                                 <table class="table table-condensed" style="border: 1px solid black;">
                                     <thead>
                                         <tr style="">
@@ -28,23 +28,23 @@
                                     </thead>
                                     <tbody>
                                         <tr t-foreach="data['items']" t-as="product">
-                                            <td style="border: 1px solid black; width: 10%;">
+                                            <td style="border: 1px solid black; width: 12%;">
                                                 <span t-esc="product[0]"/>
                                             </td>
-                                            <td align="left" style="border: 1px solid black;width: 70%;">
+                                            <td align="left" style="border: 1px solid black;width: 40%;">
                                                 <span t-esc="product[1]"/>
                                             </td>
-                                            <td align="left" style="border: 1px solid black;width: 10%;">
+                                            <td align="left" style="border: 1px solid black;width: 12%;">
                                                 <span t-esc="product[2]"/>
                                             </td>
-                                            <td align="left" style="border: 1px solid black;width: 10%;">
-                                                <span t-esc="product[3]"/>
+                                            <td align="right" style="border: 1px solid black;width: 12%;">
+                                                <span t-esc="'{:.2f}'.format(product[3])"/> <b>ea</b>
                                             </td>
-                                            <td align="right" style="border: 1px solid black;width: 10%;">
-                                                <span t-esc="product[4]"/>
+                                            <td align="right" style="border: 1px solid black;width: 12%;">
+                                                <b>$</b> <span t-esc="'{:.2f}'.format(product[4])"/>
                                             </td>
-                                            <td align="right" style="border: 1px solid black;width: 10%;">
-                                                <span t-esc="product[5]"/>
+                                            <td align="right" style="border: 1px solid black;width: 12%;">
+                                                <b>$</b> <span t-esc="'{:.2f}'.format(product[5])"/>
                                             </td>
                                         </tr>
                                         <tr>
@@ -52,8 +52,42 @@
                                             <td></td>
                                             <td></td>
                                             <td>Total</td>
-                                            <td style="text-align: right; border: 1px solid black;"><span t-esc="data['total_qty']"/></td>
-                                            <td style="text-align: right;  border: 1px solid black;"><span t-esc="data['total_assets_value']"/></td>
+                                            <td style="text-align: right; border: 1px solid black;"><b>$</b>  <span t-esc="data['total_qty']"/></td>
+                                            <td style="text-align: right;  border: 1px solid black;"><b>$</b>  <span t-esc="data['total_assets_value']"/></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </t>
+                            <t t-if="data['show_cost'] == 0">
+                                <table class="table table-condensed" style="border: 1px solid black;">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: center;center; border: 1px solid black;">SKU/Catalog No.</th>
+                                            <th style="text-align: center; border: 1px solid black; center;">Product</th>
+                                            <th style="text-align: center; border: 1px solid black;">Vendor</th>
+                                            <th style="text-align: center; border: 1px solid black;">Qty</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="data['items']" t-as="product">
+                                            <td style="border: 1px solid black; width: 13%;">
+                                                <span t-esc="product[0]"/>
+                                            </td>
+                                            <td align="left" style="border: 1px solid black;width: 60%;">
+                                                <span t-esc="product[1]"/>
+                                            </td>
+                                            <td align="left" style="border: 1px solid black;width: 13%;">
+                                                <span t-esc="product[2]"/>
+                                            </td>
+                                            <td align="right" style="border: 1px solid black;width: 14%;">
+                                                <span t-esc="'{:.2f}'.format(product[3])"/> <b>ea</b>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td>Total</td>
+                                            <td style="text-align: right; border: 1px solid black;"><span t-esc="data['total_qty']"/> <b>ea</b></td>
                                         </tr>
                                     </tbody>
                                 </table>
