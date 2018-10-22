@@ -1,9 +1,6 @@
 
 import logging
 from odoo import api, fields, models
-from odoo.tools import float_repr
-from numpy.core.defchararray import upper
-import datetime
 
 log = logging.getLogger(__name__)
 

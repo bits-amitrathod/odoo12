@@ -2,10 +2,6 @@
 
 import time
 from odoo import api, fields, models
-from odoo.tools import float_repr
-from numpy.core.defchararray import upper
-from dateutil.parser import parse
-from odoo.exceptions import UserError
 
 
 

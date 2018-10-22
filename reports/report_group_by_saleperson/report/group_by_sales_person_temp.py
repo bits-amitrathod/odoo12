@@ -1,6 +1,4 @@
 from odoo import api, fields, models
-from odoo.tools import float_repr
-from numpy.core.defchararray import upper
 
 class SaleSalespersonReport(models.TransientModel):
     _name = 'report.report_group_by_saleperson.saleperson_temp'

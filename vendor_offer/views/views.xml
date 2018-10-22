@@ -106,6 +106,7 @@
               </p>
             </field>
         </record>
+
         <menuitem action="purchase_form_action_vendor" id="purchase.menu_purchase_form_action" parent="purchase.menu_procurement_management" sequence="5"/>
 
     <record id="view_vendor_offer_form" model="ir.ui.view">
@@ -279,7 +280,9 @@
                 <button name="button_unlock" position="after">
                      <button name="action_validate" string="Validate" groups="stock.group_stock_user" type="object" class="oe_highlight" states="purchase"/>
                 </button>
-
+                <xpath expr="//group/group/field[@name='origin']" position="replace">
+                     <field name="origin" string="Sale Order#"/>
+                </xpath>
                      <xpath expr="//group/group/field[@name='company_id']" position="after">
                     <field name="carrier_info"></field>
                     <field name="carrier_acc_no"></field>

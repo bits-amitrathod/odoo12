@@ -39,14 +39,14 @@
               <field name="arch" type="xml">
                 <tree create="false" edit="false" >
                     <field name="name"/>
-                     <field name="average_sale"/>
-                    <field name="trend_val"/>
                     <field name="month6"/>
                     <field name="month5"/>
                     <field name="month4"/>
                     <field name="month3"/>
                     <field name="month2"/>
                     <field name="month1"/>
+                    <field name="average_sale"/>
+                    <field name="trend_val"/>
                     <field name="total_sale"/>
                 </tree>
               </field>
