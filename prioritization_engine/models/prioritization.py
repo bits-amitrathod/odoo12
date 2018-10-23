@@ -270,4 +270,3 @@ class StockMove(models.Model):
             setting = self.env['sps.customer.requests'].get_settings_object(self.partner_id.id,self.product_id.id,None,None)
             _logger.info('partial UOM** : %r', setting.partial_UOM)
             self.partial_UOM = setting.partial_UOM
-
