@@ -22,9 +22,6 @@ class DormantCustomer(models.Model):
             if len(confirmed_sales_orders) > 0:
                 customer.last_purchase_date = confirmed_sales_orders[0].confirmation_date
                 customer.sale_order= confirmed_sales_orders[0].name
-                _logger.info('sssssssss')
-                _logger.info('%r',confirmed_sales_orders[0].confirmation_date)
-                _logger.info('%r',confirmed_sales_orders[0].name)
                 # sales_order_lines = confirmed_sales_orders[0].order_line
                 # for order_line in sales_order_lines:
                 #     customer.last_purchased_product = order_line.product_id.product_tmpl_id.name

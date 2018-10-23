@@ -2,7 +2,7 @@
     <data>
 
         <record model="ir.ui.view" id="form_list1">
-            <field name="name">lot.history.view.list</field>
+            <field name="name">aging.report.view.list</field>
             <field name="model">stock.production.lot</field>
             <field name="priority">20</field>
             <field name="arch" type="xml">
@@ -23,7 +23,7 @@
 
 
         <record model="ir.actions.act_window" id="action_stock_quantity_history1">
-            <field name="name">Lot History</field>
+            <field name="name">Aging Report</field>
             <field name="res_model">stock.production.lot</field>
             <field name="view_mode">tree,form</field>
             <field name="view_ids" eval="[(5, 0, 0),
@@ -36,7 +36,7 @@
 
         <menuitem id="purchase_history_report1"
                   action="action_stock_quantity_history1"
-                  name="Lot History"
+                  name="Aging Report"
                   parent="stock.menu_warehouse_report"
                   sequence="4"/>
 
