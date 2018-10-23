@@ -17,6 +17,7 @@
                       <field name="quickbook_id" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                       <field name="preferred_method" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                       <field name="allow_purchase" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                      <field name="saleforce_ac"  placeholder="Sale Force A/C."/>
                   </field>
                   <field name="lang" position="after">
                      <field name="prioritization" attrs="{'readonly':[('is_parent', '==', False)]}"/>
@@ -207,6 +208,7 @@
                 </xpath>
                 <xpath expr="/form/sheet/notebook/page[1]/field[@name='child_ids']/form[1]/sheet/group/group[2]/field[@name='name']" position="after">
                     <field name="gl_account"  placeholder=" G L Account No.."/>
+
                 </xpath>
             </field>
       </record>
@@ -273,7 +275,7 @@
         </field>
     </record>
 
-    <record id="prioritization_run_scheduler" model="ir.actions.act_window">
+      <record id="prioritization_run_scheduler" model="ir.actions.act_window">
         <field name="name">Run Scheduler</field>
         <field name="res_model">prioritization.cron.schedular</field>
         <field name="view_type">form</field>
@@ -293,36 +295,33 @@
       </record>
 
       <!-- Top menu item -->
-    <menuitem name="Prioritization Engine" id="prioritization_engine.menu_root" web_icon="prioritization_engine,static/description/icon.png"/>
+      <menuitem name="Prioritization Engine" id="prioritization_engine.menu_root" web_icon="prioritization_engine,static/description/icon.png"/>
 
       <!-- menu categories -->
-    <menuitem name="Customer" id="prioritization_engine.prioritization_cmenu"  parent="prioritization_engine.menu_root"/>
+      <menuitem name="Customer" id="prioritization_engine.prioritization_cmenu"  parent="prioritization_engine.menu_root"/>
 
       <!-- actions -->
-    <menuitem name="Customer" id="prioritization_engine.prioritization_cust_menu" parent="prioritization_engine.prioritization_cmenu"
+      <menuitem name="Customer" id="prioritization_engine.prioritization_cust_menu" parent="prioritization_engine.prioritization_cmenu"
               action="action_sps_customer"/>
       <!-- menu categories -->
 
-    <menuitem name="Product" id="prioritization_engine.prioritization_pmenu" parent="prioritization_engine.menu_root"/>
+      <menuitem name="Product" id="prioritization_engine.prioritization_pmenu" parent="prioritization_engine.menu_root"/>
 
-    <!-- actions -->
+      <!-- actions -->
 
-    <menuitem name="Product" id="prioritization_engine.prioritization_pro_menu" parent="prioritization_engine.prioritization_pmenu"
+      <menuitem name="Product" id="prioritization_engine.prioritization_pro_menu" parent="prioritization_engine.prioritization_pmenu"
               action="product.product_template_action"/>
-         <!-- menu categories -->
-    <menuitem name="Import Document" id="prioritization_engine.prioritization_imenu" parent="prioritization_engine.menu_root"/>
+      <!-- menu categories -->
+      <menuitem name="Import Document" id="prioritization_engine.prioritization_imenu" parent="prioritization_engine.menu_root"/>
 
       <menuitem name="Operation" id="prioritization_operation_menu" parent="prioritization_engine.menu_root"/>
 
       <menuitem name="Run Scheduler" id="prioritization_run_scheduler_menu" parent="prioritization_operation_menu"
       action="prioritization_run_scheduler"/>
          <!-- actions -->
-   <!-- <menuitem name="Import Document" id="prioritization_engine.prioritization_import_menu" parent="prioritization_engine.prioritization_imenu"
+      <!-- <menuitem name="Import Document" id="prioritization_engine.prioritization_import_menu" parent="prioritization_engine.prioritization_imenu"
               action="action_notification_setting"/>-->
 
       <!--<menuitem name="menu_name" id="unique_id" web_icon="module_name,path_of_icon" sequence="1"/>-->
-
-
-
   </data>
 </odoo>

@@ -40,8 +40,10 @@ class DocumentProcessTransientModel(models.TransientModel):
 
         _logger.info('user_model.parent_id %r', user_model.parent_id.id)
 
+        gl_account_id = None
         if user_model.parent_id.id:
             user_id = user_model.parent_id.id
+            gl_account_id = user_model.id
             #return dict(errorCode=8, message='Child Customer not allowed to upload request')
         else:
             user_id = user_model.id
@@ -72,6 +74,7 @@ class DocumentProcessTransientModel(models.TransientModel):
         if file_acceptable is None and len(requests) > 0:
             today_date = datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
             file_upload_record = dict(token=DocumentProcessTransientModel.random_string_generator(30),
+                                      gl_account_id=gl_account_id,
                                       customer_id=user_id, template_type=template_type,
                                       document_name=DocumentProcessTransientModel.random_string_generator(10),
                                       file_location=uploaded_file_path, source=document_source, status='draft',
@@ -80,56 +83,60 @@ class DocumentProcessTransientModel(models.TransientModel):
             file_uploaded_record = self.env['sps.cust.uploaded.documents'].create(
                 file_upload_record)
             document_id = file_uploaded_record.id
-            ref = str(document_id) + "_" + file_uploaded_record.token
-            response = dict(errorCode=0, message='File Uploaded Successfully', ref=ref)
-            high_priority_requests = []
-            for req in requests:
-                high_priority_product = False
-                customer_sku = req['customer_sku']
-                product_sku = customer_sku
-                if user_model.sku_preconfig and product_sku.startswith(
-                        user_model.sku_preconfig):
-                    product_sku = product_sku[len(user_model.sku_preconfig):]
-                if user_model.sku_postconfig and product_sku.endswith(
-                        user_model.sku_postconfig):
-                    product_sku = product_sku[:-len(user_model.sku_postconfig)]
-                _logger.info('customer_sku %r product sku %r', customer_sku, product_sku)
-                product_tmpl = self.env['product.template'].search(
-                    ['|', ('sku_code', '=', product_sku), ('manufacturer_pref', '=', customer_sku)])
-                sps_product_id = 0
-                if len(product_tmpl) > 0:
-                    product_model = self.env['product.product'].search(
-                        [['product_tmpl_id', '=', product_tmpl.id]])
-                    if len(product_model) > 0:
-                        sps_product_id = product_model[0].id
-                if sps_product_id:
-                    sps_product_priotization = self.env[
-                        'prioritization_engine.prioritization'].search(
-                        [['customer_id', '=', user_id], ['product_id', '=', sps_product_id]])
-                    if len(sps_product_priotization) >= 1:
-                        sps_product = sps_product_priotization[0]
-                        sps_product_id = sps_product.product_id.id
-                        sps_customer_product_priority = sps_product.priority
-                    else:
-                        sps_customer_product_priority = user_model.priority
+            if not document_id is None or document_id:
+                ref = str(document_id) + "_" + file_uploaded_record.token
+                response = dict(errorCode=0, message='File Uploaded Successfully', ref=ref)
+                high_priority_requests = []
+                for req in requests:
+                    high_priority_product = False
+                    customer_sku = req['customer_sku']
+                    product_sku = customer_sku
+                    if user_model.sku_preconfig and product_sku.startswith(
+                            user_model.sku_preconfig):
+                        product_sku = product_sku[len(user_model.sku_preconfig):]
+                    if user_model.sku_postconfig and product_sku.endswith(
+                            user_model.sku_postconfig):
+                        product_sku = product_sku[:-len(user_model.sku_postconfig)]
+                    _logger.info('customer_sku %r product sku %r', customer_sku, product_sku)
+                    product_tmpl = self.env['product.template'].search(
+                        ['|', ('sku_code', '=', product_sku), ('manufacturer_pref', '=', customer_sku)])
+                    sps_product_id = 0
+                    if len(product_tmpl) > 0:
+                        product_model = self.env['product.product'].search(
+                            [['product_tmpl_id', '=', product_tmpl.id]])
+                        if len(product_model) > 0:
+                            sps_product_id = product_model[0].id
+                    if sps_product_id:
+                        sps_product_priotization = self.env[
+                            'prioritization_engine.prioritization'].search(
+                            [['customer_id', '=', user_id], ['product_id', '=', sps_product_id]])
+                        if len(sps_product_priotization) >= 1:
+                            sps_product = sps_product_priotization[0]
+                            sps_product_id = sps_product.product_id.id
+                            sps_customer_product_priority = sps_product.priority
+                        else:
+                            sps_customer_product_priority = user_model.priority
 
-                    if not sps_customer_product_priority:
-                        high_priority_product = True
-                        req.update(dict(product_id=sps_product_id, status='Inprocess'))
+                        if not sps_customer_product_priority:
+                            high_priority_product = True
+                            req.update(dict(product_id=sps_product_id, status='Inprocess'))
+                        else:
+                            req.update(dict(product_id=sps_product_id, status='New'))
                     else:
-                        req.update(dict(product_id=sps_product_id, status='New'))
-                else:
-                    req.update(dict(product_id=None, status='Voided'))
-                sps_customer_request = dict(document_id=document_id, customer_id=user_id, create_uid=1,
-                                            create_date=today_date, write_uid=1, write_date=today_date)
-                for key in req.keys():
-                    sps_customer_request.update({key: req[key]})
-                saved_sps_customer_request = self.env['sps.customer.requests'].create(
-                    sps_customer_request)
-                if high_priority_product:
-                    high_priority_requests.append(saved_sps_customer_request)
-            self.env['sps.customer.requests'].process_customer_requests(high_priority_requests)
-
+                        # required_quantity = 0, quantity = 0
+                        req.update(dict(product_id=None, status='Voided'))
+                    sps_customer_request = dict(document_id=document_id, customer_id=user_id, create_uid=1,
+                                                create_date=today_date, write_uid=1, write_date=today_date)
+                    for key in req.keys():
+                        sps_customer_request.update({key: req[key]})
+                    saved_sps_customer_request = self.env['sps.customer.requests'].create(
+                        sps_customer_request)
+                    if high_priority_product:
+                        high_priority_requests.append(saved_sps_customer_request)
+                self.env['sps.customer.requests'].process_customer_requests(high_priority_requests)
+            else:
+                _logger.info('file is not acceptable')
+                response = dict(errorCode=12, message='Error saving document record')
         else:
             _logger.info('file is not acceptable')
             response = dict(errorCode=2, message='Invalid File extension')

@@ -31,6 +31,7 @@ class Customer(models.Model):
     quickbook_id=fields.Char("Quickbook Id")
     having_carrier = fields.Boolean("Having Carrier?")
     notification_email=fields.Char("Notification Email")
+    saleforce_ac=fields.Char("SF A/C No#")
     preferred_method=fields.Selection([
        ('mail', 'Mail'),
        ('email', 'E Mail'),
@@ -142,14 +143,12 @@ class Customer(models.Model):
         if min_threshold and min_threshold > 999:
             raise ValidationError(_('Global Priority Configuration->Min Threshold field must be less 999'))
 
-
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
     location = fields.Char("Location")
     premium = fields.Boolean("Premium")
     sku_code = fields.Char('SKU / Catalog No')
     manufacturer_pref = fields.Char(string='Manuf. Catalog No')
-
 
 class NotificationSetting(models.Model):
     _inherit = 'res.partner'
@@ -259,7 +258,6 @@ class SalesChannelPrioritization(models.Model):
                                  required=True,
                                  help="The type of this channel, it will define the resources this channel uses.")
 
-
 class StockMove(models.Model):
     _inherit = "stock.move"
     partial_UOM = fields.Boolean("Allow Partial UOM?", compute="_get_partial_UOM", readonly=True)
@@ -272,4 +270,3 @@ class StockMove(models.Model):
             setting = self.env['sps.customer.requests'].get_settings_object(self.partner_id.id,self.product_id.id,None,None)
             _logger.info('partial UOM** : %r', setting.partial_UOM)
             self.partial_UOM = setting.partial_UOM
-

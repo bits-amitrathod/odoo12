@@ -9,6 +9,7 @@ from odoo.tools import float_compare
 
 _logger = logging.getLogger(__name__)
 
+
 class ScrapScheduler(models.TransientModel):
     _name = 'stock.scrap.scheduler'
 

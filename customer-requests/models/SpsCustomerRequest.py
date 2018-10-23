@@ -17,6 +17,7 @@ class SpsCustomerRequest(models.Model):
     product_id = fields.Many2one('product.product', string='Product', required=False, default=0)
     sale_order_line_id = fields.One2many('sale.order.line', 'customer_request_id', string="Request")
     sale_order_id = fields.Char(String="Sale Order", compute="_get_sale_order_id")
+    gl_account = fields.Char(string='GL Account')
 
     customer_sku = fields.Char()
     sps_sku = fields.Char()
@@ -26,8 +27,8 @@ class SpsCustomerRequest(models.Model):
     qty_to_show = fields.Char(compute="_get_qty_to_show")
 
     vendor_pricing = fields.Char()
-    quantity = fields.Integer()
-    required_quantity = fields.Integer()
+    quantity = fields.Float()
+    required_quantity = fields.Float()
     frequency_of_refill = fields.Integer()
     threshold = fields.Integer()
     uom = fields.Char()
@@ -102,12 +103,13 @@ class SpsCustomerRequest(models.Model):
                 _logger.debug('required_quantity : %r', required_quantity)
             else:
                 required_quantity = sps_customer_request.required_quantity
-
+            _logger.info('gl account value : %r',sps_customer_request['gl_account'])
             if _setting_object:
                 sps_customer_request.write({'customer_request_logs': 'Customer prioritization setting is True, '})
                 pr_model = dict(customer_request_id=sps_customer_request.id,
                                 template_type=sps_customer_request.document_id.template_type,
                                 customer_id=sps_customer_request['customer_id'].id,
+                                gl_account=sps_customer_request['gl_account'],
                                 product_id=sps_customer_request['product_id'].id,
                                 status=sps_customer_request['status'],
                                 required_quantity=required_quantity,
@@ -124,6 +126,7 @@ class SpsCustomerRequest(models.Model):
                 return pr_model
         return False
 
+    # check customer level or global level setting for product.
     def get_settings_object(self, customer_id,product_id,sps_customer_request_id,status):
         customer_level_setting = self.env['prioritization_engine.prioritization'].search(
             [('customer_id', '=', customer_id),('product_id', '=', product_id)])

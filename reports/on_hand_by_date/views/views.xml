@@ -47,7 +47,7 @@
             <field name="name">product.on.order.view.list</field>
             <field name="model">on_hand_by_date.stock</field>
             <field name="arch" type="xml">
-                <tree>
+                <tree create="false">
                     <field name="currency_id" invisible="1"/>
                     <field name="sku_code" string="SKU/Catalog No."/>
                     <field name="product_id" string="Product"/>
@@ -64,7 +64,7 @@
             <field name="name">product.on.order.view.list</field>
             <field name="model">on_hand_by_date.stock</field>
             <field name="arch" type="xml">
-                <tree>
+                <tree create="false">
                     <field name="product_id" string="Product"/>
                     <field name="sku_code" string="SKU/Catalog No."/>
                     <field name="qty_on_hand" string="Quantity"/>

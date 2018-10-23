@@ -1,8 +1,2 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_product_template_web_cstm_user,product.template.web.cstm.user,product.model_product_template,base.group_public,1,0,0,0
-access_product_uom_web_cstm_user,product.product_uom.web.cstm.user,product.model_product_uom,base.group_public,1,0,0,0
-access_stock_move_web_cstm_user,product.stock_move web.cstm.user,stock.model_stock_move,base.group_public,1,0,0,0
-access_stock_quant_web_cstm_user,product.stock_quant.web.cstm.user,stock.model_stock_quant,base.group_public,1,0,0,0
-access_stock_location_web_cstm_user,product.stock_location.web.cstm.user,stock.model_stock_location,base.group_public,1,0,0,0
-access_stock_warehouse_web_cstm_user,product.stock_warehouse.web.cstm.user,stock.model_stock_warehouse,base.group_public,1,0,0,0
-access_product_download_catelog_web_cstm_user,website_cstm.product_download_catelog,model_website_cstm_product_download_catelog,base.group_public,1,0,0,0
+access_product_download_catelog_web_cstm_user,website_cstm.product_download_catelog,model_website_cstm_product_download_catelog,,1,0,0,0
