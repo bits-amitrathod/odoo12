@@ -40,12 +40,12 @@ class website_product_download_catelog_cstm(models.Model):
 
     @api.model
     def create(self, vals):
-        self.setActive(vals);
+        self.setActive(vals)
         return super(website_product_download_catelog_cstm, self).create(vals)
 
     @api.multi
     def write(self, vals):
-        self.setActive(vals);
+        self.setActive(vals)
         return super(website_product_download_catelog_cstm, self).write(vals)
 
     def setActive(self,vals):

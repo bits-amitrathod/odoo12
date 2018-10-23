@@ -61,7 +61,7 @@
                                             <td style="border: 1px solid black; width: 3%;">
                                                 <t t-if="product[0] == 'done'">
                                                     <span>
-                                                        <img src="pick_report/static/img/correct.jpg`" style="height: 30px; width: 30px"/>
+                                                        <img src="/pick_report/static/img/correct.jpg" style="height: 30px; width: 30px"/>
                                                     </span>
                                                 </t>
                                             </td>
