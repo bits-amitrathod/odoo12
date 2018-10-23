@@ -2,7 +2,7 @@
 <odoo>
     <data>
 
-        <record id="trending_report_popup_view" model="ir.ui.view">
+    <!--    <record id="trending_report_popup_view" model="ir.ui.view">
             <field name="name">Trending Report List</field>
             <field name="model">trendingreportlist.popup</field>
             <field name="arch" type="xml">
@@ -20,17 +20,16 @@
                     </footer>
                 </form>
             </field>
-        </record>
+        </record>-->
 
         <record id="trending_report_list_id" model="ir.actions.act_window">
             <field name="name">Trending Report</field>
-            <field name="res_model">trendingreportlist.popup</field>
+            <field name="res_model">res.partner</field>
             <field name="view_type">form</field>
-            <field name="view_mode">form</field>
-            <field name="view_id" ref="trending_report_popup_view"/>
-            <field name="target">new</field>
-            <field name="context">{'default_compute_at_date': 0, 'valuation': True}</field>
-        </record>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="trending_report_list"/>
+            <field name="target">main</field>
+         </record>
 
         <record model="ir.ui.view" id="trending_report_list">
               <field name="name">purchase.vendor.view.list</field>
@@ -39,12 +38,14 @@
               <field name="arch" type="xml">
                 <tree create="false" edit="false" >
                     <field name="name"/>
+                    <field name="month_count"/>
                     <field name="month6"/>
                     <field name="month5"/>
                     <field name="month4"/>
                     <field name="month3"/>
                     <field name="month2"/>
                     <field name="month1"/>
+                    <field name="month_total"/>
                     <field name="average_sale"/>
                     <field name="trend_val"/>
                     <field name="total_sale"/>
