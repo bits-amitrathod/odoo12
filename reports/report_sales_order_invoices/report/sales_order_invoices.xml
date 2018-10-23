@@ -54,14 +54,16 @@
                                 <strong>Payment Terms:</strong>
                                 <p t-field="invoice.payment_term_id"/>
                             </div>
-                            <div class="col-xs-2" t-if="order.carrier_id">
-                                <strong>Carrier :</strong>
-                                <p t-field="order.carrier_id"/>
-                            </div>
-                            <div class="col-xs-2" t-if="order.commitment_date">
-                                <strong>Requested Ship Date :</strong>
-                                <p t-field="order.commitment_date" t-options="{'widget': 'date'}"/>
-                            </div>
+                            <t t-if="order">
+                                <div class="col-xs-2" t-if="order.carrier_id">
+                                    <strong>Carrier :</strong>
+                                    <p t-field="order.carrier_id"/>
+                                </div>
+                                <div class="col-xs-2" t-if="order.commitment_date">
+                                    <strong>Requested Ship Date :</strong>
+                                    <p t-field="order.commitment_date" t-options="{'widget': 'date'}"/>
+                                </div>
+                            </t>
                         </div>
 
 

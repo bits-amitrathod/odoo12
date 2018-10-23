@@ -1,0 +1,65 @@
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="form_list123">
+            <field name="name">aging.report.view.list</field>
+            <field name="model">stock.production.lot</field>
+            <field name="priority">20</field>
+            <field name="arch" type="xml">
+                <tree>
+
+
+                    <field name="pr_sku"/>
+                    <field name="pr_name"/>
+                    <field name="tracking" string="Lot"/>
+                     <field name="maxExpDate" string="ExpDate"/>
+                    <field name="p_qty"/>
+                    <field name="cr_date"/>
+                    <field name="days"/>
+                </tree>
+            </field>
+        </record>
+
+
+
+        <!--</record>-->
+         <record id="view_stock_quantity_history22" model="ir.ui.view">
+        <field name="name">Aging Report</field>
+        <field name="model">aging_popup.view.model</field>
+        <field name="arch" type="xml">
+            <form string="Choose your date">
+                <group>
+                    <group>
+                        <field name="compute_at_date" widget="radio"/>
+                        <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/><field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+
+                    </group>
+                </group>
+                <footer>
+                    <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-default" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+        <record id="action_stock_quantity_history123" model="ir.actions.act_window">
+        <field name="name">Aging Report</field>
+        <field name="res_model">aging_popup.view.model</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_stock_quantity_history22"/>
+        <field name="target">new</field>
+        <field name="context">{'default_compute_at_date': 0}</field>
+    </record>
+
+
+        <menuitem id="purchase_history_report1"
+                  action="action_stock_quantity_history123"
+                  name="Aging Report"
+                  parent="stock.menu_warehouse_report"
+                  sequence="4"/>
+
+
+    </data>
+</odoo>

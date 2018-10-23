@@ -1,0 +1,45 @@
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="form_list1">
+            <field name="name">rma_report.report.view.list</field>
+            <field name="model">stock.picking</field>
+            <field name="priority">20</field>
+            <field name="arch" type="xml">
+                <tree>
+
+                    <field name="customer"/>
+                    <field name="created"/>
+                    <field name="status"/>
+                    <field name="qty"/>
+                    <!--<field name="p_qty"/>-->
+                    <!--<field name="cr_date"/>-->
+                    <!--<field name="vend"/>-->
+                    <!--<field name="ph"/>-->
+                    <!--<field name="email"/>-->
+                </tree>
+            </field>
+        </record>
+
+
+        <record model="ir.actions.act_window" id="action_stock_quantity_history">
+            <field name="name">RMA Report</field>
+            <field name="res_model">stock.picking</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+        (0, 0, {'view_mode': 'tree', 'view_id': ref('form_list1')},)
+
+        ]"/>
+
+        </record>
+
+
+        <menuitem id="rma_history_report"
+                  action="action_stock_quantity_history"
+                  name="RMA Report"
+                  parent="sale.menu_sale_report"
+                  sequence="4"/>
+
+
+    </data>
+</odoo>
