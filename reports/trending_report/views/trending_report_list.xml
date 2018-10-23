@@ -1,36 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-
-    <!--    <record id="trending_report_popup_view" model="ir.ui.view">
-            <field name="name">Trending Report List</field>
-            <field name="model">trendingreportlist.popup</field>
-            <field name="arch" type="xml">
-                <form string="Choose your date">
-                    <group>
-                        <group>
-                            <field name="compute_at_date" widget="radio"/>
-                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
-                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
-                        </group>
-                    </group>
-                    <footer>
-                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
-                        <button string="Cancel" class="btn-default" special="cancel" />
-                    </footer>
-                </form>
-            </field>
-        </record>-->
-
-        <record id="trending_report_list_id" model="ir.actions.act_window">
-            <field name="name">Trending Report</field>
-            <field name="res_model">res.partner</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-            <field name="view_id" ref="trending_report_list"/>
-            <field name="target">main</field>
-         </record>
-
         <record model="ir.ui.view" id="trending_report_list">
               <field name="name">purchase.vendor.view.list</field>
               <field name="model">res.partner</field>
@@ -53,7 +23,14 @@
               </field>
         </record>
 
-
+        <record id="trending_report_list_id" model="ir.actions.act_window">
+            <field name="name">Trending Report</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="trending_report_list"/>
+            <field name="target">main</field>
+         </record>
 
 
         <menuitem id="menu_trending_report_list_report"

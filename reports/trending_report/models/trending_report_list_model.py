@@ -10,12 +10,12 @@ class TrendingReportListView(models.Model):
 
     _inherit = 'res.partner'
 
-    month1 = fields.Float('month1',  store=False)
-    month2 = fields.Float('month2', store=False)
-    month3 = fields.Float('month3', store=False)
-    month4 = fields.Float('month4', store=False)
-    month5 = fields.Float('month5', store=False)
-    month6 = fields.Float('month6', store=False,compute='_compute_sales_vals')
+    month1 = fields.Float(store=False)
+    month2 = fields.Float(store=False)
+    month3 = fields.Float(store=False)
+    month4 = fields.Float(store=False)
+    month5 = fields.Float(store=False)
+    month6 = fields.Float(store=False,compute='_compute_sales_vals')
     month_count = fields.Integer('Months Ago First Order', store=False, compute='_first_purchase_date')#'Months Ago First Order'
     month_total = fields.Integer('Total Purchased Month', store=False, compute='_total_purchased_month')
     trend_val = fields.Char('Trend', store=False,compute='_get_trend_value')
