@@ -4,7 +4,7 @@
         <report
                 id="action_report_trending_report_list"
                 string="Trending Report"
-                model="sale.order"
+                model="res.partner"
                 report_type="qweb-html"
                 file="trending_report.trendingreportlist_temp_test"
                 name="trending_report.trendingreportlist_temp_test"
