@@ -1,0 +1,76 @@
+<odoo>
+
+    <report id="action_todo_model_report"
+            string="Aging Rep[ort"
+            model="stock.production.lot"
+            report_type="qweb-html"
+            file="aging_report.purchase_report"
+            name="aging_report.purchase_report"
+    />
+
+    <template id="purchase_report">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <page>
+                    <div class="oe_structure"/>
+                    <div class="row">
+
+                        <center>
+                            <b>
+                                <h4>Surgical Product Solutions</h4>
+                            </b>
+                            <b>
+                                <h2>Aging Report</h2>
+                            </b>
+                        </center>
+
+                        <!-- Report page content -->
+
+                            <table class="table table-condensed table-bordered" style="border: 1px solid black;">
+                                <tr style="border: 1px solid black;">
+                                    <th style="border: 1px solid black;text-align: center;">SKU/Catalog No</th>
+                                    <th style="border: 1px solid black;text-align: center;">Product Name</th>
+                                    <th style="border: 1px solid black;text-align: center;">Tracking</th>
+                                    <th style="border: 1px solid black;text-align: center;">Qty</th>
+                                    <th style="border: 1px solid black;text-align: center;">Created Date</th>
+                                    <th style="border: 1px solid black;text-align: center;">Days</th>
+
+                                </tr>
+
+
+                                    <t t-foreach="data" t-as="o">
+                                        <tr>
+
+                                             <td align="left" class="col-xs-2" style="border: 1px solid #000;">
+                                                <span t-esc="o.name"/>
+                                            </td>
+
+                                            <td  align="left" class="col-xs-2" style="border: 1px solid #000;">
+                                                <span t-esc="o.pr_sku"/>
+                                            </td>
+
+                                            <td align="left" class="col-xs-2" style="border: 1px solid #000;">
+                                                <span t-esc="o.pr_name"/>
+                                            </td>
+                                            <td align="left" class="col-xs-2" style="border: 1px solid #000;">
+                                                <span t-esc="o.pr_type"/>
+                                            </td>
+                                             <td align="right" class="col-xs-2" style="border: 1px solid #000;">
+                                                <span t-esc="o.p_qty"/>
+                                            </td>
+                                            <td align="right" class="col-xs-2" style="border: 1px solid #000;">
+                                                <span t-esc="o.p_qty"/>
+                                            </td>
+
+                                        </tr>
+                                    </t>
+
+                            </table>
+                        </div>
+
+                </page>
+            </t>
+        </t>
+    </template>
+
+</odoo>

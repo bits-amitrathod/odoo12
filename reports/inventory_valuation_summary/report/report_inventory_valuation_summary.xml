@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report
+                id="action_report_inventory_valuation_summary"
+                string="Inventory Valuation Summary"
+                model="product.product"
+                report_type="qweb-html"
+                file="inventory_valuation_summary.inventory_valuation_template"
+                name="inventory_valuation_summary.inventory_valuation_template"
+        />
+    </data>
+</odoo>

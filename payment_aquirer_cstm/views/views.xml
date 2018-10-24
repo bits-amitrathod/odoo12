@@ -35,6 +35,7 @@
             <field name="view_template_id" ref="default_acquirer_button"/>
             <field name="module_id" ref="base.module_payment_aquirer_cstm"/>
             <field name="journal_id"></field>
+            <field name="provider">purchaseorder</field>
             <field name="description" type="html">
                 <p>
                     Payment by Purchase Order

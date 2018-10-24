@@ -10,12 +10,14 @@ class TrendingReportListView(models.Model):
 
     _inherit = 'res.partner'
 
-    month1 = fields.Float('month1',  store=False)
-    month2 = fields.Float('month2', store=False)
-    month3 = fields.Float('month3', store=False)
-    month4 = fields.Float('month4', store=False)
-    month5 = fields.Float('month5', store=False)
-    month6 = fields.Float('month6', store=False,compute='_compute_sales_vals')
+    month1 = fields.Float(store=False)
+    month2 = fields.Float(store=False)
+    month3 = fields.Float(store=False)
+    month4 = fields.Float(store=False)
+    month5 = fields.Float(store=False)
+    month6 = fields.Float(store=False,compute='_compute_sales_vals')
+    month_count = fields.Integer('Months Ago First Order', store=False, compute='_first_purchase_date')#'Months Ago First Order'
+    month_total = fields.Integer('Total Purchased Month', store=False, compute='_total_purchased_month')
     trend_val = fields.Char('Trend', store=False,compute='_get_trend_value')
     average_sale = fields.Float('Average', store=False,compute='_get_average_value')
     total_sale = fields.Float('Total', store=False,compute='_get_total_value')
@@ -46,15 +48,57 @@ class TrendingReportListView(models.Model):
         for customer in self:
             customer.total_sale=customer.month1+customer.month2+customer.month3+customer.month4+customer.month5+customer.month6
 
+    @api.onchange('month_count')
+    def _first_purchase_date(self):
+        for customer in self:
+            if(self.get_day_from_purchase(customer.id)):
+                customer.month_count = self.get_day_from_purchase(customer.id) / 30
+            else:
+                customer.month_count=0
+
+
+    def get_day_from_purchase(self,customer_id):
+        groupby_dict_month = {}
+        min = None
+        sale_orders = self.env['sale.order'].search([('partner_id', '=', customer_id), ('state', '=', 'sale')])
+        groupby_dict_month['data'] = sale_orders
+        for sale_order in groupby_dict_month['data']:
+            if (min == None):
+                min = sale_order.confirmation_date
+            elif (min > sale_order.confirmation_date):
+                min = sale_order.confirmation_date
+        if (min):
+            in_days = (fields.date.today() - datetime.date(datetime.strptime(min, "%Y-%m-%d %H:%M:%S"))).days
+            return in_days
+        else:
+            return None
+
+
+    @api.onchange('month_total')
+    def _total_purchased_month(self):
+        for customer in self:
+            groupby_dict_month = {}
+            sale_order_dict= {}
+            sale_orders = self.env['sale.order'].search([('partner_id', '=', customer.id), ('state', '=', 'sale')])
+            sale_order_dict['data'] = sale_orders
+            for sale_order in sale_order_dict['data']:
+                confirmation_date = datetime.date(datetime.strptime(sale_order.confirmation_date, "%Y-%m-%d %H:%M:%S"))
+                count=0
+                if (groupby_dict_month.get(confirmation_date.strftime('%b-%Y'))):
+                    count=groupby_dict_month[confirmation_date.strftime('%b-%Y')]
+                    count=count+1
+                    groupby_dict_month[confirmation_date.strftime('%b-%Y')]=count
+                else:
+                    groupby_dict_month[confirmation_date.strftime('%b-%Y')]=1
+            customer.month_total = len(groupby_dict_month)
+
     @api.onchange('total_sale')
     def _get_trend_value(self):
         for customer in self:
-            if(customer.average_sale < customer.month1):
+            if(customer.average_sale <= customer.month1):
                 customer.trend_val='UP'
             elif(customer.average_sale > customer.month1):
                 customer.trend_val = 'DOWN'
-            elif (customer.average_sale == customer.month1):
-                customer.trend_val = 'EQUAL'
             if (customer.month1 == 0):
                 customer.trend_val = 'NO SALE'
 
@@ -62,21 +106,14 @@ class TrendingReportListView(models.Model):
     @api.onchange('average_sale')
     def _get_average_value(self):
         for customer in self:
-            count = 0
-            if(customer.month1):
-                count=count+1
-            if(customer.month2):
-                count=count+1
-            if(customer.month3):
-                count=count+1
-            if(customer.month4):
-                count=count+1
-            if(customer.month5):
-                count=count+1
-            if(customer.month6):
-                count=count+1
-            if(count):
-                customer.average_sale=(customer.total_sale/count)
+            count=0
+            if(customer.month_count>=6):
+                customer.average_sale = (customer.total_sale / count)
+            elif(self.get_day_from_purchase(customer.id)):
+                #if (self.get_day_from_purchase(customer.id)/30 > 1):
+                customer.average_sale=(customer.total_sale *30 / self.get_day_from_purchase(customer.id))
+                '''else:
+                    customer.average_sale=customer.total_sale'''
 
 
     @api.model
@@ -84,29 +121,6 @@ class TrendingReportListView(models.Model):
         res = super(TrendingReportListView, self).fields_view_get(
             view_id=self.env.ref('trending_report.trending_report_list').id, view_type=view_type, toolbar=toolbar, submenu=submenu)
         doc = etree.XML(res['arch'])
-
-        '''print(fields.date.today() - datetime.timedelta(days=30))
-        print(fields.date.today() - datetime.timedelta(days=60))
-        print(fields.date.today() - datetime.timedelta(days=90))
-        print(fields.date.today() - datetime.timedelta(days=120))
-        print(fields.date.today() - datetime.timedelta(days=150))
-        print(fields.date.today() - datetime.timedelta(days=180))
-        print("= ==================== ========")
-        print(fields.date.today() - relativedelta(months=1))
-        print(fields.date.today() - relativedelta(months=2))
-        print(fields.date.today() - relativedelta(months=3))
-        print(fields.date.today() - relativedelta(months=4))
-        print(fields.date.today() - relativedelta(months=5))
-        print(fields.date.today() - relativedelta(months=6))
-        print("= ====================A========")
-        print((fields.date.today() - relativedelta(months=1)).strftime('%b-%Y'))
-
-        temp_month1="Jan 17"
-        temp_month2="Dec 17"
-        temp_month3="Nov 17"
-        temp_month4="Oct 17"
-        temp_month5="Sept 17"
-        temp_month6="Aug 17"'''
 
         for node in doc.xpath("//field[@name='month1']"):
             node.set('string', (fields.date.today()).strftime('%b-%Y'))

@@ -40,21 +40,22 @@ class StockMoveExtension(models.Model):
                     serialNumber = False;
                     serialNumberExDate = False;
                     for ml in vals.get('move_line_ids', {}):
-                        if ('lot_id' in ml[2] and not ml[2].get('lot_id') ):
-                            if (not 'lot_name' in ml[2] and not self._get_lot_name(ml[1])):
-                                 serialNumber = True
-                            elif('lot_name' in ml[2] and not ml[2].get('lot_name')):
-                                serialNumber = True
-                            elif(module_product_expiry and  not 'lot_expired_date' in ml[2] and not self._get_lot_name(ml[1])):
-                                lotNumbers.append(
-                                    ml[2].get('lot_name') if ml[2].get('lot_name') else self._get_lot_name(ml[1]))
-                                serialNumberExDate = True
-                            elif(module_product_expiry and 'lot_expired_date' in ml[2] and not ml[2].get('lot_expired_date')):
-                                lotNumbers.append( ml[2].get('lot_name') if ml[2].get('lot_name') else self._get_lot_name(ml[1]))
-                                serialNumberExDate = True
-                            if (module_product_expiry  and not serialNumberExDate and  (not 'lot_expired_date' in ml[2] or not ml[2].get('lot_expired_date'))):
-                                lotNumbers.append( ml[2].get('lot_name') if  ml[2].get('lot_name') else self._get_lot_name(ml[1]) )
-                                serialNumberExDate = True
+                        if isinstance(ml[2], dict):
+                            if ('lot_id' in ml[2] and not ml[2].get('lot_id') ):
+                                if (not 'lot_name' in ml[2] and not self._get_lot_name(ml[1])):
+                                     serialNumber = True
+                                elif('lot_name' in ml[2] and not ml[2].get('lot_name')):
+                                    serialNumber = True
+                                elif(module_product_expiry and  not 'lot_expired_date' in ml[2] and not self._get_lot_name(ml[1])):
+                                    lotNumbers.append(
+                                        ml[2].get('lot_name') if ml[2].get('lot_name') else self._get_lot_name(ml[1]))
+                                    serialNumberExDate = True
+                                elif(module_product_expiry and 'lot_expired_date' in ml[2] and not ml[2].get('lot_expired_date')):
+                                    lotNumbers.append( ml[2].get('lot_name') if ml[2].get('lot_name') else self._get_lot_name(ml[1]))
+                                    serialNumberExDate = True
+                                if (module_product_expiry  and not serialNumberExDate and  (not 'lot_expired_date' in ml[2] or not ml[2].get('lot_expired_date'))):
+                                    lotNumbers.append( ml[2].get('lot_name') if  ml[2].get('lot_name') else self._get_lot_name(ml[1]) )
+                                    serialNumberExDate = True
                 except KeyError:
                     print("key error pass:")
                     pass;

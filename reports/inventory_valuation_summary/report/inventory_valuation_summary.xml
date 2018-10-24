@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="inventory_valuation_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <page>
+                    <style>
+                        .noborders {
+                        border: 0;
+                        }
+
+                        .table-bordered > tbody > tr > td,.table-bordered > tbody > tr > th {
+                        border: 1px solid #000;
+                        }
+                    </style>
+                    <div class="oe_structure"/>
+                    <div class="row">
+                        <center>
+                            <b>
+                                <h2>Surgical Product Solutions</h2>
+                                <h4>Inventory Valuation Summary</h4>
+                            </b>
+                        </center>
+
+                    </div>
+                    <br/>
+
+                    <t t-set="totalAmount" t-value="0"/>
+
+                    <table class="table table-condensed">
+                        <thead>
+                            <tr>
+                                <th>Part #</th>
+                                <th>Description</th>
+                                <th class="text-right">Qty</th>
+                                <th class="text-right">Unit Cost</th>
+                                <th class="text-right">Asset Value</th>
+                            </tr>
+                        </thead>
+                        <tbody class="invoice_tbody">
+                            <tr t-foreach="products" t-as="product">
+                                <td>
+                                    <span t-field="product.sku_code"/>
+                                </td>
+                                <td>
+                                    <span t-field="product.name"/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-field="product.qty_at_date"/>
+                                    <span t-field="product.product_tmpl_id.uom_id" groups="product.group_uom"/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-field="product.product_tmpl_id.list_price"/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-field="product.stock_value"
+                                          t-options='{"widget": "monetary", "display_currency": product.currency_id}'/>
+                                </td>
+
+                                <t t-set="totalAmount" t-value="totalAmount+product.stock_value"/>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div id="total" class="row">
+                        <div class="col-xs-4 pull-right">
+                            <table class="table table-condensed" style="min-width: 250px;max-width: 400px;">
+                                <tr class="border-black">
+                                    <td>
+                                        <strong>Total</strong>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="totalAmount"
+                                              t-options='{"widget": "monetary", "display_currency": products[0].currency_id}'/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </page>
+            </t>
+        </t>
+    </template>
+</odoo>
