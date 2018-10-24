@@ -137,7 +137,8 @@ class PrioritizationEngine(models.TransientModel):
                     self.update_customer_request_status(prioritization_engine_request, 'InCoolingPeriod')
                     flag = False
         else:
-            return flag
+            flag = True
+        return flag
 
     # get product expiration tolerance date, expiration tolerance in months(3/6/12)
     def get_product_expiration_tolerance_date(self,prioritization_engine_request):
@@ -268,14 +269,14 @@ class PrioritizationEngine(models.TransientModel):
 
     # return duration in days
     def return_duration_in_days(self, duration):
-        duration_in_seconds = duration.total_seconds()
+        duration_in_seconds = int(duration.total_seconds())
         duration_in_hours = duration_in_seconds / 3600
         duration_in_days = int(duration_in_hours) / 24
         return int(duration_in_days)
 
     # return duration in hours
     def return_duration_in_hours(self,duration):
-        duration_in_seconds = duration.total_seconds()
+        duration_in_seconds = int(duration.total_seconds())
         duration_in_hours = duration_in_seconds / 3600
         return int(duration_in_hours)
 
@@ -296,6 +297,10 @@ class PrioritizationEngine(models.TransientModel):
                                         'order_partner_id' : partner_id_key, 'product_uom_qty' : allocated_product.get(list(allocated_product.keys()).pop(0), {})['allocated_product_quantity']}
 
                 self.env['sale.order.line'].create(dict(sale_order_line_dict))
+
+            sale_order._action_confirm()
+            sale_order.write(dict(state='engine', confirmation_date=''))
+
 
     # Generate sale order for gl account
     def generate_sale_order_for_gl_account(self):
@@ -324,6 +329,9 @@ class PrioritizationEngine(models.TransientModel):
                             'allocated_product_quantity']}
 
                     self.env['sale.order.line'].create(dict(sale_order_line_dict))
+
+                sale_order._action_confirm()
+                sale_order.write(dict(state='engine', confirmation_date=''))
             else:
                 _logger.info('partner id is null')
 
@@ -395,6 +403,50 @@ class PrioritizationEngine(models.TransientModel):
     def _update_uploaded_document_status(self,document_id,status):
         self.env['sps.cust.uploaded.documents'].search(
             [('id', '=', document_id)]).write(dict(status=status))
+
+    def release_reserved_quantity(self):
+        _logger.debug('release reserved quantity....')
+        # get team id
+        crm_team = self.env['crm.team'].search([('team_type', '=', 'engine')])
+
+        sale_orders = self.env['sale.order'].search([('state', 'in', ('engine','sent')), ('team_id', '=', crm_team['id'])])
+
+        for sale_order in sale_orders:
+            _logger.debug('sale order id : %r, partner_id : %r, create_date: %r', sale_order['id'], sale_order['partner_id'].id, sale_order['create_date'])
+            sale_order_lines = self.env['sale.order.line'].search([('order_id', '=', sale_order['id']), ('product_uom_qty', '>', 0)])
+
+            for sale_order_line in sale_order_lines:
+                _logger.debug('sale order line id : %r, product_id : %r, product_uom_qty: %r', sale_order_line['id'], sale_order_line['product_id'].id, sale_order_line['product_uom_qty'])
+
+                # get length of hold
+                _setting_object = self.env['sps.customer.requests'].get_settings_object(sale_order['partner_id'].id, sale_order_line['product_id'].id, None, None)
+                _logger.debug('length of hold %r',_setting_object.length_of_hold)
+
+                # get current datetime
+                current_datetime = datetime.now()
+                create_date = datetime.strptime(self.change_date_format(sale_order['create_date']), '%Y,%m,%d,%H,%M,%S')
+                # calculate datetime difference.
+                duration = current_datetime - create_date  # For build-in functions
+                duration_in_hours = self.return_duration_in_hours(duration)
+                if int(_setting_object.length_of_hold) <= int(duration_in_hours):
+                    sale_order_line_dict = {'order_id': sale_order['id'], 'product_id': sale_order_line['product_id'].id, 'order_partner_id': sale_order['partner_id'].id, 'product_uom_qty': 0}
+
+                    stock_move_lines = self.env['stock.move.line'].search([('picking_id.sale_id', '=', sale_order['id'])])
+
+                    for stock_move_line in stock_move_lines:
+                        _logger.debug('*Product_id  :  %r  ,picking_id  :  %r  ,product_uom_qty  : %r   ,  lot_id  :  %r ',stock_move_line['product_id'].id,
+                                     stock_move_line['picking_id']['location_id']['id'], stock_move_line['product_uom_qty'], stock_move_line['lot_id']['id'])
+
+                        self.env['stock.quant']._update_available_quantity(stock_move_line['product_id'], stock_move_line['picking_id']['location_id'],
+                                                                              stock_move_line['product_uom_qty'],stock_move_line['lot_id'])
+
+                        self.env['sale.order.line'].search([('customer_request_id', '=', sale_order_line['customer_request_id'].id)]).write(
+                                                            dict(sale_order_line_dict))
+                        stock_move_line.unlink()
+
+                        _logger.info('Quantity Released')
+                else:
+                    _logger.info('Product is in length of hold, unable to release quantity.')
 
 
 
