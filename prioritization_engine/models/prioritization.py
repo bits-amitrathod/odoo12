@@ -268,5 +268,7 @@ class StockMove(models.Model):
         _logger.info('partner id : %r, product id : %r',self.partner_id.id,self.product_id.id)
         if self.partner_id and self.product_id:
             setting = self.env['sps.customer.requests'].get_settings_object(self.partner_id.id,self.product_id.id,None,None)
-            _logger.info('partial UOM** : %r', setting.partial_UOM)
-            self.partial_UOM = setting.partial_UOM
+            if setting:
+                if setting.partial_UOM and not setting.partial_UOM is None:
+                    _logger.info('partial UOM** : %r', setting.partial_UOM)
+                    self.partial_UOM = setting.partial_UOM
