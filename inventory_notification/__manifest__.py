@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "In Stock Report",
+    'name': "Inventory Notification",
 
     'author': "Benchmark IT Solutions (I) Pvt Ltd.",
     'website': "http://www.benchmarkitsolutions.com",
@@ -12,21 +12,17 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','product','stock','prioritization_engine'],
+    'depends': ['base','base_setup','product', 'stock','inventory_monitor'],
 
     # always loaded
-    'data': [
-        # 'security/ir.model.access.csv',
-        'views/in_stock_report.xml',
-        'views/in_stock_report_print.xml',
-        'views/in_stock_report_pdf.xml',
-        'views/views.xml',
-        'views/templates.xml',
+    'data': [# 'security/ir.model.access.csv',
+         'views/inventory_notification_views.xml',
+         'views/inventory_notification_print.xml',
+         'views/inventory_notification_print_report.xml',
+         'views/templates.xml',
     ],
     # only loaded in demonstration mode
-    'demo': [
-        'demo/demo.xml',
-    ],
+    'demo': ['demo/demo.xml', ],
     'installable': True,
     'application': True,
     'auto_install': False,

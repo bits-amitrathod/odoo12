@@ -2,12 +2,15 @@
 from odoo import api, fields, models
 from lxml import etree
 from datetime import datetime
-import calendar
+import pprint
+import itertools
+
+
 from dateutil.relativedelta import relativedelta
 
 
 class TrendingReportListView(models.Model):
-
+    _description = 'trending_report.trending'
     _inherit = 'res.partner'
 
     month1 = fields.Float(store=False)
@@ -22,9 +25,14 @@ class TrendingReportListView(models.Model):
     average_sale = fields.Float('Average', store=False,compute='_get_average_value')
     total_sale = fields.Float('Total', store=False,compute='_get_total_value')
 
-    #@api.onchange('month6')
+    @api.onchange('month6')
     def _compute_sales_vals(self):
         for product in self:
+            #print(product.month1.get_description())
+            '''=(fields.date.today() - relativedelta(months=1)).strftime('%b-%Y')
+            product.month3.string=(fields.date.today() - relativedelta(months=2)).strftime('%b-%Y')
+            product.month4.string=(fields.date.today() - relativedelta(months=3)).strftime('%b-%Y')
+            product.month5.string=(fields.date.today() - relativedelta(months=4)).strftime('%b-%Y')'''
             groupby_dict = groupby_dict_month = groupby_dict_90 = groupby_dict_yr = {}
             sale_orders = self.env['sale.order'].search([('partner_id', '=', product.id), ('state', '=', 'sale')])
             groupby_dict_month['data'] = sale_orders
@@ -42,6 +50,8 @@ class TrendingReportListView(models.Model):
                     product.month2 = product.month2 + sale_order.amount_total
                 if((confirmation_date.month == (fields.date.today()).month) and (confirmation_date.year ==  (fields.date.today()).year)):
                     product.month1 = product.month1 + sale_order.amount_total
+
+
 
     @api.onchange('trend_val')
     def _get_total_value(self):
@@ -114,25 +124,61 @@ class TrendingReportListView(models.Model):
                 customer.average_sale=(customer.total_sale *30 / self.get_day_from_purchase(customer.id))
                 '''else:
                     customer.average_sale=customer.total_sale'''
-
-
     @api.model
-    def fields_view_get(self, view_id=None, view_type='tree', toolbar=False, submenu=False):
-        res = super(TrendingReportListView, self).fields_view_get(
-            view_id=self.env.ref('trending_report.trending_report_list').id, view_type=view_type, toolbar=toolbar, submenu=submenu)
-        doc = etree.XML(res['arch'])
+    def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
+        View = self.env['ir.ui.view']
 
-        for node in doc.xpath("//field[@name='month1']"):
-            node.set('string', (fields.date.today()).strftime('%b-%Y'))
-        for node in doc.xpath("//field[@name='month2']"):
-            node.set('string', (fields.date.today() - relativedelta(months=1)).strftime('%b-%Y'))
-        for node in doc.xpath("//field[@name='month3']"):
-            node.set('string', (fields.date.today() - relativedelta(months=2)).strftime('%b-%Y'))
-        for node in doc.xpath("//field[@name='month4']"):
-            node.set('string', (fields.date.today() - relativedelta(months=3)).strftime('%b-%Y'))
-        for node in doc.xpath("//field[@name='month5']"):
-            node.set('string', (fields.date.today() - relativedelta(months=4)).strftime('%b-%Y'))
-        for node in doc.xpath("//field[@name='month6']"):
-            node.set('string', (fields.date.today() - relativedelta(months=5)).strftime('%b-%Y'))
-        res['arch'] = etree.tostring(doc, encoding='unicode')
-        return res
+        # Get the view arch and all other attributes describing the composition of the view
+        result = self._fields_view_get(view_id=view_id, view_type=view_type, toolbar=toolbar, submenu=submenu)
+
+        # Override context for postprocessing
+        if view_id and result.get('base_model', self._name) != self._name:
+            View = View.with_context(base_model_name=result['base_model'])
+
+        # Apply post processing, groups and modifiers etc...
+        xarch, xfields = View.postprocess_and_fields(self._name, etree.fromstring(result['arch']), view_id)
+        result['arch'] = xarch
+        result['fields'] = xfields
+
+        # Add related action information if aksed
+        if toolbar:
+            bindings = self.env['ir.actions.actions'].get_bindings(self._name)
+            resreport = [action
+                         for action in bindings['report']
+                         if view_type == 'tree' or not action.get('multi')]
+            resaction = [action
+                         for action in bindings['action']
+                         if view_type == 'tree' or not action.get('multi')]
+            resrelate = []
+            if view_type == 'form':
+                resrelate = bindings['action_form_only']
+
+            for res in itertools.chain(resreport, resaction):
+                res['string'] = res['name']
+
+            result['toolbar'] = {
+                'print': resreport,
+                'action': resaction,
+                'relate': resrelate,
+            }
+            if(result['name']=="purchase.vendor.view.list"):
+                doc = etree.XML(result['arch'])
+                for node in doc.xpath("//field[@name='month1']"):
+                    node.set('string', (fields.date.today()).strftime('%b-%Y'))
+                for node in doc.xpath("//field[@name='month2']"):
+                    node.set('string', (fields.date.today() - relativedelta(months=1)).strftime('%b-%Y'))
+                for node in doc.xpath("//field[@name='month3']"):
+                    node.set('string', (fields.date.today() - relativedelta(months=2)).strftime('%b-%Y'))
+                for node in doc.xpath("//field[@name='month4']"):
+                    node.set('string', (fields.date.today() - relativedelta(months=3)).strftime('%b-%Y'))
+                for node in doc.xpath("//field[@name='month5']"):
+                    node.set('string', (fields.date.today() - relativedelta(months=4)).strftime('%b-%Y'))
+                for node in doc.xpath("//field[@name='month6']"):
+                    node.set('string', (fields.date.today() - relativedelta(months=5)).strftime('%b-%Y'))
+                result['arch'] = etree.tostring(doc, encoding='unicode')
+
+        return result
+
+
+
+

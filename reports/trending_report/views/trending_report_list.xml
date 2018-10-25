@@ -4,7 +4,7 @@
         <record model="ir.ui.view" id="trending_report_list">
               <field name="name">purchase.vendor.view.list</field>
               <field name="model">res.partner</field>
-              <field name="priority">20</field>
+               <field name="priority">51</field>
               <field name="arch" type="xml">
                 <tree create="false" edit="false" >
                     <field name="name"/>
@@ -23,14 +23,16 @@
               </field>
         </record>
 
-        <record id="trending_report_list_id" model="ir.actions.act_window">
+
+       <record id="trending_report_list_id" model="ir.actions.act_window">
             <field name="name">Trending Report</field>
             <field name="res_model">res.partner</field>
             <field name="view_type">form</field>
-            <field name="view_mode">tree</field>
+            <field name="view_mode">tree,form</field>
+             <field name="priority">51</field>
             <field name="view_id" ref="trending_report_list"/>
-            <field name="target">main</field>
-         </record>
+       </record>
+
 
 
         <menuitem id="menu_trending_report_list_report"

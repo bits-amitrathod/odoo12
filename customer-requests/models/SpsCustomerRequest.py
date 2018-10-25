@@ -48,6 +48,9 @@ class SpsCustomerRequest(models.Model):
                 _logger.error("Error procesing requests %r", exc)
 
     def process_customer_requests(self, sps_customer_requests):
+        # Release product quantity(Which sales order product not confirm within length of hold period)
+        self.env['prioritization.engine.model'].release_reserved_quantity()
+
         pr_models = []
         self.document_id_set.clear()
         _logger.debug('len of customer request %r ', str(len(sps_customer_requests)))
