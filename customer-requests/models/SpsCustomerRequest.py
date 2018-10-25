@@ -16,7 +16,7 @@ class SpsCustomerRequest(models.Model):
     document_id = fields.Many2one('sps.cust.uploaded.documents', string='Document', required=True)
     product_id = fields.Many2one('product.product', string='Product', required=False, default=0)
     sale_order_line_id = fields.One2many('sale.order.line', 'customer_request_id', string="Request")
-    sale_order_id = fields.Char(String="Sale Order", compute="_get_sale_order_id")
+    sale_order_name = fields.Char(String="Sale Order", compute="_get_sale_order_name")
     gl_account = fields.Char(string='GL Account')
 
     customer_sku = fields.Char()
@@ -180,10 +180,11 @@ class SpsCustomerRequest(models.Model):
 
     @api.multi
     @api.depends('sale_order_line_id')
-    def _get_sale_order_id(self):
+    def _get_sale_order_name(self):
         for record in self:
-            if record.sale_order_line_id.id:
-                if record.sale_order_id:
-                    record.sale_order_id = str(record.sale_order_id)+ ", " +str(record.sale_order_line_id.order_id.id)
-                else:
-                    record.sale_order_id = str(record.sale_order_line_id.order_id.id)
+            for sale_order_line_id in record.sale_order_line_id:
+                if sale_order_line_id.id:
+                    if record.sale_order_name:
+                        record.sale_order_name = str(record.sale_order_name)+ ", " +str(sale_order_line_id.order_id.name)
+                    else:
+                        record.sale_order_name = str(sale_order_line_id.order_id.name)
