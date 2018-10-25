@@ -110,6 +110,25 @@
             </field>
       </record>
 
+      <record id="view_tree_prioritization_customer"  model="ir.ui.view">
+              <field name="name">Prioritization customer Tree</field>
+              <field name="model">res.partner</field>
+               <field eval="12" name="priority"/>
+              <field name="arch" type="xml">
+               <tree string="Contacts">
+                    <field name="display_name" string="Name"/>
+                    <field name="function" invisible="1"/>
+                    <field name="phone"/>
+                    <field name="email"/>
+                    <field name="user_id" invisible="1"/>
+                    <field name="is_company" invisible="1"/>
+                    <field name="country_id" invisible="1"/>
+                    <field name="parent_id" invisible="1"/>
+                    <field name="active" invisible="1"/>
+                </tree>
+              </field>
+        </record>
+
       <record id="view_form_prioritization_normal" model="ir.ui.view">
             <field name="sequence" eval="1"/>
             <field name="name">Prioritization normal form</field>
