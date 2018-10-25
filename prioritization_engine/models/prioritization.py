@@ -112,6 +112,9 @@ class Customer(models.Model):
         length_of_hold = self.length_of_hold
         if length_of_hold and len(str(abs(length_of_hold))) > 5:
             raise ValidationError(_('Global Priority Configuration->Length of Holding field must be less than 5 digit'))
+        if length_of_hold == 0:
+            raise ValidationError(_('Global Priority Configuration->Length of Hold should be minimum 1 hour'))
+            self.length_of_hold = 1
 
     @api.constrains('priority')
     @api.one
@@ -199,6 +202,9 @@ class Prioritization(models.Model):
         length_of_hold = self.length_of_hold
         if length_of_hold and len(str(abs(length_of_hold))) > 5:
             raise ValidationError(_('Customer Priority Configuration->Length of Holding field must be less than 5 digit'))
+        if length_of_hold == 0:
+            raise ValidationError(_('Customer Priority Configuration->Length of Hold should be minimum 1 hour'))
+            self.length_of_hold = 1
 
     @api.constrains('priority')
     @api.one
