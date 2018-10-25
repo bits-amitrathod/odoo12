@@ -25,7 +25,7 @@ class TrendingReportListPopUp(models.TransientModel):
                 'view_mode': 'tree,form',
                 'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
                 'name': _('Inventory Allocation For SO'),
-                'res_model': 'sale.order',
+                'res_model': 'inventory_allocation_so.allocation_for_so',
                 # 'domain': [('date_order','>=', self.start_date ),('date_order','<=', self.end_date ),('state','in',('sale','done'))],
                 'target': 'main'
             }
@@ -37,7 +37,7 @@ class TrendingReportListPopUp(models.TransientModel):
                 'view_mode': 'tree,form',
                 'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
                 'name': _('Inventory Allocation For SO'),
-                'res_model': 'sale.order',
+                'res_model': 'inventory_allocation_so.allocation_for_so',
                 # 'domain': [('state', 'in', ('sale', 'done'))],
                 'target': 'main'
             }
