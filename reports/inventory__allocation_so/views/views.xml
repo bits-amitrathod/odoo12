@@ -4,7 +4,7 @@
 
     <record id="inventory_for_so_list_view" model="ir.ui.view">
             <field name="name">Trending Report List</field>
-            <field name="model">inventoryforsolist.popup</field>
+            <field name="model">inventory_allocation_so.popup</field>
             <field name="arch" type="xml">
                 <form string="Choose your date">
                     <group>
@@ -21,27 +21,23 @@
                 </form>
             </field>
     </record>
-    <record id="inv_allow_for_so_list" model="ir.ui.view" >
+    <record id="view_inv_all_so_tree" model="ir.ui.view" >
           <field name="name">Inventory Allocation SO view list</field>
-          <field name="model">sale.order</field>
+          <field name="model">inventory_allocation_so.allocation_for_so</field>
           <field name="priority">20</field>
           <field name="arch" type="xml">
             <tree create="false" edit="false" >
-                <field name="message_needaction" invisible="1"/>
-                <field name="name" string="Order Number"/>
-                <field name="confirmation_date" string="Order Date"/>
-                <field name="partner_id"/>
-                <field name="user_id"/>
-                <field name="amount_total" sum="Total Tax Included" widget="monetary"/>
-                <field name="currency_id" invisible="1"/>
-                <field name="invoice_status" invisible="1"/>
-                <field name="state" invisible="1"/>
+                <field name="order_id"/>
+                <field name="product_id"/>
+                <field name="name"/>
+                <field name="product_uom_qty"/>
+                <field name="amt_to_invoice"/>
             </tree>
           </field>
     </record>
     <record id="Inv_allow_so_report_list_id" model="ir.actions.act_window">
         <field name="name">Inventory Allocation For SO</field>
-        <field name="res_model">inventoryforsolist.popup</field>
+        <field name="res_model">inventory_allocation_so.popup</field>
         <field name="view_type">form</field>
         <field name="view_mode">form</field>
         <field name="view_id" ref="inventory_for_so_list_view"/>
