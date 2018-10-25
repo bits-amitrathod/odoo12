@@ -147,15 +147,15 @@ class PrioritizationEngine(models.TransientModel):
 
     # Allocate product
     def allocate_product(self, prioritization_engine_request, filter_available_product_lot_dict, allocate_inventory_product_quantity):
-        remaining_product_allocation_quantity = 0
         if prioritization_engine_request['template_type'].lower().strip() == 'inventory':
             remaining_product_allocation_quantity = allocate_inventory_product_quantity
         else:
             remaining_product_allocation_quantity = prioritization_engine_request['required_quantity']
         for product_lot in filter_available_product_lot_dict.get(prioritization_engine_request['product_id'],{}):
             _logger.debug('**** %r',product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity'))
-            if remaining_product_allocation_quantity > 0:
-                if remaining_product_allocation_quantity >= product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity'):
+
+            if int(remaining_product_allocation_quantity) > 0 and int(product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity')) > 0:
+                if int(remaining_product_allocation_quantity) >= int(product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity')):
                     if prioritization_engine_request['partial_order']:
                         _logger.debug('product allocated from lot %r %r %r', product_lot.get(list(product_lot.keys()).pop(0), {}))
 
@@ -173,7 +173,7 @@ class PrioritizationEngine(models.TransientModel):
                         product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'] = 0
 
                         _logger.debug('Quantity Updated')
-                elif remaining_product_allocation_quantity < product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity'):
+                elif int(remaining_product_allocation_quantity) < int(product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity')):
                         _logger.debug('product allocated from lot %r', list(product_lot.keys()).pop(0))
 
                         product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0),{})['reserved_quantity']) + int(remaining_product_allocation_quantity)
