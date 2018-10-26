@@ -192,7 +192,7 @@
 
 
         <record id="customer_documents_form_action" model="ir.actions.act_window">
-            <field name="name">Documents From Customers</field>
+            <field name="name">Imported Documents From Customers</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">sps.cust.uploaded.documents</field>
             <field name="view_mode">tree,form</field>
@@ -212,7 +212,7 @@
         <menuitem name="Import" id="prioritization_engine.prioritization_imenu"
                   parent="prioritization_engine.menu_root"/>
 
-        <menuitem name="Documents" id="prioritization_engine.prioritization_documents_imenu"
+        <menuitem name="Imported Documents" id="prioritization_engine.prioritization_documents_imenu"
                   parent="prioritization_engine.menu_root" action="customer_documents_form_action"/>
 
         <menuitem name="Customer Template" id="prioritization_engine.prioritization_customer_template_menu"

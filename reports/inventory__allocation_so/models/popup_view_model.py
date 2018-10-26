@@ -14,7 +14,7 @@ class TrendingReportListPopUp(models.TransientModel):
                            default = fields.Datetime.now)
 
     def open_table(self):
-        print(self.env.ref('inventory__allocation_so.view_inv_all_so_tree').id)
+        #print(self.env.ref('inventory__allocation_so.view_inv_all_so_tree').id)
         tree_view_id = self.env.ref('inventory__allocation_so.view_inv_all_so_tree').id
         form_view_id = self.env.ref('sale.view_order_form').id
 
