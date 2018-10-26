@@ -98,6 +98,17 @@ class Customer(models.Model):
         action['res_id'] = self.id
         return action
 
+    def action_import_template(self):
+        tree_view_id= self.env.ref('customer-requests.view_tree_documents_normal').id
+        return {
+            'type': 'ir.actions.client',
+            'views': [(tree_view_id, 'form')],
+            'view_mode': 'form',
+            'tag': 'importtemplate',
+            'params': [{'model': 'sps.customer.template', 'customer_id':self.id,'user_type': 'customer', 'request_model':
+                'sps.customer.requests'}],
+        }
+
     # constraint
     @api.constrains('expiration_tolerance')
     @api.one
