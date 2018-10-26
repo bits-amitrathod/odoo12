@@ -148,8 +148,10 @@ class PrioritizationEngine(models.TransientModel):
     # Allocate product
     def allocate_product(self, prioritization_engine_request, filter_available_product_lot_dict, allocate_inventory_product_quantity):
         if prioritization_engine_request['template_type'].lower().strip() == 'inventory':
+            required_quantity = allocate_inventory_product_quantity
             remaining_product_allocation_quantity = allocate_inventory_product_quantity
         else:
+            required_quantity = prioritization_engine_request['required_quantity']
             remaining_product_allocation_quantity = prioritization_engine_request['required_quantity']
         for product_lot in filter_available_product_lot_dict.get(prioritization_engine_request['product_id'],{}):
             _logger.debug('**** %r',product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity'))
@@ -161,14 +163,6 @@ class PrioritizationEngine(models.TransientModel):
 
                         remaining_product_allocation_quantity = int(remaining_product_allocation_quantity) - int(product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'])
 
-                        self.allocated_product_to_customer(prioritization_engine_request['customer_id'],
-                                                           prioritization_engine_request['gl_account'],
-                                                           prioritization_engine_request['customer_request_id'],
-                                                           prioritization_engine_request['required_quantity'],
-                                                           list(product_lot.keys()).pop(0),
-                                                           prioritization_engine_request['product_id'],
-                                                           product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'])
-
                         product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0),{})['reserved_quantity']) + int(product_lot.get(list(product_lot.keys()).pop(0),{})['available_quantity'])
                         product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'] = 0
 
@@ -178,11 +172,6 @@ class PrioritizationEngine(models.TransientModel):
 
                         product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0),{})['reserved_quantity']) + int(remaining_product_allocation_quantity)
                         product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0),{})['available_quantity']) - int(remaining_product_allocation_quantity)
-
-                        self.allocated_product_to_customer(prioritization_engine_request['customer_id'], prioritization_engine_request['gl_account'], prioritization_engine_request['customer_request_id'], prioritization_engine_request['required_quantity'],
-                                                           list(product_lot.keys()).pop(0), prioritization_engine_request['product_id'], remaining_product_allocation_quantity)
-
-                        _logger.debug('Quantity Updated')
 
                         remaining_product_allocation_quantity = 0
                         break
@@ -198,11 +187,27 @@ class PrioritizationEngine(models.TransientModel):
 
         if remaining_product_allocation_quantity == 0:
             _logger.debug("Allocated all required product quantity.")
+
+            self.allocated_product_to_customer(prioritization_engine_request['customer_id'],
+                                               prioritization_engine_request['gl_account'],
+                                               prioritization_engine_request['customer_request_id'],
+                                               prioritization_engine_request['required_quantity'],
+                                               prioritization_engine_request['product_id'],
+                                               required_quantity)
+
             prioritization_engine_request['customer_request_logs'] += 'Product allocated.'
             self.update_customer_request_status(prioritization_engine_request,'Completed')
 
-        elif remaining_product_allocation_quantity > 0:
+        elif remaining_product_allocation_quantity > 0 and remaining_product_allocation_quantity != required_quantity:
             _logger.debug(str(" Allocated Partial order product."))
+
+            self.allocated_product_to_customer(prioritization_engine_request['customer_id'],
+                                               prioritization_engine_request['gl_account'],
+                                               prioritization_engine_request['customer_request_id'],
+                                               prioritization_engine_request['required_quantity'],
+                                               prioritization_engine_request['product_id'],
+                                               required_quantity - remaining_product_allocation_quantity)
+
             prioritization_engine_request['customer_request_logs'] += 'Allocated Partial order product.'
             self.update_customer_request_status(prioritization_engine_request, 'Partial')
 
@@ -235,9 +240,9 @@ class PrioritizationEngine(models.TransientModel):
             return None
 
     # allocated product to customer
-    def allocated_product_to_customer(self, customer_id, gl_account, customer_request_id, required_quantity, lot_id, product_id, allocated_product_from_lot):
-        allocated_product = {lot_id : {'customer_request_id':customer_request_id, 'customer_required_quantity':required_quantity,
-                                 'product_id':product_id, 'allocated_product_quantity':allocated_product_from_lot}}
+    def allocated_product_to_customer(self, customer_id, gl_account, customer_request_id, required_quantity, product_id, allocated_product_from_lot):
+        allocated_product = {'customer_request_id':customer_request_id, 'customer_required_quantity':required_quantity,
+                                 'product_id':product_id, 'allocated_product_quantity':allocated_product_from_lot}
         # add data in allocated_product_for_gl_account_dict
         if gl_account and not gl_account is None:
             # match parent id and gl account
@@ -266,7 +271,6 @@ class PrioritizationEngine(models.TransientModel):
                 self.allocated_product_dict.update(new_customer_id_key)
 
 
-
     # return duration in days
     def return_duration_in_days(self, duration):
         duration_in_seconds = int(duration.total_seconds())
@@ -293,8 +297,11 @@ class PrioritizationEngine(models.TransientModel):
             _logger.debug('sale order : %r ',sale_order['id'])
 
             for allocated_product in self.allocated_product_dict.get(partner_id_key, {}):
-                sale_order_line_dict = {'customer_request_id': allocated_product.get(list(allocated_product.keys()).pop(0), {})['customer_request_id'], 'order_id': sale_order['id'], 'product_id': allocated_product.get(list(allocated_product.keys()).pop(0), {})['product_id'],
-                                        'order_partner_id' : partner_id_key, 'product_uom_qty' : allocated_product.get(list(allocated_product.keys()).pop(0), {})['allocated_product_quantity']}
+                _logger.info('customer_request_id  :**** ')
+                _logger.info('customer_request_id  :  %r  ', allocated_product['customer_request_id'])
+
+                sale_order_line_dict = {'customer_request_id': allocated_product['customer_request_id'], 'order_id': sale_order['id'], 'product_id': allocated_product['product_id'],
+                                        'order_partner_id' : partner_id_key, 'product_uom_qty' : allocated_product['allocated_product_quantity']}
 
                 self.env['sale.order.line'].create(dict(sale_order_line_dict))
 
@@ -321,12 +328,9 @@ class PrioritizationEngine(models.TransientModel):
 
                 for allocated_product in self.allocated_product_for_gl_account_dict.get(gl_account_key, {}):
                     sale_order_line_dict = {
-                        'customer_request_id': allocated_product.get(list(allocated_product.keys()).pop(0), {})[
-                            'customer_request_id'], 'order_id': sale_order['id'],
-                        'product_id': allocated_product.get(list(allocated_product.keys()).pop(0), {})['product_id'],
-                        'order_partner_id': res_partner.id,
-                        'product_uom_qty': allocated_product.get(list(allocated_product.keys()).pop(0), {})[
-                            'allocated_product_quantity']}
+                        'customer_request_id': allocated_product['customer_request_id'], 'order_id': sale_order['id'],
+                        'product_id': allocated_product['product_id'],'order_partner_id': res_partner.id,
+                        'product_uom_qty': allocated_product['allocated_product_quantity']}
 
                     self.env['sale.order.line'].create(dict(sale_order_line_dict))
 
