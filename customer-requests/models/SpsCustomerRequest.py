@@ -184,7 +184,9 @@ class SpsCustomerRequest(models.Model):
         sale_order_name_set = set()
         sale_order_name_set.clear()
         for record in self:
+            sale_order_name_set.clear()
             for sale_order_line_id in record.sale_order_line_id:
                 if sale_order_line_id.id:
                     sale_order_name_set.add(str(sale_order_line_id.order_id.name))
-        record.sale_order_name = sale_order_name_set
+            if sale_order_name_set:
+                record.sale_order_name = sale_order_name_set
