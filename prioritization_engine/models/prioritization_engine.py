@@ -348,7 +348,7 @@ class PrioritizationEngine(models.TransientModel):
         _logger.info("inside get_available_product_count")
         available_production_lot_dict =self.env['available.product.dict'].get_available_production_lot()
         _logger.info(available_production_lot_dict)
-        prioritization_engine_request=self.env['sps.customer.requests'].get_settings_object(customer_id,product_id,None,None)
+        prioritization_engine_request=self.env['sps.customer.requests'].get_settings_object(int(customer_id),int(product_id),None,None)
         _logger.info(prioritization_engine_request)
         count = 0
         if available_production_lot_dict.get(int(product_id)) !=None and prioritization_engine_request:
