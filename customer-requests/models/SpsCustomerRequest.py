@@ -133,7 +133,7 @@ class SpsCustomerRequest(models.Model):
     def get_settings_object(self, customer_id,product_id,sps_customer_request_id,status):
         customer_level_setting = self.env['prioritization_engine.prioritization'].search(
             [('customer_id', '=', customer_id),('product_id', '=', product_id)])
-        _logger.info("Inside get_settings_object")
+        _logger.info("Inside get_settings_object"+str(customer_id)+" -"+str(product_id))
         _logger.info(len(customer_level_setting))
         if len(customer_level_setting) == 1:
             _logger.info("Inside get_settings_object if block")
