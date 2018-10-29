@@ -355,6 +355,7 @@ class PrioritizationEngine(models.TransientModel):
             _logger.info("Inside IF block")
             for available_production_lot in available_production_lot_dict.get(int(product_id)):
                 _logger.info(available_production_lot)
+                _logger.info(prioritization_engine_request['expiration_tolerance'])
                 temp=(datetime.today() + relativedelta(months=+int(prioritization_engine_request['expiration_tolerance'])))
                 _logger.info(temp)
                 if datetime.strptime(
