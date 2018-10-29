@@ -49,7 +49,7 @@ class SpsCustomerRequest(models.Model):
 
     def process_customer_requests(self, sps_customer_requests):
         # Release product quantity(Which sales order product not confirm within length of hold period)
-        self.env['prioritization.engine.model'].release_reserved_quantity()
+        #self.env['prioritization.engine.model'].release_reserved_quantity()
 
         pr_models = []
         self.document_id_set.clear()
@@ -134,24 +134,24 @@ class SpsCustomerRequest(models.Model):
         customer_level_setting = self.env['prioritization_engine.prioritization'].search(
             [('customer_id', '=', customer_id),('product_id', '=', product_id)])
         if len(customer_level_setting) == 1:
-            if customer_level_setting.customer_id.prioritization:
+            if customer_level_setting.customer_id.prioritization and customer_level_setting.customer_id.on_hold is False:
                 return customer_level_setting
             else:
-                _logger.debug('Customer prioritization setting is False. Customer id is :%r',
+                _logger.debug('Customer prioritization setting is False or customer is On Hold. Customer id is :%r',
                              str(customer_level_setting.customer_id.id))
                 if sps_customer_request_id != None and status != None:
-                    self.update_customer_status(sps_customer_request_id, status, "Customer prioritization setting is False.")
+                    self.update_customer_status(sps_customer_request_id, status, "Customer prioritization setting is False or customer is On Hold.")
                 return False
         else:
             global_level_setting = self.env['res.partner'].search([('id', '=', customer_id)])
             if len(global_level_setting) == 1:
-                if global_level_setting.prioritization:
+                if global_level_setting.prioritization and global_level_setting.on_hold is False:
                     return global_level_setting
                 else:
-                    _logger.debug('Customer prioritization setting is False. Customer id is :%r',
+                    _logger.debug('Customer prioritization setting is False or customer is On Hold. Customer id is :%r',
                                  str(global_level_setting.id))
                     if sps_customer_request_id != None and status != None:
-                        self.update_customer_status(sps_customer_request_id, status, "Customer prioritization setting is False.")
+                        self.update_customer_status(sps_customer_request_id, status, "Customer prioritization setting is False or customer is On Hold.")
                     return False
 
     def update_customer_status(self,sps_customer_request_id, status, log):
