@@ -134,9 +134,11 @@ class SpsCustomerRequest(models.Model):
         customer_level_setting = self.env['prioritization_engine.prioritization'].search(
             [('customer_id', '=', customer_id),('product_id', '=', product_id)])
         _logger.info("Inside get_settings_object")
-        _logger.info(customer_level_setting)
+        _logger.info(len(customer_level_setting))
         if len(customer_level_setting) == 1:
+            _logger.info("Inside get_settings_object if block")
             if customer_level_setting.customer_id.prioritization and customer_level_setting.customer_id.on_hold is False:
+                _logger.info(customer_level_setting)
                 return customer_level_setting
             else:
                 _logger.info('Customer prioritization setting is False or customer is On Hold. Customer id is :%r',
@@ -145,6 +147,7 @@ class SpsCustomerRequest(models.Model):
                     self.update_customer_status(sps_customer_request_id, status, "Customer prioritization setting is False or customer is On Hold.")
                 return False
         else:
+            _logger.info("Inside get_settings_object else block")
             global_level_setting = self.env['res.partner'].search([('id', '=', customer_id)])
             _logger.info(global_level_setting)
             if len(global_level_setting) == 1:
