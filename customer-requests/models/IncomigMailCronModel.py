@@ -39,8 +39,9 @@ MAX_POP_MESSAGES = 50
 MAIL_TIMEOUT = 60
 
 poplib._MAXLINE = 65536
-
-ATTACHMENT_DIR = "attachments/"
+path = os.path.abspath(__file__)
+dir_path = os.path.dirname(os.path.dirname(os.path.dirname(path)))
+ATTACHMENT_DIR =  dir_path + "/Documents/attachments/"
 
 
 class IncomingMailCronModel(models.Model):
