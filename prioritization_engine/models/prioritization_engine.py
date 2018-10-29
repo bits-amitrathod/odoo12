@@ -345,15 +345,22 @@ class PrioritizationEngine(models.TransientModel):
         return formatted_date
 
     def get_available_product_count(self, customer_id, product_id):
+        print("inside get_available_product_count")
         available_production_lot_dict =self.env['available.product.dict'].get_available_production_lot()
+        print(available_production_lot_dict)
         prioritization_engine_request=self.env['sps.customer.requests'].get_settings_object(customer_id,product_id,None,None)
+        print(prioritization_engine_request)
         count = 0
         if available_production_lot_dict.get(int(product_id)) !=None and prioritization_engine_request:
+            print("Inside IF block")
             for available_production_lot in available_production_lot_dict.get(int(product_id)):
+                print(available_production_lot)
                 temp=(datetime.today() + relativedelta(months=+int(prioritization_engine_request['expiration_tolerance'])))
+                print(temp)
                 if datetime.strptime(
                         available_production_lot.get(list(available_production_lot.keys()).pop(0), {}).get('use_date'),
                         '%Y-%m-%d %H:%M:%S') >= temp:
+                    print("Inside IF2 block")
                     for available in available_production_lot:
                         print(available_production_lot.get(available))
                         count = count +(available_production_lot.get(available).get('available_quantity')-available_production_lot.get(available).get('reserved_quantity'))
