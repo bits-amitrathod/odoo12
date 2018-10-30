@@ -8,6 +8,7 @@
         <field name="arch" type="xml">
             <tree create="false">
                 <field name="customer_id"/>
+                <field name="document_name"/>
                 <field name="customer_sku" string="Customer SKU"/>
                 <field name="product_description" string="Customer Product Description"/>
                 <field name="qty_to_show" string="Quantity"/>
@@ -37,6 +38,21 @@
             </form>
         </field>
     </record>
+
+    <record id="view_voided_product_filter" model="ir.ui.view">
+        <field name="name">voided.poduct.filter</field>
+        <field name="model">sps.customer.requests</field>
+        <field name="arch" type="xml">
+            <search string="Search Customer">
+                <field name="customer_id" string="Customer"/>
+                <group expand="0" string="Group By">
+                    <filter string="Customer" name="group_by_customer" domain="[]" context="{'group_by':'customer_id'}" help="Voided Products by Customer"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+
     <record id="voided_product_template_action" model="ir.actions.act_window">
         <field name="name">Voided Products</field>
         <field name="type">ir.actions.act_window</field>
@@ -44,6 +60,8 @@
         <field name="view_id" ref="view_tree_voided_products"/>
         <field name="view_mode">tree,form</field>
         <field name="domain">[('status','in',['Voided'])]</field>
+        <field name="search_view_id" ref="view_voided_product_filter"/>
+        <field name="context">{"search_default_group_by_customer":1}</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
                 Click to define a new product.
