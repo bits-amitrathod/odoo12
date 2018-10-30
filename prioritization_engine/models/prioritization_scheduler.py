@@ -19,6 +19,7 @@ class PrioritizationScheduler(models.Model):
 
     def process_prioritization_scheduler_manually(self):
         _logger.info('In process_prioritization_scheduler_manually')
+        self.env['fetchmail.server'].fetch_mail()
         self.env['sps.customer.requests'].get_customer_requests()
 
 

@@ -16,8 +16,9 @@ class SpsCustomerRequest(models.Model):
     document_id = fields.Many2one('sps.cust.uploaded.documents', string='Document', required=True)
     product_id = fields.Many2one('product.product', string='Product', required=False, default=0)
     sale_order_line_id = fields.One2many('sale.order.line', 'customer_request_id', string="Request")
-    sale_order_id = fields.Char(String="Sale Order", compute="_get_sale_order_id")
+    sale_order_name = fields.Char(string="Sale Order", compute="_get_sale_order_name")
     gl_account = fields.Char(string='GL Account')
+    document_name = fields.Char(string="Document Name", compute="_get_document_name")
 
     customer_sku = fields.Char()
     sps_sku = fields.Char()
@@ -48,6 +49,9 @@ class SpsCustomerRequest(models.Model):
                 _logger.error("Error procesing requests %r", exc)
 
     def process_customer_requests(self, sps_customer_requests):
+        # Release product quantity(Which sales order product not confirm within length of hold period)
+        #self.env['prioritization.engine.model'].release_reserved_quantity()
+
         pr_models = []
         self.document_id_set.clear()
         _logger.debug('len of customer request %r ', str(len(sps_customer_requests)))
@@ -131,24 +135,24 @@ class SpsCustomerRequest(models.Model):
         customer_level_setting = self.env['prioritization_engine.prioritization'].search(
             [('customer_id', '=', customer_id),('product_id', '=', product_id)])
         if len(customer_level_setting) == 1:
-            if customer_level_setting.customer_id.prioritization:
+            if customer_level_setting.customer_id.prioritization and customer_level_setting.customer_id.on_hold is False:
                 return customer_level_setting
             else:
-                _logger.debug('Customer prioritization setting is False. Customer id is :%r',
+                _logger.debug('Customer prioritization setting is False or customer is On Hold. Customer id is :%r',
                              str(customer_level_setting.customer_id.id))
                 if sps_customer_request_id != None and status != None:
-                    self.update_customer_status(sps_customer_request_id, status, "Customer prioritization setting is False.")
+                    self.update_customer_status(sps_customer_request_id, status, "Customer prioritization setting is False or customer is On Hold.")
                 return False
         else:
             global_level_setting = self.env['res.partner'].search([('id', '=', customer_id)])
             if len(global_level_setting) == 1:
-                if global_level_setting.prioritization:
+                if global_level_setting.prioritization and global_level_setting.on_hold is False:
                     return global_level_setting
                 else:
-                    _logger.debug('Customer prioritization setting is False. Customer id is :%r',
+                    _logger.debug('Customer prioritization setting is False or customer is On Hold. Customer id is :%r',
                                  str(global_level_setting.id))
                     if sps_customer_request_id != None and status != None:
-                        self.update_customer_status(sps_customer_request_id, status, "Customer prioritization setting is False.")
+                        self.update_customer_status(sps_customer_request_id, status, "Customer prioritization setting is False or customer is On Hold.")
                     return False
 
     def update_customer_status(self,sps_customer_request_id, status, log):
@@ -177,10 +181,19 @@ class SpsCustomerRequest(models.Model):
 
     @api.multi
     @api.depends('sale_order_line_id')
-    def _get_sale_order_id(self):
+    def _get_sale_order_name(self):
+        sale_order_name_set = set()
+        sale_order_name_set.clear()
         for record in self:
-            if record.sale_order_line_id.id:
-                if record.sale_order_id:
-                    record.sale_order_id = str(record.sale_order_id)+ ", " +str(record.sale_order_line_id.order_id.id)
-                else:
-                    record.sale_order_id = str(record.sale_order_line_id.order_id.id)
+            sale_order_name_set.clear()
+            for sale_order_line_id in record.sale_order_line_id:
+                if sale_order_line_id.id:
+                    sale_order_name_set.add(str(sale_order_line_id.order_id.name))
+            if sale_order_name_set:
+                record.sale_order_name = sale_order_name_set
+
+    @api.multi
+    @api.depends('document_id')
+    def _get_document_name(self):
+        for record in self:
+            record.document_name = str(record.document_id.document_name)

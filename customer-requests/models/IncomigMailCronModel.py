@@ -39,8 +39,9 @@ MAX_POP_MESSAGES = 50
 MAIL_TIMEOUT = 60
 
 poplib._MAXLINE = 65536
-
-ATTACHMENT_DIR = "attachments/"
+path = os.path.abspath(__file__)
+dir_path = os.path.dirname(os.path.dirname(os.path.dirname(path)))
+ATTACHMENT_DIR =  dir_path + "/Documents/attachments/"
 
 
 class IncomingMailCronModel(models.Model):
@@ -170,7 +171,7 @@ class IncomingMailCronModel(models.Model):
                                                             file_ref.close()
                                                             self.env[
                                                                 'sps.document.process'].process_document(
-                                                                users_model, file_path, tmpl_type, 'email')
+                                                                users_model, file_path, tmpl_type,filename, 'Email')
                                                         except Exception as e:
                                                             _logger.info(str(e))
                                             else:

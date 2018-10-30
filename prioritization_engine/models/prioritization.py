@@ -18,7 +18,7 @@ class Customer(models.Model):
     priority = fields.Integer("Product Priority", readonly=False)
     cooling_period = fields.Integer("Cooling Period in days", readonly=False)
     auto_allocate = fields.Boolean("Allow Auto Allocation?", readonly=False)
-    length_of_hold = fields.Integer("Length Of Hold in hours", readonly=False)
+    length_of_hold = fields.Integer("Length Of Hold in hours", readonly=False, default=1)
     expiration_tolerance = fields.Integer("Expiration Tolerance in Months", readonly=False)
     partial_ordering = fields.Boolean("Allow Partial Ordering?", readonly=False)
     partial_UOM = fields.Boolean("Allow Partial UOM?", readonly=False)
@@ -99,6 +99,17 @@ class Customer(models.Model):
         action['res_id'] = self.id
         return action
 
+    def action_import_template(self):
+        tree_view_id= self.env.ref('customer-requests.view_tree_documents_normal').id
+        return {
+            'type': 'ir.actions.client',
+            'views': [(tree_view_id, 'form')],
+            'view_mode': 'form',
+            'tag': 'importtemplate',
+            'params': [{'model': 'sps.customer.template', 'customer_id':self.id,'user_type': 'customer', 'request_model':
+                'sps.customer.requests'}],
+        }
+
     # constraint
     @api.constrains('expiration_tolerance')
     @api.one
@@ -113,6 +124,9 @@ class Customer(models.Model):
         length_of_hold = self.length_of_hold
         if length_of_hold and len(str(abs(length_of_hold))) > 5:
             raise ValidationError(_('Global Priority Configuration->Length of Holding field must be less than 5 digit'))
+        if length_of_hold == 0:
+            raise ValidationError(_('Global Priority Configuration->Length of Hold should be minimum 1 hour'))
+            self.length_of_hold = 1
 
     @api.constrains('priority')
     @api.one
@@ -173,7 +187,7 @@ class Prioritization(models.Model):
     priority = fields.Integer("Product Priority",readonly=False)
     cooling_period = fields.Integer("Cooling Period in days",readonly=False)
     auto_allocate = fields.Boolean("Allow Auto Allocation?",readonly=False)
-    length_of_hold = fields.Integer("Length Of Hold in hours",readonly=False)
+    length_of_hold = fields.Integer("Length Of Hold in hours",readonly=False, default=1)
     expiration_tolerance = fields.Integer("Expiration Tolerance in months",readonly=False)
     partial_ordering = fields.Boolean("Allow Partial Ordering?",readonly=False)
     partial_UOM = fields.Boolean("Allow Partial UOM?",readonly=False)
@@ -200,6 +214,9 @@ class Prioritization(models.Model):
         length_of_hold = self.length_of_hold
         if length_of_hold and len(str(abs(length_of_hold))) > 5:
             raise ValidationError(_('Customer Priority Configuration->Length of Holding field must be less than 5 digit'))
+        if length_of_hold == 0:
+            raise ValidationError(_('Customer Priority Configuration->Length of Hold should be minimum 1 hour'))
+            self.length_of_hold = 1
 
     @api.constrains('priority')
     @api.one
@@ -273,3 +290,4 @@ class StockMove(models.Model):
                 if setting.partial_UOM and not setting.partial_UOM is None:
                     _logger.info('partial UOM** : %r', setting.partial_UOM)
                     self.partial_UOM = setting.partial_UOM
+

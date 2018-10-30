@@ -30,7 +30,7 @@ _logger = logging.getLogger(__name__)
 class DocumentProcessTransientModel(models.TransientModel):
     _name = 'sps.document.process'
 
-    def process_document(self, user_model, uploaded_file_path, template_type_from_user, document_source='api',
+    def process_document(self, user_model, uploaded_file_path, template_type_from_user, file_name, document_source='Api',
                          ):
         if not user_model.prioritization:
             return dict(errorCode=6, message='Prioritization is Not Enabled')
@@ -76,7 +76,7 @@ class DocumentProcessTransientModel(models.TransientModel):
             file_upload_record = dict(token=DocumentProcessTransientModel.random_string_generator(30),
                                       gl_account_id=gl_account_id,
                                       customer_id=user_id, template_type=template_type,
-                                      document_name=DocumentProcessTransientModel.random_string_generator(10),
+                                      document_name=file_name,
                                       file_location=uploaded_file_path, source=document_source, status='draft',
                                       create_uid=1, create_date=today_date, write_uid=1,
                                       write_date=today_date)
