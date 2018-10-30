@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="common_mail_template" model="mail.template">
+    <record id="inventory_packing_list_notification" model="mail.template">
             <field name="name">Inventory Notification: Product Availability Email</field>
             <field name="model_id" ref="base.model_res_users"/>
             <field name="email_from">${ctx['email_from']}</field>
@@ -17,6 +17,13 @@
                         <div >
                             <p>Hi Team,</p>
                             <p> ${ctx['descrption']} </p>
+                        </div>
+                         <div >
+                            <p><span style="font-weight: bold;">Customer Name:</span>${ctx['customer_name']}</p>
+                            <p><span style="font-weight: bold;">Shipping Address:</span>${ctx['shipping_address']}</p>
+                            <p><span style="font-weight: bold;">Customer PO Number:</span>${ctx['customer_po_no']}</p>
+                            <p><span style="font-weight: bold;">Carrier Name:</span>${ctx['carrier_name']}</p>
+                            <p><span style="font-weight: bold;">Carrier Account Number:</span>${ctx['carrier_acc_no']}</p>
                         </div>
                         <center>
                         </center>

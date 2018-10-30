@@ -60,6 +60,7 @@ class Customer(models.Model):
     def copy_parent_date(self, vals):
         #print(self)
         #self.ensure_one()
+        _logger.info("pritization engin :%r",vals)
         for child_id in self.child_ids:
             print(child_id.child_ids)
             child_id.write({'on_hold':self.on_hold,
