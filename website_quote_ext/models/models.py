@@ -13,14 +13,16 @@ class Website(models.Model):
         _logger.info("inside sale_get_engine_order")
         order = self.env['sale.order'].search([('id', '=', order_id)])[0]
         values = {'product_uom_qty':set_qty}
+        _logger.info(line_id)
         line = self.env['sale.order.line'].sudo().search([('id', '=', line_id)])[0]
         line.write(values)
-        move = self.env['stock.move'].search([('sale_line_id', '=', line_id)])
-        _logger.info(move.move_line_ids)
-        for movelineid in move.move_line_ids:
+        moves = self.env['stock.move'].search([('sale_line_id', '=', line_id)])
+        _logger.info(len(moves))
+        _logger.info(moves)
+        for movelineid in moves:
             _logger.info("Inside First For")
-            _logger.info(movelineid)
-            moveline = self.env['stock.move.line'].search([('id', '=', movelineid)])
+            _logger.info(movelineid.move_line_ids)
+            moveline = self.env['stock.move.line'].search([('id', '=', movelineid.move_line_ids)])
             _logger.info(moveline.package_id)
             _logger.info(moveline.result_package_id)
             package=self.env['stock.quant.package'].search([('id', '=', moveline.package_id)])
