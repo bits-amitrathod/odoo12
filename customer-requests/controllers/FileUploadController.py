@@ -57,7 +57,8 @@ class FileUploadController(Controller):
                 file_storage.save(uploaded_file_path)
                 response = request.env['sps.document.process'].sudo().process_document(user_api_settings,
                                                                                        uploaded_file_path,
-                                                                                       template_type_from_user)
+                                                                                       template_type_from_user,
+                                                                                       str(request.params['file'].filename))
             else:
                 response = dict(errorCode=3, message='UnAuthorized Access')
                 
@@ -80,7 +81,6 @@ class FileUploadController(Controller):
     @http.route('/template_import/set_file', methods=['POST'])
     def set_file(self, file, import_id, customer, template_type, jsonp='callback'):
         import_id = int(import_id)
-
         written = request.env['sps.template.transient'].browse(import_id).write({
             'file': file.read(),
             'file_name': file.filename,
