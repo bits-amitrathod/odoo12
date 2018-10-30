@@ -18,6 +18,7 @@ class SpsCustomerRequest(models.Model):
     sale_order_line_id = fields.One2many('sale.order.line', 'customer_request_id', string="Request")
     sale_order_name = fields.Char(string="Sale Order", compute="_get_sale_order_name")
     gl_account = fields.Char(string='GL Account')
+    document_name = fields.Char(string="Document Name", compute="_get_document_name")
 
     customer_sku = fields.Char()
     sps_sku = fields.Char()
@@ -196,3 +197,9 @@ class SpsCustomerRequest(models.Model):
                     sale_order_name_set.add(str(sale_order_line_id.order_id.name))
             if sale_order_name_set:
                 record.sale_order_name = sale_order_name_set
+
+    @api.multi
+    @api.depends('document_id')
+    def _get_document_name(self):
+        for record in self:
+            record.document_name = str(record.document_id.document_name)
