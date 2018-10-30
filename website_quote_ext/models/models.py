@@ -21,11 +21,11 @@ class Website(models.Model):
         _logger.info(move)
         moveline = self.env['stock.move.line'].search([('move_id', '=', move.id)])
         package=self.env['stock.quant.package'].search([('id', '=', moveline.package_id)])
-        package=self.env['stock.quant.package'].search([('id', '=', moveline.package_id)])
-        quant=self.env['stock.quant'].search([('id', '=', package.picking_id)])
-        values = {'quantity':quant.quantity-1,'reserved_quantity': set_qty}
-        quant.write(values)
-        _logger.info(quant)
+        quants=self.env['stock.quant'].search([('id', '=', package.quant_ids)])
+        for quant in quants:
+            values = {'quantity':quant.quantity-1,'reserved_quantity': set_qty}
+            quant.write(values)
+            _logger.info(quant)
         #order.write(line)
         count = self.env['prioritization.engine.model'].get_available_product_count(order.partner_id.id, product_id)
         return count;
