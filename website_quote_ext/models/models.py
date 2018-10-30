@@ -15,12 +15,14 @@ class Website(models.Model):
         order = self.env['sale.order'].search([('id', '=', order_id)])[0]
         values = {'product_uom_qty':set_qty}
         line = self.env['sale.order.line'].sudo().search([('id', '=', line_id)])[0]
-        line.write(values)
+        line.write(line)
         move = self.env['stock.move'].search([('sale_line_id', '=', line_id)])
-        _logger.info("move")
-        _logger.info(move)
+        _logger.info(move.id)
         moveline = self.env['stock.move.line'].search([('move_id', '=', move.id)])
+        _logger.info(moveline.package_id)
+        _logger.info(moveline.result_package_id)
         package=self.env['stock.quant.package'].search([('id', '=', moveline.package_id)])
+        _logger.info(package)
         quants=self.env['stock.quant'].search([('id', '=', package.quant_ids)])
         for quant in quants:
             values = {'quantity':quant.quantity-1,'reserved_quantity': set_qty}
