@@ -47,6 +47,7 @@
                         <field name="status"/>
                     </group>
                     <group>
+                        <field name="product_description" string="Customer Product Description"/>
                         <field name="customer_sku"/>
                         <field name="qty_to_show" string="Quantity"/>
                     </group>
