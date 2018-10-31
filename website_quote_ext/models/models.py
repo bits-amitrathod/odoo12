@@ -15,12 +15,20 @@ class Website(models.Model):
         values = {'product_uom_qty':set_qty}
         line = self.env['sale.order.line'].sudo().search([('id', '=', line_id)])[0]
         line.write(values)
-        count = self.env['prioritization.engine.model'].get_available_product_count(order.partner_id.id, product_id)
+        customer = self.env['res.partner'].sudo().search([('id', '=', order.partner_id.id)])[0]
+        cust_id = order.partner_id.id
+        if customer.is_parent is False:
+            cust_id = customer.parent_id
+        count = self.env['prioritization.engine.model'].get_available_product_count(cust_id, product_id)
         return count;
 
     @api.multi
     def sale_get_engine_count(self, order_id,product_id):
         order = self.env['sale.order'].search([('id', '=', order_id)])[0]
-        count = self.env['prioritization.engine.model'].get_available_product_count(order.partner_id.id, product_id)
+        customer = self.env['res.partner'].sudo().search([('id', '=', order.partner_id.id)])[0]
+        cust_id = order.partner_id.id
+        if customer.is_parent is False:
+            cust_id = customer.parent_id
+        count = self.env['prioritization.engine.model'].get_available_product_count(cust_id, product_id)
         return count;
 
