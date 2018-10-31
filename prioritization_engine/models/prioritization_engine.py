@@ -427,22 +427,22 @@ class PrioritizationEngine(models.TransientModel):
             [('id', '=', document_id)]).write(dict(status=status))
 
     def release_reserved_quantity(self):
-        _logger.debug('release reserved quantity....')
+        _logger.info('release reserved quantity....')
         # get team id
         crm_team = self.env['crm.team'].search([('team_type', '=', 'engine')])
 
         sale_orders = self.env['sale.order'].search([('state', 'in', ('engine','sent')), ('team_id', '=', crm_team['id'])])
 
         for sale_order in sale_orders:
-            _logger.debug('sale order id : %r, partner_id : %r, create_date: %r', sale_order['id'], sale_order['partner_id'].id, sale_order['create_date'])
+            _logger.info('sale order id : %r, partner_id : %r, create_date: %r', sale_order['id'], sale_order['partner_id'].id, sale_order['create_date'])
             sale_order_lines = self.env['sale.order.line'].search([('order_id', '=', sale_order['id']), ('product_uom_qty', '>', 0)])
 
             for sale_order_line in sale_order_lines:
-                _logger.debug('sale order line id : %r, product_id : %r, product_uom_qty: %r', sale_order_line['id'], sale_order_line['product_id'].id, sale_order_line['product_uom_qty'])
+                _logger.info('sale order line id : %r, product_id : %r, product_uom_qty: %r', sale_order_line['id'], sale_order_line['product_id'].id, sale_order_line['product_uom_qty'])
 
                 # get length of hold
                 _setting_object = self.env['sps.customer.requests'].get_settings_object(sale_order['partner_id'].id, sale_order_line['product_id'].id, None, None)
-                _logger.debug('length of hold %r',_setting_object.length_of_hold)
+                _logger.info('length of hold %r',_setting_object.length_of_hold)
 
                 # get current datetime
                 current_datetime = datetime.now()
@@ -453,24 +453,35 @@ class PrioritizationEngine(models.TransientModel):
                 if int(_setting_object.length_of_hold) <= int(duration_in_hours):
                     sale_order_line_dict = {'order_id': sale_order['id'], 'product_id': sale_order_line['product_id'].id, 'order_partner_id': sale_order['partner_id'].id, 'product_uom_qty': 0}
 
-                    stock_move_lines = self.env['stock.move.line'].search([('picking_id.sale_id', '=', sale_order['id'])])
+                    stock_move_lines = self.env['stock.move.line'].search([('picking_id.sale_id', '=', sale_order['id']),('product_id', '=', sale_order_line['product_id'].id)])
 
-                    for stock_move_line in stock_move_lines:
-                        _logger.debug('*Product_id  :  %r  ,picking_id  :  %r  ,product_uom_qty  : %r   ,  lot_id  :  %r ',stock_move_line['product_id'].id,
-                                     stock_move_line['picking_id']['location_id']['id'], stock_move_line['product_uom_qty'], stock_move_line['lot_id']['id'])
+                    if stock_move_lines:
+                        for stock_move_line in stock_move_lines:
+                            _logger.info('*Product_id  :  %r  ,picking_id  :  %r  ,product_uom_qty  : %r   ,  lot_id  :  %r ',stock_move_line['product_id'].id,
+                                         stock_move_line['picking_id']['location_id']['id'], stock_move_line['product_uom_qty'], stock_move_line['lot_id']['id'])
 
-                        self.env['stock.quant']._update_available_quantity(stock_move_line['product_id'], stock_move_line['picking_id']['location_id'],
-                                                                              stock_move_line['product_uom_qty'],stock_move_line['lot_id'])
+                            # self.env['stock.quant']._update_available_quantity(stock_move_line['product_id'], stock_move_line['picking_id']['location_id'],
+                            #                                                       stock_move_line['product_uom_qty'],stock_move_line['lot_id'])
 
-                        self.env['sale.order.line'].search([('customer_request_id', '=', sale_order_line['customer_request_id'].id)]).write(
-                                                            dict(sale_order_line_dict))
-                        stock_move_line.unlink()
-
+                            stock_move_line.unlink()
+                            
+                        self.env['sale.order.line'].search([('customer_request_id', '=', sale_order_line['customer_request_id'].id)]).write(dict(sale_order_line_dict))
                         _logger.info('Quantity Released')
                 else:
                     _logger.info('Product is in length of hold, unable to release quantity.')
 
+            # change sale order state: 'cancel'
+            self.change_sale_order_state(sale_order)
 
+
+    # change sale order state: 'cancel' when length of hold of all products in sale order is finished.
+    def change_sale_order_state(self,sale_order):
+        all_sale_order_lines = self.env['sale.order.line'].search([('order_id', '=', sale_order['id'])])
+        sale_order_lines_uom_qty_zero = self.env['sale.order.line'].search([('order_id', '=', sale_order['id']), ('product_uom_qty', '=', 0)])
+        if len(all_sale_order_lines) == len(sale_order_lines_uom_qty_zero):
+            _logger.info('sales order status before : %r',sale_order['state'])
+            sale_order.write(dict(state='cancel'))
+            _logger.info('sales order status after : %r', sale_order['state'])
 
 
 

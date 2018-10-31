@@ -64,11 +64,9 @@
         <field name="context">{"search_default_group_by_customer":1}</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
-                Click to define a new product.
+                Voided product list empty.
             </p><p>
-            You must define a product for everything you sell, whether it's a physical product, a consumable or a service you offer to customers.
-            </p><p>
-            The product form contains information to simplify the sale process: price, notes in the quotation, accounting data, procurement methods, etc.
+            Voided product list empty.
             </p>
         </field>
     </record>
