@@ -38,7 +38,9 @@
                                          %for column in  columnProps
                                              <td style="text-align: center;">
                                                 <span>
-                                                    ${product[column]}
+                                                    % if product[column] != "False":
+                                                        ${product[column]}
+                                                    % endif
                                                  </span>
                                             </td>
                                           % endfor

@@ -49,7 +49,8 @@ class InventoryNotificationHTML(models.TransientModel):
             for column_name in columnProps:
                 body = body + """<td style = 'text-align: center;border: 1px solid black;'><span>"""
                 column=str(product.get(column_name))
-                body = body + column
+                if column:
+                    body = body + column
                 body = body +"""</span></td>"""
             body= body+"""</tr>"""
 

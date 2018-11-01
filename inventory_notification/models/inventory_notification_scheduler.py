@@ -30,7 +30,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         self.process_packing_list()
         self.process_on_hold_customer()
         self.process_notification_for_product_status()
-        # self.process_notification_for_in_stock_report()
+        self.process_notification_for_in_stock_report()
 
 
     def process_new_product_scheduler(self):
@@ -184,7 +184,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         weekday=days[dayNumber]
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
         _logger.info("weekday: %r", weekday)
-        users = self.env['res.partner'].search([('customer','=',True),('start_date','<=',today_start),('end_date','>=',today_start)])
+        users = self.env['res.partner'].search([(weekday,'=',True),('customer','=',True),('start_date','<=',today_start),('end_date','>=',today_start)])
         products= self.env['product.product'].search([('product_tmpl_id.type','=','product')])
         if products:
             products._compute_max_inventory_level()
@@ -196,8 +196,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                           'Product Price', 'Min Expiration Date', 'Max Expiration Date']
                 columnProps = ['manufacturer', 'sku_reference', 'product_code', 'product_name', 'qty_in_stock',
                                'product_price_symbol', 'minExDate', 'maxExDate']
-                # self.process_common_email_notification_template(user, super_user, subject,
-                #                                             description, products, header, columnProps)
+                self.process_common_email_notification_template(user, super_user, subject,
+                                                            description, products, header, columnProps)
 
 
 
