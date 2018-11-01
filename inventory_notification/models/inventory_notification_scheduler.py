@@ -3,6 +3,7 @@
 from odoo import models, fields, api,SUPERUSER_ID
 import logging
 import datetime
+import base64
 from datetime import date
 import calendar
 from odoo.exceptions import UserError
@@ -24,11 +25,12 @@ class InventoryNotificationScheduler(models.TransientModel):
     @api.model
     @api.multi
     def process_notification_scheduler(self):
-        # self.process_new_product_scheduler()
-        # self.process_notify_available()
-        # self.process_packing_list()
-        #self.process_on_hold_customer()
+        self.process_new_product_scheduler()
+        self.process_notify_available()
+        self.process_packing_list()
+        self.process_on_hold_customer()
         self.process_notification_for_product_status()
+        # self.process_notification_for_in_stock_report()
 
 
     def process_new_product_scheduler(self):
@@ -172,6 +174,30 @@ class InventoryNotificationScheduler(models.TransientModel):
                     self.process_notify_yellow_product(yellow_products,user,super_user)
                 if red_product:
                     self.process_notify_red_product(red_product,user,super_user)
+
+
+    def process_notification_for_in_stock_report(self):
+        today_date = date.today()
+        today_start = fields.Date.to_string(today_date)
+        days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+        dayNumber = today_date.weekday()
+        weekday=days[dayNumber]
+        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
+        _logger.info("weekday: %r", weekday)
+        users = self.env['res.partner'].search([('customer','=',True),('start_date','<=',today_start),('end_date','>=',today_start)])
+        products= self.env['product.product'].search([('product_tmpl_id.type','=','product')])
+        if products:
+            products._compute_max_inventory_level()
+            for user in users:
+                _logger.info("user:%r ",user)
+                subject = "In Stock Product"
+                description = "Please find below list of all the product whose are in stock in SPS Inventory."
+                header = ['Manufacturer', 'Sku Reference', 'Product Code', 'Product Name', 'Qty In Stock',
+                          'Product Price', 'Min Expiration Date', 'Max Expiration Date']
+                columnProps = ['manufacturer', 'sku_reference', 'product_code', 'product_name', 'qty_in_stock',
+                               'product_price_symbol', 'minExDate', 'maxExDate']
+                # self.process_common_email_notification_template(user, super_user, subject,
+                #                                             description, products, header, columnProps)
 
 
 
@@ -349,7 +375,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                          'descrption': vals['description']}
         html_file = self.env['inventory.notification.html'].search([])
         finalHTML = html_file.process_common_html(vals['subject'], vals['description'], vals['product_list'], vals['headers'], vals['coln_name'])
-        vals['template'].with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True, )
+        template_id = vals['template'].with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True, )
         mail = self.env["mail.thread"]
         mail.message_post(
             body=finalHTML,
@@ -358,6 +384,20 @@ class InventoryNotificationScheduler(models.TransientModel):
             partner_ids=[vals['email_to_user'].partner_id.id],
             content_subtype='html'
         )
+
+        # mail = self.env['mail.mail'].browse(template_id)
+        # attachment_value = {
+        #     'name': 'product status',
+        #     'res_name': "red product status",
+        #     'res_model': 'product.product',
+        #     'type': 'binary',
+        #     'res_id': self.ids[0],
+        #     'datas': base64.b64encode(mail.body_html.encode("utf-8")),
+        #     'datas_fname': 'product_status' + '.pdf',
+        # }
+        # new_attachment = self.env['ir.attachment'].create(attachment_value)
+        # mail.attachment_ids |= new_attachment
+        # mail.send()
 
 
 
