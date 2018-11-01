@@ -371,9 +371,12 @@ class PrioritizationEngine(models.TransientModel):
                 if datetime.strptime(
                         available_production_lot.get(list(available_production_lot.keys()).pop(0), {}).get('use_date'),
                         '%Y-%m-%d %H:%M:%S') >= temp:
-                    _logger.info("Inside IF2 block")
+                    _logger.info("Inside IF2 block  len: %r ",len(available_production_lot))
+
                     for available in available_production_lot:
-                        _logger.info(available_production_lot.get(available))
+                        _logger.info('*** %r',available_production_lot.get(available))
+                        _logger.info('available_quantity : %r', available_production_lot.get(available).get('available_quantity'))
+                        _logger.info('reserved_quantity : %r',available_production_lot.get(available).get('reserved_quantity'))
                         count = count +(available_production_lot.get(available).get('available_quantity')-available_production_lot.get(available).get('reserved_quantity'))
         return count
 
@@ -382,6 +385,7 @@ class PrioritizationEngine(models.TransientModel):
             allocate_quantity = prioritization_engine_request['max_threshold'] - prioritization_engine_request['quantity']
             return True,allocate_quantity
         else:
+            prioritization_engine_request['customer_request_logs'] += 'unable to allocate product beacause stock is greater than minimum threshold, '
             return False,0
 
     # Update uploaded document status
@@ -464,7 +468,7 @@ class PrioritizationEngine(models.TransientModel):
                             #                                                       stock_move_line['product_uom_qty'],stock_move_line['lot_id'])
 
                             stock_move_line.unlink()
-                            
+
                         self.env['sale.order.line'].search([('customer_request_id', '=', sale_order_line['customer_request_id'].id)]).write(dict(sale_order_line_dict))
                         _logger.info('Quantity Released')
                 else:

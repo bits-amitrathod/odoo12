@@ -52,8 +52,12 @@ class AvailableProductDict(models.TransientModel):
                                                                 'available_quantity': production_lot.quantity,
                                                                 'reserved_quantity': production_lot.reserved_quantity,
                                                                 'use_date': production_lot.lot_id.use_date}}
-                dict = {production_lot.product_id.id: [available_product]}
-                available_production_lot_dict.update(dict)
+
+                if production_lot.product_id.id in available_production_lot_dict.keys():
+                    available_production_lot_dict.get(production_lot.product_id.id,{}).append(available_product)
+                else:
+                    dict = {production_lot.product_id.id: [available_product]}
+                    available_production_lot_dict.update(dict)
 
         # sort list by latest expiry date(use date)
         # available_production_lot_list_to_be_returned = sorted(self.available_production_lot_list_to_be_returned, key=itemgetter('use_date'))
