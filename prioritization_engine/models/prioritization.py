@@ -124,9 +124,6 @@ class Customer(models.Model):
         length_of_hold = self.length_of_hold
         if length_of_hold and len(str(abs(length_of_hold))) > 5:
             raise ValidationError(_('Global Priority Configuration->Length of Holding field must be less than 5 digit'))
-        if length_of_hold == 0:
-            raise ValidationError(_('Global Priority Configuration->Length of Hold should be minimum 1 hour'))
-            self.length_of_hold = 1
 
     @api.constrains('priority')
     @api.one
@@ -214,9 +211,6 @@ class Prioritization(models.Model):
         length_of_hold = self.length_of_hold
         if length_of_hold and len(str(abs(length_of_hold))) > 5:
             raise ValidationError(_('Customer Priority Configuration->Length of Holding field must be less than 5 digit'))
-        if length_of_hold == 0:
-            raise ValidationError(_('Customer Priority Configuration->Length of Hold should be minimum 1 hour'))
-            self.length_of_hold = 1
 
     @api.constrains('priority')
     @api.one
@@ -257,8 +251,8 @@ class PrioritizationTransient(models.TransientModel):
     priority = fields.Integer("Priority")
     cooling_period = fields.Integer("Cooling Period in days")
     auto_allocate = fields.Boolean("Allow Auto Allocation?")
-    length_of_hold = fields.Integer("Length Of Hold in days")
-    expiration_tolerance = fields.Integer("Expiration Tolerance days")
+    length_of_hold = fields.Integer("Length Of Hold in hours")
+    expiration_tolerance = fields.Integer("Expiration Tolerance in months")
     partial_ordering = fields.Boolean("Allow Partial Ordering?")
     partial_UOM = fields.Boolean("Allow Partial UOM?")
 
