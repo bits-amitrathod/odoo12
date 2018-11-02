@@ -48,6 +48,7 @@
                 <group expand="0" string="Group By">
                     <filter string="Customer" name="group_by_customer" domain="[]" context="{'group_by':'customer_id'}" help="Voided Products Group by Customer"/>
                     <filter string="Customer SKU" name="group_by_customer_sku" domain="[]" context="{'group_by':'customer_sku'}" help="Voided Products Group by Customer SKU"/>
+                    <filter string="Document" name="group_by_document" domain="[]" context="{'group_by':'document_id'}" help="Voided Products Group by Document"/>
                 </group>
             </search>
         </field>
