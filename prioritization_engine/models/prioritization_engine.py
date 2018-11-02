@@ -305,7 +305,7 @@ class PrioritizationEngine(models.TransientModel):
 
                 self.env['sale.order.line'].create(dict(sale_order_line_dict))
 
-            sale_order._action_confirm()
+            sale_order.action_confirm()
             _logger.info('sale order id  : %r', sale_order.id)
             picking = self.env['stock.picking'].search([('sale_id', '=', sale_order.id)])
             _logger.info('picking before   : %r', picking.state)
@@ -339,7 +339,7 @@ class PrioritizationEngine(models.TransientModel):
 
                     self.env['sale.order.line'].create(dict(sale_order_line_dict))
 
-                sale_order._action_confirm()
+                sale_order.action_confirm()
                 _logger.info('sale order id  : %r', sale_order.id)
                 picking = self.env['stock.picking'].search([('sale_id', '=', sale_order.id)])
                 _logger.info('picking before   : %r', picking.state)
