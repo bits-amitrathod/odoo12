@@ -230,7 +230,7 @@ class PrioritizationEngine(models.TransientModel):
             " WHERE saleorderline.order_partner_id IN (SELECT distinct unnest(array[id, parent_id]) from public.res_partner WHERE parent_id = " +
             str(prioritization_engine_request['customer_id']) + ") " +
             " and saleorderline.product_id = " + str(prioritization_engine_request['product_id']) +
-            " and saleorder.state in ('engine','sent') and crmteam.team_type = 'engine'")
+            " and saleorder.state in ('engine','sent','cancel') and crmteam.team_type = 'engine'")
         query_result = self.env.cr.dictfetchone()
 
         if query_result['create_date'] != None:
