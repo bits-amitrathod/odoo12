@@ -40,6 +40,7 @@ class SpsCustomerRequest(models.Model):
 
     # Get Customer Requests
     def get_customer_requests(self):
+        _logger.info('In get_customer_requests')
         sps_customer_requests = self.env['sps.customer.requests'].search(
             [('status', 'in', ('Inprocess', 'Incomplete', 'Unprocessed', 'InCoolingPeriod', 'New', 'Partial'))])
         if len(sps_customer_requests)>0:
@@ -47,10 +48,15 @@ class SpsCustomerRequest(models.Model):
                 self.process_customer_requests(sps_customer_requests)
             except Exception as exc:
                 _logger.error("Error procesing requests %r", exc)
+        else:
+            # Release product quantity(Which sales order product not confirm within length of hold period)
+            self.env['prioritization.engine.model'].release_reserved_quantity()
+
 
     def process_customer_requests(self, sps_customer_requests):
+        _logger.info('In process_customer_requests')
         # Release product quantity(Which sales order product not confirm within length of hold period)
-        #self.env['prioritization.engine.model'].release_reserved_quantity()
+        self.env['prioritization.engine.model'].release_reserved_quantity()
 
         pr_models = []
         self.document_id_set.clear()
@@ -132,7 +138,7 @@ class SpsCustomerRequest(models.Model):
 
     # check customer level or global level setting for product.
     def get_settings_object(self, customer_id,product_id,sps_customer_request_id,status):
-        customer_level_setting = self.env['prioritization_engine.prioritization'].search(
+        customer_level_setting = self.env['prioritization_engine.prioritization'].sudo().search(
             [('customer_id', '=', customer_id),('product_id', '=', product_id)])
         _logger.info("Inside get_settings_object"+str(customer_id)+" -"+str(product_id))
         _logger.info(len(customer_level_setting))
@@ -149,7 +155,7 @@ class SpsCustomerRequest(models.Model):
                 return False
         else:
             _logger.info("Inside get_settings_object else block")
-            global_level_setting = self.env['res.partner'].search([('id', '=', customer_id)])
+            global_level_setting = self.env['res.partner'].sudo().search([('id', '=', customer_id)])
             _logger.info(global_level_setting)
             if len(global_level_setting) == 1:
                 if global_level_setting.prioritization and global_level_setting.on_hold is False:

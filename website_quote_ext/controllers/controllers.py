@@ -67,6 +67,25 @@ class WebsiteSale(http.Controller):
         values = self._order_get_page_view_values(order_sudo, access_token, **kw)
         return request.render("website_quote_ext.portal_order_page_ex", values)
 
+    @http.route(['/quote/<int:order_id>/<token>/accept'], type='http', auth="public", methods=['POST'], website=True)
+    def accept(self, order_id, token, **post):
+        Order = request.env['sale.order'].sudo().browse(order_id)
+        print("order.client_order_ref")
+        if token != Order.access_token:
+            return request.render('website.404')
+        if Order.state != 'sent':
+            return werkzeug.utils.redirect("/quote/%s/%s?message=4" % (order_id, token))
+        #Order.action_confirm()
+        message = post.get('accept_message')
+        client_order_ref = post.get('client_order_ref')
+        print(client_order_ref)
+        if client_order_ref:
+            Order.write({"client_order_ref":client_order_ref})
+        if message:
+            _message_post_helper(message=message, res_id=order_id, res_model='sale.order',
+                                 **{'token': token} if token else {})
+        return werkzeug.utils.redirect("/quote/%s/%s?message=3" % (order_id, token))
+
 
 class CustomerPortal(CustomerPortal):
 
