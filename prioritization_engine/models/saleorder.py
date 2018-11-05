@@ -1,6 +1,7 @@
 from odoo import models, fields, api,_
 from odoo.exceptions import UserError, AccessError,ValidationError
 from odoo.tools.float_utils import float_compare, float_is_zero, float_round
+from datetime import datetime
 
 import logging
 
@@ -57,6 +58,16 @@ class SaleOrder(models.Model):
         multi = self.env['stock.picking'].search([('sale_id', '=', self.id)])
         if len(multi) >= 1:
             return multi.do_unreserve()
+
+    '''@api.multi
+    def action_confirm(self):
+        print(self.team_id)
+        crm_team = self.env['crm.team'].search([('team_type', '=', 'engine')])[0]
+        print(crm_team)
+        if self.team_id.id==crm_team.id:
+            self.write({'state': 'sale','confirmation_date':datetime.today()})
+        else:
+            super(SaleOrder, self).action_confirm()'''
 
     @api.multi
     def action_quotation_send(self):

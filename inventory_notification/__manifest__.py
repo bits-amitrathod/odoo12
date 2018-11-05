@@ -12,13 +12,14 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','base_setup','product', 'stock','inventory_monitor'],
+    'depends': ['base','base_setup','product', 'stock','vendor_offer','prioritization_engine','inventory_monitor','in_stock_report'],
 
     # always loaded
     'data': [# 'security/ir.model.access.csv',
          'views/inventory_notification_views.xml',
          'views/inventory_notification_print.xml',
          'views/inventory_notification_print_report.xml',
+         'views/inventory_packing_list_notification.xml',
          'views/templates.xml',
     ],
     # only loaded in demonstration mode
