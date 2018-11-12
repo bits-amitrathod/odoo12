@@ -327,11 +327,8 @@
       <menuitem name="Customer" id="prioritization_engine.prioritization_cust_menu" parent="prioritization_engine.prioritization_cmenu"
               action="action_sps_customer"/>
       <!-- menu categories -->
-
       <menuitem name="Product" id="prioritization_engine.prioritization_pmenu" parent="prioritization_engine.menu_root"/>
-
       <!-- actions -->
-
       <menuitem name="Product" id="prioritization_engine.prioritization_pro_menu" parent="prioritization_engine.prioritization_pmenu"
               action="product.product_template_action"/>
       <!-- menu categories -->
@@ -341,7 +338,7 @@
 
       <menuitem name="Run Scheduler" id="prioritization_run_scheduler_menu" parent="prioritization_operation_menu"
       action="prioritization_run_scheduler"/>
-         <!-- actions -->
+      <!-- actions -->
       <!-- <menuitem name="Import Document" id="prioritization_engine.prioritization_import_menu" parent="prioritization_engine.prioritization_imenu"
               action="action_notification_setting"/>-->
 

@@ -32,3 +32,14 @@ class Website(models.Model):
         count = self.env['prioritization.engine.model'].get_available_product_count(cust_id, product_id)
         return count;
 
+    @api.multi
+    def sale_order_line_del(self, order_id,line_id, product_id):
+        line = self.env['sale.order.line'].search([('id', '=', line_id)])[0]
+        line.unlink()
+        '''customer = self.env['res.partner'].sudo().search([('id', '=', order.partner_id.id)])[0]
+        cust_id = order.partner_id.id
+        if customer.is_parent is False:
+            cust_id = customer.parent_id
+        count = self.env['prioritization.engine.model'].get_available_product_count(cust_id, product_id)
+        return count;'''
+

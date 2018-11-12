@@ -2,7 +2,7 @@
 <odoo>
   <data>
     <!-- explicit list view definition -->
-    <record model="ir.ui.view" id="vendor_offer.list">
+     <record model="ir.ui.view" id="vendor_offer.list">
       <field name="name">purchase.order list2</field>
       <field name="model">purchase.order</field>
       <field name="priority">20</field>
@@ -23,7 +23,7 @@
       </field>
     </record>
 
-      <record model="ir.ui.view" id="listmultiplier">
+     <record model="ir.ui.view" id="listmultiplier">
       <field name="name">multiplier.multiplier listmultiplier</field>
       <field name="model">multiplier.multiplier</field>
       <field name="arch" type="xml">
@@ -46,8 +46,7 @@
       </field>
     </record>
 
-
-       <record id="view_vendor_offer_multiplier" model="ir.ui.view">
+     <record id="view_vendor_offer_multiplier" model="ir.ui.view">
             <field name="name">multiplier.multiplier.form</field>
             <field name="model">multiplier.multiplier</field>
             <field name="arch" type="xml">
@@ -67,7 +66,7 @@
             </field>
        </record>
 
-       <record id="view_vendor_offer_competition" model="ir.ui.view">
+     <record id="view_vendor_offer_competition" model="ir.ui.view">
             <field name="name">competition.competition.form</field>
             <field name="model">competition.competition</field>
             <field name="arch" type="xml">
@@ -86,7 +85,7 @@
        </record>
 
 
-        <record id="purchase_form_action_vendor" model="ir.actions.act_window">
+    <record id="purchase_form_action_vendor" model="ir.actions.act_window">
             <field name="name">Purchase Orders</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">purchase.order</field>
@@ -107,7 +106,7 @@
             </field>
         </record>
 
-        <menuitem action="purchase_form_action_vendor" id="purchase.menu_purchase_form_action" parent="purchase.menu_procurement_management" sequence="5"/>
+    <menuitem action="purchase_form_action_vendor" id="purchase.menu_purchase_form_action" parent="purchase.menu_procurement_management" sequence="5"/>
 
     <record id="view_vendor_offer_form" model="ir.ui.view">
             <field name="name">purchase.order.form</field>
@@ -168,7 +167,7 @@
                     </group>
                     <notebook>
                         <page string="Product">
-                            <field name="order_line" mode="tree,kanban" attrs="{'readonly': [('state', 'not in', ('draft', 'ven_draft'))]}" >
+                            <field name="order_line" mode="tree,form" attrs="{'readonly': [('state', 'not in', ('draft', 'ven_draft'))]}" >
                                             <form >
                                                 <group>
                                                     <group>
@@ -204,32 +203,32 @@
                                                 </group>
                                             </form>
                                 <!--editable="bottom"-->
-                                <tree>
-                                                         <field name="currency_id" invisible="1"/>
-                                                         <field name="product_id" />
-                                                         <field name="sku_code"  readonly="1" />
-                                                         <field name="product_brand_id"   readonly="1"/>
-                                                         <field name="name"  invisible="1" />
-                                                         <field name="tier"  readonly="1" />
-                                                         <field name="product_qty"  />
-                                                         <field name="expiration_date"  widget="date"  />
-                                                         <field name="qty_in_stock"  />
-                                                         <field name="product_sales_count" />
-                                                         <field name="product_sales_count_month"  />
-                                                         <field name="product_sales_count_90"    />
-                                                         <field name="product_sales_count_yrs"   />
-                                                         <field name="price_unit"    invisible="1" />
-                                                         <field name="list_price"    invisible="1" />
-                                                         <field name="expired_inventory"   />
-                                                         <field name="product_unit_price"  />
-                                                         <field name="product_offer_price"   />
-                                                         <field name="product_retail"   />
-                                                         <field name="price_subtotal" string="Total Offer Price" />
-                                                         <field name="margin" />
-                                                         <field name="multiplier"   />
-                                                         <field name="date_planned"  invisible="1"  />
-                                                         <field name="product_uom"    invisible="1"/>
-                                                         <field name="order_id"   invisible="1"  />
+                                <tree editable="bottom">
+                                         <field name="currency_id" invisible="1"/>
+                                         <field name="product_id" />
+                                         <field name="sku_code"  readonly="1" />
+                                         <field name="product_brand_id"   readonly="1"/>
+                                         <field name="name"  invisible="1" />
+                                         <field name="tier"  readonly="1" />
+                                         <field name="product_qty"  />
+                                         <field name="expiration_date"  widget="date"  />
+                                         <field name="qty_in_stock"  />
+                                         <field name="product_sales_count" />
+                                         <field name="product_sales_count_month"  />
+                                         <field name="product_sales_count_90"    />
+                                         <field name="product_sales_count_yrs"   />
+                                         <field name="price_unit"    invisible="1" />
+                                         <field name="list_price"    invisible="1" />
+                                         <field name="expired_inventory"   />
+                                         <field name="product_unit_price"  />
+                                         <field name="product_offer_price"   />
+                                         <field name="product_retail"   />
+                                         <field name="price_subtotal" string="Total Offer Price" />
+                                         <field name="margin" />
+                                         <field name="multiplier"   />
+                                         <field name="date_planned"  invisible="1"  />
+                                         <field name="product_uom"    invisible="1"/>
+                                         <field name="order_id"   invisible="1"  />
 
                                 </tree>
 
@@ -272,7 +271,7 @@
             </field>
         </record>
 
-        <record id="purchase_order_form" model="ir.ui.view">
+    <record id="purchase_order_form" model="ir.ui.view">
             <field name="name">purchase.order.form</field>
             <field name="model">purchase.order</field>
             <field name="inherit_id" ref="purchase.purchase_order_form"></field>
@@ -337,7 +336,7 @@
             </field>
         </record>
 
-      <record id="product_template_form_view" model="ir.ui.view">
+    <record id="product_template_form_view" model="ir.ui.view">
         <field name="name">product.template.common.form</field>
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_form_view"/>
@@ -370,7 +369,7 @@
 
     <!--</record>-->
 
-      <record id="vendor_offer.action_window" model="ir.actions.act_window">
+    <record id="vendor_offer.action_window" model="ir.actions.act_window">
             <field name="name">Requests for vendor Offer</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">purchase.order</field>
@@ -395,7 +394,7 @@
             </field>
        </record>
 
-     <record model="ir.actions.act_window" id="vendor_offer.action_window_multiplier">
+    <record model="ir.actions.act_window" id="vendor_offer.action_window_multiplier">
       <field name="name">Multiplier</field>
       <field name="res_model">multiplier.multiplier</field>
       <field name="view_mode">tree,form</field>
@@ -406,7 +405,7 @@
 
     </record>
 
-     <record model="ir.actions.act_window" id="vendor_offer.action_window_competition">
+    <record model="ir.actions.act_window" id="vendor_offer.action_window_competition">
       <field name="name">Competition</field>
       <field name="res_model">competition.competition</field>
       <field name="view_mode">tree,form</field>
@@ -417,13 +416,13 @@
 
     </record>
 
-      <menuitem
+    <menuitem
             id="menu_product_in_config_purchase_setting" name="Setting"  sequence="99"  parent="purchase.menu_purchase_root" />
 
     <menuitem
             id="menu_product_in_config_purchase_multiplier" name="Multiplier" action="vendor_offer.action_window_multiplier"
             parent="vendor_offer.menu_product_in_config_purchase_setting" sequence="29" />
-      <menuitem
+    <menuitem
             id="menu_product_in_config_purchase_competition" name="Competition" action="vendor_offer.action_window_competition"
             parent="vendor_offer.menu_product_in_config_purchase_setting" sequence="30" />
 
