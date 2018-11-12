@@ -12,11 +12,12 @@
 
     # any module necessary for this one to work correctly
 
-    'depends': ['base','product','product_brand','sale_management','stock','web_one2many_selectable','account'],
+    'depends': ['base','sale','product','product_brand','sale_management','stock','web_one2many_selectable','account'],
 
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
+        'views/res_config_setting_view.xml',
         'views/saleorder_views.xml',
         'views/report_invoice.xml',
         'views/prioritization_views.xml',
