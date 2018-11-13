@@ -24,13 +24,16 @@ from odoo.http import Controller, request, route
 
 _logger = logging.getLogger(__name__)
 
-UPLOAD_DIR = "/home/odoo/uploads/"
-
+#UPLOAD_DIR = "/home/odoo/uploads/"
+path = os.path.abspath(__file__)
+dir_path = os.path.dirname(os.path.dirname(os.path.dirname(path)))
+UPLOAD_DIR =  dir_path + "/Documents/uploads/"
 
 class FileUploadController(Controller):
 
     @http.route('/api/upload/', type='http', auth='public', csrf=False)
     def upload_api(self, **post):
+        _logger.info("")
         response = None
         try:
             username = post['username']
@@ -57,13 +60,15 @@ class FileUploadController(Controller):
                 file_storage.save(uploaded_file_path)
                 response = request.env['sps.document.process'].sudo().process_document(user_api_settings,
                                                                                        uploaded_file_path,
-                                                                                       template_type_from_user)
+                                                                                       template_type_from_user,
+                                                                                       str(request.params['file'].filename))
+                _logger.info("response :%r", response)
             else:
                 response = dict(errorCode=3, message='UnAuthorized Access')
+
                 
-        # if response['errorCode']:
-        #     self.send_mail(
-        #         "Sending API Response as " + str(response['message']) + " for user " + username)
+        if "errorCode" in response:
+            self.send_mail("Sending API Response as " + str(response['message']) + " for user " + username)
 
         return json.JSONEncoder().encode(response)
 
@@ -80,7 +85,6 @@ class FileUploadController(Controller):
     @http.route('/template_import/set_file', methods=['POST'])
     def set_file(self, file, import_id, customer, template_type, jsonp='callback'):
         import_id = int(import_id)
-
         written = request.env['sps.template.transient'].browse(import_id).write({
             'file': file.read(),
             'file_name': file.filename,

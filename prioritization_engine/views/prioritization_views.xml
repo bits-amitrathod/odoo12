@@ -10,6 +10,9 @@
                     <button class="oe_stat_button" name ="action_view_notification" type="object"  icon="fa-bell">
                          <span class="o_stat_text">In-Stock Notification</span>
                     </button>
+                    <button class="oe_stat_button" name ="action_import_template" type="object"  icon="fa-upload"  attrs="{'invisible':['|', '|', ('is_parent', '==', False),('prioritization', '==', False)]}">
+                         <span class="o_stat_text">Import Template</span>
+                    </button>
                 </button>
                   <field name="vat" position="after">
                       <field name="sku_preconfig" attrs="{'readonly':[('is_parent', '==', False)]}"/>
@@ -110,6 +113,25 @@
             </field>
       </record>
 
+      <record id="view_tree_prioritization_customer"  model="ir.ui.view">
+              <field name="name">Prioritization customer Tree</field>
+              <field name="model">res.partner</field>
+               <field eval="12" name="priority"/>
+              <field name="arch" type="xml">
+               <tree string="Contacts">
+                    <field name="display_name" string="Name"/>
+                    <field name="function" invisible="1"/>
+                    <field name="phone"/>
+                    <field name="email"/>
+                    <field name="user_id" invisible="1"/>
+                    <field name="is_company" invisible="1"/>
+                    <field name="country_id" invisible="1"/>
+                    <field name="parent_id" invisible="1"/>
+                    <field name="active" invisible="1"/>
+                </tree>
+              </field>
+        </record>
+
       <record id="view_form_prioritization_normal" model="ir.ui.view">
             <field name="sequence" eval="1"/>
             <field name="name">Prioritization normal form</field>
@@ -146,6 +168,7 @@
             <field name="res_model">res.partner</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
+            <field name="context">{'default_customer':1, 'search_default_customer':1, 'default_company_type': 'company','default_is_company': 1}</field>
             <field name="help" type="html">
               <p class="oe_view_nocontent_create">
                 Click to add a contact in your contacts directory.
@@ -295,7 +318,7 @@
       </record>
 
       <!-- Top menu item -->
-      <menuitem name="Prioritization Engine" id="prioritization_engine.menu_root" web_icon="prioritization_engine,static/description/icon.png"/>
+      <menuitem name="Priority Engine" id="prioritization_engine.menu_root" web_icon="prioritization_engine,static/description/icon.png"/>
 
       <!-- menu categories -->
       <menuitem name="Customer" id="prioritization_engine.prioritization_cmenu"  parent="prioritization_engine.menu_root"/>
@@ -304,11 +327,8 @@
       <menuitem name="Customer" id="prioritization_engine.prioritization_cust_menu" parent="prioritization_engine.prioritization_cmenu"
               action="action_sps_customer"/>
       <!-- menu categories -->
-
       <menuitem name="Product" id="prioritization_engine.prioritization_pmenu" parent="prioritization_engine.menu_root"/>
-
       <!-- actions -->
-
       <menuitem name="Product" id="prioritization_engine.prioritization_pro_menu" parent="prioritization_engine.prioritization_pmenu"
               action="product.product_template_action"/>
       <!-- menu categories -->
@@ -318,7 +338,7 @@
 
       <menuitem name="Run Scheduler" id="prioritization_run_scheduler_menu" parent="prioritization_operation_menu"
       action="prioritization_run_scheduler"/>
-         <!-- actions -->
+      <!-- actions -->
       <!-- <menuitem name="Import Document" id="prioritization_engine.prioritization_import_menu" parent="prioritization_engine.prioritization_imenu"
               action="action_notification_setting"/>-->
 

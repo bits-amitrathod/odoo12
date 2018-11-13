@@ -118,6 +118,7 @@ var DataImport = Widget.extend(ControlPanelMixin, {
         },
     },
     init: function (parent, action) {
+        console.log("Inside Init");
         this._super.apply(this, arguments);
         this.action_manager = parent;
         this.res_model =  action.params[0].request_model;//action.params.model;
@@ -127,7 +128,8 @@ var DataImport = Widget.extend(ControlPanelMixin, {
         this.session = session;
         action.display_name = _t('Import Template'); // Displayed in the breadcrumbs
         this.do_not_change_match = false;
-        this.customer = null;
+        console.log(action.params[0].customer_id);
+        this.customer = action.params[0].customer_id;
         this.user_type = action.params[0].user_type;
         this.parent_model = action.params[0].model;
         this.template_type = 'Inventory';
@@ -148,6 +150,11 @@ var DataImport = Widget.extend(ControlPanelMixin, {
                 } else{
                    self.$('#template_type_container').show();
                 }
+                /* if(self.customer){
+                   self.$('#customers_list').hide();
+                } else{
+                   self.$('#customers_list').show();
+                }*/
 
                 self.$('#file_selection_widget').hide();
                 self.$('p#user_type_label').html(self.toTitleCase(self.user_type));
@@ -158,6 +165,10 @@ var DataImport = Widget.extend(ControlPanelMixin, {
                     for(var index = 0; index < jsonArray.length; index++){
                         var jsonObject = jsonArray[index];
                         self.$('#customers_list').append("<option value='" + jsonObject.id + "'>" + jsonObject.name + "</option>");
+                    }
+                    if(self.customer){
+                         self.$("#customers_list option[value="+self.customer+"]").attr("selected", "selected");
+                         self.$('#file_selection_widget').show();
                     }
                     self.$( "#loadingimg" ).hide();
                  }, "json").fail(function() {

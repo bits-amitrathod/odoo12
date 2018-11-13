@@ -30,7 +30,7 @@ _logger = logging.getLogger(__name__)
 class DocumentProcessTransientModel(models.TransientModel):
     _name = 'sps.document.process'
 
-    def process_document(self, user_model, uploaded_file_path, template_type_from_user, document_source='api',
+    def process_document(self, user_model, uploaded_file_path, template_type_from_user, file_name, document_source='Api',
                          ):
         if not user_model.prioritization:
             return dict(errorCode=6, message='Prioritization is Not Enabled')
@@ -76,7 +76,7 @@ class DocumentProcessTransientModel(models.TransientModel):
             file_upload_record = dict(token=DocumentProcessTransientModel.random_string_generator(30),
                                       gl_account_id=gl_account_id,
                                       customer_id=user_id, template_type=template_type,
-                                      document_name=DocumentProcessTransientModel.random_string_generator(10),
+                                      document_name=file_name,
                                       file_location=uploaded_file_path, source=document_source, status='draft',
                                       create_uid=1, create_date=today_date, write_uid=1,
                                       write_date=today_date)
@@ -165,10 +165,15 @@ class DocumentProcessTransientModel(models.TransientModel):
             elif file_extension == 'csv':
                 columns = DocumentProcessTransientModel._read_columns_from_csv(file_path)
             compare = lambda x, y: collections.Counter(x) == collections.Counter(y)
-            if compare(template_column_list, columns):
-                column_mappings = mapped_columns
-                template_type = customer_template.template_type
-                matched_templates.update({template_type: [column_mappings, non_selected_columns, template_type]})
+            try:
+                if compare(template_column_list, columns):
+                    column_mappings = mapped_columns
+                    template_type = customer_template.template_type
+                    matched_templates.update({template_type: [column_mappings, non_selected_columns, template_type]})
+            except  UnboundLocalError as ue:
+                if ue:
+                    _logger.info("raise error :%r", ue)
+
         _logger.info('template_type_from_user: %r', template_type_from_user)
         if len(matched_templates) > 1:
             if template_type_from_user is None:

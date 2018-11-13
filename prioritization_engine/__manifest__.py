@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Prioritization Engine",
+    'name': "Priority Engine",
     'author': "Benchmark IT Solutions (I) Pvt Ltd.",
     'website': "http://www.benchmarkitsolutions.com",
 
@@ -12,17 +12,20 @@
 
     # any module necessary for this one to work correctly
 
-    'depends': ['base','product','product_brand','sale_management','stock','web_one2many_selectable','account'],
+    'depends': ['base','sale','product','product_brand','sale_management','stock','web_one2many_selectable','account'],
 
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
+        'views/res_config_setting_view.xml',
         'views/saleorder_views.xml',
         'views/report_invoice.xml',
+        'views/res_user_prioritization.xml',
         'views/prioritization_views.xml',
         'views/web_assets.xml',
         'views/templates.xml',
         'views/prioritization_schedular_views.xml',
+        'views/release_product_quantity_scheduler_views.xml',
         'data/sales_team_data_prioritization.xml',
     ],
 

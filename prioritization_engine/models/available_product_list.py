@@ -15,7 +15,7 @@ class AvailableProductDict(models.TransientModel):
         production_lot_list = self.env['stock.quant'].search([('quantity', '>', 0), ('location_id.usage', '=', 'internal'), ('location_id.active', '=', 'true')])
 
         for production_lot in production_lot_list:
-            if production_lot.id and production_lot.lot_id and production_lot.product_id and production_lot.quantity and production_lot.lot_id.use_date:
+            if production_lot.id and production_lot.lot_id and production_lot.product_id and production_lot.quantity and production_lot.lot_id.use_date and not production_lot.lot_id.use_date is None:
                 available_product = {production_lot.lot_id.id : {'stock_quant_id':production_lot.id,
                                         'available_quantity':production_lot.quantity,
                                         'reserved_quantity':production_lot.reserved_quantity,
@@ -52,8 +52,12 @@ class AvailableProductDict(models.TransientModel):
                                                                 'available_quantity': production_lot.quantity,
                                                                 'reserved_quantity': production_lot.reserved_quantity,
                                                                 'use_date': production_lot.lot_id.use_date}}
-                dict = {production_lot.product_id.id: [available_product]}
-                available_production_lot_dict.update(dict)
+
+                if production_lot.product_id.id in available_production_lot_dict.keys():
+                    available_production_lot_dict.get(production_lot.product_id.id,{}).append(available_product)
+                else:
+                    dict = {production_lot.product_id.id: [available_product]}
+                    available_production_lot_dict.update(dict)
 
         # sort list by latest expiry date(use date)
         # available_production_lot_list_to_be_returned = sorted(self.available_production_lot_list_to_be_returned, key=itemgetter('use_date'))
