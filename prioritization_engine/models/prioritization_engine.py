@@ -430,8 +430,9 @@ class PrioritizationEngine(models.TransientModel):
         self.env['sps.cust.uploaded.documents'].search(
             [('id', '=', document_id)]).write(dict(status=status))
 
-    def release_reserved_quantity(self):
-        _logger.info('release reserved quantity....')
+    # Release reserved product quantity(Which sales order product not confirm within length of hold period)
+    def release_reserved_product_quantity(self):
+        _logger.info('release reserved product quantity....')
         # get team id
         crm_team = self.env['crm.team'].search([('team_type', '=', 'engine')])
 

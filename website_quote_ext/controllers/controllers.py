@@ -75,7 +75,7 @@ class WebsiteSale(http.Controller):
             return request.render('website.404')
         if Order.state != 'sent':
             return werkzeug.utils.redirect("/quote/%s/%s?message=4" % (order_id, token))
-        #Order.action_confirm()
+        Order.action_confirm()
         message = post.get('accept_message')
         client_order_ref = post.get('client_order_ref')
         print(client_order_ref)
