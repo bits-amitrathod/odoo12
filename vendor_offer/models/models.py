@@ -7,9 +7,7 @@ import datetime
 import math
 from random import randint
 
-
 class VendorOffer(models.Model):
-
     _description = "Vendor Offer"
     _inherit = "purchase.order"
 
@@ -108,7 +106,7 @@ class VendorOffer(models.Model):
                 order.appraisal_no = 'AP' + str(randint(11111, 99999))
 
 
-    @api.depends('order_line.product_offer_price')
+    @api.onchange('order_line.product_offer_price')
     def _amount_tot_all(self):
         for order in self:
             retail_amt = offer_amount = 0.0
