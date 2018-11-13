@@ -31,6 +31,7 @@ class FileUploadController(Controller):
 
     @http.route('/api/upload/', type='http', auth='public', csrf=False)
     def upload_api(self, **post):
+        _logger.info("")
         response = None
         try:
             username = post['username']
@@ -59,12 +60,12 @@ class FileUploadController(Controller):
                                                                                        uploaded_file_path,
                                                                                        template_type_from_user,
                                                                                        str(request.params['file'].filename))
+                _logger.info("response :%r", response)
             else:
                 response = dict(errorCode=3, message='UnAuthorized Access')
                 
-        # if response['errorCode']:
-        #     self.send_mail(
-        #         "Sending API Response as " + str(response['message']) + " for user " + username)
+        if "errorCode" in response:
+            self.send_mail("Sending API Response as " + str(response['message']) + " for user " + username)
 
         return json.JSONEncoder().encode(response)
 

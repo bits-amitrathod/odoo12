@@ -19,6 +19,7 @@
         # 'security/ir.model.access.csv',
         'views/saleorder_views.xml',
         'views/report_invoice.xml',
+        'views/res_user_prioritization.xml',
         'views/prioritization_views.xml',
         'views/web_assets.xml',
         'views/templates.xml',

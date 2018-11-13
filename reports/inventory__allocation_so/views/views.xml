@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-
+     <record id="product_product_action" model="ir.actions.act_window">
+            <field name="name">Products</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.product</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="product_product_view_tree"/>
+        </record>
     <record id="inventory_for_so_list_view" model="ir.ui.view">
             <field name="name">Trending Report List</field>
             <field name="model">inventory_allocation_so.popup</field>
@@ -31,7 +38,7 @@
                 <field name="product_id"/>
                 <field name="name"/>
                 <field name="product_uom_qty"/>
-                <field name="amt_to_invoice"/>
+
             </tree>
           </field>
     </record>
