@@ -8,6 +8,11 @@
 							href="javascript:void(0)" style="margin-top: 8px;margin-left: 16px;">
 						Multiple Update
 					</button>
+					<button name="action_view_import" icon="gtk-yes"
+							class="cf_button_confirm btn btn-primary btn-sm o_form_button_edit"
+							href="javascript:void(0)" style="margin-top: 8px;margin-left: 16px;">
+						Import Product
+					</button>
 				</t>
 	        </div>
 	</t>

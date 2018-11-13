@@ -99,6 +99,18 @@ class Customer(models.Model):
         action['res_id'] = self.id
         return action
 
+    def action_view_import(self):
+        '''
+        This function returns an action that display existing notification
+        of given partner ids. It can be form
+        view,
+        '''
+        action = self.env.ref('stock.product_template_action_product').read()[0]
+        action['views'] = [(self.env.ref('product.product_template_tree_view').id, 'tree')]
+        action['view_ids'] = self.env.ref('product.product_template_tree_view').id
+        action['res_id'] = self.id
+        return action
+
     def action_import_template(self):
         tree_view_id= self.env.ref('customer-requests.view_tree_documents_normal').id
         return {
