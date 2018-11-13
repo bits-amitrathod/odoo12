@@ -24,8 +24,10 @@ from odoo.http import Controller, request, route
 
 _logger = logging.getLogger(__name__)
 
-UPLOAD_DIR = "/home/odoo/uploads/"
-
+#UPLOAD_DIR = "/home/odoo/uploads/"
+path = os.path.abspath(__file__)
+dir_path = os.path.dirname(os.path.dirname(os.path.dirname(path)))
+UPLOAD_DIR =  dir_path + "/Documents/uploads/"
 
 class FileUploadController(Controller):
 
@@ -63,6 +65,7 @@ class FileUploadController(Controller):
                 _logger.info("response :%r", response)
             else:
                 response = dict(errorCode=3, message='UnAuthorized Access')
+
                 
         if "errorCode" in response:
             self.send_mail("Sending API Response as " + str(response['message']) + " for user " + username)

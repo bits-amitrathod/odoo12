@@ -12,6 +12,26 @@ odoo.define('website_quote_ext.portal_order_page_ex', function (require) {
 
     $('.engine').each(function () {
         var engine = this;
+         $(engine).on('click', 'a.js_delete_product', function (ev) {
+            ev.preventDefault();
+            var $link = $(ev.currentTarget);
+            var $input = $link.parent().find("input");
+            var product_id = $input[0]['attributes']['data-product-id']['value'];
+            var quote_id = $input[0]['attributes']['data-quote-id']['value'];
+            var line_id = $input[0]['attributes']['data-line-id']['value']
+
+             ajax.jsonRpc("/shop/engine/update_json", 'call', {
+                    'quote_id':quote_id,
+                    'line_id': line_id,
+                    'product_id': product_id,
+                    'set_qty': 0
+                }).then(function (data) {
+                     console.log("inside update_json");
+                     console.log(data);
+                     window.location.reload();
+                });
+            return false;
+         });
 
          // hack to add and remove from cart with json
         $(engine).on('click', 'a.js_add_cart_json', function (ev) {
