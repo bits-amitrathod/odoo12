@@ -48,15 +48,10 @@ class SpsCustomerRequest(models.Model):
                 self.process_customer_requests(sps_customer_requests)
             except Exception as exc:
                 _logger.error("Error procesing requests %r", exc)
-        else:
-            # Release product quantity(Which sales order product not confirm within length of hold period)
-            self.env['prioritization.engine.model'].release_reserved_quantity()
 
 
     def process_customer_requests(self, sps_customer_requests):
         _logger.info('In process_customer_requests')
-        # Release product quantity(Which sales order product not confirm within length of hold period)
-        self.env['prioritization.engine.model'].release_reserved_quantity()
 
         pr_models = []
         self.document_id_set.clear()
