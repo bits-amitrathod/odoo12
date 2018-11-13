@@ -9,19 +9,13 @@ class inventory__allocation_so(models.Model):
      _name = "inventory_allocation_so.allocation_for_so"
      _auto = False
      sale_order_name = fields.Char(string="Name")
-     qty = fields.Float(string="Qty")
      product_id = fields.Many2one('product.product', string='Product', )
      partner_id = fields.Many2one('res.partner', string='Customer', )
      cost = fields.Float(string="Unit Price")
      product_qty = fields.Integer(string="Quantity")
-     product_code = fields.String(string="Total Price")
-     total_unit_cost = fields.Float(string="COGS")
-     margin = fields.Float(string="Margins")
-     margin_percentage = fields.Float(string="Margins %", group_operator='avg')
-     date_from = fields.Date(string='Date From')
-     date_to = fields.Date(string='Date To')
-     group_by = fields.Char()
-     product_uom_qty=fields.Integer(string="Product UOM Qty")
+     product_code = fields.Char(string="Product Code")
+     product_name=fields.Char(string="Name")
+     product_qty=fields.Integer(string="Product UOM Qty")
 
      # currency_id = fields.Many2one("res.currency", related='user_id.company_id.currency_id', string="Currency",
      #                               readonly=True)
