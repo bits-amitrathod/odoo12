@@ -13,6 +13,7 @@ class inventory__allocation_so(models.Model):
      partner_id = fields.Many2one('res.partner', string='Customer', )
      cost = fields.Float(string="Unit Price")
      product_qty = fields.Integer(string="Quantity")
+
      product_code = fields.Char(string="Product Code")
      product_name=fields.Char(string="Name")
      product_qty=fields.Integer(string="Product UOM Qty")
