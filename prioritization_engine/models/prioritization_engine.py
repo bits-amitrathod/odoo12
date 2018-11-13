@@ -447,7 +447,7 @@ class PrioritizationEngine(models.TransientModel):
 
                 # get length of hold
                 _setting_object = self.env['sps.customer.requests'].get_settings_object(sale_order['partner_id'].id, sale_order_line['product_id'].id, None, None)
-                _logger.info('length of hold %r',_setting_object.length_of_hold)
+                #_logger.info('length of hold %r',_setting_object.length_of_hold)
 
                 # get current datetime
                 current_datetime = datetime.now()
@@ -455,7 +455,7 @@ class PrioritizationEngine(models.TransientModel):
                 # calculate datetime difference.
                 duration = current_datetime - create_date  # For build-in functions
                 duration_in_hours = self.return_duration_in_hours(duration)
-                if int(_setting_object.length_of_hold) <= int(duration_in_hours):
+                if _setting_object and int(_setting_object.length_of_hold) <= int(duration_in_hours):
                     sale_order_line_dict = {'order_id': sale_order['id'], 'product_id': sale_order_line['product_id'].id, 'order_partner_id': sale_order['partner_id'].id, 'product_uom_qty': 0}
 
                     stock_move_lines = self.env['stock.move.line'].search([('picking_id.sale_id', '=', sale_order['id']),('product_id', '=', sale_order_line['product_id'].id)])
