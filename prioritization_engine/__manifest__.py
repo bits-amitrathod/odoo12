@@ -20,6 +20,7 @@
         'views/res_config_setting_view.xml',
         'views/saleorder_views.xml',
         'views/report_invoice.xml',
+        'views/res_user_prioritization.xml',
         'views/prioritization_views.xml',
         'views/web_assets.xml',
         'views/templates.xml',
