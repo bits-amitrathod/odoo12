@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 {
     'name': "Inventory Valuation Summary",
 
@@ -12,10 +11,8 @@
     'category': 'Report',
     'version': '0.1',
 
-    # any module necessary for this one to work correctly
     'depends': ['stock_account','prioritization_engine'],
 
-    # always loaded
     'data': [
         'views/views.xml',
         'report/report_inventory_valuation_summary.xml',

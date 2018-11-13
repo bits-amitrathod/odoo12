@@ -1,17 +1,51 @@
 <odoo>
-    <data>
-        <record id="view_stock_product_tree_cstm1" model="ir.ui.view">
-           <field name="name">product.stock.tree.cstm1</field>
-            <field name="model">product.product</field>
-            <field name="inherit_id" ref="stock_account.view_stock_product_tree2"/>
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='name']" position="after">
-                    <field name="sku_code"/>
-                </xpath>
-                <xpath expr="//field[@name='uom_id']" position="after">
-                    <field name="list_price" widget="monetary"/>
-                </xpath>
-            </field>
-        </record>
-    </data>
+    <!--<record id="action_stock_inventory_valuation_summary" model="ir.actions.act_window">-->
+        <!--<field name="name">Inventory Valuation Summary</field>-->
+        <!--<field name="res_model">inventory.valuation.summary</field>-->
+        <!--<field name="view_type">form</field>-->
+        <!--<field name="view_mode">tree</field>-->
+    <!--</record>-->
+
+    <record id="action_stock_inventory_valuation_summary" model="ir.actions.server">
+        <field name="name">Helpdesk: Teams Settings</field>
+        <field name="model_id" ref="model_inventory_valuation_summary"/>
+        <field name="state">code</field>
+        <field name="code">
+            action = model.delete_and_create()
+        </field>
+    </record>
+
+    <record id="view_stock_inventory_valuation_summary" model="ir.ui.view">
+        <field name="name">inventory.valuation.summary.default</field>
+        <field name="model">inventory.valuation.summary</field>
+        <field name="arch" type="xml">
+            <search string="Product">
+                <filter string="Valuation Summary" name="valuation_summary" domain="[]"
+                        context="{'group_by' : ['warehouse', 'location', 'type']}"/>
+                <separator/>
+            </search>
+        </field>
+    </record>
+
+    <!-- LIST VIEW -->
+    <record model="ir.ui.view" id="inventory_valuation_summary.list">
+        <field name="name">inventory_valuation_summary_list</field>
+        <field name="model">inventory.valuation.summary</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="quantity"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="unit_cost" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="asset_value" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="cost_method" invisible="1"/>
+                <button name="action_valuation_at_date_details" type="object" icon="fa-info-circle"  attrs="{'invisible': [('cost_method', '!=', 'fifo')]}"  />
+            </tree>
+        </field>
+    </record>
+
+
+    <menuitem id="menu_stock_inventory_valuation_summary" name="Inventory Valuation Summary"
+              parent="stock.menu_warehouse_report" sequence="110"
+              action="action_stock_inventory_valuation_summary"/>
 </odoo>
