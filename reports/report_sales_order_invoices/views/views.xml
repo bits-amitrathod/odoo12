@@ -29,7 +29,7 @@
             <field name="view_mode">form</field>
             <field name="view_id" ref="sales_order_popup_view"/>
             <field name="target">new</field>
-            <field name="context">{'default_compute_at_date': 0, 'valuation': True}</field>
+            <field name="context">{'default_compute_at_date': '0', 'valuation': True}</field>
         </record>
 
 
