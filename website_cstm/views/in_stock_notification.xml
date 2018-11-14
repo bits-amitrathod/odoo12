@@ -46,19 +46,17 @@
                     <br/>
                     <br/>
                     <p>Would you like to complete your purchase?</p>
-                    <br/>
-                    <br/>
 
                     <table width="100%">
                      % for product in products:
                         <tr>
-                                <td style="width:100px;">
+                                <td style="width:50px;padding-top: 16px;">
                                     <!--<img src="/web/image/product.product/${object.product_variant_id.id}/image"-->
                                     <img src="/website_cstm/static/src/img/product-image.jpg"
-                                         height="100px"
-                                         width="100px"></img>
+                                         height="50px"
+                                         width="50px"></img>
                                 </td>
-                                <td>
+                                <td valign="top">
                                     <a href="/shop/product/${product.product_tmpl_id.id}" target="_blank">
                                         <!--<strong>${object.product_variant_id.display_name}</strong>-->
                                         <br/>${product.product_tmpl_id.product_variant_id.name}
