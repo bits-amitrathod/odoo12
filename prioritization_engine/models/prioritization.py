@@ -207,6 +207,9 @@ class Prioritization(models.Model):
     _sql_constraints = [
         ('priority_engine_uniq', 'unique (product_id,customer_id)', 'In Customer Priority Configuration Product Value Repeated !')
     ]
+    def import_product(self,records,cust_id):
+        for record in records:
+            self.create({'customer_id':cust_id,'product_id':record['id']})
 
     # constraint
     @api.constrains('expiration_tolerance')
