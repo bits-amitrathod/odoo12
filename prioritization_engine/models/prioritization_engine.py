@@ -306,12 +306,15 @@ class PrioritizationEngine(models.TransientModel):
                 self.env['sale.order.line'].create(dict(sale_order_line_dict))
 
             sale_order.action_confirm()
-            _logger.info('sale order id  : %r', sale_order.id)
+            _logger.info('sale order id  : %r  sale order state : %r', sale_order.id, sale_order.state)
             picking = self.env['stock.picking'].search([('sale_id', '=', sale_order.id)])
             _logger.info('picking before   : %r', picking.state)
             picking.write(dict(state='confirmed'))
             _logger.info('picking after   : %r', picking.state)
             sale_order.write(dict(state='engine', confirmation_date=''))
+            sale_order.action_quotation_send()
+            _logger.info('sale order id  : %r  sale order state : %r', sale_order.id, sale_order.state)
+            sale_order.write(dict(state='sent', confirmation_date=''))
 
 
     # Generate sale order for gl account
@@ -340,12 +343,15 @@ class PrioritizationEngine(models.TransientModel):
                     self.env['sale.order.line'].create(dict(sale_order_line_dict))
 
                 sale_order.action_confirm()
-                _logger.info('sale order id  : %r', sale_order.id)
+                _logger.info('sale order id  : %r  sale order state : %r', sale_order.id, sale_order.state)
                 picking = self.env['stock.picking'].search([('sale_id', '=', sale_order.id)])
                 _logger.info('picking before   : %r', picking.state)
                 picking.write(dict(state='confirmed'))
                 _logger.info('picking after   : %r', picking.state)
                 sale_order.write(dict(state='engine', confirmation_date=''))
+                sale_order.action_quotation_send()
+                _logger.info('sale order id  : %r  sale order state : %r', sale_order.id, sale_order.state)
+                sale_order.write(dict(state='sent', confirmation_date=''))
             else:
                 _logger.info('partner id is null')
 
