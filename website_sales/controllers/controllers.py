@@ -7,6 +7,7 @@ class WebsiteSales(WebsiteSale):
     @http.route([
         '/shop',
         '/shop/featured',
+        '/shop/capital-equipment',
         '/shop/page/<int:page>',
         '/shop/category/<model("product.public.category"):category>',
         '/shop/category/<model("product.public.category"):category>/page/<int:page>'
@@ -14,6 +15,11 @@ class WebsiteSales(WebsiteSale):
     def shop(self, page=0, category=None, search='', ppg=False, **post):
         if request.httprequest.path == "/shop/featured" :
             result = request.env['product.public.category'].search([('name','ilike', 'featured' )], limit=1)
+            if result :
+                category = result.id
+
+        if request.httprequest.path == "/shop/capital-equipment" :
+            result = request.env['product.public.category'].search([('name','ilike', 'capital equipment' )], limit=1)
             if result :
                 category = result.id
 
