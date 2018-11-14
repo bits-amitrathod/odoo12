@@ -1,10 +1,8 @@
 odoo.define('prioritization_engine.ActionManager', function (require) {
 "use strict";
 var ActionManager = require('web.ActionManager');
-
     ActionManager.include({
         ir_actions_act_close_wizard_and_reload_view: function (action, options) {
-
             if (!this.dialog) {
                 options.on_close();
             }

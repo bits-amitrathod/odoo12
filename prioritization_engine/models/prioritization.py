@@ -99,6 +99,18 @@ class Customer(models.Model):
         action['res_id'] = self.id
         return action
 
+    def action_view_import(self):
+        '''
+        This function returns an action that display existing notification
+        of given partner ids. It can be form
+        view,
+        '''
+        action = self.env.ref('stock.product_template_action_product').read()[0]
+        action['views'] = [(self.env.ref('product.product_template_tree_view').id, 'tree')]
+        action['view_ids'] = self.env.ref('product.product_template_tree_view').id
+        action['res_id'] = self.id
+        return action
+
     def action_import_template(self):
         tree_view_id= self.env.ref('customer-requests.view_tree_documents_normal').id
         return {
@@ -195,6 +207,9 @@ class Prioritization(models.Model):
     _sql_constraints = [
         ('priority_engine_uniq', 'unique (product_id,customer_id)', 'In Customer Priority Configuration Product Value Repeated !')
     ]
+    def import_product(self,records,cust_id):
+        for record in records:
+            self.create({'customer_id':cust_id,'product_id':record['id']})
 
     # constraint
     @api.constrains('expiration_tolerance')

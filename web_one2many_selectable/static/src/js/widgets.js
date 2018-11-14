@@ -6,11 +6,15 @@ odoo.define('web_one2many_selectable.form_widgets', function (require) {
  * allows the user to change his password.
  */
 var core = require('web.core');
+var ActionManager = require('web.ActionManager');
+var Widget = require('web.Widget');
 var AbstractField = require('web.AbstractField');
 var Widget = require('web.Widget');
 var web_client = require('web.web_client');
 var fieldRegistry = require('web.field_registry');
 var FieldOne2Many=fieldRegistry.get("one2many");
+var dialogs = require('web.view_dialogs');
+var rpc = require('web.rpc')
 var _t = core._t;
 var One2ManySelectable = FieldOne2Many.extend({
     template: "One2ManySelectable",
@@ -23,6 +27,7 @@ var One2ManySelectable = FieldOne2Many.extend({
 
     events: {
         "click .cf_button_confirm": "action_selected_lines",
+        "click .cf_button_import": "searchCreatePopup",
     },
     start: function () {
         //console.log("inside start");
@@ -90,8 +95,51 @@ var One2ManySelectable = FieldOne2Many.extend({
                 view_mode : 'form'
             });
 		},
-});
 
+	/*action_selected_line: function(e)
+	{
+	        e.preventDefault();
+	        var action = {
+                    name: _t("Multiple Selection"),
+                    type: 'ir.actions.act_window',
+                    res_model: 'product.product',
+                    view_mode: 'tree,form',
+                    view_type: 'form',
+                    views:[[false, "list"]],
+                    target: 'new',
+            };
+            var returnVal=this.do_action(action);
+	},*/
+	reinitialize: function (value) {
+        this.isDirty = false;
+        this.floating = false;
+        this._setValue(value);
+    },
+     searchCreatePopup: function (view, ids, context) {
+        var self = this;
+        var cust_id=this.res_id;
+        var action_manager = new ActionManager(this);
+        return new dialogs.SelectCreateDialog(this, _.extend({}, this.nodeOptions, {
+            res_model: 'product.product',
+            context: _.extend({}, this.record.getContext(this.recordParams), context || {}),
+            title: "Multiple Selection",
+            initial_ids: ids ? _.map(ids, function (x) { return x[0]; }) : undefined,
+            initial_view: 'search',
+            //disable_multiple_selection: true,
+            on_selected: function (records) {
+            rpc.query({
+            model: 'prioritization_engine.prioritization',
+            method: 'import_product',
+            args: [this.res_id, records,cust_id]
+        }).then(function (returned_value) {
+              action_manager.do_action({type: 'ir.actions.client',tag: 'reload'});
+             //,{type: 'ir.actions.client',tag: 'reload'}{'type': 'ir.actions.act_close_wizard_and_reload_view'}
+        })
+            }
+        })).open();
+    },
+
+});
 fieldRegistry.add("one2many_selectable", One2ManySelectable);
 return One2ManySelectable;
 
