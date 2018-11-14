@@ -7,3 +7,4 @@ from . import SpsCustomerRequest
 from . import SpsTransientBaseImport
 from . import CustomerTemplate
 from . import DocumentProcessTransientModel
+from . import remove_document_scheduler

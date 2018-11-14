@@ -18,7 +18,7 @@ class report_sales_order_invoices(models.TransientModel):
     end_date = fields.Datetime('End Date', help="Choose report End date",
                                default=fields.Datetime.now)
 
-    order_invoices = fields.Many2many('account.invoice', domain="[('type','=', 'out_invoice'),('state','=','open')]", string='Invoices')
+    order_invoices = fields.Many2many('account.invoice', domain="[('type','=', 'out_invoice')]", string='Invoices')
 
     def open_table(self):
 
@@ -32,8 +32,7 @@ class report_sales_order_invoices(models.TransientModel):
             'view_mode': 'tree,form',
             'name': _('Sales Order Invoice'),
             'res_model': 'account.invoice',
-            # 'context': {'search_default_product': 1},
-            'domain': [('type','=', 'out_invoice'),('state','=','open')]
+            # 'context': {'search_default_product': 1}
         }
 
         if self.compute_at_date == '0':
