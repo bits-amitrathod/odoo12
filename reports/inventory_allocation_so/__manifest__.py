@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Inventory Allocation For SO1",
+    'name': "Inventory SO Allocation",
 
      'summary': """
         Short (1 phrase/line) summary of the module's purpose, used as
@@ -20,7 +20,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','sale'],
+    'depends': ['base','sale','stock','purchase'],
 
     # always loaded
     'data': [
