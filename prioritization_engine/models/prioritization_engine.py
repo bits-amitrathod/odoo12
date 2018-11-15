@@ -95,21 +95,23 @@ class PrioritizationEngine(models.TransientModel):
                 current_datetime = datetime.now()
                 create_date = datetime.strptime(self.change_date_format(create_date), '%Y,%m,%d,%H,%M,%S')
                 #convert cooling period days into hours
-                cooling_period_in_hours = int(prioritization_engine_request['cooling_period']) * 24;
+                cooling_period_in_hours = int(prioritization_engine_request['cooling_period']) * 24
                 length_of_hold_in_hours = int(prioritization_engine_request['length_of_hold'])
                 total_hours = cooling_period_in_hours + length_of_hold_in_hours
                 # calculate datetime difference.
                 duration = current_datetime - create_date  # For build-in functions
                 duration_in_hours = self.return_duration_in_hours(duration)
                 if int(total_hours) <= int(duration_in_hours):
+                    _logger.info('True')
                     if prioritization_engine_request['status'].lower().strip() != 'inprocess':
                         # update status In Process
                         self.update_customer_request_status(prioritization_engine_request, 'Inprocess')
-                        flag = True
-                elif prioritization_engine_request['status'].lower().strip() != 'incoolingperiod':
+                    flag = True
+                else:
+                    if prioritization_engine_request['status'].lower().strip() != 'incoolingperiod':
                         # update status In cooling period
                         self.update_customer_request_status(prioritization_engine_request, 'InCoolingPeriod')
-                        flag = False
+                    flag = False
             else:
                 flag = True
         else:
@@ -135,7 +137,7 @@ class PrioritizationEngine(models.TransientModel):
                 # update status In cooling period
                 if prioritization_engine_request['status'].lower().strip() != 'incoolingperiod':
                     self.update_customer_request_status(prioritization_engine_request, 'InCoolingPeriod')
-                    flag = False
+                flag = False
         else:
             flag = True
         return flag
@@ -230,7 +232,9 @@ class PrioritizationEngine(models.TransientModel):
             " WHERE saleorderline.order_partner_id IN (SELECT distinct unnest(array[id, parent_id]) from public.res_partner WHERE parent_id = " +
             str(prioritization_engine_request['customer_id']) + ") " +
             " and saleorderline.product_id = " + str(prioritization_engine_request['product_id']) +
-            " and saleorder.state in ('engine','sent','cancel') and crmteam.team_type = 'engine'")
+            " and ((saleorder.state in ('engine','sent','cancel')) or (saleorder.state in ('sent','sale') and saleorderline.product_uom_qty = 0))" +
+            " and crmteam.team_type = 'engine'")
+
         query_result = self.env.cr.dictfetchone()
 
         if query_result['create_date'] != None:

@@ -1,6 +1,3 @@
-
-
-
 <odoo>
   <data>
       <record model="ir.ui.view" id="form_list">
