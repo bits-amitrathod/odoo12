@@ -1,4 +1,6 @@
 from odoo import api, fields, models
+from numpy.core.defchararray import upper
+
 
 class SaleSalespersonReport(models.TransientModel):
     _name = 'report.report_group_by_saleperson.saleperson_temp'
@@ -17,7 +19,7 @@ class SaleSalespersonReport(models.TransientModel):
         groupby_dict = {}
         for user in user_ids:
             filtered_order = list(filter(lambda x: x.user_id.id == user.id, sale_orders))
-            filtered_by_date =  filtered_order
+            filtered_by_date = filtered_order
             groupby_dict[user.name] = filtered_by_date
         final_list = []
         currency_id = 0
@@ -35,7 +37,6 @@ class SaleSalespersonReport(models.TransientModel):
             list1.append(sorted(temp, key=lambda x: x[0], reverse=False))
             final_list.append(list1)
         final_list.sort(key=lambda x: self.check(x[0]))
-        print(final_list)
 
         datas = {
             'ids': self,
@@ -43,7 +44,6 @@ class SaleSalespersonReport(models.TransientModel):
             'form': final_list,
 
         }
-        action = self.env.ref('report_group_by_saleperson.action_report_sales_saleperson_wise').report_action([],
-                                                                                                                    data=datas)
-        action.update({'target': 'main'})
+
+        action = {'target': 'main', 'data': datas}
         return action
