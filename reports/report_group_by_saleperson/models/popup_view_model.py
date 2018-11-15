@@ -22,7 +22,7 @@ class DiscountSummaryPopUp(models.TransientModel):
                 'name': _('Sales Orders'),
                 'res_model': 'sale.order',
                 'context': {'group_by':'user_id' , 'start_date' : self.start_date , 'end_date' : self.end_date} ,
-                'domain':[('state', 'not in', ('draft', 'sent', 'cancel')),('confirmation_date', '>=', self.start_date),('confirmation_date','<=', self.end_date)] ,
+                'domain':[('state', '=', 'sale'),('confirmation_date', '>=', self.start_date),('confirmation_date','<=', self.end_date)] ,
             }
             return action
         else:
@@ -32,6 +32,6 @@ class DiscountSummaryPopUp(models.TransientModel):
                 'name': _('Sales Orders'),
                 'res_model': 'sale.order',
                 'context': {'group_by':'user_id'},
-                'domain': [('state', 'not in', ('draft', 'sent', 'cancel'))],
+                'domain': [('state', '=', 'sale')],
             }
             return action
