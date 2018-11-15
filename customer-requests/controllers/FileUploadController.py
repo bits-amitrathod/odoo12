@@ -116,4 +116,10 @@ class FileUploadController(Controller):
     def send_mail(self, body):
         template = request.env.ref('customer-requests.set_log_email').sudo()
         local_context = {'body': body}
-        template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True,force_send=True,)
+        try:
+            template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True, )
+        except:
+            response = {'message': 'Unable to connect to SMTP Server'}
+
+
+
