@@ -33,7 +33,7 @@ class TrendingReportListPopUp(models.TransientModel):
             e_date=None
 
         margins_context = {'s_date': s_date, 'e_date': e_date, 'group_by': self.group_by}
-        group_by_domain = ['order_id']
+        group_by_domain = ['sale_order_name']
         x_res_model = 'inventory.allocation_so'
 
         self.env[x_res_model].with_context(margins_context).delete_and_create()

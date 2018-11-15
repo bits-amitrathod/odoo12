@@ -38,7 +38,7 @@ class inventory_allocation_so(models.Model):
           e_date = self.env.context.get('e_date')
           group_by = self.env.context.get('group_by')
 
-          select_query=""" SELECT so.id as order_id, pt.*,so.name as sale_order_name,res.name as customer_name, sol.product_id as product_id,so.partner_id as partner_id,
+          select_query=""" SELECT concat(so.name ,'-',res.display_name) as sale_order_name, so.id as order_id, pt.*,res.name as customer_name, sol.product_id as product_id,so.partner_id as partner_id,
           po.default_code as product_code, sol.name as product_name,sol.product_uom_qty as product_qty,sol.price_unit as cost """
 
           if not group_by is None:
