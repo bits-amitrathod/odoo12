@@ -9,9 +9,10 @@ import errno
 
 _logger = logging.getLogger(__name__)
 
-path = os.path.abspath(__file__)
-dir_path = os.path.dirname(os.path.dirname(os.path.dirname(path)))
-UPLOAD_DIR = dir_path + "/Documents/uploads/"
+#path = os.path.abspath(__file__)
+#dir_path = os.path.dirname(os.path.dirname(os.path.dirname(path)))
+#UPLOAD_DIR = dir_path + "/Documents/uploads/"
+UPLOAD_DIR = "/home/odoo/Documents/uploads/"
 
 
 class RemoveDocumentScheduler(models.Model):
