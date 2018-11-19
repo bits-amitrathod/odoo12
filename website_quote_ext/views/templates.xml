@@ -507,7 +507,7 @@
 
                             </div>
                             <t t-foreach="order.order_line" t-as="ol">
-                                <!-- <t t-if="ol.product_uom_qty != 0">-->
+                                <t t-if="ol.product_uom_qty != 0">
                                 <div class="row orders_vertical_align">
                                     <div class="visible-lg col-lg-1 text-center">
                                         <span t-field="ol.product_image"
@@ -556,7 +556,7 @@
                                         <a href='#' class='js_delete_product hidden-xs no-decoration'> <small>  <i class='fa fa-trash-o'></i></small></a>
                                     </div>
                                 </div>
-                                <!-- </t>-->
+                                </t>
                             </t>
 
                             <hr/>

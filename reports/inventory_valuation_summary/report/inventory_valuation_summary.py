@@ -18,7 +18,9 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 #
 ##############################################################################
+
 from odoo import api, models
+import json
 
 
 class ReportInventoryProductValuationSummary(models.AbstractModel):
@@ -26,7 +28,13 @@ class ReportInventoryProductValuationSummary(models.AbstractModel):
 
     @api.model
     def get_report_values(self, docids, data=None):
-        products = self.env['product.product'].search([('id', 'in', docids)])
+        self.env.cr.execute("""
+            SELECT warehouse|| '/'|| location as warehouse, array_agg(ARRAY[ type, products]) as type
+            from(SELECT  warehouse, type,location, string_agg(concat_ws(';', name, quantity,unit_cost,asset_value,currency_id),',') as products
+                FROM public.inventory_valuation_summary Group by warehouse,type,location) as tbl Group by warehouse,location
+                          """)
+
+        warehouses = self.env.cr.dictfetchall()
         return {
-            'products': products
+            'warehouses': warehouses
         }
