@@ -71,6 +71,7 @@ class SaleOrder(models.Model):
 
     @api.multi
     def action_quotation_send(self):
+        print('saleorder -> action_quotation_send()')
         """
         This function opens a window to compose an email, with the edi sale template message loaded by default
         """
