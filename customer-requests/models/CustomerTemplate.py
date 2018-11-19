@@ -21,7 +21,7 @@ import os
 import errno
 
 _logger = logging.getLogger(__name__)
-ATTACHMENT_DIR = "/home/odoo/templates/customer/"
+ATTACHMENT_DIR = "/home/odoo/Documents/templates/customer/"
 
 
 class CustomerTemplate(models.Model):
@@ -101,10 +101,10 @@ class CustomerTemplate(models.Model):
             try:
                 file_name = vals['file_name']
                 file_extension = file_name[file_name.rindex('.') + 1:]
-                path = os.path.abspath(__file__)
-                dir_path = os.path.dirname(os.path.dirname(os.path.dirname(path)))
-                #directory_path = ATTACHMENT_DIR + str(vals['customer_id']) + "/" + template_type + "/"
-                directory_path = dir_path+"/Documents/Template/" + str(vals['customer_id']) + "/" + template_type + "/"
+                #path = os.path.abspath(__file__)
+                #dir_path = os.path.dirname(os.path.dirname(os.path.dirname(path)))
+                directory_path = ATTACHMENT_DIR + str(vals['customer_id']) + "/" + template_type + "/"
+                #directory_path = dir_path+"/Documents/Template/" + str(vals['customer_id']) + "/" + template_type + "/"
                 #print(dir_path)
                 #print(directory_path)
                 if not os.path.exists(os.path.dirname(directory_path)):
