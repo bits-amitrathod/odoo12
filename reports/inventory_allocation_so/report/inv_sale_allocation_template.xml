@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="inv_sale_allocation_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <page>
+                    <style>
+                        .noborders {
+                        border: 0;
+                        }
+
+                        <!--.table-bordered > tbody > tr > td,.table-bordered > tbody > tr > th {-->
+                        <!--border: 1px solid #000;-->
+                        <!--}-->
+                    </style>
+                    <div class="oe_structure"/>
+                    <div class="row">
+                        <center>
+                            <b>
+                                <h2>Surgical Product Solutions</h2>
+                                <h4>Inventory Allocation For Sale Orders</h4>
+                            </b>
+                        </center>
+
+                    </div>
+                    <br/>
+                    <div t-foreach="sale_order_list" t-as="sale_order" class="row">
+                        <div class="col-md-12">
+                            <strong>
+                                <span t-esc="sale_order[0]"/>
+                            </strong>
+                            <hr style="margin: 5px 0px;"/>
+                        </div>
+
+                        <div class="col-md-12" >
+
+                            <table class="table table-condensed table-bordered table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Description</th>
+                                        <th class="text-right">Qty</th>
+                                        <th class="text-right">Unit Cost</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="invoice_tbody">
+                                    <tr t-foreach="sale_order[2]" t-as="product">
+                                        <td>
+                                            <span t-esc="product[0]"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-esc="product[1]"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-esc="product[2]"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-esc="product[3]" />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div id="total" class="row">
+                                <div class="col-xs-4 pull-right">
+                                    <table class="table table-condensed" style="min-width: 250px;max-width: 400px;">
+                                        <tr >
+                                            <td>
+                                                <strong>Total</strong>
+                                            </td>
+                                            <td class="text-right">
+                                                <span t-esc="sale_order[1]"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </page>
+            </t>
+        </t>
+    </template>
+</odoo>

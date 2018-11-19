@@ -253,18 +253,18 @@ class InventoryNotificationScheduler(models.TransientModel):
     def process_packing_email_notification(self,vals):
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
         users = self.env['res.users'].search([])
-        template = self.env.ref(vals.custom_template)
+        template = self.env.ref(vals['custom_template'])
         product_dict = {}
         product_list = []
         coln_name = []
         background_color = "#ffffff"
-        for product in vals.sale_order_lines:
+        for product in vals['sale_order_lines']:
             coln_name = []
             if background_color == "#ffffff":
                 background_color = "#f0f8ff"
             else:
                 background_color = "#ffffff"
-            for column_name in vals.columnProps:
+            for column_name in vals['columnProps']:
                 coln_name.append(column_name)
                 if isinstance(product, dict):
                     column = str(product.get(column_name))
@@ -286,32 +286,32 @@ class InventoryNotificationScheduler(models.TransientModel):
         for user in users:
             has_group = user.has_group('stock.group_stock_manager')
             if has_group:
-                local_context = {'products': product_list, 'headers': vals.header, 'columnProps': coln_name,
-                         'email_from': super_user.email, 'email_to': user.email, 'subject': vals.subject,
-                         'descrption': vals.descrption,'customer_name':vals.customer_name,'shipping_address':vals.shipping_address,
-                         'customer_po_no':vals.customer_po_no,'carrier_name':vals.carrier_name,'carrier_acc_no':vals.carrier_acc_no
+                local_context = {'products': product_list, 'headers': vals['header'], 'columnProps': coln_name,
+                         'email_from': super_user.email, 'email_to': user.email, 'subject': vals['subject'],
+                         'descrption': vals['descrption'],'customer_name':vals['customer_name'],'shipping_address':vals['shipping_address'],
+                         'customer_po_no':vals['customer_po_no'],'carrier_name':vals['carrier_name'],'carrier_acc_no':vals['carrier_acc_no']
                 }
                 html_description="""
                     <div>
-                       <p>"""+vals.descrption+"""</p>
+                       <p>"""+vals['descrption']+"""</p>
                         <p> <span style = "font-weight: bold;" > 
-                            Customer Name: </span >""" +vals.customer_name + """ </p >
+                            Customer Name: </span >""" +vals['customer_name'] + """ </p >
                         <p> 
-                            <span style = "font-weight: bold;" > Shipping Address: </span >""" +vals.shipping_address +"""</p>
+                            <span style = "font-weight: bold;" > Shipping Address: </span >""" +vals['shipping_address'] +"""</p>
                          <p> <span style = "font-weight: bold;" > 
-                           Customer PO Number: </span >""" +vals.customer_po_no + """ </p >
+                           Customer PO Number: </span >""" +vals['customer_po_no'] + """ </p >
                         <p> 
-                            <span style = "font-weight: bold;" > Carrier Name: </span >""" +vals.carrier_name +"""</p> 
+                            <span style = "font-weight: bold;" > Carrier Name: </span >""" +vals['carrier_name'] +"""</p> 
                         <p> 
-                            <span style = "font-weight: bold;" > Carrier Account Number: </span >""" +vals.carrier_acc_no +"""</p>       
+                            <span style = "font-weight: bold;" > Carrier Account Number: </span >""" +vals['carrier_acc_no'] +"""</p>       
                     </div>"""
                 html_file = self.env['inventory.notification.html'].search([])
-                finalHTML = html_file.process_common_html(vals.subject, html_description, product_list, vals.header, coln_name)
+                finalHTML = html_file.process_common_html(vals['subject'], html_description, product_list, vals['header'], coln_name)
                 template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True, )
                 mail = self.env["mail.thread"]
                 mail.message_post(
                     body=finalHTML,
-                    subject=vals.subject,
+                    subject=vals['subject'],
                     message_type='notification',
                     partner_ids=[user.partner_id.id],
                     content_subtype='html'

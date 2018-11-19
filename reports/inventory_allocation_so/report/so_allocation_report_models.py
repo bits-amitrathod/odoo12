@@ -6,45 +6,44 @@ _logger = logging.getLogger(__name__)
 
 
 class OnHandByDateReportModel(models.AbstractModel):
-    _name = 'report.margins.margins_temp'
+    _name = 'report.inventory_allocation_so.inv_sale_allocation_template'
 
     @api.model
     def get_report_values(self, docids, data=None):
-        margins_list = self.env['margins'].browse(docids)
 
-        group_by_list = {}
-        group_by_product = {}
-        insert_date_range = True
+        select = """ SELECT sale_order_name, 
+                concat(sum(so.cost),' ',so.currency_symbol)  as total_cost,
+                array_agg(ARRAY[ 
+                 CASE WHEN so.product_code IS NULL THEN
+                 ''
+                 ELSE
+                 so.product_code END
+                , 
+                CASE WHEN so.product_name IS NULL THEN
+                 ''
+                 ELSE
+                 so.product_name END
+                ,
+                 CASE WHEN so.product_qty IS NULL THEN
+                 ''
+                 ELSE
+                 cast(so.product_qty as varchar) END
+                ,
+                CASE WHEN so.cost IS NULL THEN
+                 ''
+                 ELSE
+                 concat(cast(so.cost as varchar),' ',so.currency_symbol) END
+                ]) as type 
+                FROM inventory_allocation_so so
+                GROUP BY sale_order_name,currency_symbol   """
+        self._cr.execute(select)
+        result = self.env.cr.fetchall()
+        _logger.info("selct :%r", result)
+        sale_order_list = []
+        for sale_order in result:
+            orders = [sale_order[0],sale_order[1], sale_order[2]]
+            sale_order_list.append(orders)
 
-        for margins in margins_list:
-            if insert_date_range:
-                group_by_list.update({'date_from': margins.date_from, 'date_to': margins.date_to, 'items': []})
-                insert_date_range = False
-            product_name = str(margins.product_id.product_tmpl_id.sku_code) + str(' - ') + str(
-                margins.product_id.product_tmpl_id.name)
-            inner_list = [margins.order_id.name, margins.unit_cost, margins.qty, margins.unit_price,
-                          margins.total_unit_price, margins.total_unit_cost, margins.margin, margins.margin_percentage]
-            if product_name in group_by_product:
-                group_by_product[product_name].append(inner_list)
-            else:
-                group_by_product.update({product_name: [inner_list]})
+        return {'sale_order_list' :sale_order_list }
 
-        items = []
-        for product_name, products in group_by_product.items():
-            sum_of_margins = sum_of_unit_price = sum_of_cogs = sum_of_margins_percentage = 0
-            for product in products:
-                sum_of_unit_price = sum_of_unit_price + product[4]
-                sum_of_cogs = sum_of_cogs + product[5]
-                sum_of_margins = sum_of_margins + product[6]
-                sum_of_margins_percentage = sum_of_margins_percentage + product[7]
-            sum_of_margins_percentage = sum_of_margins_percentage / len(products)
-            items.append({'product_name': product_name, 'items': products,
-                          'totals': [sum_of_unit_price, sum_of_cogs, sum_of_margins, sum_of_margins_percentage]})
-
-        group_by_list.update({'items': items})
-
-        action = self.env.ref('margins.action_report_margins').report_action([], data=group_by_list)
-        action.update({'target': 'main'})
-
-        return action
 
