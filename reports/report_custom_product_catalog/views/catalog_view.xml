@@ -26,7 +26,7 @@
               <field name="arch" type="xml">
                 <tree>
                     <field name="sku_code"/>
-                    <field name="name"/>
+                    <field name="name" string="Product Name"/>
                     <field name="list_price" widget="monetary" />
                     <field name="currency_id"  invisible="1" />
                 </tree>

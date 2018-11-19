@@ -65,9 +65,13 @@ class ProductSaleByCountPopUp(models.TransientModel):
             'name': _('Dormant Customers'),
             'res_model': 'res.partner',
             'domain': [('id', 'in', partner_ids)],
-            'target': 'main'
+            'target': 'main',
+            'start_date':self.start_date,
+            'end_date':self.end_date
         }
-        return action
+
+        # self.env.ref('dormant_customers.dorm_cust_report_temp').report_action([],data=action)
+        return self.env.ref('dormant_customers.dorm_cust_report_temp').report_action([],data=action)
 
     @staticmethod
     def string_to_date(date_string):
