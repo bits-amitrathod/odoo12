@@ -162,4 +162,3 @@ class CustomerTemplate(models.Model):
                 result.append(current_model[key])
         return result
 
-

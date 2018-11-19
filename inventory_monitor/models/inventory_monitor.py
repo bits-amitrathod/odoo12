@@ -129,4 +129,5 @@ class ReportInventoryMonitor(models.AbstractModel):
     @api.model
     def get_report_values(self, docids, data=None):
          _logger.info("print report called...")
-         return {'data': self.env['product.template'].browse(docids)}
+         monitor=self.env['product.template'].browse(docids)
+         return {'data': monitor}
