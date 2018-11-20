@@ -106,7 +106,7 @@ class VendorOffer(models.Model):
                 order.appraisal_no = 'AP' + str(randint(11111, 99999))
 
 
-    @api.onchange('order_line.product_offer_price')
+    @api.onchange('order_line.product_offer_price','order_line.price_total')
     def _amount_tot_all(self):
         for order in self:
             retail_amt = offer_amount = 0.0
@@ -323,13 +323,24 @@ class VendorOfferProduct(models.Model):
     expired_inventory = fields.Char(string="Expired Inventory Items")
     multiplier = fields.Many2one('multiplier.multiplier', string="Multiplier")
     offer_price = fields.Char(string="Total Offer Price")
-    product_offer_price = fields.Char(string="Offer Price")
+    product_offer_price = fields.Char(string="Offer Price", compute='_compute_product_offer_price')
     margin = fields.Char(string="Margin")
     possible_competition = fields.Many2one(related='order_id.possible_competition',store=False)
     vendor_offer_data = fields.Boolean(related='order_id.vendor_offer_data', store=True)
     product_note = fields.Text(string="Notes")
     product_retail = fields.Char(string="Total Retail Price")
     product_unit_price = fields.Char(string="Retail Price")
+
+    '''@api.depends('product_qty', 'price_unit', 'taxes_id')
+    def _compute_product_offer_price(self):
+        for line in self:
+            taxes = line.taxes_id.compute_all(line.price_unit, line.order_id.currency_id, line.product_qty,
+                                              product=line.product_id, partner=line.order_id.partner_id)
+            line.update({
+                'price_tax': sum(t.get('amount', 0.0) for t in taxes.get('taxes', [])),
+                'price_total': taxes['total_included'],
+                'price_subtotal': taxes['total_excluded'],
+            })'''
 
     def action_show_details(self):
 
