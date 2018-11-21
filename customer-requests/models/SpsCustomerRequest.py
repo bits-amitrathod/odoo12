@@ -21,6 +21,7 @@ class SpsCustomerRequest(models.Model):
     document_name = fields.Char(string="Document Name", compute="_get_document_name")
 
     customer_sku = fields.Char()
+    mfr_catalog_no = fields.Char()
     sps_sku = fields.Char()
     status = fields.Char()
     un_mapped_data = fields.Text()
