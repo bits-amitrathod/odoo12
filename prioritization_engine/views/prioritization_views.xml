@@ -15,8 +15,8 @@
                     </button>
                 </button>
                   <field name="vat" position="after">
-                      <field name="sku_preconfig" attrs="{'readonly':[('is_parent', '==', False)]}"/>
-                      <field name="sku_postconfig" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                      <field name="sku_preconfig" attrs="{'readonly':[('is_parent', '==', False)]}" placeholder="****       e.g. A**2"/>
+                      <field name="sku_postconfig" attrs="{'readonly':[('is_parent', '==', False)]}" placeholder="****       e.g. *2*B"/>
                       <field name="quickbook_id" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                       <field name="preferred_method" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                       <field name="allow_purchase" attrs="{'readonly':[('is_parent', '==', False)]}"/>

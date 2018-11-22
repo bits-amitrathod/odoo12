@@ -25,12 +25,12 @@ class InventoryNotificationScheduler(models.TransientModel):
     @api.model
     @api.multi
     def process_notification_scheduler(self):
-        self.process_new_product_scheduler()
-        self.process_notify_available()
+        # self.process_new_product_scheduler()
+        # self.process_notify_available()
         self.process_packing_list()
-        self.process_on_hold_customer()
-        self.process_notification_for_product_status()
-        self.process_notification_for_in_stock_report()
+        # self.process_on_hold_customer()
+        # self.process_notification_for_product_status()
+        # self.process_notification_for_in_stock_report()
 
 
     def process_new_product_scheduler(self):
@@ -276,7 +276,11 @@ class InventoryNotificationScheduler(models.TransientModel):
                         column = product[lst[0]]
                         if isinstance(lst, list):
                             for col in range(1, len(lst)):
-                                column = column[lst[col]]
+                                pri_col=""
+                                for cols in column:
+                                  cols = cols[lst[col]]
+                                  pri_col=cols
+                                column=pri_col
                         else:
                             column = column[lst]
                 product_dict[column_name] = column
@@ -375,7 +379,10 @@ class InventoryNotificationScheduler(models.TransientModel):
                          'descrption': vals['description']}
         html_file = self.env['inventory.notification.html'].search([])
         finalHTML = html_file.process_common_html(vals['subject'], vals['description'], vals['product_list'], vals['headers'], vals['coln_name'])
-        template_id = vals['template'].with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True, )
+        try:
+         template_id = vals['template'].with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True, )
+        except:
+            vals['template'].with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True)
         mail = self.env["mail.thread"]
         mail.message_post(
             body=finalHTML,

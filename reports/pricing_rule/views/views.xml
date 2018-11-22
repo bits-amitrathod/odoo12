@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+    <record id="inventory_for_pricing_rule_list_id" model="ir.ui.view">
+            <field name="name">Pricing Rule List</field>
+            <field name="model">inventory.pricing_rules_popup</field>
+            <field name="arch" type="xml">
+                <form string="Choose Customer">
+                    <group>
+                        <group>
+                            <field name="partner_id" widget="many2many_tags"/>
+                        </group>
+                        <group>
+                            <field name="product_id" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+    </record>
+    <record id="action_price_rule_customer" model="ir.actions.act_window">
+          <field name="name">Price Rules</field>
+          <field name="res_model">inventory.pricing_rules_popup</field>
+          <field name="view_type">form</field>
+          <field name="view_mode">form</field>
+          <field name="view_id" ref="inventory_for_pricing_rule_list_id"/>
+          <field name="target">new</field>
+      </record>
+    <record id="view_inv_all_pricing_rule_tree" model="ir.ui.view" >
+          <field name="name">Inventory Pricing Rule List</field>
+          <field name="model">res.pricing_rule</field>
+          <field name="priority">20</field>
+          <field name="arch" type="xml">
+            <tree create="false" edit="false" >
+                <field name="currency_id" invisible="1"/>
+                <field name="customer_name" invisible="1"/>
+                <field name="product_code"/>
+                <field name="product_name"/>
+                <field name="cost" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+
+            </tree>
+          </field>
+    </record>
+
+
+
+    <menuitem id="menu_inv_allow_pricing_list_report"
+              name="Inventory Pricing Rules"
+              parent="sale.menu_sale_report"
+              action="action_price_rule_customer"
+             />
+
+
+    </data>
+
+</odoo>
