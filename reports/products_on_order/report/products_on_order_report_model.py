@@ -41,7 +41,7 @@ class ReportProductsOnOrder(models.AbstractModel):
 
         }
         action = self.env.ref('products_on_order.action_report_products_on_order').report_action([], data=datas)
-        action.update({'target': 'main'})
+        action.update({'target': 'main','data': datas})
 
         return action
 
