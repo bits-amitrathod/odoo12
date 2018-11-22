@@ -323,7 +323,7 @@ class VendorOfferProduct(models.Model):
     expired_inventory = fields.Char(string="Expired Inventory Items")
     multiplier = fields.Many2one('multiplier.multiplier', string="Multiplier")
     offer_price = fields.Char(string="Total Offer Price")
-    product_offer_price = fields.Char(string="Offer Price", compute='_compute_product_offer_price')
+    product_offer_price = fields.Char(string="Offer Price")
     margin = fields.Char(string="Margin")
     possible_competition = fields.Many2one(related='order_id.possible_competition',store=False)
     vendor_offer_data = fields.Boolean(related='order_id.vendor_offer_data', store=True)
@@ -339,14 +339,16 @@ class VendorOfferProduct(models.Model):
             line.update({
                 'price_tax': sum(t.get('amount', 0.0) for t in taxes.get('taxes', [])),
                 'price_total': taxes['total_included'],
-                'price_subtotal': taxes['total_excluded'],
+                'price_subtotal': taxes['total_exclud_compute_product_offer_priceed'],
             })'''
 
     def action_show_details(self):
 
         multi = self.env['stock.move'].search([('purchase_line_id', '=', self.id)])
-        if len(multi) >= 1:
+        if len(multi) >= 1 and self.order_id.picking_count ==1:
             return multi.action_show_details()
+        elif self.order_id.picking_count > 1:
+            raise ValidationError(_('Picking is not possible for multiple shipping please do picking inside Shipping'))
 
     @api.depends('list_price', 'taxes_id','product_offer_price')
     def _compute_amount(self):

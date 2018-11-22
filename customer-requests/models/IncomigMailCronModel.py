@@ -60,7 +60,11 @@ class IncomingMailCronModel(models.Model):
                         pop_server = server.connect()
                         (num_messages, total_size) = pop_server.stat()
                         pop_server.list()
+                        _logger.info('Server tpye is POP inside while')
+                        _logger.info('total_size = %d', total_size)
+                        _logger.info('num_messages = %d', num_messages)
                         for num in range(1, min(MAX_POP_MESSAGES, num_messages) + 1):
+                            _logger.info('Server tpye is POP inside while INSIDE FOR')
                             (header, messages, octets) = pop_server.retr(num)
                             message = (b'\n').join(messages)
                             res_id = None
@@ -77,12 +81,13 @@ class IncomingMailCronModel(models.Model):
                                 email_to = tools.decode_message_header(message, 'To')
                                 match = re.search(r'[\w\.-]+@[\w\.-]+', email_to)
                                 email_to = str(match.group(0))
-                                _logger.info('Email %r', email_to)
+                                _logger.info('Email to %r', email_to)
                                 # if email_to == INCOMING_EMAIL_ID:
                                 _Attachment = namedtuple('Attachment', ('fname', 'content', 'info'))
                                 attachments = []
                                 body = u''
                                 email_from = tools.decode_message_header(message, 'From')
+                                _logger.info('Email from %r', email_from)
                                 match = re.search(r'[\w\.-]+@[\w\.-]+', email_from)
                                 email_from = str(match.group(0))
                                 subject = tools.decode_message_header(message, 'Subject')
@@ -137,17 +142,23 @@ class IncomingMailCronModel(models.Model):
                                             tools.ustr(body, encoding, errors='replace'))
                                         if '- Forwarded message -' in message_payload:
                                             messages = message_payload.split('- Forwarded message -')
+                                            _logger.info('Forwarded message payload: %r', messages)
                                             total_parts = len(messages)
                                             originator_part = messages[total_parts - 1]
+                                            _logger.info('originator_part: %r', originator_part)
                                             match = re.search(r'[\w\.-]+@[\w\.-]+', originator_part)
+                                            _logger.info('match: %r', match)
                                             if match:
                                                 email_from_domain = re.search("@[\w.]+", email_from).group(0)
+                                                _logger.info('email_from_domain: %r', email_from_domain)
                                                 email_to_domain = re.search("@[\w.]+", email_to).group(0)
+                                                _logger.info('email_to_domain: %r', email_to_domain)
                                                 if email_to_domain != email_from_domain:
                                                     email_from = None
                                                 else:
                                                     email_from = str(match.group(0))
-                                        _logger.info('message payload: %r %r', message_payload, email_from)
+                                                    _logger.info('email_to_domain email_from: %r', email_from)
+                                        #_logger.info('message payload: %r %r', message_payload, email_from)
                                         if not email_from is None:
                                             users_model = self.env['res.partner'].search(
                                                 [("email", "=", email_from)])
@@ -200,7 +211,7 @@ class IncomingMailCronModel(models.Model):
                                     'active_model': self.env.context.get("thread_model", server.object_id.model)
                                 }).run()
                             self.env.cr.commit()
-
+                        _logger.info('num_messages = %d',num_messages)
                         if num_messages < MAX_POP_MESSAGES:
                             break
                         pop_server.quit()
@@ -210,6 +221,7 @@ class IncomingMailCronModel(models.Model):
                     _logger.info("General failure when trying to fetch mail from %s server %s.", server.type,
                                  server.name, exc_info=True)
                 finally:
+                    _logger.info('Server tpye is POP inside finally')
                     if pop_server:
                         pop_server.quit()
             server.write({'date': fields.Datetime.now()})

@@ -20,7 +20,7 @@
                             <thead style="display: table-header-group;">
                                 <tr>
                                     <th style="border: 1px solid black;text-align:  center !important;width:200px;">
-                                        Product
+                                        SKU/Catalog No.
                                     </th>
                                     <th style="border: 1px solid black;text-align:  center !important;width:500px;">
                                         Product Name
@@ -72,7 +72,7 @@
                             <thead style="display: table-header-group;">
                                 <tr style="border: 1px solid black;">
                                     <th style="border: 1px solid black;text-align:center !important;width:200px;">
-                                        Product
+                                        SKU/Catalog No.
                                     </th>
                                     <th style="border: 1px solid black;text-align:center !important;width:500px;">
                                         Product Name

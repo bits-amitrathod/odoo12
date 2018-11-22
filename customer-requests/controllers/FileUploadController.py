@@ -24,16 +24,16 @@ from odoo.http import Controller, request, route
 
 _logger = logging.getLogger(__name__)
 
-#UPLOAD_DIR = "/home/odoo/uploads/"
-path = os.path.abspath(__file__)
-dir_path = os.path.dirname(os.path.dirname(os.path.dirname(path)))
-UPLOAD_DIR =  dir_path + "/Documents/uploads/"
+UPLOAD_DIR = "/home/odoo/uploads/"
+#path = os.path.abspath(__file__)
+#dir_path = os.path.dirname(os.path.dirname(os.path.dirname(path)))
+#UPLOAD_DIR =  dir_path + "/Documents/uploads/"
 
 class FileUploadController(Controller):
 
     @http.route('/api/upload/', type='http', auth='public', csrf=False)
     def upload_api(self, **post):
-        _logger.info("")
+        _logger.info("inside upload_api")
         response = None
         try:
             username = post['username']

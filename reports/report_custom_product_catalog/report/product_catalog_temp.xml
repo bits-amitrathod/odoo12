@@ -83,9 +83,9 @@
                         <table class="table table-condensed" style="border: 1px solid black;">
                             <thead style="display: table-header-group;">
                                 <tr style="border: 1px solid black;">
-                                    <th style="border: 1px solid black;text-align:center;width:200px;"> Product </th>
+                                    <th style="border: 1px solid black;text-align:center;width:200px;"> SKU/Catalog No. </th>
                                     <th style="border: 1px solid black;text-align:center;width:500px;"> Product Name </th>
-                                    <th style="border: 1px solid black;text-align:center;width:200px;"> Price </th>
+                                    <th style="border: 1px solid black;text-align:center;width:200px;"> Sales Price </th>
                                 </tr>
                             </thead>
                             <tbody>

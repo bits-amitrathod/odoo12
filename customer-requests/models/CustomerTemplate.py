@@ -35,6 +35,7 @@ class CustomerTemplate(models.Model):
     template_status = fields.Char(string='Template Status')
 
     mf_customer_sku = fields.Char(string='SKU')
+    mf_mfr_catalog_no = fields.Char(string='Manufacturer SKU')
     mf_required_quantity = fields.Char(string='Required Quantity')
     mf_quantity = fields.Char(string='Stock')
     mf_uom = fields.Char(string='Unit Of Measurement')
@@ -161,5 +162,4 @@ class CustomerTemplate(models.Model):
             if key and key.startswith('mf_'):
                 result.append(current_model[key])
         return result
-
 
