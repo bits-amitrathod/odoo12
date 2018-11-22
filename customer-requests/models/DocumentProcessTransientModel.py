@@ -91,12 +91,39 @@ class DocumentProcessTransientModel(models.TransientModel):
                     high_priority_product = False
                     customer_sku = req['customer_sku']
                     product_sku = customer_sku
-                    if user_model.sku_preconfig and product_sku.startswith(
-                            user_model.sku_preconfig):
+                    sku_preconfig_flag = False
+                    if user_model.sku_preconfig and product_sku:
+                        if len(user_model.sku_preconfig) > 0:
+                            j = 0
+                            for i in user_model.sku_preconfig:
+                                if user_model.sku_preconfig[j].isalnum():
+                                    if user_model.sku_preconfig[j] == product_sku[j]:
+                                        sku_preconfig_flag = True
+                                    else:
+                                        sku_preconfig_flag = False
+                                        break
+                                j += 1
+
+                    if sku_preconfig_flag:
                         product_sku = product_sku[len(user_model.sku_preconfig):]
-                    if user_model.sku_postconfig and product_sku.endswith(
-                            user_model.sku_postconfig):
-                        product_sku = product_sku[:-len(user_model.sku_postconfig)]
+                        print('product_sku : ', product_sku)
+
+                    sku_postconfig_flag = False
+                    if user_model.sku_postconfig and product_sku:
+                        if len(user_model.sku_postconfig) > 0:
+                            k = -1
+                            for i in user_model.sku_postconfig:
+                                if user_model.sku_postconfig[k].isalnum():
+                                    if user_model.sku_postconfig[k] == product_sku[k]:
+                                        sku_postconfig_flag = True
+                                    else:
+                                        sku_postconfig_flag = False
+                                        break
+                                k -= 1
+
+                        if sku_postconfig_flag:
+                            product_sku = product_sku[:-len(user_model.sku_postconfig)]
+                            print('product_sku : ', product_sku)
                     _logger.info('customer_sku %r product sku %r', customer_sku, product_sku)
                     product_tmpl = self.env['product.template'].search(
                         ['|', ('sku_code', '=', product_sku), ('manufacturer_pref', '=', customer_sku)])
@@ -106,6 +133,10 @@ class DocumentProcessTransientModel(models.TransientModel):
                             [['product_tmpl_id', '=', product_tmpl.id]])
                         if len(product_model) > 0:
                             sps_product_id = product_model[0].id
+                    if sps_product_id == 0:
+                        print('search product id in mfr_catalog_no')
+                        mfr_catalog_no = req['mfr_catalog_no']
+                        sps_product_id = self.get_sps_product_id(user_model, mfr_catalog_no)
                     if sps_product_id:
                         sps_product_priotization = self.env[
                             'prioritization_engine.prioritization'].search(
@@ -303,3 +334,52 @@ class DocumentProcessTransientModel(models.TransientModel):
         #     _logger.info('Error Processing Hight Priority Requests')
         self.env['prioritization_engine.prioritization'].process_requests(customer_product_requests)
         return None
+
+    def get_sps_product_id(self, user_model, sku_code):
+        print('In get_sps_product_id()')
+        customer_sku = sku_code
+        product_sku = customer_sku
+        sku_preconfig_flag = False
+        if user_model.sku_preconfig and product_sku:
+            if len(user_model.sku_preconfig) > 0:
+                j = 0
+                for i in user_model.sku_preconfig:
+                    if user_model.sku_preconfig[j].isalnum():
+                        if user_model.sku_preconfig[j] == product_sku[j]:
+                            sku_preconfig_flag = True
+                        else:
+                            sku_preconfig_flag = False
+                            break
+                    j += 1
+
+        if sku_preconfig_flag:
+            product_sku = product_sku[len(user_model.sku_preconfig):]
+            print('product_sku : ', product_sku)
+
+        sku_postconfig_flag = False
+        if user_model.sku_postconfig and product_sku:
+            if len(user_model.sku_postconfig) > 0:
+                k = -1
+                for i in user_model.sku_postconfig:
+                    if user_model.sku_postconfig[k].isalnum():
+                        if user_model.sku_postconfig[k] == product_sku[k]:
+                            sku_postconfig_flag = True
+                        else:
+                            sku_postconfig_flag = False
+                            break
+                    k -= 1
+
+            if sku_postconfig_flag:
+                product_sku = product_sku[:-len(user_model.sku_postconfig)]
+                print('product_sku : ', product_sku)
+        _logger.info('customer_sku %r product sku %r', customer_sku, product_sku)
+        product_tmpl = self.env['product.template'].search(
+            ['|', ('sku_code', '=', customer_sku), ('manufacturer_pref', '=', product_sku)])
+        sps_product_id = 0
+        if len(product_tmpl) > 0:
+            product_model = self.env['product.product'].search(
+                [['product_tmpl_id', '=', product_tmpl.id]])
+            if len(product_model) > 0:
+                sps_product_id = product_model[0].id
+        print('Got product id', sps_product_id)
+        return sps_product_id

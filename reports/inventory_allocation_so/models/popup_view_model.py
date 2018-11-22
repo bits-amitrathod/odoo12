@@ -16,6 +16,10 @@ class TrendingReportListPopUp(models.TransientModel):
     group_by = fields.Selection([
         ('order_id', 'Sale'),
     ], string="Group By", default='order_id', required=True, _defaluts={'field_name': 'sale', })
+    partner_id = fields.Many2many('res.partner',string='Users', required=True)
+    customer_by = fields.Selection([
+        ('partner_id', 'Customer'),
+    ], string="Customer", default='partner_id', required=True, _defaluts={'field_name': 'name', })
     start_date = fields.Date('Start Date', help="Choose a date to get the Discount Summary at that  Start date",)
     end_date = fields.Date('End Date', help="Choose a date to get the Discount Summary at that  End date",)
 

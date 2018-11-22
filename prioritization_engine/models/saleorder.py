@@ -112,10 +112,11 @@ class SaleOrderLine(models.Model):
     customer_request_id = fields.Many2one('sps.customer.requests', string='Request')
 
     def action_show_details(self):
-
        multi= self.env['stock.move'].search([('sale_line_id', '=', self.id)])
-       if len(multi) >= 1:
+       if len(multi) >= 1  and self.order_id.delivery_count ==1:
            return multi.action_show_details()
+       elif self.order_id.delivery_count>1:
+           raise ValidationError(_('Picking is not possible for multiple delivery please do picking inside Delivery'))
 
 
 class StockPicking(models.Model):

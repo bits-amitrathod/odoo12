@@ -416,10 +416,12 @@
                                             Signed
                                         </a>
                                     </t>
+                                     <t t-if="order.amount_total != 0">
                                     <a target="_blank" t-att-href="'/my/orders/pdf/%s?%s' % (order.id, keep_query())"
                                        class="ml8 pull-right mt4 mr8" title="Download">
                                         <i class="fa fa-download fa-2x" aria-hidden="true"/>
                                     </a>
+                                     </t>
                                 </div>
                             </div>
                         </div>
@@ -628,10 +630,12 @@
                             </div>
                         </div>
                         <div class="text-center hidden-print mt16 mb16" id="portal_sign">
+                             <t t-if="order.amount_total != 0">
                             <a class="btn btn-success" data-toggle="modal" data-target="#accept">
                                 <i class="fa fa-check"></i>
                                 Accept
                             </a>
+                             </t>
                             <a class="btn btn-danger" data-toggle="modal" data-target="#decline">
                                 <i class="fa fa-times"></i>
                                 Reject
