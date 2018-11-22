@@ -323,7 +323,7 @@ class VendorOfferProduct(models.Model):
     expired_inventory = fields.Char(string="Expired Inventory Items")
     multiplier = fields.Many2one('multiplier.multiplier', string="Multiplier")
     offer_price = fields.Char(string="Total Offer Price")
-    product_offer_price = fields.Char(string="Offer Price", compute='_compute_product_offer_price')
+    product_offer_price = fields.Char(string="Offer Price")
     margin = fields.Char(string="Margin")
     possible_competition = fields.Many2one(related='order_id.possible_competition',store=False)
     vendor_offer_data = fields.Boolean(related='order_id.vendor_offer_data', store=True)

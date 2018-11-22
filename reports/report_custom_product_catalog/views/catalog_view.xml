@@ -3,34 +3,35 @@
     <data>
 
         <record model="ir.ui.view" id="custom_list_view">
-              <field name="name">Custom Product Catalog</field>
-              <field name="model">product.product</field>
-              <field name="priority">20</field>
-              <field name="arch" type="xml">
+            <field name="name">Custom Product Catalog</field>
+            <field name="model">product.product</field>
+            <field name="priority">20</field>
+            <field name="arch" type="xml">
                 <tree>
                     <field name="type"/>
                     <field name="sku_code"/>
                     <field name="product_brand_id"/>
-                    <field name="name"/>
+                    <field name="name" string="Product Name"/>
                     <field name="product_qty"/>
-                    <field name="exp_min_date"/>
-                    <field name="exp_max_date"/>
+                    <field name="list_price" string="Price"/>
+                    <field name="exp_min_date" string="Max Exp Date"/>
+                    <field name="exp_max_date" string="Min Exp Date"/>
                 </tree>
-              </field>
+            </field>
         </record>
 
         <record model="ir.ui.view" id="product_list_view">
-              <field name="name">Product.Catalog.List</field>
-              <field name="model">product.product</field>
-              <field name="priority">20</field>
-              <field name="arch" type="xml">
+            <field name="name">Product.Catalog.List</field>
+            <field name="model">product.product</field>
+            <field name="priority">20</field>
+            <field name="arch" type="xml">
                 <tree>
                     <field name="sku_code"/>
                     <field name="name" string="Product Name"/>
-                    <field name="list_price" widget="monetary" />
-                    <field name="currency_id"  invisible="1" />
+                    <field name="list_price" widget="monetary"/>
+                    <field name="currency_id" invisible="1"/>
                 </tree>
-              </field>
+            </field>
         </record>
 
         <record id="action_custom_catalog_list" model="ir.actions.act_window">
@@ -50,16 +51,16 @@
         </record>
 
         <menuitem id="sr_menu_custome_product_catalog_wizard"
-                      name="Custom Product Catalog"
-                      action="action_custom_catalog_list"
-                      parent="stock.menu_warehouse_report"
-                      sequence="2"/>
+                  name="Custom Product Catalog"
+                  action="action_custom_catalog_list"
+                  parent="stock.menu_warehouse_report"
+                  sequence="2"/>
 
         <menuitem id="sr_menu_product_catalog_wizard"
-                      name="Product Catalog"
-                      action="action_product_catalog_list"
-                      parent="stock.menu_warehouse_report"
-                      sequence="2"/>
+                  name="Product Catalog"
+                  action="action_product_catalog_list"
+                  parent="stock.menu_warehouse_report"
+                  sequence="2"/>
 
     </data>
 </odoo>
