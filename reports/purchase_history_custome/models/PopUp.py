@@ -35,7 +35,7 @@ class PopUp(models.TransientModel):
                 'name': _('Purchase History'),
                 'res_model': 'purchase.order',
                 'context': {'start_date':self.start_date,'end_date':self.end_date},
-                'domain': [('product_id','in', self.product_id.ids),('date_order', '>=', self.start_date),('date_order', '<=', self.end_date)],
+                'domain': [('state','=','purchase'),('product_id','in', self.product_id.ids),('date_order', '>=', self.start_date),('date_order', '<=', self.end_date)],
             }
             action.update({'target': 'main'})
             return action
@@ -46,6 +46,7 @@ class PopUp(models.TransientModel):
                 'view_mode': 'tree,form',
                 'name': _('Purchase History'),
                 'res_model': 'purchase.order',
+                'domain': [('state', '=', 'purchase')]
             }
             action.update({'target': 'main'})
             return action
