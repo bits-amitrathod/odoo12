@@ -25,12 +25,12 @@ class InventoryNotificationScheduler(models.TransientModel):
     @api.model
     @api.multi
     def process_notification_scheduler(self):
-        # self.process_new_product_scheduler()
-        # self.process_notify_available()
+        self.process_new_product_scheduler()
+        self.process_notify_available()
         self.process_packing_list()
-        # self.process_on_hold_customer()
-        # self.process_notification_for_product_status()
-        # self.process_notification_for_in_stock_report()
+        self.process_on_hold_customer()
+        self.process_notification_for_product_status()
+        self.process_notification_for_in_stock_report()
 
 
     def process_new_product_scheduler(self):
