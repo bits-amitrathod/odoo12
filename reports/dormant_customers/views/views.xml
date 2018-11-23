@@ -40,7 +40,6 @@
                     <field name="display_name" string="Customer" />
                     <field name="sale_order" />
                     <field name="last_purchase_date" />
-
                 </tree>
               </field>
         </record>

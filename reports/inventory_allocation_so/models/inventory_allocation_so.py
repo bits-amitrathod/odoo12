@@ -12,7 +12,7 @@ class inventory_allocation_so(models.Model):
     sale_order_name = fields.Char(string="Name")
     product_id = fields.Many2one('product.product', string='Product', )
     order_id = fields.Many2one('sale.order', string='Sale', )
-    partner_id = fields.Many2one('res.partner', string='Customer', )
+    partner_id = fields.Many2many('res.partner', string='Customer', )
     sale_order_line = fields.One2many('sale.order.line', string='Sales Order Line')
     cost = fields.Float(string="Unit Price")
     so_allocation = fields.Boolean(string="isSale", compute='_compute_so_allocation')
@@ -38,7 +38,7 @@ class inventory_allocation_so(models.Model):
         group_by = self.env.context.get('group_by')
 
         select_query = """ SELECT concat(so.name ,'-',res.display_name) as sale_order_name, curr.id as currency_id,curr.symbol as currency_symbol, so.id as order_id, pt.*,sol.id as sale_order_id, res.name as customer_name, sol.product_id as product_id,so.partner_id as partner_id,
-          po.default_code as product_code, sol.name as product_name,sol.product_uom_qty as product_qty,sol.price_unit as cost """
+          pt.sku_code as product_code, sol.name as product_name,sol.product_uom_qty as product_qty,sol.price_unit as cost """
 
         if not group_by is None:
             select_query = select_query + ", '" + str(group_by) + "' as group_by "

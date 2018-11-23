@@ -99,6 +99,7 @@
                     </group>
                     <group>
                         <field name="mf_customer_sku"/>
+                        <field name="mf_mfr_catalog_no"/>
                         <field name="mf_required_quantity"/>
                         <field name="mf_quantity"/>
                         <field name="mf_uom"/>

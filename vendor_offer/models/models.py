@@ -339,14 +339,16 @@ class VendorOfferProduct(models.Model):
             line.update({
                 'price_tax': sum(t.get('amount', 0.0) for t in taxes.get('taxes', [])),
                 'price_total': taxes['total_included'],
-                'price_subtotal': taxes['total_excluded'],
+                'price_subtotal': taxes['total_exclud_compute_product_offer_priceed'],
             })'''
 
     def action_show_details(self):
 
         multi = self.env['stock.move'].search([('purchase_line_id', '=', self.id)])
-        if len(multi) >= 1:
+        if len(multi) >= 1 and self.order_id.picking_count ==1:
             return multi.action_show_details()
+        elif self.order_id.picking_count > 1:
+            raise ValidationError(_('Picking is not possible for multiple shipping please do picking inside Shipping'))
 
     @api.depends('list_price', 'taxes_id','product_offer_price')
     def _compute_amount(self):

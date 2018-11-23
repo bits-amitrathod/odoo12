@@ -41,7 +41,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
             s_date = ProductSaleByCountPopUp.string_to_date(str(self.start_date))
             e_date = ProductSaleByCountPopUp.string_to_date(str(self.end_date))
 
-            sale_orders = self.env['sale.order'].search([])
+            sale_orders = self.env['sale.order'].search([('state', '=', 'sale')])
 
             filtered_sale_orders = list(filter(
                 lambda x: x.confirmation_date and \

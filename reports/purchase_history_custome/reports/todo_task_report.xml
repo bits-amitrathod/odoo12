@@ -35,10 +35,11 @@
                         <!-- Report page content -->
 
                             <table class="table table-condensed table-bordered" style="border: 1px solid #000;">
+                                <thead>
                                 <tr>
                                     <th style="border: 1px solid black;text-align: center;">Order Reference</th>
                                     <th style="border: 1px solid black;text-align: center;">SKU/Catalog No</th>
-                                    <th style="border: 1px solid black;text-align: center;">Manufacturer</th>
+                                    <!--<th style="border: 1px solid black;text-align: center;">Manufacturer</th>-->
                                     <th style="border: 1px solid black;text-align: center;">Vendor</th>
                                     <th style="border: 1px solid black;text-align: center;">Product Name</th>
                                     <th style="border: 1px solid black;text-align: center;">Qty</th>
@@ -46,7 +47,8 @@
                                     <th style="border: 1px solid black;text-align: center;">Min Exp Date</th>
                                     <th style="border: 1px solid black;text-align: center;">Max Exp Date</th>
                                 </tr>
-
+                                </thead>
+                                <tbody>
                                 <!--<t t-foreach="data.keys()" t-as="user">-->
                                     <t t-foreach="data" t-as="o">
                                         <tr>
@@ -56,9 +58,9 @@
                                             <td  style="border: 1px solid #000;">
                                                 <span t-esc="o.sku"/>
                                             </td>
-                                            <td  style="border: 1px solid #000;">
-                                                <span t-esc="o.manufacturer_rep"/>
-                                            </td>
+                                            <!--<td  style="border: 1px solid #000;">-->
+                                                <!--<span t-esc="o.manufacturer_rep"/>-->
+                                            <!--</td>-->
                                             <td  style="border: 1px solid #000;">
                                                 <span t-esc="o.vendor"/>
                                             </td>
@@ -79,6 +81,7 @@
                                             </td>
                                         </tr>
                                     </t>
+                                </tbody>
                                 <!--</t>-->
                             </table>
                         </div>
