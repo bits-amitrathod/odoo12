@@ -7,7 +7,7 @@
             <field name="arch" type="xml">
 
              <button name="action_quotation_send"  position="after">
-                 <field name="show_validate"/>
+                 <field name="show_validate" invisible="1"/>
                  <button name="action_quotation_send" string="Send by Email" type="object" states="engine" class="btn-primary"/>
                  <button name="print_quotation" string="Print" type="object" states="engine" class="btn-primary o_sale_print"/>
                  <button name="action_confirm" id="action_confirm"
