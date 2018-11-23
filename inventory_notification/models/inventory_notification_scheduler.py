@@ -25,6 +25,7 @@ class InventoryNotificationScheduler(models.TransientModel):
     @api.model
     @api.multi
     def process_notification_scheduler(self):
+        _logger.info("process_notification_scheduler called")
         self.process_new_product_scheduler()
         self.process_notify_available()
         self.process_packing_list()
