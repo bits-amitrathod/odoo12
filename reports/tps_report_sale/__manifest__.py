@@ -27,10 +27,6 @@
         'report/selected_product_report.xml',
         'report/selected_product_template.xml',
     ],
-    # only loaded in demonstration mode
-    'demo': [
-        'demo/demo.xml',
-    ],
     'installable': True,
     'application': True,
     'auto_install': False,

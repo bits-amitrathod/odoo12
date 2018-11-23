@@ -9,7 +9,7 @@
                     <center>
                         <b>
                             <h2> Surgical Product Solutions </h2>
-                            <h4> Custom Product Catalog </h4>
+                            <h4> Custom Purchase History </h4>
                         </b>
                     </center>
                     </div>
@@ -19,9 +19,9 @@
                         <table class="table table-condensed" style="border: 1px solid black;">
                             <thead style="display: table-header-group;">
                                 <tr style="border: 1px solid black;">
-                                    <th style="border: 1px solid black;text-align: center !important;white-space: nowrap;width:170px;">Type</th>
+                                    <th style="border: 1px solid black;text-align: center !important;white-space: nowrap;width:170px;">Product Type</th>
                                     <th style="border: 1px solid black;text-align: center !important;white-space: nowrap;">Manufacturer</th>
-                                    <th style="border: 1px solid black;text-align: center !important;white-space: nowrap;">Product</th>
+                                    <th style="border: 1px solid black;text-align: center !important;white-space: nowrap;">SKU / Catalog No</th>
                                     <th style="border: 1px solid black;text-align: center !important;white-space: nowrap;">Product Name</th>
                                     <th style="border: 1px solid black;text-align: center !important;white-space: nowrap;">Quantity</th>
                                     <th style="border: 1px solid black;text-align: center !important;white-space: nowrap;width:125px;">Price</th>
