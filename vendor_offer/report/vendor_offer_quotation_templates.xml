@@ -52,6 +52,8 @@
                         <th class="text-center"><strong>Catalog Number</strong></th>
                         <th class="text-right"><strong>Qty. (Each counts)</strong></th>
                         <th class="text-right"><strong>Offer</strong></th>
+                         <th class="text-right"><strong>Untaxed Offer</strong></th>
+                         <th class="text-right"><strong>Taxes</strong></th>
                          <th class="text-right"><strong>Total Offer</strong></th>
 
                     </tr>
@@ -73,6 +75,12 @@
                         </td>
                         <td class="text-right">
                             <span t-field="order_line.price_subtotal" />
+                        </td>
+                           <td class="text-right">
+                            <span t-field="o.amount_tax" />
+                        </td>
+                           <td class="text-right">
+                            <span t-field="o.amount_total" />
                         </td>
                     </tr>
                 </tbody>
