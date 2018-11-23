@@ -20,12 +20,21 @@ class SaleOrder(models.Model):
         ('cancel', 'Cancelled'),
         ('void', 'Voided'),
     ], string='Status', readonly=True, copy=False, index=True, track_visibility='onchange', default='draft')
-
-
+    show_validate = fields.Boolean(
+        compute='_compute_show_validate',
+        help='Technical field used to compute whether the validate should be shown.')
     shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
     preferred_method = fields.Selection(string='Preferred Invoice Delivery Method', related='partner_id.preferred_method', readonly=True)
     carrier_info = fields.Char("Carrier Info",related='partner_id.carrier_info',readonly=True)
     carrier_acc_no = fields.Char("Carrier Account No",related='partner_id.carrier_acc_no',readonly=True)
+
+    @api.multi
+    def _compute_show_validate(self):
+        multi = self.env['stock.picking'].search([('sale_id', '=', self.id)])
+        if len(multi) == 1 and self.delivery_count ==1:
+            self.show_validate=multi.show_validate
+        elif self.delivery_count > 1:
+            self.show_validate=True
 
     @api.multi
     def action_void(self):
@@ -58,16 +67,6 @@ class SaleOrder(models.Model):
         multi = self.env['stock.picking'].search([('sale_id', '=', self.id)])
         if len(multi) >= 1:
             return multi.do_unreserve()
-
-    '''@api.multi
-    def action_confirm(self):
-        print(self.team_id)
-        crm_team = self.env['crm.team'].search([('team_type', '=', 'engine')])[0]
-        print(crm_team)
-        if self.team_id.id==crm_team.id:
-            self.write({'state': 'sale','confirmation_date':datetime.today()})
-        else:
-            super(SaleOrder, self).action_confirm()'''
 
     @api.multi
     def action_quotation_send(self):
