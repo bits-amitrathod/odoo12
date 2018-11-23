@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="sale_packing_list_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <page>
+                    <style>
+                        .noborders {
+                        border: 0;
+                        }
+
+                        <!--.table-bordered > tbody > tr > td,.table-bordered > tbody > tr > th {-->
+                        <!--border: 1px solid #000;-->
+                        <!--}-->
+                    </style>
+                    <div class="oe_structure"/>
+                    <div class="row">
+                        <center>
+                            <b>
+                                <h2>Surgical Product Solutions</h2>
+                                <h4>Customer Products Price Rule</h4>
+                            </b>
+                        </center>
+
+                    </div>
+                    <br/>
+                    <div class="row">
+
+                        <div class="col-md-12" >
+
+                            <table class="table  table-condensed" style="border: 1px solid black;width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                             <div class="col-md-12">Pricing Rule</div></th>
+                                            <th><div class="col-md-12">Pricing Rule</div></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="invoice_tbody"  t-foreach="pricing_rule_result" t-as="pricing_rule">
+                                    <tr >
+                                       <th>
+                                            <div class="col-md-12" style="margin-top:10px">
+                                                    <strong>
+                                                         <span t-esc="pricing_rule[0].product_code"/>:
+                                                         <span t-esc="pricing_rule[0].customer_name"/>
+                                                    </strong>
+                                                <hr style="margin: 5px 0px;"/>
+                                                <p style="font-weight: lighter">
+                                                    Applies to product: <span t-esc="pricing_rule[0].product_code"/>
+                                                </p>
+                                               <p style="font-weight: lighter">
+                                                     Set the price of product(s) to be:<span t-esc="pricing_rule[0].currency_symbol"/>
+                                                    <span t-esc="pricing_rule[0].cost"/>
+
+
+                                                </p>
+                                                <p style="font-weight: lighter">
+                                                    Applies to the customer: <span t-esc="pricing_rule[0].customer_name"/>
+                                                </p>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="col-md-12" style="margin-top:10px ">
+                                                <t t-if="pricing_rule[1]!=False">
+                                                    <strong>
+                                                        <span t-esc="pricing_rule[1].product_code"/>:
+                                                         <span t-esc="pricing_rule[1].customer_name"/>
+
+                                                    </strong>
+                                                    <hr style="margin: 5px 0px;"/>
+                                                    <p style="font-weight: lighter">
+                                                        Applies to product: <span t-esc="pricing_rule[1].product_code"/>
+                                                    </p>
+                                                    <p style="font-weight: lighter">
+                                                         Set the price of product(s) to be: <span t-esc="pricing_rule[1].currency_symbol"/>
+                                                        <span t-esc="pricing_rule[1].cost"/>
+
+                                                    </p>
+                                                    <p style="font-weight: lighter">
+                                                        Applies to the customer: <span t-esc="pricing_rule[1].customer_name"/>
+                                                    </p>
+                                                </t>
+                                            </div>
+                                        </th>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+                </page>
+            </t>
+        </t>
+    </template>
+</odoo>

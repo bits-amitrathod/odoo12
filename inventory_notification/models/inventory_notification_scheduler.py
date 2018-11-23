@@ -99,7 +99,7 @@ class InventoryNotificationScheduler(models.TransientModel):
 
 
     def process_hold_off_customer(self,partner_id):
-        sales = self.env['sale.order'].search([('state', '=', 'sale'),('partner_id', '=', partner_id)])
+        sales = self.env['sale.order'].search([('state', '=', 'sale'),('partner_id', '=', partner_id.id)])
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
         users = self.env['res.users'].search([])
         sales_order=[]
@@ -120,18 +120,19 @@ class InventoryNotificationScheduler(models.TransientModel):
                     'shipping_address':shipping_address
                 }
                 sales_order.append(sale_order)
-        vals = {
-            'sale_order_lines': sales_order,
-            'subject': "shipment need to release for "+sale.partner_id.display_name  ,
-            'description': "Please release the shipment of customer: " + sale.partner_id.display_name ,
-            'header': ['Sales order', 'Shipping Address'],
-            'columnProps': ['sales_order', 'shipping_address'],
-        }
-        for user in users:
-            has_group = user.has_group('stock.group_stock_manager')
-            if has_group:
-                self.process_common_email_notification_template(super_user, user, vals['subject'], vals['description'],  vals['sale_order_lines'],  vals['header'],
-                                                            vals['columnProps'])
+        if sales:
+            vals = {
+                'sale_order_lines': sales_order,
+                'subject': "shipment need to release for "+partner_id.display_name  ,
+                'description': "Please release the shipment of customer: " + partner_id.display_name ,
+                'header': ['Sales order', 'Shipping Address'],
+                'columnProps': ['sales_order', 'shipping_address'],
+            }
+            for user in users:
+                has_group = user.has_group('stock.group_stock_manager')
+                if has_group:
+                    self.process_common_email_notification_template(super_user, user, vals['subject'], vals['description'],  vals['sale_order_lines'],  vals['header'],
+                                                                vals['columnProps'])
 
     def process_notification_for_product_status(self):
         products=self.env['product.product'].search([('product_tmpl_id.type','=','product')])
