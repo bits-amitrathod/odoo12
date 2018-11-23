@@ -33,6 +33,8 @@
                                     <th style="border: 1px solid black;">Product</th>
 
                                 </tr>
+                            </thead>
+                            <tbody>
                                 <tr t-foreach="data[user]" t-as="order">
                                     <td style="border: 1px solid black;">
                                         <span t-esc="order[0]"/>
@@ -61,7 +63,7 @@
                                         <span t-esc="total_sum"/>
                                     </td>
                                 </tr>
-                            </thead>
+                            </tbody>
                         </table>
                     </t>
                 </page>

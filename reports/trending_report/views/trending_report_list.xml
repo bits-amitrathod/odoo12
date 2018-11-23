@@ -7,7 +7,7 @@
                <field name="priority">51</field>
               <field name="arch" type="xml">
                 <tree create="false" edit="false" >
-                    <field name="name"/>
+                    <field name="name" string="Customer Name"/>
                     <field name="month_count"/>
                     <field name="month6"/>
                     <field name="month5"/>

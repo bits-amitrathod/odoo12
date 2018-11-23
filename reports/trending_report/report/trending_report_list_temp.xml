@@ -6,87 +6,94 @@
                 <page>
                     <div class="oe_structure"/>
                     <div class="row">
-                    <center>
-                        <b>
-                            <h2> Surgical Product Solutions </h2>
-                            <h4> Trending Report</h4>
-                        </b>
-                    </center>
-                    <center>
-                    </center>
+                        <center>
+                            <b>
+                                <h2>Surgical Product Solutions</h2>
+                                <h4>Trending Report</h4>
+                            </b>
+                        </center>
+                        <center>
+                        </center>
                     </div>
                     <br/>
-                    <div class="table-responsive">
                     <table class="table table-condensed" style="border: 1px solid black;">
-                            <thead>
-                                <tr style="border: 1px solid black;">
-                                    <th style="border: 1px solid black;text-align: center;">Name</th>
-                                    <th style="border: 1px solid black;text-align: center;">Months Ago First Order</th>
-                                    <th style="border: 1px solid black;text-align: center;">
-                                        <span  t-esc="(datetime.datetime.now()- relativedelta(months=5)).strftime('%b-%Y')"/>
-                                    </th>
-                                    <th style="border: 1px solid black;text-align: center;">
-                                        <span  t-esc="(datetime.datetime.now()- relativedelta(months=4)).strftime('%b-%Y')"/>
-                                    </th>
-                                    <th style="border: 1px solid black;text-align: center;">
-                                        <span  t-esc="(datetime.datetime.now()- relativedelta(months=3)).strftime('%b-%Y')"/>
-                                    </th>
-                                    <th style="border: 1px solid black;text-align: center;">
-                                        <span  t-esc="(datetime.datetime.now()- relativedelta(months=2)).strftime('%b-%Y')"/>
-                                    </th>
-                                    <th style="border: 1px solid black;text-align: center;">
-                                        <span  t-esc="(datetime.datetime.now()- relativedelta(months=1)).strftime('%b-%Y')"/>
-                                    </th>
-                                    <th style="border: 1px solid black;text-align: center;">
-                                        <span  t-esc="datetime.datetime.now().strftime('%b-%Y')"/>
-                                    </th>
-                                    <th style="border: 1px solid black;text-align: center;">Total Purchased Month</th>
-                                    <th style="border: 1px solid black;text-align: center;">Average</th>
-                                    <th style="border: 1px solid black;text-align: center;">Trend</th>
-                                    <th style="border: 1px solid black;text-align: center;">Total</th>
-
-                                </tr>
-                                    <tr t-foreach="data" t-as="order">
-                                        <td style="border: 1px solid black;">
-                                            <span t-esc="order.name"/>
-                                        </td>
-                                        <td style="border: 1px solid black;">
-                                            <span t-esc="order.month_count"/>
-                                        </td>
-                                        <td style="border: 1px solid black;">
-                                            <span t-esc="order.month6" t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
-                                        </td>
-                                        <td align="center" style="border: 1px solid black;">
-                                           <span t-esc="order.month5" t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
-                                        </td>
-                                        <td style="border: 1px solid black;white-space:nowrap;">
-                                             <span t-esc="order.month4" t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
-                                        </td>
-                                        <td align="center" style="border: 1px solid black;">
-                                           <span t-esc="order.month3" t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
-                                        </td>
-                                        <td style="border: 1px solid black;white-space:nowrap;">
-                                             <span t-esc="order.month2" t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
-                                        </td>
-                                        <td style="border: 1px solid black;white-space:nowrap;">
-                                             <span t-esc="order.month1" t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
-                                        </td>
-                                        <td align="center" style="border: 1px solid black;">
-                                           <span t-esc="order.month_total"/>
-                                        </td>
-                                        <td style="border: 1px solid black;white-space:nowrap;">
-                                             <span t-esc="order.average_sale"  t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
-                                        </td>
-                                        <td style="border: 1px solid black;white-space:nowrap;">
-                                             <span t-esc="order.trend_val"/>
-                                        </td>
-                                        <td align="right" style="border: 1px solid black;white-space:nowrap;">
-                                             <span t-esc="order.total_sale"  t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
-                                        </td>
-                                    </tr>
-                            </thead>
+                        <thead>
+                            <tr style="border: 1px solid black;">
+                                <th style="border: 1px solid black;text-align: center;">Customer Name</th>
+                                <th style="border: 1px solid black;text-align: center;">Months Ago First Order</th>
+                                <th style="border: 1px solid black;text-align: center;">
+                                    <span t-esc="(datetime.datetime.now()- relativedelta(months=5)).strftime('%b-%Y')"/>
+                                </th>
+                                <th style="border: 1px solid black;text-align: center;">
+                                    <span t-esc="(datetime.datetime.now()- relativedelta(months=4)).strftime('%b-%Y')"/>
+                                </th>
+                                <th style="border: 1px solid black;text-align: center;">
+                                    <span t-esc="(datetime.datetime.now()- relativedelta(months=3)).strftime('%b-%Y')"/>
+                                </th>
+                                <th style="border: 1px solid black;text-align: center;">
+                                    <span t-esc="(datetime.datetime.now()- relativedelta(months=2)).strftime('%b-%Y')"/>
+                                </th>
+                                <th style="border: 1px solid black;text-align: center;">
+                                    <span t-esc="(datetime.datetime.now()- relativedelta(months=1)).strftime('%b-%Y')"/>
+                                </th>
+                                <th style="border: 1px solid black;text-align: center;">
+                                    <span t-esc="datetime.datetime.now().strftime('%b-%Y')"/>
+                                </th>
+                                <th style="border: 1px solid black;text-align: center;">Total Purchased Month</th>
+                                <th style="border: 1px solid black;text-align: center;">Average</th>
+                                <th style="border: 1px solid black;text-align: center;">Trend</th>
+                                <th style="border: 1px solid black;text-align: center;">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="data" t-as="order">
+                                <td style="border: 1px solid black;">
+                                    <span t-esc="order.name"/>
+                                </td>
+                                <td style="border: 1px solid black;">
+                                    <span t-esc="order.month_count"/>
+                                </td>
+                                <td style="border: 1px solid black;">
+                                    <span t-esc="order.month6"
+                                          t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                </td>
+                                <td align="center" style="border: 1px solid black;">
+                                    <span t-esc="order.month5"
+                                          t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                </td>
+                                <td style="border: 1px solid black;white-space:nowrap;">
+                                    <span t-esc="order.month4"
+                                          t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                </td>
+                                <td align="center" style="border: 1px solid black;">
+                                    <span t-esc="order.month3"
+                                          t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                </td>
+                                <td style="border: 1px solid black;white-space:nowrap;">
+                                    <span t-esc="order.month2"
+                                          t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                </td>
+                                <td style="border: 1px solid black;white-space:nowrap;">
+                                    <span t-esc="order.month1"
+                                          t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                </td>
+                                <td align="center" style="border: 1px solid black;">
+                                    <span t-esc="order.month_total"/>
+                                </td>
+                                <td style="border: 1px solid black;white-space:nowrap;">
+                                    <span t-esc="order.average_sale"
+                                          t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                </td>
+                                <td style="border: 1px solid black;white-space:nowrap;">
+                                    <span t-esc="order.trend_val"/>
+                                </td>
+                                <td align="right" style="border: 1px solid black;white-space:nowrap;">
+                                    <span t-esc="order.total_sale"
+                                          t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                </td>
+                            </tr>
+                        </tbody>
                     </table>
-                    </div>
                 </page>
             </t>
         </t>
