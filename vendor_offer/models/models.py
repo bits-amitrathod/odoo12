@@ -28,6 +28,13 @@ class VendorOffer(models.Model):
     offer_amount = fields.Monetary(string="Total  Offer",readonly=True,default=0,compute='_amount_tot_all')
     # date_planned = fields.Datetime(string='Scheduled Date')
     possible_competition = fields.Many2one('competition.competition', string="Possible Competition")
+    rt_price_subtotal_amt = fields.Monetary(string='Subtotal', compute='_amount_tot_all')
+    rt_price_total_amt = fields.Monetary( string='Total', compute='_amount_tot_all')
+    rt_price_tax_amt = fields.Float(string='Tax', compute='_amount_tot_all')
+    show_validate = fields.Boolean(
+        compute='_compute_show_validate',
+        help='Technical field used to compute whether the validate should be shown.')
+
     offer_type = fields.Selection([
         ('cash', 'Cash'),
         ('credit', 'Credit')
@@ -73,6 +80,14 @@ class VendorOffer(models.Model):
         ('cancel', 'Cancelled')
     ], string='Status', readonly=True, index=True, copy=False, default='draft', track_visibility='onchange')
 
+    @api.multi
+    def _compute_show_validate(self):
+        multi = self.env['stock.picking'].search([('purchase_id', '=', self.id)])
+        if len(multi) == 1 and self.picking_count == 1:
+            self.show_validate = multi.show_validate
+        elif self.picking_count > 1:
+            self.show_validate = True
+
     def action_validate(self):
         multi = self.env['stock.picking'].search([('purchase_id', '=', self.id)])
         if len(multi) == 1 and self.picking_count ==1:
@@ -84,11 +99,6 @@ class VendorOffer(models.Model):
         multi = self.env['stock.picking'].search([('purchase_id', '=', self.id)])
         if len(multi) >= 1:
             return multi.action_assign()
-
-    def _compute_show_validate(self):
-        multi = self.env['stock.picking'].search([('purchase_id', '=', self.id)])
-        if len(multi)>=1:
-            multi._compute_show_validate()
 
     @api.multi
     def do_unreserve(self):
@@ -110,14 +120,22 @@ class VendorOffer(models.Model):
     def _amount_tot_all(self):
         for order in self:
             retail_amt = offer_amount = 0.0
+            rt_price_subtotal_amt_temp = rt_price_total_amt_temp =rt_price_tax_amt_temp = 0.0
             for line in order.order_line:
                 retail_amt += float(line.product_retail)
-                offer_amount += float(line.price_subtotal)
-            # order.retail_amt =retail_amt
-            # order.offer_amount = offer_amount
+                rt_price_subtotal_amt_temp+=float(line.rt_price_subtotal)
+                rt_price_total_amt_temp += float(line.rt_price_total)
+                rt_price_tax_amt_temp += float(line.rt_price_tax)
+
+
             order.update({
                 'retail_amt': retail_amt,
+                'rt_price_subtotal_amt':rt_price_subtotal_amt_temp,
+
+                'rt_price_tax_amt': rt_price_tax_amt_temp,
+                'rt_price_total_amt': rt_price_subtotal_amt_temp + rt_price_tax_amt_temp,
                 'offer_amount': offer_amount,
+
             })
 
     @api.onchange('possible_competition')
@@ -331,16 +349,10 @@ class VendorOfferProduct(models.Model):
     product_retail = fields.Char(string="Total Retail Price")
     product_unit_price = fields.Char(string="Retail Price")
 
-    '''@api.depends('product_qty', 'price_unit', 'taxes_id')
-    def _compute_product_offer_price(self):
-        for line in self:
-            taxes = line.taxes_id.compute_all(line.price_unit, line.order_id.currency_id, line.product_qty,
-                                              product=line.product_id, partner=line.order_id.partner_id)
-            line.update({
-                'price_tax': sum(t.get('amount', 0.0) for t in taxes.get('taxes', [])),
-                'price_total': taxes['total_included'],
-                'price_subtotal': taxes['total_exclud_compute_product_offer_priceed'],
-            })'''
+    rt_price_subtotal = fields.Monetary(compute='_compute_amount', string='Subtotal', store=False)
+    rt_price_total = fields.Monetary(compute='_compute_amount', string='Total', store=False)
+    rt_price_tax = fields.Float(compute='_compute_amount', string='Tax', store=False)
+
 
     def action_show_details(self):
 
@@ -361,9 +373,18 @@ class VendorOfferProduct(models.Model):
                 # line.price_subtotal = round(float(line.product_qty) * float(line.product_unit_price),2)
                 line.price_subtotal = round(float(line.product_qty) * float(line.product_offer_price),2)
                 line.update({
-                    'price_tax': '0',
+
                     'price_subtotal': line.price_subtotal,
                 })
+        for line in self:
+            taxes1 = line.taxes_id.compute_all(float(line.product_unit_price), line.order_id.currency_id, line.product_qty, product=line.product_id, partner=line.order_id.partner_id)
+
+           
+            line.update({
+                'rt_price_tax': sum(t.get('amount', 0.0) for t in taxes1.get('taxes', [])),
+                'rt_price_total': taxes1['total_included'],
+                'rt_price_subtotal': taxes1['total_excluded'],
+            })
 
 
     @api.onchange('product_id')
@@ -458,6 +479,7 @@ class VendorOfferProduct(models.Model):
                 for line in order:
                     line.qty_in_stock=line.product_id.qty_available
 
+
     def update_product_expiration_date(self):
         for order in self:
             order.env.cr.execute(
@@ -485,7 +507,7 @@ class VendorOfferProduct(models.Model):
                 line.margin = multiplier_list.margin
                 line.price_subtotal = line.offer_price = round(
                     float(line.product_qty) * float(line.product_offer_price), 2)
-                line.price_unit = line.offer_price
+                line.price_unit = line.product_offer_price
                 line.product_retail = round(float(line.product_qty) * float(line.product_unit_price), 2)
                 # line.price_subtotal = round(float(line.product_qty) * float(line.product_offer_price),2)
 

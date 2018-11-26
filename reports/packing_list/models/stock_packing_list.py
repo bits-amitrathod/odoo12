@@ -14,8 +14,16 @@ _logger = logging.getLogger(__name__)
 
 
 class PricingRule(models.Model):
-    _name = "res.pricing_rule"
-    _description = "inventory pricing rule for customer"
+    _name = "res.stock_packing_list"
+    _description = "sale packing list for customer"
+    ship_to=fields.Char(string="Ship To")
+    bill_to = fields.Char(string="Bill To")
+    requested_date=fields.Char(string="Requested Date")
+    shipping_terms=fields.Char(string="Shipping Term")
+    ship_via=fields.Char(string="Ship Via")
+    order_number=fields.Char(string="Order Number")
+    carton_information=fields.Char(string="Carton Information")
+    tracking_url=fields.Char(string="Tracking Url")
     customer_name = fields.Char(string="Name")
     product_id = fields.Many2one('product.template', string='Product', )
     partner_id = fields.Many2one('res.partner', string='Customer', )

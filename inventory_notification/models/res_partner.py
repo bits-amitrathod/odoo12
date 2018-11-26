@@ -14,5 +14,5 @@ class ParnerOnHoldStatus(models.Model):
         if res and self.is_parent and 'on_hold' in vals  and not vals.get('on_hold'):
             _logger.info("on hold false: %r",vals)
             inv_notification = self.env['inventory.notification.scheduler'].search([])
-            inv_notification.process_hold_off_customer(self.id)
+            inv_notification.process_hold_off_customer(self)
         return res

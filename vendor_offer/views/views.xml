@@ -8,7 +8,7 @@
       <field name="priority">20</field>
       <field name="arch" type="xml">
         <tree>
-          <field name="name" attrs="{'invisible':[('state', 'not in', ('ven_draft'))]}"/>
+          <field name="name" attrs="{'invisible':[('state', 'not in', ('ven_draft','ven_sent'))]}"/>
           <field name="state" invisible="1"   />
           <field name="acq_user_id" string='Acq Manager' attrs="{'invisible':[('state', 'not in', ('ven_draft','ven_sent'))]}"/>
           <field name="partner_id" attrs="{'invisible':[('state', 'not in', ('ven_draft','ven_sent'))]}" string ="Facility Name"/>
@@ -167,7 +167,7 @@
                     </group>
                     <notebook>
                         <page string="Product">
-                            <field name="order_line" mode="tree,form" attrs="{'readonly': [('state', 'not in', ('draft', 'ven_draft'))]}" >
+                            <field name="order_line" mode="tree,form" attrs="{'readonly': [('state', 'not in', ('draft', 'ven_draft','ven_sent'))]}" >
                                             <form >
                                                 <group>
                                                     <group>
@@ -194,6 +194,10 @@
                                                          <field name="product_offer_price"   />
                                                          <field name="product_retail"   />
                                                          <field name="price_subtotal"  string="Total Offer Price" />
+                                                         <!-- <field name="taxes_id" widget="many2many_tags" domain="[('type_tax_use','=','purchase')]" context="{'default_type_tax_use': 'purchase'}" options="{'no_create': True}"/>
+                                         <field name="price_tax"  />
+                                        <field name="price_total"   widget="monetary" />
+                                        <field name="price_subtotal"   widget="monetary" />-->
                                                          <field name="margin"    />
                                                          <field name="multiplier"   />
                                                          <field name="product_note"   />
@@ -203,7 +207,7 @@
                                                 </group>
                                             </form>
                                 <!--editable="bottom"-->
-                                <tree editable="bottom">
+                                <tree editable="bottom" >
                                          <field name="currency_id" invisible="1"/>
                                          <field name="product_id" />
                                          <field name="sku_code"  readonly="1" />
@@ -224,6 +228,13 @@
                                          <field name="product_offer_price"   />
                                          <field name="product_retail"   />
                                          <field name="price_subtotal" string="Total Offer Price" />
+                                         <field name="taxes_id" widget="many2many_tags" domain="[('type_tax_use','=','purchase')]" context="{'default_type_tax_use': 'purchase'}" options="{'no_create': True}"/>
+                                      <!--    <field name="price_tax"  />
+                                        <field name="price_total"   widget="monetary" />
+                                        <field name="price_subtotal"   widget="monetary" />
+                                     <field name="rt_price_tax"  />
+                                        <field name="rt_price_total"   widget="monetary" />
+                                        <field name="rt_price_subtotal"   widget="monetary" />-->
                                          <field name="margin" />
                                          <field name="multiplier"   />
                                          <field name="date_planned"  invisible="1"  />
@@ -233,10 +244,20 @@
                                 </tree>
 
                             </field>
+                             <group>
                              <group class="oe_subtotal_footer oe_right">
-                                <field name="retail_amt" widget="monetary"  />
-                                <field name="offer_amount"  widget="monetary"/>
+
+                                 <field name="amount_untaxed" widget="monetary"  string="Untaxed Offer Price"/>
+                                  <field name="amount_tax"   string="Tax" />
+                                    <field name="amount_total" widget="monetary"  string="Total Offer Price" />
+
                             </group>
+                                  <group class="oe_subtotal_footer oe_right">
+                                    <field name="rt_price_subtotal_amt" widget="monetary"  string="Untaxed Retail Price" />
+                                      <field name="rt_price_tax_amt" string="Tax" />
+                                   <field name="rt_price_total_amt" widget="monetary"  string="Total Retail Price" />
+                                    </group>
+                             </group>
                             <field name="notes" class="oe_inline" placeholder="Define your terms and conditions ..."/>
                             <div class="oe_clear"/>
                         </page>
@@ -277,7 +298,8 @@
             <field name="inherit_id" ref="purchase.purchase_order_form"></field>
             <field name="arch" type="xml">
                 <button name="button_unlock" position="after">
-                     <button name="action_validate" string="Validate" groups="stock.group_stock_user" type="object" class="oe_highlight" states="purchase"/>
+                     <field name="show_validate" invisible="1"/>
+                     <button name="action_validate"  attrs="{'invisible': ['|', ('show_validate', '=', False),('state', 'not in', 'purchase')]}"  string="Validate" groups="stock.group_stock_user" type="object" class="oe_highlight"/>
                 </button>
                 <xpath expr="//group/group/field[@name='origin']" position="replace">
                      <field name="origin" string="Sale Order#"/>
