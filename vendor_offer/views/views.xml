@@ -298,7 +298,8 @@
             <field name="inherit_id" ref="purchase.purchase_order_form"></field>
             <field name="arch" type="xml">
                 <button name="button_unlock" position="after">
-                     <button name="action_validate" string="Validate" groups="stock.group_stock_user" type="object" class="oe_highlight" states="purchase"/>
+                     <field name="show_validate" invisible="1"/>
+                     <button name="action_validate"  attrs="{'invisible': ['|', ('show_validate', '=', False),('state', 'not in', 'purchase')]}"  string="Validate" groups="stock.group_stock_user" type="object" class="oe_highlight"/>
                 </button>
                 <xpath expr="//group/group/field[@name='origin']" position="replace">
                      <field name="origin" string="Sale Order#"/>

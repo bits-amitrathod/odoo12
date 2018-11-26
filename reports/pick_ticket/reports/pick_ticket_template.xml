@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="pick_ticket_report1">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <page>
+                    <div class="oe_structure"/>
+                    <div class="row">
+                        <center>
+                            <b>
+                                <h2>Surgical Product Solution</h2>
+                                <h4>Pick Ticket List</h4>
+                            </b>
+                        </center>
+                        <br/>
+                    </div>
+                    <t t-foreach="picks" t-as="pick_int">
+                        <t t-set="pick" t-value="picks[pick_int]"/>
+
+                        <table  class="table table-condensed" style="margin-bottom: 0px;">
+                            <tr>
+                                <td style="border: none;">
+                                    <strong>SO #:</strong>
+                                    <span t-esc="pick['order']"/>
+                                </td>
+                                <td style="border: none;">
+                                    <strong>Carrier:</strong>
+                                    <span t-esc="pick['carrier']"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border: none;">
+                                    <strong>Customer:</strong>
+                                    <span t-esc="pick['customer']"/>
+                                </td>
+                                <td style="border: none;">
+                                    <strong>State:</strong>
+                                    <span t-esc="pick['state']"/>
+                                </td>
+                            </tr>
+                        </table>
+                        <table class="table table-condensed" style="border: 1px solid black;">
+                            <thead>
+                                <tr>
+                                    <th style="border: 1px solid black;text-align:  center !important;">
+                                        Quantity
+                                    </th>
+                                    <th style="border: 1px solid black;text-align:  center !important;">
+                                        Product Name
+                                    </th>
+                                    <th style="border: 1px solid black;text-align:  center !important;">
+                                        Location
+                                    </th>
+                                    <th style="border: 1px solid black;text-align:  center !important;">
+                                        Destination
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="pick['product']" t-as="product">
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="product['quantity']"/>
+                                        ea
+                                    </td>
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="product['product']"/>
+                                    </td>
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="product['location']"/>
+                                    </td>
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="product['destination']"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </t>
+                </page>
+            </t>
+        </t>
+    </template>
+
+
+</odoo>
