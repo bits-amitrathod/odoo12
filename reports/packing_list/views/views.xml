@@ -9,10 +9,9 @@
                 <form string="Choose Customer">
                     <group>
                         <group>
-                            <field name="partner_id" widget="many2many_tags"/>
-                        </group>
-                        <group>
-                            <field name="product_id" widget="many2many_tags"/>
+                            <field name="compute_at_date" widget="radio"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)],'required':[('compute_at_date', '=', 1)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)],'required':[('compute_at_date', '=', 1)]}"/>
                         </group>
                     </group>
                     <footer>
@@ -32,15 +31,13 @@
       </record>
     <record id="view_inv_all_packing_list_tree" model="ir.ui.view" >
           <field name="name">Inventory Packing List</field>
-          <field name="model">res.stock_packing_list</field>
+          <field name="model">stock.picking</field>
           <field name="priority">20</field>
           <field name="arch" type="xml">
             <tree create="false" edit="false" >
-                <field name="currency_id" invisible="1"/>
-                <field name="customer_name" invisible="1"/>
-                <field name="product_code"/>
-                <field name="product_name"/>
-                <field name="cost" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="origin"/>
+                <field name="state"/>
+                <field name="carrier_id"/>
 
             </tree>
           </field>
@@ -49,9 +46,9 @@
 
 
     <menuitem id="menu_inv_allow_pricing_list_report"
-              name="Inventory Pricing Rules"
+              name="Sale Packing List"
               parent="sale.menu_sale_report"
-              action="action_price_rule_customer"
+              action="action_packing_list_customer"
              />
 
 
