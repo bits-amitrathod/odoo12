@@ -1,0 +1,63 @@
+<odoo>
+    <data>
+
+        <record id="pick_report_list_view" model="ir.ui.view">
+            <field name="name">report.order.pick.ticket.list</field>
+            <field name="model">report.order.pick.ticket</field>
+            <field name="priority">20</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="sale_id" string="Sale Order"/>
+                    <field name="product_id" string="Product Name"/>
+                    <field name="partner_id" string="Customer Name"/>
+                    <field name="qty_done" string="Quantity"/>
+                    <field name="location_id" string="Location"/>
+                    <field name="location_dest_id" string="Destination"/>
+                    <field name="carrier_info" string="Carrier"/>
+                    <field name="state" string="Status"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="pick_ticket_groupby_order_popup_view" model="ir.ui.view">
+            <field name="name">Pick Ticket Report</field>
+            <field name="model">report.pick.ticket.groupby.order</field>
+            <field name="arch" type="xml">
+                <form string="Choose your date">
+                    <group>
+                        <group>
+                            <field name="compute_at_date" widget="radio"/>
+                        </group>
+                        <group>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                            <field name="order_number" attrs="{'invisible': [('compute_at_date', '=', 1)]}"
+                                   widget="many2many_tags" domain="[('state','=','sale')]"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_pick_ticket_groupby_order" model="ir.actions.act_window">
+            <field name="name">Pick Ticket Report</field>
+            <field name="res_model">report.pick.ticket.groupby.order</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{'default_compute_at_date': 0}</field>
+        </record>
+
+        <menuitem id="pick_ticket_by_date"
+                  name="Pick Ticket"
+                  action="action_pick_ticket_groupby_order"
+                  parent="stock.menu_warehouse_report"
+                  sequence="1"/>
+
+
+    </data>
+</odoo>
