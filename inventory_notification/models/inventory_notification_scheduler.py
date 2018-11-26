@@ -52,8 +52,8 @@ class InventoryNotificationScheduler(models.TransientModel):
         sales = self.env['sale.order'].search([('state','=','sale')])
         for sale in sales:
             sale_order_lines = self.env['sale.order.line'].search([('order_id.id','=',sale.id),
-                                                              ('move_ids.state','=','assigned'),
-                                                              ('move_ids.move_line_ids.state','=','assigned'),
+                                                              ('move_ids.state','=','done'),
+                                                              ('move_ids.move_line_ids.state','=','done'),
                                                               ('move_ids.move_line_ids.write_date','>=',today_start),
                                                               ('move_ids.move_line_ids.qty_done','>',0),
                                                               ('move_ids.move_line_ids.lot_id','!=',None)])
@@ -65,9 +65,9 @@ class InventoryNotificationScheduler(models.TransientModel):
                 'sale_order_lines':sale_order_lines,
                 'subject':"New Sale Order",
                 'descrption':"Please find below Packing list for Order No:" + sale.name +" Dated:"+ today_start,
-                'header': ['Name',  'Lot No#', 'Expiration Date','Qty On Hand', 'Unit Of Measure'],
+                'header': ['Name',  'Lot No#', 'Expiration Date','Ordered Qty', 'Unit Of Measure'],
                 'columnProps':['name',  'move_ids.move_line_ids.lot_id.name', 'move_ids.move_line_ids.lot_id.use_date',
-                           'product_id.qty_available',  'product_id.product_tmpl_id.uom_id.name'],
+                           'move_ids.move_line_ids.ordered_qty',  'product_id.product_tmpl_id.uom_id.name'],
                 'customer_name':self.check_isAvailable(sale.partner_id.display_name),
                 'shipping_address':shipping_address,
                 'customer_po_no': self.check_isAvailable(sale.client_order_ref),
@@ -179,6 +179,7 @@ class InventoryNotificationScheduler(models.TransientModel):
 
 
     def process_notification_for_in_stock_report(self):
+        _logger.info("process_notification_for_in_stock_report called....")
         today_date = date.today()
         today_start = fields.Date.to_string(today_date)
         days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
@@ -187,16 +188,15 @@ class InventoryNotificationScheduler(models.TransientModel):
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
         _logger.info("weekday: %r", weekday)
         users = self.env['res.partner'].search([(weekday,'=',True),('customer','=',True),('start_date','<=',today_start),('end_date','>=',today_start)])
-        products= self.env['product.product'].search([('product_tmpl_id.type','=','product')])
+        products= self.env['product.product'].search([('product_tmpl_id.type','=','product'),('qty_available','>',0)])
         if products:
-            products._compute_max_inventory_level()
             for user in users:
                 _logger.info("user:%r ",user)
                 subject = "In Stock Product"
                 description = "Please find below list of all the product whose are in stock in SPS Inventory."
                 header = ['Manufacturer', 'Sku Reference', 'Product Code', 'Product Name', 'Qty In Stock',
                           'Product Price', 'Min Expiration Date', 'Max Expiration Date']
-                columnProps = ['manufacturer', 'sku_reference', 'product_code', 'product_name', 'qty_in_stock',
+                columnProps = ['manufacturer', 'sku_reference', 'product_code', 'product_name', 'qty_available',
                                'product_price_symbol', 'minExDate', 'maxExDate']
                 self.process_common_email_notification_template(user, super_user, subject,
                                                             description, products, header, columnProps)
