@@ -68,7 +68,7 @@
                         </td>
                         <td class="text-right">
                             <span t-field="order_line.product_qty"/>
-                            <span t-field="order_line.product_uom" groups="product.group_uom"/>
+                          <!--  <span t-field="order_line.product_uom" groups="product.group_uom"/>-->
                         </td>
                         <td class="text-right">
                             <span t-field="order_line.product_offer_price"/>
@@ -77,16 +77,22 @@
                             <span t-field="order_line.price_subtotal" />
                         </td>
                            <td class="text-right">
-                            <span t-field="o.amount_tax" />
+                            <span t-field="order_line.price_tax" />
                         </td>
                            <td class="text-right">
-                            <span t-field="o.amount_total" />
+                            <span t-field="order_line.product_offer_price" />
                         </td>
+                    </tr>
+                    <tr>
+                         <td>
+                          <field name="o.amount_total" widget="monetary"  string="Total Offer Price" />
+                         </td>
                     </tr>
                 </tbody>
             </table>
 
             <div class="oe_structure"/>
+              
         </div>
     </t>
 </template>

@@ -15,8 +15,8 @@
           <field name="state" invisible="1"   />
           <field name="acq_user_id" string='Acq Manager' attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"/>
           <field name="partner_id" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}" string ="Facility"/>
-          <field name="offer_amount" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"  widget="monetary"/>
-          <field name="retail_amt" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"  widget="monetary"/>
+          <field name="amount_total" attrs="{'invisible':[('state', 'not in', ('purchase','cancel'))]}"  widget="monetary" string ="Total Offer"/>
+          <field name="rt_price_total_amt" attrs="{'invisible':[('state', 'not in', ('purchase','cancel'))]}"  widget="monetary" string ="Total Retail"/>
           <field name="create_date" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}" />
           <field name="shipping_label_issued" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}" />
           <field name="shipping_date" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}" />
@@ -128,7 +128,13 @@
                                                          <field name="product_offer_price"   />
                                                          <field name="product_retail"   />
                                                          <field name="price_subtotal" string="Total Offer Price" />
-
+                                                <field name="taxes_id" widget="many2many_tags" domain="[('type_tax_use','=','purchase')]" context="{'default_type_tax_use': 'purchase'}" options="{'no_create': True}"/>
+                                      <!--    <field name="price_tax"  />
+                                        <field name="price_total"   widget="monetary" />
+                                        <field name="price_subtotal"   widget="monetary" />
+                                     <field name="rt_price_tax"  />
+                                        <field name="rt_price_total"   widget="monetary" />
+                                        <field name="rt_price_subtotal"   widget="monetary" />-->
                                                          <field name="margin" />
                                                          <field name="multiplier"   />
                                                          <field name="date_planned"  invisible="1"  />
@@ -138,10 +144,20 @@
                                 </tree>
 
                             </field>
+                           <group>
                              <group class="oe_subtotal_footer oe_right">
-                                <field name="retail_amt" widget="monetary"  />
-                                <field name="offer_amount"  widget="monetary"/>
+
+                                 <field name="amount_untaxed" widget="monetary"  string="Untaxed Offer Price"/>
+                                  <field name="amount_tax"   string="Tax" />
+                                    <field name="amount_total" widget="monetary"  string="Total Offer Price" />
+
                             </group>
+                                  <group class="oe_subtotal_footer oe_right">
+                                    <field name="rt_price_subtotal_amt" widget="monetary"  string="Untaxed Retail Price" />
+                                      <field name="rt_price_tax_amt" string="Tax" />
+                                   <field name="rt_price_total_amt" widget="monetary"  string="Total Retail Price" />
+                                    </group>
+                             </group>
                             <field name="notes" class="oe_inline" placeholder="Define your terms and conditions ..."/>
                             <div class="oe_clear"/>
                         </page>
