@@ -98,7 +98,7 @@ class InventoryNotificationScheduler(models.TransientModel):
 
 
     def process_hold_off_customer(self,partner_id):
-        sales = self.env['sale.order'].search([('state', '=', 'sale'),('partner_id', '=', partner_id)])
+        sales = self.env['sale.order'].search([('state', '=', 'sale'),('partner_id', '=', partner_id.id)])
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
         users = self.env['res.users'].search([])
         sales_order=[]
@@ -119,18 +119,19 @@ class InventoryNotificationScheduler(models.TransientModel):
                     'shipping_address':shipping_address
                 }
                 sales_order.append(sale_order)
-        vals = {
-            'sale_order_lines': sales_order,
-            'subject': "shipment need to release for "+sale.partner_id.display_name  ,
-            'description': "Please release the shipment of customer: " + sale.partner_id.display_name ,
-            'header': ['Sales order', 'Shipping Address'],
-            'columnProps': ['sales_order', 'shipping_address'],
-        }
-        for user in users:
-            has_group = user.has_group('stock.group_stock_manager')
-            if has_group:
-                self.process_common_email_notification_template(super_user, user, vals['subject'], vals['description'],  vals['sale_order_lines'],  vals['header'],
-                                                            vals['columnProps'])
+        if sales:
+            vals = {
+                'sale_order_lines': sales_order,
+                'subject': "shipment need to release for "+partner_id.display_name  ,
+                'description': "Please release the shipment of customer: " + partner_id.display_name ,
+                'header': ['Sales order', 'Shipping Address'],
+                'columnProps': ['sales_order', 'shipping_address'],
+            }
+            for user in users:
+                has_group = user.has_group('stock.group_stock_manager')
+                if has_group:
+                    self.process_common_email_notification_template(super_user, user, vals['subject'], vals['description'],  vals['sale_order_lines'],  vals['header'],
+                                                                vals['columnProps'])
 
     def process_notification_for_product_status(self):
         products=self.env['product.product'].search([('product_tmpl_id.type','=','product')])
@@ -276,7 +277,11 @@ class InventoryNotificationScheduler(models.TransientModel):
                         column = product[lst[0]]
                         if isinstance(lst, list):
                             for col in range(1, len(lst)):
-                                column = column[lst[col]]
+                                pri_col=""
+                                for cols in column:
+                                  cols = cols[lst[col]]
+                                  pri_col=cols
+                                column=pri_col
                         else:
                             column = column[lst]
                 product_dict[column_name] = column
@@ -375,7 +380,10 @@ class InventoryNotificationScheduler(models.TransientModel):
                          'descrption': vals['description']}
         html_file = self.env['inventory.notification.html'].search([])
         finalHTML = html_file.process_common_html(vals['subject'], vals['description'], vals['product_list'], vals['headers'], vals['coln_name'])
-        template_id = vals['template'].with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True, )
+        try:
+         template_id = vals['template'].with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True, )
+        except:
+            vals['template'].with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True)
         mail = self.env["mail.thread"]
         mail.message_post(
             body=finalHTML,
