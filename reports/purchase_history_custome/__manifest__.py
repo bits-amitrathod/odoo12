@@ -28,10 +28,6 @@
         'reports/todo_task_report.xml',
         'views/views.xml'
     ],
-    # only loaded in demonstration mode
-    'demo': [
-        'demo/demo.xml',
-    ],
    'installable': True,
    'auto_install': True,
    'application': True
