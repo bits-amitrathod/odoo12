@@ -230,7 +230,7 @@ class PrioritizationEngine(models.TransientModel):
             " INNER JOIN public.sale_order saleorder ON saleorder.id = saleorderline.order_id "
             " INNER JOIN public.crm_team crmteam ON crmteam.id = saleorder.team_id"
             " WHERE saleorderline.order_partner_id IN (SELECT distinct unnest(array[id, parent_id]) from public.res_partner WHERE parent_id = " +
-            str(prioritization_engine_request['customer_id']) + ") " +
+            str(prioritization_engine_request['customer_id']) + " or id = " + str(prioritization_engine_request['customer_id']) + " ) " +
             " and saleorderline.product_id = " + str(prioritization_engine_request['product_id']) +
             " and ((saleorder.state in ('engine','sent','cancel')) or (saleorder.state in ('sent','sale') and saleorderline.product_uom_qty = 0))" +
             " and crmteam.team_type = 'engine'")
