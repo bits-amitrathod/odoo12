@@ -31,6 +31,9 @@ class VendorOffer(models.Model):
     rt_price_subtotal_amt = fields.Monetary(string='Subtotal', compute='_amount_tot_all')
     rt_price_total_amt = fields.Monetary( string='Total', compute='_amount_tot_all')
     rt_price_tax_amt = fields.Float(string='Tax', compute='_amount_tot_all')
+    show_validate = fields.Boolean(
+        compute='_compute_show_validate',
+        help='Technical field used to compute whether the validate should be shown.')
 
     offer_type = fields.Selection([
         ('cash', 'Cash'),
@@ -77,6 +80,14 @@ class VendorOffer(models.Model):
         ('cancel', 'Cancelled')
     ], string='Status', readonly=True, index=True, copy=False, default='draft', track_visibility='onchange')
 
+    @api.multi
+    def _compute_show_validate(self):
+        multi = self.env['stock.picking'].search([('purchase_id', '=', self.id)])
+        if len(multi) == 1 and self.picking_count == 1:
+            self.show_validate = multi.show_validate
+        elif self.picking_count > 1:
+            self.show_validate = True
+
     def action_validate(self):
         multi = self.env['stock.picking'].search([('purchase_id', '=', self.id)])
         if len(multi) == 1 and self.picking_count ==1:
@@ -88,11 +99,6 @@ class VendorOffer(models.Model):
         multi = self.env['stock.picking'].search([('purchase_id', '=', self.id)])
         if len(multi) >= 1:
             return multi.action_assign()
-
-    def _compute_show_validate(self):
-        multi = self.env['stock.picking'].search([('purchase_id', '=', self.id)])
-        if len(multi)>=1:
-            multi._compute_show_validate()
 
     @api.multi
     def do_unreserve(self):
