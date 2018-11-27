@@ -50,12 +50,12 @@ class PricingRule(models.Model):
                     RESTART IDENTITY;
                 """
         self._cr.execute(sql_query)
-        shipping_address = self.check_isAvailable(sale.partner_id.street) + " " + self.check_isAvailable(
-            sale.partner_id.street2) + " " \
-                           + self.check_isAvailable(sale.partner_id.zip) + " " + self.check_isAvailable(
-            sale.partner_id.city) + " " + \
-                           self.check_isAvailable(sale.partner_id.state_id.name) + " " + self.check_isAvailable(
-            sale.partner_id.country_id.name)
+        # shipping_address = self.check_isAvailable(sale.partner_id.street) + " " + self.check_isAvailable(
+        #     sale.partner_id.street2) + " " \
+        #                    + self.check_isAvailable(sale.partner_id.zip) + " " + self.check_isAvailable(
+        #     sale.partner_id.city) + " " + \
+        #                    self.check_isAvailable(sale.partner_id.state_id.name) + " " + self.check_isAvailable(
+        #     sale.partner_id.country_id.name)
         select_query = """ SELECT sp.id,pr.shipping_terms, concat(pr.street ,' ',pr.street2,' ',pr.zip,' ',pr.city,' ',st.name,' ',co.name) as address ,
           (select concat(spr.street ,' ',spr.street2,' ',spr.zip,' ',spr.city,' ',sst.name,' ',co.name) shipment_address from res_partner spr LEFT JOIN res_country_state sst ON sst.id=spr.state_id 
           LEFT JOIN res_country sc ON sc.id=spr.country_id where spr.parent_id=pr.id and spr.type='delivery' ),
@@ -71,11 +71,11 @@ class PricingRule(models.Model):
                   LEFT JOIN res_country co ON co.id=pr.country_id
                   where sp.state='done'  """
 
-        if not s_date is None:
-            select_query = select_query + " and sml.write_date >='" + str(s_date) + "'"
-
-        if not e_date is None:
-            select_query = select_query + " and sml.write_date <='" + str(e_date) + "'"
+        # if not s_date is None:
+        #     select_query = select_query + " and sml.write_date >='" + str(s_date) + "'"
+        #
+        # if not e_date is None:
+        #     select_query = select_query + " and sml.write_date <='" + str(e_date) + "'"
 
 
         insert_query="""INSERT INTO res_stock_packing_list(customer_name, product_code, product_name, cost,currency_id,currency_symbol) values """
