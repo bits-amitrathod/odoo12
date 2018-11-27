@@ -36,7 +36,7 @@
             <field name="inherit_id" ref="vendor_offer.view_vendor_offer_form"/>
             <field name="arch" type="xml">
                 <xpath expr="/form/header/button[1]" position="before">
-                    <button name="action_import_order_lines" string="Import" type="object"  class="btn-primary"/>
+                    <button name="action_import_order_lines" string="Import" type="object"  class="btn-primary" attrs="{'invisible':[('state', 'in', ('purchase'))]}" />
                 </xpath>
             </field>
         </record>
