@@ -197,7 +197,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                           'Product Price', 'Min Expiration Date', 'Max Expiration Date']
                 columnProps = ['manufacturer', 'sku_reference', 'product_code', 'product_name', 'qty_available',
                                'product_price_symbol', 'minExDate', 'maxExDate']
-                self.process_common_email_notification_template(user, super_user, subject,
+                self.process_common_email_notification_template(super_user, user,  subject,
                                                             description, products, header, columnProps)
 
 
