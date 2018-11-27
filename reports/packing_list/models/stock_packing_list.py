@@ -30,9 +30,12 @@ class PricingRule(models.Model):
     cost = fields.Float(string="Unit Price")
     product_code = fields.Char(string="Product Code")
     product_name = fields.Char(string="Name")
-    currency_id = fields.Many2one("res.currency", string="Currency",
-                                  readonly=True)
+    currency_id = fields.Many2one("res.currency", string="Currency",readonly=True)
     currency_symbol=fields.Char(string="Currency Symbol")
+    item_description=fields.Char(string="Item Description")
+    qty_ordered=fields.Char(string="Qty Ordered")
+    qty_shipped = fields.Char(string="Qty Ordered")
+    qty_remaining=fields.Char(string="Qty Remainig")
 
     def _compute_so_allocation(self):
         self.so_allocation = True
@@ -43,11 +46,39 @@ class PricingRule(models.Model):
 
     def init_table(self):
         sql_query = """ 
-                    TRUNCATE TABLE "res_pricing_rule"
+                    TRUNCATE TABLE "res_stock_packing_list"
                     RESTART IDENTITY;
                 """
         self._cr.execute(sql_query)
-        insert_query="""INSERT INTO res_pricing_rule(customer_name, product_code, product_name, cost,currency_id,currency_symbol) values """
+        # shipping_address = self.check_isAvailable(sale.partner_id.street) + " " + self.check_isAvailable(
+        #     sale.partner_id.street2) + " " \
+        #                    + self.check_isAvailable(sale.partner_id.zip) + " " + self.check_isAvailable(
+        #     sale.partner_id.city) + " " + \
+        #                    self.check_isAvailable(sale.partner_id.state_id.name) + " " + self.check_isAvailable(
+        #     sale.partner_id.country_id.name)
+        select_query = """ SELECT sp.id,pr.shipping_terms, concat(pr.street ,' ',pr.street2,' ',pr.zip,' ',pr.city,' ',st.name,' ',co.name) as address ,
+          (select concat(spr.street ,' ',spr.street2,' ',spr.zip,' ',spr.city,' ',sst.name,' ',co.name) shipment_address from res_partner spr LEFT JOIN res_country_state sst ON sst.id=spr.state_id 
+          LEFT JOIN res_country sc ON sc.id=spr.country_id where spr.parent_id=pr.id and spr.type='delivery' ),
+           (select concat(spr.street ,' ',spr.street2,' ',spr.zip,' ',spr.city,' ',sst.name,' ',co.name) bill_address from res_partner spr LEFT JOIN res_country_state sst ON sst.id=spr.state_id 
+          LEFT JOIN res_country sc ON sc.id=spr.country_id where spr.parent_id=pr.id and spr.type='invoice' ) 
+        """
+
+
+
+        select_query = select_query + """from  stock_picking sp           
+                  LEFT JOIN res_partner pr ON pr.id=sp.partner_id 
+                  LEFT JOIN res_country_state st ON st.id=pr.state_id 
+                  LEFT JOIN res_country co ON co.id=pr.country_id
+                  where sp.state='done'  """
+
+        # if not s_date is None:
+        #     select_query = select_query + " and sml.write_date >='" + str(s_date) + "'"
+        #
+        # if not e_date is None:
+        #     select_query = select_query + " and sml.write_date <='" + str(e_date) + "'"
+
+
+        insert_query="""INSERT INTO res_stock_packing_list(customer_name, product_code, product_name, cost,currency_id,currency_symbol) values """
         partner=self.env.context.get('partner_id')
         products = self.env.context.get('product_id')
         if partner:

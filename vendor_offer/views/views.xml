@@ -12,8 +12,8 @@
           <field name="state" invisible="1"   />
           <field name="acq_user_id" string='Acq Manager' attrs="{'invisible':[('state', 'not in', ('ven_draft','ven_sent'))]}"/>
           <field name="partner_id" attrs="{'invisible':[('state', 'not in', ('ven_draft','ven_sent'))]}" string ="Facility Name"/>
-          <field name="offer_amount" attrs="{'invisible':[('state', 'not in', ('ven_draft','ven_sent'))]}"  widget="monetary"/>
-          <field name="retail_amt" attrs="{'invisible':[('state', 'not in', ('ven_draft','ven_sent'))]}"  widget="monetary"/>
+          <field name="amount_total" attrs="{'invisible':[('state', 'not in', ('ven_draft','ven_sent'))]}"  widget="monetary" string ="Total Offer"/>
+          <field name="rt_price_total_amt" attrs="{'invisible':[('state', 'not in', ('ven_draft','ven_sent'))]}"  widget="monetary" string ="Total Retail"/>
           <field name="date_offered" attrs="{'invisible':[('state', 'not in', ('ven_draft','ven_sent'))]}"/>
           <field name="revision" attrs="{'invisible':[('state', 'not in', ('ven_draft','ven_sent'))]}"/>
           <field name="currency_id" invisible="1"/>
@@ -92,7 +92,7 @@
             <field name="inherit_id" ref="purchase.purchase_form_action"></field>
             <field name="view_mode">tree,kanban,form,pivot,graph,calendar</field>
             <field name="context">{'search_default_todo':1, 'show_purchase': True}</field>
-            <field name="domain">[('state','not in',('draft','sent','bid', 'confirmed','ven_draft'))]</field>
+            <field name="domain">[('state','not in',('draft','sent','bid', 'confirmed','ven_draft','ven_sent'))]</field>
             <field name="search_view_id" ref="purchase.view_purchase_order_filter"/>
             <field name="help" type="html">
               <p class="oe_view_nocontent_create">
@@ -115,8 +115,8 @@
             <field name="arch" type="xml">
                 <form string="Vendor Offer" class="o_sale_order">
                 <header>
-                    <button name="action_send_offer_email" string="Send Offer by Email" type="object" context="{'send_rfq':True}" class="btn-primary"/>
-                    <button name="action_print_vendor_offer" string="Print Vendor Offer" type="object"  class="btn-primary"/>
+                    <button name="action_send_offer_email" string="Send Offer by Email" type="object" context="{'send_rfq':True}" class="btn-primary" attrs="{'invisible':[('state', 'in', ('purchase'))]}" />
+                    <button name="action_print_vendor_offer" string="Print Vendor Offer" type="object"  class="btn-primary" attrs="{'invisible':[('state', 'in', ('purchase'))]}" />
                     <button name="action_button_confirm" states="ven_draft,ven_sent" string="Confirm Order" type="object"  />
                     <button name="action_cancel_vendor_offer"  states="ven_draft" string="Cancel" type="object"  />
                      <field name="status" widget="statusbar" statusbar_visible="ven_draft,ven_sent,purchase" readonly="1"  />
@@ -266,6 +266,9 @@
                                 <group  >
                                         <field name="date_planned" />
                                         <field name="shipping_label_issued" />
+                                     <field name="invoice_status" />
+
+                                    <field name="payment_term_id" options="{'no_open': True, 'no_create': True}" attrs="{'readonly': ['|', ('invoice_status','=', 'invoiced'), ('state', '=', 'done')]}"/>
                                 </group>
                                  <group  >
                                         <field name="shipping_date" />
@@ -298,7 +301,8 @@
             <field name="inherit_id" ref="purchase.purchase_order_form"></field>
             <field name="arch" type="xml">
                 <button name="button_unlock" position="after">
-                     <button name="action_validate" string="Validate" groups="stock.group_stock_user" type="object" class="oe_highlight" states="purchase"/>
+                     <field name="show_validate" invisible="1"/>
+                     <button name="action_validate"  attrs="{'invisible': ['|', ('show_validate', '=', False),('state', 'not in', 'purchase')]}"  string="Validate" groups="stock.group_stock_user" type="object" class="oe_highlight"/>
                 </button>
                 <xpath expr="//group/group/field[@name='origin']" position="replace">
                      <field name="origin" string="Sale Order#"/>

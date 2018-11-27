@@ -20,12 +20,12 @@ class TrendingReportListPopUp(models.TransientModel):
 
     def open_table(self):
         tree_view_id = self.env.ref('packing_list.view_inv_all_packing_list_tree').id
-        form_view_id = self.env.ref('packing_list.inv_sale_order_form_view')
+
         margins_context = {'start_date': self.start_date,'end_date':self.end_date}
         group_by_domain = ['name']
-        x_res_model = 'res.stock_packing_list'
+        x_res_model = 'stock.picking'
 
-        self.env[x_res_model].with_context(margins_context).delete_and_create()
+        
 
         action = {
             'type': 'ir.actions.act_window',
@@ -33,6 +33,7 @@ class TrendingReportListPopUp(models.TransientModel):
             'views': [(tree_view_id, 'tree')],
             'name': _('Inventory Packing List'),
             'context': {'group_by': group_by_domain, 'order_by': group_by_domain},
+            'domain':[('write_date','&gt;=',self.start_date),('date','&lt;=',self.end_date)],
             'res_model': x_res_model,
             'target': 'main'
         }

@@ -18,13 +18,12 @@ class comparebymonth():
                 #print(r1.product_id.id)
                 if r1.product_id.id in dict:
 
-                    # log.info(" current_month Key available in dictionary")
                     data = dict[r1.product_id.id]
                     data.current_month_total_qty = data.current_month_total_qty + r1.product_uom_qty
                     data.current_month_total_amount = data.current_month_total_amount + r1.price_subtotal
                     dict[r1.product_id.id] = data
                 else:
-                    # log.info(" current_month not Key available in dictionary")
+
                     object = comparebymonth()
                     object.current_month_total_qty = r1.product_uom_qty
                     object.current_month_total_amount = r1.price_subtotal

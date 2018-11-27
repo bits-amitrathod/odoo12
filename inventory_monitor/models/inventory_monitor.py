@@ -34,7 +34,7 @@ class ProductTemplate(models.Model):
             sale_quant =0
             purchase_qty=0
             max_inventory = 0
-            products = self.env['product.product'].search([('product_tmpl_id', '=', ml.id)])
+            products = self.env['product.product'].search([('product_tmpl_id', '=', ml.id),('qty_available','>',0)])
             for product_id in products:
                 self.env.cr.execute(
                     "SELECT sum(sml.product_uom_qty) FROM sale_order_line AS sol LEFT JOIN stock_picking AS sp ON sp.sale_id=sol.id LEFT JOIN stock_move_line AS sml ON sml.picking_id=sp.id WHERE sml.product_id =%s AND sml.create_date>=%s",
@@ -50,13 +50,10 @@ class ProductTemplate(models.Model):
                 pur_qty=self.env.cr.fetchone()
                 if pur_qty[0] is not None:
                     purchase_qty = int(purchase_qty) + int(pur_qty[0])
+                quantity = int(product_id.qty_available) + int(quantity)
             ml.qty_on_order= str(purchase_qty)
-            for location_id in location_ids:
-                for product_id in products:
-                    self.env.cr.execute("SELECT sum(quantity) FROM stock_quant WHERE lot_id>%s AND location_id=%s AND product_id=%s AND quantity>%s",(0,location_id.id,product_id.id,0))
-                    total_quant = self.env.cr.fetchone()
-                    if total_quant[0] is not None:
-                        quantity = int(total_quant[0]) + int(quantity)
+
+
             ml.qty_in_stock = str(int(quantity))
             if max_inventory>0:
                 max_inventory_percent = (quantity/int(max_inventory))*100
