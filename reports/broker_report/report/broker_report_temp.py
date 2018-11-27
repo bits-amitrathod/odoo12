@@ -59,8 +59,7 @@ class ReportBrokerReport(models.AbstractModel):
          else:
              apprisal_list = self.env['purchase.order'].search([('state', '=', 'purchase'), ('status', '=', 'purchase'), ('vendor_offer_data', '=', True) ])
 
-         print('= ==================================== =================')
-         log.info('= ==================================== =================')
+
          log.info(apprisal_list)
          if(len(apprisal_list)>0):
              apprisal_list_rtl_val = apprisal_list_tot_val = apprisal_list_mar_val = apprisal_list[0]
@@ -79,39 +78,39 @@ class ReportBrokerReport(models.AbstractModel):
 
              m40_margin_retailamount = 0
              m40_margin_offeramount = 0
-             log.info('= ==================================== =================')
+
 
              for order in apprisal_list:
-                 log.info(order.retail_amt)
-                 apprisal_list_rtl_val.total_retail_broker = str(float(apprisal_list_rtl_val.total_retail_broker) + float(order.retail_amt))
+
+                 apprisal_list_rtl_val.total_retail_broker = str(float(apprisal_list_rtl_val.total_retail_broker) + float(order.rt_price_total_amt))
                  apprisal_list_rtl_val.bonus_eligible = apprisal_list_rtl_val.bonus_eligible + order.bonus_eligible
                  apprisal_list_rtl_val.hospital_total = apprisal_list_rtl_val.hospital_total + order.hospital_total
                  apprisal_list_rtl_val.broker_total = apprisal_list_rtl_val.broker_total + order.broker_total
                  apprisal_list_rtl_val.broker_greater_40_total = apprisal_list_rtl_val.broker_greater_40_total + order.broker_greater_40_total
                  apprisal_list_rtl_val.broker_less_40_total = apprisal_list_rtl_val.broker_less_40_total + order.broker_less_40_total
                  apprisal_list_rtl_val.broker_desc="RETAIL $ VALUE"
-                 tot_offer=tot_offer+order.offer_amount
+                 tot_offer=tot_offer+order.amount_total
 
-                 if (order.retail_amt != 0):
-                     if((abs(float(((order.offer_amount)/float(order.retail_amt))-1)) < 0.4) or  ( (order.partner_id.is_broker) and (abs(float(order.offer_amount/order.retail_amt)) < 0.52) or (abs(float(order.offer_amount/order.retail_amt)) > 0.52))):
-                        margin_retailamount = nomargin_retailamount + order.retail_amt
-                        margin_offeramount = nomargin_retailamount + order.offer_amount
+                 if (order.rt_price_total_amt != 0):
+                     if((abs(float(((order.offer_amount)/float(order.retail_amt))-1)) < 0.4) or  ( (order.partner_id.is_broker) and (abs(float(order.amount_total/order.rt_price_total_amt)) < 0.52) or (abs(float(order.amount_total/order.rt_price_total_amt)) > 0.52))):
+                        margin_retailamount = nomargin_retailamount + order.rt_price_total_amt
+                        margin_offeramount = nomargin_retailamount + order.amount_total
                      else:
-                        nomargin_retailamount=nomargin_retailamount+ order.retail_amt
-                        nomargin_offeramount = nomargin_retailamount + order.offer_amount
+                        nomargin_retailamount=nomargin_retailamount+ order.rt_price_total_amt
+                        nomargin_offeramount = nomargin_retailamount + order.amount_total
 
-                 if (order.retail_amt != 0):
-                     if (order.partner_id.is_broker and ((abs(float(order.offer_amount / order.retail_amt)) < 0.52) or (abs(float(order.offer_amount / order.retail_amt)) > 0.52))):
-                         t1t2_margin_retailamount = nomargin_retailamount + order.retail_amt
-                         tit2_margin_offeramount = nomargin_retailamount + order.offer_amount
-                 if (order.retail_amt != 0):
-                     if (abs(float(((order.offer_amount) / float(order.retail_amt)) - 1)) < 0.4):
-                         m40_margin_retailamount = nomargin_retailamount + order.retail_amt
-                         m40_margin_offeramount = nomargin_retailamount + order.offer_amount
+                 if (order.rt_price_total_amt != 0):
+                     if (order.partner_id.is_broker and ((abs(float(order.amount_total / order.rt_price_total_amt)) < 0.52) or (abs(float(order.amount_total / order.rt_price_total_amt)) > 0.52))):
+                         t1t2_margin_retailamount = nomargin_retailamount + order.rt_price_total_amt
+                         tit2_margin_offeramount = nomargin_retailamount + order.amount_total
+                 if (order.rt_price_total_amt != 0):
+                     if (abs(float(((order.amount_total) / float(order.retail_amt)) - 1)) < 0.4):
+                         m40_margin_retailamount = nomargin_retailamount + order.rt_price_total_amt
+                         m40_margin_offeramount = nomargin_retailamount + order.amount_total
 
-                 if (order.retail_amt != 0):
-                    if (abs(float(((order.offer_amount) / float(order.retail_amt)) - 1)) < 0.4):
-                         margin40tot=float(margin40tot)+order.retail_amt
+                 if (order.rt_price_total_amt != 0):
+                    if (abs(float(((order.amount_total) / float(order.rt_price_total_amt)) - 1)) < 0.4):
+                         margin40tot=float(margin40tot)+order.rt_price_total_amt
 
              apprisal_list_rtl_val.bonus_eligible=apprisal_list_rtl_val.total_retail_broker-margin40tot
              apprisal_list_rtl_val.hospital_total=float(apprisal_list_rtl_val.total_retail_broker) - float(margin_retailamount)
