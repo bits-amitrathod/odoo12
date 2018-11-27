@@ -35,7 +35,7 @@
               <div><p><strong>OFFER PRICE CONDITIONAL UPON</strong>:</p></div>
               <div><p>Speedy Delivery to Buyer within 5 days  Please included this purchase offer inside each shipment</p></div>
               <div><p>Quality Control Inspection within 10 days upon receipt of goods</p></div>
-              <div><p><strong>PREFERRED SETTLEMENT PERIOD:</strong> 30 days from completion of SPS quality control inspection</p></div>
+              <div><p><strong>PREFERRED SETTLEMENT PERIOD:</strong> <span style="font-weight:600;font-size:16px !important;" t-field="o.payment_term_id"/> after completion of SPS quality control inspection</p></div>
               <div><p><strong>SPS RESERVES THE RIGHT TO ADJUST THIS PURCHASE OFFER IN THE EVENT THAT SPSS QUALITY CONTROL PROCESS INDENTIFIES ANY DAMAGES OR DISCREPENCIES WITH THE PRODUCT FURNISHED.SELLER WILL BE NOTIFIED IMMEDIATELY IF AND WHEN THIS OFFER IS ADJUSTED.</strong></p></div>
               <div><p><strong>ALL ITEMS MUST BE IN THE ORIGINAL MANUFACTURERS PACKAGING AND NOT REPROCESSED. NO SALES SAMPLES OR CPT PRODUCTS.</strong></p></div>
               <div><p><strong>YOU WARRANT THAT YOU ARE THE LAWFUL OWNER OF THE AFOREMENTIONED GOODS, THAT THEY ARE FREE FROM ALL ENCUMBRANCES, AND THAT WE HAVE THE RIGHT TO SELL THESE GOODS. SELLER BINDS ITSELF, ITS SUCCESSORS AND ASSIGNS, TO WARRANT AND DEFEND SPS TITLE TO THESE GOODS AGAINST CLAIMS AND DEMANDS OF ALL PERSONS.</strong></p></div>
