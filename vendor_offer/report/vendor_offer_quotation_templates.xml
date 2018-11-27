@@ -29,21 +29,22 @@
                 </div>
             </div>
             <h2 style="color:red;font-size:16px;" align="center" ><strong>***CONFIDENTIAL***</strong></h2><hr></hr>
-            <div><p><span style="font-weight:600;font-size:16px !important;">OFFER PRICE: </span><span style="font-weight:600;font-size:18px !important;" t-field="o.offer_amount"/> <span style="font-weight:600;font-size:18px!important;">Cash Back</span></p></div>
+            <div><p><span style="font-weight:600;font-size:16px !important;">OFFER PRICE  : </span><span style="font-weight:600;font-size:18px !important;" t-field="o.amount_total"/> <span style="font-weight:600;font-size:18px!important;">Cash Back</span></p></div>
             <div><p>This offer must be accepted within 3 business days of delivery date unless otherwise noted.</p></div>
               <div><p>Once the offer is accepted, the offer price is contingent upon requirements detailed below.</p></div>
               <div><p><strong>OFFER PRICE CONDITIONAL UPON</strong>:</p></div>
               <div><p>Speedy Delivery to Buyer within 5 days  Please included this purchase offer inside each shipment</p></div>
               <div><p>Quality Control Inspection within 10 days upon receipt of goods</p></div>
-              <div><p><strong>PREFERRED SETTLEMENT PERIOD:</strong> 30 days from completion of SPS quality control inspection</p></div>
+              <div><p><strong>PREFERRED SETTLEMENT PERIOD:</strong> <span style="font-weight:600;font-size:16px !important;" t-field="o.payment_term_id"/> after completion of SPS quality control inspection</p></div>
               <div><p><strong>SPS RESERVES THE RIGHT TO ADJUST THIS PURCHASE OFFER IN THE EVENT THAT SPSS QUALITY CONTROL PROCESS INDENTIFIES ANY DAMAGES OR DISCREPENCIES WITH THE PRODUCT FURNISHED.SELLER WILL BE NOTIFIED IMMEDIATELY IF AND WHEN THIS OFFER IS ADJUSTED.</strong></p></div>
               <div><p><strong>ALL ITEMS MUST BE IN THE ORIGINAL MANUFACTURERS PACKAGING AND NOT REPROCESSED. NO SALES SAMPLES OR CPT PRODUCTS.</strong></p></div>
               <div><p><strong>YOU WARRANT THAT YOU ARE THE LAWFUL OWNER OF THE AFOREMENTIONED GOODS, THAT THEY ARE FREE FROM ALL ENCUMBRANCES, AND THAT WE HAVE THE RIGHT TO SELL THESE GOODS. SELLER BINDS ITSELF, ITS SUCCESSORS AND ASSIGNS, TO WARRANT AND DEFEND SPS TITLE TO THESE GOODS AGAINST CLAIMS AND DEMANDS OF ALL PERSONS.</strong></p></div>
               <div><p><strong><br /> </strong><strong></strong>By checking the box to the left, you agree that: (1) you are a licensed facility with legitimate title ownership of the merchandise being sold; (2) you have quality system procedures to ensure the maintenance of safety, storage and distribution is properly being enforced; and (3) you are willing to demonstrate this to SPS upon request.</p></div>
-              <div><p>PRINT NAME:<strong><span t-field="o.partner_id.name"/> </strong></p></div>
+              <div><p>PRINT NAME :<strong><span t-field="o.partner_id.name"/> </strong></p></div>
             <div><p>SELLER SIGNATURE:  __________________________________<span style="float:right;position:relative;right:119px;">DATE:</span></p></div>
               <div><p>PRINT NAME:<strong><span t-field="o.name"/> </strong></p></div>
-            <div><p>BUYER SIGNATURE: <u>________________________________</u>_<span style="float:right;position:relative;right:50px;">DATE: 1/02/1234</span></p></div>
+            <div><p>BUYER SIGNATURE: <u>________________________________</u> </p></div>
+                <div><span style="">DATE : </span> <span style="font-weight:600;font-size:16px !important;" t-field="o.create_date"/>  </div>
               <h2><p>SURGICAL SURPLUS PURCHASE OFFER <span t-field="o.name"/></p></h2>
               <table class="table table-condensed">
                 <thead>
@@ -68,7 +69,7 @@
                         </td>
                         <td class="text-right">
                             <span t-field="order_line.product_qty"/>
-                            <span t-field="order_line.product_uom" groups="product.group_uom"/>
+                          <!--  <span t-field="order_line.product_uom" groups="product.group_uom"/>-->
                         </td>
                         <td class="text-right">
                             <span t-field="order_line.product_offer_price"/>
@@ -77,16 +78,25 @@
                             <span t-field="order_line.price_subtotal" />
                         </td>
                            <td class="text-right">
-                            <span t-field="o.amount_tax" />
+                            <span t-field="order_line.price_tax" />
                         </td>
                            <td class="text-right">
-                            <span t-field="o.amount_total" />
+                            <span t-field="order_line.product_offer_price" />
                         </td>
                     </tr>
+                    <tr>
+                        <td></td> <td></td> <td></td> <td></td> <td></td> <td></td>
+                         <td class="text-right">
+                              <span t-field="o.amount_total" />
+
+                         </td>
+                    </tr>
                 </tbody>
+
             </table>
 
             <div class="oe_structure"/>
+<field name="o.amount_total" widget="monetary"  string="Total Offer Price" />
         </div>
     </t>
 </template>

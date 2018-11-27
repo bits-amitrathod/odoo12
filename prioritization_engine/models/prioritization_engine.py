@@ -316,8 +316,7 @@ class PrioritizationEngine(models.TransientModel):
             picking.write(dict(state='confirmed'))
             _logger.info('picking after   : %r', picking.state)
             sale_order.write(dict(state='engine', confirmation_date=''))
-            sale_order.action_quotation_send()
-            self.env['mail.compose.message'].send_mail_action()
+            sale_order.force_quotation_send()
             _logger.info('sale order id  : %r  sale order state : %r', sale_order.id, sale_order.state)
             sale_order.write(dict(state='sent', confirmation_date=''))
 
@@ -354,8 +353,7 @@ class PrioritizationEngine(models.TransientModel):
                 picking.write(dict(state='confirmed'))
                 _logger.info('picking after   : %r', picking.state)
                 sale_order.write(dict(state='engine', confirmation_date=''))
-                sale_order.action_quotation_send()
-                self.env['mail.compose.message'].send_mail_action()
+                sale_order.force_quotation_send()
                 _logger.info('sale order id  : %r  sale order state : %r', sale_order.id, sale_order.state)
                 sale_order.write(dict(state='sent', confirmation_date=''))
             else:
