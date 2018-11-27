@@ -436,6 +436,10 @@ class VendorOfferProduct(models.Model):
 
             self.product_sales_count_yrs = total_yr
 
+            for order in self:
+                for line in order:
+                    line.qty_in_stock = line.product_id.qty_available
+
             if self.tier.code == False:
                 multiplier_list = self.env['multiplier.multiplier'].search([('code', '=', 'out of scope')])
                 self.multiplier = multiplier_list.id
@@ -475,9 +479,7 @@ class VendorOfferProduct(models.Model):
             self.product_unit_price= math.ceil(round(float(self.list_price) * (float(multiplier_list.retail) / 100),2))
             self.product_offer_price = math.ceil(round(float(self.product_unit_price) * (float(multiplier_list.margin) / 100 + float(possible_competition_list.margin) / 100),2))
             self.product_tier=self.product_id.tier
-            for order in self:
-                for line in order:
-                    line.qty_in_stock=line.product_id.qty_available
+
 
 
     def update_product_expiration_date(self):
