@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report
+                id="action_report_product_activity_report"
+                string="Product Activity Report"
+                model="product.activity.report"
+                report_type="qweb-html"
+                file="product_activity_report.product_activity_report_template"
+                name="product_activity_report.product_activity_report_template"
+        />
+    </data>
+</odoo>
