@@ -29,7 +29,7 @@ class VendorOffer(models.Model):
     # date_planned = fields.Datetime(string='Scheduled Date')
     possible_competition = fields.Many2one('competition.competition', string="Possible Competition")
     rt_price_subtotal_amt = fields.Monetary(string='Subtotal', compute='_amount_tot_all')
-    rt_price_total_amt = fields.Monetary( string='Total', compute='_amount_tot_all')
+    rt_price_total_amt = fields.Monetary( string='Total',compute='_amount_tot_all')
     rt_price_tax_amt = fields.Float(string='Tax', compute='_amount_tot_all')
     show_validate = fields.Boolean(
         compute='_compute_show_validate',
@@ -158,15 +158,16 @@ class VendorOffer(models.Model):
                 line.price_subtotal = line.offer_price
                 # line.price_unit = line.product_offer_price
 
-    @api.onchange('offer_amount', 'retail_amt')
-    def cal_potentail_profit_margin(self):
-        if(self.retail_amt!=0):
-            self.potential_profit_margin = math.ceil(abs(round((((self.offer_amount/self.retail_amt)*100)-100),2)))
 
-    @api.onchange('accelerator','retail_amt')
+    @api.onchange('amount_total', 'rt_price_total_amt')
+    def cal_potentail_profit_margin(self):
+        if(self.rt_price_total_amt!=0):
+            self.potential_profit_margin = math.ceil(abs(round((((self.amount_total/self.rt_price_total_amt)*100)-100),2)))
+
+    @api.onchange('accelerator','rt_price_total_amt')
     def accelerator_onchange(self):
         if self.accelerator == True:
-            self.max = round(float(self.retail_amt)*float(0.65),2)
+            self.max = round(float(self.rt_price_total_amt)*float(0.65),2)
         else:
             self.max = 0
 
@@ -307,7 +308,16 @@ class VendorOffer(models.Model):
             vals['state']= 'ven_draft'
             vals['vendor_offer_data']=True
             vals['revision'] = '0'
+
             record = super(VendorOffer, self).create(vals)
+            if record.accelerator == True:
+                record.max = round(float(record.rt_price_total_amt) * float(0.65), 2)
+            else:
+                record.max = 0
+            if (record.rt_price_total_amt != 0):
+                record.potential_profit_margin = math.ceil(
+                    abs(round((((record.amount_total / record.rt_price_total_amt) * 100) - 100), 2)))
+
             return record
         else:
             record = super(VendorOffer, self).create(vals)
@@ -344,6 +354,9 @@ class VendorOfferProduct(models.Model):
     product_offer_price = fields.Char(string="Offer Price")
     margin = fields.Char(string="Margin")
     possible_competition = fields.Many2one(related='order_id.possible_competition',store=False)
+    accelerator = fields.Boolean(related='order_id.accelerator')
+    max = fields.Char(related='order_id.max')
+    rt_price_total_amt = fields.Monetary(related='order_id.rt_price_total_amt')
     vendor_offer_data = fields.Boolean(related='order_id.vendor_offer_data', store=True)
     product_note = fields.Text(string="Notes")
     product_retail = fields.Char(string="Total Retail Price")
@@ -479,6 +492,10 @@ class VendorOfferProduct(models.Model):
             self.product_unit_price= math.ceil(round(float(self.list_price) * (float(multiplier_list.retail) / 100),2))
             self.product_offer_price = math.ceil(round(float(self.product_unit_price) * (float(multiplier_list.margin) / 100 + float(possible_competition_list.margin) / 100),2))
             self.product_tier=self.product_id.tier
+            # if self.accelerator == True:
+            #     self.max = round(float(self.rt_price_total_amt) * float(0.65), 2)
+            # else:
+            #     self.max = 0
 
 
 
