@@ -48,7 +48,8 @@ odoo.define('website_quote_ext.portal_order_page_ex', function (require) {
                  console.log("inside count");
                 console.log(maxCount);
                 var min = parseFloat($input.data("min") || 0);
-                var max = parseFloat($input.data("max") || maxCount);
+                var total_max_count = parseFloat($input.data("max") + maxCount);
+                var max = parseFloat($input.data("max") || total_max_count);
                 var quantity = ($link.has(".fa-minus").length ? -1 : 1) + parseFloat($input.val() || 0, 10);
                 var new_qty = quantity > min ? (quantity < max ? quantity : max) : min;
                 $('input[name="'+$input.attr("name")+'"]').add($input).filter(function () {
