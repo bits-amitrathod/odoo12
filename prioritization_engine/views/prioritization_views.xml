@@ -98,7 +98,7 @@
                             <field name="priority"/>
                              <field name="expiration_tolerance" />
                             <field name="length_of_hold"/>
-                            <field name="gl_account"/>
+                            <!--<field name="gl_account"/>-->
                         </group>
                         <group>
                             <field name="min_threshold"/>
