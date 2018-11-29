@@ -1,5 +1,4 @@
 from odoo import api, fields, models
-from numpy.core.defchararray import upper
 
 
 class SaleSalespersonReport(models.TransientModel):
@@ -8,7 +7,7 @@ class SaleSalespersonReport(models.TransientModel):
     @api.model
     def check(self, data):
         if data:
-            return upper(data)
+            return data.upper()
         else:
             return " "
 

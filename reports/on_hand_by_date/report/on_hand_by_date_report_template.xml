@@ -10,7 +10,7 @@
                             <b>
                                 <h2>Surgical Product Solutions</h2>
                                 <h4>On Hand By Date</h4>
-                                <h4>Reporting Date: <span t-esc="data['report_date']"/></h4>
+                                <h4 t-if="data['report_date']">Reporting Date: <span t-esc="data['report_date']"/></h4>
                             </b>
                         </center>
                         <br/>

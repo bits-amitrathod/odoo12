@@ -49,10 +49,22 @@ class SpsCustomerRequest(models.Model):
                 self.process_customer_requests(sps_customer_requests)
             except Exception as exc:
                 _logger.error("Error procesing requests %r", exc)
+        else:
+            _logger.info('customer request count is 0.')
 
 
     def process_customer_requests(self, sps_customer_requests):
         _logger.info('In process_customer_requests')
+        params = self.env['ir.config_parameter'].sudo()
+        document_processing_count_setting = params.get_param('prioritization_engine.document_processing_count_setting')
+        document_processing_count = 0
+        if document_processing_count_setting:
+            document_processing_count = int(params.get_param('prioritization_engine.document_processing_count'))
+        else:
+            _logger.info('document_processing_count_setting is False')
+
+        _logger.info('****document_processing_count_setting '+ str(document_processing_count_setting))
+        _logger.info('****Document Processing Count : '+ str(document_processing_count))
 
         pr_models = []
         self.document_id_set.clear()
@@ -60,7 +72,7 @@ class SpsCustomerRequest(models.Model):
         for sps_customer_request in sps_customer_requests:
             # get latest customer uploaded document id
             self.env.cr.execute("SELECT max(id) document_id FROM public.sps_cust_uploaded_documents WHERE customer_id="+
-                                str(sps_customer_request['customer_id'].id))
+                                    str(sps_customer_request['customer_id'].id))
             query_result = self.env.cr.dictfetchone()
 
             # For Inventory Template
@@ -71,16 +83,18 @@ class SpsCustomerRequest(models.Model):
                     if pr_model:
                         pr_models.append(pr_model)
             # For Requirement Template, Process old document maximum 3 times and for new(latest) document processing no limit.
-            elif sps_customer_request.document_id.template_type.lower().strip() == 'requirement':
+            elif sps_customer_request.document_id.template_type.lower().strip() == 'requirement' and int(document_processing_count) > 0:
                 # following condition use for process only latest uploaded document.
                 if int(query_result['document_id']) == int(sps_customer_request.document_id.id):
                     pr_model = self.add_customer_request_data(sps_customer_request)
                     if pr_model:
                         pr_models.append(pr_model)
-                elif int(sps_customer_request.document_id.document_processed_count) < 3:
+                elif int(sps_customer_request.document_id.document_processed_count) < int(document_processing_count):
                     pr_model = self.add_customer_request_data(sps_customer_request)
                     if pr_model:
                         pr_models.append(pr_model)
+            else:
+                _logger.info('Document Processing Count is 0(Zero).')
 
         #_logger.debug('Length **** %r', str(len(pr_models)))
         if len(pr_models) > 0:
@@ -88,6 +102,7 @@ class SpsCustomerRequest(models.Model):
             pr_models = sorted(pr_models, key=itemgetter('product_priority'))
             # Allocate Product by priority.
             self.env['prioritization.engine.model'].allocate_product_by_priority(pr_models)
+
 
 
     def add_customer_request_data(self,sps_customer_request):
