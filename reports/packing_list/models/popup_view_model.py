@@ -9,11 +9,6 @@ class TrendingReportListPopUp(models.TransientModel):
     _name = 'sale.packing_list_popup'
     _description = 'Sale Packing List'
 
-    compute_at_date = fields.Selection([
-        (0, 'Show All '),
-        (1, 'Date Range ')
-    ], string="Compute", help="Choose to analyze the Show Summary or from a specific date in the past.", default=0)
-
     start_date = fields.Date('Start Date', help="Choose a date to get the Discount Summary at that  Start date", required=True)
     end_date = fields.Date('End Date', help="Choose a date to get the Discount Summary at that  End date",required=True )
 
@@ -23,7 +18,7 @@ class TrendingReportListPopUp(models.TransientModel):
 
         margins_context = {'start_date': self.start_date,'end_date':self.end_date}
         group_by_domain = ['name']
-        x_res_model = 'stock.picking'
+        x_res_model = 'res.stock_packing_list'
 
         
 
@@ -32,8 +27,6 @@ class TrendingReportListPopUp(models.TransientModel):
             'view_mode': 'tree,form',
             'views': [(tree_view_id, 'tree')],
             'name': _('Inventory Packing List'),
-            'context': {'group_by': group_by_domain, 'order_by': group_by_domain},
-            'domain':[('write_date','&gt;=',self.start_date),('date','&lt;=',self.end_date)],
             'res_model': x_res_model,
             'target': 'main'
         }
