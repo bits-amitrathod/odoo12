@@ -14,6 +14,7 @@ class ReportProductsOnOrder(models.AbstractModel):
         group_by_list = {}
         for products_on_order in products_on_order_list:
             order_line = [products_on_order.order_id.name, products_on_order.partner_id.display_name,
+                          products_on_order.date_ordered,products_on_order.date_due,
                           products_on_order.qty_ordered, products_on_order.qty_remaining]
             key = ""
             if products_on_order.product_id.product_tmpl_id.sku_code:
@@ -30,7 +31,7 @@ class ReportProductsOnOrder(models.AbstractModel):
             inner_list = [product_name, line_list]
             remainig_so_qty = 0
             for line in line_list:
-                remainig_so_qty = remainig_so_qty + line[3]
+                remainig_so_qty = remainig_so_qty + line[5 ]
             inner_list.append(remainig_so_qty)
             final_list.append(inner_list)
 
