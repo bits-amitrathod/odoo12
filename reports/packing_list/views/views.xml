@@ -9,9 +9,8 @@
                 <form string="Choose Customer">
                     <group>
                         <group>
-                            <field name="compute_at_date" widget="radio"/>
-                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)],'required':[('compute_at_date', '=', 1)]}"/>
-                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)],'required':[('compute_at_date', '=', 1)]}"/>
+                            <field name="start_date" />
+                            <field name="end_date" />
                         </group>
                     </group>
                     <footer>
@@ -31,13 +30,14 @@
       </record>
     <record id="view_inv_all_packing_list_tree" model="ir.ui.view" >
           <field name="name">Inventory Packing List</field>
-          <field name="model">stock.picking</field>
+          <field name="model">res.stock_packing_list</field>
           <field name="priority">20</field>
           <field name="arch" type="xml">
             <tree create="false" edit="false" >
                 <field name="origin"/>
-                <field name="state"/>
+                 <field name="partner_id"/>
                 <field name="carrier_id"/>
+                 <field name="state"/>
 
             </tree>
           </field>
