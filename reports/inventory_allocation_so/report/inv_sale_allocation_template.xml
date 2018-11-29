@@ -34,8 +34,8 @@
 
                         <div class="col-md-12" >
 
-                            <table class="table table-condensed table-bordered table-bordered">
-                                <thead>
+                            <table class="table table-condensed  table-bordered" style="border: 1px solid black;width:100%">
+                                <thead style="border: 1px solid black;width:100%">
                                     <tr>
                                         <th>Product</th>
                                         <th>Description</th>
@@ -43,7 +43,7 @@
                                         <th class="text-right">Unit Cost</th>
                                     </tr>
                                 </thead>
-                                <tbody class="invoice_tbody">
+                                <tbody class="invoice_tbody" style="border: 1px solid black;width:100%">
                                     <tr t-foreach="sale_order[2]" t-as="product">
                                         <td>
                                             <span t-esc="product[0]"/>

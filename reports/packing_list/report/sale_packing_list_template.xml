@@ -3,10 +3,13 @@
     <template id="sale_packing_list_template">
         <t t-call="web.html_container">
             <t t-call="web.external_layout">
-                <page>
+                <page >
                     <style>
                         .noborders {
                         border: 0;
+                        }
+                        .page-break {
+                            page-break-after: always !important;
                         }
 
                         <!--.table-bordered > tbody > tr > td,.table-bordered > tbody > tr > th {-->
@@ -18,76 +21,227 @@
                         <center>
                             <b>
                                 <h2>Surgical Product Solutions</h2>
-                                <h4>Customer Products Price Rule</h4>
+                                <h4>Packing List</h4>
                             </b>
                         </center>
 
                     </div>
                     <br/>
-                    <div class="row">
+                    <div class="row"  t-foreach="packing_list_result" t-as="packing_list">
 
                         <div class="col-md-12" >
 
-                            <table class="table  table-condensed" style="border: 1px solid black;width:100%">
-                                <thead>
-                                    <tr>
-                                        <th>
-                                             <div class="col-md-12">Pricing Rule</div></th>
-                                            <th><div class="col-md-12">Pricing Rule</div></th>
-                                    </tr>
-                                </thead>
-                                <tbody class="invoice_tbody"  t-foreach="pricing_rule_result" t-as="pricing_rule">
+                            <table class="table " >
+                                <tbody class="invoice_tbody" >
                                     <tr >
                                        <th>
-                                            <div class="col-md-12" style="margin-top:10px">
-                                                    <strong>
-                                                         <span t-esc="pricing_rule[0].product_code"/>:
-                                                         <span t-esc="pricing_rule[0].customer_name"/>
-                                                    </strong>
-                                                <hr style="margin: 5px 0px;"/>
+                                            Ship To:
+                                            <div class="col-md-12" style="margin-top:10px;border: 1px solid black;width:100%">
                                                 <p style="font-weight: lighter">
-                                                    Applies to product: <span t-esc="pricing_rule[0].product_code"/>
-                                                </p>
-                                               <p style="font-weight: lighter">
-                                                     Set the price of product(s) to be:<span t-esc="pricing_rule[0].currency_symbol"/>
-                                                    <span t-esc="pricing_rule[0].cost"/>
+                                                   <span t-esc="packing_list.sale_id.partner_shipping_id.street"/>
+                                                    <br/>
+                                                    <t t-if="packing_list.sale_id.partner_shipping_id.street2">
+                                                        <span t-esc="packing_list.sale_id.partner_shipping_id.street2"/>
+                                                    <br/>
+                                                    </t>
 
+                                                    <span t-esc="packing_list.sale_id.partner_shipping_id.city"/>
+                                                    <span t-esc="packing_list.sale_id.partner_shipping_id.state_id.name"/>
+                                                    <span t-esc="packing_list.sale_id.partner_shipping_id.zip"/>
+                                                    <br/>
+                                                     <span t-esc="packing_list.sale_id.partner_shipping_id.country_id.name"/>
+                                                    <br/>
 
                                                 </p>
-                                                <p style="font-weight: lighter">
-                                                    Applies to the customer: <span t-esc="pricing_rule[0].customer_name"/>
-                                                </p>
+                                                 <t t-if="packing_list.sale_id.client_order_ref">
+                                                     <p style="margin-top:10px;font-weight: lighter">
+                                                         PO Number: <span t-esc="packing_list.sale_id.client_order_ref"/>
+                                                     </p>
+                                                 </t>
                                             </div>
                                         </th>
                                         <th>
-                                            <div class="col-md-12" style="margin-top:10px ">
-                                                <t t-if="pricing_rule[1]!=False">
-                                                    <strong>
-                                                        <span t-esc="pricing_rule[1].product_code"/>:
-                                                         <span t-esc="pricing_rule[1].customer_name"/>
+                                            Bill To:
+                                            <div class="col-md-12" style="margin-top:10px;border: 1px solid black;width:100%">
+                                                <p style="font-weight: lighter">
+                                                   <span t-esc="packing_list.sale_id.partner_invoice_id.street"/>
+                                                    <br/>
+                                                    <t t-if="packing_list.sale_id.partner_invoice_id.street2">
+                                                        <span t-esc="packing_list.sale_id.partner_invoice_id.street2"/>
+                                                    <br/>
+                                                    </t>
 
-                                                    </strong>
-                                                    <hr style="margin: 5px 0px;"/>
-                                                    <p style="font-weight: lighter">
-                                                        Applies to product: <span t-esc="pricing_rule[1].product_code"/>
-                                                    </p>
-                                                    <p style="font-weight: lighter">
-                                                         Set the price of product(s) to be: <span t-esc="pricing_rule[1].currency_symbol"/>
-                                                        <span t-esc="pricing_rule[1].cost"/>
+                                                    <span t-esc="packing_list.sale_id.partner_invoice_id.city"/>
+                                                    <span t-esc="packing_list.sale_id.partner_invoice_id.state_id.name"/>
+                                                    <span t-esc="packing_list.sale_id.partner_invoice_id.zip"/>
+                                                    <br/>
+                                                     <span t-esc="packing_list.sale_id.partner_invoice_id.country_id.name"/>
+                                                    <br/>
 
-                                                    </p>
-                                                    <p style="font-weight: lighter">
-                                                        Applies to the customer: <span t-esc="pricing_rule[1].customer_name"/>
-                                                    </p>
-                                                </t>
+                                                </p>
                                             </div>
+
                                         </th>
                                     </tr>
+                                    <tr>
+                                         <table class="table  table-condensed table-bordered " >
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                         <div class="col-md-12">Carton Count</div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="col-md-12">Req. Ship Date</div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="col-md-12">Shipping Terms</div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="col-md-12">Ship Via</div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="col-md-12">Order Num</div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="invoice_tbody"  >
+                                                <tr >
+                                                   <th>
+                                                        <div class="col-md-12" style="margin-top:10px">
+                                                            <p style="font-weight: lighter">
+                                                               1
+                                                            </p>
+                                                        </div>
+                                                    </th>
+                                                   <th>
+                                                        <div class="col-md-12" style="margin-top:10px">
+                                                            <p style="font-weight: lighter">
+                                                                <span t-esc="packing_list.sale_id.requested_date"/>
+                                                            </p>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="col-md-12" style="margin-top:10px">
+                                                            <p style="font-weight: lighter">
+                                                                	 <span t-esc="packing_list.shipping_terms"/>
+                                                            </p>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="col-md-12" style="margin-top:10px">
+                                                            <p style="font-weight: lighter">
+                                                                <span t-esc="packing_list.carrier_id.name"/>
+                                                            </p>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="col-md-12" style="margin-top:10px">
+                                                            <p style="font-weight: lighter">
+                                                                <span t-esc="packing_list.origin"/>
+                                                            </p>
+                                                        </div>
+                                                    </th>
+                                                </tr>
 
+                                            </tbody>
+                                        </table>
+                                    </tr>
+                                    <tr>
+                                        <th>
+                                            <div class="col-md-12" style="margin-top:10px;width:50%">
+
+                                                <p style="height:10px">
+                                                    Carton Information
+                                                </p>
+                                                <p>
+                                                 <hr style="margin:0px;padding:0px"/>
+                                                    Carton 1 (# <span t-esc="packing_list.carrier_tracking_ref"/>)
+                                                    <a style="float:right" t-att-href="packing_list.carrier_tracking_url" target="_blank">
+                                                        <t t-if="packing_list.carrier_id.name !='Normal Delivery Charges' ">
+                                                         <span t-esc="packing_list.carrier_id.name"/> Tracking
+                                                       </t>
+                                                    </a>
+                                                 <hr style="margin:0px;padding:0px"/>
+                                                  Total: 1
+                                                </p>
+                                            </div>
+                                        </th>
+
+                                    </tr>
+                                    <tr>
+                                        <table class="table  table-condensed table-bordered " style="margin-top:10px">
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                         <div class="col-md-12">#Line</div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="col-md-12">Item/Description</div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="col-md-12">Qty Ordered</div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="col-md-12">Qty Shipped</div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="col-md-12">Qty Remaining</div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="invoice_tbody"  >
+                                                <tr t-foreach="packing_list.move_lines" t-as="move_line">
+                                                   <th>
+                                                        <span t-esc="move_line_index + 1" />
+                                                    </th>
+                                                     <th>
+                                                        <div class="col-md-12" style="margin-top:10px">
+                                                            <p style="font-weight: lighter">
+                                                                Code#<span t-esc="move_line.product_tmpl_id.sku_code"/>-
+                                                                <span t-esc="move_line.product_tmpl_id.name"/>
+                                                            </p>
+                                                             <p style="font-weight: lighter" t-foreach="move_line.move_line_ids" t-as="move_line_id">
+                                                                <span t-esc="move_line_id.qty_done"/>
+                                                                <span t-esc="move_line.product_uom.name"/>-
+                                                                Lot#:<span t-esc="move_line_id.lot_id.name"/>
+                                                                Exp Date:<span t-esc="move_line_id.lot_id.use_date"/>
+                                                            </p>
+                                                        </div>
+                                                    </th>
+                                                   <th>
+                                                        <div class="col-md-12" style="margin-top:10px">
+                                                            <p style="font-weight: lighter">
+                                                                <span t-esc="move_line.ordered_qty"/>
+                                                                <span t-esc="move_line.product_uom.name"/>
+                                                            </p>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="col-md-12" style="margin-top:10px">
+                                                            <p style="font-weight: lighter">
+                                                                <span t-esc="move_line.quantity_done"/>
+                                                                <span t-esc="move_line.product_uom.name"/>
+                                                            </p>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="col-md-12" style="margin-top:10px">
+                                                            <p style="font-weight: lighter">
+                                                                <span t-esc="move_line.remaining_qty"/>
+                                                                <span t-esc="move_line.product_uom.name"/>
+                                                            </p>
+
+                                                        </div>
+                                                    </th>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
-
+                        <div class="page-break"></div>
                     </div>
 
                 </page>

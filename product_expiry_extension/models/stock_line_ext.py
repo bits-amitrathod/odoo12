@@ -46,6 +46,7 @@ class inventory_exe(models.Model):
                         message = _(
                             'You cannot use the same serial number twice. Please correct the serial numbers encoded.')
                 elif self.lot_id:
+                    self.lot_expired_date=self.lot_id.use_date
                     counter = Counter(move_lines_to_check.mapped('lot_id.id'))
                     if counter.get(self.lot_id.id) and counter[self.lot_id.id] > 1:
                         message = _(
