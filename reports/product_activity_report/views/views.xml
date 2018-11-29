@@ -1,0 +1,63 @@
+<odoo>
+
+    <record id="action_popup_product_activity_report" model="ir.actions.act_window">
+            <field name="name">Product Activity Report</field>
+            <field name="res_model">product.activity.report.popup</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+    <record id="popup_product_activity_report" model="ir.ui.view">
+            <field name="name">Product Activity Report</field>
+            <field name="model">product.activity.report.popup</field>
+            <field name="arch" type="xml">
+                <form string="Choose your date">
+                    <group>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                    </group>
+                    <footer>
+                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    <record id="view_stock_product_activity_report" model="ir.ui.view">
+        <field name="name">product.activity.report.default</field>
+        <field name="model">product.activity.report</field>
+        <field name="arch" type="xml">
+            <search string="Product">
+                <filter string="Product Activity" name="product_activity" domain="[]"
+                        context="{'group_by' : ['warehouse', 'location', 'type']}"/>
+                <separator/>
+            </search>
+        </field>
+    </record>
+
+    <!-- LIST VIEW -->
+    <record model="ir.ui.view" id="product_activity_report.list">
+        <field name="name">product_activity_report_list</field>
+        <field name="model">product.activity.report</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="warehouse"/>
+                <field name="date"/>
+                <field name="location"/>
+                <field name="event"/>
+                <field name="change_qty"/>
+                <field name="agent"/>
+                <field name="sku"/>
+                <field name="expiration_date"/>
+                <!--<field name="type"/>-->
+            </tree>
+        </field>
+    </record>
+
+
+    <menuitem id="menu_stock_product_activity_report" name="Product Activity Report"
+              parent="stock.menu_warehouse_report" sequence="110"
+              action="action_popup_product_activity_report"/>
+</odoo>

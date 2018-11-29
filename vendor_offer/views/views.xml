@@ -266,6 +266,9 @@
                                 <group  >
                                         <field name="date_planned" />
                                         <field name="shipping_label_issued" />
+                                     <field name="invoice_status" />
+
+                                    <field name="payment_term_id" options="{'no_open': True, 'no_create': True}" attrs="{'readonly': ['|', ('invoice_status','=', 'invoiced'), ('state', '=', 'done')]}"/>
                                 </group>
                                  <group  >
                                         <field name="shipping_date" />
