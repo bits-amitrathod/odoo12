@@ -13,7 +13,7 @@ class ReportProductsOnOrder(models.AbstractModel):
 
         group_by_list = {}
         for returned_sales in returned_sales_list:
-            order_line = [returned_sales.partner_id.display_name,
+            order_line = [returned_sales.order_id.name, returned_sales.partner_id.display_name,returned_sales.user_id.display_name,
                           returned_sales.done_qty, returned_sales.cost_price]
             key = ""
             if returned_sales.product_id.product_tmpl_id.sku_code:
@@ -32,8 +32,8 @@ class ReportProductsOnOrder(models.AbstractModel):
             total_done_qty = 0.0
             total_cost_price = 0.00
             for line in line_list:
-                total_done_qty = total_done_qty + line[1]
-                total_cost_price = total_cost_price + line[2]
+                total_done_qty = total_done_qty + line[3]
+                total_cost_price = total_cost_price + line[4]
             inner_list.append(total_done_qty)
             inner_list.append(total_cost_price)
             final_list.append(inner_list)

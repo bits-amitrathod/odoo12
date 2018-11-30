@@ -10,6 +10,7 @@
                             <b>
                                 <h2>Surgical Product Solutions</h2>
                                 <h4>Dormant Customers</h4>
+                                <h4 t-if="dateRange"> Reporting Date: <span t-esc="dateRange"/></h4>
                             </b>
                         </center>
                     </div>

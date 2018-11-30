@@ -26,8 +26,10 @@
                         <table class="table table-condensed" style="">
                             <thead>
                                 <tr style="">
-                                    <th style="text-align: center;center;width: 327px;">Order #</th>
-                                    <th style="text-align: center;center;width: 474px;">Customer</th>
+                                    <th style="text-align: center;center;">Order #</th>
+                                    <th style="text-align: center;;">Customer</th>
+                                    <th style="text-align: center;">Date</th>
+                                    <th style="text-align: center;">Due Date</th>
                                     <th style="text-align: center;">Qty Ordered</th>
                                     <th style="text-align: center;">Qty Remaining</th>
                                 </tr>
@@ -40,18 +42,23 @@
                                     <td align="center" style="">
                                         <span t-esc="order[1]"/>
                                     </td>
-                                    <td align="right" style="">
+                                    <td align="center" style="">
                                           <span t-esc="order[2]"/>
                                     </td>
-                                    <td align="right" style="">
+                                    <td align="center" style="">
                                           <span t-esc="order[3]"/>
+                                    </td>
+                                    <td align="right" style="">
+                                          <span t-esc="order[4]"/>
+                                    </td>
+                                    <td align="right" style="">
+                                          <span t-esc="order[5]"/>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="">
+                                    <td colspan="4">
                                     </td>
-                                    <td style="">
-                                    </td>
+
                                     <td style="text-align: right;">
                                         <b>Total SO Items Remaining</b>
                                     </td>

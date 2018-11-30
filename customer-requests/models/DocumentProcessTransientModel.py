@@ -131,7 +131,7 @@ class DocumentProcessTransientModel(models.TransientModel):
                     sps_product_id = 0
                     if len(product_tmpl) > 0:
                         product_model = self.env['product.product'].search(
-                            [['product_tmpl_id', '=', product_tmpl.id]])
+                            [['product_tmpl_id', '=', product_tmpl[0].id]])
                         if len(product_model) > 0:
                             sps_product_id = product_model[0].id
                     if sps_product_id == 0:
