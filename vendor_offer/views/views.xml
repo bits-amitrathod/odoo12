@@ -117,8 +117,8 @@
                 <header>
                     <button name="action_send_offer_email" string="Send Offer by Email" type="object" context="{'send_rfq':True}" class="btn-primary" attrs="{'invisible':[('state', 'in', ('purchase'))]}" />
                     <button name="action_print_vendor_offer" string="Print Vendor Offer" type="object"  class="btn-primary" attrs="{'invisible':[('state', 'in', ('purchase'))]}" />
-                    <button name="action_button_confirm" states="ven_draft,ven_sent" string="Confirm Order" type="object"  />
-                    <button name="action_cancel_vendor_offer"  states="ven_draft" string="Cancel" type="object"  />
+                    <button name="action_button_confirm" states="ven_draft,ven_sent"   context="{'vendor_offer_data': True}" string="Confirm Order" type="object"  />
+                    <button name="action_cancel_vendor_offer"  states="ven_draft,ven_sent" string="Cancel" type="object"  />
                      <field name="status" widget="statusbar" statusbar_visible="ven_draft,ven_sent,purchase" readonly="1"  />
                 </header>
                 <sheet>
@@ -194,10 +194,13 @@
                                                          <field name="product_offer_price"   />
                                                          <field name="product_retail"   />
                                                          <field name="price_subtotal"  string="Total Offer Price" />
-                                                         <!-- <field name="taxes_id" widget="many2many_tags" domain="[('type_tax_use','=','purchase')]" context="{'default_type_tax_use': 'purchase'}" options="{'no_create': True}"/>
-                                         <field name="price_tax"  />
+                                                          <field name="taxes_id" widget="many2many_tags" domain="[('type_tax_use','=','purchase')]" context="{'default_type_tax_use': 'purchase'}" options="{'no_create': True}"/>
+                                        <field name="price_tax"  />
                                         <field name="price_total"   widget="monetary" />
-                                        <field name="price_subtotal"   widget="monetary" />-->
+                                        <field name="price_subtotal"   widget="monetary" />
+                                                         <field name="rt_price_tax"  />
+                                        <field name="rt_price_total"   widget="monetary" />
+                                        <field name="rt_price_subtotal"   widget="monetary" />
                                                          <field name="margin"    />
                                                          <field name="multiplier"   />
                                                          <field name="product_note"   />
@@ -207,7 +210,7 @@
                                                 </group>
                                             </form>
                                 <!--editable="bottom"-->
-                                <tree editable="bottom" >
+                                <tree  editable="bottom">
                                          <field name="currency_id" invisible="1"/>
                                          <field name="product_id" />
                                          <field name="sku_code"  readonly="1" />
@@ -250,7 +253,9 @@
                                  <field name="amount_untaxed" widget="monetary"  string="Untaxed Offer Price"/>
                                   <field name="amount_tax"   string="Tax" />
                                     <field name="amount_total" widget="monetary"  string="Total Offer Price" />
-
+                                 <field name="val_bool_temp"  invisible="1"  />
+                                 <!--attrs="{'invisible':[('val_bool_temp','=',False)]}"  -->
+                    <button name="update_values_vendor" string="Update Values" type="object"  class="btn-primary"  />
                             </group>
                                   <group class="oe_subtotal_footer oe_right">
                                     <field name="rt_price_subtotal_amt" widget="monetary"  string="Untaxed Retail Price" />

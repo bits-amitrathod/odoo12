@@ -29,13 +29,13 @@
                 </div>
             </div>
             <h2 style="color:red;font-size:16px;" align="center" ><strong>***CONFIDENTIAL***</strong></h2><hr></hr>
-            <div><p><span style="font-weight:600;font-size:16px !important;">OFFER PRICE  : </span><span style="font-weight:600;font-size:18px !important;" t-field="o.amount_total"/> <span style="font-weight:600;font-size:18px!important;">Cash Back</span></p></div>
+            <div><p><span style="font-weight:600;font-size:16px !important;">OFFER PRICE  : </span><span style="font-weight:600;font-size:18px !important;" t-field="o.amount_total"/><span style="font-weight:600;font-size:18px!important;">Cash Back</span></p></div>
             <div><p>This offer must be accepted within 3 business days of delivery date unless otherwise noted.</p></div>
               <div><p>Once the offer is accepted, the offer price is contingent upon requirements detailed below.</p></div>
               <div><p><strong>OFFER PRICE CONDITIONAL UPON</strong>:</p></div>
               <div><p>Speedy Delivery to Buyer within 5 days  Please included this purchase offer inside each shipment</p></div>
               <div><p>Quality Control Inspection within 10 days upon receipt of goods</p></div>
-              <div><p><strong>PREFERRED SETTLEMENT PERIOD:</strong> <span style="font-weight:600;font-size:16px !important;" t-field="o.payment_term_id"/> after completion of SPS quality control inspection</p></div>
+            <div><p><strong>PREFERRED SETTLEMENT PERIOD:</strong> <span style="font-weight:600;font-size:16px !important;" t-field="o.temp_payment_term"/> after completion of SPS quality control inspection</p></div>
               <div><p><strong>SPS RESERVES THE RIGHT TO ADJUST THIS PURCHASE OFFER IN THE EVENT THAT SPSS QUALITY CONTROL PROCESS INDENTIFIES ANY DAMAGES OR DISCREPENCIES WITH THE PRODUCT FURNISHED.SELLER WILL BE NOTIFIED IMMEDIATELY IF AND WHEN THIS OFFER IS ADJUSTED.</strong></p></div>
               <div><p><strong>ALL ITEMS MUST BE IN THE ORIGINAL MANUFACTURERS PACKAGING AND NOT REPROCESSED. NO SALES SAMPLES OR CPT PRODUCTS.</strong></p></div>
               <div><p><strong>YOU WARRANT THAT YOU ARE THE LAWFUL OWNER OF THE AFOREMENTIONED GOODS, THAT THEY ARE FREE FROM ALL ENCUMBRANCES, AND THAT WE HAVE THE RIGHT TO SELL THESE GOODS. SELLER BINDS ITSELF, ITS SUCCESSORS AND ASSIGNS, TO WARRANT AND DEFEND SPS TITLE TO THESE GOODS AGAINST CLAIMS AND DEMANDS OF ALL PERSONS.</strong></p></div>
@@ -81,7 +81,7 @@
                             <span t-field="order_line.price_tax" />
                         </td>
                            <td class="text-right">
-                            <span t-field="order_line.product_offer_price" />
+                            <span t-field="order_line.price_subtotal" />
                         </td>
                     </tr>
                     <tr>
@@ -96,7 +96,6 @@
             </table>
 
             <div class="oe_structure"/>
-<field name="o.amount_total" widget="monetary"  string="Total Offer Price" />
         </div>
     </t>
 </template>

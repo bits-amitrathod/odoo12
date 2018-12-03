@@ -18,6 +18,8 @@ class ReturnrdSales(models.Model):
     product_id = fields.Many2one('product.product', string='Product', )
     move_id = fields.Many2one('stock.move', string='Stock Move', ),
     moved_date = fields.Datetime('Date')
+    user_id = fields.Many2one('res.users', 'Salesperson', readonly=True)
+    sku_code = fields.Char('SKU / Catalog No')
 
     @api.model_cr
     def init(self):
@@ -35,7 +37,7 @@ class ReturnrdSales(models.Model):
 
         sql_query = """  CREATE VIEW returned_sales_order AS ( 
                     SELECT ROW_NUMBER () OVER (ORDER BY move_id) as id, concat(so.name,' - ', t.name) as name, 
-                    so.id as order_id, m.id as move_id, 
+                    so.id as order_id, m.id as move_id, so.user_id, t.sku_code,
                     m.partner_id as partner_id, m.product_id as product_id, m.product_uom_qty as done_qty, 
                     (sl.price_unit * m.product_uom_qty) as cost_price,
                     m.date as moved_date

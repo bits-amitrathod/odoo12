@@ -3,8 +3,8 @@
 from odoo import models, fields, api,SUPERUSER_ID
 import logging
 import datetime
+from datetime import date,datetime,timedelta
 import base64
-from datetime import date
 import calendar
 from odoo.exceptions import UserError
 from odoo.tools import float_compare
@@ -30,8 +30,6 @@ class InventoryNotificationScheduler(models.TransientModel):
         self.process_notify_available()
         self.process_packing_list()
         self.process_on_hold_customer()
-        self.process_notification_for_product_status()
-        self.process_notification_for_in_stock_report()
 
 
     def process_new_product_scheduler(self):
@@ -50,11 +48,12 @@ class InventoryNotificationScheduler(models.TransientModel):
         today_start = fields.Date.to_string(today_date)
         users = self.env['res.users'].search([])
         sales = self.env['sale.order'].search([('state','=','sale')])
+        last_day = fields.Date.to_string(datetime.now() - timedelta(days=1))
         for sale in sales:
             sale_order_lines = self.env['sale.order.line'].search([('order_id.id','=',sale.id),
                                                               ('move_ids.state','=','done'),
                                                               ('move_ids.move_line_ids.state','=','done'),
-                                                              ('move_ids.move_line_ids.write_date','>=',today_start),
+                                                              ('move_ids.move_line_ids.write_date','>=',last_day),
                                                               ('move_ids.move_line_ids.qty_done','>',0),
                                                               ('move_ids.move_line_ids.lot_id','!=',None)])
 
@@ -64,7 +63,7 @@ class InventoryNotificationScheduler(models.TransientModel):
             vals={
                 'sale_order_lines':sale_order_lines,
                 'subject':"New Sale Order",
-                'descrption':"Please find below Packing list for Order No:" + sale.name +" Dated:"+ today_start,
+                'descrption':"Please find below Packing list for Order No:" + sale.name +" Dated:"+ sale.write_date,
                 'header': ['Name',  'Lot No#', 'Expiration Date','Ordered Qty', 'Unit Of Measure'],
                 'columnProps':['name',  'move_ids.move_line_ids.lot_id.name', 'move_ids.move_line_ids.lot_id.use_date',
                            'move_ids.move_line_ids.ordered_qty',  'product_id.product_tmpl_id.uom_id.name'],
@@ -77,11 +76,24 @@ class InventoryNotificationScheduler(models.TransientModel):
             }
             if len(sale_order_lines)>0:
                 self.process_packing_email_notification(vals)
+            today_start = datetime.now().date()
+            final_date = datetime.strftime(today_start, "%Y-%m-%d 00:00:00")
+            # final_date = fields.Datetime.from_string(today_start)
+        products = self.env['product.product'].search([('stock_move_ids.sale_line_id', '!=', False),
+                                                       ('stock_move_ids.state', '=', 'done'),
+                                                       ('stock_move_ids.move_line_ids.state', '=', 'done'),
+                                                       ('stock_move_ids.move_line_ids.write_date', '>=', last_day),
+                                                       ('stock_move_ids.move_line_ids.write_date', '<', final_date),
+                                                       ('stock_move_ids.move_line_ids.qty_done', '>', 0),
+                                                       ('stock_move_ids.move_line_ids.lot_id', '!=', None)
+                                                       ])
+        self.process_notification_for_product_red_status(products)
+
 
     def process_on_hold_customer(self):
         customers = self.env['res.partner'].search([('on_hold', '=', True),('is_parent','=',True)])
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
-        users = self.env['res.users'].search([])
+        users = self.env['res.users'].search([('active','=',True)])
         for customer in customers:
             _logger.info("customer :%r", customer)
         if customers:
@@ -101,7 +113,7 @@ class InventoryNotificationScheduler(models.TransientModel):
     def process_hold_off_customer(self,partner_id):
         sales = self.env['sale.order'].search([('state', '=', 'sale'),('partner_id', '=', partner_id.id)])
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
-        users = self.env['res.users'].search([])
+        users = self.env['res.users'].search([('active','=',True)])
         sales_order=[]
         for sale in sales:
             sale_order_lines = self.env['sale.order.line'].search([('order_id.id', '=', sale.id),
@@ -134,11 +146,9 @@ class InventoryNotificationScheduler(models.TransientModel):
                     self.process_common_email_notification_template(super_user, user, vals['subject'], vals['description'],  vals['sale_order_lines'],  vals['header'],
                                                                 vals['columnProps'])
 
-    def process_notification_for_product_status(self):
-        products=self.env['product.product'].search([('product_tmpl_id.type','=','product')])
+    def process_notification_for_product_red_status(self,products):
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
-        users = self.env['res.users'].search([])
-        location_ids = self.env['stock.location'].search([('usage', '=', 'internal'), ('active', '=', True)])
+        users = self.env['res.users'].search([('active','=',True)])
         green_products=[]
         yellow_products=[]
         red_product=[]
@@ -148,23 +158,55 @@ class InventoryNotificationScheduler(models.TransientModel):
             'service': "Service"
         }
         for product in products:
-            product.product_tmpl_id._compute_max_inventory_level()
             vals = {
                 'sku_code':self.check_isAvailable(product.product_tmpl_id.sku_code),
                 'sale_price': product.lst_price,
                 'standard_price': product.product_tmpl_id.standard_price,
                 'product_type': switcher.get(product.type, " "),
-                'qty_on_hand': product.product_tmpl_id.qty_in_stock,
+                'qty_on_hand': product.qty_available,
+                'forecasted_qty': product.virtual_available,
+                'product_name': self.check_isAvailable_product_code(product.default_code)+" "+product.product_tmpl_id.name,
+                'unit_of_measure': product.product_tmpl_id.uom_id.name
+            }
+
+            if  product.inventory_percent_color > 75 and  product.inventory_percent_color <=125:
+                yellow_products.append(vals)
+            elif product.inventory_percent_color <= 75:
+                red_product.append(vals)
+
+        for user in users:
+            has_group = user.has_group('purchase.group_purchase_manager') or user.has_group(
+                'sales_team.group_sale_manager')
+            if has_group:
+                if yellow_products:
+                    self.process_notify_yellow_product(yellow_products,user,super_user)
+                if red_product:
+                    self.process_notify_red_product(red_product,user,super_user)
+
+    def process_notification_for_product_green_status(self,products):
+        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
+        users = self.env['res.users'].search([('active','=',True)])
+        green_products=[]
+        yellow_products=[]
+        red_product=[]
+        switcher = {
+            'product': "Stockable",
+            'consu': "Consumable",
+            'service': "Service"
+        }
+        for product in products:
+            vals = {
+                'sku_code':self.check_isAvailable(product.product_tmpl_id.sku_code),
+                'sale_price': product.lst_price,
+                'standard_price': product.product_tmpl_id.standard_price,
+                'product_type': switcher.get(product.type, " "),
+                'qty_on_hand': product.qty_available,
                 'forecasted_qty': product.virtual_available,
                 'product_name': self.check_isAvailable_product_code(product.default_code)+" "+product.product_tmpl_id.name,
                 'unit_of_measure': product.product_tmpl_id.uom_id.name
             }
             if product.inventory_percent_color > 125:
                 green_products.append(vals)
-            elif  product.inventory_percent_color > 75 and  product.inventory_percent_color <=125:
-                yellow_products.append(vals)
-            elif product.inventory_percent_color <= 75:
-                red_product.append(vals)
 
         for user in users:
             has_group = user.has_group('purchase.group_purchase_manager') or user.has_group(
@@ -174,11 +216,10 @@ class InventoryNotificationScheduler(models.TransientModel):
                     self.process_notify_green_product(green_products,user,super_user)
                 if yellow_products:
                     self.process_notify_yellow_product(yellow_products,user,super_user)
-                if red_product:
-                    self.process_notify_red_product(red_product,user,super_user)
 
 
-    def process_notification_for_in_stock_report(self):
+
+    def process_notification_for_in_stock_report(self,products):
         _logger.info("process_notification_for_in_stock_report called....")
         today_date = date.today()
         today_start = fields.Date.to_string(today_date)
@@ -187,10 +228,10 @@ class InventoryNotificationScheduler(models.TransientModel):
         weekday=days[dayNumber]
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
         _logger.info("weekday: %r", weekday)
-        users = self.env['res.partner'].search([(weekday,'=',True),('customer','=',True),('start_date','<=',today_start),('end_date','>=',today_start)])
-        products= self.env['product.product'].search([('product_tmpl_id.type','=','product'),('qty_available','>',0)])
-        if products:
-            for user in users:
+        custmer_user=self.env['res.users'].search([('partner_id.customer', '=', True),('active','=',True) ])
+        for customer in custmer_user:
+         user = self.env['res.partner'].search([(weekday,'=',True),('customer','=',True),('start_date','<=',today_start),('end_date','>=',today_start),('id','=',customer.partner_id.id)])
+         if user and products:
                 _logger.info("user:%r ",user)
                 subject = "In Stock Product"
                 description = "Please find below list of all the product whose are in stock in SPS Inventory."
@@ -200,6 +241,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                                'product_price_symbol', 'minExDate', 'maxExDate']
                 self.process_common_email_notification_template(super_user, user,  subject,
                                                             description, products, header, columnProps)
+
 
 
 
@@ -239,16 +281,22 @@ class InventoryNotificationScheduler(models.TransientModel):
     def process_notify_available(self):
         today_date = date.today()
         today_start = fields.Date.to_string(today_date)
+        last_day = fields.Date.to_string(datetime.now() - timedelta(days=1))
         quant = self.env['stock.quant'].search(
-            [('write_date', '>=', today_start), ('quantity', '>', 0),('product_tmpl_id.notify', '=', True),])
+            [('create_date', '>=', last_day), ('quantity', '>', 0),('product_tmpl_id.notify', '=', True),])
         products = quant.mapped('product_id')
         subject = "Products Back In Stock"
-        descrption = "<p>Please find below the list items which are back in stock now in SPS Inventory.</p>"
+        descrption = "Please find below the list items which are back in stock now in SPS Inventory."
         header = ['Name', 'Sales Price', 'Cost', 'Product Type', 'Min Expiration Date', 'Max Expiration Date',
                   'Qty On Hand', 'Forecasted Quantity', 'Unit Of Measure']
         columnProps = ['product_name', 'sale_price', 'standard_price', 'product_type', 'maxExDate', 'maxExDate',
                        'qty_on_hand', 'forecasted_qty', 'unit_of_measure']
         self.process_common_product_scheduler(subject, descrption, products, header, columnProps)
+        quant = self.env['stock.quant'].search(
+            [('write_date', '>=', last_day), ('quantity', '>', 0), ])
+        products = quant.mapped('product_id')
+        self.process_notification_for_product_green_status(products)
+        self.process_notification_for_in_stock_report(products)
 
 
 
@@ -412,7 +460,7 @@ class InventoryNotificationScheduler(models.TransientModel):
 
     def process_common_product_scheduler(self,subject,descrption,products, header, columnProps):
         super_user=self.env['res.users'].search([('id', '=',SUPERUSER_ID),])
-        users = self.env['res.users'].search([])
+        users = self.env['res.users'].search([('active','=',True)])
         today_date = date.today()
         today_start = fields.Date.to_string(today_date)
         switcher = {
