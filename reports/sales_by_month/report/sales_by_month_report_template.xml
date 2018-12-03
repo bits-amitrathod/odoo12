@@ -21,8 +21,8 @@
                         <table class="table table-condensed" style="border: 1px solid black;">
                             <thead style="display: table-header-group;">
                                 <tr>
-                                    <th style="border: 1px solid black;text-align: center; width:15%; ">Product</th>
-                                    <th style="border: 1px solid black;text-align: center; width:75%;">Description</th>
+                                    <th style="border: 1px solid black;text-align: center; width:15%; ">SKU / Catalog No</th>
+                                    <th style="border: 1px solid black;text-align: center; width:75%;">Product Name</th>
                                     <th style="border: 1px solid black;text-align: center;white-space: nowrap; width:10%;">
                                        Price
                                     </th>
@@ -40,7 +40,7 @@
                                         <span t-esc="product.product_name"/>
                                     </td>
                                     <td align="right" style="border: 1px solid black;">
-                                        <span t-esc="product.product_price" t-options='{"widget": "monetary","display_currency": product.currency_id}'/>
+                                        <span t-esc="product.product_price * product.total_sale_qty" t-options='{"widget": "monetary","display_currency": product.currency_id}'/>
                                         <t t-set="total_price" t-value="total_price + product.product_price " />
                                         <t t-set="currency" t-value="product.currency_id " />
                                     </td>

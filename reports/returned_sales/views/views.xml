@@ -42,8 +42,10 @@
             <field name="arch" type="xml">
                 <tree>
                     <field name="order_id" string="Order #"/>
+                    <field name="partner_id" string="Customer Name"/>
                     <field name="product_id" string="Product"/>
-                    <!--<field name="partner_id" string="Customer Name"/>-->
+                    <field name="sku_code"/>
+                    <field name="user_id"/>
                     <field name="done_qty" string="Quantity"/>
                     <field name="cost_price" string="Cost"/>
                 </tree>
