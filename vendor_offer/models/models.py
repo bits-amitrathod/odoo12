@@ -31,6 +31,13 @@ class VendorOffer(models.Model):
     rt_price_subtotal_amt = fields.Monetary(string='Subtotal', compute='_amount_tot_all')
     rt_price_total_amt = fields.Monetary( string='Total',compute='_amount_tot_all')
     rt_price_tax_amt = fields.Float(string='Tax', compute='_amount_tot_all')
+    val_temp= fields.Char(string='Temp', default=0)
+    val_bool_temp = fields.Boolean(string='Temp')
+    # ven_amount_untaxed = fields.Monetary(string='Untaxed Amount', store=True,  compute='_amount_all_ven')
+    # ven_amount_tax = fields.Monetary(string='Taxes', store=True,  compute='_amount_all_ven')
+    # ven_amount_total = fields.Monetary(string='Total', store=True, compute='_amount_all_ven')
+    temp_payment_term=fields.Char(string='Temp')
+
     show_validate = fields.Boolean(
         compute='_compute_show_validate',
         help='Technical field used to compute whether the validate should be shown.')
@@ -80,6 +87,13 @@ class VendorOffer(models.Model):
         ('cancel', 'Cancelled')
     ], string='Status', readonly=True, index=True, copy=False, default='draft', track_visibility='onchange')
 
+    @api.model_cr
+    def init(self):
+        for order in self:
+            if order.id!=False:
+                order.val_bool_temp=True
+
+
     @api.multi
     def _compute_show_validate(self):
         multi = self.env['stock.picking'].search([('purchase_id', '=', self.id)])
@@ -115,18 +129,37 @@ class VendorOffer(models.Model):
             if(order.appraisal_no == False):
                 order.appraisal_no = 'AP' + str(randint(11111, 99999))
 
-
-    @api.onchange('order_line.product_offer_price','order_line.price_total')
-    def _amount_tot_all(self):
+    @api.depends('order_line.price_total')
+    def _amount_all_ven(self):
+        print('------------- ------------  purchase    _amount_all')
         for order in self:
-            retail_amt = offer_amount = 0.0
+            amount_untaxed = amount_tax = 0.0
+            for line in order.order_line:
+                amount_untaxed += line.price_subtotal
+                amount_tax += line.price_tax
+
+            order.update({
+                'amount_untaxed': order.currency_id.round(amount_untaxed),
+                'amount_tax': order.currency_id.round(amount_tax),
+                'amount_total': amount_untaxed + amount_tax,
+            })
+
+    @api.onchange('order_line.product_offer_price', 'order_line.price_total')
+    def _amount_tot_all(self):
+
+        for order in self:
+            print('---------------------- in _amount_tot_all-')
+            retail_amt = offer_amount =amount_tax= 0.0
+            temp_amount_untaxed=temp_amount_total=0.0
             rt_price_subtotal_amt_temp = rt_price_total_amt_temp =rt_price_tax_amt_temp = 0.0
             for line in order.order_line:
                 retail_amt += float(line.product_retail)
                 rt_price_subtotal_amt_temp+=float(line.rt_price_subtotal)
                 rt_price_total_amt_temp += float(line.rt_price_total)
                 rt_price_tax_amt_temp += float(line.rt_price_tax)
+                temp_amount_untaxed+=float(line.price_subtotal)
 
+                amount_tax += line.price_tax
 
             order.update({
                 'retail_amt': retail_amt,
@@ -135,8 +168,44 @@ class VendorOffer(models.Model):
                 'rt_price_tax_amt': rt_price_tax_amt_temp,
                 'rt_price_total_amt': rt_price_subtotal_amt_temp + rt_price_tax_amt_temp,
                 'offer_amount': offer_amount,
+                'amount_untaxed':temp_amount_untaxed,
+                    'amount_total' :temp_amount_untaxed + amount_tax,
 
             })
+            temp_calu=temp_amount_untaxed + amount_tax
+            if order.accelerator == False:
+                order.write({'amount_untaxed': temp_amount_untaxed})
+                order.write({'amount_total':temp_calu})
+
+
+            if order.accelerator == True:
+                print('---------------------- in _amount_tot_all-   order.accelerator == True:')
+                print(round(float(order.rt_price_subtotal_amt) * float(0.50), 2))
+
+                temp_cal=round(float(order.rt_price_subtotal_amt) * float(0.50), 2)
+                order.amount_untaxed = round(float(order.rt_price_subtotal_amt) * float(0.50), 2)
+                temp_cal1 = round(float(order.rt_price_subtotal_amt) * float(0.50), 2)
+                order.amount_total = round(float(order.rt_price_subtotal_amt) * float(0.50)+ float(order.amount_tax), 2)
+                print('---------------------- val :')
+                print(order.amount_untaxed)
+                print(order.amount_total)
+                order.update({
+
+                    'amount_untaxed': round(float(order.rt_price_subtotal_amt) * float(0.50), 2),
+                    'amount_total': round(float(order.rt_price_subtotal_amt) * float(0.50)+ float(order.amount_tax), 2),
+
+                })
+                order.write({'amount_untaxed':round(float(order.rt_price_subtotal_amt) * float(0.50), 2)})
+                order.write({'amount_total': round(float(order.rt_price_subtotal_amt) * float(0.50)+ float(order.amount_tax), 2)})
+
+
+                order.potential_profit_margin = math.ceil(abs(round((((order.amount_total / order.rt_price_total_amt) * 100) - 100), 2)))
+                print(order.potential_profit_margin)
+                order.write({'potential_profit_margin': order.potential_profit_margin})
+
+        # self.write({'val_temp': str(randint(11111, 99999))})
+        # self.action_print_vendor_offer_temp()
+
 
     @api.onchange('possible_competition')
     def possible_competition_onchange(self):
@@ -158,25 +227,86 @@ class VendorOffer(models.Model):
                 line.price_subtotal = line.offer_price
                 # line.price_unit = line.product_offer_price
 
+        #         for line in order.order_line:
+        #             taxes1 = line.taxes_id.compute_all(float(line.product_offer_price), line.order_id.currency_id,
+        #                                                line.product_qty, product=line.product_id,
+        #                                                partner=line.order_id.partner_id)
+        #             print(taxes1)
+        #             line.update({
+        #                 'price_tax': sum(t.get('amount', 0.0) for t in taxes1.get('taxes', [])),
+        #                 'price_total': taxes1['total_included'],
+        #                 'price_subtotal': taxes1['total_excluded'],
+        #             })
+        #             line.price_tax=sum(t.get('amount', 0.0) for t in taxes1.get('taxes', []))
+        # self._amount_tot_all()
+
 
     @api.onchange('amount_total', 'rt_price_total_amt')
     def cal_potentail_profit_margin(self):
         if(self.rt_price_total_amt!=0):
             self.potential_profit_margin = math.ceil(abs(round((((self.amount_total/self.rt_price_total_amt)*100)-100),2)))
 
-    @api.onchange('accelerator','rt_price_total_amt')
+    @api.onchange('accelerator')
     def accelerator_onchange(self):
+        print('-------------- --------------------------- in on change acc')
         if self.accelerator == True:
+
             self.max = round(float(self.rt_price_total_amt)*float(0.65),2)
+            self.amount_untaxed = round(float(self.rt_price_subtotal_amt) * float(0.50), 2)
+            temp_cal1 = round(float(self.rt_price_subtotal_amt) * float(0.50), 2)
+            self.amount_total = round(float(temp_cal1) + float(self.amount_tax), 2)
+            for order in self:
+                if order.accelerator == True:
+                    print(round(float(order.rt_price_subtotal_amt) * float(0.50), 2))
+
+                    temp_cal = round(float(order.rt_price_subtotal_amt) * float(0.50), 2)
+                    print(temp_cal)
+                    order.update({
+                        'amount_untaxed': round(float(order.rt_price_subtotal_amt) * float(0.50), 2),
+                        'amount_total': round(float(temp_cal) + float(order.amount_tax), 2),
+
+                    })
+                    order.write({'amount_untaxed': round(float(order.rt_price_subtotal_amt) * float(0.50), 2)})
+                    order.write({'amount_total': round(
+                        float(order.rt_price_subtotal_amt) * float(0.50) + float(order.amount_tax), 2)})
+
+
+
+
         else:
             self.max = 0
+            for order in self:
+                print('---------------------- in in on change acc  == no')
+                retail_amt = offer_amount = 0.0
+                rt_price_subtotal_amt_temp = rt_price_total_amt_temp = rt_price_tax_amt_temp = 0.0
+                for line in order.order_line:
+                    retail_amt += float(line.product_retail)
+                    rt_price_subtotal_amt_temp += float(line.rt_price_subtotal)
+                    rt_price_total_amt_temp += float(line.rt_price_total)
+                    rt_price_tax_amt_temp += float(line.rt_price_tax)
+
+                order.update({
+                    'retail_amt': retail_amt,
+                    'rt_price_subtotal_amt': rt_price_subtotal_amt_temp,
+
+                    'rt_price_tax_amt': rt_price_tax_amt_temp,
+                    'rt_price_total_amt': rt_price_subtotal_amt_temp + rt_price_tax_amt_temp,
+                    'offer_amount': offer_amount,
+
+                })
+
 
     @api.multi
     def action_send_offer_email(self):
         '''
                This function opens a window to compose an email, with the edi purchase template message loaded by default
                '''
+        self.temp_payment_term=self.payment_term_id.name
+        if(self.payment_term_id.name==False):
+            self.temp_payment_term ='0 Days '
         self.ensure_one()
+        print('-----------------')
+        print(self.temp_payment_term)
         ir_model_data = self.env['ir.model.data']
         try:
             if self.env.context.get('send_rfq', False):
@@ -214,8 +344,18 @@ class VendorOffer(models.Model):
 
     @api.multi
     def action_print_vendor_offer(self):
+        self.temp_payment_term = self.payment_term_id.name
+        if (self.payment_term_id.name == False):
+            self.temp_payment_term = '0 Days '
         self.write({'status': 'ven_sent','state': 'ven_sent'})
         return self.env.ref('vendor_offer.action_report_vendor_offer').report_action(self)
+
+    @api.multi
+    def update_values_vendor(self):
+        self.write({'val_temp': str(randint(11111, 99999))})
+
+
+
 
     @api.multi
     def action_confirm_vendor_offer(self):
@@ -304,7 +444,9 @@ class VendorOffer(models.Model):
 
     @api.model
     def create(self, vals):
+        print('----------------- -------------------------- in create ')
         if(self.env.context.get('vendor_offer_data') == True):
+
             vals['state']= 'ven_draft'
             vals['vendor_offer_data']=True
             vals['revision'] = '0'
@@ -312,11 +454,36 @@ class VendorOffer(models.Model):
             record = super(VendorOffer, self).create(vals)
             if record.accelerator == True:
                 record.max = round(float(record.rt_price_total_amt) * float(0.65), 2)
+
             else:
                 record.max = 0
             if (record.rt_price_total_amt != 0):
                 record.potential_profit_margin = math.ceil(
                     abs(round((((record.amount_total / record.rt_price_total_amt) * 100) - 100), 2)))
+            for record1 in record.order_line:
+                taxes1 = record1.taxes_id.compute_all(float(record1.product_offer_price), record1.order_id.currency_id,
+                                                  record1.product_qty, product=record1.product_id,
+                                                           partner=record1.order_id.partner_id)
+
+                record1.price_tax=sum(t.get('amount', 0.0) for t in taxes1.get('taxes', []))
+                record1.price_total = taxes1['total_included']
+                record1.price_subtotal = taxes1['total_excluded']
+            for order in record:
+                retail_amt = offer_amount = 0.0
+                rt_price_subtotal_amt_temp = rt_price_total_amt_temp = rt_price_tax_amt_temp = 0.0
+                for line in order.order_line:
+                    retail_amt += float(line.product_retail)
+                    rt_price_subtotal_amt_temp += float(line.rt_price_subtotal)
+                    rt_price_total_amt_temp += float(line.rt_price_total)
+                    rt_price_tax_amt_temp += float(line.rt_price_tax)
+                order.rt_price_tax_amt=rt_price_subtotal_amt_temp
+
+            if record.accelerator == True:
+
+                record.amount_untaxed =round(float(record.rt_price_subtotal_amt) * float(0.50), 2)
+                temp_cal = round(float(record.rt_price_subtotal_amt) * float(0.50), 2)
+                record.amount_total =round(float(temp_cal) + float(record.amount_tax),2)
+
 
             return record
         else:
@@ -329,9 +496,44 @@ class VendorOffer(models.Model):
     @api.multi
     def write(self, values):
         if (self.state == 'ven_draft'):
+            print(values)
             temp = int(self.revision) + 1
             values['revision'] = str(temp)
-        return super(VendorOffer, self).write(values)
+            record =super(VendorOffer, self).write(values)
+           #  purchase_list = self.env['purchase.order'].search([('id', '=', self.id)])
+           #
+           #  if purchase_list.accelerator == True:
+           #      purchase_list.max = round(float(purchase_list.rt_price_total_amt) * float(0.65), 2)
+           #      purchase_list.amount_total =round(float(purchase_list.rt_price_total_amt) * float(0.50), 2)
+           # # else:
+           #  #    purchase_list.max = 0
+           #  if (purchase_list.rt_price_total_amt != 0):
+           #      purchase_list.potential_profit_margin = math.ceil(
+           #          abs(round((((purchase_list.amount_total / purchase_list.rt_price_total_amt) * 100) - 100), 2)))
+           #  for purchase_list1 in purchase_list.order_line:
+           #      taxes1 = purchase_list1.taxes_id.compute_all(float(purchase_list1.product_offer_price), purchase_list1.order_id.currency_id,
+           #                                            purchase_list1.product_qty, product=purchase_list1.product_id,
+           #                                                 partner=purchase_list1.order_id.partner_id)
+           #
+           #      purchase_list1.price_tax=sum(t.get('amount', 0.0) for t in taxes1.get('taxes', []))
+           #      purchase_list1.price_total = taxes1['total_included']
+           #      purchase_list1.price_subtotal = taxes1['total_excluded']
+           #  for order in purchase_list:
+           #      retail_amt = offer_amount = 0.0
+           #      rt_price_subtotal_amt_temp = rt_price_total_amt_temp = rt_price_tax_amt_temp = 0.0
+           #      for line in order.order_line:
+           #          retail_amt += float(line.product_retail)
+           #          rt_price_subtotal_amt_temp += float(line.rt_price_subtotal)
+           #          rt_price_total_amt_temp += float(line.rt_price_total)
+           #          rt_price_tax_amt_temp += float(line.rt_price_tax)
+           #      order.rt_price_tax_amt=rt_price_subtotal_amt_temp
+           #
+           #  if purchase_list.accelerator == True:
+           #      purchase_list.amount_untaxed =round(float(purchase_list.rt_price_subtotal_amt) * float(0.50), 2)
+           #      purchase_list.amount_total =round(float(purchase_list.amount_untaxed) + float(purchase_list.amount_tax),2)
+            return record
+        else:
+            return super(VendorOffer, self).write(values)
 
 
 
@@ -528,7 +730,7 @@ class VendorOfferProduct(models.Model):
                     float(line.product_qty) * float(line.product_offer_price), 2)
                 line.price_unit = line.product_offer_price
                 line.product_retail = round(float(line.product_qty) * float(line.product_unit_price), 2)
-                # line.price_subtotal = round(float(line.product_qty) * float(line.product_offer_price),2)
+                #line.price_subtotal = round(float(line.product_qty) * float(line.product_offer_price),2)
 
 
     @api.multi
