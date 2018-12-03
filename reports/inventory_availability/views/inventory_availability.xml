@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_inventory_availability_line_tree" model="ir.ui.view">
+        <field name="name">product.product.tree</field>
+        <field name="model">product.product</field>
+        <field name="arch" type="xml">
+            <tree create="false" edit="false" string="Inventory Availability">
+                <field name="product_name" string="Product Name"/>
+                <field name="uom_id" string="UOM"/>
+                <field name="qty_available" string="On Hand"/>
+                <field name="outgoing_qty"  string="Allocated"/>
+                <field name="virtual_available" string="Available"/>
+                <field name="incoming_qty" string="On Order"/>
+            </tree>
+        </field>
+    </record>
+    <record id="product_normal_action_inventory_availability" model="ir.actions.act_window">
+        <field name="name">Inventory Availability</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">product.product</field>
+        <field name="domain">[('product_tmpl_id.type', '=', 'product')]</field>
+        <field name="search_view_id" eval="False"/>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree</field>
+        <field name="search_view_id" eval="False"/>
+        <field name="view_id" ref="view_inventory_availability_line_tree"/>
+    </record>
+
+      <!-- Product menu-->
+      <menuitem name="Inventory Availability" id="menu_procurement_partner_contact_inventory_availability" action="product_normal_action_inventory_availability"
+          parent="stock.menu_warehouse_report" sequence="6"/>
+</odoo>
