@@ -82,7 +82,7 @@
                         <field name="product_id" string="Product"/>
                         <field name="sku_code" string="SKU/Catalog No."/>
                         <field name="qty_on_hand" string="Quantity"/>
-                         <field name="vendor_name" string="Vendor"/>
+                        <field name="vendor_name" string="Vendor"/>
                     </group>
                 </form>
             </field>

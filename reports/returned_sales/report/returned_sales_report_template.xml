@@ -6,16 +6,16 @@
                 <page>
                     <div class="oe_structure"/>
                     <div class="row">
-                    <center>
-                        <b>
-                            <h2> Surgical Product Solutions </h2>
-                            <h4> Returned Sales </h4>
-                        </b>
-                    </center>
+                        <center>
+                            <b>
+                                <h2>Surgical Product Solutions</h2>
+                                <h4>Returned Sales</h4>
+                            </b>
+                        </center>
 
                     </div>
                     <br/>
-                    <t t-set="currency" t-value="0" />
+                    <t t-set="currency" t-value="0"/>
                     <t t-foreach="data['form']" t-as="returned_sales">
                         <center>
                             <b>
@@ -26,25 +26,34 @@
                         <table class="table table-condensed" style="">
                             <thead>
                                 <tr style="">
+                                    <th style="text-align: left;">Order #</th>
                                     <th style="text-align: left;">Customer</th>
+                                    <th style="text-align: left;">Salesperson</th>
                                     <th style="text-align: right;">Qty</th>
                                     <th style="text-align: right;">Price</th>
                                 </tr>
-                               </thead>
+                            </thead>
                             <tbody>
                                 <tr t-foreach="returned_sales[1]" t-as="order">
                                     <td>
                                         <span t-esc="order[0]"/>
                                     </td>
-                                    <td align="center" style="text-align: right;">
+                                    <td>
                                         <span t-esc="order[1]"/>
                                     </td>
+                                    <td>
+                                        <span t-esc="order[2]"/>
+                                    </td>
+                                    <td align="center" style="text-align: right;">
+                                        <span t-esc="order[3]"/>
+                                    </td>
                                     <td align="right" style="text-align: right;">
-                                          <span t-esc="order[2]"/>
+                                        <span t-esc="order[4]"/>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style=""><b>Total</b>
+                                    <td colspan="3" style="text-align: right;">
+                                        <b>Total</b>
                                     </td>
                                     <td style="text-align: right;">
                                         <span t-esc="returned_sales[2]"/>

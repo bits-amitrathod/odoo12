@@ -44,12 +44,8 @@ class ProductTemplate(models.Model):
                     sale_quant = sale_quant + int(quant[0])
                     max_inventory=int(((sale_quant)*30)/max_inventory_level_duration)
                     ml.max_inventory_level =str(int(max_inventory))
-                self.env.cr.execute(
-                    "SELECT sum(product_qty) FROM purchase_order_line WHERE product_id =%s AND state=%s AND product_qty>qty_received",
-                    (product_id.id, "purchase"))
-                pur_qty=self.env.cr.fetchone()
-                if pur_qty[0] is not None:
-                    purchase_qty = int(purchase_qty) + int(pur_qty[0])
+                if  product_id.incoming_qty:
+                    purchase_qty=purchase_qty+int(product_id.incoming_qty)
                 quantity = int(product_id.qty_available) + int(quantity)
             ml.qty_on_order= str(purchase_qty)
 

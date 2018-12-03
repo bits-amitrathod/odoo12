@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="product_activity_report_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <page>
+                    <style>
+                        .noborders {
+                        border: 0;
+                        }
+                    </style>
+                    <div class="oe_structure"/>
+                    <div class="row">
+                        <center>
+                            <b>
+                                <h2>Surgical Product Solutions</h2>
+                                <h4>Product Activity Report</h4>
+                            </b>
+                        </center>
+
+                    </div>
+                    <br/>
+                    <t t-set="grandAmount" t-value="0"/>
+                    <div t-foreach="activities" t-as="location" class="row">
+                        <div class="col-md-12">
+                            <strong>
+                                <span t-esc="location" style="font-size: 16px;"/>
+                            </strong>
+                            <hr style="margin: 5px 0px;"/>
+                        </div>
+
+                        <div class="col-md-12" t-foreach="activities[location]" t-as="activity">
+
+                            <div>
+                                <strong>
+                                    <span t-esc="activity"/>
+                                </strong>
+                            </div>
+
+                            <table class="table table-condensed table-bordered table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Event</th>
+                                        <th>Date</th>
+                                        <th>Change Qty</th>
+                                        <th>User</th>
+                                        <th>SKU / Catalog No</th>
+                                        <th>Lot</th>
+                                        <th>Expiration Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="invoice_tbody">
+                                    <tr t-foreach="activities[location][activity]" t-as="product">
+                                        <td>
+                                            <span t-esc="product['event']"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="product['date']"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="product['change_qty']"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="product['agent']"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="product['sku']"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="product['lot']"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="product['expiration_date']"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </page>
+            </t>
+        </t>
+    </template>
+</odoo>
