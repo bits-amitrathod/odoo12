@@ -254,7 +254,7 @@
                                   <field name="amount_tax"   string="Tax" />
                                     <field name="amount_total" widget="monetary"  string="Total Offer Price" />
                                  <field name="val_bool_temp"  invisible="1"  />
-                                 <!--attrs="{'invisible':[('val_bool_temp', 'not in', ('True','True'))]}" -->
+                                 <!--attrs="{'invisible':[('val_bool_temp','=',False)]}"  -->
                     <button name="update_values_vendor" string="Update Values" type="object"  class="btn-primary"  />
                             </group>
                                   <group class="oe_subtotal_footer oe_right">
