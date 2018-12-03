@@ -50,7 +50,7 @@
                                     <span t-esc="a.total_sale_qty"/>
                                 </td>
                                 <td align="right" class="text-right" style="border: 1px solid black;white-space: nowrap;">
-                                    <span t-esc="a.stock_value" t-options='{"widget": "monetary", "display_currency": a.currency_id}'/>
+                                    <span t-esc="a.stock_value*a.total_sale_qty" t-options='{"widget": "monetary", "display_currency": a.currency_id}'/>
                                 </td>
                             </tr>
                         </t>

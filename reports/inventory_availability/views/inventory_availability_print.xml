@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="inventory_availability_print">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <page>
+                    <div class="oe_structure"/>
+                    <div class="row">
+                    <center>
+                        <b>
+                            <h2> Surgical Product Solutions </h2>
+                            <h4>Inventory Availability</h4>
+                        </b>
+                    </center>
+                    <center>
+                    </center>
+                    </div>
+                    <br/>
+                    <div >
+                    <table class="table  table-condensed" style="border: 1px solid black;width:100%">
+                            <thead>
+                                <tr style="border: 1px solid black;">
+                                    <th style="border: 1px solid black;text-align: center;">Product Name</th>
+                                    <th style="border: 1px solid black;text-align: center;">UOM</th>
+                                    <th style="border: 1px solid black;text-align: center;">On Hand</th>
+                                    <th style="border: 1px solid black;text-align: center;">Allocated</th>
+                                    <th style="border: 1px solid black;text-align: center;">Available</th>
+                                    <th style="border: 1px solid black;text-align: center;">On Order</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="data" t-as="order">
+                                         <td style="border: 1px solid black;">
+                                            <span t-esc="order.product_name"/>
+                                        </td>
+
+                                        <td style="border: 1px solid black;">
+                                            <span t-esc="order.product_tmpl_id.uom_id.name"/>
+                                        </td>
+
+                                        <td style="border: 1px solid black;">
+                                            <span t-esc="order.qty_available"/>
+                                        </td>
+                                        <td align="center" style="border: 1px solid black;">
+                                            <span t-esc="order.outgoing_qty"/>
+                                        </td>
+
+                                        <td align="right" style="border: 1px solid black;white-space:nowrap;">
+                                              <span t-esc="order.virtual_available" />
+                                        </td>
+                                        <td align="right" style="border: 1px solid black;white-space:nowrap;">
+                                              <span t-esc="order.incoming_qty"/>
+                                        </td>
+
+                                    </tr>
+                                </tbody>
+                    </table>
+                    </div>
+                </page>
+            </t>
+        </t>
+    </template>
+</odoo>
