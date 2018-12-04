@@ -18,13 +18,13 @@ class DateGen:
         return next_month - datetime.timedelta(days=next_month.day)
 
     def getFirstDayOfLastMonth(self):
-        dtDateTime = self.getFirstOfMonth()
-        ddays = int(dtDateTime.strftime("%d"))  # days to subtract to get to the 1st
+        dtDateTime = self.getLastDayOfLastMonth()
+        ddays = int(dtDateTime.strftime("%d")) - 1  # days to subtract to get to the 1st
         delta = datetime.timedelta(days=ddays)  # create a delta datetime object
         return dtDateTime - delta
 
     def getLastDayOfLastMonth(self):
-        dtDateTime = self.getFirstDayOfLastMonth()
+        dtDateTime = self.getFirstOfMonth()
         ddays = int(dtDateTime.strftime("%d"))  # days to subtract to get to the 1st
         delta = datetime.timedelta(days=ddays)  # create a delta datetime object
         return dtDateTime - delta

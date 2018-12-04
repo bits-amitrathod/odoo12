@@ -21,11 +21,12 @@
                             <thead style="display: table-header-group;">
                                 <tr style="border: 1px solid black;">
                                     <th style="border: 1px solid black;text-align: center;">SO# </th>
+                                    <th style="border: 1px solid black;text-align: center;">Line #</th>
                                     <th style="border: 1px solid black;text-align: center;width:350px;">Customer</th>
                                     <th style="border: 1px solid black;text-align: center;">Confirmation Date</th>
                                     <th style="border: 1px solid black;text-align: center;">Discount</th>
                                     <th style="border: 1px solid black;text-align: center;">Amount</th>
-                                    <th style="border: 1px solid black;text-align: center;">Total</th>
+                                    <!--<th style="border: 1px solid black;text-align: center;">Total</th>-->
                                 </tr>
                             </thead>
                             <tbody>
@@ -33,7 +34,9 @@
                                         <td  style="border: 1px solid black;">
                                             <span t-esc="order.name"/>
                                         </td>
-
+                                        <td style="border: 1px solid black;">
+                                            <span t-esc="order.r_line_item"/>
+                                        </td>
                                         <td style="border: 1px solid black;">
                                             <span t-esc="order.partner_id.name"/>
                                         </td>
@@ -46,9 +49,9 @@
                                         <td align="right" style="border: 1px solid black;white-space:nowrap;">
                                               <span t-esc="order.r_amount" t-options='{"widget": "monetary","display_currency": order.currency_id}' />
                                         </td>
-                                        <td align="right" style="border: 1px solid black;white-space:nowrap;">
-                                              <span t-esc="order.r_total" t-options='{"widget": "monetary","display_currency": order.currency_id}' />
-                                        </td>
+                                        <!--<td align="right" style="border: 1px solid black;white-space:nowrap;">-->
+                                              <!--<span t-esc="order.r_total" t-options='{"widget": "monetary","display_currency": order.currency_id}' />-->
+                                        <!--</td>-->
                                     </tr>
                             </tbody>
                     </table>
