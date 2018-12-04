@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report
+                id="action_print_inventory_availability"
+                string="Inventory Availability"
+                model="product.product"
+                report_type="qweb-html"
+                file="inventory_availability.inventory_availability_print"
+                name="inventory_availability.inventory_availability_print"
+        />
+    </data>
+</odoo>

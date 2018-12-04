@@ -7,9 +7,10 @@ import logging
 
 
 from odoo import models, fields, api
-import datetime
-_logger = logging.getLogger(__name__)
 
+_logger = logging.getLogger(__name__)
+import datetime
+from datetime import date,datetime,timedelta
 
 
 
@@ -60,6 +61,7 @@ class PricingRule(models.Model):
         # self._cr.execute(sql_query)
         s_date = self.env.context.get('start_date')
         e_date = self.env.context.get('end_date')
+
         select_columns=""" SELECT column_name 
                         FROM  information_schema.columns
                         WHERE 
