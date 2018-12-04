@@ -410,6 +410,9 @@ class PrioritizationEngine(models.TransientModel):
                                     str(sps_cust_uploaded_document.customer_id.id))
             query_result = self.env.cr.dictfetchone()
             if sps_cust_uploaded_document.template_type.lower().strip() == 'requirement':
+                params = self.env['ir.config_parameter'].sudo()
+                document_processing_count = int(params.get_param('prioritization_engine.document_processing_count'))
+                print('Document Processing Count : ',document_processing_count)
                 if int(query_result['document_id']) == int(sps_cust_uploaded_document.id):
                     sps_customer_requirements = self.env['sps.customer.requests'].search(
                         [('document_id', '=', sps_cust_uploaded_document.id),
@@ -418,7 +421,7 @@ class PrioritizationEngine(models.TransientModel):
                         self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'In Process')
                     else:
                         self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
-                elif int(sps_cust_uploaded_document.document_processed_count) >=3:
+                elif int(sps_cust_uploaded_document.document_processed_count) >= int(document_processing_count):
                     self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
                 else:
                     self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'In Process')
@@ -464,6 +467,7 @@ class PrioritizationEngine(models.TransientModel):
 
                 # get current datetime
                 current_datetime = datetime.now()
+                _logger.info('current datetime :%r ',current_datetime)
                 create_date = datetime.strptime(self.change_date_format(sale_order['create_date']), '%Y,%m,%d,%H,%M,%S')
                 # calculate datetime difference.
                 duration = current_datetime - create_date  # For build-in functions
