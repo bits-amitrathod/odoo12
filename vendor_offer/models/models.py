@@ -162,10 +162,11 @@ class VendorOffer(models.Model):
 
                 rt_price_tax_amt_temp += float(line.rt_price_tax)
                 temp_amount_untaxed+=float(line.price_subtotal)
-
-                taxes1 = line.taxes_id.compute_all(float(line.price_subtotal), line.order_id.currency_id,
+                print(line.price_subtotal)
+                taxes1 = line.taxes_id.compute_all(float(line.product_offer_price), line.order_id.currency_id,
                                                    line.product_qty, product=line.product_id,
                                                    partner=line.order_id.partner_id)
+                print(taxes1)
                 amount_tax += sum(t.get('amount', 0.0) for t in taxes1.get('taxes', []))
                 #amount_tax += line.price_tax
 
