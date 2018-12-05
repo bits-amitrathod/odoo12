@@ -133,12 +133,13 @@ class Customer(models.Model):
     @api.constrains('length_of_hold')
     @api.one
     def _check_length_of_hold(self):
-        length_of_hold = self.length_of_hold
-        if length_of_hold and len(str(abs(length_of_hold))) > 5:
-            raise ValidationError(_('Global Priority Configuration->Length of Holding field must be less than 5 digit'))
-        # elif length_of_hold == 0:
-        #     self.length_of_hold = 1
-        #     raise ValidationError(_('Global Priority Configuration->Length of Holding field should not be 0'))
+        if self.prioritization:
+            length_of_hold = self.length_of_hold
+            if length_of_hold and len(str(abs(length_of_hold))) > 5:
+                raise ValidationError(_('Global Priority Configuration->Length of Holding field must be less than 5 digit'))
+            # elif length_of_hold == 0:
+            #     self.length_of_hold = 1
+            #     raise ValidationError(_('Global Priority Configuration->Length of Holding field should not be 0'))
 
     @api.constrains('priority')
     @api.one
@@ -226,11 +227,12 @@ class Prioritization(models.Model):
     @api.constrains('length_of_hold')
     @api.one
     def _check_length_of_hold(self):
-        length_of_hold = self.length_of_hold
-        if length_of_hold and len(str(abs(length_of_hold))) > 5:
-            raise ValidationError(_('Customer Priority Configuration->Length of Holding field must be less than 5 digit'))
-        elif length_of_hold == 0:
-            raise ValidationError(_('Customer Priority Configuration->Length of Holding field should not be 0'))
+        if self.prioritization:
+            length_of_hold = self.length_of_hold
+            if length_of_hold and len(str(abs(length_of_hold))) > 5:
+                raise ValidationError(_('Customer Priority Configuration->Length of Holding field must be less than 5 digit'))
+            elif length_of_hold == 0:
+                raise ValidationError(_('Customer Priority Configuration->Length of Holding field should not be 0'))
 
     @api.constrains('priority')
     @api.one
