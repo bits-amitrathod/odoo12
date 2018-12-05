@@ -63,7 +63,7 @@ odoo.define('website_quote_ext.portal_order_page_ex', function (require) {
                 }).then(function (data) {
                      console.log("inside update_json");
                      console.log(data);
-                     //window.location.reload();
+                     window.location.reload();
                 });
             });
             return false;
