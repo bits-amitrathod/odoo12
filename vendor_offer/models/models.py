@@ -147,21 +147,30 @@ class VendorOffer(models.Model):
 
     @api.onchange('order_line.product_offer_price', 'order_line.price_total')
     def _amount_tot_all(self):
+        print('---- -------------')
 
         for order in self:
 
             retail_amt = offer_amount =amount_tax= 0.0
             temp_amount_untaxed=temp_amount_total=0.0
             rt_price_subtotal_amt_temp = rt_price_total_amt_temp =rt_price_tax_amt_temp = 0.0
+
             for line in order.order_line:
                 retail_amt += float(line.product_retail)
                 rt_price_subtotal_amt_temp+=float(line.rt_price_subtotal)
                 rt_price_total_amt_temp += float(line.rt_price_total)
+
                 rt_price_tax_amt_temp += float(line.rt_price_tax)
                 temp_amount_untaxed+=float(line.price_subtotal)
+                print(line.price_subtotal)
+                taxes1 = line.taxes_id.compute_all(float(line.product_offer_price), line.order_id.currency_id,
+                                                   line.product_qty, product=line.product_id,
+                                                   partner=line.order_id.partner_id)
+                print(taxes1)
+                amount_tax += sum(t.get('amount', 0.0) for t in taxes1.get('taxes', []))
+                #amount_tax += line.price_tax
 
-                amount_tax += line.price_tax
-
+            print(amount_tax)
             order.update({
                 'retail_amt': retail_amt,
                 'rt_price_subtotal_amt':rt_price_subtotal_amt_temp,
@@ -170,13 +179,15 @@ class VendorOffer(models.Model):
                 'rt_price_total_amt': rt_price_subtotal_amt_temp + rt_price_tax_amt_temp,
                 'offer_amount': offer_amount,
                 'amount_untaxed':temp_amount_untaxed,
-                    'amount_total' :temp_amount_untaxed + amount_tax,
+                'amount_tax':amount_tax,
+                'amount_total' :temp_amount_untaxed + amount_tax,
 
             })
             temp_calu=temp_amount_untaxed + amount_tax
             if order.accelerator == False:
                 order.write({'amount_untaxed': temp_amount_untaxed})
                 order.write({'amount_total':temp_calu})
+                order.write({'amount_tax': amount_tax})
 
 
             if order.accelerator == True:
@@ -194,7 +205,7 @@ class VendorOffer(models.Model):
                 })
                 order.write({'amount_untaxed':round(float(order.rt_price_subtotal_amt) * float(0.50), 2)})
                 order.write({'amount_total': round(float(order.rt_price_subtotal_amt) * float(0.50)+ float(order.amount_tax), 2)})
-
+                order.write({'amount_tax': amount_tax})
 
                 order.potential_profit_margin = math.ceil(abs(round((((order.amount_total / order.rt_price_total_amt) * 100) - 100), 2)))
                 print(order.potential_profit_margin)
@@ -623,6 +634,7 @@ class VendorOfferProduct(models.Model):
             for order in self:
                 for line in order:
                     line.qty_in_stock = line.product_id.qty_available
+
 
             if self.tier.code == False:
                 multiplier_list = self.env['multiplier.multiplier'].search([('code', '=', 'out of scope')])

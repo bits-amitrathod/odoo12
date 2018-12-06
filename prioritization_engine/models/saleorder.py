@@ -30,11 +30,15 @@ class SaleOrder(models.Model):
 
     @api.multi
     def _compute_show_validate(self):
-        multi = self.env['stock.picking'].search([('sale_id', '=', self.id)])
-        if len(multi) == 1 and self.delivery_count ==1:
-            self.show_validate=multi.show_validate
-        elif self.delivery_count > 1:
-            self.show_validate=True
+        _logger.info('self %r',self)
+        sale_order_list = [self.id]
+        for sale_id in sale_order_list:
+            multi = self.env['stock.picking'].search([('sale_id', '=', sale_id)])
+            _logger.info('**multi : %r',multi)
+            if len(multi) == 1 and self.delivery_count ==1:
+                self.show_validate=multi.show_validate
+            elif self.delivery_count > 1:
+                self.show_validate=True
 
     @api.multi
     def action_void(self):
