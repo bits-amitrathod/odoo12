@@ -16,7 +16,7 @@ class ReturnrdSales(models.Model):
     done_qty = fields.Float("Qty")
     partner_id = fields.Many2one('res.partner', string='Customer', )
     product_id = fields.Many2one('product.product', string='Product', )
-    move_id = fields.Many2one('stock.move', string='Stock Move', ),
+    move_id = fields.Many2one('stock.move', string='Stock Move', )
     moved_date = fields.Datetime('Date')
     user_id = fields.Many2one('res.users', 'Salesperson', readonly=True)
     sku_code = fields.Char('SKU / Catalog No')
