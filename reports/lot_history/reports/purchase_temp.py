@@ -7,12 +7,9 @@ class ReportPurchaseSalespersonWise(models.AbstractModel):
 
     @api.model
     def get_report_values(self, docids, data=None):
-        purchase_orders = self.env['stock.production.lot'].browse(docids)
+        lot_history = self.env['lot.history.report'].browse(docids)
 
         action= {
-            'doc_ids': data.get('ids'),
-            'doc_model': data.get('model'),
-            'data': purchase_orders,
+            'data': lot_history,
         }
-        action.update({'target': 'main'})
         return action
