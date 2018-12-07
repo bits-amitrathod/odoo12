@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Lot History",
+    'name': "SPS Receiving List",
 
     'summary': """
-        """,
+       """,
 
     'description': """
         
@@ -12,21 +12,15 @@
     'author': "Benchmark It Solutions",
     'website': "http://www.benchmarkitsolutions.com",
 
-
     'category': 'Report',
     'version': '1.0',
 
-    # any module necessary for this one to work correctly
-    'depends': ['base','stock'],
+    'depends': ['base','stock','stock_barcode', 'delivery'],
 
-    # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
         'views/views.xml',
-        'reports/todo_task_report.xml',
-        'views/templates.xml',
+        'reports/sps_receiving_list.xml'
     ],
-
     'installable': True,
     'auto_install': True,
     'application': True,
