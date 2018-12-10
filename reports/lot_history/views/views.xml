@@ -1,45 +1,66 @@
 <odoo>
     <data>
-
-        <record model="ir.ui.view" id="form_list1">
-            <field name="name">aging.report.view.list</field>
-            <field name="model">stock.production.lot</field>
+        <record model="ir.ui.view" id="view_lot_history">
+            <field name="name">lot.history.list</field>
+            <field name="model">lot.history.report</field>
             <field name="priority">20</field>
             <field name="arch" type="xml">
-                <tree>
-
-                    <field name="name"/>
-                    <field name="pr_sku"/>
-                    <field name="pr_name"/>
-                    <field name="pr_type"/>
-                    <field name="p_qty"/>
-                    <field name="cr_date"/>
-                    <field name="vend"/>
-                    <field name="ph"/>
+                 <tree>
+                    <field name="sku_code"/>
+                    <field name="description"/>
+                    <field name="type"/>
+                    <field name="event"/>
+                    <field name="event_date"/>
+                    <field name="lot_no"/>
+                    <field name="change"/>
+                    <field name="vendor"/>
+                    <field name="phone"/>
                     <field name="email"/>
                 </tree>
             </field>
         </record>
 
 
-        <record model="ir.actions.act_window" id="action_stock_quantity_history1">
-            <field name="name">Aging Report</field>
-            <field name="res_model">stock.production.lot</field>
-            <field name="view_mode">tree,form</field>
-            <field name="view_ids" eval="[(5, 0, 0),
-        (0, 0, {'view_mode': 'tree', 'view_id': ref('form_list1')},),
-        (0, 0, {'view_mode': 'form', 'view_id': ref('stock.view_production_lot_form')})
-        ]"/>
-
+        <record id="view_lot_history_popup" model="ir.ui.view">
+            <field name="name">Lot History</field>
+            <field name="model">popup.lot.history</field>
+            <field name="arch" type="xml">
+                <form string="Choose your date">
+                    <group>
+                        <group>
+                            <field name="lot_id"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
         </record>
 
+        <record id="action_lot_history_popup" model="ir.actions.act_window">
+            <field name="name">Lot History</field>
+            <field name="res_model">popup.lot.history</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_lot_history_popup"/>
+            <field name="target">new</field>
+            <!--<field name="context">{'default_compute_at_date': 0}</field>-->
+        </record>
+
+        <record model="ir.actions.act_window" id="action_lot_history">
+            <field name="name">Lot History</field>
+            <field name="res_model">lot.history.report</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_lot_history"/>
+        </record>
 
         <menuitem id="purchase_history_report1"
-                  action="action_stock_quantity_history1"
-                  name="Aging Report"
+                  action="action_lot_history_popup"
+                  name="Lot History"
                   parent="stock.menu_warehouse_report"
                   sequence="4"/>
-
 
     </data>
 </odoo>
