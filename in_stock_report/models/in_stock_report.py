@@ -33,11 +33,13 @@ class ProductTemplate(models.Model):
         for ml in self:
             location_ids = self.env['stock.location'].search([('usage', '=', 'internal'), ('active', '=', True)])
             self.env.cr.execute(
-                "SELECT min(use_date), max (use_date) FROM public.stock_production_lot where product_id = %s",
+                "SELECT sum(sq.quantity), min(use_date), max (use_date) FROM stock_production_lot spl LEFT JOIN   stock_quant sq ON sq.lot_id=spl.id LEFT JOIN  stock_location sl ON sl.id=sq.location_id   where (sl.usage ='internal' OR sl.usage='transit') and  sq.product_id = %s",
                 ( ml.id,))
             query_result = self.env.cr.dictfetchone()
+
             ml.minExDate=fields.Date.from_string(query_result['min'])
             ml.maxExDate =fields.Date.from_string(query_result['max'])
+            ml.qty_in_stock = str(query_result['sum'])
             self.env.cr.execute(
                 "SELECT pt.name AS product_name,pt.company_id AS company_id,pt.sku_code AS sku_code,pb.name AS product_manufacturer,pp.default_code AS product_code FROM product_product AS pp "
                 "LEFT JOIN product_template AS pt ON pt.id=pp.product_tmpl_id LEFT JOIN product_brand AS pb ON pb.id=pt.product_brand_id where pp.id = %s",
@@ -52,13 +54,6 @@ class ProductTemplate(models.Model):
                 [('id', '=', company_id)])
             main_company = self.env['res.company'].sudo().search([], limit=1, order="id")
             ml.currency_id = company.sudo().currency_id.id or main_company.currency_id.id
-            quantity = 0
-            for location_id in location_ids:
-                self.env.cr.execute("SELECT sum(quantity) FROM stock_quant WHERE lot_id>%s AND location_id=%s AND product_id=%s AND quantity>%s",(0,location_id.id,ml.id,0))
-                total_quant = self.env.cr.fetchone()
-                if total_quant[0] is not None:
-                    quantity = int(total_quant[0]) + int(quantity)
-            ml.qty_in_stock = str(int(quantity))
             ml.product_price=str(ml.lst_price)
             ml.product_price_symbol=ml.check_isAvailable(ml.currency_id['symbol']) +" "+str(ml.lst_price)
 
