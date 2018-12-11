@@ -1,0 +1,76 @@
+<odoo>
+
+    <report id="action_sps_receiving_list_report"
+            string="SPS Receiving List"
+            model="stock.move.line"
+            report_type="qweb-html"
+            file="sps_receiving_list_report.adjustment_report1"
+            name="sps_receiving_list_report.adjustment_report1"
+    />
+
+    <template id="adjustment_report1">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <center>
+                           <b>
+                            <h4>Surgical Product Solutions</h4>
+                        </b>
+                        <b>
+                            <h2>SPS Receiving List</h2>
+                        </b>
+                    </center>
+                    <!-- Report page content -->
+
+                   <t t-foreach="receiving_list" t-as="receiving_list_int">
+                        <t t-set="receiving_item" t-value="receiving_list[receiving_list_int]"/>
+
+                        <table  class="table table-condensed" style="margin-bottom: 0px;">
+                            <tr>
+                                <td style="border: none;">
+                                    <span t-esc="receiving_item['product']"/>
+                                </td>
+                            </tr>
+                        </table>
+                        <table class="table table-condensed" style="border: 1px solid black;">
+                            <thead>
+                                <tr>
+                                    <th style="border: 1px solid black;text-align:  center !important;">
+                                        Lot
+                                    </th>
+                                    <th style="border: 1px solid black;text-align:  center !important;">
+                                        Lot Expired Date
+                                    </th>
+                                    <th style="border: 1px solid black;text-align:  center !important;">
+                                        Qty Done
+                                    </th>
+                                    <th style="border: 1px solid black;text-align:  center !important;">
+                                        UOM
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="receiving_item['lots']" t-as="lot">
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="lot['lot_id']"/>
+                                    </td>
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="lot['lot_expired_date']"/>
+                                    </td>
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="lot['qty_done']"/>
+                                    </td>
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="lot['product_uom_id']"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </t>
+                    </div>
+
+            </t>
+        </t>
+    </template>
+
+</odoo>

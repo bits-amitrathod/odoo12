@@ -1,80 +1,249 @@
 # -*- coding: utf-8 -*-
+from builtins import str
 
 from odoo import models, fields, api
 import logging
-import datetime
 
 _logger = logging.getLogger(__name__)
-class lot_history(models.Model):
-    _inherit = 'stock.production.lot'
 
-    pr_sku = fields.Char("SKU/Catalog No", store=False, compute="_calculateSKU")
-    pr_name= fields.Char("Product Name", store=False)
-    pr_type = fields.Char("Product Type", store=False)
-    cr_date = fields.Date("Creation date", store=False)
-    vend=fields.Char("Vendor", store=False)
-    ph=fields.Char("Phone", store=False)
-    email=fields.Char("Email", store=False)
-    p_qty = fields.Integer('Qty', store=False)
-    @api.multi
-    def _calculateSKU(self):
-        ACTIONS = {
-            "product": "Stockable Product",
-            "consu": "Consumable",
-            "service": "Service",
+
+class LotHistory(models.Model):
+    _name = "lot.history.report"
+    _description = "report product activity report"
+
+    sku_code = fields.Char('SKU / Catalog No')
+    description = fields.Char('Description')
+    type = fields.Char('Type')
+    event = fields.Char('Event')
+    event_date = fields.Date(string="Event Date")
+    change = fields.Integer('Change')
+    lot_no = fields.Char(string="Lot #")
+    vendor = fields.Char(string="Vendor")
+    phone = fields.Char(string="Phone")
+    email = fields.Char(string="Email")
+
+    def init(self):
+        self.init_table()
+
+    def init_table(self):
+        sql_query = """ 
+                TRUNCATE TABLE "lot_history_report"
+                RESTART IDENTITY;
+            """
+        self._cr.execute(sql_query)
+        lot_id = self.env.context.get('lot_id')
+        insert_start = "INSERT INTO lot_history_report" \
+                       "(sku_code, description, type,event,event_date,change,lot_no"
+        insert_mid = ",vendor,phone,email"
+        insert_end = ") "
+
+        where_clause = ""
+        if not lot_id is None:
+            where_clause = " AND stock_production_lot.id=" + str(lot_id)
+
+        # -------------------- purchase ------------------------
+        sql_query = insert_start + insert_mid + insert_end + """ 
+                SELECT
+                    product_template.sku_code,
+                    product_template.name            AS description,
+                    'Receive'                               AS type,
+                    purchase_order.name              AS event,
+                    purchase_order.date_order        AS event_date,
+                    purchase_order_line.qty_received AS change,
+                    stock_production_lot.name        AS lot_no,
+                    res_partner.name                 AS vendor,
+                    res_partner.phone,
+                    res_partner.email
+                FROM
+                    purchase_order_line
+                INNER JOIN 
+                    purchase_order
+                ON
+                    (
+                        purchase_order_line.order_id = purchase_order.id)
+                INNER JOIN
+                    product_product
+                ON
+                    (
+                        purchase_order_line.product_id = product_product.id)
+                INNER JOIN
+                    product_template
+                ON
+                    (
+                        product_product.product_tmpl_id = product_template.id)
+                INNER JOIN
+                    stock_move
+                ON
+                    (
+                        purchase_order_line.id = stock_move.purchase_line_id)
+                INNER JOIN
+                    stock_move_line
+                ON
+                    (
+                        stock_move.id = stock_move_line.move_id)
+                LEFT OUTER JOIN
+                    stock_production_lot
+                ON
+                    (
+                        stock_move_line.lot_id = stock_production_lot.id)
+                INNER JOIN
+                    res_partner
+                ON
+                    (
+                        purchase_order_line.partner_id = res_partner.id)
+                INNER JOIN
+                    stock_picking
+                ON
+                    (
+                        stock_move_line.picking_id = stock_picking.id)
+                    """ + where_clause
+
+        self._cr.execute(sql_query)
+
+        # -------------------- Sales ------------------------
+        sql_query = insert_start + insert_mid + insert_end + """
+                SELECT
+                    product_template.sku_code,
+                    product_template.name         AS description,
+                    'Ship'                               AS type,
+                    sale_order.name               AS event,
+                    sale_order.confirmation_date  AS event_date,
+                    sale_order_line.qty_delivered * -1 AS change,
+                    stock_production_lot.name     AS lot_no,
+                    res_partner.name              AS vendor,
+                    res_partner.phone,
+                    res_partner.email
+                FROM
+                    sale_order
+                INNER JOIN
+                    sale_order_line
+                ON
+                    (
+                        sale_order.id = sale_order_line.order_id)
+                INNER JOIN
+                    product_product
+                ON
+                    (
+                        sale_order_line.product_id = product_product.id)
+                INNER JOIN
+                    product_template
+                ON
+                    (
+                        product_product.product_tmpl_id = product_template.id)
+                INNER JOIN
+                    stock_move
+                ON
+                    (
+                        sale_order_line.id = stock_move.sale_line_id)
+                INNER JOIN
+                    stock_move_line
+                ON
+                    (
+                        stock_move.id = stock_move_line.move_id)
+                INNER JOIN
+                    stock_production_lot
+                ON
+                    (
+                        stock_move_line.lot_id = stock_production_lot.id)
+                INNER JOIN
+                    res_partner
+                ON
+                    (
+                        sale_order_line.order_partner_id = res_partner.id)
+                INNER JOIN
+                    stock_picking
+                ON
+                    (
+                        stock_move_line.picking_id = stock_picking.id)
+                            """ + where_clause
+
+        self._cr.execute(sql_query)
+
+        # -------------------- Stock ------------------------
+        sql_query = insert_start + insert_end + """
+            SELECT
+                product_template.sku_code,
+                product_template.name as description,
+                'Inventory Adjustments' AS type,
+                stock_inventory.name as event,
+                stock_inventory.date as event_date,
+                stock_inventory_line.product_qty as change,
+                stock_production_lot.name as lot_no
+            FROM
+                stock_inventory_line
+            INNER JOIN
+                stock_inventory
+            ON
+                (
+                    stock_inventory_line.inventory_id = stock_inventory.id)
+            INNER JOIN
+                product_product
+            ON
+                (
+                    stock_inventory_line.product_id = product_product.id)
+            INNER JOIN
+                product_template
+            ON
+                (
+                    product_product.product_tmpl_id = product_template.id)
+            INNER JOIN
+                stock_production_lot
+            ON
+                (
+                    stock_inventory_line.prod_lot_id = stock_production_lot.id)
+            WHERE stock_inventory.state = 'done'
+                            """ + where_clause
+
+        self._cr.execute(sql_query)
+
+        # -------------------- Srcap ------------------------
+        sql_query = insert_start + insert_end + """
+            SELECT
+                product_template.sku_code,
+                product_template.name as description,
+                'Adjustment Scrap' as type,
+                stock_scrap.name as event,
+                stock_scrap.date_expected as event_date,
+                stock_scrap.scrap_qty * -1 as change,
+                stock_production_lot.name as lot_no
+            FROM
+                product_product
+            INNER JOIN
+                product_template
+            ON
+                (
+                    product_product.product_tmpl_id = product_template.id)
+            INNER JOIN
+                stock_scrap
+            ON
+                (
+                    product_product.id = stock_scrap.product_id)
+            INNER JOIN
+                res_users
+            ON
+                (
+                    stock_scrap.write_uid = res_users.id)
+            INNER JOIN
+                res_partner
+            ON
+                (
+                    res_users.partner_id = res_partner.id)
+            INNER JOIN
+                stock_production_lot
+            ON
+                (
+                    stock_scrap.lot_id = stock_production_lot.id)
+            WHERE stock_scrap.state = 'done'
+                                    """ + where_clause
+
+        self._cr.execute(sql_query)
+
+    def delete_and_create(self):
+        self.init_table()
+
+        return {
+            "type": "ir.actions.act_window",
+            "view_mode": "tree",
+            "res_model": self._name,
+            "name": "Lot History"
         }
-        for order in self:
-            order.pr_sku = order.product_id.product_tmpl_id.sku_code
-            order.pr_name=order.product_id.product_tmpl_id.name
-            order.pr_type=(ACTIONS[order.product_id.product_tmpl_id.type])
-            order.cr_date=order.create_date
-            order.vend=order.product_id.product_tmpl_id.product_brand_id.partner_id.name
-            order.ph=order.product_id.product_tmpl_id.product_brand_id.partner_id.phone
-            order.email = order.product_id.product_tmpl_id.product_brand_id.partner_id.email
-            for p in order.quant_ids:
-                order.p_qty = p.quantity
-    # @api.multi
-    # def get_report_values(self):
-    #     lots = self.env['stock.production.lot'].search([])
-    #     groupby_dict = {}
-    #
-    #     for user in self.product_id:
-    #         filtered_order = list(filter(lambda x: x.product_id == user, lots))
-    #         filtered_by_date = list( filter(lambda x: x.create_date >= self.start_date and x.create_date <= self.end_date, filtered_order))
-    #         groupby_dict[user.name] = filtered_by_date
-    #
-    #
-    #         ACTIONS = {
-    #             "product": "Stockable Product",
-    #             "consu": "Consumable",
-    #             "service": "Service",
-    #         }
-    #
-    #
-    #
-    #         final_dict = {}
-    #         for user in groupby_dict.keys():
-    #             temp = []
-    #             for order in groupby_dict[user]:
-    #                 temp_2 = []
-    #                 temp_2.append(order.product_id.product_tmpl_id.sku_code)
-    #                 temp_2.append(order.name)
-    #                 temp_2.append(order.product_id.product_tmpl_id.name)
-    #                 temp_2.append(ACTIONS[order.product_id.product_tmpl_id.type])
-    #                 temp_2.append(datetime.datetime.strptime(str(order.create_date), '%Y-%m-%d %H:%M:%S').date().strftime('%m-%d-%Y'))
-    #                 temp_2.append(order.product_id.product_tmpl_id.product_brand_id.partner_id.name)
-    #                 temp_2.append(order.product_id.product_tmpl_id.product_brand_id.partner_id.phone)
-    #                 temp_2.append(order.product_id.product_tmpl_id.product_brand_id.partner_id.email)
-    #
-    #                 temp.append(temp_2)
-    #             final_dict[user] = temp
-    #
-    #     datas = {
-    #         'ids': self,
-    #         'model': 'product.list.report',
-    #         'form': final_dict,
-    #         'start_date': fields.Datetime.from_string(str(self.start_date)).date().strftime('%m/%d/%Y'),
-    #         'end_date': fields.Datetime.from_string(str(self.end_date)).date().strftime('%m/%d/%Y'),
-    #
-    #     }
-    #     return self.env.ref('lot_history.action_todo_model_report').report_action([], data=datas)

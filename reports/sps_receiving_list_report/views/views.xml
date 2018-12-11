@@ -1,0 +1,68 @@
+<odoo>
+    <data>
+
+        <record id="view_sps_receive_list_search" model="ir.ui.view">
+            <field name="name">stock.move.line.report</field>
+            <field name="model">stock.move.line</field>
+            <field name="arch" type="xml">
+                <search string="Product">
+                    <filter string="Product" name="product_group" domain="[]"
+                            context="{'group_by' : ['product_id']}"/>
+                    <separator/>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="form_list_sps">
+            <field name="name">sps.receiving.report.view.list</field>
+            <field name="model">stock.move.line</field>
+            <field name="priority">20</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <!--<field name="product_id"/>-->
+                    <field name="sku_code"/>
+                    <field name="lot_id"/>
+                    <field name="lot_expired_date"/>
+                    <field name="qty_done"/>
+                    <field name="product_uom_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_sps_receive_list" model="ir.ui.view">
+            <field name="name">SPS Receiving Report</field>
+            <field name="model">sps_receive_popup.view.model</field>
+            <field name="arch" type="xml">
+                <form string="Choose your date">
+                    <group>
+                        <group>
+                            <field name="compute_at_date" widget="radio"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_sps_receive_list" model="ir.actions.act_window">
+            <field name="name">SPS Receiving List</field>
+            <field name="res_model">sps_receive_popup.view.model</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_sps_receive_list"/>
+            <field name="target">new</field>
+            <field name="context">{'default_compute_at_date': 0}</field>
+        </record>
+
+        <menuitem id="receive_list_report"
+                  action="action_sps_receive_list"
+                  name="SPS Receiving List"
+                  parent="purchase.purchase_report"
+                  sequence="4"/>
+    </data>
+</odoo>

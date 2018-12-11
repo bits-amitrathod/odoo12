@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_prioritization_engine_prioritization,prioritization_engine.prioritization,model_prioritization_engine_prioritization,base.group_user,1,0,0,0
+access_prioritization_engine_sale_order,prioritization_engine.sale_order,model_prioritization_engine_sale_order,base.group_user,1,0,0,0
+access_prioritization_engine_prioritization_engine,prioritization_engine.prioritization_engine,model_prioritization_engine_prioritization_engine,base.group_user,1,0,0,0
