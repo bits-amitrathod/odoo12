@@ -8,56 +8,98 @@
             <field name="subject">${ctx['subject']}</field>
             <field name="body_html">
                 <![CDATA[
-                % set products = ctx.get('products', [])
-                %set headers =  ctx.get('headers', [])
-                %set columnProps =  ctx.get('columnProps', [])
+                % set picking_list = ctx.get('picking_list', [])
+                % set row_color = "#f0f8ff"
 
                  <div style="margin:auto;width:100%;background-color:  #ffffff;  padding-left: 60px;"/>
                     <div>
                         <div >
                             <p>Hi Team,</p>
-                            <p> ${ctx['descrption']} </p>
+                            <p>Please find below Packing list:  </p>
                         </div>
-                         <div >
-                            <p><span style="font-weight: bold;">Customer Name:</span>${ctx['customer_name']}</p>
-                            <p><span style="font-weight: bold;">Shipping Address:</span>${ctx['shipping_address']}</p>
-                            <p><span style="font-weight: bold;">Customer PO Number:</span>${ctx['customer_po_no']}</p>
-                            <p><span style="font-weight: bold;">Carrier Name:</span>${ctx['carrier_name']}</p>
-                            <p><span style="font-weight: bold;">Carrier Account Number:</span>${ctx['carrier_acc_no']}</p>
-                        </div>
+
                         <center>
                         </center>
                     </div>
-                    <br/>
-                    <div >
-                    <table style="border: 1px solid #efecec;width:100%">
+                    % for packing in picking_list:
+                    <div style="border: 1px solid #aaa; margin-top: 50px;">
+                        <div style="margin-left:10px;">
+                            <p><span style="font-weight: bold;">Order Number:</span><span>${packing.sale_id.name}</span></p>
+                             <p><span style="font-weight: bold;">Dated On:</span>${packing.sale_id.write_date}</p>
+                            <p><span style="font-weight: bold;">Customer Name:</span>${packing.sale_id.partner_id.display_name}</p>
+                            <p>
+                                <span style="font-weight: bold;">Shipping Address:</span>
+                                <span>${packing.sale_id.partner_shipping_id.street}</span>
+                                <span>${packing.sale_id.partner_shipping_id.street2}</span>
+                                <span>${packing.sale_id.partner_shipping_id.city}</span>
+                                <span>${packing.sale_id.partner_shipping_id.state_id.name}</span>
+                                <span>${packing.sale_id.partner_shipping_id.zip}</span>
+                                <span>${packing.sale_id.partner_shipping_id.country_id.name}</span>
+                            </p>
+                            %if packing.sale_id.client_order_ref != False:
+                            <p><span style="font-weight: bold;">Customer PO Number:</span>${packing.sale_id.client_order_ref}</p>
+                            %endif
+                            %if packing.sale_id.carrier_info !=False:
+                                <p><span style="font-weight: bold;">Carrier Name:</span>${packing.sale_id.carrier_info}</p>
+                            %endif
+                            %if packing.sale_id.carrier_acc_no !=False:
+                             <p><span style="font-weight: bold;">Carrier Account Number:</span>${packing.sale_id.carrier_acc_no}</p>
+                            %endif
+                        </div>
+                        <br/>
+                        <table style="border: 1px solid #efecec;width:100%">
 
-                            <thead style='border: 1px solid black;background-color:#D6DBDF;line-height: 30px'>
-                                <tr style="border: 1px solid black;">
-                                 %for header in  headers
-                                             <th style="text-align: center;">${header} </th>
-                                  % endfor
-                                </tr>
-                            </thead>
-                            <tbody>
-                               % for product in products:
-                                    <tr  style='border: 1px solid black;background-color: ${product.background_color};line-height:25px'>
-                                         %for column in  columnProps
-                                             <td style="text-align: center;">
-                                                <span>
-                                                    ${product[column]}
-                                                 </span>
-                                            </td>
-                                          % endfor
-                                     </tr>
-                                   % endfor
-                            </tbody>
-                    </table>
-                  </div>
-                  <div  style="margin-top:20px">
-                        <p>Thanks & Regards,</p>
-                        <p> Admin Team </p>
-                  </div>
+                                <thead style='border: 1px solid black;background-color:#D6DBDF;line-height: 30px'>
+                                    <tr style="border: 1px solid black;">
+                                         <th style="text-align: center;">SKU Code</th>
+                                         <th style="text-align: center;">Product Name</th>
+                                         <th style="text-align: center;">Unit of Measure</th>
+                                         <th style="text-align: center;">Lot#</th>
+                                         <th style="text-align: center;">Ordered Qty</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                   % for move_line in packing.move_lines:
+                                        % if (row_color == "#f0f8ff"):
+                                             %set row_color="#ffffff"
+                                            <tr  style='border: 1px solid black;line-height:25px;background-color:#ffffff'>
+                                        % else:
+                                            %set row_color="#f0f8ff"
+                                            <tr  style='border: 1px solid black;line-height:25px;background-color:#f0f8ff'>
+                                        % endif
+                                                <th>${move_line.product_tmpl_id.sku_code}</th>
+                                                <th>${move_line.product_tmpl_id.name}</th>
+                                                <th>${move_line.product_uom.name}</th>
+                                                <th>
+                                                    <div style="margin-top:10px">
+                                                        %for move_line_id in move_line.move_line_ids
+                                                             <p style="font-weight: lighter">
+                                                                <span> ${move_line_id.qty_done}</span>
+                                                                <span>${move_line.product_uom.name}</span>-
+                                                                Lot#:<span>${ move_line_id.lot_id.name} </span>
+                                                                Exp Date:<span> ${move_line_id.lot_id.use_date}</span>
+                                                            </p>
+                                                        %endfor
+                                                    </div>
+                                                </th>
+                                               <th>
+                                                    <div  style="margin-top:10px">
+                                                        <p style="font-weight: lighter">
+                                                            <span> ${move_line.ordered_qty}</span>
+                                                            <span> ${move_line.product_uom.name} </span>
+                                                        </p>
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                   %endfor
+                                </tbody>
+                        </table>
+                 </div>
+                  % endfor
+                      <div  style="margin-top:20px">
+                            <p>Thanks & Regards,</p>
+                            <p> Admin Team </p>
+                      </div>
                  </div>
                 ]]>
             </field>
