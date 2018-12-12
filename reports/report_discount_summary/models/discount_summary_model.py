@@ -5,8 +5,8 @@ class DiscountSummaryView(models.Model):
     _inherit = "sale.order"
 
     start_date = fields.Date('Start Date', store=False)
-    r_line_item = fields.Integer("Line #", store=False)
-    r_discount = fields.Monetary(string='Discount', currency_field='currency_id', compute='_compute_discount',
+    r_line_item = fields.Integer("Line #", store=False, compute='_compute_discount')
+    r_discount = fields.Monetary(string='Discount', currency_field='currency_id',
                                  store=False)
     r_amount = fields.Monetary(string='Amount', currency_field='currency_id', store=False)
 

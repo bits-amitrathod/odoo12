@@ -48,7 +48,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
             returned_sales_context.update({'product_id': self.product_id.id})
 
         if self.sale_person_id.id:
-            returned_sales_context.update({'sales_partner_id': self.sale_person_id.partner_id.id})
+            returned_sales_context.update({'sales_partner_id': self.sale_person_id.id})
 
         self.env['returned_sales.order'].with_context(returned_sales_context).delete_and_create()
 

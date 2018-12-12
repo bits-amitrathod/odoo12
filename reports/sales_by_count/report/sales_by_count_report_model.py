@@ -9,6 +9,21 @@ class ReportProductSaleByCount(models.AbstractModel):
 
     @api.model
     def get_report_values(self, docids, data=None):
-        records = self.env['product.product'].browse(docids)
-        return {
-            'data': records.sorted(key=lambda r: r.total_sale_qty, reverse=True)}
+        records = self.env['report.sales.by.count'].browse(docids)
+
+        old = ""
+        sales = {}
+        for record in records:
+            product = {
+                'sku_code': record.sku_code,
+                'product_name': record.product_name,
+                'quantity': int(float(record.quantity))}
+            if old == record.location:
+                sales[old]['product'].append(product)
+            else:
+                old = record.location
+                sales[old] = {
+                    'location': record.location,
+                    'product': [product]}
+
+        return {'sales': sales}

@@ -10,88 +10,66 @@
                             <b>
                                 <h2>Surgical Product Solutions</h2>
                                 <h4>On Hand By Date</h4>
-                                <h4 t-if="data['report_date']">Reporting Date: <span t-esc="data['report_date']"/></h4>
+                                <h4 t-if="popup.report_date">Reporting Date:
+                                    <span t-esc="popup.report_date"/>
+                                </h4>
                             </b>
                         </center>
                         <br/>
-                            <t t-if="data['show_cost'] != 0">
-                                <table class="table table-condensed" style="border: 1px solid black;">
-                                    <thead>
-                                        <tr style="">
-                                            <th style="text-align: center;center; border: 1px solid black;">SKU/Catalog No.</th>
-                                            <th style="text-align: center; border: 1px solid black; center;">Product</th>
-                                            <th style="text-align: center; border: 1px solid black;">Vendor</th>
-                                            <th style="text-align: center; border: 1px solid black;">Qty</th>
-                                            <th style="text-align: center; border: 1px solid black;">Unit Price</th>
-                                            <th style="text-align: right; border: 1px solid black;">Assets Value</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr t-foreach="data['items']" t-as="product">
-                                            <td style="border: 1px solid black; width: 12%;">
-                                                <span t-esc="product[0]"/>
-                                            </td>
-                                            <td align="left" style="border: 1px solid black;width: 40%;">
-                                                <span t-esc="product[1]"/>
-                                            </td>
-                                            <td align="left" style="border: 1px solid black;width: 12%;">
-                                                <span t-esc="product[2]"/>
-                                            </td>
-                                            <td align="right" style="border: 1px solid black;width: 12%;">
-                                                <span t-esc="'{:.2f}'.format(product[3])"/> <b>ea</b>
-                                            </td>
-                                            <td align="right" style="border: 1px solid black;width: 12%;">
-                                                <b>$</b> <span t-esc="'{:.2f}'.format(product[4])"/>
-                                            </td>
-                                            <td align="right" style="border: 1px solid black;width: 12%;">
-                                                <b>$</b> <span t-esc="'{:.2f}'.format(product[5])"/>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td>Total</td>
-                                            <td style="text-align: right; border: 1px solid black;"><b>$</b>  <span t-esc="data['total_qty']"/></td>
-                                            <td style="text-align: right;  border: 1px solid black;"><b>$</b>  <span t-esc="data['total_assets_value']"/></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </t>
-                            <t t-if="data['show_cost'] == 0">
-                                <table class="table table-condensed" style="border: 1px solid black;">
-                                    <thead>
-                                        <tr>
-                                            <th style="text-align: center;center; border: 1px solid black;">SKU/Catalog No.</th>
-                                            <th style="text-align: center; border: 1px solid black; center;">Product</th>
-                                            <th style="text-align: center; border: 1px solid black;">Vendor</th>
-                                            <th style="text-align: center; border: 1px solid black;">Qty</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr t-foreach="data['items']" t-as="product">
-                                            <td style="border: 1px solid black; width: 13%;">
-                                                <span t-esc="product[0]"/>
-                                            </td>
-                                            <td align="left" style="border: 1px solid black;width: 60%;">
-                                                <span t-esc="product[1]"/>
-                                            </td>
-                                            <td align="left" style="border: 1px solid black;width: 13%;">
-                                                <span t-esc="product[2]"/>
-                                            </td>
-                                            <td align="right" style="border: 1px solid black;width: 14%;">
-                                                <span t-esc="'{:.2f}'.format(product[3])"/> <b>ea</b>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td></td>
-                                            <td>Total</td>
-                                            <td style="text-align: right; border: 1px solid black;"><span t-esc="data['total_qty']"/> <b>ea</b></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </t>
+                        <table class="table table-condensed" style="border: 1px solid black;">
+                            <thead>
+                                <tr style="">
+                                    <th style="text-align: center;center; border: 1px solid black;">SKU/Catalog
+                                        No.
+                                    </th>
+                                    <th style="text-align: center; border: 1px solid black; center;">Product</th>
+                                    <th style="text-align: center; border: 1px solid black;">Qty</th>
+                                    <th style="text-align: center; border: 1px solid black;">Vendor</th>
+                                    <th t-if="popup.show_cost" style="text-align: center; border: 1px solid black;">
+                                        Unit Price
+                                    </th>
+                                    <th t-if="popup.show_cost" style="text-align: right; border: 1px solid black;">
+                                        Assets Value
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="total_assets_value" t-value="0"/>
+                                <tr t-foreach="products" t-as="product">
+                                    <td style="border: 1px solid black; width: 12%;">
+                                        <span t-esc="product.sku_code"/>
+                                    </td>
+                                    <td align="left" style="border: 1px solid black;width: 40%;">
+                                        <span t-esc="product.product_name"/>
+                                    </td>
+                                    <td align="right" style="border: 1px solid black;width: 12%;">
+                                        <span t-esc="product.qty_done"/>
+                                        ea
+                                    </td>
+                                    <td align="left" style="border: 1px solid black;width: 12%;">
+                                        <span t-esc="product.vendor_name"/>
+                                    </td>
+                                    <td t-if="popup.show_cost" align="right"
+                                        style="border: 1px solid black;width: 12%;">
+                                        $
+                                        <span t-esc="product.price_unit"/>
+                                    </td>
+                                    <td t-if="popup.show_cost" align="right"
+                                        style="border: 1px solid black;width: 12%;">
+                                        $
+                                        <span t-esc="product.asset_value"/>
+                                        <t t-set="total_assets_value" t-value="total_assets_value+product.asset_value"/>
+                                    </td>
+                                </tr>
+                                <tr  t-if="popup.show_cost" >
+                                    <td colspan="5">Total</td>
+                                    <td style="text-align: right;  border: 1px solid black;">
+                                        $
+                                        <span t-esc="total_assets_value"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                     <!--<br/>-->
                 </page>

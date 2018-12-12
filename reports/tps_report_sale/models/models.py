@@ -39,4 +39,4 @@ class tps_report_sale(models.Model):
                 if sale_order_line.order_id.confirmation_date and (start_date <= fields.Datetime.from_string(
                         sale_order_line.order_id.confirmation_date).date() <= end_date):
                     product.total_sale_qty = product.total_sale_qty + sale_order_line.product_uom_qty
-                    product.product_price = sale_order_line.price_unit
+                    product.product_price = product.product_price+sale_order_line.price_unit

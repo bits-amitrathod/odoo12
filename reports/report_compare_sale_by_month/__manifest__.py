@@ -1,6 +1,6 @@
 
 {
-    'name': 'Compare Sale By Month',
+    'name': 'Compare Sales By Month',
     'category': 'Report',
     'version': '11.0.0.1',
     'author': "Benchmark IT Solutions (I) Pvt Ltd.",
