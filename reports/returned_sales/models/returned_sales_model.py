@@ -66,7 +66,7 @@ class ReturnrdSales(models.Model):
             sql_query = sql_query + AND + " m.product_id = " + str(product_id)
 
         if not sales_partner_id is None:
-            sql_query = sql_query + AND + " ml.owner_id = " + str(sales_partner_id)
+            sql_query = sql_query + AND + " so.user_id = " + str(sales_partner_id)
 
         # if not start_date is None and not end_date is None:
         #     sql_query = sql_query + AND + " m.date >= '" + str(start_date) + "'" + AND + "m.date <= '" + str(

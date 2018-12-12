@@ -16,54 +16,56 @@
                     </div>
                     <br/>
                     <t t-set="currency" t-value="0"/>
-                    <t t-foreach="data['form']" t-as="returned_sales">
-                        <center>
-                            <b>
-                                <span>Product #:</span>
-                                <span t-esc="returned_sales[0]"/>
-                            </b>
-                        </center>
-                        <table class="table table-condensed" style="">
-                            <thead>
-                                <tr style="">
-                                    <th style="text-align: left;">Order #</th>
-                                    <th style="text-align: left;">Customer</th>
-                                    <th style="text-align: left;">Salesperson</th>
-                                    <th style="text-align: right;">Qty</th>
-                                    <th style="text-align: right;">Price</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr t-foreach="returned_sales[1]" t-as="order">
-                                    <td>
-                                        <span t-esc="order[0]"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="order[1]"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="order[2]"/>
-                                    </td>
-                                    <td align="center" style="text-align: right;">
-                                        <span t-esc="order[3]"/>
-                                    </td>
-                                    <td align="right" style="text-align: right;">
-                                        <span t-esc="order[4]"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="3" style="text-align: right;">
-                                        <b>Total</b>
-                                    </td>
-                                    <td style="text-align: right;">
-                                        <span t-esc="returned_sales[2]"/>
-                                    </td>
-                                    <td align="right" style="white-space: nowrap;">
-                                        <span t-esc="returned_sales[3]"/>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <t t-if="data['form'] is not None">
+                        <t t-foreach="data['form']" t-as="returned_sales">
+                            <center>
+                                <b>
+                                    <span>Product #:</span>
+                                    <span t-esc="returned_sales[0]"/>
+                                </b>
+                            </center>
+                            <table class="table table-condensed" style="">
+                                <thead>
+                                    <tr style="">
+                                        <th style="text-align: left;">Order #</th>
+                                        <th style="text-align: left;">Customer</th>
+                                        <th style="text-align: left;">Salesperson</th>
+                                        <th style="text-align: right;">Qty</th>
+                                        <th style="text-align: right;">Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="returned_sales[1]" t-as="order">
+                                        <td>
+                                            <span t-esc="order[0]"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="order[1]"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="order[2]"/>
+                                        </td>
+                                        <td align="center" style="text-align: right;">
+                                            <span t-esc="order[3]"/>
+                                        </td>
+                                        <td align="right" style="text-align: right;">
+                                            <span t-esc="order[4]"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3" style="text-align: right;">
+                                            <b>Total</b>
+                                        </td>
+                                        <td style="text-align: right;">
+                                            <span t-esc="returned_sales[2]"/>
+                                        </td>
+                                        <td align="right" style="white-space: nowrap;">
+                                            <span t-esc="returned_sales[3]"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </t>
                     </t>
                 </page>
             </t>

@@ -1,6 +1,22 @@
 <odoo>
-  <data>
-    <record id="view_popup_for_sales_by_count" model="ir.ui.view">
+    <data>
+
+        <record id="report_sales_by_count_list_view" model="ir.ui.view">
+            <field name="name">report.sales.by.count.list</field>
+            <field name="model">report.sales.by.count</field>
+            <field name="priority">20</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <!--<field name="location"/>-->
+                    <field name="sku_code"/>
+                    <field name="product_name"/>
+                    <field name="quantity"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="view_popup_for_sales_by_count" model="ir.ui.view">
             <field name="name">Sales By Count</field>
             <field name="model">salesbycount.popup</field>
             <field name="arch" type="xml">
@@ -14,7 +30,7 @@
                     </group>
                     <footer>
                         <button name="open_table" string="View Report" type="object" class="btn-primary"/>
-                        <button string="Cancel" class="btn-default" special="cancel" />
+                        <button string="Cancel" class="btn-default" special="cancel"/>
                     </footer>
                 </form>
             </field>
@@ -31,19 +47,7 @@
         </record>
 
 
-        <record model="ir.ui.view" id="list_view">
-              <field name="name">product.sale.by.count.view.list</field>
-              <field name="model">product.product</field>
-              <field name="priority">21</field>
-              <field name="arch" type="xml">
-                <tree>
-                    <field name="sku_name" string="SKU / Catalog No" />
-                    <field name="product_name" string="Name"/>
-                    <field name="total_sale_qty"/>
-                </tree>
-              </field>
-        </record>
-    <menuitem name="Sales By Count" id="sales_by_count_menu" parent="sale.menu_sale_report"
-              action="sales_by_count.action_sales_by_count"/>
-  </data>
+        <menuitem name="Sales By Count" id="sales_by_count_menu" parent="sale.menu_sale_report"
+                  action="sales_by_count.action_sales_by_count"/>
+    </data>
 </odoo>

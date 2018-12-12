@@ -6,30 +6,6 @@ class OnHandByDateReportModel(models.AbstractModel):
 
     @api.model
     def get_report_values(self, docids, data=None):
-        on_hand_by_date_stock_list = self.env['on_hand_by_date.stock'].browse(docids)
-
-        group_by_list = {}
-        i = 0
-        total_qty = 0
-        total_assets_value = 0
-        for stock in on_hand_by_date_stock_list:
-            if not i:
-                group_by_list.update({'report_date' : stock.report_date})
-                group_by_list.update({'items' : []})
-                show_cost = stock.costing_method
-            i = i + 1
-            group_by_list['items'].append([stock.sku_code, stock.product_id.product_tmpl_id.name, stock.vendor_name,
-                                           stock.qty_on_hand, stock.unit_price, stock.assets_value, stock.vendor_name])
-            total_qty = total_qty + stock.qty_on_hand
-            total_assets_value = total_assets_value + stock.assets_value
-
-        group_by_list.update({'total_qty': total_qty})
-
-        group_by_list.update({'total_assets_value': total_assets_value})
-
-        group_by_list.update({'show_cost': show_cost})
-
-        action = self.env.ref('on_hand_by_date.action_report_on_hand_by_date').report_action([], data=group_by_list)
-        action.update({'target': 'main'})
-
-        return action
+        products = self.env['report.on.hand.by.date'].browse(docids)
+        popup = self.env['popup.on_hand_by_date'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
+        return {'products': products, 'popup': popup}

@@ -19,6 +19,9 @@ class InventoryNotificationScheduler(models.TransientModel):
 
     def process_manual_notification_scheduler(self):
         _logger.info("process_manual_notification_scheduler called..")
+        product_lots = self.env['stock.production.lot'].search([])
+        for product_lot in product_lots:
+            _logger.info("product_lot:%r", product_lot)
         self.process_notification_scheduler()
 
 
@@ -39,48 +42,28 @@ class InventoryNotificationScheduler(models.TransientModel):
             [('create_date', '>=', today_start), ('notification_date', '=', None)])
         subject = "New Product In Inventory"
         descrption = "Please find below list of all the new product added in SPS Inventory"
-        header=['Name','Sales Price','Cost','Product Type','Min Expiration Date','Max Expiration Date','Qty On Hand','Forecasted Quantity','Unit Of Measure']
-        columnProps=['product_name','sale_price','standard_price','product_type','maxExDate','maxExDate','qty_on_hand','forecasted_qty','unit_of_measure']
+        header=['SKU Code','Name','Sales Price','Cost','Product Type','Min Expiration Date','Max Expiration Date','Qty On Hand','Forecasted Quantity','Unit Of Measure']
+        columnProps=['sku_code','product_name','sale_price','standard_price','product_type','minExDate','maxExDate','qty_on_hand','forecasted_qty','unit_of_measure']
         self.process_common_product_scheduler(subject, descrption, products, header, columnProps)
 
     def process_packing_list(self):
         today_date = date.today()
-        today_start = fields.Date.to_string(today_date)
-        users = self.env['res.users'].search([])
-        sales = self.env['sale.order'].search([('state','=','sale')])
+        today_start = datetime.now().date()
+        final_date = datetime.strftime(today_start, "%Y-%m-%d 00:00:00")
         last_day = fields.Date.to_string(datetime.now() - timedelta(days=1))
-        for sale in sales:
-            sale_order_lines = self.env['sale.order.line'].search([('order_id.id','=',sale.id),
-                                                              ('move_ids.state','=','done'),
-                                                              ('move_ids.move_line_ids.state','=','done'),
-                                                              ('move_ids.move_line_ids.write_date','>=',last_day),
-                                                              ('move_ids.move_line_ids.qty_done','>',0),
-                                                              ('move_ids.move_line_ids.lot_id','!=',None)])
+        picking = self.env['stock.picking'].search([('sale_id', '!=', False),('state', '=', 'done'),('write_date','>=',last_day),('write_date', '<', final_date)])
+        _logger.info("picking:%r", picking)
+        vals={
+             'picking_list':picking,
+            'custom_template':"inventory_notification.inventory_packing_list_notification"
+        }
+        if len(picking)>0:
+            self.process_packing_email_notification(vals)
 
-            shipping_address=self.check_isAvailable(sale.partner_id.street) + " " + self.check_isAvailable(sale.partner_id.street2) + " "\
-                             +self.check_isAvailable(sale.partner_id.zip) + " "+ self.check_isAvailable(sale.partner_id.city)+" "+ \
-                             self.check_isAvailable(sale.partner_id.state_id.name) + " "+ self.check_isAvailable(sale.partner_id.country_id.name)
-            vals={
-                'sale_order_lines':sale_order_lines,
-                'subject':"New Sale Order",
-                'descrption':"Please find below Packing list for Order No:" + sale.name +" Dated:"+ sale.write_date,
-                'header': ['Name',  'Lot No#', 'Expiration Date','Ordered Qty', 'Unit Of Measure'],
-                'columnProps':['name',  'move_ids.move_line_ids.lot_id.name', 'move_ids.move_line_ids.lot_id.use_date',
-                           'move_ids.move_line_ids.ordered_qty',  'product_id.product_tmpl_id.uom_id.name'],
-                'customer_name':self.check_isAvailable(sale.partner_id.display_name),
-                'shipping_address':shipping_address,
-                'customer_po_no': self.check_isAvailable(sale.client_order_ref),
-                'carrier_name': self.check_isAvailable(sale.carrier_info),
-                'carrier_acc_no':  self.check_isAvailable(sale.carrier_acc_no),
-                'custom_template':"inventory_notification.inventory_packing_list_notification"
-            }
-            if len(sale_order_lines)>0:
-                self.process_packing_email_notification(vals)
-            today_start = datetime.now().date()
-            final_date = datetime.strftime(today_start, "%Y-%m-%d 00:00:00")
             # final_date = fields.Datetime.from_string(today_start)
         products = self.env['product.product'].search([('stock_move_ids.sale_line_id', '!=', False),
                                                        ('stock_move_ids.state', '=', 'done'),
+                                                       ('stock_move_ids.picking_id','!=',False),
                                                        ('stock_move_ids.move_line_ids.state', '=', 'done'),
                                                        ('stock_move_ids.move_line_ids.write_date', '>=', last_day),
                                                        ('stock_move_ids.move_line_ids.write_date', '<', final_date),
@@ -248,7 +231,7 @@ class InventoryNotificationScheduler(models.TransientModel):
     def process_notify_green_product(self,products,to_user,from_user):
         subject = "products which are in green status"
         description = "Please find below list of all the product whose status in Color(Green) in SPS Inventory."
-        header = ['SKU','Name', 'Sales Price', 'Cost', 'Product Type',
+        header = ['SKU Code','Name', 'Sales Price', 'Cost', 'Product Type',
                   'Qty On Hand', 'Forecasted Quantity', 'Unit Of Measure']
         columnProps = ['sku_code','product_name', 'sale_price', 'standard_price', 'product_type',
                        'qty_on_hand', 'forecasted_qty', 'unit_of_measure']
@@ -259,7 +242,7 @@ class InventoryNotificationScheduler(models.TransientModel):
     def process_notify_yellow_product(self, products,to_user,from_user):
         subject = "products which are in yellow status"
         description = "Please find below list of all the product whose status in Color(Yellow) in SPS Inventory."
-        header = ['SKU', 'Name', 'Sales Price', 'Cost', 'Product Type',
+        header = ['SKU Code', 'Name', 'Sales Price', 'Cost', 'Product Type',
                   'Qty On Hand', 'Forecasted Quantity', 'Unit Of Measure']
         columnProps = ['sku_code', 'product_name', 'sale_price', 'standard_price', 'product_type',
                        'qty_on_hand', 'forecasted_qty', 'unit_of_measure']
@@ -270,7 +253,7 @@ class InventoryNotificationScheduler(models.TransientModel):
     def process_notify_red_product(self, products,to_user,from_user):
         subject = "products which are in red status"
         description = "Please find below list of all the product whose status in Color(Red) in SPS Inventory."
-        header = ['SKU', 'Name', 'Sales Price', 'Cost', 'Product Type',
+        header = ['SKU Code', 'Name', 'Sales Price', 'Cost', 'Product Type',
                   'Qty On Hand', 'Forecasted Quantity', 'Unit Of Measure']
         columnProps = ['sku_code', 'product_name', 'sale_price', 'standard_price', 'product_type',
                        'qty_on_hand', 'forecasted_qty', 'unit_of_measure']
@@ -287,9 +270,9 @@ class InventoryNotificationScheduler(models.TransientModel):
         products = quant.mapped('product_id')
         subject = "Products Back In Stock"
         descrption = "Please find below the list items which are back in stock now in SPS Inventory."
-        header = ['Name', 'Sales Price', 'Cost', 'Product Type', 'Min Expiration Date', 'Max Expiration Date',
+        header = ['SKU Code','Name', 'Sales Price', 'Cost', 'Product Type', 'Min Expiration Date', 'Max Expiration Date',
                   'Qty On Hand', 'Forecasted Quantity', 'Unit Of Measure']
-        columnProps = ['product_name', 'sale_price', 'standard_price', 'product_type', 'maxExDate', 'maxExDate',
+        columnProps = ['sku_code','product_name', 'sale_price', 'standard_price', 'product_type', 'minExDate', 'maxExDate',
                        'qty_on_hand', 'forecasted_qty', 'unit_of_measure']
         self.process_common_product_scheduler(subject, descrption, products, header, columnProps)
         quant = self.env['stock.quant'].search(
@@ -302,74 +285,26 @@ class InventoryNotificationScheduler(models.TransientModel):
 
     def process_packing_email_notification(self,vals):
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
-        users = self.env['res.users'].search([])
+        users = self.env['res.users'].search([('active','=',True)])
         template = self.env.ref(vals['custom_template'])
-        product_dict = {}
-        product_list = []
-        coln_name = []
-        background_color = "#ffffff"
-        for product in vals['sale_order_lines']:
-            coln_name = []
-            if background_color == "#ffffff":
-                background_color = "#f0f8ff"
-            else:
-                background_color = "#ffffff"
-            for column_name in vals['columnProps']:
-                coln_name.append(column_name)
-                if isinstance(product, dict):
-                    column = str(product.get(column_name))
-                else:
-                    if column_name.find(".") == -1:
-                        column = str(product[column_name])
-                    else:
-                        lst = column_name.split('.')
-                        column = product[lst[0]]
-                        if isinstance(lst, list):
-                            for col in range(1, len(lst)):
-                                pri_col=""
-                                for cols in column:
-                                  cols = cols[lst[col]]
-                                  pri_col=cols
-                                column=pri_col
-                        else:
-                            column = column[lst]
-                product_dict[column_name] = column
-            product_dict['background_color'] = background_color
-            product_list.append(product_dict)
-            product_dict = {}
         for user in users:
             has_group = user.has_group('stock.group_stock_manager')
             if has_group:
-                local_context = {'products': product_list, 'headers': vals['header'], 'columnProps': coln_name,
-                         'email_from': super_user.email, 'email_to': user.email, 'subject': vals['subject'],
-                         'descrption': vals['descrption'],'customer_name':vals['customer_name'],'shipping_address':vals['shipping_address'],
-                         'customer_po_no':vals['customer_po_no'],'carrier_name':vals['carrier_name'],'carrier_acc_no':vals['carrier_acc_no']
+                local_context = {'picking_list': vals['picking_list'],
+                                 'subject': 'New Sales Order',
+                         'email_from': super_user.email, 'email_to': user.email,
                 }
-                html_description="""
-                    <div>
-                       <p>"""+vals['descrption']+"""</p>
-                        <p> <span style = "font-weight: bold;" > 
-                            Customer Name: </span >""" +vals['customer_name'] + """ </p >
-                        <p> 
-                            <span style = "font-weight: bold;" > Shipping Address: </span >""" +vals['shipping_address'] +"""</p>
-                         <p> <span style = "font-weight: bold;" > 
-                           Customer PO Number: </span >""" +vals['customer_po_no'] + """ </p >
-                        <p> 
-                            <span style = "font-weight: bold;" > Carrier Name: </span >""" +vals['carrier_name'] +"""</p> 
-                        <p> 
-                            <span style = "font-weight: bold;" > Carrier Account Number: </span >""" +vals['carrier_acc_no'] +"""</p>       
-                    </div>"""
                 html_file = self.env['inventory.notification.html'].search([])
-                finalHTML = html_file.process_common_html(vals['subject'], html_description, product_list, vals['header'], coln_name)
+                finalHTML = html_file.process_packing_list_html(vals['picking_list'])
                 template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True, )
                 mail = self.env["mail.thread"]
                 mail.message_post(
-                    body=finalHTML,
-                    subject=vals['subject'],
-                    message_type='notification',
-                    partner_ids=[user.partner_id.id],
-                    content_subtype='html'
-                )
+                     body=finalHTML,
+                     subject='New Sales Order',
+                     message_type='notification',
+                     partner_ids=[user.partner_id.id],
+                     content_subtype='html'
+                 )
 
 
 
@@ -483,8 +418,9 @@ class InventoryNotificationScheduler(models.TransientModel):
                             row = "even"
                         qty_on_hand=product.qty_available
                         forecasted_qty=product.virtual_available
+
                         self.env.cr.execute(
-                            "SELECT min(use_date), max (use_date) FROM stock_production_lot where product_id = %s",
+                            "SELECT  min(use_date), max (use_date) FROM stock_production_lot spl LEFT JOIN   stock_quant sq ON sq.lot_id=spl.id LEFT JOIN  stock_location sl ON sl.id=sq.location_id   where (sl.usage ='internal' OR sl.usage='transit') and  sq.product_id = %s",
                             (product.id,))
                         query_result = self.env.cr.dictfetchone()
                         minExDate = fields.Date.from_string(query_result['min'])
@@ -499,13 +435,12 @@ class InventoryNotificationScheduler(models.TransientModel):
                             'forecasted_qty':forecasted_qty,
                             'background_color':background_color,
                             'product_name':product.product_tmpl_id.name,
+                            'sku_code':product.product_tmpl_id.sku_code,
                             'unit_of_measure':product.product_tmpl_id.uom_id.name
                         }
                         product_list.append(vals)
                         product.write({'notification_date': today_start})
                     self.process_common_email_notification_template(super_user, user, subject,
-
-
                                                                descrption, product_list, header, columnProps)
 
     def check_isAvailable(self, value):

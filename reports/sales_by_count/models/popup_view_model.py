@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import api, fields, models ,_
+from odoo import api, fields, models, _
 import logging
 import datetime
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, pycompat, misc
@@ -20,44 +20,31 @@ class ProductSaleByCountPopUp(models.TransientModel):
 
     start_date = fields.Datetime('Start Date', default=fields.Datetime.now)
 
-    end_date = fields.Datetime('End Date', default = fields.Datetime.now)
-
-
+    end_date = fields.Datetime('End Date', default=fields.Datetime.now)
 
     def open_table(self):
-        tree_view_id = self.env.ref('sales_by_count.list_view').id
-        form_view_id = self.env.ref('product.product_normal_form_view').id
+        tree_view_id = self.env.ref('sales_by_count.report_sales_by_count_list_view').id
+
+        res_model = 'report.sales.by.count'
+        margins_context = {}
+        if self.compute_at_date:
+            s_date = self.string_to_date(str(self.start_date))
+            e_date = self.string_to_date(str(self.end_date))
+            margins_context.update({'s_date': s_date, 'e_date': e_date})
+
+        self.env[res_model].with_context(margins_context).delete_and_create()
 
         action = {
             'type': 'ir.actions.act_window',
-            'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
-            'view_mode': 'tree,form',
-            'name': _('Sales By Count'),
-            'res_model': 'product.product',
-            'target': 'main'
+            'views': [(tree_view_id, 'tree')],
+            'view_mode': 'tree',
+            'name': 'Sales By Count',
+            'res_model': res_model,
+            'context': {'group_by': 'location', 'order_by': 'quantity'},
         }
-
-        if self.compute_at_date:
-            s_date = ProductSaleByCountPopUp.string_to_date(str(self.start_date))
-            e_date = ProductSaleByCountPopUp.string_to_date(str(self.end_date))
-
-            sale_orders = self.env['sale.order'].search([('state', '=', 'sale')])
-
-            filtered_sale_orders = list(filter(
-                lambda x: x.confirmation_date and \
-                          s_date <= ProductSaleByCountPopUp.string_to_date(x.confirmation_date) <= e_date, sale_orders))
-            product_ids = []
-            for sale_order in filtered_sale_orders:
-                for sale_order_line in sale_order.order_line:
-                    product_ids.append(sale_order_line.product_id.id)
-
-            product_ids = list(set(product_ids))
-
-            action.update({'domain': [('id', 'in', product_ids)]})
 
         return action
 
     @staticmethod
     def string_to_date(date_string):
         return datetime.datetime.strptime(date_string, DEFAULT_SERVER_DATETIME_FORMAT).date()
-

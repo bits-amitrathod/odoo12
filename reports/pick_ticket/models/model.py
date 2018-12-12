@@ -21,18 +21,18 @@ class ReportPickTicketGroupByOrderDate(models.TransientModel):
 
     def open_table(self):
 
-        margins_context = {}
+        context = {}
         if self.compute_at_date:
             s_date = self.string_to_date(str(self.start_date))
             e_date = self.string_to_date(str(self.end_date))
-            margins_context.update({'s_date': s_date, 'e_date': e_date})
+            context.update({'s_date': s_date, 'e_date': e_date})
         else:
-            margins_context.update({'sale_number': self.order_number})
+            context.update({'sale_number': self.order_number})
 
         tree_view_id = self.env.ref('pick_ticket.pick_report_list_view').id
 
         res_model = 'report.order.pick.ticket'
-        self.env[res_model].with_context(margins_context).delete_and_create()
+        self.env[res_model].with_context(context).delete_and_create()
 
         action = {
             'type': 'ir.actions.act_window',
@@ -71,7 +71,6 @@ class PickTicketReport(models.Model):
     @api.model_cr
     def init(self):
         self.init_table()
-        pass
 
     def init_table(self):
         s_date = self.env.context.get('s_date')
