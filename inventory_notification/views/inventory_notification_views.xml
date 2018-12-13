@@ -3,7 +3,7 @@
       <record id="ir_cron_scheduler_scrap_action" forcecreate="True" model="ir.cron">
             <field name="name">Notification Scheduler</field>
             <field name="user_id" ref="base.user_root"/>
-            <field name="interval_number">60</field>
+            <field name="interval_number">1440</field>
             <field name="interval_type">minutes</field>
             <field name="model_id" ref="model_inventory_notification_scheduler"/>
             <field name="state">code</field>
