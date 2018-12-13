@@ -10,7 +10,7 @@
                     <center>
                         <b>
                             <h2> Surgical Product Solutions </h2>
-                            <h4> Discount Summary</h4>
+                            <h4> Appraisal Tracker</h4>
                         </b>
                     </center>
                     <center>
@@ -18,20 +18,6 @@
                     </div>
                     <br/>
 
-                            <!--<div class="row mt32 mb32">-->
-                        <!--<div t-if="data.appraisal_no" class="col-xs-3">-->
-                            <!--<strong>Our Order Reference:</strong>-->
-                            <!--<p t-field="o.appraisal_no"/>-->
-                        <!--</div>-->
-                        <!--<div t-if="data.priority" class="col-xs-3">-->
-                            <!--<strong>Your Order Reference:</strong>-->
-                            <!--<p t-field="o.priority"/>-->
-                        <!--</div>-->
-                        <!--<div t-if="data.revision" class="col-xs-3">-->
-                            <!--<strong>Order Date:</strong>-->
-                            <!--<p t-field="o.revision"/>-->
-                        <!--</div>-->
-                 <!--</div>-->
                     <div class="" style=" width: 100%;text-align: center;" >
                     <table class="table table-condensed" style="border: 1px solid black; " >
                             <thead>

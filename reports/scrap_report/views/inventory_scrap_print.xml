@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="inventory_scrap_print">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <page>
+                    <div class="oe_structure"/>
+                    <div class="row">
+                    <center>
+                        <b>
+                            <h2> Surgical Product Solutions </h2>
+                            <h4>Inventory Scrap Report</h4>
+                        </b>
+                    </center>
+                    <center>
+                    </center>
+                    </div>
+                    <br/>
+                    <div >
+                    <table class="table  table-condensed" style="border: 1px solid black;width:100%">
+                            <thead>
+                                <tr style="border: 1px solid black;">
+                                    <th style="border: 1px solid black;text-align: center;">Reference</th>
+                                    <th style="border: 1px solid black;text-align: center;">Create Date</th>
+                                    <th style="border: 1px solid black;text-align: center;">Product</th>
+                                    <th style="border: 1px solid black;text-align: center;">Lot Number</th>
+                                    <th style="border: 1px solid black;text-align: center;">Quantity</th>
+                                    <th style="border: 1px solid black;text-align: center;">Unit of Measure</th>
+                                    <th style="border: 1px solid black;text-align: center;">Location</th>
+                                    <th style="border: 1px solid black;text-align: center;">Scrap Location</th>
+                                     <th style="border: 1px solid black;text-align: center;">Status</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="data" t-as="scrap">
+                                         <td style="border: 1px solid black;">
+                                            <span t-esc="scrap.name"/>
+                                        </td>
+
+                                        <td style="border: 1px solid black;">
+                                            <span t-esc="scrap.create_date"/>
+                                        </td>
+                                        <td style="border: 1px solid black;">
+                                            <span t-esc="scrap.product_id.name"/>
+                                        </td>
+                                        <td style="border: 1px solid black;">
+                                            <span t-esc="scrap.lot_id.name"/>
+                                        </td>
+                                        <td align="center" style="border: 1px solid black;">
+                                            <span t-esc="scrap.scrap_qty"/>
+                                        </td>
+
+                                        <td align="right" style="border: 1px solid black;white-space:nowrap;">
+                                              <span t-esc="scrap.product_uom_id.name" />
+                                        </td>
+                                        <td align="right" style="border: 1px solid black;white-space:nowrap;">
+                                              <span t-esc="scrap.location_id"/>
+                                        </td>
+                                        <td align="right" style="border: 1px solid black;white-space:nowrap;">
+                                              <span t-esc="scrap.scrap_location_id.name"/>
+                                        </td>
+                                        <td align="right" style="border: 1px solid black;white-space:nowrap;">
+                                              <span t-esc="scrap.state"/>
+                                        </td>
+
+
+                                    </tr>
+                                </tbody>
+                    </table>
+                    </div>
+                </page>
+            </t>
+        </t>
+    </template>
+</odoo>

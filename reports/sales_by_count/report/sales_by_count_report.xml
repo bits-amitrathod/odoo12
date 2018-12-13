@@ -4,7 +4,7 @@
         <report
                 id="action_report_sales_by_count"
                 string="Sales By Count"
-                model="product.product"
+                model="report.sales.by.count"
                 report_type="qweb-html"
                 file="sales_by_count.sales_by_count_template"
                 name="sales_by_count.sales_by_count_template"

@@ -5,7 +5,7 @@
     'author': "Benchmark IT Solutions (I) Pvt. Ltd",
     'website': "http://www.benchmarkitsolutions.com",
 
-    'category': 'Uncategorized',
+    'category': 'Report',
     'version': '0.1',
 
     # any module necessary for this one to work correctly

@@ -35,7 +35,10 @@ class StockMoveExtension(models.Model):
             params = self.env['ir.config_parameter'].sudo()
             group_stock_production_lot = params.get_param('inventory_extension.group_stock_production_lot')
             module_product_expiry = params.get_param('inventory_extension.module_product_expiry')
-            if product_tmpl.tracking =='lot' and group_stock_production_lot:
+            show_lots_m2o = this.has_tracking != 'none' and (
+                    this.picking_type_id.use_existing_lots or this.state == 'done' or this.origin_returned_move_id.id),  # able to create lots, whatever the value of ` use_create_lots`.
+            show_lots_text = this.has_tracking != 'none' and this.picking_type_id.use_create_lots and not this.picking_type_id.use_existing_lots and this.state != 'done' and not this.origin_returned_move_id.id,
+            if product_tmpl.tracking =='lot' and group_stock_production_lot and (show_lots_m2o[0] or show_lots_text[0]) :
                 try:
                     serialNumber = False;
                     serialNumberExDate = False;

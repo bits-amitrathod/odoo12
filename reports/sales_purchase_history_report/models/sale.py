@@ -31,13 +31,14 @@ class SaleSalespersonReport(models.TransientModel):
 
     @api.multi
     def print_purchase_history_vise_report(self):
-        sale_orders = self.env['sale.order'].search([])
-        groupby_dict = {}
-        for user in self.product_id:
-            filtered_order = list(filter(lambda x: x.product_id == user, sale_orders))
-        filtered_by_date = list(
-                filter(lambda x: x.date_order >= self.start_date and x.date_order <= self.end_date, filtered_order))
-        groupby_dict['data'] = filtered_by_date
+        filter = [('date_order', '>=', self.start_date), ('date_order', '<=', self.end_date)]
+
+        if hasattr(self.product_id, 'ids') and len(self.product_id.ids):
+            filter.append(('order_line.product_id', 'in', self.product_id.ids))
+
+        sale_orders = self.env['sale.order'].search(filter)
+
+        groupby_dict = {'data': sale_orders}
 
         final_dict = {}
         for user in groupby_dict.keys():
@@ -47,9 +48,9 @@ class SaleSalespersonReport(models.TransientModel):
                 temp_2.append(order.name)
                 temp_2.append(order.date_order)
                 temp_2.append(order.amount_total)
-                sum= 0
+                sum = 0
                 for r in order.order_line:
-                    sum=sum +r.qty_delivered
+                    sum = sum + r.qty_delivered
                 temp_2.append(sum)
                 temp_2.append(order.product_id.name)
                 temp.append(temp_2)
@@ -63,5 +64,4 @@ class SaleSalespersonReport(models.TransientModel):
 
         }
         return self.env.ref('sales_purchase_history_report.action_report_purchase_history_wise').report_action([],
-                                                                                                                    data=datas)
-
+                                                                                                               data=datas)
