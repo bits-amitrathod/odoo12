@@ -19,7 +19,7 @@ class inventory_adjustment_report(models.Model):
     total_amt=fields.Monetary("Total Amount", store=False,currency_field='currency_id')
     p_qty = fields.Integer('Qty', store=False)
     currency_id = fields.Many2one('res.currency', 'Currency', store=False)
-
+    product_name = fields.Char("Product Name", store=False)
 
     @api.multi
     def _calculateSKU(self):
@@ -40,6 +40,7 @@ class inventory_adjustment_report(models.Model):
             order.p_type =(ACTIONS[keys])
             order.date_cal=order.date
             order.date_posted=order.date
+            order.product_name = order.product_id.name
             order.amount = (float_repr(order.product_id.product_tmpl_id.list_price, precision_digits=2))
             for p in order.line_ids:
                 order.p_qty = p.product_qty
@@ -54,6 +55,7 @@ class inventory_adjustment_report(models.Model):
                 order.date_cal = user.create_date
                 order.date_posted = user.create_date
                 order.p_qty = user.scrap_qty
+                order.product_name = order.product_id.name
                 order.amount = (float_repr(user.product_id.product_tmpl_id.list_price, precision_digits=2))
                 order.total_amt = (
                     float_repr(user.scrap_qty * user.product_id.product_tmpl_id.list_price, precision_digits=2))

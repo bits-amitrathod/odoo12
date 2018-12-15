@@ -10,6 +10,7 @@
                             <field name="compute_at_date" widget="radio"/>
                             <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
                             <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                            <field name="product_sku_code"/>
                         </group>
                     </group>
                     <footer>
@@ -40,6 +41,7 @@
                     <field name="name" string="Description"/>
                     <field name="product_price" widget="monetary" sum="Total"/>
                     <field name="total_sale_qty" />
+                    <field name="total_amount" widget="monetary"/>
                     <field name="currency_id"  invisible="1" />
                 </tree>
               </field>
