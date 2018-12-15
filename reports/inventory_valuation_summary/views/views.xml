@@ -1,23 +1,8 @@
 <odoo>
-    <!--<record id="action_stock_inventory_valuation_summary" model="ir.actions.act_window">-->
-        <!--<field name="name">Inventory Valuation Summary</field>-->
-        <!--<field name="res_model">inventory.valuation.summary</field>-->
-        <!--<field name="view_type">form</field>-->
-        <!--<field name="view_mode">tree</field>-->
-    <!--</record>-->
-
-    <record id="action_stock_inventory_valuation_summary" model="ir.actions.server">
-        <field name="name">Helpdesk: Teams Settings</field>
-        <field name="model_id" ref="model_inventory_valuation_summary"/>
-        <field name="state">code</field>
-        <field name="code">
-            action = model.delete_and_create()
-        </field>
-    </record>
 
     <record id="view_stock_inventory_valuation_summary" model="ir.ui.view">
-        <field name="name">inventory.valuation.summary.default</field>
-        <field name="model">inventory.valuation.summary</field>
+        <field name="name">report.inventory.valuation.summary.default</field>
+        <field name="model">report.inventory.valuation.summary</field>
         <field name="arch" type="xml">
             <search string="Product">
                 <filter string="Valuation Summary" name="valuation_summary" domain="[]"
@@ -28,20 +13,55 @@
     </record>
 
     <!-- LIST VIEW -->
-    <record model="ir.ui.view" id="inventory_valuation_summary.list">
+    <record model="ir.ui.view" id="inventory_valuation_summary_list">
         <field name="name">inventory_valuation_summary_list</field>
-        <field name="model">inventory.valuation.summary</field>
+        <field name="model">report.inventory.valuation.summary</field>
         <field name="arch" type="xml">
             <tree>
+                <field name="sku_code"/>
                 <field name="name"/>
                 <field name="quantity"/>
                 <field name="currency_id" invisible="1"/>
                 <field name="unit_cost" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                 <field name="asset_value" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                 <field name="cost_method" invisible="1"/>
-                <button name="action_valuation_at_date_details" type="object" icon="fa-info-circle"  attrs="{'invisible': [('cost_method', '!=', 'fifo')]}"  />
+                <button name="action_valuation_at_date_details" type="object" icon="fa-info-circle"
+                        attrs="{'invisible': [('cost_method', '!=', 'fifo')]}"/>
             </tree>
         </field>
+    </record>
+
+    <record id="inventory_valuation_summary_popup_view" model="ir.ui.view">
+        <field name="name">Pick Ticket Report</field>
+        <field name="model">popup.inventory.valuation.summary</field>
+        <field name="arch" type="xml">
+            <form string="Choose your date">
+
+                <group>
+                    <group>
+                        <field name="warehouse"/>
+                        <field name="location"/>
+                    </group>
+                    <group>
+                        <field name="property_cost_method"/>
+                        <field name="sku_code"/>
+                        <field name="asset_value"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_stock_inventory_valuation_summary" model="ir.actions.act_window">
+        <field name="name">Pick Ticket Report</field>
+        <field name="res_model">popup.inventory.valuation.summary</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
     </record>
 
 

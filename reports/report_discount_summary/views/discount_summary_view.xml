@@ -9,6 +9,8 @@
                 <form string="Choose your date">
                     <group>
                         <group>
+                            <field name="sale_order"/>
+                            <field name="partner_id"/>
                             <field name="compute_at_date" widget="radio"/>
                             <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
                             <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
