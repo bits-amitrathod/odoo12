@@ -22,7 +22,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
 
     end_date = fields.Datetime('End Date', default = fields.Datetime.now)
 
-
+    product_sku_code = fields.Char('Product SKU')
 
     def open_table(self):
         tree_view_id = self.env.ref('sales_by_month.list_view').id
@@ -55,6 +55,8 @@ class ProductSaleByCountPopUp(models.TransientModel):
                 'domain': [('id', 'in', product_ids)],
                 'target': 'main'
             }
+            if self.product_sku_code:
+                action['domain'].append(('product_tmpl_id.sku_code', 'ilike', self.product_sku_code))
         else:
             action = {
                 'type': 'ir.actions.act_window',
@@ -62,8 +64,11 @@ class ProductSaleByCountPopUp(models.TransientModel):
                 'view_mode': 'tree,form',
                 'name': _('Sales By Month'),
                 'res_model': 'product.product',
+                'domain': [],
                 'target': 'main'
             }
+            if self.product_sku_code:
+                action['domain'].append(('product_tmpl_id.sku_code', 'ilike', self.product_sku_code))
         return action
 
     @staticmethod

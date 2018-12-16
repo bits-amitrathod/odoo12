@@ -18,7 +18,7 @@ class ReportSaleOrdersGroupbyProduct(models.TransientModel):
 
     def open_table(self):
 
-        tree_view_id = self.env.ref('sale.view_order_line_tree').id
+        tree_view_id = self.env.ref('report_sale_orders_groupby_product.report_sale_orders_group_by_product_tree').id
         form_view_id = self.env.ref('report_sale_orders_groupby_product.view_sales_order_line_view_cstm').id
 
         action = {

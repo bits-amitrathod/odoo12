@@ -9,6 +9,7 @@
               <tree>
                   <field name="id"/>
                   <field name="p_sku"/>
+                  <field name="product_name"/>
                   <field name="date_cal"/>
                   <field name="date_posted"/>
                   <field name="p_type"/>
@@ -30,7 +31,7 @@
                         <field name="compute_at_date" widget="radio"/>
                         <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
                         <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
-
+                        <field name="product_sku_code"/>
                     </group>
                 </group>
                 <footer>
