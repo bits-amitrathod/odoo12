@@ -1,6 +1,4 @@
-
 from odoo import api, fields, models,_
-
 
 class SaleSalespersonReport(models.TransientModel):
     _name = 'sale.purchase.history.report'
