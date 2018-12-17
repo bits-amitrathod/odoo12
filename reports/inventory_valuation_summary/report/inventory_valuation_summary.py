@@ -9,7 +9,7 @@ class ReportInventoryProductValuationSummary(models.AbstractModel):
         self.env.cr.execute("""
             SELECT warehouse|| '/'|| location as warehouse, array_agg(ARRAY[ type, products]) as type
             from(SELECT  warehouse, type,location, string_agg(concat_ws('**|**',sku_code, name, quantity,unit_cost,asset_value,currency_id),'||**||') as products
-                FROM public.inventory_valuation_summary Group by warehouse,type,location) as tbl Group by warehouse,location
+                FROM public.report_inventory_valuation_summary where id in ("""+",".join(map(str, docids))+""") Group by warehouse,type,location) as tbl Group by warehouse,location
                           """)
 
         warehouses = self.env.cr.dictfetchall()

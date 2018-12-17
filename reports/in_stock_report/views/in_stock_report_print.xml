@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="in_stock_report_print">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <page>
+                    <div class="oe_structure"/>
+                    <div class="row">
+                        <center>
+                            <b>
+                                <h2>Surgical Product Solutions</h2>
+                                <h4>In Stock Report</h4>
+                            </b>
+                        </center>
+                        <center>
+                        </center>
+                    </div>
+                    <br/>
+                    <div>
+                        <table class="table  table-condensed" style="border: 1px solid black">
+                            <thead>
+                                <tr style="border: 1px solid black;">
+                                    <th style="border: 1px solid black;text-align: center;">Customer</th>
+                                    <th style="border: 1px solid black;text-align: center;">Manufacturer</th>
+                                    <th style="border: 1px solid black;text-align: center;">SKU / Catalog No</th>
+                                    <th style="border: 1px solid black;text-align: center;">Product Name</th>
+                                    <th style="border: 1px solid black;text-align: center;">Qty In Stock</th>
+                                    <th style="border: 1px solid black;text-align: center;">Sale Price</th>
+                                    <th style="border: 1px solid black;text-align: center;">Min. Expiration Date</th>
+                                    <th style="border: 1px solid black;text-align: center;">Max. Expiration Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="data" t-as="product">
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="product.partner_id.name"/>
+                                    </td>
+
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="product.product_brand_id.name"/>
+                                    </td>
+
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="product.sku_code"/>
+                                    </td>
+
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="product.product_id.name"/>
+                                    </td>
+                                    <td align="center" style="border: 1px solid black;">
+                                        <span t-esc="product.qty_available"/>
+                                    </td>
+
+                                    <td align="right" style="border: 1px solid black;white-space:nowrap;">
+                                        <span t-esc="product.list_price"/>
+                                    </td>
+                                    <td align="right" style="border: 1px solid black;white-space:nowrap;">
+                                        <span t-esc="product.min_expiration_date" t-options='{"widget": "date"}'/>
+                                    </td>
+                                    <td align="right" style="border: 1px solid black;white-space:nowrap;">
+                                        <span t-esc="product.max_expiration_date" t-options='{"widget": "date"}'/>
+                                    </td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </page>
+            </t>
+        </t>
+    </template>
+</odoo>
