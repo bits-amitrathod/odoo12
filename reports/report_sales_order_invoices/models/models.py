@@ -36,7 +36,6 @@ class report_sales_order_invoices(models.TransientModel):
         }
 
         if self.compute_at_date == '0':
-
             return action
         elif self.compute_at_date == '1':
             action['domain'].append(('id', 'in', self.order_invoices.ids))

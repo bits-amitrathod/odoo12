@@ -18,7 +18,7 @@ class ReportSaleOrdersGroupbyProduct(models.TransientModel):
 
     def open_table(self):
 
-        tree_view_id = self.env.ref('sale.view_order_line_tree').id
+        tree_view_id = self.env.ref('report_sale_orders_groupby_product.report_sale_orders_group_by_product_tree').id
         form_view_id = self.env.ref('report_sale_orders_groupby_product.view_sales_order_line_view_cstm').id
 
         action = {
@@ -38,3 +38,11 @@ class ReportSaleOrdersGroupbyProduct(models.TransientModel):
             return action
         else:
             return action
+
+
+class ReportSaleOrderLine(models.Model):
+    _inherit = 'sale.order.line'
+
+    _inherits = {'sale.order': 'order_id'}
+    order_id = fields.Many2one('sale.order', string='Order Reference')
+
