@@ -31,7 +31,7 @@ class SaleOrder(models.Model):
     @api.multi
     def _compute_show_validate(self):
         _logger.info('self %r',self)
-        sale_order_list = [self.id]
+        sale_order_list = [self.ids]
         for sale_id in sale_order_list:
             multi = self.env['stock.picking'].search([('sale_id', '=', sale_id)])
             _logger.info('**multi : %r',multi)
