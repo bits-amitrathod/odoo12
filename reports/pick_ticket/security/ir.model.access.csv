@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_pick_ticket_pick_ticket,pick_ticket.pick_ticket,model_pick_ticket_pick_ticket,,1,0,0,0
+access_report_order_pick_ticket_user,report.order.pick.ticket user,model_report_order_pick_ticket,pick_ticket.group_pick_ticket_user,1,1,0,0
+access_report_order_pick_ticket_manager,report.order.pick.ticket manager,model_report_order_pick_ticket,pick_ticket.group_pick_ticket_manager,1,1,1,1
