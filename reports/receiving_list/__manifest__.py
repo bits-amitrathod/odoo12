@@ -15,4 +15,7 @@
         'report/receiving_list_report.xml',
         'report/receiving_list_report_template.xml'
     ],
+    'installable': True,
+    'application': True,
+    'auto_install': False,
 }
