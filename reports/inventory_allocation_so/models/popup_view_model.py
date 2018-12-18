@@ -8,14 +8,12 @@ _logger = logging.getLogger(__name__)
 class TrendingReportListPopUp(models.TransientModel):
     _name = 'inventory.so_popup'
     _description = 'Inventory Allocation Report List PopUp'
-
+    product_sku = fields.Char()
     compute_at_date = fields.Selection([
         (0, 'Show All '),
         (1, 'Date Range ')
     ], string="Compute", help="Choose to analyze the Show Summary or from a specific date in the past.",default=0)
-    group_by = fields.Selection([
-        ('order_id', 'Sale'),
-    ], string="Group By", default='order_id', required=True, _defaluts={'field_name': 'sale', })
+    order_id = fields.Many2one('sale.order', string='Sale', )
     partner_id = fields.Many2many('res.partner',string='Users', required=True)
     customer_by = fields.Selection([
         ('partner_id', 'Customer'),
@@ -36,7 +34,8 @@ class TrendingReportListPopUp(models.TransientModel):
             s_date=None
             e_date=None
 
-        margins_context = {'s_date': s_date, 'e_date': e_date, 'group_by': self.group_by}
+
+        margins_context = {'s_date': s_date, 'e_date': e_date, 'order_id': self.order_id,'product_sku':self.product_sku}
         group_by_domain = ['sale_order_name']
         x_res_model = 'inventory.allocation_so'
 

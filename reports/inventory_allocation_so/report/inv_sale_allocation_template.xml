@@ -29,18 +29,18 @@
                             <strong>
                                 <span t-esc="sale_order[0]"/>
                             </strong>
-                            <hr style="margin: 5px 0px;"/>
+                            <hr style="display: block;height: 1px;border: 0;border-top-color: currentcolor;border-top-style: none;border-top-width: 0px;border-top: 1px solid black;margin-top: 0px;padding: 0;"/>
                         </div>
 
                         <div class="col-md-12" >
 
-                            <table class="table table-condensed  table-bordered" style="border: 1px solid black;width:100%">
-                                <thead style="border: 1px solid black;width:100%">
+                            <table class="table table-condensed  table-bordered" >
+                                <thead >
                                     <tr>
-                                        <th>Product</th>
-                                        <th>Description</th>
+                                        <th>SKU/Catalog No.</th>
+                                        <th>Product Name</th>
                                         <th class="text-right">Qty</th>
-                                        <th class="text-right">Unit Cost</th>
+                                        <th class="text-right">Cost</th>
                                     </tr>
                                 </thead>
                                 <tbody class="invoice_tbody" style="border: 1px solid black;width:100%">
@@ -48,7 +48,7 @@
                                         <td>
                                             <span t-esc="product[0]"/>
                                         </td>
-                                        <td class="text-right">
+                                        <td >
                                             <span t-esc="product[1]"/>
                                         </td>
                                         <td class="text-right">
@@ -60,14 +60,17 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            <div id="total" class="row">
-                                <div class="col-xs-4 pull-right">
-                                    <table class="table table-condensed" style="min-width: 250px;max-width: 400px;">
+                            <div id="total" class="row" style="width: 47%;float: right;margin: 5px;">
+                                <div>
+                                    <table class="table table-condensed" >
                                         <tr >
-                                            <td>
+                                            <td style="border-top: 1px solid black">
                                                 <strong>Total</strong>
                                             </td>
-                                            <td class="text-right">
+                                             <td class="text-right" style="border-top: 1px solid black">
+                                                <span  t-esc="sale_order[3]"/>
+                                            </td>
+                                            <td class="text-right" style="border-top: 1px solid black">
                                                 <span t-esc="sale_order[1]"/>
                                             </td>
                                         </tr>
