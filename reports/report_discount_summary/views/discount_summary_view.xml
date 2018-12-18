@@ -4,7 +4,7 @@
 
         <record id="view_popup_view" model="ir.ui.view">
             <field name="name">Discount Summary</field>
-            <field name="model">discountsummary.popup</field>
+            <field name="model">popup.discount.summary</field>
             <field name="arch" type="xml">
                 <form string="Choose your date">
                     <group>
@@ -26,7 +26,7 @@
 
         <record id="action_discount_summary_valuation" model="ir.actions.act_window">
             <field name="name">Discount Summary</field>
-            <field name="res_model">discountsummary.popup</field>
+            <field name="res_model">popup.discount.summary</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="view_popup_view"/>

@@ -9,18 +9,21 @@ _logger = logging.getLogger(__name__)
 
 
 class ProductSaleByCountPopUp(models.TransientModel):
-    _name = 'salesbycount.popup'
+    _name = 'popup.sales.by.count'
     _description = 'Sales By Count'
     # _auto = False
+
+    user_id = fields.Many2one('res.users', 'Salesperson')
+    warehouse_id = fields.Many2one('stock.warehouse', 'Warehouse')
 
     compute_at_date = fields.Selection([
         (0, 'Show All '),
         (1, 'Date Range ')
     ], string="Compute", default=0, help="Choose to analyze the Show Summary or from a specific date in the past.")
 
-    start_date = fields.Datetime('Start Date', default=fields.Datetime.now)
+    start_date = fields.Date('Start Date', default=fields.Datetime.now)
 
-    end_date = fields.Datetime('End Date', default=fields.Datetime.now)
+    end_date = fields.Date('End Date', default=fields.Datetime.now)
 
     def open_table(self):
         tree_view_id = self.env.ref('sales_by_count.report_sales_by_count_list_view').id
@@ -40,8 +43,15 @@ class ProductSaleByCountPopUp(models.TransientModel):
             'view_mode': 'tree',
             'name': 'Sales By Count',
             'res_model': res_model,
-            'context': {'group_by': 'location', 'order_by': 'quantity'},
+            "context": {"search_default_group_by_location": 1},
+            'domain':[]
         }
+
+        if self.user_id.id:
+            action["domain"].append(('user_id', '=', self.user_id.id))
+
+        if self.warehouse_id.id:
+            action["domain"].append(('warehouse_id', '=', self.warehouse_id.id))
 
         return action
 
