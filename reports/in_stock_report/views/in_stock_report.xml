@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_stock_inventory_valuation_summary" model="ir.ui.view">
+        <field name="name">report.in.stock.report.default</field>
+        <field name="model">report.in.stock.report</field>
+        <field name="arch" type="xml">
+            <search string="Product">
+                <filter string="Valuation Summary" name="valuation_summary" domain="[]"
+                        context="{'group_by' : ['warehouse', 'location', 'type']}"/>
+                <separator/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_in_stock_report_line_tree" model="ir.ui.view">
+        <field name="name">report.in.stock.report.tree</field>
+        <field name="model">report.in.stock.report</field>
+        <field name="arch" type="xml">
+            <tree create="false" edit="false" string="In Stock Report">
+                <field name="partner_id"/>
+                <field name="product_brand_id"/>
+                <field name="sku_code"/>
+                <field name="product_id"/>
+                <field name="qty_available"/>
+                <field name="list_price"/>
+                <field name="min_expiration_date"/>
+                <field name="max_expiration_date"/>
+                <!--<field name="confirmation_date"/>-->
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_popup_in_stock_report" model="ir.actions.act_window">
+    <field name="name">In Stock Report</field>
+    <field name="res_model">popup.report.in.stock.report</field>
+    <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+    </record>
+
+
+    <record id="popup_view_in_stock_report" model="ir.ui.view">
+        <field name="name">In Stock Report</field>
+        <field name="model">popup.report.in.stock.report</field>
+        <field name="arch" type="xml">
+            <form string="Choose your date">
+                <group>
+                    <group>
+                        <field name="partner_id"/>
+                        <field name="user_id"/>
+                    </group>
+                    <group>
+                        <field name="warehouse_id"/>
+                        <field name="sku_code"/>
+                    </group>
+                    <group>
+                        <field name="start_date"/>
+                        <field name="end_date"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Product menu-->
+    <menuitem name="In Stock Report" id="menu_procurement_partner_contact_in_stock_report"
+              action="action_popup_in_stock_report"
+              parent="stock.menu_warehouse_report" sequence="5"/>
+</odoo>

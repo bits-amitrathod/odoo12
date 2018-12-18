@@ -6,7 +6,7 @@ class ReportPickTicketOrderOrDate(models.AbstractModel):
 
     @api.model
     def get_report_values(self, docids, data=None):
-        pick_report = self.env['report.order.pick.ticket'].search([('id','in',docids)], order='sale_id')
+        pick_report = self.env['report.order.pick.ticket'].search([('id','in',docids)], order='picking_id')
 
         old = 0
         picks = {}
@@ -15,15 +15,20 @@ class ReportPickTicketOrderOrDate(models.AbstractModel):
                                  'product': pick.product_id.name,
                                  'location': pick.location_id.display_name,
                                  'destination': pick.location_dest_id.display_name}
-            if old == pick.sale_id.id:
+            if old == pick.picking_id.id:
                 picks[old]['product'].append(product)
             else:
-                old = pick.sale_id.id
+                old = pick.picking_id.id
                 picks[old] = {
                     'order': pick.sale_id.name,
                     'customer': pick.partner_id.display_name,
                     'carrier': pick.carrier_info,
                     'state': pick.state,
+                    'priority': pick.priority,
+                    'scheduled_date': pick.scheduled_date,
+                    'picking_type': pick.picking_type_id.name,
+                    'warehouse': pick.warehouse_id.name,
+                    'picking': pick.picking_id.name,
                     'product': [product]}
 
         return {'picks': picks}

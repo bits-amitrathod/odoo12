@@ -15,6 +15,7 @@ class ProductSaleByCount(models.Model):
     product_name = fields.Char("Product Name ", store=False)
     product_price = fields.Monetary(string='Price', currency_field='currency_id', store=False)
     total_sale_qty = fields.Float("Quantity", store=False)
+    total_amount = fields.Monetary(string='Total', currency_field='currency_id', store=False)
 
 
     @api.multi
@@ -40,4 +41,7 @@ class ProductSaleByCount(models.Model):
                 if sale_order_line.order_id.confirmation_date and (start_date <= fields.Datetime.from_string(
                         sale_order_line.order_id.confirmation_date).date() <= end_date):
                     product.total_sale_qty = product.total_sale_qty + sale_order_line.product_uom_qty
-                    product.product_price = product.product_price + sale_order_line.price_total
+
+                    product.product_price = sale_order_line.price_unit
+            product.total_amount = product.product_price * product.total_sale_qty
+

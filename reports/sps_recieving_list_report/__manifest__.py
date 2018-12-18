@@ -1,8 +1,16 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "In Stock Report",
+    'name': "SPS Recieving List",
 
-    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
+    'summary': """
+        Short (1 phrase/line) summary of the module's purpose, used as
+        subtitle on modules listing or apps.openerp.com""",
+
+    'description': """
+        Long description of module's purpose
+    """,
+
+    'author': "Benchmark It Solutions",
     'website': "http://www.benchmarkitsolutions.com",
 
     # Categories can be used to filter modules in modules listing
@@ -12,22 +20,15 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','product','stock','prioritization_engine'],
+    'depends': ['base','stock','stock_barcode', 'delivery'],
 
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
-        'views/in_stock_report.xml',
-        'views/in_stock_report_print.xml',
-        'views/in_stock_report_pdf.xml',
         'views/views.xml',
-        'views/templates.xml',
+        'reports/todo_task_report.xml'
+
+
     ],
-    # only loaded in demonstration mode
-    'demo': [
-        'demo/demo.xml',
-    ],
-    'installable': True,
-    'application': True,
-    'auto_install': False,
+
 }

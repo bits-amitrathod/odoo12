@@ -19,7 +19,7 @@ class DiscountSummaryPopUp(models.TransientModel):
             action = {
                 'type': 'ir.actions.act_window',
                 'view_mode': 'tree,form',
-                'name': _('Sales Orders'),
+                'name': _('Gross Sales By Salesperson'),
                 'res_model': 'sale.order',
                 'context': {'group_by':'user_id' , 'start_date' : self.start_date , 'end_date' : self.end_date} ,
                 'domain':[('state', '=', 'sale'),('confirmation_date', '>=', self.start_date),('confirmation_date','<=', self.end_date)] ,
@@ -29,7 +29,7 @@ class DiscountSummaryPopUp(models.TransientModel):
             action = {
                 'type': 'ir.actions.act_window',
                 'view_mode': 'tree,form',
-                'name': _('Sales Orders'),
+                'name': _('Gross Sales By Salesperson'),
                 'res_model': 'sale.order',
                 'context': {'group_by':'user_id'},
                 'domain': [('state', '=', 'sale')],

@@ -4,11 +4,13 @@
 
         <record id="view_popup_view" model="ir.ui.view">
             <field name="name">Discount Summary</field>
-            <field name="model">discountsummary.popup</field>
+            <field name="model">popup.discount.summary</field>
             <field name="arch" type="xml">
                 <form string="Choose your date">
                     <group>
                         <group>
+                            <field name="sale_order"/>
+                            <field name="partner_id"/>
                             <field name="compute_at_date" widget="radio"/>
                             <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
                             <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
@@ -24,7 +26,7 @@
 
         <record id="action_discount_summary_valuation" model="ir.actions.act_window">
             <field name="name">Discount Summary</field>
-            <field name="res_model">discountsummary.popup</field>
+            <field name="res_model">popup.discount.summary</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="view_popup_view"/>

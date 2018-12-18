@@ -24,6 +24,28 @@
             </field>
         </record>
 
+
+        <record id="report_sale_orders_group_by_product_tree" model="ir.ui.view">
+            <field name="name">report.sale.orders.groupby.product.tree</field>
+            <field name="model">sale.order.line</field>
+            <field name="arch" type="xml">
+                <tree string="Sales Order Lines" create="false">
+                    <field name="product_id" invisible="1"/>
+                    <field name="order_id"/>
+                    <field name="confirmation_date"/>
+                    <!--<field name="order_partner_id"/>-->
+                    <field name="name" string="Product"/>
+                    <!--<field name="salesman_id"/>-->
+                    <field name="product_uom_qty" string="Qty"/>
+                    <!--<field name="qty_delivered"/>-->
+                    <!--<field name="qty_invoiced"/>-->
+                    <!--<field name="qty_to_invoice"/>-->
+                    <!--<field name="product_uom" string="Unit of Measure" groups="product.group_uom"/>-->
+                    <field name="price_subtotal" sum="Total" widget="monetary"/>
+                </tree>
+            </field>
+        </record>
+
         <record id="view_sales_order_line_view_cstm" model="ir.ui.view">
             <field name="name">sale.order.line.view</field>
             <field name="model">sale.order.line</field>

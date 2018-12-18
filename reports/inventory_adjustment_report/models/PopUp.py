@@ -22,6 +22,7 @@ class PopUp(models.TransientModel):
         (1, 'Date Range')
     ], string="Compute", help="Choose to analyze the current inventory or from a specific date in the past.")
 
+    product_sku_code = fields.Char('Product SKU')
 
     def open_table(self):
         tree_view_id = self.env.ref('inventory_adjustment_report.form_list_adjustment').id
@@ -38,6 +39,8 @@ class PopUp(models.TransientModel):
                 'res_model': 'stock.inventory',
                 'domain': [('date', '>=', self.start_date),('date', '<=', self.end_date)],
             }
+            if self.product_sku_code:
+                action['domain'].append(('product_id.product_tmpl_id.sku_code', 'ilike', self.product_sku_code))
             action.update({'target': 'main'})
             return action
         else:
@@ -47,7 +50,10 @@ class PopUp(models.TransientModel):
                 'view_mode': 'tree,form',
                 'name': _('Inventory Adjustment'),
                 'res_model': 'stock.inventory',
+                'domain': [],
             }
+            if self.product_sku_code:
+                action['domain'].append(('product_id.product_tmpl_id.sku_code', 'ilike', self.product_sku_code))
             action.update({'target': 'main'})
             return action
 

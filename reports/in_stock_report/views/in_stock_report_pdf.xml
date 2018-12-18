@@ -4,7 +4,7 @@
         <report
                 id="action_print_in_stock_report"
                 string="In Stock Report"
-                model="product.product"
+                model="report.in.stock.report"
                 report_type="qweb-html"
                 file="in_stock_report.in_stock_report_print"
                 name="in_stock_report.in_stock_report_print"

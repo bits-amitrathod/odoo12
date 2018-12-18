@@ -6,11 +6,11 @@
                 <page>
                     <style>
                         .noborders {
-                            border: 0;
+                        border: 0;
                         }
 
                         .table-bordered > tbody > tr > td,.table-bordered > tbody > tr > th {
-                            border: 1px solid #000;
+                        border: 1px solid #000;
                         }
                     </style>
                     <div class="oe_structure"/>
@@ -25,11 +25,11 @@
                     </div>
                     <br/>
                     <t t-foreach="data" t-as="product">
-                       <center> <b>
+                        <b>
                             <span>Product :</span>
                             <span t-esc="product['name']"/>
                         </b>
-                       </center>
+
                         <table class="table table-condensed table-bordered table-bordered">
                             <tr>
                                 <th class="text-right" style="width:10%">#</th>
@@ -45,7 +45,9 @@
                                 <td class="text-right" t-esc="index"/>
                                 <td class="text-center" t-esc="saleOrder[0]"/>
                                 <td class="text-center" t-esc="saleOrder[1]"/>
-                                <td class="text-right">$ <span t-esc="'{:.2f}'.format(amount)"/></td>
+                                <td class="text-right">$
+                                    <span t-esc="'{:.2f}'.format(amount)"/>
+                                </td>
                                 <t t-set="index" t-value="index+1"/>
                                 <t t-set="totalAmount" t-value="totalAmount+amount"/>
                             </tr>
@@ -53,7 +55,8 @@
                                 <td colspan="2" class="noborders"/>
                                 <th class="text-right" scope="row">TOTAL</th>
                                 <td class="text-right">
-                                    $ <span t-esc="'{:.2f}'.format(totalAmount)"/>
+                                    $
+                                    <span t-esc="'{:.2f}'.format(totalAmount)"/>
                                 </td>
                             </tr>
                         </table>

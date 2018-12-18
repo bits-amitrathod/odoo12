@@ -10,22 +10,18 @@
                         <group>
                             <field name="start_date"/>
                             <field name="product_id" widget="many2many_tags"/>
+                            <field name="order_partner_id" operator="child_of"/>
                         </group>
                         <group>
                             <field name="end_date"/>
-
                         </group>
                     </group>
 
                     <footer>
-                        <button name="print_purchase_history_vise_report" string="Print Report" class="oe_highlight"
-                                type="object"/>
-                        Or
+                        <button name="open_table" string="Print Report" class="btn-primary" type="object"/>
                         <button string="Cancel" class="btn-default" special="cancel"/>
                     </footer>
                 </form>
-
-
             </field>
         </record>
 
@@ -34,13 +30,62 @@
             <field name="res_model">sale.purchase.history.report</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
+            <field name="view_id" ref="sr_sale_purchase_report_form_view"/>
             <field name="target">new</field>
+            <field name="context">{'valuation': True}</field>
         </record>
 
-        <menuitem id="menu_sale_report_purchase_wizard"
-                  name="Purchase History"
-                  action="action_sale_report_purchase_wizard"
-                  parent="sale.menu_sale_report"
-                  sequence="1"/>
+        <record model="ir.ui.view" id="list_view">
+              <field name="name">product.sale.purchase.history.view.list</field>
+              <field name="model">sale.order.line</field>
+              <field name="priority">21</field>
+              <field name="arch" type="xml">
+                <tree>
+                    <field name="user_id" invisible="1"/>
+                    <field name="product_sku" string="SKU/Catalog No."/>
+                    <field name="customer_name" string="Customer Name"/>
+                    <field name="sale_order" string="SO#"/>
+                    <field name="product_name" string="Product Name"/>
+                    <field name="delivered_date" string="Delivered Date"/>
+                    <field name="qty_delivered" string="Qty Delivered" />
+                    <field name="unit_price" widget="monetary" string="Price" />
+                    <field name="total_price" widget="monetary" string="Total" />
+                    <field name="currency_id"  invisible="1" />
+                </tree>
+              </field>
+        </record>
+        <record id="view_sales_order_line_view_cstm" model="ir.ui.view">
+            <field name="name">sale.order.line.view</field>
+            <field name="model">sale.order.line</field>
+            <field name="arch" type="xml">
+                <form create="false" edit="false">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="order_id"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="product_id"/>
+                                <field name="product_sku"/>
+                                <field name="product_uom"/>
+                                <field name="order_partner_id"/>
+                                <field name="company_id"/>
+                            </group>
+                            <group>
+                                <field name="product_uom_qty" string="Required Quantity"/>
+                                <field name="qty_delivered" string="Delivered Quantity"/>
+                                <field name="price_unit" widget="monetary"/>
+                                <field name="total_price" string="Total Price" widget="monetary" sum="Total"/>
+                                <field name="delivered_date" string="Delivered Date"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <menuitem id="menu_sale_report_purchase_wizard" name="Purchase History" action="action_sale_report_purchase_wizard" parent="sale.menu_sale_report" sequence="1"/>
     </data>
 </odoo>

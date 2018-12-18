@@ -45,21 +45,21 @@
                             <table class="table table-condensed table-bordered table-bordered">
                                 <thead>
                                     <tr>
-                                        <th>Part #</th>
-                                        <!--<th>Description</th>-->
+                                        <th>SKU / Catalog No</th>
+                                        <th>Product Name</th>
                                         <th class="text-right">Qty</th>
                                         <th class="text-right">Unit Cost</th>
                                         <th class="text-right">Asset Value</th>
                                     </tr>
                                 </thead>
                                 <tbody class="invoice_tbody">
-                                    <t t-set="products" t-value="type[1].split(',')"/>
+                                    <t t-set="products" t-value="type[1].split('||**||')"/>
                                     <t t-set="totalAmount" t-value="0"/>
 
 
                                     <tr t-foreach="products" t-as="product_s">
-                                        <t t-set="product" t-value="product_s.split(';')"/>
-                                        <t t-set="assetValue" t-value="float(product[3])"/>
+                                        <t t-set="product" t-value="product_s.split('**|**')"/>
+                                        <t t-set="assetValue" t-value="float(product[4])"/>
 
                                         <td>
                                             <span t-esc="product[0]"/>
@@ -68,8 +68,10 @@
                                             <span t-esc="product[1]"/>
                                         </td>
                                         <td class="text-right">
-                                            $
                                             <span t-esc="product[2]"/>
+                                        </td>
+                                         <td class="text-right">
+                                            $<span t-esc="product[3]"/>
                                         </td>
                                         <td class="text-right">
                                             $

@@ -35,6 +35,7 @@
                         <tr>
                             <!--<th style="border: 1px solid black;text-align: center;">Inventory Reference</th>-->
                             <th style="border: 1px solid black;text-align: center;">SKU/Catalog No</th>
+                            <th style="border: 1px solid black;text-align: center;">Product Name</th>
                             <th style="border: 1px solid black;text-align: center;">Inventory Date</th>
                             <th style="border: 1px solid black;text-align: center;">Date Posted</th>
                             <th style="border: 1px solid black;text-align: center;">Type</th>
@@ -53,6 +54,10 @@
                                     <!--</td>-->
                                     <td align="left"  style="border: 1px solid #000;">
                                         <span t-esc="o.p_sku"/>
+                                    </td>
+
+                                    <td align="left"  style="border: 1px solid #000;">
+                                        <span t-esc="o.product_name"/>
                                     </td>
 
                                     <td align="center"   style="border: 1px solid #000;">
