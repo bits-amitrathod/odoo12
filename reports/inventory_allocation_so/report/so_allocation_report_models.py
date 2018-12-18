@@ -10,7 +10,10 @@ class OnHandByDateReportModel(models.AbstractModel):
 
     @api.model
     def get_report_values(self, docids, data=None):
-
+        if len(docids) == 1:
+            ids="("+str(docids[0])+")"
+        else:
+            ids=tuple(docids)
         select = """ SELECT sale_order_name, 
                 concat(sum(so.cost),' ',so.currency_symbol)  as total_cost,
                 array_agg(ARRAY[ 
@@ -24,24 +27,26 @@ class OnHandByDateReportModel(models.AbstractModel):
                  ELSE
                  so.product_name END
                 ,
-                 CASE WHEN so.product_qty IS NULL THEN
+                 CASE WHEN so.product_uom_qty IS NULL THEN
                  ''
                  ELSE
-                 cast(so.product_qty as varchar) END
+                 so.product_uom_qty END
                 ,
                 CASE WHEN so.cost IS NULL THEN
                  ''
                  ELSE
                  concat(cast(so.cost as varchar),' ',so.currency_symbol) END
-                ]) as type 
-                FROM inventory_allocation_so so
+                ]) as type ,
+                sum(so.product_quantity) as total_qty
+                FROM inventory_allocation_so so where id in """
+        select=select+ ' '+str(ids)+ ' '+""" 
                 GROUP BY sale_order_name,currency_symbol   """
         self._cr.execute(select)
         result = self.env.cr.fetchall()
         _logger.info("selct :%r", result)
         sale_order_list = []
         for sale_order in result:
-            orders = [sale_order[0],sale_order[1], sale_order[2]]
+            orders = [sale_order[0],sale_order[1], sale_order[2],sale_order[3]]
             sale_order_list.append(orders)
 
         return {'sale_order_list' :sale_order_list }

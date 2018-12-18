@@ -9,14 +9,14 @@ class TrendingReportListPopUp(models.TransientModel):
     _name = 'sale.packing_list_popup'
     _description = 'Sale Packing List'
 
-    start_date = fields.Date('Start Date', help="Choose a date to get the Discount Summary at that  Start date", required=True)
-    end_date = fields.Date('End Date', help="Choose a date to get the Discount Summary at that  End date",required=True )
-
-
+    start_date = fields.Date('Start Date', help="Choose a date to get the Discount Summary at that  Start date")
+    end_date = fields.Date('End Date', help="Choose a date to get the Discount Summary at that  End date")
+    order_number = fields.Many2many('sale.order', string="Sale Order")
+    shipping_number = fields.Char()
+    purchase_order = fields.Char()
     def open_table(self):
         tree_view_id = self.env.ref('packing_list.view_inv_all_packing_list_tree').id
-
-        margins_context = {'start_date': self.start_date,'end_date':self.end_date}
+        margins_context = {'start_date': self.start_date,'end_date':self.end_date,'sale_number':self.order_number,'shipping_number':self.shipping_number,'purchase_order':self.purchase_order}
         group_by_domain = ['name']
         x_res_model = 'res.stock_packing_list'
 

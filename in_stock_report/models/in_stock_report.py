@@ -21,7 +21,7 @@ class ProductTemplate(models.Model):
     manufacturer=fields.Char("Manufacturer", compute='_compute_max_inventory_level')
     product_name = fields.Char("Product Name", compute='_compute_max_inventory_level')
     product_code = fields.Char("Product Code", compute='_compute_max_inventory_level')
-    product_price=fields.Monetary(string='Price Per Unit', currency_field='currency_id', compute = '_compute_max_inventory_level', store=False)
+    product_price=fields.Float(string='Price Per Unit', currency_field='currency_id', compute = '_compute_max_inventory_level', store=False)
     product_price_symbol = fields.Char(string='Price/Unit',
                                     compute='_compute_max_inventory_level', store=False)
     currency_id = fields.Many2one('res.currency', 'Currency',compute = '_compute_max_inventory_level', store=False)
@@ -54,8 +54,9 @@ class ProductTemplate(models.Model):
                 [('id', '=', company_id)])
             main_company = self.env['res.company'].sudo().search([], limit=1, order="id")
             ml.currency_id = company.sudo().currency_id.id or main_company.currency_id.id
-            ml.product_price=str(ml.lst_price)
-            ml.product_price_symbol=ml.check_isAvailable(ml.currency_id['symbol']) +" "+str(ml.lst_price)
+            product_price=ml.lst_price
+            ml.product_price=product_price
+            ml.product_price_symbol=ml.check_isAvailable(ml.currency_id['symbol']) +" "+str(product_price)
 
     def check_isAvailable(self, value):
         if value:
