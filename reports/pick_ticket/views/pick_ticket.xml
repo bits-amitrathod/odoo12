@@ -8,11 +8,16 @@
             <field name="arch" type="xml">
                 <tree>
                     <field name="sale_id" string="Sale Order"/>
+                    <field name="priority"/>
                     <field name="product_id" string="Product Name"/>
                     <field name="partner_id" string="Customer Name"/>
                     <field name="qty_done" string="Quantity"/>
+                    <field name="product_uom_id"/>
+                    <field name="warehouse_id"/>
                     <field name="location_id" string="Location"/>
                     <field name="location_dest_id" string="Destination"/>
+                    <field name="scheduled_date"/>
+                    <field name="picking_type_id"/>
                     <field name="carrier_info" string="Carrier"/>
                     <field name="state" string="Status"/>
                 </tree>
@@ -31,8 +36,8 @@
                         <group>
                             <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
                             <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
-                            <field name="order_number" attrs="{'invisible': [('compute_at_date', '=', 1)]}"
-                                   widget="many2many_tags" domain="[('state','=','sale')]"/>
+                            <field name="picking_id" attrs="{'invisible': [('compute_at_date', '=', 1)]}"
+                                   widget="many2many_tags"/>
                         </group>
                     </group>
                     <footer>

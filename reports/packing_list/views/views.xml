@@ -12,6 +12,11 @@
                             <field name="start_date" />
                             <field name="end_date" />
                         </group>
+                        <group>
+                            <field name="order_number"  widget="many2many_tags"/>
+                            <field name="shipping_number" />
+                            <field name="purchase_order" />
+                        </group>
                     </group>
                     <footer>
                         <button name="open_table" string="View Report" type="object" class="btn-primary"/>

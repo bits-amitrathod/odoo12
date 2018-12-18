@@ -13,11 +13,11 @@ class ReportPickTicketGroupByOrderDate(models.TransientModel):
         (1, 'Date Range ')
     ], string="Compute", help="Choose to analyze the Show Summary or from a specific date in the past.")
 
-    start_date = fields.Date('Start Date', default=fields.Datetime.now, required=True)
+    start_date = fields.Date('Start Date', default=fields.date.today() - datetime.timedelta(days=30), required=True)
 
     end_date = fields.Date('End Date', default=fields.Datetime.now, required=True)
 
-    order_number = fields.Many2many('sale.order', string="Sale Order")
+    picking_id = fields.Many2many('stock.picking', string='Pick Number')
 
     def open_table(self):
 
@@ -27,7 +27,7 @@ class ReportPickTicketGroupByOrderDate(models.TransientModel):
             e_date = self.string_to_date(str(self.end_date))
             context.update({'s_date': s_date, 'e_date': e_date})
         else:
-            context.update({'sale_number': self.order_number})
+            context.update({'sale_number': self.picking_id})
 
         tree_view_id = self.env.ref('pick_ticket.pick_report_list_view').id
 
@@ -40,8 +40,20 @@ class ReportPickTicketGroupByOrderDate(models.TransientModel):
             'view_mode': 'tree',
             'name': 'Pick Ticket',
             'res_model': res_model,
-            'context': {'group_by': 'sale_id'},
+            'context': {'group_by': 'picking_id'},
+            'domain': []
         }
+
+        if self.compute_at_date:
+            if self.start_date:
+                action["domain"].append(('scheduled_date', '>=', self.start_date))
+
+            if self.end_date:
+                action["domain"].append(('scheduled_date', '<=', self.end_date))
+
+        else:
+            if len(self.picking_id.ids) > 0:
+                action["domain"].append(('picking_id', 'in', self.picking_id.ids))
 
         if self.compute_at_date:
             return action
@@ -57,6 +69,8 @@ class PickTicketReport(models.Model):
     _name = "report.order.pick.ticket"
     _auto = False
 
+    _inherits = {'stock.picking': 'picking_id'}
+
     carrier_info = fields.Char(string="Sale Order")
     move_id = fields.Many2one('stock.move', string="Customer Name")
     qty_done = fields.Char(string="Quantity")
@@ -68,14 +82,16 @@ class PickTicketReport(models.Model):
     carrier_id = fields.Many2one('delivery.carrier', string="Carrier Id")
     product_id = fields.Many2one('product.product', string="Carrier Id")
 
+    picking_id = fields.Many2one('stock.picking', string='Pick Number')
+    product_uom_id = fields.Many2one('product.uom', 'Unit of Measure ')
+    warehouse_id = fields.Many2one('stock.warehouse', 'Warehouse')
+    scheduled_date = fields.Date(stirng='Scheduled Date')
+
     @api.model_cr
     def init(self):
         self.init_table()
 
     def init_table(self):
-        s_date = self.env.context.get('s_date')
-        e_date = self.env.context.get('e_date')
-        sale_number = self.env.context.get('sale_number')
         tools.drop_view_if_exists(self._cr, self._name.replace(".", "_"))
 
         select_query = """ SELECT
@@ -93,7 +109,11 @@ class PickTicketReport(models.Model):
                    stock_move_line.id as id,
                    sale_order.partner_id,
                    sale_order.carrier_id,
-                   stock_move_line.product_id
+                   stock_move_line.product_id,
+                   stock_move_line.picking_id,
+                   stock_move_line.product_uom_id,
+                   sale_order.warehouse_id,
+                   stock_picking.scheduled_date
                     FROM
                        stock_move_line
                     INNER JOIN
@@ -123,19 +143,8 @@ class PickTicketReport(models.Model):
                         stock_move_line.product_id = product_product.id)"""
 
         where_clause = "  WHERE  stock_picking.scheduled_date IS NOT NULL "
-        AND = " AND "
 
-        if not s_date is None:
-            select_query = select_query + where_clause + AND + " stock_picking.scheduled_date >= '" + \
-                           str(s_date) + "'"
-
-        if not e_date is None:
-            select_query = select_query + AND + " stock_picking.scheduled_date <= '" + str(e_date) + "'"
-
-        if hasattr(sale_number, 'ids') and len(sale_number.ids):
-            select_query = select_query + AND + " sale_order.id in (" + ", ".join(str(x) for x in sale_number.ids) + ")"
-
-        sql_query = "CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + select_query + " )"
+        sql_query = "CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + select_query + where_clause + " )"
         self._cr.execute(sql_query)
 
     @api.model_cr
