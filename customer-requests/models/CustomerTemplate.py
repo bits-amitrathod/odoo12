@@ -107,7 +107,7 @@ class CustomerTemplate(models.Model):
                 directory_path = ATTACHMENT_DIR + str(vals['customer_id']) + "/" + template_type + "/"
                 #directory_path = dir_path+"/Documents/Template/" + str(vals['customer_id']) + "/" + template_type + "/"
                 #print(dir_path)
-                #print(directory_path)
+                print(directory_path)
                 if not os.path.exists(os.path.dirname(directory_path)):
                     try:
                         os.makedirs(os.path.dirname(directory_path))
