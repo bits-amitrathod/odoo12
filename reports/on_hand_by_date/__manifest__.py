@@ -17,4 +17,7 @@
         'report/on_hand_by_date_report.xml',
         'report/on_hand_by_date_report_template.xml'
     ],
+    'installable': True,
+    'application': True,
+    'auto_install': False,
 }

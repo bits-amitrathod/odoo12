@@ -16,5 +16,8 @@
         'report/products_on_order_report.xml',
         'report/products_on_order_report_template.xml'
     ],
+    'installable': True,
+    'application': True,
+    'auto_install': False,
 
 }

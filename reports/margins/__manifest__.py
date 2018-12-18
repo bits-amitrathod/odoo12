@@ -16,4 +16,7 @@
         'report/margins_report_template.xml',
         'report/margins_report_by_cust_template.xml'
     ],
+    'installable': True,
+    'application': True,
+    'auto_install': False,
 }
