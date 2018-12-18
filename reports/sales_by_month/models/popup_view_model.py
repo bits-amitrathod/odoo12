@@ -18,9 +18,9 @@ class ProductSaleByCountPopUp(models.TransientModel):
         (1, 'Date Range ')
     ], string="Compute", default=0, help="Choose to analyze the Show Summary or from a specific date in the past.")
 
-    start_date = fields.Datetime('Start Date', default=fields.Datetime.now)
+    start_date = fields.Datetime('Start Date', default=fields.Datetime.now, required=True)
 
-    end_date = fields.Datetime('End Date', default = fields.Datetime.now)
+    end_date = fields.Datetime('End Date', default = fields.Datetime.now, required=True)
 
     product_sku_code = fields.Char('Product SKU')
 
@@ -32,6 +32,9 @@ class ProductSaleByCountPopUp(models.TransientModel):
             s_date = ProductSaleByCountPopUp.string_to_date(str(self.start_date))
             e_date = ProductSaleByCountPopUp.string_to_date(str(self.end_date))
 
+            print(s_date)
+            print(e_date)
+
             sale_orders = self.env['sale.order'].search([])
 
             filtered_sale_orders = list(filter(
@@ -39,7 +42,10 @@ class ProductSaleByCountPopUp(models.TransientModel):
                           s_date <= ProductSaleByCountPopUp.string_to_date(x.confirmation_date) <= e_date, sale_orders))
             product_ids = []
             for sale_order in filtered_sale_orders:
+                print('sale_order : %r',sale_order.name)
+
                 for sale_order_line in sale_order.order_line:
+
                     product_ids.append(sale_order_line.product_id.id)
 
             product_ids = list(set(product_ids))
@@ -52,7 +58,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
                 'view_mode': 'tree,form',
                 'name': _('Sales By Month'),
                 'res_model': 'product.product',
-                'domain': [('id', 'in', product_ids)],
+                'domain': [('id', 'in', product_ids), ('total_sale_qty', '>', 0)],
                 'target': 'main'
             }
             if self.product_sku_code:
@@ -64,7 +70,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
                 'view_mode': 'tree,form',
                 'name': _('Sales By Month'),
                 'res_model': 'product.product',
-                'domain': [],
+                'domain': [('total_sale_qty', '>', 0)],
                 'target': 'main'
             }
             if self.product_sku_code:

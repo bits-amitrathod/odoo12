@@ -1,4 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_customer-requests_customer-requests,customer-requests.customer-requests,model_customer-requests_customer-requests,,1,0,0,0
-access_sps_cust_uploaded_documents,access_sps_cust_uploaded_documents,model_sps_cust_uploaded_documents,base.group_user,1,0,0,0
-access_sps_document_process,access_sps_document_process,model_sps_document_process,base.group_user,1,0,0,0
+access_sps_customer_requests_user,sps.customer.requests user,model_sps_customer_requests,customer-requests.group_customer_requests_user,1,1,0,0
+access_sps_customer_requests_manager,sps.customer.requests manager,model_sps_customer_requests,customer-requests.group_customer_requests_manager,1,1,1,1
+access_sps_cust_uploaded_documents_user,sps.cust.uploaded.documents user,model_sps_cust_uploaded_documents,customer-requests.group_customer_requests_user,1,1,0,0
+access_sps_cust_uploaded_documents_manager,sps.cust.uploaded.documents manager,model_sps_cust_uploaded_documents,customer-requests.group_customer_requests_manager,1,1,1,1
