@@ -20,3 +20,4 @@
 ##############################################################################
 
 from . import sale
+from . import sale_purchase_history_model

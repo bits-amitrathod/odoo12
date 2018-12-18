@@ -8,62 +8,72 @@
                     <div class="row">
                     <center>
                         <b>
+                            <h2>Surgical Product Solutions</h2>
                             <h4>Sales Purchase History</h4>
                         </b>
                     </center>
-                    <center>
-                        <b>
-                            <span t-esc="start_date"/>
-                            To
-                            <span t-esc="end_date"/>
-                        </b>
-                    </center>
+                    <!--<center>-->
+                        <!--<b>-->
+                            <!--<span t-esc="start_date"/>-->
+                            <!--To-->
+                            <!--<span t-esc="end_date"/>-->
+                        <!--</b>-->
+                    <!--</center>-->
                     </div>
                     <br/>
-                    <t t-foreach="data.keys()" t-as="user">
 
-                        <t t-set="total_sum" t-value="0"/>
+                        <t t-set="total_price" t-value="0"/>
                         <table class="table table-condensed" style="border: 1px solid black;">
                             <thead>
                                 <tr style="border: 1px solid black;">
-                                    <th style="border: 1px solid black;">Order</th>
-                                    <th style="border: 1px solid black;">Date</th>
-                                    <th style="border: 1px solid black;">Price</th>
+                                    <th style="border: 1px solid black;">SKU/Catalog No.</th>
+                                    <th style="border: 1px solid black;">Customer Name</th>
+                                    <th style="border: 1px solid black;">SO#</th>
+                                    <th style="border: 1px solid black;">Product Name</th>
+                                    <th style="border: 1px solid black;">Delivered Date</th>
                                     <th style="border: 1px solid black;">Qty Delivered</th>
-                                    <th style="border: 1px solid black;">Product</th>
-
+                                    <th style="border: 1px solid black;">Price</th>
+                                    <th style="border: 1px solid black;">Total</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr t-foreach="data[user]" t-as="order">
+                                <tr t-foreach="data" t-as="order">
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order[0]"/>
+                                        <span t-esc="order.product_sku"/>
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order[1]"/>
+                                        <span t-esc="order.customer_name"/>
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order[2]"/>
-                                        <t t-set="total_sum" t-value="total_sum + order[2]"/>
+                                        <span t-esc="order.sale_order"/>
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order[3]"/>
+                                        <span t-esc="order.product_name"/>
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order[4]"/>
+                                        <span t-esc="order.delivered_date"/>
+                                    </td>
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="order.qty_delivered"/>
+                                    </td>
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="order.unit_price" t-options='{"widget": "monetary","display_currency": order.product_id.currency_id}' />
+                                    </td>
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="order.total_price" t-options='{"widget": "monetary","display_currency": order.product_id.currency_id}'/>
+                                        <t t-set="total_price" t-value="total_price + order.total_price" />
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="2" style="border: 1px solid black;text-align: right;">
+                                    <td colspan="7" style="text-align: right;">
                                         <b>Total</b>
                                     </td>
-                                    <td style="border: 1px solid black;">
-                                        <span t-esc="total_sum"/>
+                                    <td style="text-align: right;">
+                                        $ <span t-esc="total_price"/>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
-                    </t>
                 </page>
             </t>
         </t>

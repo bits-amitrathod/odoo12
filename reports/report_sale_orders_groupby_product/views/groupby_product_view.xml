@@ -32,14 +32,15 @@
                 <tree string="Sales Order Lines" create="false">
                     <field name="product_id" invisible="1"/>
                     <field name="order_id"/>
-                    <field name="order_partner_id"/>
+                    <field name="confirmation_date"/>
+                    <!--<field name="order_partner_id"/>-->
                     <field name="name" string="Product"/>
                     <!--<field name="salesman_id"/>-->
                     <field name="product_uom_qty" string="Qty"/>
-                    <field name="qty_delivered"/>
+                    <!--<field name="qty_delivered"/>-->
                     <!--<field name="qty_invoiced"/>-->
                     <!--<field name="qty_to_invoice"/>-->
-                    <field name="product_uom" string="Unit of Measure" groups="product.group_uom"/>
+                    <!--<field name="product_uom" string="Unit of Measure" groups="product.group_uom"/>-->
                     <field name="price_subtotal" sum="Total" widget="monetary"/>
                 </tree>
             </field>

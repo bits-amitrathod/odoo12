@@ -38,3 +38,11 @@ class ReportSaleOrdersGroupbyProduct(models.TransientModel):
             return action
         else:
             return action
+
+
+class ReportSaleOrderLine(models.Model):
+    _inherit = 'sale.order.line'
+
+    _inherits = {'sale.order': 'order_id'}
+    order_id = fields.Many2one('sale.order', string='Order Reference')
+
