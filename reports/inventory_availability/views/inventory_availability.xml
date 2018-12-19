@@ -5,7 +5,8 @@
         <field name="model">product.product</field>
         <field name="arch" type="xml">
             <tree create="false" edit="false" string="Inventory Availability">
-                <field name="product_name" string="Product Name"/>
+                <field name="product_tmpl_id" invisible="1"/>
+                 <field name="sku_code" />
                 <field name="uom_id" string="UOM"/>
                 <field name="qty_available" string="On Hand"/>
                 <field name="outgoing_qty"  string="Allocated"/>
