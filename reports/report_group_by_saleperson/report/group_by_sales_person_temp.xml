@@ -54,7 +54,7 @@
                                         <b>Total</b>
                                     </td>
                                     <td align="right" style="border: 1px solid black;white-space: nowrap;">
-                                         <span t-esc="total_sum" t-options='{"widget": "monetary","display_currency":currency}' />
+                                         $ <span t-esc="total_sum" />
                                     </td>
                                 </tr>
                             </tbody>
