@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Total Product Sales",
+    'name': "TPS Report",
 
     # 'summary': """""",
     #
@@ -17,12 +17,12 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','product','purchase','sale_management'],
+    'depends': ['base','stock','product','purchase','sale_management'],
 
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
-        'wizard/tps_sale_view.xml',
+
         'views/tps_report_view.xml',
         'report/selected_product_report.xml',
         'report/selected_product_template.xml',

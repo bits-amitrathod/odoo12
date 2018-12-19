@@ -106,11 +106,14 @@ class inventory_exe(models.Model):
                                 params = self.env['ir.config_parameter'].sudo()
                                 production_lot_alert_days = int(
                                     params.get_param('inventory_extension.production_lot_alert_days'))
-                                final_date = fields.Datetime.from_string(ml.lot_expired_date)
-                                if production_lot_alert_days > 0:
-                                    alert_date = final_date.date() - datetime.timedelta(days=production_lot_alert_days)
+                                if ml.lot_expired_date and not ml.lot_expired_date is None:
+                                    final_date = fields.Datetime.from_string(ml.lot_expired_date)
+                                    if production_lot_alert_days > 0:
+                                        alert_date = final_date.date() - datetime.timedelta(days=production_lot_alert_days)
+                                    else:
+                                        alert_date = final_date.date() - datetime.timedelta(days=3)
                                 else:
-                                    alert_date = final_date.date() - datetime.timedelta(days=3)
+                                    alert_date=None
                                 lot = self.env['stock.production.lot'].create(
                                     {'name': ml.lot_name, 'use_date': ml.lot_expired_date,
                                      'removal_date': ml.lot_expired_date, 'life_date': ml.lot_expired_date,
