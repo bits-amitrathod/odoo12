@@ -13,13 +13,24 @@ class SaleSalespersonReport(models.TransientModel):
 
     @api.multi
     def get_report_values(self, docids, data):
-        sale_orders = self.env['sale.order'].search([('state', '=', 'sale')])
-        user_ids = self.env['res.users'].search([])
+        sale_orders = self.env['sale.order'].search([('state', '=', 'sale'),('id', 'in', docids)])
+
         groupby_dict = {}
-        for user in user_ids:
-            filtered_order = list(filter(lambda x: x.user_id.id == user.id, sale_orders))
-            filtered_by_date = filtered_order
-            groupby_dict[user.name] = filtered_by_date
+        old=""
+        for sale_order in sale_orders:
+
+            if old == sale_order.user_id.name:
+                groupby_dict[old].append(sale_order)
+            else:
+                old = sale_order.user_id.name
+                groupby_dict[old] = [sale_order]
+
+        # user_ids = self.env['res.users'].search([('id', 'in', docids)])
+
+        # for user in user_ids:
+        #     filtered_order = list(filter(lambda x: x.user_id.id == user.id, sale_orders))
+        #     filtered_by_date = filtered_order
+        #     groupby_dict[user.name] = filtered_by_date
         final_list = []
         currency_id = 0
         for user in groupby_dict.keys():

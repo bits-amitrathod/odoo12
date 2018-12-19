@@ -2,7 +2,7 @@ from odoo import api, fields, models ,_
 import datetime
 
 class DiscountSummaryPopUp(models.TransientModel):
-    _name = 'saleperson.popup'
+    _name = 'popup.gross.sales.by.person'
     _description = 'Gross Sale By Salesperson'
 
     compute_at_date = fields.Selection([
@@ -10,8 +10,8 @@ class DiscountSummaryPopUp(models.TransientModel):
         (1, 'Date Range ')
     ], string="Compute", help="Choose to analyze the Show Summary or from a specific date in the past.")
 
-    start_date = fields.Datetime('Start Date', default = (fields.date.today() - datetime.timedelta(days = 31)))
-    end_date = fields.Datetime('End Date', default = fields.Datetime.now)
+    start_date = fields.Date('Start Date', default = (fields.date.today() - datetime.timedelta(days = 31)))
+    end_date = fields.Date('End Date', default = fields.Datetime.now)
 
     def open_table(self):
 
