@@ -36,7 +36,7 @@
                                     <tr >
                                        <th>
                                             Ship To:
-                                            <div class="col-md-12" style="margin-top:10px;border: 1px solid black;width:100%">
+                                            <div class="col-md-12" style="margin-top:10px;border: 1px solid #ddd;width:100%">
                                                 <p style="font-weight: lighter">
                                                    <span t-esc="packing_list.sale_id.partner_shipping_id.street"/>
                                                     <br/>
@@ -62,7 +62,7 @@
                                         </th>
                                         <th>
                                             Bill To:
-                                            <div class="col-md-12" style="margin-top:10px;border: 1px solid black;width:100%">
+                                            <div class="col-md-12" style="margin-top:10px;border: 1px solid #ddd;width:100%">
                                                 <p style="font-weight: lighter">
                                                    <span t-esc="packing_list.sale_id.partner_invoice_id.street"/>
                                                     <br/>
@@ -87,9 +87,7 @@
                                          <table class="table  table-condensed table-bordered " >
                                             <thead>
                                                 <tr>
-                                                    <th>
-                                                         <div class="col-md-12">Carton Count</div>
-                                                    </th>
+
                                                     <th>
                                                         <div class="col-md-12">Req. Ship Date</div>
                                                     </th>
@@ -106,13 +104,7 @@
                                             </thead>
                                             <tbody class="invoice_tbody"  >
                                                 <tr >
-                                                   <th>
-                                                        <div class="col-md-12" style="margin-top:10px">
-                                                            <p style="font-weight: lighter">
-                                                               1
-                                                            </p>
-                                                        </div>
-                                                    </th>
+
                                                    <th>
                                                         <div class="col-md-12" style="margin-top:10px">
                                                             <p style="font-weight: lighter">
@@ -151,25 +143,26 @@
                                             <div class="col-md-12" style="margin-top:10px;width:50%">
 
                                                 <p style="height:10px">
-                                                    Carton Information
+
+                                                  Tracking Information:
                                                 </p>
                                                 <p>
                                                  <hr style="margin:0px;padding:0px"/>
-                                                    Carton 1 (# <span t-esc="packing_list.carrier_tracking_ref"/>)
+                                                     Tracking (# <span t-esc="packing_list.carrier_tracking_ref"/>)
                                                     <a style="float:right" t-att-href="packing_list.carrier_tracking_url" target="_blank">
                                                         <t t-if="packing_list.carrier_id.name !='Normal Delivery Charges' ">
-                                                         <span t-esc="packing_list.carrier_id.name"/> Tracking
+                                                         <span t-esc="packing_list.carrier_id.name"/>
                                                        </t>
                                                     </a>
                                                  <hr style="margin:0px;padding:0px"/>
-                                                  Total: 1
+
                                                 </p>
                                             </div>
                                         </th>
 
                                     </tr>
                                     <tr>
-                                        <table class="table  table-condensed table-bordered " style="margin-top:10px">
+                                        <table class="table  table-condensed table-bordered " style="margin-top:20px">
                                             <thead>
                                                 <tr>
                                                     <th>

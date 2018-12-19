@@ -17,7 +17,7 @@ class ReturnrdSales(models.Model):
     product_uom_id = fields.Many2one('product.uom', 'UOM')
     partner_id = fields.Many2one('res.partner', string='Customer', )
     product_id = fields.Many2one('product.product', string='Product', )
-    move_id = fields.Many2one('stock.move', string='Stock Move', ),
+    move_id = fields.Many2one('stock.move', string='Stock Move' )
     moved_date = fields.Date('Date')
     user_id = fields.Many2one('res.users', 'Salesperson', readonly=True)
     sku_code = fields.Char('SKU / Catalog No')

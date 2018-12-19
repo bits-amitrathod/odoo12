@@ -8,9 +8,18 @@ class ReportProducts(models.AbstractModel):
 
     @api.model
     def get_report_values(self, docids, data=None):
-        records = self.env['product.product'].browse(docids)
+        if len(docids) == 1:
+            ids = "(" + str(docids[0]) + ")"
+        else:
+            ids = str(tuple(docids))
+        view='total_product_sale'
+        records = "select tps.sku_code,tps.product_name,concat(tps.currency_symbol,' ',cast(tps.total_sales as varchar)) as total_sales,tps.start_date,tps.end_date  from  " + view +" as tps where id in "  + ids
+        self._cr.execute(records)
+        records = self._cr.fetchall()
+        for record in records:
+            record
         return {
-            'data': records.sorted(key=lambda r: r.total_sale_qty, reverse=True)}
+            'data': records}
 
 
 

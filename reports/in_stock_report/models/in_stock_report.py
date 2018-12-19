@@ -91,7 +91,8 @@ class ReportInStockReport(models.TransientModel):
 
     @api.model_cr
     def init(self):
-        self.init_table()
+        # self.init_table()
+        pass
 
     def init_table(self):
         sql_query = """ 
