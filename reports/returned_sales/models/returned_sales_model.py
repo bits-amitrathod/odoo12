@@ -20,7 +20,7 @@ class ReturnrdSales(models.Model):
     move_id = fields.Many2one('stock.move', string='Stock Move' )
     moved_date = fields.Date('Date')
     user_id = fields.Many2one('res.users', 'Salesperson', readonly=True)
-    sku_code = fields.Char('SKU / Catalog No')
+    sku_code = fields.Char('Product SKU')
 
     @api.model_cr
     def init(self):

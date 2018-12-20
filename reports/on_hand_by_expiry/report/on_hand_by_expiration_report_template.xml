@@ -18,7 +18,7 @@
                                 <table class="table table-condensed" style="border: 1px solid black;">
                                     <thead>
                                         <tr style="">
-                                            <th style="text-align: center; border: 1px solid black;">SKU/Catalog No.</th>
+                                            <th style="text-align: center; border: 1px solid black;">Product SKU</th>
                                             <th style="text-align: center; border: 1px solid black;">Product</th>
                                             <th style="text-align: center; border: 1px solid black;">Qty</th>
                                             <th style="text-align: center; border: 1px solid black;">Location</th>

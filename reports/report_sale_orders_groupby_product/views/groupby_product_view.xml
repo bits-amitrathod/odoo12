@@ -26,15 +26,15 @@
 
 
         <record id="report_sale_orders_group_by_product_tree" model="ir.ui.view">
-            <field name="name">report.sale.orders.groupby.product.tree</field>
+            <field name="name">popup.sale.orders.groupby.product.report.tree</field>
             <field name="model">sale.order.line</field>
             <field name="arch" type="xml">
                 <tree string="Sales Order Lines" create="false">
                     <field name="product_id" invisible="1"/>
-                    <field name="order_id"/>
+                    <field name="order_id" string="SO#"/>
                     <field name="confirmation_date"/>
                     <!--<field name="order_partner_id"/>-->
-                    <field name="name" string="Product"/>
+                    <field name="sku_code"/>
                     <!--<field name="salesman_id"/>-->
                     <field name="product_uom_qty" string="Qty"/>
                     <!--<field name="qty_delivered"/>-->
@@ -61,7 +61,7 @@
 
                             <group>
                                 <field name="name"/>
-                                <field name="product_id"/>
+                                <field name="sku_code"/>
                                 <field name="order_partner_id"/>
                                 <field name="company_id"/>
 
@@ -82,7 +82,7 @@
 
         <record id="sale_orders_groupby_product_popup_view" model="ir.ui.view">
             <field name="name">Gross Sales By Product</field>
-            <field name="model">report.sale.orders.groupby.product</field>
+            <field name="model">popup.sale.orders.groupby.product.report</field>
             <field name="arch" type="xml">
                 <form string="Choose your date">
                     <group>
@@ -102,7 +102,7 @@
 
         <record id="action_sale_order_groupby_product" model="ir.actions.act_window">
             <field name="name">Gross Sales By Product</field>
-            <field name="res_model">report.sale.orders.groupby.product</field>
+            <field name="res_model">popup.sale.orders.groupby.product.report</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="sale_orders_groupby_product_popup_view"/>

@@ -9,7 +9,7 @@ _logger = logging.getLogger(__name__)
 class aging_report(models.Model):
     _inherit = 'stock.production.lot'
 
-    pr_sku = fields.Char("SKU/Catalog No", store=False, compute="_calculateSKU")
+    pr_sku = fields.Char("Product SKU", store=False, compute="_calculateSKU")
     pr_name= fields.Char("Product Name", store=False)
     tracking = fields.Char("Tracking", store=False,compute="_calculateTracking")
     p_qty = fields.Integer('Qty', store=False)

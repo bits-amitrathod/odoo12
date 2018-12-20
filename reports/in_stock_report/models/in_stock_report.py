@@ -19,7 +19,7 @@ class ReportInStockReportPopup(models.TransientModel):
     partner_id = fields.Many2one('res.partner', string='Customer', )
     user_id = fields.Many2one('res.users', 'Salesperson')
     warehouse_id = fields.Many2one('stock.warehouse', 'Warehouse')
-    sku_code = fields.Char('SKU / Catalog No')
+    sku_code = fields.Char('Product SKU')
 
     def open_table(self):
         tree_view_id = self.env.ref('in_stock_report.view_in_stock_report_line_tree').id

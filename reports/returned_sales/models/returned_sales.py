@@ -24,7 +24,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
 
     sale_person_id = fields.Many2one('res.users', string='Sales Person', required=False)
 
-    sku_code = fields.Char('SKU / Catalog No')
+    sku_code = fields.Char('Product SKU')
 
     customer_id = fields.Many2one('res.partner', string='Customer', required=False,)
 

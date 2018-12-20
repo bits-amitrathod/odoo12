@@ -11,7 +11,7 @@ class inventory_adjustment_report(models.Model):
     _inherit = 'stock.inventory'
 
 
-    p_sku = fields.Char("SKU/Catalog No", store=False, compute="_calculateSKU")
+    p_sku = fields.Char("Product SKU", store=False, compute="_calculateSKU")
     p_type= fields.Char("Type", store=False)
     date_cal=fields.Date('Inventory Date',store=False)
     date_posted=fields.Date('Date Posted',store=False)
