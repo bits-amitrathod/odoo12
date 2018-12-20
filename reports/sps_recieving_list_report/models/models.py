@@ -11,7 +11,7 @@ _logger = logging.getLogger(__name__)
 class sps_recieving_list(models.Model):
     _inherit = 'stock.picking'
 
-    sku = fields.Char('SKU/Catalog No', store=False, compute="_findSKU")
+    sku = fields.Char('Product SKU', store=False, compute="_findSKU")
     p_name = fields.Char('Product Name', store=False)
     lot_no = fields.Char('Lot No#', store=False)
     exp_date = fields.Date('Exp Date', store=False)

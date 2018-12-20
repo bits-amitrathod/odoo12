@@ -14,7 +14,7 @@ class InventoryValuationPopUp(models.TransientModel):
 
     warehouse = fields.Many2one('stock.warehouse', string='Warehouse')
     location = fields.Many2one('stock.location', string='Location')
-    sku_code = fields.Char('SKU / Catalog No')
+    sku_code = fields.Char('Product SKU')
     asset_value = fields.Char(string="Asset Value")
 
     def open_table(self):
@@ -57,7 +57,7 @@ class ReportInventoryValuationSummary(models.TransientModel):
     location = fields.Char(string="Location")
     product_id = fields.Many2one('product.product', string='Product', )
     name = fields.Char(string="Name")
-    sku_code = fields.Char('SKU / Catalog No')
+    sku_code = fields.Char('Product SKU')
     quantity = fields.Float(string="Quantity")
     unit_cost = fields.Float(string="Unit Cost")
     asset_value = fields.Float(string="Asset Value")

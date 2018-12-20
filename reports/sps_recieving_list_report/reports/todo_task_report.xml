@@ -34,7 +34,7 @@
                     <table class="table table-condensed table-bordered" style="border: 1px solid black;">
                         <tr>
                             <!--<th style="border: 1px solid black;text-align: center;">Inventory Reference</th>-->
-                            <th style="border: 1px solid black;text-align: center;">SKU/Catalog No</th>
+                            <th style="border: 1px solid black;text-align: center;">Product SKU</th>
                             <th style="border: 1px solid black;text-align: center;">Inventory Date</th>
                             <th style="border: 1px solid black;text-align: center;">Date Posted</th>
                             <th style="border: 1px solid black;text-align: center;">Type</th>

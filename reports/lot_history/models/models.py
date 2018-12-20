@@ -11,7 +11,7 @@ class LotHistory(models.Model):
     _name = "lot.history.report"
     _description = "report product activity report"
 
-    sku_code = fields.Char('SKU / Catalog No')
+    sku_code = fields.Char('Product SKU')
     description = fields.Char('Description')
     type = fields.Char('Type')
     event = fields.Char('Event')

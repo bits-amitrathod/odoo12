@@ -10,7 +10,7 @@ class ProductVendorListView(models.Model):
 
     last_sold = fields.Date('Last Sold',  store=False)
     cost=fields.Monetary(string='Cost', store=False)
-    sku_code_product = fields.Char(string='SKU/Catelog No.', compute='_compute_product_vals', store=False)
+    sku_code_product = fields.Char(string='Product SKU', compute='_compute_product_vals', store=False)
 
     @api.onchange('cost')
     def _compute_product_vals(self):

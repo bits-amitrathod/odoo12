@@ -13,7 +13,7 @@ class OnHandByDate(models.Model):
     _name = "report.on.hand.by.date"
     _auto = False
 
-    sku_code = fields.Char('SKU / Catalog No')
+    sku_code = fields.Char('Product SKU')
     product_name = fields.Char("Product")
     qty_done = fields.Float("Qty")
     vendor_name = fields.Char("Vendor")

@@ -20,7 +20,7 @@
                     <table class="table  table-condensed" style="border: 1px solid black;width:100%">
                             <thead>
                                 <tr style="border: 1px solid black;">
-                                    <th style="border: 1px solid black;text-align: center;">SKU/Catalog No.</th>
+                                    <th style="border: 1px solid black;text-align: center;">Product SKU</th>
                                     <th style="border: 1px solid black;text-align: center;">UOM</th>
                                     <th style="border: 1px solid black;text-align: center;">On Hand</th>
                                     <th style="border: 1px solid black;text-align: center;">Allocated</th>

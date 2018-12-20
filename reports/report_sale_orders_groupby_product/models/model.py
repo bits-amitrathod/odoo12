@@ -2,7 +2,7 @@ from odoo import api, fields, models ,_
 import datetime
 
 class ReportSaleOrdersGroupbyProduct(models.TransientModel):
-    _name = 'report.sale.orders.groupby.product'
+    _name = 'popup.sale.orders.groupby.product.report'
     _description = 'Sales Orders Group by product'
     # _inherits = {'sale.order': 'sale_order_id'}
     # _auto = False
@@ -45,4 +45,12 @@ class ReportSaleOrderLine(models.Model):
 
     _inherits = {'sale.order': 'order_id'}
     order_id = fields.Many2one('sale.order', string='Order Reference')
+
+    sku_code = fields.Char('Product SKU', store=False, compute="_get_sku")
+
+    @api.multi
+    def _get_sku(self):
+        for order in self:
+            for sale_order in order.order_line:
+                order.sku_code = sale_order.product_id.product_tmpl_id.sku_code
 

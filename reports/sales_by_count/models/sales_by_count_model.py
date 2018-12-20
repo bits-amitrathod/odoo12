@@ -15,7 +15,7 @@ class ProductSaleByCountReport(models.Model):
     location = fields.Char(string='Location')
     user_id = fields.Many2one('res.users', 'Salesperson')
     warehouse_id = fields.Many2one('stock.warehouse', 'Warehouse')
-    sku_code = fields.Char('SKU / Catalog No')
+    sku_code = fields.Char('Product SKU')
     product_name = fields.Char(string='Product Name')
     quantity = fields.Char(string='Quantity')
 

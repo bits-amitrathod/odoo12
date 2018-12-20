@@ -38,7 +38,7 @@ class ReportProductActivity(models.TransientModel):
     event = fields.Char(string="Event")
     change_qty = fields.Integer(string="Change Qty")
     agent = fields.Char(string="User")
-    sku = fields.Char(string="SKU/Catalog No.")
+    sku = fields.Char(string="Product SKU")
     lot = fields.Char(string="Lot")
     expiration_date = fields.Date(string="Expiration Date")
     type = fields.Char(string="Type")

@@ -19,7 +19,7 @@ class inventory_allocation_so(models.Model):
     cost = fields.Float(string="Cost")
     so_allocation = fields.Boolean(string="isSale", compute='_compute_so_allocation')
     product_uom =fields.Char(string="Product_UOM")
-    product_code = fields.Char(string="SKU/Catalog No.")
+    product_code = fields.Char(string="Product SKU")
     product_name = fields.Char(string="Product Name")
     product_quantity = fields.Integer(string="Qty")
     product_uom_qty=fields.Char(string="Qty")

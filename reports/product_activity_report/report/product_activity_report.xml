@@ -44,7 +44,7 @@
                                         <th>Date</th>
                                         <th>Change Qty</th>
                                         <th>User</th>
-                                        <th>SKU / Catalog No</th>
+                                        <th>Product SKU</th>
                                         <th>Lot</th>
                                         <th>Expiration Date</th>
                                     </tr>
