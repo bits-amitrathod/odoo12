@@ -38,7 +38,7 @@
                                 <thead>
                                 <tr>
                                     <th style="border: 1px solid black;text-align: center;">Order Reference</th>
-                                    <th style="border: 1px solid black;text-align: center;">SKU/Catalog No</th>
+                                    <th style="border: 1px solid black;text-align: center;">Product SKU</th>
                                     <!--<th style="border: 1px solid black;text-align: center;">Manufacturer</th>-->
                                     <th style="border: 1px solid black;text-align: center;">Vendor</th>
                                     <th style="border: 1px solid black;text-align: center;">Product Name</th>

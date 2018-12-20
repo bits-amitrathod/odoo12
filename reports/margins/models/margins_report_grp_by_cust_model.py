@@ -15,7 +15,7 @@ class MarginsReport(models.Model):
     product_id = fields.Many2one('product.product', string='Product', )
     partner_id = fields.Many2one('res.partner', string='Customer', )
     order_id = fields.Many2one('sale.order', string='Order #', )
-    sku_code = fields.Char(string="SKU/Catalog No.")
+    sku_code = fields.Char(string="Product SKU")
     unit_price = fields.Float(string="Unit Price")
     unit_cost = fields.Float(string="Unit Cost")
     total_unit_price = fields.Float(string="Total Price")

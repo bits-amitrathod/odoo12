@@ -40,7 +40,7 @@
               <field name="priority">20</field>
               <field name="arch" type="xml">
                 <tree>
-                    <field name="name"/>
+                    <field name="name" string="SO#"/>
                     <field name="partner_id"/>
                     <field name="r_line_item"/>
                     <field name="confirmation_date"/>

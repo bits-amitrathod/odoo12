@@ -45,7 +45,7 @@
             <field name="model">report.on.hand.by.date</field>
             <field name="arch" type="xml">
                 <tree create="false">
-                    <field name="sku_code" string="SKU/Catalog No."/>
+                    <field name="sku_code" string="Product SKU"/>
                     <field name="product_name"/>
                     <field name="qty_done" string="Quantity"/>
                     <field name="vendor_name" string="Vendor"/>
@@ -60,7 +60,7 @@
             <field name="model">report.on.hand.by.date</field>
             <field name="arch" type="xml">
                 <tree create="false">
-                    <field name="sku_code" string="SKU/Catalog No."/>
+                    <field name="sku_code" string="Product SKU"/>
                     <field name="product_name" string="Product"/>
                     <field name="vendor_name" string="Vendor"/>
                     <field name="qty_done" string="Quantity"/>
@@ -75,7 +75,7 @@
                 <form create="false" update="false">
                     <group>
                         <field name="product_name" string="Product"/>
-                        <field name="sku_code" string="SKU/Catalog No."/>
+                        <field name="sku_code" string="Product SKU"/>
                         <field name="qty_done" string="Quantity"/>
                         <field name="vendor_name" string="Vendor"/>
                     </group>

@@ -11,7 +11,6 @@ _logger = logging.getLogger(__name__)
 class ProductSaleByCountPopUp(models.TransientModel):
 
     _name = 'popup.returned.sales'
-    _description = 'Products On Order'
 
     compute_at_date = fields.Selection([
         (0, 'All '),
@@ -24,7 +23,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
 
     sale_person_id = fields.Many2one('res.users', string='Sales Person', required=False)
 
-    sku_code = fields.Char('SKU / Catalog No')
+    sku_code = fields.Char('Product SKU')
 
     customer_id = fields.Many2one('res.partner', string='Customer', required=False,)
 

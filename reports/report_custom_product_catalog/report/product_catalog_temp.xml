@@ -21,7 +21,7 @@
                                 <tr style="border: 1px solid black;">
                                     <th style="border: 1px solid black;text-align: center !important;white-space: nowrap;">Product Type</th>
                                     <th style="border: 1px solid black;text-align: center !important;white-space: nowrap;">Manufacturer</th>
-                                    <th style="border: 1px solid black;text-align: center !important;white-space: nowrap;">SKU / Catalog No</th>
+                                    <th style="border: 1px solid black;text-align: center !important;white-space: nowrap;">Product SKU</th>
                                     <th style="border: 1px solid black;text-align: center !important;white-space: nowrap;">Product Name</th>
                                     <th style="border: 1px solid black;text-align: center !important;white-space: nowrap;">Quantity</th>
                                     <th style="border: 1px solid black;text-align: center !important;white-space: nowrap;">Price</th>
@@ -83,7 +83,7 @@
                         <table class="table table-condensed" style="border: 1px solid black;">
                             <thead style="display: table-header-group;">
                                 <tr style="border: 1px solid black;">
-                                    <th style="border: 1px solid black;text-align:center;"> SKU/Catalog No. </th>
+                                    <th style="border: 1px solid black;text-align:center;"> Product SKU </th>
                                     <th style="border: 1px solid black;text-align:center;"> Product Name </th>
                                     <th style="border: 1px solid black;text-align:center;"> Sales Price </th>
                                 </tr>

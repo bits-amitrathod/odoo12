@@ -16,7 +16,7 @@ class ProductVendorListPopUp(models.TransientModel):
 
     def open_table(self):
         tree_view_id = self.env.ref('product_vendor_list.vendor_form_list').id
-        form_view_id = self.env.ref('purchase.purchase_order_form').id
+        form_view_id = self.env.ref('purchase.purcha0se_order_form').id
 
         action = {
             'type': 'ir.actions.act_window',

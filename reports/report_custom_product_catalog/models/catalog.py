@@ -4,7 +4,7 @@ from odoo import api, fields, models
 class InventoryValuationPopUp(models.TransientModel):
     _name = 'popup.product.catalog'
 
-    sku_code = fields.Char('SKU / Catalog No')
+    sku_code = fields.Char('Product SKU')
 
     def open_table(self):
         res_model = 'product.product'

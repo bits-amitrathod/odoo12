@@ -18,7 +18,7 @@ class tps_report_sale(models.Model):
     total_sales = fields.Monetary(string='Sales', currency_field='currency_id')
     currency_id = fields.Many2one("res.currency", string="Currency", readonly=True)
     product_name=fields.Char("Product Name")
-    sku_code = fields.Char("SKU/Catalog No.")
+    sku_code = fields.Char("Product SKU")
     start_date=fields.Date("start_date")
     end_date=fields.Date("end_date")
     @api.multi
