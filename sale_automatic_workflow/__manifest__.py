@@ -19,5 +19,7 @@
              'data/automatic_workflow_data.xml',
              'security/ir.model.access.csv',
              ],
-    'installable': True,
+     'installable': True,
+    'application': True,
+    'auto_install': False,
 }

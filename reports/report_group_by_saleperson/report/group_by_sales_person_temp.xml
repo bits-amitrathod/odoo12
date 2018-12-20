@@ -27,8 +27,8 @@
                         <table class="table table-condensed" style="border: 1px solid black;">
                             <thead>
                                 <tr style="border: 1px solid black;">
-                                    <th style="border: 1px solid black;text-align: center;center;width: 327px;">Order</th>
-                                    <th style="border: 1px solid black;text-align: center;center;width: 474px;">Date</th>
+                                    <th style="border: 1px solid black;text-align: center;center;width: 327px;">Sales Order#</th>
+                                    <th style="border: 1px solid black;text-align: center;center;width: 474px;">Order Date</th>
                                     <th style="border: 1px solid black;text-align: center;">Price</th>
                                 </tr>
                                </thead>
@@ -54,7 +54,7 @@
                                         <b>Total</b>
                                     </td>
                                     <td align="right" style="border: 1px solid black;white-space: nowrap;">
-                                         <span t-esc="total_sum" t-options='{"widget": "monetary","display_currency":currency}' />
+                                         $ <span t-esc="total_sum" />
                                     </td>
                                 </tr>
                             </tbody>

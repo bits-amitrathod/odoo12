@@ -30,7 +30,7 @@
                                         <th style="text-align: left;">Order #</th>
                                         <th style="text-align: left;">Customer</th>
                                         <th style="text-align: left;">Salesperson</th>
-                                        <th style="text-align: right;">Qty</th>
+                                        <th style="text-align: right;">Qty Done</th>
                                         <th style="text-align: right;">Price</th>
                                     </tr>
                                 </thead>
@@ -46,10 +46,10 @@
                                             <span t-esc="order[2]"/>
                                         </td>
                                         <td align="center" style="text-align: right;">
-                                            <span t-esc="order[3]"/>
+                                            <span t-esc="order[3]"/> <span t-esc="order[4]"/>
                                         </td>
                                         <td align="right" style="text-align: right;">
-                                            <span t-esc="order[4]"/>
+                                            <span t-esc="order[5]"/>
                                         </td>
                                     </tr>
                                     <tr>

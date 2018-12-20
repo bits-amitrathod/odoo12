@@ -12,7 +12,7 @@ class purchase_history(models.Model):
 
 
 
-    sku = fields.Char("SKU/Catalog No", store=False, compute="_calculateSKU1")
+    sku = fields.Char("Product SKU", store=False, compute="_calculateSKU1")
     vendor = fields.Char("Vendor", store=False)
     qty = fields.Integer("Qty", store=False)
     manufacturer_rep = fields.Char("Manufacturer", store=False)

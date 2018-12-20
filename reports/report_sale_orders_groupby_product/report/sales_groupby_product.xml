@@ -33,7 +33,7 @@
                         <table class="table table-condensed table-bordered table-bordered">
                             <tr>
                                 <th class="text-right" style="width:10%">#</th>
-                                <th class="text-center">Sales Order</th>
+                                <th class="text-center">SO#</th>
                                 <th class="text-center">Date Order</th>
                                 <th class="text-center">Amount</th>
                             </tr>

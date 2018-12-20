@@ -17,7 +17,7 @@ class OnHandByExpiry(models.Model):
     product_id = fields.Many2one('product.product', string='Product',)
     location_id = fields.Many2one('stock.location', string='Location', )
     status = fields.Char('Status')
-    name = fields.Char("SKU/Catalog No.")
+    name = fields.Char("Product SKU")
     expiration_date = fields.Datetime("Expiration Date")
 
     @api.model_cr

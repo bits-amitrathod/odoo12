@@ -34,31 +34,65 @@
             </field>
         </record>
 
-        <record id="action_custom_catalog_list" model="ir.actions.act_window">
-            <field name="name">Custom Product Catalog</field>
-            <field name="res_model">product.product</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">form,tree</field>
-            <field name="view_id" ref="custom_list_view"/>
+        <record id="custom_product_catalog_popup_view" model="ir.ui.view">
+            <field name="name">Product Catalog</field>
+            <field name="model">popup.product.catalog</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="sku_code"/>
+                    </group>
+                    <footer>
+                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
         </record>
 
-        <record id="action_product_catalog_list" model="ir.actions.act_window">
-            <field name="name">Product Catalog</field>
-            <field name="res_model">product.product</field>
+        <record id="action_report_custom_product_catalog" model="ir.actions.act_window">
+            <field name="name">Custom Product Catalog</field>
+            <field name="res_model">popup.product.catalog</field>
             <field name="view_type">form</field>
-            <field name="view_mode">form,tree</field>
-            <field name="view_id" ref="product_list_view"/>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{'is_custom_report': True}</field>
         </record>
+
+        <record id="action_report_product_catalog" model="ir.actions.act_window">
+            <field name="name">Product Catalog</field>
+            <field name="res_model">popup.product.catalog</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{'is_custom_report': False}</field>
+        </record>
+
+        <!--<record id="action_custom_catalog_list" model="ir.actions.act_window">-->
+        <!--<field name="name">Custom Product Catalog</field>-->
+        <!--<field name="res_model">product.product</field>-->
+        <!--<field name="view_type">form</field>-->
+        <!--<field name="view_mode">form,tree</field>-->
+        <!--<field name="view_id" ref="custom_list_view"/>-->
+        <!--</record>-->
+
+        <!--<record id="action_product_catalog_list" model="ir.actions.act_window">-->
+        <!--<field name="name">Product Catalog</field>-->
+        <!--<field name="res_model">product.product</field>-->
+        <!--<field name="view_type">form</field>-->
+        <!--<field name="view_mode">form,tree</field>-->
+        <!--<field name="view_id" ref="product_list_view"/>-->
+        <!--</record>-->
 
         <menuitem id="sr_menu_custome_product_catalog_wizard"
                   name="Custom Product Catalog"
-                  action="action_custom_catalog_list"
+                  action="action_report_custom_product_catalog"
                   parent="stock.menu_warehouse_report"
                   sequence="2"/>
 
         <menuitem id="sr_menu_product_catalog_wizard"
                   name="Product Catalog"
-                  action="action_product_catalog_list"
+                  action="action_report_product_catalog"
                   parent="stock.menu_warehouse_report"
                   sequence="2"/>
 

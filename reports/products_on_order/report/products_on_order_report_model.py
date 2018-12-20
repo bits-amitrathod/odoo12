@@ -9,13 +9,14 @@ class ReportProductsOnOrder(models.AbstractModel):
 
     @api.model
     def get_report_values(self, docids, data=None):
-        products_on_order_list = self.env['products.on_order'].browse(docids)
+        products_on_order_list = self.env['report.products.on.order'].browse(docids)
 
         group_by_list = {}
         for products_on_order in products_on_order_list:
             order_line = [products_on_order.order_id.name, products_on_order.partner_id.display_name,
+                          products_on_order.sku_code,
                           products_on_order.date_ordered,products_on_order.date_due,
-                          products_on_order.qty_ordered, products_on_order.qty_remaining]
+                          products_on_order.qty_ordered, products_on_order.qty_remaining, products_on_order.product_uom.name]
             key = ""
             if products_on_order.product_id.product_tmpl_id.sku_code:
                 key = str(products_on_order.product_id.product_tmpl_id.sku_code) + str(" - ")

@@ -18,7 +18,7 @@ class tps_report_sale(models.Model):
     total_sales = fields.Monetary(string='Sales', currency_field='currency_id')
     currency_id = fields.Many2one("res.currency", string="Currency", readonly=True)
     product_name=fields.Char("Product Name")
-    sku_code = fields.Char("SKU/Catalog No.")
+    sku_code = fields.Char("Product SKU")
     start_date=fields.Date("start_date")
     end_date=fields.Date("end_date")
     @api.multi
@@ -44,7 +44,8 @@ class tps_report_sale(models.Model):
         start_date = self.env.context.get('start_date')
         end_date = self.env.context.get('end_date')
         if  start_date is None or  end_date is None:
-            return
+            start_date = fields.date.today()
+            end_date = fields.date.today()
         s_date = (str(start_date)).replace("-","/")
         e_date = str(end_date).replace("-","/")
 
