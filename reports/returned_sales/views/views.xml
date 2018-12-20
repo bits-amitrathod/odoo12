@@ -2,14 +2,14 @@
     <data>
         <record id="view_returned_sales_popup" model="ir.ui.view">
             <field name="name">Returned Sales</field>
-            <field name="model">returned_sales.popup</field>
+            <field name="model">popup.returned.sales</field>
             <field name="arch" type="xml">
                 <form string="Choose your date">
                     <group>
                         <group>
                             <field name="sale_person_id" domain="[('sales_person','=', 1)]"/>
                             <field name="customer_id"/>
-                            <field name="product_id"/>
+                            <field name="sku_code"/>
                         </group>
                         <group>
                             <field name="compute_at_date" widget="radio"/>
@@ -27,7 +27,7 @@
 
         <record id="action_returned_sales" model="ir.actions.act_window">
             <field name="name">Returned Sales</field>
-            <field name="res_model">returned_sales.popup</field>
+            <field name="res_model">popup.returned.sales</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="view_returned_sales_popup"/>
@@ -38,7 +38,7 @@
 
         <record model="ir.ui.view" id="returned_saleslist_view">
             <field name="name">product.on.order.view.list</field>
-            <field name="model">returned_sales.order</field>
+            <field name="model">report.returned.sales.order</field>
             <field name="arch" type="xml">
                 <tree>
                     <field name="order_id" string="Order #"/>
@@ -47,6 +47,7 @@
                     <field name="sku_code"/>
                     <field name="user_id"/>
                     <field name="done_qty" string="Quantity"/>
+                    <field name="product_uom_id"/>
                     <field name="cost_price" string="Cost"/>
                 </tree>
             </field>
@@ -54,18 +55,19 @@
 
         <record model="ir.ui.view" id="returned_salesform_view">
             <field name="name">product.on.order.view.list</field>
-            <field name="model">returned_sales.order</field>
+            <field name="model">report.returned.sales.order</field>
             <field name="arch" type="xml">
                 <form>
                     <group>
                         <group>
                             <field name="order_id" string="Order #"/>
-                            <field name="product_id" string="Product"/>
+                            <field name="sku_code" string="Product"/>
                             <field name="partner_id" string="Customer Name"/>
                         </group>
                         <group>
                             <field name="done_qty" string="Quantity"/>
                             <field name="cost_price" string="Cost"/>
+                            <field name="moved_date" />
                         </group>
                     </group>
                 </form>

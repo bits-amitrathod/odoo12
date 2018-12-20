@@ -20,7 +20,7 @@
 
     <record id="view_stock_quantity_history" model="ir.ui.view">
         <field name="name">Total Product Sales</field>
-        <field name="model">popup.view.model123</field>
+        <field name="model">tps.popup.view</field>
         <field name="arch" type="xml">
             <form string="Choose your date">
                 <group>
@@ -39,7 +39,7 @@
 
     <record id="action_stock_quantity_history" model="ir.actions.act_window">
         <field name="name">Total Product Sales</field>
-        <field name="res_model">popup.view.model123</field>
+        <field name="res_model">tps.popup.view</field>
         <field name="search_view_id" eval="False"/>
         <field name="view_type">form</field>
         <field name="view_mode">form</field>
