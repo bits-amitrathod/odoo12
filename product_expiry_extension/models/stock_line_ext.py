@@ -112,12 +112,14 @@ class inventory_exe(models.Model):
                                         alert_date = final_date.date() - datetime.timedelta(days=production_lot_alert_days)
                                     else:
                                         alert_date = final_date.date() - datetime.timedelta(days=3)
+                                    lot = self.env['stock.production.lot'].create(
+                                        {'name': ml.lot_name, 'use_date': ml.lot_expired_date,
+                                         'removal_date': ml.lot_expired_date, 'life_date': ml.lot_expired_date,
+                                         'alert_date': str(alert_date), 'product_id': ml.product_id.id})
                                 else:
-                                    alert_date=None
-                                lot = self.env['stock.production.lot'].create(
-                                    {'name': ml.lot_name, 'use_date': ml.lot_expired_date,
-                                     'removal_date': ml.lot_expired_date, 'life_date': ml.lot_expired_date,
-                                     'alert_date': str(alert_date), 'product_id': ml.product_id.id})
+                                    lot = self.env['stock.production.lot'].create(
+                                        {'name': ml.lot_name,'product_id': ml.product_id.id})
+
                                 ml.write({'lot_id': lot.id})
                         elif not picking_type_id.use_create_lots and not picking_type_id.use_existing_lots:
                             # If the user disabled both `use_create_lots` and `use_existing_lots`
