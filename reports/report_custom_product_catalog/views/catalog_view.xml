@@ -34,7 +34,7 @@
             </field>
         </record>
 
-        <record id="inventory_valuation_summary_popup_view" model="ir.ui.view">
+        <record id="custom_product_catalog_popup_view" model="ir.ui.view">
             <field name="name">Product Catalog</field>
             <field name="model">popup.product.catalog</field>
             <field name="arch" type="xml">
