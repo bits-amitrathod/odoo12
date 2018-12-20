@@ -28,7 +28,9 @@
                             <thead style="display: table-header-group;">
                                 <tr>
                                     <th style="border: 1px solid black;text-align: center; width:15%; ">Product SKU</th>
+
                                     <th style="border: 1px solid black;text-align: center; width:50%;">Product Name</th>
+
                                     <th style="border: 1px solid black;text-align: center;white-space: nowrap; width:10%;">
                                        Sales Price
                                     </th>
