@@ -27,11 +27,13 @@
                             <thead>
                                 <tr style="">
                                     <th width="10%" style="text-align: center;center;">Order #</th>
-                                    <th style="text-align: center;;">Customer</th>
-                                    <th style="text-align: center;">Date</th>
+                                    <th>Customer Name</th>
+                                    <th>Product SKU</th>
+                                    <th style="text-align: center;">Order Date</th>
                                     <th style="text-align: center;">Due Date</th>
                                     <th width="10%" style="text-align: center;">Qty Ordered</th>
                                     <th width="10%" style="text-align: center;">Qty Remaining</th>
+                                    <th width="10%" style="text-align: center;">UOM</th>
                                 </tr>
                                </thead>
                             <tbody>
@@ -39,20 +41,26 @@
                                     <td width="10%" style="text-align: center;center;">
                                         <span t-esc="order[0]"/>
                                     </td>
-                                    <td align="center" style="">
+                                    <td style="">
                                         <span t-esc="order[1]"/>
                                     </td>
-                                    <td width="15%" align="center" style="">
-                                          <span t-esc="order[2]"/>
+                                    <td style="">
+                                        <span t-esc="order[2]"/>
                                     </td>
-                                    <td width="10%" align="center" style="">
+                                    <td width="15%" align="center" style="">
                                           <span t-esc="order[3]"/>
                                     </td>
-                                    <td width="10%" align="right" style="">
+                                    <td width="10%" align="center" style="">
                                           <span t-esc="order[4]"/>
                                     </td>
                                     <td width="10%" align="right" style="">
                                           <span t-esc="order[5]"/>
+                                    </td>
+                                    <td width="10%" align="right" style="">
+                                          <span t-esc="order[6]"/>
+                                    </td>
+                                    <td width="10%" align="right" style="">
+                                          <span t-esc="order[6]"/>
                                     </td>
                                 </tr>
                                 <tr>

@@ -9,20 +9,17 @@ class ReportProductSaleByCount(models.AbstractModel):
 
     @api.model
     def get_report_values(self, docids, data=None):
-        records = self.env['product.product'].browse(docids)
 
-        data = []
-        for product in records:
-            record = {'product_name': product.product_tmpl_id.name,
-                      'sku_name': product.product_tmpl_id.sku_code}
-
-            sale_order_lines = self.env['sale.order.line'].search([('product_id', '=', product.id)])
-            for sale_order_line in sale_order_lines:
-                record['total_sale_qty'] = product.total_sale_qty + sale_order_line.product_uom_qty
-                if 'product_price' in record:
-                    record['product_price'] = record['product_price'] + sale_order_line.price_total
-                else:
-                    record['product_price'] = sale_order_line.price_total
-            data.append(record)
+        if len(docids) == 1:
+            ids = "(" + str(docids[0]) + ")"
+        else:
+            ids = str(tuple(docids))
+        view='sales_by_month'
+        records = "select sbm.sku_code,sbm.p_name,concat(sbm.currency_symbol,' ',cast(sbm.product_price as varchar)) as product_price,sbm.total_sale_quantity, sbm.total_amount," \
+                  "concat(sbm.currency_symbol,' ',cast(sbm.total_amount as varchar)) as total_amount,sbm.start_date,sbm.end_date,sbm.currency_symbol  from  " + view +" as sbm where id in "  + ids
+        self._cr.execute(records)
+        records = self._cr.fetchall()
+        for record in records:
+            record
         return {
-            'data': records.sorted(key=lambda r: r.total_sale_qty, reverse=True)}
+            'data': records}

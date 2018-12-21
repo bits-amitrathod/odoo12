@@ -15,9 +15,13 @@ class DiscountSummaryPopUp(models.TransientModel):
 
     def open_table(self):
 
+        tree_view_id = self.env.ref('report_group_by_saleperson.view_order_tree').id
+        form_view_id = self.env.ref('sale.view_order_form').id
+
         if self.compute_at_date:
             action = {
                 'type': 'ir.actions.act_window',
+                'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
                 'view_mode': 'tree,form',
                 'name': _('Gross Sales By Salesperson'),
                 'res_model': 'sale.order',
@@ -28,6 +32,7 @@ class DiscountSummaryPopUp(models.TransientModel):
         else:
             action = {
                 'type': 'ir.actions.act_window',
+                'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
                 'view_mode': 'tree,form',
                 'name': _('Gross Sales By Salesperson'),
                 'res_model': 'sale.order',

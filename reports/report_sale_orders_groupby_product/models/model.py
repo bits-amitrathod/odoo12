@@ -12,8 +12,8 @@ class ReportSaleOrdersGroupbyProduct(models.TransientModel):
         (0, 'Show All '),
         (1, 'Date Range ')
     ], string="Compute", help="Choose to analyze the Show Summary or from a specific date in the past.")
-    start_date = fields.Datetime('Start Date', help="Choose report Start date", default = (fields.date.today() - datetime.timedelta(days = 31)))
-    end_date = fields.Datetime('End Date', help="Choose report End date",
+    start_date = fields.Date('Start Date', help="Choose report Start date", default = (fields.date.today() - datetime.timedelta(days = 31)))
+    end_date = fields.Date('End Date', help="Choose report End date",
                            default = fields.Datetime.now)
 
     def open_table(self):
@@ -33,7 +33,7 @@ class ReportSaleOrdersGroupbyProduct(models.TransientModel):
         }
 
         if self.compute_at_date:
-            action.update({'domain': [('order_id.confirmation_date', '>=', self.start_date), ('order_id.confirmation_date', '<=', self.end_date),
+            action.update({'domain': [('order_id.date_order', '>=', self.start_date), ('order_id.date_order', '<=', self.end_date),
                    ('state', 'in', ('sale', 'done'))]})
             return action
         else:

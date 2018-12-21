@@ -10,7 +10,7 @@ _logger = logging.getLogger(__name__)
 
 class ProductSaleByCountPopUp(models.TransientModel):
 
-    _name = 'prod_on_order.popup'
+    _name = 'popup.product.on.order'
     _description = 'Products On Order'
 
     compute_at_date = fields.Selection([
@@ -45,7 +45,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
         if self.product_id.id:
             products_on_order_context.update({'product_id': self.product_id.id})
 
-        self.env['products.on_order'].with_context(products_on_order_context).delete_and_create()
+        self.env['report.products.on.order'].with_context(products_on_order_context).delete_and_create()
 
         domain = [('date_ordered', '>=', s_date), ('date_ordered', '<=', e_date)]
 
@@ -54,7 +54,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
             'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
             'view_mode': 'tree,form',
             'name': _('Products On Order'),
-            'res_model': 'products.on_order',
+            'res_model': 'report.products.on.order',
             'context': {'group_by': 'product_id',},
             'domain' : domain,
             'target': 'main',

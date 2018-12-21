@@ -24,7 +24,7 @@
                                     <span t-esc="pick['picking']"/>
                                 </td>
                                 <td style="border: none;">
-                                    <strong>SO #:</strong>
+                                    <strong>Sales Order#:</strong>
                                     <span t-esc="pick['order']"/>
                                 </td>
                                 <td style="border: none;">

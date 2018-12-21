@@ -34,7 +34,7 @@
                                 <td style="width:10%"><b>Orders: </b></td>
                             </tr>
                             <tr>
-                                <td style="width:10%">SO #</td>
+                                <td style="width:10%">Sales Order#</td>
                                 <td style="width:80%"><span t-esc="data['order_id']"/></td>
                             </tr>
                             <tr>
