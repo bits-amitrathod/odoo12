@@ -40,6 +40,7 @@ class tps_report_sale(models.Model):
 
     def init_table(self):
         view='total_product_sale'
+
         tools.drop_view_if_exists(self._cr, view)
         start_date = self.env.context.get('start_date')
         end_date = self.env.context.get('end_date')

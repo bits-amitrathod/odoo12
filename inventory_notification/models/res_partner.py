@@ -10,9 +10,10 @@ class ParnerOnHoldStatus(models.Model):
     @api.multi
     def write(self, vals):
         _logger.info("res.partner vals :%r",vals)
-        res = super(ParnerOnHoldStatus, self).write(vals)
-        if res and self.is_parent and 'on_hold' in vals  and not vals.get('on_hold'):
-            _logger.info("on hold false: %r",vals)
-            inv_notification = self.env['inventory.notification.scheduler'].search([])
-            inv_notification.process_hold_off_customer(self)
-        return res
+        for ml in self:
+            res = super(ParnerOnHoldStatus, ml).write(vals)
+            if res and ml.is_parent and 'on_hold' in vals  and not vals.get('on_hold'):
+                _logger.info("on hold false: %r",vals)
+                inv_notification = ml.env['inventory.notification.scheduler'].search([])
+                inv_notification.process_hold_off_customer(ml)
+            return res
