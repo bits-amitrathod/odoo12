@@ -6,21 +6,22 @@
                 <page>
                     <div class="oe_structure"/>
                     <div class="row">
-                    <center>
-                        <b>
-                            <h2> Surgical Product Solutions </h2>
-                            <h4> Discount Summary</h4>
-                        </b>
-                    </center>
-                    <center>
-                    </center>
+                        <center>
+                            <b>
+                                <h2>Surgical Product Solutions</h2>
+                                <h4>Discount Summary</h4>
+                                <h4 t-if="date">
+                                    <span t-esc="date"/>
+                                </h4>
+                            </b>
+                        </center>
                     </div>
                     <br/>
-                    <div >
-                    <table class="table table-condensed" style="border: 1px solid black;">
+                    <div>
+                        <table class="table table-condensed" style="border: 1px solid black;">
                             <thead style="display: table-header-group;">
                                 <tr style="border: 1px solid black;">
-                                    <th style="border: 1px solid black;text-align: center;">SO# </th>
+                                    <th style="border: 1px solid black;text-align: center;">Sales Order#</th>
                                     <th style="border: 1px solid black;text-align: center;">Line #</th>
                                     <th style="border: 1px solid black;text-align: center;width:350px;">Customer</th>
                                     <th style="border: 1px solid black;text-align: center;">Confirmation Date</th>
@@ -30,31 +31,33 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                    <tr t-foreach="data" t-as="order">
-                                        <td  style="border: 1px solid black;">
-                                            <span t-esc="order.name"/>
-                                        </td>
-                                        <td style="border: 1px solid black;">
-                                            <span t-esc="order.r_line_item"/>
-                                        </td>
-                                        <td style="border: 1px solid black;">
-                                            <span t-esc="order.partner_id.name"/>
-                                        </td>
-                                        <td align="center" style="border: 1px solid black;">
-                                            <span t-esc="order.confirmation_date"  t-options='{"widget": "date"}'/>
-                                        </td>
-                                        <td align="right" style="border: 1px solid black;white-space:nowrap;">
-                                              <span t-esc="order.r_discount" t-options='{"widget": "monetary","display_currency": order.currency_id}' />
-                                        </td>
-                                        <td align="right" style="border: 1px solid black;white-space:nowrap;">
-                                              <span t-esc="order.r_amount" t-options='{"widget": "monetary","display_currency": order.currency_id}' />
-                                        </td>
-                                        <!--<td align="right" style="border: 1px solid black;white-space:nowrap;">-->
-                                              <!--<span t-esc="order.r_total" t-options='{"widget": "monetary","display_currency": order.currency_id}' />-->
-                                        <!--</td>-->
-                                    </tr>
+                                <tr t-foreach="data" t-as="order">
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="order.name"/>
+                                    </td>
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="order.r_line_item"/>
+                                    </td>
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="order.partner_id.name"/>
+                                    </td>
+                                    <td align="center" style="border: 1px solid black;">
+                                        <span t-esc="order.confirmation_date" t-options='{"widget": "date"}'/>
+                                    </td>
+                                    <td align="right" style="border: 1px solid black;white-space:nowrap;">
+                                        <span t-esc="order.r_discount"
+                                              t-options='{"widget": "monetary","display_currency": order.currency_id}'/>
+                                    </td>
+                                    <td align="right" style="border: 1px solid black;white-space:nowrap;">
+                                        <span t-esc="order.r_amount"
+                                              t-options='{"widget": "monetary","display_currency": order.currency_id}'/>
+                                    </td>
+                                    <!--<td align="right" style="border: 1px solid black;white-space:nowrap;">-->
+                                    <!--<span t-esc="order.r_total" t-options='{"widget": "monetary","display_currency": order.currency_id}' />-->
+                                    <!--</td>-->
+                                </tr>
                             </tbody>
-                    </table>
+                        </table>
                     </div>
                 </page>
             </t>

@@ -44,7 +44,7 @@
                     <field name="user_id" invisible="1"/>
                     <field name="product_sku" string="Product SKU"/>
                     <field name="customer_name" string="Customer Name"/>
-                    <field name="sale_order" string="SO#"/>
+                    <field name="sale_order" string="Sales Order#"/>
                     <field name="product_name" string="Product Name"/>
                     <field name="delivered_date" string="Delivered Date"/>
                     <field name="qty_delivered" string="Qty Delivered" />
