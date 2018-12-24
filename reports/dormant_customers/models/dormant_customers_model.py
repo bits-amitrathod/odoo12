@@ -10,7 +10,7 @@ class DormantCustomer(models.Model):
     _inherit = "res.partner"
 
     last_purchase_date = fields.Datetime("Last Purchased Date ", store=False, compute='_compute_last_purchase')
-    sale_order=fields.Char("SO#", store=False)
+    sale_order=fields.Char("Sales Order#", store=False)
     # last_purchased_product = fields.Char('Last Purchased Product', store=False)
 
     @api.multi
