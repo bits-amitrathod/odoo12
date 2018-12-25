@@ -35,11 +35,7 @@ class OnHandByDate(models.Model):
         product_inactive = self.env.context.get('product_inactive')
         show_cost = self.env.context.get('show_cost')
         # costing_method = self.env.context.get('costing_method')
-        print(location_id)
-        print(product_id)
-        print(partner_id)
-        print(product_inactive)
-        print(show_cost)
+        
         column = """
                 purchase_order_line.id,
                 product_template.sku_code,
