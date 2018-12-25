@@ -7,7 +7,7 @@ _logger = logging.getLogger(__name__)
 
 class TrendingReportListPopUp(models.TransientModel):
     _name = 'inventory.pricing_rules_popup'
-    _description = 'Inventory Allocation Report List PopUp'
+    _description = 'Inventory Pricing Rule Report PopUp'
     price_list = fields.Many2one('product.pricelist',string='Pricing Rule', required=True)
     def open_table(self):
         #print(self.env.ref('inventory__allocation_so.view_inv_all_so_tree').id)
