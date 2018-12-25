@@ -12,7 +12,7 @@ class ProductsOnHandByDatePopUp(models.TransientModel):
     _name = 'popup.on_hand_by_date'
     _description = 'On Hand By Date Popup'
 
-    report_date = fields.Datetime('Report On Date', default=fields.Datetime.now, required=True)
+    report_date = fields.Date('Report On Date', default=fields.Datetime.now, required=True)
 
     costing_method = fields.Selection([
         (1, 'Standard Costing '),
@@ -23,7 +23,8 @@ class ProductsOnHandByDatePopUp(models.TransientModel):
 
     vendor_id = fields.Many2one('res.partner', string='Vendor', required=False, )
     product_id = fields.Many2one('product.product', string='Product', required=False)
-    show_inactive_products = fields.Boolean('Show Inactive Products', default=True, required=False)
+    location_id = fields.Many2one('stock.location', string='Location', required=False)
+    show_inactive_products = fields.Boolean('Show Active Products', default=True, required=False)
     show_cost = fields.Boolean('Show Cost', default=False, required=False)
 
     quantities = fields.Selection([
@@ -48,6 +49,9 @@ class ProductsOnHandByDatePopUp(models.TransientModel):
 
         if self.product_id.id:
             on_hand_by_date_context.update({'product_id': self.product_id.id})
+
+        if self.location_id.id:
+            on_hand_by_date_context.update({'location_id': self.location_id.id})
 
         on_hand_by_date_context.update({'show_cost': self.show_cost})
         on_hand_by_date_context.update({'quantities': self.quantities})

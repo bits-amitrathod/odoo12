@@ -44,12 +44,12 @@
                     <field name="user_id" invisible="1"/>
                     <field name="product_sku" string="Product SKU"/>
                     <field name="customer_name" string="Customer Name"/>
-                    <field name="sale_order" string="Sales Order#"/>
+                    <field name="sale_order" string="Sales Order"/>
                     <field name="product_name" string="Product Name"/>
                     <field name="delivered_date" string="Delivered Date"/>
-                    <field name="qty_delivered" string="Qty Delivered" />
-                    <field name="unit_price" widget="monetary" string="Price" />
-                    <field name="total_price" widget="monetary" string="Total" />
+                    <field name="qty_delivered" string="Delivered Qty" />
+                    <field name="unit_price" widget="monetary" string="Unit Price" />
+                    <field name="total_price" widget="monetary" string="Total" sum="Total"/>
                     <field name="currency_id"  invisible="1" />
                 </tree>
               </field>

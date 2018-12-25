@@ -25,7 +25,12 @@ class ProductSaleByCountPopUp(models.TransientModel):
     def open_table(self):
         tree_view_id = self.env.ref('sales_by_month.list_view').id
         form_view_id = self.env.ref('product.product_normal_form_view').id
-        if not self.start_date is None and not self.end_date is None:
+        if self.start_date and self.end_date :
+            self.end_date = datetime.datetime.strptime(str(self.end_date), "%Y-%m-%d") + datetime.timedelta(days=1)
+            margins_context = {'start_date': self.start_date, 'end_date': self.end_date}
+        else:
+            self.start_date = datetime.date.today().replace(day=1)
+            self.end_date = datetime.date.today() + datetime.timedelta(days=1)
             margins_context = {'start_date': self.start_date, 'end_date': self.end_date}
         x_res_model = 'sales_by_month'
         self.env[x_res_model].with_context(margins_context).delete_and_create()

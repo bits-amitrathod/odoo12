@@ -4,18 +4,18 @@
     <record model="ir.ui.view" id="form_list_adjustment">
           <field name="name">adjustment.report.view.list</field>
           <field name="model">stock.inventory</field>
-          <field name="priority">20</field>
+          <field name="priority">21</field>
           <field name="arch" type="xml">
               <tree>
-                  <field name="id"/>
-                  <field name="p_sku"/>
-                  <field name="product_name"/>
-                  <field name="date_cal"/>
-                  <field name="date_posted"/>
-                  <field name="p_type"/>
-                  <field name="p_qty" />
+                  <field name="id" invisible="1"/>
+                  <field name="p_sku" string="Product SKU"/>
+                  <field name="product_name" string="Product Name"/>
+                  <field name="date_cal" string="Inventory Date"/>
+                  <field name="date_posted" string="Date Posted"/>
+                  <field name="p_type" string="Product Type"/>
+                  <field name="p_qty" string="Product Qty"/>
                   <field name="amount" widget="monetary"/>
-                  <field name="total_amt" widget="monetary"/>
+                  <field name="total_amt" widget="monetary" sum="Total"/>
                   <field name="currency_id" invisible="1" />
               </tree>
           </field>
