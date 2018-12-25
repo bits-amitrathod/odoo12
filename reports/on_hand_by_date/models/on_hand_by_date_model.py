@@ -14,9 +14,9 @@ class OnHandByDate(models.Model):
     _auto = False
 
     sku_code = fields.Char('Product SKU')
-    product_name = fields.Char("Product")
-    qty_done = fields.Float("Qty")
-    vendor_name = fields.Char("Vendor")
+    product_name = fields.Char("Product Name")
+    qty_done = fields.Float("Product Qty")
+    vendor_name = fields.Char("Vendor Name")
     price_unit = fields.Float("Unit Price")
     asset_value = fields.Float("Assets Value")
 
@@ -30,11 +30,16 @@ class OnHandByDate(models.Model):
         report_date = self.env.context.get('report_date')
         partner_id = self.env.context.get('partner_id')
         product_id = self.env.context.get('product_id')
+        location_id = self.env.context.get('location_id')
         quantities = self.env.context.get('quantities')
         product_inactive = self.env.context.get('product_inactive')
         show_cost = self.env.context.get('show_cost')
         # costing_method = self.env.context.get('costing_method')
-
+        print(location_id)
+        print(product_id)
+        print(partner_id)
+        print(product_inactive)
+        print(show_cost)
         column = """
                 purchase_order_line.id,
                 product_template.sku_code,
@@ -112,8 +117,13 @@ class OnHandByDate(models.Model):
         if product_id is not None:
             select_query = select_query + " AND product_product.id =" + str(product_id)
 
-        if product_inactive is None:
+        if product_inactive:
             select_query = select_query + " AND product_template.active = TRUE "
+        else:
+            select_query = select_query + " AND product_template.active = FALSE "
+
+        if location_id is not None:
+            select_query = select_query + " AND stock_location.id ="+ str(location_id)
 
         if quantities is 0:
             select_query = select_query + " AND stock_move_line.qty_done > 0 "
