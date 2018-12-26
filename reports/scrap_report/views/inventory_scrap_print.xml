@@ -54,10 +54,10 @@
                                               <span t-esc="scrap.product_uom_id.name" />
                                         </td>
                                         <td align="right" style="border: 1px solid black;white-space:nowrap;">
-                                              <span t-esc="scrap.location_id"/>
+                                              <span t-esc="scrap.location_id.complete_name"/>
                                         </td>
                                         <td align="right" style="border: 1px solid black;white-space:nowrap;">
-                                              <span t-esc="scrap.scrap_location_id.name"/>
+                                              <span t-esc="scrap.scrap_location_id.complete_name"/>
                                         </td>
                                         <td align="right" style="border: 1px solid black;white-space:nowrap;">
                                               <span t-esc="scrap.state"/>

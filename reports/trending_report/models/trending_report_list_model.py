@@ -13,17 +13,18 @@ class TrendingReportListView(models.Model):
     _description = 'trending_report.trending'
     _inherit = 'res.partner'
 
-    month1 = fields.Float(store=False)
-    month2 = fields.Float(store=False)
-    month3 = fields.Float(store=False)
-    month4 = fields.Float(store=False)
-    month5 = fields.Float(store=False)
-    month6 = fields.Float(store=False,compute='_compute_sales_vals')
-    month_count = fields.Integer('Months Ago First Order', store=False, compute='_first_purchase_date')#'Months Ago First Order'
-    month_total = fields.Integer('Total Purchased Month', store=False, compute='_total_purchased_month')
+    month1 = fields.Monetary(currency_field='currency_id', store=False)
+    month2 = fields.Monetary(currency_field='currency_id', store=False)
+    month3 = fields.Monetary(currency_field='currency_id', store=False)
+    month4 = fields.Monetary(currency_field='currency_id', store=False)
+    month5 = fields.Monetary(currency_field='currency_id', store=False)
+    month6 = fields.Monetary(compute='_compute_sales_vals',currency_field='currency_id', store=False)
+    month_count = fields.Integer('Months Ago First Order', compute='_first_purchase_date', store=False)#'Months Ago First Order'
+    month_total = fields.Integer('Total Purchased Month', compute='_total_purchased_month', store=False)
     trend_val = fields.Char('Trend', store=False,compute='_get_trend_value')
-    average_sale = fields.Float('Average', store=False,compute='_get_average_value')
-    total_sale = fields.Float('Total', store=False,compute='_get_total_value')
+    average_sale = fields.Monetary('Average',compute='_get_average_value', currency_field='currency_id', store=False)
+    total_sale = fields.Monetary('Total',compute='_get_total_value', currency_field='currency_id', store=False)
+    currency_id = fields.Many2one("res.currency", string="Currency", readonly=True)
 
     @api.onchange('month6')
     def _compute_sales_vals(self):

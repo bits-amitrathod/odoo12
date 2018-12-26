@@ -26,11 +26,19 @@ class ReportSaleOrderLineGroupByProduct(models.AbstractModel):
 
     @api.model
     def get_report_values(self, docids, data=None):
+
         self.env.cr.execute("""
                    SELECT 
                       distinct sale_order_line.product_id,
                       product_template.name,
-                      array_agg(ARRAY[sale_order.name,to_char(sale_order.date_order,'MM/DD/YYYY'),CAST (sale_order.amount_total as text),CAST (sale_order_line.currency_id as text)]) as table
+                      array_agg(ARRAY[
+                             sale_order.name,
+                            to_char(sale_order.date_order,'MM/DD/YYYY'),
+                            product_template.sku_code,
+                            CAST (sale_order_line.product_uom_qty as text),
+                            CAST (sale_order.amount_total as text),
+                            CAST (sale_order_line.currency_id as text)
+                        ]) as table
                     FROM 
                       public.sale_order_line, 
                       public.sale_order, 
@@ -39,7 +47,8 @@ class ReportSaleOrderLineGroupByProduct(models.AbstractModel):
                     WHERE 
                       sale_order_line.product_id = product_product.id AND
                       sale_order.id = sale_order_line.order_id AND
-                      product_product.product_tmpl_id = product_template.id and sale_order_line.id in ("""+",".join(map(str, docids))+""")
+                      product_product.product_tmpl_id = product_template.id and sale_order_line.id in (""" + ",".join(
+            map(str, docids)) + """)
                     Group BY
                       product_template.name,sale_order_line.product_id
                     Order BY
@@ -48,6 +57,14 @@ class ReportSaleOrderLineGroupByProduct(models.AbstractModel):
 
         result = self.env.cr.dictfetchall()
 
+        popup = self.env['popup.sale.orders.groupby.product.report'].search([('create_uid', '=', self._uid)], limit=1,
+                                                                            order="id desc")
+        if popup.compute_at_date:
+            date = popup.start_date + " to " + popup.end_date
+        else:
+            date = False
+
         return {
-            'data': result
+            'data': result,
+            'date': date
         }

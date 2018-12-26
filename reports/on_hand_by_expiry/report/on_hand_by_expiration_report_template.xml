@@ -15,12 +15,13 @@
                         </center>
                         <br/>
                             <t>
+                                <t t-set="color_value" t-value="0"/>
                                 <table class="table table-condensed" style="border: 1px solid black;">
                                     <thead>
                                         <tr style="">
                                             <th style="text-align: center; border: 1px solid black;">Product SKU</th>
-                                            <th style="text-align: center; border: 1px solid black;">Product</th>
-                                            <th style="text-align: center; border: 1px solid black;">Qty</th>
+                                            <th style="text-align: center; border: 1px solid black;">Product Name</th>
+                                            <th style="text-align: center; border: 1px solid black;">Product Qty</th>
                                             <th style="text-align: center; border: 1px solid black;">Location</th>
                                             <th style="text-align: center; border: 1px solid black;">Expiration Date</th>
                                             <th style="text-align: center; border: 1px solid black;">Status</th>
@@ -30,6 +31,7 @@
                                         <tr t-foreach="data['items']" t-as="product">
                                             <td style="border: 1px solid black; width: 15%;">
                                                 <span t-esc="product.name"/>
+                                                <t t-set="color_value" t-value="product.color_value"/>
                                             </td>
                                             <td align="left" style="border: 1px solid black;width: 35%;">
                                                 <span t-esc="product.product_id.product_tmpl_id.name"/>
@@ -41,17 +43,20 @@
                                                 <span t-esc="product.location_id.complete_name"/>
                                             </td>
                                             <td align="right" style="border: 1px solid black;width: 15%;">
-                                                <span t-esc="product.expiration_date"/>
+                                                <t t-if="color_value==1"><font color="red"><span t-esc="product.expiration_date"/></font></t>
+                                                <t t-if="color_value==2"><font color="orange"><span t-esc="product.expiration_date"/></font></t>
+                                                <t t-if="color_value==3"><font color="green"><span t-esc="product.expiration_date"/></font></t>
                                             </td>
                                             <td align="left" style="border: 1px solid black;width: 10%;">
-                                                <span t-esc="product.status"/>
+                                                <t t-if="color_value==1"><font color="red"><span t-esc="product.status"/></font></t>
+                                                <t t-if="color_value==2"><font color="orange"><span t-esc="product.status"/></font></t>
+                                                <t t-if="color_value==3"><font color="green"><span t-esc="product.status"/></font></t>
                                             </td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </t>
                     </div>
-                    <!--<br/>-->
                 </page>
             </t>
         </t>

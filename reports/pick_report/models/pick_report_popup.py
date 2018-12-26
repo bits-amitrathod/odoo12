@@ -14,11 +14,19 @@ class PickingReportPopUp(models.TransientModel):
     picking_id = fields.Many2one('stock.picking', string='Pick Number', required=True)
 
     def open_table(self):
-
+        location_group=""
+        carrier_id=""
+        if self.picking_id.picking_type_id.warehouse_id:
+            location_group=self.picking_id.picking_type_id.warehouse_id.code
+        if self.picking_id.carrier_id:
+            carrier_id = self.picking_id.carrier_id.name
         data_dict = {'scheduled_date': self.picking_id.scheduled_date,
                      'priority': self.picking_id.priority,
                      'state': self.picking_id.state.capitalize(),
-                     'type': self.picking_id.picking_type_id.name}
+                     'type': self.picking_id.picking_type_id.name,
+                     'location_group':location_group,
+                     'carrier_id':carrier_id
+                     }
 
         if self.picking_id.sale_id.id:
             data_dict.update({'order_id': self.picking_id.sale_id.name})
