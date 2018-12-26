@@ -13,13 +13,10 @@ _logger = logging.getLogger(__name__)
 
 
 
-class PricingRule(models.Model):
-    _name = "res.pricing_rule"
-    _description = "inventory pricing rule for customer"
-    _auto = False
+class CustomerPriceList(models.Model):
+    _name = "inv.customer_price_list"
+    _description = "inventory customer price list"
     customer_name = fields.Char(string="Customer Name")
-    product_id = fields.Many2one('product.template', string='Product', )
-    partner_id = fields.Many2one('res.partner', string='Customer', )
     cost = fields.Float(string="Cost")
     product_code = fields.Char(string="Product SKU")
     product_name = fields.Char(string="Product Name")
@@ -35,17 +32,16 @@ class PricingRule(models.Model):
 
     def init_table(self):
         sql_query = """ 
-                    TRUNCATE TABLE "res_pricing_rule"
+                    TRUNCATE TABLE "inv_customer_price_list"
                     RESTART IDENTITY;
                 """
         self._cr.execute(sql_query)
-        insert_query="""INSERT INTO res_pricing_rule(customer_name, product_code, product_name, cost,currency_id,currency_symbol) values """
-        price_list=self.env.context.get('price_list')
+        insert_query="""INSERT INTO inv_customer_price_list(customer_name, product_code, product_name, cost,currency_id,currency_symbol) values """
+        customer_list=self.env.context.get('customer_list')
         products = self.env.context.get('product_id')
-        partners = self.env['res.partner'].search([('active','=',True),('customer','=',True),('is_parent','=',True)])
-        for part in partners:
-            _logger.info("res_partner : %r", part)
-            if part.property_product_pricelist and part.property_product_pricelist == price_list:
+        if not customer_list is None:
+            for part in customer_list:
+                _logger.info("res_partner : %r", part)
                 for product in products:
                     product_price = part.property_product_pricelist.get_product_price(product, 1.0, part)
                     values="(%s,%s,%s,%s,%s,%s)"
