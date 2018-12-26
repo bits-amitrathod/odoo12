@@ -19,7 +19,7 @@ class SaleSalespersonReport(models.TransientModel):
             'view_mode': 'tree,form',
             'name': _('Sales Purchase History'),
             'res_model': 'sale.order.line',
-            'domain': [('create_date', '>=', self.start_date), ('create_date', '<=', self.end_date), ('state', '!=', 'cancel')],
+            'domain': [('create_date', '>=', self.start_date), ('create_date', '<=', self.end_date), ('state', 'not in', ('cancel','void')),('qty_delivered', '>', 0)],
             'target': 'main'
         }
 

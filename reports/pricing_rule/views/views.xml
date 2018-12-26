@@ -9,10 +9,7 @@
                 <form string="Choose Customer">
                     <group>
                         <group>
-                            <field name="partner_id" widget="many2many_tags"/>
-                        </group>
-                        <group>
-                            <field name="product_id" widget="many2many_tags"/>
+                            <field name="price_list" />
                         </group>
                     </group>
                     <footer>

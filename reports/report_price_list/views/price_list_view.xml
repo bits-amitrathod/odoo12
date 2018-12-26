@@ -2,51 +2,92 @@
 <odoo>
     <data>
 
-        <record model="ir.ui.view" id="product_list_view">
-              <field name="name">product.price.list</field>
-              <field name="model">product.template</field>
-              <field name="priority">50</field>
-              <field name="arch" type="xml">
-                <tree>
-                    <field name="sku_code"/>
-                    <field name="name" string="Product Name"/>
-                    <field name="standard_price" widget="monetary" />
-                    <field name="currency_id"  invisible="1" />
-                </tree>
-              </field>
-        </record>
-
-        <record id="action_product_price_list" model="ir.actions.act_window">
+         <record id="inventory_for_product_list_id" model="ir.ui.view">
             <field name="name">Product Price List</field>
-            <field name="res_model">product.template</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">form,tree</field>
-            <field name="view_id" ref="product_list_view"/>
-            <field name="domain">[('type', 'in', ['product'])]</field>
+            <field name="model">inventory.product_price_list_popup</field>
+            <field name="arch" type="xml">
+                <form string="Choose Customer">
+                    <group>
+                        <group>
+                            <field name="products" filter_domain="[('sku_code', '=', self)]"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel" />
+                    </footer>
+                </form>
+            </field>
         </record>
 
-         <record model="ir.ui.view" id="custom_list_view">
-              <field name="name">product.price.list</field>
-              <field name="model">product.template</field>
-              <field name="priority">50</field>
-              <field name="arch" type="xml">
-                <tree>
-                    <field name="sku_code"/>
-                    <field name="name"  string="Product Name"/>
-                    <field name="list_price" widget="monetary" />
-                    <field name="currency_id"  invisible="1" />
-                </tree>
-              </field>
-        </record>
 
-        <record id="action_customer_price_list" model="ir.actions.act_window">
+
+
+        <record id="inventory_for_customer_list_id" model="ir.ui.view">
             <field name="name">Customer Price List</field>
-            <field name="res_model">product.template</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">form,tree</field>
-            <field name="view_id" ref="custom_list_view"/>
-            <field name="domain">[('type', 'in', ['product'])]</field>
-        </record>
+            <field name="model">inventory.customer_price_list_popup</field>
+            <field name="arch" type="xml">
+                <form string="Choose Customer">
+                    <group>
+                        <group>
+                            <field name="customer_list" />
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+    </record>
+         <record id="action_product_price_list" model="ir.actions.act_window">
+              <field name="name">Product Price List</field>
+              <field name="res_model">inventory.product_price_list_popup</field>
+              <field name="view_type">form</field>
+              <field name="view_mode">form</field>
+              <field name="view_id" ref="inventory_for_product_list_id"/>
+              <field name="target">new</field>
+      </record>
+    <record id="action_customer_price_list" model="ir.actions.act_window">
+          <field name="name">Customer Price List</field>
+          <field name="res_model">inventory.customer_price_list_popup</field>
+          <field name="view_type">form</field>
+          <field name="view_mode">form</field>
+          <field name="view_id" ref="inventory_for_customer_list_id"/>
+          <field name="target">new</field>
+      </record>
+
+       <record id="view_inv_all_pricing_rule_customer_tree" model="ir.ui.view" >
+          <field name="name">Inventory Customer Price List</field>
+          <field name="model">inv.customer_price_list</field>
+          <field name="priority">20</field>
+          <field name="arch" type="xml">
+            <tree create="false" edit="false" >
+                <field name="currency_id" invisible="1"/>
+                <field name="customer_name" invisible="1"/>
+                <field name="product_code"/>
+                <field name="product_name"/>
+                <field name="cost" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+
+            </tree>
+          </field>
+    </record>
+
+    <record id="view_inv_all_pricing_rule_product_tree" model="ir.ui.view" >
+          <field name="name">Inventory Product Price List</field>
+          <field name="model">product.product</field>
+          <field name="priority">20</field>
+          <field name="arch" type="xml">
+            <tree create="false" edit="false" >
+                <field name="currency_id" invisible="1"/>
+                <field name="product_tmpl_id" invisible="1"/>
+                <field name="sku_code" string="Product SKU"/>
+                <field name="name" string="Product Name"/>
+                <field name="lst_price" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+
+            </tree>
+          </field>
+    </record>
 
         <menuitem id="menu_sale_report_product_list_wizard"
                   name="Product Price List"

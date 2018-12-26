@@ -4,21 +4,22 @@
         <record model="ir.ui.view" id="trending_report_list">
               <field name="name">purchase.vendor.view.list</field>
               <field name="model">res.partner</field>
-               <field name="priority">51</field>
+               <field name="priority">21</field>
               <field name="arch" type="xml">
                 <tree create="false" edit="false" >
                     <field name="name" string="Customer Name"/>
                     <field name="month_count"/>
-                    <field name="month6"/>
-                    <field name="month5"/>
-                    <field name="month4"/>
-                    <field name="month3"/>
-                    <field name="month2"/>
-                    <field name="month1"/>
+                    <field name="month6" widget="monetary" />
+                    <field name="month5" widget="monetary"/>
+                    <field name="month4" widget="monetary"/>
+                    <field name="month3" widget="monetary"/>
+                    <field name="month2" widget="monetary"/>
+                    <field name="month1" widget="monetary"/>
                     <field name="month_total"/>
-                    <field name="average_sale"/>
+                    <field name="average_sale" widget="monetary"/>
                     <field name="trend_val"/>
-                    <field name="total_sale"/>
+                    <field name="total_sale" widget="monetary" sum="Total"/>
+                    <field name="currency_id"  invisible="1" />
                 </tree>
               </field>
         </record>

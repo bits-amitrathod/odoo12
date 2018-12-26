@@ -32,14 +32,12 @@ class ProductSaleByCount(models.Model):
         tools.drop_view_if_exists(self._cr, view)
         start_date = self.env.context.get('start_date')
         end_date = self.env.context.get('end_date')
-        print(start_date)
-        print(end_date)
         if start_date is None or end_date is None:
             return
         s_date = (str(start_date)).replace("-", "/")
         e_date = str(end_date).replace("-", "/")
 
-        select_query = """ SELECT Distinct pp.*,%s as start_date , %s as end_date,pt.sku_code as sku_code,pt.name as p_name,sol.price_unit as product_price,curr.id as currency_id,curr.symbol as currency_symbol,sum(sml.product_uom_qty) as total_sale_quantity, sum(sml.product_uom_qty) * sol.price_unit as total_amount 
+        select_query = """ SELECT Distinct pp.*,%s as start_date , %s as end_date,pt.sku_code as sku_code,pt.name as p_name,sol.price_unit as product_price,curr.id as currency_id,curr.symbol as currency_symbol,sum(sml.qty_done) as total_sale_quantity, sum(sml.qty_done) * sol.price_unit as total_amount 
                             FROM product_product pp                                  
                             INNER JOIN sale_order_line sol ON sol.product_id=pp.id
                             INNER JOIN product_template pt ON pt.id=pp.product_tmpl_id 
@@ -50,18 +48,18 @@ class ProductSaleByCount(models.Model):
                             INNER JOIN res_currency curr ON curr.id=cmpy.currency_id                            
                   """
 
-        if start_date and end_date:
-            start_date = datetime.datetime.strptime(str(start_date), "%Y-%m-%d")
-            end_date = datetime.datetime.strptime(str(end_date), "%Y-%m-%d")
+        # if start_date and end_date:
+        #     start_date = datetime.datedatetime.strptime(str(start_date), "%Y-%m-%d")
+        #     end_date = datetime.datetime.strptime(str(end_date), "%Y-%m-%d")
 
         if start_date and end_date:
             select_query = select_query + """where sml.state in ('done','partially_available') and so.confirmation_date>=%s and so.confirmation_date<=%s group by pp.id,pt.name,pt.sku_code,sol.price_unit,curr.id,curr.symbol """
             sql_query = "CREATE VIEW " + view + " AS ( " + select_query + ")"
             self._cr.execute(sql_query, (str(s_date), str(e_date), str(start_date), str(end_date),))
-        else:
-            select_query = select_query + """where sml.state in ('done','partially_available')  group by pp.id,pt.name,pt.sku_code,sol.price_unit,curr.id,curr.symbol having sum(sml.product_uom_qty) > 0 """
-            sql_query = "CREATE VIEW " + view + " AS ( " + select_query + ")"
-            self._cr.execute(sql_query, (str(s_date), str(e_date), ))
+        # else:
+        #     select_query = select_query + """where sml.state in ('done','partially_available')  group by pp.id,pt.name,pt.sku_code,sol.price_unit,curr.id,curr.symbol having sum(sml.product_uom_qty) > 0 """
+        #     sql_query = "CREATE VIEW " + view + " AS ( " + select_query + ")"
+        #     self._cr.execute(sql_query, (str(s_date), str(e_date), ))
 
     @api.model_cr
     def delete_and_create(self):
