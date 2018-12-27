@@ -9,12 +9,12 @@
                 <form string="Choose your date">
                     <group>
                         <group>
-                            <field name="partner_id"/>
+                            <field name="product_id"/>
                         </group>
                         <group>
                             <field name="compute_at_date" widget="radio"/>
-                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
-                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
                         </group>
                     </group>
                     <footer>
@@ -41,9 +41,9 @@
               <field name="priority">20</field>
               <field name="arch" type="xml">
                 <tree create="false" edit="false" >
+                    <field name="partner_id"/>
                     <field name="sku_code_product"/>
                     <field name="product_id"/>
-                    <field name="partner_id"/>
                     <field name="last_sold" />
                     <field name="cost" widget="monetary"/>
                     <field name="currency_id" invisible="1"/>

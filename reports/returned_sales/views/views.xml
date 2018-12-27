@@ -13,8 +13,8 @@
                         </group>
                         <group>
                             <field name="compute_at_date" widget="radio"/>
-                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
-                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
                         </group>
                     </group>
                     <footer>
@@ -41,14 +41,14 @@
             <field name="model">report.returned.sales.order</field>
             <field name="arch" type="xml">
                 <tree>
-                    <field name="order_id" string="Order #"/>
+                    <field name="order_id" string="Sales Order #"/>
                     <field name="partner_id" string="Customer Name"/>
-                    <field name="product_id" string="Product"/>
+                    <field name="product_id" string="Product Name"/>
                     <field name="sku_code"/>
                     <field name="user_id"/>
-                    <field name="done_qty" string="Quantity"/>
+                    <field name="done_qty" string="Qty Done"/>
                     <field name="product_uom_id"/>
-                    <field name="cost_price" string="Cost"/>
+                    <field name="cost_price" string="Selling Cost"/>
                 </tree>
             </field>
         </record>

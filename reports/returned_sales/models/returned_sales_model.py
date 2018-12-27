@@ -10,13 +10,13 @@ class ReturnrdSales(models.Model):
     _name = "report.returned.sales.order"
     _auto = False
 
-    name = fields.Char("Order #")
+    name = fields.Char("Sales Order #")
     order_id = fields.Many2one('sale.order', string='Order', )
     cost_price = fields.Float("Qty Ordered")
     done_qty = fields.Float("Qty Done")
     product_uom_id = fields.Many2one('product.uom', 'UOM')
     partner_id = fields.Many2one('res.partner', string='Customer', )
-    product_id = fields.Many2one('product.product', string='Product', )
+    product_id = fields.Many2one('product.product', string='Product Name', )
     move_id = fields.Many2one('stock.move', string='Stock Move' )
     moved_date = fields.Date('Date')
     user_id = fields.Many2one('res.users', 'Salesperson', readonly=True)
