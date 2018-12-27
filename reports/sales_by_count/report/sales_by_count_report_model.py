@@ -26,4 +26,10 @@ class ReportProductSaleByCount(models.AbstractModel):
                     'location': record.location,
                     'product': [product]}
 
-        return {'sales': sales}
+        popup = self.env['popup.sales.by.count'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
+        if popup.compute_at_date:
+            date = popup.start_date + " to " + popup.end_date
+        else:
+            date = False
+
+        return {'sales': sales, 'date': date}

@@ -12,11 +12,11 @@ class ProductVendorListPopUp(models.TransientModel):
     start_date = fields.Date('Start Date', help="Choose a date to get the Discount Summary at that  Start date", default = (fields.date.today() - datetime.timedelta(days = 31)))
     end_date = fields.Date('End Date', help="Choose a date to get the Discount Summary at that  End date",
                            default = fields.Datetime.now)
-    partner_id = fields.Many2one('res.partner', string="Partner Id")
+    product_id = fields.Many2one('product.product', string='Product', required=False)
 
     def open_table(self):
         tree_view_id = self.env.ref('product_vendor_list.vendor_form_list').id
-        form_view_id = self.env.ref('purchase.purcha0se_order_form').id
+        form_view_id = self.env.ref('purchase.purchase_order_form').id
 
         action = {
             'type': 'ir.actions.act_window',
@@ -35,8 +35,8 @@ class ProductVendorListPopUp(models.TransientModel):
             if self.end_date:
                 action["domain"].append(('date_order', '<=', self.end_date))
 
-        if self.partner_id:
-            action['domain'].append(('partner_id', '=', self.partner_id.id))
+        if self.product_id.id:
+            action['domain'].append(('product_id', '=', self.product_id.id))
 
         return action
 
