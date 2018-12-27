@@ -61,31 +61,32 @@ class Customer(models.Model):
         #print(self)
         #self.ensure_one()
         _logger.info("pritization engin :%r",vals)
-        for child_id in self.child_ids:
-            print(child_id.child_ids)
-            child_id.write({'on_hold':self.on_hold,
-                            'is_broker':self.is_broker,
-                            'carrier_info':self.carrier_info,
-                            'carrier_acc_no':self.carrier_acc_no,
-                            'quickbook_id':self.quickbook_id,
-                            'having_carrier': self.having_carrier,
-                            'preferred_method': self.preferred_method,
-                            'shipping_terms': self.shipping_terms,
-                            'allow_purchase': self.allow_purchase,
-                            'sku_preconfig': self.sku_preconfig,
-                            'sku_postconfig': self.sku_postconfig,
-                            'is_parent':False,
-                            'prioritization': self.prioritization,
-                            'prioritization_ids':self.prioritization_ids,
-                            'min_threshold':self.min_threshold,
-                            'priority':self.priority,
-                            'partial_UOM':self.partial_UOM,
-                            'partial_ordering':self.partial_ordering,
-                            'auto_allocate':self.auto_allocate,
-                            'length_of_hold':self.length_of_hold,
-                            'expiration_tolerance':self.expiration_tolerance,
-                            'cooling_period':self.cooling_period,
-                            'max_threshold':self.max_threshold});
+        for ml in self:
+            for child_id in ml.child_ids:
+                print(child_id.child_ids)
+                child_id.write({'on_hold':ml.on_hold,
+                                'is_broker':ml.is_broker,
+                                'carrier_info':ml.carrier_info,
+                                'carrier_acc_no':ml.carrier_acc_no,
+                                'quickbook_id':ml.quickbook_id,
+                                'having_carrier': ml.having_carrier,
+                                'preferred_method': ml.preferred_method,
+                                'shipping_terms': ml.shipping_terms,
+                                'allow_purchase': ml.allow_purchase,
+                                'sku_preconfig': ml.sku_preconfig,
+                                'sku_postconfig': ml.sku_postconfig,
+                                'is_parent':False,
+                                'prioritization': ml.prioritization,
+                                'prioritization_ids':ml.prioritization_ids,
+                                'min_threshold':ml.min_threshold,
+                                'priority':ml.priority,
+                                'partial_UOM':ml.partial_UOM,
+                                'partial_ordering':ml.partial_ordering,
+                                'auto_allocate':ml.auto_allocate,
+                                'length_of_hold':ml.length_of_hold,
+                                'expiration_tolerance':ml.expiration_tolerance,
+                                'cooling_period':ml.cooling_period,
+                                'max_threshold':ml.max_threshold});
 
     def action_view_notification(self):
         '''
