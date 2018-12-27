@@ -10,46 +10,6 @@ class comparebymonth():
     last_month_total_amount = 0
     sku=''
 
-    @api.multi
-    def addObject(self, filtered_by_current_month, filtered_by_last_month):
-        dict = {}
-        for record in filtered_by_current_month:
-            for r1 in record.order_line:
-                #print(r1.product_id.id)
-                if r1.product_id.id in dict:
-
-                    data = dict[r1.product_id.id]
-                    data.current_month_total_qty = data.current_month_total_qty + r1.product_uom_qty
-                    data.current_month_total_amount = data.current_month_total_amount + r1.price_subtotal
-                    dict[r1.product_id.id] = data
-                else:
-
-                    object = comparebymonth()
-                    object.current_month_total_qty = r1.product_uom_qty
-                    object.current_month_total_amount = r1.price_subtotal
-                    object.product_name = r1.product_id.name
-                    object.sku = r1.product_id.product_tmpl_id.sku_code
-                    dict[r1.product_id.id] = object
-
-        for record in filtered_by_last_month:
-            for r1 in record.order_line:
-                #print(r1.product_id.id)
-                if r1.product_id.id in dict:
-                    # log.info(" last_month Key available in dictionary")
-                    data = dict[r1.product_id.id]
-                    data.last_month_total_qty = data.last_month_total_qty + r1.product_uom_qty
-                    data.last_month_total_amount = data.last_month_total_amount + r1.price_subtotal
-                    dict[r1.product_id.id] = data
-                else:
-                    # log.info(" last_month Key not available in dictionary")
-                    object = comparebymonth()
-                    object.last_month_total_qty = r1.product_uom_qty
-                    object.last_month_total_amount = r1.price_subtotal
-                    object.product_name = r1.product_id.name
-                    object.sku = r1.product_id.product_tmpl_id.sku_code
-                    dict[r1.product_id.id] = object
-        return dict
-
 
 class CompareSaleByMonth(models.Model):
     _inherit = "product.product"
@@ -60,6 +20,7 @@ class CompareSaleByMonth(models.Model):
     last_month_total_amount = fields.Monetary("Last Month Total Amount", store=False)
     current_month_total_qty = fields.Float("Current Month Total Qty", store=False)
     current_month_total_amount = fields.Monetary("Current Month Total Amount", store=False)
+    # location = fields.Char(string='Location')
 
     def _compare_data(self):
         sale_orders = self.env['sale.order'].search([('state','in',('sale','done'))])
@@ -81,13 +42,68 @@ class CompareSaleByMonth(models.Model):
         filtered_by_last_month = list(filter(
             lambda x: fields.Datetime.from_string(x.date_order).date() >= ps_date and fields.Datetime.from_string(
                 x.date_order).date() <= pl_date, sale_orders))
-        dat = comparebymonth().addObject(filtered_by_current_month, filtered_by_last_month)
+        dat = self.addObject(filtered_by_current_month, filtered_by_last_month)
 
-        for order in self :
+        for order in self:
             if order.id in dat:
-                # order.sku_name = dat[order.id].sku
-                order.product_name = dat[order.id].product_name
-                order.last_month_total_qty = dat[order.id].last_month_total_qty
-                order.last_month_total_amount = dat[order.id].last_month_total_amount
-                order.current_month_total_qty = dat[order.id].current_month_total_qty
-                order.current_month_total_amount = dat[order.id].current_month_total_amount
+                if int(dat[order.id].current_month_total_qty) > 0 or int(dat[order.id].last_month_total_qty) > 0:
+                    # order.sku_name = dat[order.id].sku
+                    order.product_name = dat[order.id].product_name
+                    order.last_month_total_qty = dat[order.id].last_month_total_qty
+                    order.last_month_total_amount = dat[order.id].last_month_total_amount
+                    order.current_month_total_qty = dat[order.id].current_month_total_qty
+                    order.current_month_total_amount = dat[order.id].current_month_total_amount
+                    # order.location = dat[order.id].location
+
+    @api.multi
+    def addObject(self, filtered_by_current_month, filtered_by_last_month):
+        product_dict = {}
+        for record in filtered_by_current_month:
+            stock_picking = self.env['stock.picking'].search([('sale_id', '=', record.id)])
+            if len(stock_picking) == 1:
+                for r1 in record.order_line:
+                    stock_move = self.env['stock.move'].search([('picking_id', '=', stock_picking.id), ('product_id', '=', r1.product_id.id),('state', 'in', ('done', 'partially_available'))])
+                    if len(stock_move) == 1:
+                        stock_move_line = self.env['stock.move.line'].search([('move_id', '=', stock_move.id), ('state', 'in', ('done', 'partially_available'))])
+                        if len(stock_move_line) == 1:
+                            if int(stock_move_line.qty_done) > 0:
+                                if r1.product_id.id in product_dict:
+                                    data = product_dict[r1.product_id.id]
+                                    data.current_month_total_qty = data.current_month_total_qty + stock_move_line.qty_done
+                                    data.current_month_total_amount = data.current_month_total_amount + (r1.price_unit * stock_move_line.qty_done)
+                                    # data.location = stock_move_line.location_id.name
+                                    product_dict[r1.product_id.id] = data
+                                else:
+                                    object = comparebymonth()
+                                    object.current_month_total_qty = stock_move_line.qty_done
+                                    object.current_month_total_amount = r1.price_unit * stock_move_line.qty_done
+                                    object.product_name = r1.product_id.name
+                                    object.sku = r1.product_id.product_tmpl_id.sku_code
+                                    # object.location = stock_move_line.location_id.name
+                                    product_dict[r1.product_id.id] = object
+
+        for record in filtered_by_last_month:
+            stock_picking = self.env['stock.picking'].search([('sale_id', '=', record.id)])
+            if len(stock_picking) == 1:
+                for r1 in record.order_line:
+                    stock_move = self.env['stock.move'].search([('picking_id', '=', stock_picking.id), ('product_id', '=', r1.product_id.id),('state', 'in', ('done', 'partially_available'))])
+                    if len(stock_move) == 1:
+                        stock_move_line = self.env['stock.move.line'].search(
+                            [('move_id', '=', stock_move.id), ('state', 'in', ('done', 'partially_available'))])
+                        if len(stock_move_line) == 1:
+                            if int(stock_move_line.qty_done) > 0:
+                                if r1.product_id.id in product_dict:
+                                    data = product_dict[r1.product_id.id]
+                                    data.last_month_total_qty = data.last_month_total_qty + stock_move_line.qty_done
+                                    data.last_month_total_amount = data.last_month_total_amount + (r1.price_unit * stock_move_line.qty_done)
+                                    # data.location = stock_move_line.location_id.name
+                                    product_dict[r1.product_id.id] = data
+                                else:
+                                    object = comparebymonth()
+                                    object.last_month_total_qty = stock_move_line.qty_done
+                                    object.last_month_total_amount = r1.price_unit * stock_move_line.qty_done
+                                    object.product_name = r1.product_id.name
+                                    object.sku = r1.product_id.product_tmpl_id.sku_code
+                                    # object.location = stock_move_line.location_id.name
+                                    product_dict[r1.product_id.id] = object
+        return product_dict
