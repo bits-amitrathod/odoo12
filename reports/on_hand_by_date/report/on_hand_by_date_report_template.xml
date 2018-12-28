@@ -11,7 +11,7 @@
                                 <h2>Surgical Product Solutions</h2>
                                 <h4>On Hand By Date</h4>
                                 <h4 t-if="popup.report_date">Reporting Date:
-                                    <span t-esc="popup.report_date"/>
+                                    <span t-esc="popup.report_date" t-options="{'widget':'date'}"/>
                                 </h4>
                             </b>
                         </center>
@@ -19,12 +19,11 @@
                         <table class="table table-condensed" style="border: 1px solid black;">
                             <thead>
                                 <tr style="">
-                                    <th style="text-align: center;center; border: 1px solid black;">Product SKU
-                                    </th>
-                                    <th style="text-align: center; border: 1px solid black; center;">Product Name</th>
-                                    <th style="text-align: center; border: 1px solid black;">Product Qty</th>
-                                    <th style="text-align: center; border: 1px solid black;">Vendor Name</th>
-                                    <th t-if="popup.show_cost" style="text-align: center; border: 1px solid black;">
+                                    <th style="text-align: left; border: 1px solid black;">Product SKU</th>
+                                    <th style="text-align: left; border: 1px solid black; center;">Product Name</th>
+                                    <th style="text-align: right; border: 1px solid black;">Product Qty</th>
+                                    <th style="text-align: left; border: 1px solid black;">Vendor Name</th>
+                                    <th t-if="popup.show_cost" style="text-align: right; border: 1px solid black;">
                                         Unit Price
                                     </th>
                                     <th t-if="popup.show_cost" style="text-align: right; border: 1px solid black;">

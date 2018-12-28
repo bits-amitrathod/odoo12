@@ -10,7 +10,7 @@
                             <b>
                                 <h2>Surgical Product Solutions</h2>
                                 <h4>On Hand By Expiration Date</h4>
-                                <h4>Reporting Date: <span t-esc="data['report_date']"/></h4>
+                                <h4>Reporting Date: <span t-esc="data['report_date']" t-options="{'widget':'date'}"/></h4>
                             </b>
                         </center>
                         <br/>
@@ -19,12 +19,12 @@
                                 <table class="table table-condensed" style="border: 1px solid black;">
                                     <thead>
                                         <tr style="">
-                                            <th style="text-align: center; border: 1px solid black;">Product SKU</th>
-                                            <th style="text-align: center; border: 1px solid black;">Product Name</th>
-                                            <th style="text-align: center; border: 1px solid black;">Product Qty</th>
-                                            <th style="text-align: center; border: 1px solid black;">Location</th>
-                                            <th style="text-align: center; border: 1px solid black;">Expiration Date</th>
-                                            <th style="text-align: center; border: 1px solid black;">Status</th>
+                                            <th style="text-align: left; border: 1px solid black;">Product SKU</th>
+                                            <th style="text-align: left; border: 1px solid black;">Product Name</th>
+                                            <th style="text-align: right; border: 1px solid black;">Product Qty</th>
+                                            <th style="text-align: left; border: 1px solid black;">Location</th>
+                                            <th style="text-align: right; border: 1px solid black;">Expiration Date</th>
+                                            <th style="text-align: left; border: 1px solid black;">Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -43,9 +43,9 @@
                                                 <span t-esc="product.location_id.complete_name"/>
                                             </td>
                                             <td align="right" style="border: 1px solid black;width: 15%;">
-                                                <t t-if="color_value==1"><font color="red"><span t-esc="product.expiration_date"/></font></t>
-                                                <t t-if="color_value==2"><font color="orange"><span t-esc="product.expiration_date"/></font></t>
-                                                <t t-if="color_value==3"><font color="green"><span t-esc="product.expiration_date"/></font></t>
+                                                <t t-if="color_value==1"><font color="red"><span t-esc="product.expiration_date" t-options="{'widget':'date'}"/></font></t>
+                                                <t t-if="color_value==2"><font color="orange"><span t-esc="product.expiration_date" t-options="{'widget':'date'}"/></font></t>
+                                                <t t-if="color_value==3"><font color="green"><span t-esc="product.expiration_date" t-options="{'widget':'date'}"/></font></t>
                                             </td>
                                             <td align="left" style="border: 1px solid black;width: 10%;">
                                                 <t t-if="color_value==1"><font color="red"><span t-esc="product.status"/></font></t>
