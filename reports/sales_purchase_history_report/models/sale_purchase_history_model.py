@@ -19,7 +19,7 @@ class SalePurchaseHistory(models.Model):
     qty_delivered = fields.Float("Delivered Qty", store=False)
     unit_price = fields.Monetary("Unit Price", currency_field='currency_id', store=False)
     total_price = fields.Monetary("Total", currency_field='currency_id', store=False)
-    sale_order_id = fields.Many2one('sale.order', 'Sales Order', required=True)
+    sale_order_id = fields.Many2one('sale.order', 'Sales Order', required=True, store=False)
     user_id = fields.Many2one('res.users', string='User', store=False)
     currency_id = fields.Many2one("res.currency", string="Currency",readonly=True)
 
