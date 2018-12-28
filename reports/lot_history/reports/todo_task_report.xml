@@ -27,49 +27,49 @@
                             <table class="table table-condensed table-bordered" style="border: 1px solid black;">
                                 <thead>
                                 <tr>
-                                    <th style="border: 1px solid black;text-align: center;">Product SKU</th>
-                                    <th style="border: 1px solid black;text-align: center;">Product Name</th>
-                                    <th style="border: 1px solid black;text-align: center;">Type</th>
-                                    <th style="border: 1px solid black;text-align: center;">Event</th>
-                                    <th style="border: 1px solid black;text-align: center;">Event Date</th>
-                                    <th style="border: 1px solid black;text-align: center;">Change</th>
-                                    <th style="border: 1px solid black;text-align: center;">Lot #</th>
-                                    <th style="border: 1px solid black;text-align: center;">Vendor</th>
-                                    <th style="border: 1px solid black;text-align: center;">Phone</th>
-                                    <th style="border: 1px solid black;text-align: center;">Email</th>
+                                    <th style="border: 1px solid black;text-align: left;">Product SKU</th>
+                                    <th style="border: 1px solid black;text-align: left;">Product Name</th>
+                                    <th style="border: 1px solid black;text-align: left;">Type</th>
+                                    <th style="border: 1px solid black;text-align: left;">Event</th>
+                                    <th style="border: 1px solid black;text-align: left;">Event Date</th>
+                                    <th style="border: 1px solid black;text-align: left;">Change</th>
+                                    <th style="border: 1px solid black;text-align: left;">Lot #</th>
+                                    <th style="border: 1px solid black;text-align: left;">Vendor Name</th>
+                                    <th style="border: 1px solid black;text-align: right;">Phone</th>
+                                    <th style="border: 1px solid black;text-align: left;">Email</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                     <t t-foreach="data" t-as="lot">
                                         <tr>
-                                            <td>
+                                            <td style="border: 1px solid black;">
                                                 <span t-esc="lot.sku_code"/>
                                             </td>
-                                            <td>
+                                            <td style="border: 1px solid black;">
                                                 <span t-esc="lot.description"/>
                                             </td>
-                                            <td>
+                                            <td style="border: 1px solid black;">
                                                 <span t-esc="lot.type"/>
                                             </td>
-                                            <td>
+                                            <td style="border: 1px solid black;">
                                                 <span t-esc="lot.event"/>
                                             </td>
-                                            <td>
-                                                <span t-esc="lot.event_date"/>
+                                            <td style="border: 1px solid black;">
+                                                <span t-esc="lot.event_date" t-options="{'widget':'date'}"/>
                                             </td>
-                                            <td>
+                                            <td style="border: 1px solid black;">
                                                 <span t-esc="lot.change"/>
                                             </td>
-                                            <td>
+                                            <td style="border: 1px solid black;">
                                                 <span t-esc="lot.lot_no"/>
                                             </td>
-                                            <td>
+                                            <td style="border: 1px solid black;">
                                                 <span t-esc="lot.vendor"/>
                                             </td>
-                                            <td>
+                                            <td style="border: 1px solid black;">
                                                 <span t-esc="lot.phone"/>
                                             </td>
-                                            <td>
+                                            <td style="border: 1px solid black;">
                                                 <span t-esc="lot.email"/>
                                             </td>
                                         </tr>

@@ -18,7 +18,7 @@ class LotHistory(models.Model):
     event_date = fields.Date(string="Event Date")
     change = fields.Integer('Change')
     lot_no = fields.Char(string="Lot #")
-    vendor = fields.Char(string="Vendor")
+    vendor = fields.Char(string="Vendor Name")
     phone = fields.Char(string="Phone")
     email = fields.Char(string="Email")
 
