@@ -1,5 +1,6 @@
 import logging
 from odoo import api, fields, models
+from datetime import datetime
 
 log = logging.getLogger(__name__)
 
@@ -38,12 +39,19 @@ class ReportProductsOnOrder(models.AbstractModel):
 
         log.info('final list: %r', final_list)
 
+        popup = self.env['popup.product.on.order'].search([('create_uid', '=', self._uid)], limit=1,order="id desc")
+
+        if popup.compute_at_date:
+            date = datetime.strptime(popup.start_date, '%Y-%m-%d').strftime('%m/%d/%Y') + " - " + datetime.strptime(popup.end_date, '%Y-%m-%d').strftime('%m/%d/%Y')
+        else:
+            date = False
+
         datas = {
             'form': final_list,
-
         }
+
         action = self.env.ref('products_on_order.action_report_products_on_order').report_action([], data=datas)
-        action.update({'target': 'main','data': datas})
+        action.update({'target': 'main','data': datas,'date': date})
 
         return action
 

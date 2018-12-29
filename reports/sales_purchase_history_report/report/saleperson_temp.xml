@@ -12,13 +12,11 @@
                             <h4>Sales Purchase History</h4>
                         </b>
                     </center>
-                    <!--<center>-->
-                        <!--<b>-->
-                            <!--<span t-esc="start_date"/>-->
-                            <!--To-->
-                            <!--<span t-esc="end_date"/>-->
-                        <!--</b>-->
-                    <!--</center>-->
+                    <center>
+                        <h4 t-if="date">
+                            <span t-esc="date"/>
+                        </h4>
+                    </center>
                     </div>
                     <br/>
 
@@ -51,7 +49,7 @@
                                         <span t-esc="order.product_name"/>
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.delivered_date"/>
+                                        <span t-esc="order.delivered_date" t-options="{'widget':'date'}"/>
                                     </td>
                                     <td style="border: 1px solid black;">
                                         <span t-esc="order.qty_delivered"/>

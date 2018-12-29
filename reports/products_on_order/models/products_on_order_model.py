@@ -10,16 +10,16 @@ class ProductsOnOrder(models.Model):
     _name = "report.products.on.order"
     _auto = False
 
-    name = fields.Char("Order #")
+    name = fields.Char("Sales Order")
     order_id = fields.Many2one('sale.order', string='Order', )
-    date_ordered = fields.Datetime('Order Date')
+    date_ordered = fields.Date('Order Date')
     date_due = fields.Date('Due Date')
     qty_ordered = fields.Float("Qty Ordered")
     product_uom = fields.Many2one('product.uom', 'UOM')
     sku_code = fields.Char('Product SKU')
     qty_remaining = fields.Float("Qty Remaining")
-    partner_id = fields.Many2one('res.partner', string='Customer', )
-    product_id = fields.Many2one('product.product', string='Product', )
+    partner_id = fields.Many2one('res.partner', string='Customer Name', )
+    product_id = fields.Many2one('product.product', string='Product Name', )
 
     @api.model_cr
     def init(self):

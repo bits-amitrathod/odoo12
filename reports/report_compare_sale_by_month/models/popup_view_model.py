@@ -44,8 +44,7 @@ class DiscountSummaryPopUp(models.TransientModel):
     current_start_date = fields.Date('Current month Start Date', default=date_gen.getFirstOfMonth())
     current_end_date = fields.Date('Current month End Date', default=date_gen.getLastOfMonth())
 
-    last_start_date = fields.Date('Last Month Start Date',
-                                      default=date_gen.getFirstDayOfLastMonth())
+    last_start_date = fields.Date('Last Month Start Date',default=date_gen.getFirstDayOfLastMonth())
     last_end_date = fields.Date('Last Month End Date', default=date_gen.getLastDayOfLastMonth())
 
     def open_table(self):
