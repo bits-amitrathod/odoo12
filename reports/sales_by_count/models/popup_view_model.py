@@ -11,7 +11,6 @@ _logger = logging.getLogger(__name__)
 class ProductSaleByCountPopUp(models.TransientModel):
     _name = 'popup.sales.by.count'
     _description = 'Sales By Count'
-    # _auto = False
 
     user_id = fields.Many2one('res.users', 'Salesperson')
     warehouse_id = fields.Many2one('stock.warehouse', 'Warehouse')

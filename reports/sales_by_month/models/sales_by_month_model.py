@@ -53,6 +53,7 @@ class ProductSaleByCount(models.Model):
         #     start_date = datetime.datedatetime.strptime(str(start_date), "%Y-%m-%d")
         #     end_date = datetime.datetime.strptime(str(end_date), "%Y-%m-%d")
 
+
         if start_date  and end_date and not start_date is None and not end_date is None :
             select_query = select_query + """where sml.state in ('done','partially_available') and so.confirmation_date>=%s and so.confirmation_date<=%s group by pp.id,pt.name,pt.sku_code,sol.price_unit,curr.id,curr.symbol """
             sql_query = "CREATE VIEW " + view + " AS ( " + select_query + ")"

@@ -33,8 +33,7 @@ class OnHandByExpiry(models.Model):
         end_date = self.env.context.get('e_date')
         expiration_date = fields.Date.to_string(datetime.now() + timedelta(days=30))
 
-        if not start_date is None and not end_date is None:
-            sql_query = """  CREATE VIEW on_hand_by_expiry AS (             
+        sql_query = """  CREATE VIEW on_hand_by_expiry AS (             
             SELECT t.sku_code as name, l.product_id as product_id, l.id as id,                 
                 sq.quantity as qty,
                 l.use_date as expiration_date,
@@ -54,20 +53,23 @@ class OnHandByExpiry(models.Model):
             WHERE 
                 sq.quantity > 0 AND sq.lot_id IS NOT NULL AND sq.location_id IS NOT NULL """
 
-            location_id = self.env.context.get('location_id')
-            product_id = self.env.context.get('product_id')
+        location_id = self.env.context.get('location_id')
+        product_id = self.env.context.get('product_id')
 
-            AND = " AND "
+        AND = " AND "
 
-            if not product_id is None:
-                sql_query = sql_query + AND + " l.product_id = " + str(product_id)
+        if not product_id is None:
+            sql_query = sql_query + AND + " l.product_id = " + str(product_id)
 
-            if not location_id is None:
-                sql_query = sql_query + AND + " sq.location_id = " + str(location_id)
+        if not location_id is None:
+            sql_query = sql_query + AND + " sq.location_id = " + str(location_id)
 
-            sql_query = sql_query + " )"
+        if not start_date is None and not end_date is None:
+            sql_query = sql_query + AND + " l.use_date >='" + str(start_date) + "'" + AND + " l.use_date <='" + str(end_date)+"'"
 
-            self._cr.execute(sql_query)
+        sql_query = sql_query + " )"
+
+        self._cr.execute(sql_query)
 
     @api.model_cr
     def delete_and_create(self):
