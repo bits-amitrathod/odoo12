@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_vendor_offer_automation_vendor_offer_automation,vendor_offer_automation.vendor_offer_automation,model_vendor_offer_automation_vendor_offer_automation,,1,0,0,0
+access_sps_vendor_offer_automation_user,sps.vendor_offer_automation user,model_sps_vendor_offer_automation_template,,1,1,0,0
+access_sps_vendor_offer_automation_mng,sps.vendor_offer_automation mng,model_sps_vendor_offer_automation_template,,1,1,1,1

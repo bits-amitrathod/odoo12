@@ -56,10 +56,12 @@ class ReportBrokerReport(models.AbstractModel):
          apprisal_list={}
          if(data['start_date']!=False and data['end_date']!=False):
              apprisal_list= self.env['purchase.order'].search([('state', '=', 'purchase'),('status', '=', 'purchase'),('vendor_offer_data', '=', True),('date_order','>=',data['start_date']),('date_order','<=',data['end_date'])])
+             s_date = (str(data['start_date'])).replace("-", "/")
+             e_date = str(data['end_date']).replace("-", "/")
          else:
              apprisal_list = self.env['purchase.order'].search([('state', '=', 'purchase'), ('status', '=', 'purchase'), ('vendor_offer_data', '=', True) ])
-
-
+             s_date=False
+             e_date=False
          log.info(apprisal_list)
          if(len(apprisal_list)>0):
              apprisal_list_rtl_val = apprisal_list_tot_val = apprisal_list_mar_val = apprisal_list[0]
@@ -92,27 +94,28 @@ class ReportBrokerReport(models.AbstractModel):
                  tot_offer=tot_offer+order.amount_total
 
                  if (order.rt_price_total_amt != 0):
-                     if((abs(float(((order.offer_amount)/float(order.retail_amt))-1)) < 0.4) or  ( (order.partner_id.is_broker) and (abs(float(order.amount_total/order.rt_price_total_amt)) < 0.52) or (abs(float(order.amount_total/order.rt_price_total_amt)) > 0.52))):
-                        margin_retailamount = nomargin_retailamount + order.rt_price_total_amt
-                        margin_offeramount = nomargin_retailamount + order.amount_total
-                     else:
-                        nomargin_retailamount=nomargin_retailamount+ order.rt_price_total_amt
-                        nomargin_offeramount = nomargin_retailamount + order.amount_total
+                     if((abs(float(((order.amount_total)/float(order.rt_price_total_amt))-1)) < 0.4) or  ( (order.partner_id.is_broker) and (abs(float(order.amount_total/order.rt_price_total_amt)) < 0.52) or (abs(float(order.amount_total/order.rt_price_total_amt)) > 0.52))):
+                        margin_retailamount = margin_retailamount + order.rt_price_total_amt
+                        margin_offeramount = margin_offeramount + order.amount_total
+                     # else:
+                     #    nomargin_retailamount=nomargin_retailamount+ order.rt_price_total_amt
+                     #    nomargin_offeramount = nomargin_retailamount + order.amount_total
 
                  if (order.rt_price_total_amt != 0):
                      if (order.partner_id.is_broker and ((abs(float(order.amount_total / order.rt_price_total_amt)) < 0.52) or (abs(float(order.amount_total / order.rt_price_total_amt)) > 0.52))):
-                         t1t2_margin_retailamount = nomargin_retailamount + order.rt_price_total_amt
-                         tit2_margin_offeramount = nomargin_retailamount + order.amount_total
+                         t1t2_margin_retailamount = t1t2_margin_retailamount + order.rt_price_total_amt
+                         tit2_margin_offeramount = tit2_margin_offeramount + order.amount_total
                  if (order.rt_price_total_amt != 0):
                      if (abs(float(((order.amount_total) / float(order.retail_amt)) - 1)) < 0.4):
-                         m40_margin_retailamount = nomargin_retailamount + order.rt_price_total_amt
-                         m40_margin_offeramount = nomargin_retailamount + order.amount_total
+                         m40_margin_retailamount = m40_margin_retailamount + order.rt_price_total_amt
+                         m40_margin_offeramount = m40_margin_offeramount + order.amount_total
 
                  if (order.rt_price_total_amt != 0):
                     if (abs(float(((order.amount_total) / float(order.rt_price_total_amt)) - 1)) < 0.4):
                          margin40tot=float(margin40tot)+order.rt_price_total_amt
 
              apprisal_list_rtl_val.bonus_eligible=apprisal_list_rtl_val.total_retail_broker-margin40tot
+             eligible_offer=tot_offer-margin40tot
              apprisal_list_rtl_val.hospital_total=float(apprisal_list_rtl_val.total_retail_broker) - float(margin_retailamount)
              apprisal_list_rtl_val.broker_total=margin_retailamount
              apprisal_list_rtl_val.broker_greater_40_total = t1t2_margin_retailamount
@@ -120,26 +123,26 @@ class ReportBrokerReport(models.AbstractModel):
 
              apprisal_list_tot_val.total_retail_broker_tot = round(float(apprisal_list_rtl_val.total_retail_broker/ apprisal_list_rtl_val.total_retail_broker)*100,2)
              apprisal_list_tot_val.bonus_eligible_tot =  round((apprisal_list_rtl_val.bonus_eligible/apprisal_list_rtl_val.total_retail_broker)*100,2)
-             apprisal_list_tot_val.hospital_total_tot =round((float(apprisal_list_tot_val.hospital_total_tot)/float(apprisal_list_rtl_val.total_retail_broker))*100,2)
-             apprisal_list_tot_val.broker_total_tot =  round(float(apprisal_list_tot_val.broker_total_tot)/float(apprisal_list_rtl_val.total_retail_broker) * 100,2)
+             apprisal_list_tot_val.hospital_total_tot =round((float(apprisal_list_tot_val.hospital_total)/float(apprisal_list_rtl_val.total_retail_broker))*100,2)
+             apprisal_list_tot_val.broker_total_tot =  round(float(apprisal_list_tot_val.broker_total)/float(apprisal_list_rtl_val.total_retail_broker) * 100,2)
              apprisal_list_tot_val.broker_greater_40_total_tot =round(float(apprisal_list_rtl_val.broker_greater_40_total)/float(apprisal_list_rtl_val.total_retail_broker)*100,2)
              apprisal_list_tot_val.broker_less_40_total_tot = round(float(apprisal_list_rtl_val.broker_less_40_total)/float(apprisal_list_rtl_val.total_retail_broker)*100,2)
              apprisal_list_rtl_val.broker_desc_tot = "% OF TOTAL"
 
              if (apprisal_list_rtl_val.total_retail_broker!= 0):
-                apprisal_list_mar_val.total_retail_broker_mar = str(round(abs(((1-float(tot_offer))/float(apprisal_list_rtl_val.total_retail_broker)))*100,2)) + ' %'
+                apprisal_list_mar_val.total_retail_broker_mar = str(round(abs((1-(float(tot_offer)))/float(apprisal_list_rtl_val.total_retail_broker))*100,2)) + ' %'
 
              else:
                 apprisal_list_mar_val.total_retail_broker_mar="0 %"
 
 
-             if (apprisal_list_rtl_val.bonus_eligible_tot != 0):
-                apprisal_list_mar_val.bonus_eligible_mar = str(round(abs((1-(float(apprisal_list_tot_val.bonus_eligible_tot))/float(apprisal_list_tot_val.bonus_eligible_tot)))*100,2)) + ' %'
+             if (apprisal_list_rtl_val.bonus_eligible != 0):
+                apprisal_list_mar_val.bonus_eligible_mar = str(round(abs(((1-(float(eligible_offer)))/float(apprisal_list_tot_val.bonus_eligible)))*100,2)) + ' %'
 
              else:
                  apprisal_list_mar_val.bonus_eligible_mar="0 %"
 
-             if(apprisal_list_rtl_val.total_retail_broker-nomargin_retailamount!=0):
+             if(apprisal_list_rtl_val.total_retail_broker-margin_retailamount!=0):
                 apprisal_list_mar_val.hospital_total_mar = str(abs(round(((1-float(tot_offer-margin_offeramount))/(apprisal_list_rtl_val.total_retail_broker-margin_retailamount)),2)) ) + ' %'
              else:
                 apprisal_list_mar_val.hospital_total_mar='0 %'
@@ -172,6 +175,6 @@ class ReportBrokerReport(models.AbstractModel):
              apprisal_list_report.append(apprisal_list_tot_val)
              apprisal_list_report.append(apprisal_list_mar_val)
 
-             return {'data': apprisal_list_report}
+             return {'data': apprisal_list_report,'e_date':e_date,'s_date':s_date}
          else:
-             return {'data': apprisal_list}
+             return {'data': apprisal_list,'e_date':e_date,'s_date':s_date}
