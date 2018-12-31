@@ -34,8 +34,8 @@
                             <field name="compute_at_date" widget="radio"/>
                         </group>
                         <group>
-                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
-                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
                             <field name="picking_id" attrs="{'invisible': [('compute_at_date', '=', 1)]}"
                                    widget="many2many_tags"/>
                         </group>

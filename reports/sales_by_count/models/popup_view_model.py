@@ -29,14 +29,6 @@ class ProductSaleByCountPopUp(models.TransientModel):
         tree_view_id = self.env.ref('sales_by_count.report_sales_by_count_list_view').id
 
         res_model = 'report.sales.by.count'
-        margins_context = {}
-        if self.compute_at_date:
-            s_date = self.string_to_date(str(self.start_date))
-            e_date = self.string_to_date(str(self.end_date))
-            margins_context.update({'s_date': s_date, 'e_date': e_date})
-
-        self.env[res_model].with_context(margins_context).delete_and_create()
-
         action = {
             'type': 'ir.actions.act_window',
             'views': [(tree_view_id, 'tree')],
@@ -44,8 +36,15 @@ class ProductSaleByCountPopUp(models.TransientModel):
             'name': 'Sales By Count',
             'res_model': res_model,
             "context": {"search_default_group_by_location": 1},
-            'domain':[]
+            'domain': []
         }
+
+        if self.compute_at_date:
+            if self.start_date:
+                action["domain"].append(('confirmation_date', '>=', self.start_date))
+
+            if self.end_date:
+                action["domain"].append(('confirmation_date', '<=', self.end_date))
 
         if self.user_id.id:
             action["domain"].append(('user_id', '=', self.user_id.id))
@@ -54,7 +53,3 @@ class ProductSaleByCountPopUp(models.TransientModel):
             action["domain"].append(('warehouse_id', '=', self.warehouse_id.id))
 
         return action
-
-    @staticmethod
-    def string_to_date(date_string):
-        return datetime.datetime.strptime(date_string, DEFAULT_SERVER_DATETIME_FORMAT).date()

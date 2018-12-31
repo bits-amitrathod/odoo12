@@ -21,13 +21,9 @@
                         </b>
                     </center>
                     <center>
-                        <!--<b>Date Range:-->
-                            <!--<span t-esc="start_date"/>-->
-
-                            <!-- - -->
-
-                            <!--<span t-esc="end_date"/>-->
-                        <!--</b>-->
+                       <h4 t-if="date">
+                           <span t-esc="date"/>
+                       </h4>
                     </center>
                     <!-- Report page content -->
                      <t t-set="total_amount" t-value="0"/>
@@ -54,10 +50,10 @@
                                     </td>
 
                                     <td align="center"   style="border: 1px solid #000;">
-                                        <span t-esc="o.date_cal"/>
+                                        <span t-esc="o.date_cal" t-options="{'widget':'date'}"/>
                                     </td>
                                     <td align="center"   style="border: 1px solid #000;">
-                                        <span t-esc="o.date_posted"/>
+                                        <span t-esc="o.date_posted" t-options="{'widget':'date'}"/>
                                     </td>
                                     <td align="left"   style="border: 1px solid #000;">
                                         <span t-esc="o.p_type"/>

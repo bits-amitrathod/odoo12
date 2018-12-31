@@ -9,7 +9,7 @@
             <field name="arch" type="xml">
                 <tree>
                     <field name="type"/>
-                    <field name="sku_code"/>
+                    <field name="sku_code"  string="Product SKU"/>
                     <field name="product_brand_id"/>
                     <field name="name" string="Product Name"/>
                     <field name="product_qty"/>
@@ -26,7 +26,7 @@
             <field name="priority">20</field>
             <field name="arch" type="xml">
                 <tree>
-                    <field name="sku_code"/>
+                    <field name="sku_code"  string="Product SKU"/>
                     <field name="name" string="Product Name"/>
                     <field name="list_price" widget="monetary"/>
                     <field name="currency_id" invisible="1"/>
@@ -40,7 +40,7 @@
             <field name="arch" type="xml">
                 <form>
                     <group>
-                        <field name="sku_code"/>
+                        <field name="sku_code" string="Product SKU"/>
                     </group>
                     <footer>
                         <button name="open_table" string="View Report" type="object" class="btn-primary"/>

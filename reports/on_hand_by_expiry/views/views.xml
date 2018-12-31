@@ -45,7 +45,7 @@
                     <field name="product_id"/>
                     <field name="qty"/>
                     <field name="location_id"/>
-                    <field name="expiration_date" options='{"fg_color": "red:color_value==1;orange:color_value==2;green:color_value==3"}'/>
+                    <field name="expiration_date" widget="date" options='{"fg_color": "red:color_value==1;orange:color_value==2;green:color_value==3"}'/>
                     <field name="status" options='{"fg_color": "red:color_value==1;orange:color_value==2;green:color_value==3"}'/>
                 </tree>
             </field>

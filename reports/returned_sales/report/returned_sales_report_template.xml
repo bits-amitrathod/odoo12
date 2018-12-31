@@ -20,18 +20,18 @@
                         <t t-foreach="data['form']" t-as="returned_sales">
                             <center>
                                 <b>
-                                    <span>Product #:</span>
+                                    <span>Product Name:</span>
                                     <span t-esc="returned_sales[0]"/>
                                 </b>
                             </center>
                             <table class="table table-condensed" style="">
                                 <thead>
                                     <tr style="">
-                                        <th style="text-align: left;">Order #</th>
-                                        <th style="text-align: left;">Customer</th>
+                                        <th style="text-align: left;">Sales Order #</th>
+                                        <th style="text-align: left;">Customer Name</th>
                                         <th style="text-align: left;">Salesperson</th>
                                         <th style="text-align: right;">Qty Done</th>
-                                        <th style="text-align: right;">Price</th>
+                                        <th style="text-align: right;">Selling Cost</th>
                                     </tr>
                                 </thead>
                                 <tbody>
