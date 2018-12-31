@@ -16,7 +16,7 @@ _logger = logging.getLogger(__name__)
 class PricingRule(models.Model):
     _name = "res.pricing_rule"
     _description = "inventory pricing rule for customer"
-    _auto = False
+    # _auto = False
     customer_name = fields.Char(string="Customer Name")
     product_id = fields.Many2one('product.template', string='Product', )
     partner_id = fields.Many2one('res.partner', string='Customer', )

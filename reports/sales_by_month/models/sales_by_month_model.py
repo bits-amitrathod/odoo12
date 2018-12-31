@@ -53,13 +53,13 @@ class ProductSaleByCount(models.Model):
         #     end_date = datetime.datetime.strptime(str(end_date), "%Y-%m-%d")
 
         if start_date and end_date:
-            select_query = select_query + """where sml.state in ('done','partially_available') and so.confirmation_date>=%s and so.confirmation_date<=%s group by pp.id,pt.name,pt.sku_code,sol.price_unit,curr.id,curr.symbol """
-            sql_query = "CREATE VIEW " + view + " AS ( " + select_query + ")"
+            select_query = select_query + """ where sml.state in ('done','partially_available') and so.confirmation_date>=%s and so.confirmation_date<=%s group by pp.id,pt.name,pt.sku_code,sol.price_unit,curr.id,curr.symbol """
+            sql_query = "CREATE VIEW " + view + " AS ( " + select_query + " ) "
             self._cr.execute(sql_query, (str(s_date), str(e_date), str(start_date), str(end_date),))
-        # else:
-        #     select_query = select_query + """where sml.state in ('done','partially_available')  group by pp.id,pt.name,pt.sku_code,sol.price_unit,curr.id,curr.symbol having sum(sml.product_uom_qty) > 0 """
-        #     sql_query = "CREATE VIEW " + view + " AS ( " + select_query + ")"
-        #     self._cr.execute(sql_query, (str(s_date), str(e_date), ))
+        else:
+            select_query = select_query + """where sml.state in ('done','partially_available')  group by pp.id,pt.name,pt.sku_code,sol.price_unit,curr.id,curr.symbol """
+            sql_query = "CREATE VIEW " + view + " AS ( " + select_query + " ) "
+            self._cr.execute(sql_query, (str(s_date), str(e_date), ))
 
     @api.model_cr
     def delete_and_create(self):
