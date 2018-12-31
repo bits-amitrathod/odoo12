@@ -45,7 +45,7 @@ class PopUp(models.TransientModel):
             print(self.purchase_order.ids)
             print(len(self.purchase_order.ids))
             if(len(self.purchase_order.ids)>0):
-                action['domain'].append(('move_id.purchase_line_id.order_id', '=', 11))
+                action['domain'].append(('move_id.purchase_line_id.order_id', 'in', self.purchase_order.ids))
             else:
                 action['domain'].append(('move_id.purchase_line_id', '!=', False))
             return action
