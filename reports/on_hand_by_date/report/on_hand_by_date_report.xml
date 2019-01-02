@@ -9,5 +9,14 @@
                 file="on_hand_by_date.on_hand_by_date_temp"
                 name="on_hand_by_date.on_hand_by_date_temp"
                 />
+
+        <report
+                id="action_report_on_hand_by_date_cost"
+                string="On Hand By Date"
+                model="report.on.hand.by.date.cost"
+                report_type="qweb-html"
+                file="on_hand_by_date.on_hand_by_date_temp"
+                name="on_hand_by_date.on_hand_by_date_temp"
+                />
     </data>
 </odoo>
