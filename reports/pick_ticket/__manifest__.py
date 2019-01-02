@@ -11,7 +11,6 @@
 
     # always loaded
     'data': [
-        'security/res_pick_ticket.xml',
         'security/ir.model.access.csv',
         'views/pick_ticket.xml',
         'reports/pick_ticket.xml',
