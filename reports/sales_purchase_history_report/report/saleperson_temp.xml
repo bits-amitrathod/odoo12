@@ -38,16 +38,16 @@
                             <tbody>
                                 <tr t-foreach="data" t-as="order">
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.product_sku"/>
+                                        <span t-esc="order.product_sku_ref"/>
                                     </td>
                                     <td style="border: 1px solid black;">
                                         <span t-esc="order.customer_name"/>
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.sale_order"/>
+                                        <span t-esc="order.order_id.name"/>
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.product_name"/>
+                                        <span t-esc="order.product_id.name"/>
                                     </td>
                                     <td style="border: 1px solid black;">
                                         <span t-esc="order.delivered_date" t-options="{'widget':'date'}"/>
@@ -56,14 +56,14 @@
                                         <span t-esc="order.qty_delivered"/>
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.product_uom_id.name"/>
+                                        <span t-esc="order.product_uom.name"/>
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.unit_price" t-options='{"widget": "monetary","display_currency": order.product_id.currency_id}' />
+                                        <span t-esc="order.price_unit" t-options='{"widget": "monetary","display_currency": order.product_id.currency_id}' />
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.total_price" t-options='{"widget": "monetary","display_currency": order.product_id.currency_id}'/>
-                                        <t t-set="total_price" t-value="total_price + order.total_price" />
+                                        <span t-esc="order.price_total" t-options='{"widget": "monetary","display_currency": order.product_id.currency_id}'/>
+                                        <t t-set="total_price" t-value="total_price + order.price_total" />
                                     </td>
                                 </tr>
                                 <tr>
