@@ -19,10 +19,9 @@ class SalePurchaseHistory(models.Model):
     qty_delivered = fields.Float("Delivered Qty", store=False)
     unit_price = fields.Monetary("Unit Price", currency_field='currency_id', store=False)
     total_price = fields.Monetary("Total", currency_field='currency_id', store=False)
-    # sale_order_id = fields.Many2one('sale.order', 'Sales Order', required=True, store=False)
     user_id = fields.Many2one('res.users', string='User', store=False)
     currency_id = fields.Many2one("res.currency", string="Currency",readonly=True)
-    product_uom_id = fields.Many2one('product.uom', 'UOM')
+    product_uom = fields.Char(string='UOM', store=False)
 
     @api.multi
     def _compare_data(self):
@@ -32,11 +31,10 @@ class SalePurchaseHistory(models.Model):
                 sale_order_line.product_sku = sale_order_line.product_id.product_tmpl_id.sku_code
                 sale_order_line.customer_name = sale_order_line.order_id.partner_id.name
                 sale_order_line.sale_order = sale_order_line.order_id.name
-                # sale_order_line.sale_order_id = sale_order_line.order_id.id
                 stock_picking = self.env['stock.picking'].search([('sale_id', '=', sale_order_line.order_id.id),('state', '=', 'done')])
                 if len(stock_picking) == 1:
                     stock_move_line = self.env['stock.move.line'].search([('picking_id', '=', stock_picking.id),('product_id', '=', sale_order_line.product_id.id)])
-                    sale_order_line.product_uom_id = stock_move_line.product_uom_id
+                    sale_order_line.product_uom = stock_move_line.product_uom_id.name
                     sale_order_line.qty_delivered = sale_order_line.qty_delivered
                     sale_order_line.delivered_date = stock_picking.scheduled_date
                 else:

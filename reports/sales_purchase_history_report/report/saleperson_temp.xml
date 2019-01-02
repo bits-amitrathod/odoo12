@@ -56,7 +56,7 @@
                                         <span t-esc="order.qty_delivered"/>
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.product_uom_id.name"/>
+                                        <span t-esc="order.product_uom"/>
                                     </td>
                                     <td style="border: 1px solid black;">
                                         <span t-esc="order.unit_price" t-options='{"widget": "monetary","display_currency": order.product_id.currency_id}' />
