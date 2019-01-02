@@ -32,8 +32,8 @@ class ProductSaleByCount(models.Model):
         tools.drop_view_if_exists(self._cr, view)
         start_date = self.env.context.get('start_date')
         end_date = self.env.context.get('end_date')
-        s_date=""
-        e_date=""
+        s_date= datetime.datetime.now()
+        e_date= datetime.datetime.now()
         if start_date and end_date and  not start_date is None and not end_date is None:
             s_date = (str(start_date)).replace("-", "/")
             e_date = str(end_date).replace("-", "/")
@@ -61,7 +61,7 @@ class ProductSaleByCount(models.Model):
         else:
             select_query = select_query + """where sml.state in ('done','partially_available')  group by pp.id,pt.name,pt.sku_code,sol.price_unit,curr.id,curr.symbol  """
             sql_query = "CREATE VIEW " + view + " AS ( " + select_query + ")"
-            self._cr.execute(sql_query )
+            self._cr.execute(sql_query,(str(s_date), str(e_date),) )
 
     @api.model_cr
     def delete_and_create(self):
