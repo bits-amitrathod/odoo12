@@ -7,10 +7,9 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
-class LotHistory(models.Model):
+class LotHistory(models.TransientModel):
     _name = "lot.history.report"
     _description = "report product activity report"
-    _auto = False
 
     sku_code = fields.Char('Product SKU')
     description = fields.Char('Product Name')
