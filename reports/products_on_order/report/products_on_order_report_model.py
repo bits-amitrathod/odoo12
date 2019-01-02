@@ -1,5 +1,6 @@
 import logging
 from odoo import api, fields, models
+from datetime import datetime
 
 log = logging.getLogger(__name__)
 
@@ -9,13 +10,14 @@ class ReportProductsOnOrder(models.AbstractModel):
 
     @api.model
     def get_report_values(self, docids, data=None):
-        products_on_order_list = self.env['products.on_order'].browse(docids)
+        products_on_order_list = self.env['report.products.on.order'].browse(docids)
 
         group_by_list = {}
         for products_on_order in products_on_order_list:
             order_line = [products_on_order.order_id.name, products_on_order.partner_id.display_name,
+                          products_on_order.sku_code,
                           products_on_order.date_ordered,products_on_order.date_due,
-                          products_on_order.qty_ordered, products_on_order.qty_remaining]
+                          products_on_order.qty_ordered, products_on_order.qty_remaining, products_on_order.product_uom.name]
             key = ""
             if products_on_order.product_id.product_tmpl_id.sku_code:
                 key = str(products_on_order.product_id.product_tmpl_id.sku_code) + str(" - ")
@@ -37,12 +39,19 @@ class ReportProductsOnOrder(models.AbstractModel):
 
         log.info('final list: %r', final_list)
 
+        popup = self.env['popup.product.on.order'].search([('create_uid', '=', self._uid)], limit=1,order="id desc")
+
+        if popup.compute_at_date:
+            date = datetime.strptime(popup.start_date, '%Y-%m-%d').strftime('%m/%d/%Y') + " - " + datetime.strptime(popup.end_date, '%Y-%m-%d').strftime('%m/%d/%Y')
+        else:
+            date = False
+
         datas = {
             'form': final_list,
-
         }
+
         action = self.env.ref('products_on_order.action_report_products_on_order').report_action([], data=datas)
-        action.update({'target': 'main','data': datas})
+        action.update({'target': 'main','data': datas,'date': date})
 
         return action
 

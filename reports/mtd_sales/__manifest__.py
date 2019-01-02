@@ -12,4 +12,7 @@
         'report/mtd_report.xml',
         'report/mtd_report_template.xml',
     ],
+    'installable': True,
+    'application': True,
+    'auto_install': False,
 }

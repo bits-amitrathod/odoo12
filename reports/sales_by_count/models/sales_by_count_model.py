@@ -13,9 +13,12 @@ class ProductSaleByCountReport(models.Model):
     _auto = False
 
     location = fields.Char(string='Location')
-    sku_code = fields.Char('SKU / Catalog No')
+    user_id = fields.Many2one('res.users', 'Salesperson')
+    warehouse_id = fields.Many2one('stock.warehouse', 'Warehouse')
+    sku_code = fields.Char('Product SKU')
     product_name = fields.Char(string='Product Name')
     quantity = fields.Char(string='Quantity')
+    confirmation_date = fields.Date('Confirmation Date')
 
     @api.model_cr
     def init(self):
@@ -29,10 +32,13 @@ class ProductSaleByCountReport(models.Model):
 
         select_query = """  
             SELECT
+                sale_order.user_id,
                 stock_move_line.id,
+                sale_order.warehouse_id ,
                 stock_warehouse.name || '/' || stock_location.name AS location,
                 product_template.sku_code                   AS sku_code,
                 product_template.name as product_name,
+                sale_order.confirmation_date,
                 SUM(stock_move_line.qty_done) AS quantity
             FROM
                 sale_order
@@ -77,14 +83,12 @@ class ProductSaleByCountReport(models.Model):
         """
 
         where_clause = "  WHERE  sale_order.state = 'sale'"
-        group_order_by = " Group by stock_warehouse.name,stock_location.name,product_template.sku_code," \
-                         "product_template.name,stock_move_line.id " \
+        group_order_by = " Group by stock_warehouse.name,stock_location.name,product_template.sku_code,sale_order.confirmation_date," \
+                         "product_template.name,stock_move_line.id,sale_order.user_id,sale_order.warehouse_id " \
                          "Order by location "
-        if not s_date is None and not e_date is None:
-            where_clause = where_clause + " And sale_order.confirmation_date  BETWEEN '" + str(s_date) + "' AND '" + str(e_date) + "' "
 
-        sql_query = "CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + select_query + where_clause + group_order_by+ " )"
-        self._cr.execute(sql_query)
+        sql_query = select_query + where_clause + group_order_by
+        self._cr.execute("CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + sql_query + " )")
 
     @api.model_cr
     def delete_and_create(self):

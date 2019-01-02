@@ -16,7 +16,8 @@
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/res_vendor_offer.xml',
+        'security/ir.model.access.csv',
         'views/views.xml',
         'views/templates.xml',
         'demo/data.xml',
@@ -27,6 +28,6 @@
     ],
 
     'application' :True,
-    'auto-install': True,
+    'auto-install': False,
     'installable': True,
 }

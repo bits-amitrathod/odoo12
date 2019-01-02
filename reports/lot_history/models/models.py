@@ -7,18 +7,18 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
-class LotHistory(models.Model):
+class LotHistory(models.TransientModel):
     _name = "lot.history.report"
     _description = "report product activity report"
 
-    sku_code = fields.Char('SKU / Catalog No')
-    description = fields.Char('Description')
+    sku_code = fields.Char('Product SKU')
+    description = fields.Char('Product Name')
     type = fields.Char('Type')
     event = fields.Char('Event')
     event_date = fields.Date(string="Event Date")
     change = fields.Integer('Change')
     lot_no = fields.Char(string="Lot #")
-    vendor = fields.Char(string="Vendor")
+    vendor = fields.Char(string="Vendor Name")
     phone = fields.Char(string="Phone")
     email = fields.Char(string="Email")
 
@@ -32,14 +32,18 @@ class LotHistory(models.Model):
             """
         self._cr.execute(sql_query)
         lot_id = self.env.context.get('lot_id')
+        sku_code = self.env.context.get('sku_code')
         insert_start = "INSERT INTO lot_history_report" \
                        "(sku_code, description, type,event,event_date,change,lot_no"
         insert_mid = ",vendor,phone,email"
         insert_end = ") "
 
         where_clause = ""
-        if not lot_id is None:
+        if lot_id and lot_id is not None:
             where_clause = " AND stock_production_lot.id=" + str(lot_id)
+
+        if sku_code and sku_code is not None:
+            where_clause = where_clause + " AND product_template.sku_code ilike '%" + str(sku_code) + "%'"
 
         # -------------------- purchase ------------------------
         sql_query = insert_start + insert_mid + insert_end + """ 
@@ -49,7 +53,7 @@ class LotHistory(models.Model):
                     'Receive'                               AS type,
                     purchase_order.name              AS event,
                     purchase_order.date_order        AS event_date,
-                    purchase_order_line.qty_received AS change,
+                    stock_move_line.qty_done         AS change,
                     stock_production_lot.name        AS lot_no,
                     res_partner.name                 AS vendor,
                     res_partner.phone,
@@ -108,7 +112,7 @@ class LotHistory(models.Model):
                     'Ship'                               AS type,
                     sale_order.name               AS event,
                     sale_order.confirmation_date  AS event_date,
-                    sale_order_line.qty_delivered * -1 AS change,
+                    stock_move_line.qty_done      AS change,
                     stock_production_lot.name     AS lot_no,
                     res_partner.name              AS vendor,
                     res_partner.phone,

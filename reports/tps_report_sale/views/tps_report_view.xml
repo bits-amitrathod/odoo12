@@ -3,15 +3,15 @@
 
     <record model="ir.ui.view" id="form_list_tps">
         <field name="name">tps.report.view.list</field>
-        <field name="model">product.product</field>
+        <field name="model">total_product_sale</field>
+         <field name="search_view_id" eval="False"/>
         <field name="priority">20</field>
         <field name="arch" type="xml">
-            <tree>
-                <field name="default_code"/>
-                <field name="sku_name"/>
-                <field name="product_name"/>
-                <field name="total_sale_qty"/>
-                <field name="product_price" widget="monetary"/>
+            <tree create="false" edit="false" >
+
+                <field name="sku_code" />
+                <field name="product_name" />
+                <field name="total_sales" widget="monetary" />
                 <field name="currency_id" invisible="1"/>
 
             </tree>
@@ -20,14 +20,13 @@
 
     <record id="view_stock_quantity_history" model="ir.ui.view">
         <field name="name">Total Product Sales</field>
-        <field name="model">popup.view.model123</field>
+        <field name="model">tps.popup.view</field>
         <field name="arch" type="xml">
             <form string="Choose your date">
                 <group>
                     <group>
-                        <field name="compute_at_date" widget="radio"/>
-                        <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
-                        <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                        <field name="start_date" required="True"/>
+                        <field name="end_date" required="True"/>
                     </group>
                 </group>
                 <footer>
@@ -40,12 +39,11 @@
 
     <record id="action_stock_quantity_history" model="ir.actions.act_window">
         <field name="name">Total Product Sales</field>
-        <field name="res_model">popup.view.model123</field>
+        <field name="res_model">tps.popup.view</field>
+        <field name="search_view_id" eval="False"/>
         <field name="view_type">form</field>
         <field name="view_mode">form</field>
-        <field name="view_id" ref="view_stock_quantity_history"/>
         <field name="target">new</field>
-        <field name="context">{'default_compute_at_date': 0}</field>
     </record>
 
     <menuitem

@@ -10,7 +10,7 @@ from odoo import models, fields, api
 
 _logger = logging.getLogger(__name__)
 import datetime
-from datetime import date,datetime,timedelta
+
 
 
 
@@ -61,7 +61,9 @@ class PricingRule(models.Model):
         # self._cr.execute(sql_query)
         s_date = self.env.context.get('start_date')
         e_date = self.env.context.get('end_date')
-
+        sale_number = self.env.context.get('sale_number')
+        shipping_number=self.env.context.get('shipping_number')
+        purchase_order = self.env.context.get('purchase_order')
         select_columns=""" SELECT column_name 
                         FROM  information_schema.columns
                         WHERE 
@@ -94,12 +96,34 @@ class PricingRule(models.Model):
                       LEFT JOIN product_template pt  ON pt.id=pp.product_tmpl_id 
                where sp.state='done' and pt.type='product'
         """
+        if not sale_number and not shipping_number and not purchase_order:
 
-        if not s_date is None:
-            select_query = select_query + " and sp.write_date >='" + str(s_date) + "'"
 
-        if not e_date is None:
-            select_query = select_query + " and sp.write_date <='" + str(e_date) + "'"
+            if (s_date is False and e_date is False) or (s_date is None and e_date is None):
+                 select_query = select_query + " " + " and FALSE"
+            else:
+                if s_date and (not s_date is None):
+                    start_date = datetime.datetime.strptime(str(s_date), "%Y-%m-%d")
+                    select_query = select_query + " and sp.write_date >='" + str(start_date) + "'"
+                if e_date and (not e_date is None):
+                    end_date = datetime.datetime.strptime(str(e_date), "%Y-%m-%d")
+                    if (s_date and (not s_date is None)) and start_date == end_date:
+                        end_date = end_date + datetime.timedelta(days=1)
+                    select_query = select_query + " and sp.write_date <='" + str(end_date) + "'"
+        if sale_number and not sale_number is None :
+            sale_order="("
+            for sale in sale_number:
+                sale_order=sale_order+str(sale.id)+","
+            sale_order = sale_order[:-1]
+            sale_order=sale_order+")"
+            select_query = select_query + """and sp.sale_id in """  + sale_order
+        if shipping_number:
+            select_query = select_query + " and sp.carrier_tracking_ref ='" + str(shipping_number) + "'"
+        if purchase_order:
+            select_query = select_query + " and so.client_order_ref ='" + str(purchase_order) + "'"
+
+
+
 
         # select_query = select_query + """ GROUP BY sp.id,so.name,pt.name,pt.sku_code,sol.product_uom_qty,sol.qty_delivered,pr.street,pr.street2,pr.zip,pr.city,st.name,co.name,so.requested_date,
         #            sp.carrier_tracking_ref,sp.carrier_tracking_ref,dc.name,shipment_address,bill_address,pr.shipping_terms,dc.delivery_type  """

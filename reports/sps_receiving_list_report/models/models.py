@@ -9,9 +9,10 @@ _logger = logging.getLogger(__name__)
 class SpsReceivingList(models.Model):
     _inherit = 'stock.move.line'
 
-    sku_code = fields.Char('SKU/Catalog No', store=False, compute="_get_sku")
+    sku_code = fields.Char('Product SKU', store=False, compute="_get_sku")
 
     @api.multi
     def _get_sku(self):
         for move_line in self:
-            move_line.sku_code = move_line.product_id.sku_code
+            if move_line.product_id:
+                move_line.sku_code = move_line.product_id.sku_code

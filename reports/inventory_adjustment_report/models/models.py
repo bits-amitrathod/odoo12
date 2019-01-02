@@ -10,15 +10,14 @@ _logger = logging.getLogger(__name__)
 class inventory_adjustment_report(models.Model):
     _inherit = 'stock.inventory'
 
-
-    p_sku = fields.Char("SKU/Catalog No", store=False, compute="_calculateSKU")
-    p_type= fields.Char("Type", store=False)
+    currency_id = fields.Many2one("res.currency", string="Currency", readonly=True)
+    p_sku = fields.Char("Product SKU", store=False, compute="_calculateSKU")
+    p_type= fields.Char("Product Type", store=False)
     date_cal=fields.Date('Inventory Date',store=False)
     date_posted=fields.Date('Date Posted',store=False)
-    amount= fields.Monetary("Amount", store=False,currency_field='currency_id')
-    total_amt=fields.Monetary("Total Amount", store=False,currency_field='currency_id')
-    p_qty = fields.Integer('Qty', store=False)
-    currency_id = fields.Many2one('res.currency', 'Currency', store=False)
+    amount= fields.Monetary("Unit Price", currency_field='currency_id', store=False)
+    total_amt=fields.Monetary("Total",currency_field='currency_id', store=False)
+    p_qty = fields.Integer('Product Qty', store=False)
     product_name = fields.Char("Product Name", store=False)
 
     @api.multi

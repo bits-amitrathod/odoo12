@@ -24,13 +24,9 @@
                             </b>
                         </center>
                         <center>
-                            <!--<b>Date Range:-->
-                                <!--<span t-esc="start_date"/>-->
-
-                                <!-- - -->
-
-                                <!--<span t-esc="end_date"/>-->
-                            <!--</b>-->
+                            <h4 t-if="date">
+                                <span t-esc="date"/>
+                            </h4>
                         </center>
                         <!-- Report page content -->
 
@@ -38,14 +34,14 @@
                                 <thead>
                                 <tr>
                                     <th style="border: 1px solid black;text-align: center;">Order Reference</th>
-                                    <th style="border: 1px solid black;text-align: center;">SKU/Catalog No</th>
+                                    <th style="border: 1px solid black;text-align: left;">Product SKU</th>
                                     <!--<th style="border: 1px solid black;text-align: center;">Manufacturer</th>-->
-                                    <th style="border: 1px solid black;text-align: center;">Vendor</th>
+                                    <th style="border: 1px solid black;text-align: center;">Vendor Name</th>
                                     <th style="border: 1px solid black;text-align: center;">Product Name</th>
-                                    <th style="border: 1px solid black;text-align: center;">Qty</th>
-                                    <th style="border: 1px solid black;text-align: center;">Price Per Stock</th>
-                                    <th style="border: 1px solid black;text-align: center;">Min Exp Date</th>
-                                    <th style="border: 1px solid black;text-align: center;">Max Exp Date</th>
+                                    <th style="border: 1px solid black;text-align: center;">Product Qty</th>
+                                    <th style="border: 1px solid black;text-align: center;">Price Per Unit</th>
+                                    <th style="border: 1px solid black;text-align: center;">Min Expiration Date</th>
+                                    <th style="border: 1px solid black;text-align: center;">Max Expiration Date</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -70,14 +66,14 @@
                                             <td align="right"  style="border: 1px solid #000;">
                                                 <span t-esc="o.qty"/>
                                             </td>
+                                            <td align="center"  style="border: 1px solid #000;">
+                                                <span t-esc="o.minExpDate" t-options="{'widget':'date'}"/>
+                                            </td>
+                                            <td align="center"  style="border: 1px solid #000;">
+                                                <span t-esc="o.maxExpDate" t-options="{'widget':'date'}"/>
+                                            </td>
                                             <td align="right"  style="border: 1px solid #000; white-space:nowrap;">
                                                 <span t-esc="o.unit_price" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
-                                            </td>
-                                            <td align="center"  style="border: 1px solid #000;">
-                                                <span t-esc="o.minExpDate"/>
-                                            </td>
-                                            <td align="center"  style="border: 1px solid #000;">
-                                                <span t-esc="o.maxExpDate"/>
                                             </td>
                                         </tr>
                                     </t>

@@ -9,7 +9,9 @@
                 <form string="Choose your date">
                     <group>
                          <group>
-                            <field name="group_by"/>
+                            <field name="order_id"/>
+                             <field name="product_sku" />
+
                         </group>
                         <group>
                             <field name="compute_at_date" widget="radio"/>
@@ -32,9 +34,9 @@
             <tree create="false" edit="false" >
                 <field name="currency_id" invisible="1"/>
                 <field name="sale_order_name" invisible="1"/>
-                <field name="product_code"/>
-                <field name="product_name"/>
-                <field name="product_qty"/>
+                <field name="product_code" string="Product SKU"/>
+                <field name="product_name" string="Product Name"/>
+                <field name="product_quantity"/>
                 <field name="cost" widget="monetary" options="{'currency_field': 'currency_id'}"/>
 
             </tree>

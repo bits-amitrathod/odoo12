@@ -7,7 +7,7 @@ class ReportSalesSalespersonWise(models.AbstractModel):
 
     @api.model
     def get_report_values(self, docids, data=None):
-        return {'data': self.env['product.template'].browse(docids)}
+        return {'data': self.env['product.product'].browse(docids)}
 
 
 class CustProductPriceList(models.AbstractModel):
@@ -15,4 +15,4 @@ class CustProductPriceList(models.AbstractModel):
 
     @api.model
     def get_report_values(self, docids, data=None):
-        return {'data': self.env['product.template'].browse(docids)}
+        return {'data': self.env['inv.customer_price_list'].browse(docids)}

@@ -10,6 +10,9 @@
                             <b>
                                 <h2>Surgical Product Solutions</h2>
                                 <h4>Sales By Count</h4>
+                                <h4 t-if="date">
+                                   <span t-esc="date"/>
+                               </h4>
                             </b>
                         </center>
                     </div>
@@ -23,7 +26,7 @@
                             <thead>
                                 <tr>
                                     <th style="border: 1px solid black;text-align:  center !important;width: 15%;">
-                                        SKU / Catalog No
+                                        Product SKU
                                     </th>
                                     <th style="border: 1px solid black;text-align:  center !important;">
                                         Product Name

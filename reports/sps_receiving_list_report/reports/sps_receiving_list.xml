@@ -22,51 +22,67 @@
                     </center>
                     <!-- Report page content -->
 
-                   <t t-foreach="receiving_list" t-as="receiving_list_int">
-                        <t t-set="receiving_item" t-value="receiving_list[receiving_list_int]"/>
 
-                        <table  class="table table-condensed" style="margin-bottom: 0px;">
-                            <tr>
-                                <td style="border: none;">
-                                    <span t-esc="receiving_item['product']"/>
-                                </td>
-                            </tr>
-                        </table>
+
+                      <!--   <table  class="table table-condensed" style="margin-bottom: 0px;">
+
+                        </table>-->
                         <table class="table table-condensed" style="border: 1px solid black;">
                             <thead>
                                 <tr>
                                     <th style="border: 1px solid black;text-align:  center !important;">
-                                        Lot
+                                        Product Name
                                     </th>
-                                    <th style="border: 1px solid black;text-align:  center !important;">
+                                    <!--<th style="border: 1px solid black;text-align:  center !important;">
                                         Lot Expired Date
-                                    </th>
+                                    </th>-->
                                     <th style="border: 1px solid black;text-align:  center !important;">
-                                        Qty Done
+                                        Qty Received
                                     </th>
                                     <th style="border: 1px solid black;text-align:  center !important;">
                                         UOM
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody>
+                                            <tbody>
+
+                             <t t-foreach="receiving_list" t-as="receiving_list_int">
+                        <t t-set="receiving_item" t-value="receiving_list[receiving_list_int]"/>
+                                 <tr>
+                                <td style="border: 1px solid black;">
+                                    <b><span t-esc="receiving_item['product']"/></b>
+                                </td>
+                                     <td style="border: 1px solid black;">
+
+                                </td>
+                                     <td style="border: 1px solid black;">
+
+                                </td>
+                                </tr>
                                 <tr t-foreach="receiving_item['lots']" t-as="lot">
-                                    <td style="border: 1px solid black;">
-                                        <span t-esc="lot['lot_id']"/>
+                                    <td style="border: 1px solid black; text-align:  center ">
+                                      Lot# : <span t-esc="lot['lot_id']"/>    Exp Date : <span t-esc="lot['lot_expired_date']"/>
                                     </td>
-                                    <td style="border: 1px solid black;">
-                                        <span t-esc="lot['lot_expired_date']"/>
+
+                                    <td style="border: 1px solid black; text-align:  center ">
+                                        <b><span t-esc="lot['qty_done']"/></b>
                                     </td>
-                                    <td style="border: 1px solid black;">
-                                        <span t-esc="lot['qty_done']"/>
-                                    </td>
-                                    <td style="border: 1px solid black;">
+                                    <td style="border: 1px solid black; text-align:  center ">
                                         <span t-esc="lot['product_uom_id']"/>
                                     </td>
                                 </tr>
-                            </tbody>
+                                <tr style="">
+                                    <td  style="border: 1px solid black;height:20px">
+                                    <span >   </span></td>
+
+                                    <td  style="border: 1px solid black;height:20px"></td>
+                                    <td  style="border: 1px solid black;height:20px"></td>
+                                </tr>
+
+                             </t>
+                             </tbody>
                         </table>
-                    </t>
+
                     </div>
 
             </t>

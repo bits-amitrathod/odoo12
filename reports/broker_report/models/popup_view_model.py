@@ -11,9 +11,10 @@ class BrokerReportPopUp(models.TransientModel):
         (0, 'Show All '),
         (1, 'Date Range ')
     ], string="Compute", help="Choose to analyze the Show Summary or from a specific date in the past.",default=0)
-    start_date = fields.Datetime('Start Date', help="Choose a date to get the Discount Summary at that  Start date", default = (fields.date.today() - datetime.timedelta(days = 31)))
-    end_date = fields.Datetime('End Date', help="Choose a date to get the Discount Summary at that  End date",
-                           default = fields.Datetime.now)
+    start_date = fields.Date('Start Date', help="Choose a date to get the Discount Summary at that  Start date",
+                             default=lambda self: self._get_current_date())
+    end_date = fields.Date('End Date', help="Choose a date to get the Discount Summary at that  End date",
+                           default=fields.Date.today())
 
     def open_table(self):
 

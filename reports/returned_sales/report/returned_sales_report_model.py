@@ -9,12 +9,12 @@ class ReportProductsOnOrder(models.AbstractModel):
 
     @api.model
     def get_report_values(self, docids, data=None):
-        returned_sales_list = self.env['returned_sales.order'].browse(docids)
+        returned_sales_list = self.env['report.returned.sales.order'].browse(docids)
 
         group_by_list = {}
         for returned_sales in returned_sales_list:
             order_line = [returned_sales.order_id.name, returned_sales.partner_id.display_name,returned_sales.user_id.display_name,
-                          returned_sales.done_qty, returned_sales.cost_price]
+                          returned_sales.done_qty,returned_sales.product_uom_id.name, returned_sales.cost_price]
             key = ""
             if returned_sales.product_id.product_tmpl_id.sku_code:
                 key = str(returned_sales.product_id.product_tmpl_id.sku_code) + str(" - ")
@@ -33,7 +33,7 @@ class ReportProductsOnOrder(models.AbstractModel):
             total_cost_price = 0.00
             for line in line_list:
                 total_done_qty = total_done_qty + line[3]
-                total_cost_price = total_cost_price + line[4]
+                total_cost_price = total_cost_price + line[5]
             inner_list.append(total_done_qty)
             inner_list.append(total_cost_price)
             final_list.append(inner_list)

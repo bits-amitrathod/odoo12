@@ -45,7 +45,7 @@
                             <table class="table table-condensed table-bordered table-bordered">
                                 <thead>
                                     <tr>
-                                        <th>SKU / Catalog No</th>
+                                        <th>Product SKU</th>
                                         <th>Product Name</th>
                                         <th class="text-right">Qty</th>
                                         <th class="text-right">Unit Cost</th>

@@ -4,15 +4,17 @@
 
         <record id="vendor_view_popup_view" model="ir.ui.view">
             <field name="name">Product Vendor List</field>
-            <field name="model">productvendorlist.popup</field>
+            <field name="model">popup.product.vendor.list</field>
             <field name="arch" type="xml">
                 <form string="Choose your date">
                     <group>
                         <group>
+                            <field name="product_id"/>
+                        </group>
+                        <group>
                             <field name="compute_at_date" widget="radio"/>
-                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
-                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
-                            <field name="product_id" widget="many2many_tags" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
                         </group>
                     </group>
                     <footer>
@@ -25,7 +27,7 @@
 
         <record id="product_vendor_list_id" model="ir.actions.act_window">
             <field name="name">Product Vendor</field>
-            <field name="res_model">productvendorlist.popup</field>
+            <field name="res_model">popup.product.vendor.list</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="vendor_view_popup_view"/>
@@ -39,9 +41,9 @@
               <field name="priority">20</field>
               <field name="arch" type="xml">
                 <tree create="false" edit="false" >
+                    <field name="partner_id"/>
                     <field name="sku_code_product"/>
                     <field name="product_id"/>
-                    <field name="partner_id"/>
                     <field name="last_sold" />
                     <field name="cost" widget="monetary"/>
                     <field name="currency_id" invisible="1"/>

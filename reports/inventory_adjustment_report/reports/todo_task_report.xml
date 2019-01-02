@@ -21,37 +21,26 @@
                         </b>
                     </center>
                     <center>
-                        <!--<b>Date Range:-->
-                            <!--<span t-esc="start_date"/>-->
-
-                            <!-- - -->
-
-                            <!--<span t-esc="end_date"/>-->
-                        <!--</b>-->
+                       <h4 t-if="date">
+                           <span t-esc="date"/>
+                       </h4>
                     </center>
                     <!-- Report page content -->
-
+                     <t t-set="total_amount" t-value="0"/>
                     <table class="table table-condensed table-bordered" style="border: 1px solid black;">
                         <tr>
                             <!--<th style="border: 1px solid black;text-align: center;">Inventory Reference</th>-->
-                            <th style="border: 1px solid black;text-align: center;">SKU/Catalog No</th>
+                            <th style="border: 1px solid black;text-align: center;">Product SKU</th>
                             <th style="border: 1px solid black;text-align: center;">Product Name</th>
                             <th style="border: 1px solid black;text-align: center;">Inventory Date</th>
                             <th style="border: 1px solid black;text-align: center;">Date Posted</th>
-                            <th style="border: 1px solid black;text-align: center;">Type</th>
-                            <th style="border: 1px solid black;text-align: center;">Qty</th>
-                            <th style="border: 1px solid black;text-align: center;">Amount</th>
-                            <th style="border: 1px solid black;text-align: center;">Total Amount</th>
-
+                            <th style="border: 1px solid black;text-align: center;">Product Type</th>
+                            <th style="border: 1px solid black;text-align: center;">Product Qty</th>
+                            <th style="border: 1px solid black;text-align: center;">Unit Price</th>
+                            <th style="border: 1px solid black;text-align: center;">Total</th>
                         </tr>
-
-
                             <t t-foreach="data" t-as="o">
                                 <tr>
-
-                                    <!--<td align="left"  style="border: 1px solid #000;">-->
-                                        <!--<span t-esc="o.name"/>-->
-                                    <!--</td>-->
                                     <td align="left"  style="border: 1px solid #000;">
                                         <span t-esc="o.p_sku"/>
                                     </td>
@@ -61,10 +50,10 @@
                                     </td>
 
                                     <td align="center"   style="border: 1px solid #000;">
-                                        <span t-esc="o.date_cal"/>
+                                        <span t-esc="o.date_cal" t-options="{'widget':'date'}"/>
                                     </td>
                                     <td align="center"   style="border: 1px solid #000;">
-                                        <span t-esc="o.date_posted"/>
+                                        <span t-esc="o.date_posted" t-options="{'widget':'date'}"/>
                                     </td>
                                     <td align="left"   style="border: 1px solid #000;">
                                         <span t-esc="o.p_type"/>
@@ -77,15 +66,21 @@
                                     </td>
                                     <td align="right"   style="border: 1px solid #000;white-space: nowrap;">
                                       $   <span t-esc="o.total_amt" />
+                                        <t t-set="total_amount" t-value="total_amount + o.total_amt" />
                                     </td>
                                 </tr>
                             </t>
-
+                            <tr>
+                                <td colspan="7" style="border: 1px solid #000;white-space: nowrap;text-align: right;">
+                                    <b>Total</b>
+                                </td>
+                                <td style="border: 1px solid #000;white-space: nowrap;text-align: right;">
+                                    $ <span t-esc="total_amount"/>
+                                </td>
+                            </tr>
                     </table>
                     </div>
-
+                </t>
             </t>
-        </t>
-    </template>
-
+        </template>
 </odoo>

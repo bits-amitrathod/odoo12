@@ -8,8 +8,8 @@
                     <group>
                         <group>
                             <field name="compute_at_date" widget="radio"/>
-                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
-                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
                             <field name="product_sku_code"/>
                         </group>
                     </group>
@@ -33,16 +33,16 @@
 
         <record model="ir.ui.view" id="list_view">
               <field name="name">product.sale.by.count.view.list</field>
-              <field name="model">product.product</field>
+              <field name="model">sales_by_month</field>
               <field name="priority">21</field>
               <field name="arch" type="xml">
                 <tree>
-                    <field name="sku_name" string="Product"/>
-                    <field name="name" string="Description"/>
-                    <field name="product_price" widget="monetary" sum="Total"/>
-                    <field name="total_sale_qty" />
-                    <field name="total_amount" widget="monetary"/>
-                    <field name="currency_id"  invisible="1" />
+                    <field name="sku_code" string="Product SKU"/>
+                    <field name="p_name"/>
+                    <field name="product_price" widget="monetary"/>
+                    <field name="total_sale_quantity" string="Total Sale Qty"/>
+                    <field name="total_amount" widget="monetary" sum="Total"/>
+                    <field name="currency_id"  invisible="1"/>
                 </tree>
               </field>
         </record>

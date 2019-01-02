@@ -10,8 +10,7 @@ _logger = logging.getLogger(__name__)
 
 class ProductSaleByCountPopUp(models.TransientModel):
 
-    _name = 'returned_sales.popup'
-    _description = 'Products On Order'
+    _name = 'popup.returned.sales'
 
     compute_at_date = fields.Selection([
         (0, 'All '),
@@ -24,7 +23,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
 
     sale_person_id = fields.Many2one('res.users', string='Sales Person', required=False)
 
-    product_id = fields.Many2one('product.product', string='Product', required=False)
+    sku_code = fields.Char('Product SKU')
 
     customer_id = fields.Many2one('res.partner', string='Customer', required=False,)
 
@@ -32,38 +31,36 @@ class ProductSaleByCountPopUp(models.TransientModel):
         tree_view_id = self.env.ref('returned_sales.returned_saleslist_view').id
         form_view_id = self.env.ref('returned_sales.returned_salesform_view').id
 
-        if self.compute_at_date:
-            s_date = ProductSaleByCountPopUp.string_to_date(str(self.start_date))
-            e_date = ProductSaleByCountPopUp.string_to_date(str(self.end_date))
-        else:
-            e_date = datetime.date.today()
-            s_date = datetime.date.today().replace(day=1)
+        self.env['report.returned.sales.order'].delete_and_create()
 
-        returned_sales_context = {}
-
-        if self.customer_id.id:
-            returned_sales_context.update({'partner_id': self.customer_id.id})
-
-        if self.product_id.id:
-            returned_sales_context.update({'product_id': self.product_id.id})
-
-        if self.sale_person_id.id:
-            returned_sales_context.update({'sales_partner_id': self.sale_person_id.id})
-
-        self.env['returned_sales.order'].with_context(returned_sales_context).delete_and_create()
-
-        domain = [('moved_date', '>=', s_date), ('moved_date', '<=', e_date)]
-
-        return {
+        action =  {
             'type': 'ir.actions.act_window',
             'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
             'view_mode': 'tree,form',
             'name': _('Returned Sales'),
-            'res_model': 'returned_sales.order',
+            'res_model': 'report.returned.sales.order',
             'context': {'group_by': 'product_id',},
-            'domain' : domain,
+            'domain' :  [],
             'target': 'main',
         }
+
+        if self.customer_id.id:
+            action["domain"].append(('partner_id', '=', self.customer_id.id))
+
+        if self.sale_person_id.id:
+            action["domain"].append(('user_id', '=', self.sale_person_id.id))
+
+        if self.sku_code:
+            action["domain"].append(('sku_code', 'ilike', self.sku_code))
+
+        if self.compute_at_date:
+            if self.start_date:
+                action["domain"].append(('moved_date', '>=', self.start_date))
+
+            if self.end_date:
+                action["domain"].append(('moved_date', '<=', self.end_date))
+
+        return action
 
     @staticmethod
     def string_to_date(date_string):

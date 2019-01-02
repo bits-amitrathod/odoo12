@@ -9,7 +9,7 @@
                         <center>
                             <b>
                                 <h2>Surgical Product Solution</h2>
-                                <h4>Pick Ticket List</h4>
+                                <h4>Pick Ticket</h4>
                             </b>
                         </center>
                         <br/>
@@ -17,18 +17,30 @@
                     <t t-foreach="picks" t-as="pick_int">
                         <t t-set="pick" t-value="picks[pick_int]"/>
 
-                        <table  class="table table-condensed" style="margin-bottom: 0px;">
+                        <table class="table table-condensed" style="margin-bottom: 0px;">
                             <tr>
                                 <td style="border: none;">
-                                    <strong>SO #:</strong>
+                                    <strong>Pick Number:</strong>
+                                    <span t-esc="pick['picking']"/>
+                                </td>
+                                <td style="border: none;">
+                                    <strong>Sales Order#:</strong>
                                     <span t-esc="pick['order']"/>
                                 </td>
                                 <td style="border: none;">
                                     <strong>Carrier:</strong>
                                     <span t-esc="pick['carrier']"/>
                                 </td>
+                                <td style="border: none;">
+                                    <strong>Warehouse:</strong>
+                                    <span t-esc="pick['warehouse']"/>
+                                </td>
                             </tr>
                             <tr>
+                                <td style="border: none;">
+                                    <strong>Scheduled Date:</strong>
+                                    <span t-esc="pick['scheduled_date']"/>
+                                </td>
                                 <td style="border: none;">
                                     <strong>Customer:</strong>
                                     <span t-esc="pick['customer']"/>
@@ -36,6 +48,10 @@
                                 <td style="border: none;">
                                     <strong>State:</strong>
                                     <span t-esc="pick['state']"/>
+                                </td>
+                                 <td style="border: none;">
+                                    <strong>Operation Type:</strong>
+                                    <span t-esc="pick['picking_type']"/>
                                 </td>
                             </tr>
                         </table>
