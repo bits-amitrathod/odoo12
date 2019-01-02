@@ -1,106 +1,121 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api
+from odoo import models, fields, api, tools
 import logging
-import  datetime
-from datetime import datetime
+import datetime
+from datetime import date, datetime
 
-_logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
+
+
 class aging_report(models.Model):
-    _inherit = 'stock.production.lot'
+    _name = 'aging.report'
+    _auto = False
 
-    pr_sku = fields.Char("Product SKU", store=False, compute="_calculateSKU")
-    pr_name= fields.Char("Product Name", store=False)
-    tracking = fields.Char("Tracking", store=False,compute="_calculateTracking")
-    p_qty = fields.Integer('Qty', store=False)
-    cr_date = fields.Date("Created date", store=False)
+    # cr_date = fields.Date("Created date")
+    qty = fields.Integer("Product Qty", compute='get_quantity_byorm', store=False)
     days = fields.Char("Days", store=False)
-    maxExpDate = fields.Date("Max Exp Date", store=False, compute="_calculateDate2")
 
-    # @api.onchange('days')
-    # def _calculateDays(self):
-    #     DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
-    #     for order in self:
-    #         to_dt=datetime.datetime.strptime(fields.date.today(), '%Y-%m-%d %H:%M:%S')
-    #         from_dt = datetime.strptime(order.create_date, DATETIME_FORMAT)
-    #         to_dt = datetime.strptime(fields.date.today(), DATETIME_FORMAT)
-    #         timedelta = to_dt - from_dt
-    #         # order.days = timedelta.days + float(timedelta.seconds) / 86400
+    sku_code = fields.Char(string="Product SKU")
+    prod_lot_id = fields.Many2one('stock.production.lot', 'stock production lot')
+    product_name = fields.Char(string="Product Name")
+    lot_name = fields.Char(string="Lot#")
+    create_date = fields.Date(string="Created Date")
 
+    warehouse_id = fields.Many2one('stock.warehouse', 'Warehouse')
+    location_id = fields.Many2one('stock.location', string="Location")
+    # tracking  = fields.Char("Tracking" ,compute='_get_Data',default=0)
+    warehouse_name = fields.Char(string="Warehouse", store=False)
+    product_uom_id = fields.Char(string="UOM", store=False)
 
-
-    @api.onchange('maxExpDate')
-    def _calculateDate2(self):
-        for order in self:
-
-            if order.product_id.id != False:
-                order.env.cr.execute(
-                    "SELECT min(use_date), max (use_date) FROM public.stock_production_lot where product_id =" + str(
-                        order.product_id.id))
-                query_result = order.env.cr.dictfetchone()
-                order.maxExpDate = query_result['max']
-
-    @api.onchange('tracking')
-    def _calculateTracking(self):
-        for order in self:
-            if order.maxExpDate==False:
-                order.maxExpDate=''
-            order.tracking = 'Lot#:' + str(order.name)
+    # product_id = fields.Integer()
+    current_date = date.today()
+    use_date = fields.Date(string="Expiry Date" ,store=False)
+    product_id = fields.Many2one('product.template', 'Product')
 
     @api.multi
-    def _calculateSKU(self):
+    def get_quantity_byorm(self):
+        for order in self:
+            order.use_date = order.prod_lot_id.use_date
+            order.qty = order.prod_lot_id.product_qty
+            order.product_uom_id = order.prod_lot_id.product_id.product_tmpl_id.uom_id.name
+            order.warehouse_name = order.warehouse_id.name
 
         for order in self:
+            date_format = "%Y-%m-%d"
+            today = date.today().strftime('%Y-%m-%d')
+            a = datetime.strptime(today, date_format)
+            b = datetime.strptime(order.create_date, date_format)
+            diff = a - b
+            order.days = diff.days
 
-            order.pr_sku = order.product_id.product_tmpl_id.sku_code
-            order.pr_name=order.product_id.product_tmpl_id.name
-            order.tracking = 'Lot#:' + str(order.name)
-            # order.cr_date = order.create_date
+    @api.model_cr
+    def init(self):
+        self.init_table()
 
+    def init_table(self):
+        """ Hybrid View """
+        locations = self.env.context.get('locations')
+        tools.drop_view_if_exists(self._cr, self._name.replace(".", "_"))
+        select_query="""SELECT
+           distinct ON (public.stock_production_lot.id)  public.stock_production_lot.id as lot_id  ,
+           public.product_template.sku_code,
+           public.product_template.name as product_name,
+           public.product_template.id as product_id,
+           stock_inventory_line.prod_lot_id,
+           public.stock_production_lot.name as lot_name,
+           public.stock_production_lot.product_uom_id,
+           public.stock_production_lot.create_date as create_date,
+           public.stock_warehouse.id as warehouse_id,
+           public.stock_quant.location_id as location_id,
+           NULL::Date as use_date,
+           ROW_NUMBER () OVER (ORDER BY  stock_production_lot.id ) as id
+           FROM
+           public.product_product
+           INNER JOIN
+              public.product_template
+              ON
+              (public.product_product.product_tmpl_id = public.product_template.id)
+           INNER JOIN
+               public.stock_production_lot
+               ON  
+               (public.product_product.id = public.stock_production_lot.product_id)
+           INNER JOIN
+                public.stock_quant 
+                ON
+                (public.stock_quant.lot_id=public.stock_production_lot.id)   
+           INNER JOIN
+               public.stock_inventory_line
+               ON
+               (public.stock_production_lot.id = public.stock_inventory_line.prod_lot_id)
+           INNER JOIN
+               public.stock_location
+               ON 
+               (public.stock_inventory_line.location_id = public.stock_location.id)
+           INNER JOIN
+               public.stock_warehouse
+               ON
+                (public.stock_location.id = public.stock_warehouse.lot_stock_id)
+        
+        """
+        if locations and not locations is None and len(locations)>0:
+            location=str(tuple(locations))
+            length=len(location)
+            location=location[:length-2]
+            location=location+")"
+            select_query=select_query + " WHERE public.stock_quant.location_id in " + str(location)
 
+        sql_query="CREATE VIEW aging_report AS ( " + select_query +")"
+        self._cr.execute(sql_query)
 
-            for p in order.quant_ids:
-                order.p_qty = p.quantity
+    @api.model_cr
+    def delete_and_create(self):
+        self.init_table()
 
-            # order.cr_date=order.create_date
-            # order.vend=order.product_id.product_tmpl_id.product_brand_id.partner_id.name
-            # order.ph=order.product_id.product_tmpl_id.product_brand_id.partner_id.phone
-            # order.email = order.product_id.product_tmpl_id.product_brand_id.partner_id.email
-            # for p in order.quant_ids:
-            #     order.p_qty = p.quantity
     # @api.multi
-    # def get_report_values(self):
-    #     lots = self.env['stock.production.lot'].search([])
-    #     groupby_dict = {}
+    # def _get_Data(self):
+    #     for order in self:
+    #          order.tracking = 'Lot#:' + str(order.name)
     #
-    #     for user in self.product_id:
-    #         filtered_order = list(filter(lambda x: x.product_id == user, lots))
-    #         filtered_by_date = list( filter(lambda x: x.create_date >= self.start_date and x.create_date <= self.end_date, filtered_order))
-    #         groupby_dict[user.name] = filtered_by_date
-    #
-    #
-    #         final_dict = {}
-    #         for user in groupby_dict.keys():
-    #             temp = []
-    #             for order in groupby_dict[user]:
-    #                 temp_2 = []
-    #                 temp_2.append(order.product_id.product_tmpl_id.sku_code)
-    #                 temp_2.append(order.name)
-    #                 temp_2.append(order.product_id.product_tmpl_id.name)
-    #                 temp_2.append(datetime.datetime.strptime(str(order.create_date), '%Y-%m-%d %H:%M:%S').date().strftime('%m-%d-%Y'))
-    #                 temp_2.append(order.product_id.product_tmpl_id.product_brand_id.partner_id.name)
-    #                 temp_2.append(order.product_id.product_tmpl_id.product_brand_id.partner_id.phone)
-    #                 temp_2.append(order.product_id.product_tmpl_id.product_brand_id.partner_id.email)
-    #
-    #                 temp.append(temp_2)
-    #             final_dict[user] = temp
-    #
-    #     datas = {
-    #         'ids': self,
-    #         'model': 'product.list.report',
-    #         'form': final_dict,
-    #         'start_date': fields.Datetime.from_string(str(self.start_date)).date().strftime('%m/%d/%Y'),
-    #         'end_date': fields.Datetime.from_string(str(self.end_date)).date().strftime('%m/%d/%Y'),
-    #
-    #     }
-    #     return self.env.ref('aging_report.action_todo_model_report').report_action([], data=datas)
+    #          for p in order.quant_ids:
+    #            order.qty = p.quantity

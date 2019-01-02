@@ -22,6 +22,7 @@ class SalePurchaseHistory(models.Model):
     # sale_order_id = fields.Many2one('sale.order', 'Sales Order', required=True, store=False)
     user_id = fields.Many2one('res.users', string='User', store=False)
     currency_id = fields.Many2one("res.currency", string="Currency",readonly=True)
+    product_uom_id = fields.Many2one('product.uom', 'UOM')
 
     @api.multi
     def _compare_data(self):
@@ -34,6 +35,8 @@ class SalePurchaseHistory(models.Model):
                 # sale_order_line.sale_order_id = sale_order_line.order_id.id
                 stock_picking = self.env['stock.picking'].search([('sale_id', '=', sale_order_line.order_id.id),('state', '=', 'done')])
                 if len(stock_picking) == 1:
+                    stock_move_line = self.env['stock.move.line'].search([('picking_id', '=', stock_picking.id),('product_id', '=', sale_order_line.product_id.id)])
+                    sale_order_line.product_uom_id = stock_move_line.product_uom_id
                     sale_order_line.qty_delivered = sale_order_line.qty_delivered
                     sale_order_line.delivered_date = stock_picking.scheduled_date
                 else:

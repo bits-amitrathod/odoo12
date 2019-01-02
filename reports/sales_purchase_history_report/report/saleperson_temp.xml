@@ -30,6 +30,7 @@
                                     <th style="border: 1px solid black;">Product Name</th>
                                     <th style="border: 1px solid black;">Delivered Date</th>
                                     <th style="border: 1px solid black;">Delivered Qty</th>
+                                    <th style="border: 1px solid black;">UOM</th>
                                     <th style="border: 1px solid black;">Unit Price</th>
                                     <th style="border: 1px solid black;">Total</th>
                                 </tr>
@@ -55,6 +56,9 @@
                                         <span t-esc="order.qty_delivered"/>
                                     </td>
                                     <td style="border: 1px solid black;">
+                                        <span t-esc="order.product_uom_id.name"/>
+                                    </td>
+                                    <td style="border: 1px solid black;">
                                         <span t-esc="order.unit_price" t-options='{"widget": "monetary","display_currency": order.product_id.currency_id}' />
                                     </td>
                                     <td style="border: 1px solid black;">
@@ -63,10 +67,10 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="7" style="text-align: right;">
+                                    <td colspan="8" style="border: 1px solid black; text-align: right;">
                                         <b>Total</b>
                                     </td>
-                                    <td style="text-align: right;">
+                                    <td style="border: 1px solid black; text-align: right;">
                                         $ <span t-esc="total_price"/>
                                     </td>
                                 </tr>
