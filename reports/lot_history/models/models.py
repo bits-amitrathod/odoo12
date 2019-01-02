@@ -10,6 +10,7 @@ _logger = logging.getLogger(__name__)
 class LotHistory(models.Model):
     _name = "lot.history.report"
     _description = "report product activity report"
+    _auto = False
 
     sku_code = fields.Char('Product SKU')
     description = fields.Char('Product Name')
@@ -39,10 +40,10 @@ class LotHistory(models.Model):
         insert_end = ") "
 
         where_clause = ""
-        if not lot_id is None:
+        if lot_id and lot_id is not None:
             where_clause = " AND stock_production_lot.id=" + str(lot_id)
 
-        if not sku_code is None:
+        if sku_code and sku_code is not None:
             where_clause = where_clause + " AND product_template.sku_code ilike '%" + str(sku_code) + "%'"
 
         # -------------------- purchase ------------------------

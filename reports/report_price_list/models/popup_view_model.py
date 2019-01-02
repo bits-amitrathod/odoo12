@@ -24,7 +24,7 @@ class CustomerListPopUp(models.TransientModel):
         action = {
             'type': 'ir.actions.act_window',
             'view_mode': 'tree,form',
-            'views': [(tree_view_id, 'tree'),(form_view_id,'form')],
+            'views': [(tree_view_id, 'tree')],
             'name': _('Customer Price List'),
 
             'res_model': x_res_model,

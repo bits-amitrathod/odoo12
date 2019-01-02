@@ -14,4 +14,5 @@ class SpsReceivingList(models.Model):
     @api.multi
     def _get_sku(self):
         for move_line in self:
-            move_line.sku_code = move_line.product_id.sku_code
+            if move_line.product_id:
+                move_line.sku_code = move_line.product_id.sku_code

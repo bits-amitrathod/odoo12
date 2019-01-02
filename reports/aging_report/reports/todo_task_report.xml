@@ -1,8 +1,8 @@
 <odoo>
 
     <report id="action_todo_model_report"
-            string="Aging Rep[ort"
-            model="stock.production.lot"
+            string="Aging Report"
+            model="aging.report"
             report_type="qweb-html"
             file="aging_report.purchase_report"
             name="aging_report.purchase_report"
@@ -25,48 +25,58 @@
                         </center>
 
                         <!-- Report page content -->
-
-                            <table class="table table-condensed table-bordered" style="border: 1px solid black;">
+                        <t t-foreach="dictionary" t-as="dic_str">
+                            <t t-set="records" t-value="dictionary[dic_str]"/>
+                            <strong>Warehouse: </strong>
+                            <span t-esc="dic_str"/><br/><br/>
+                            <h4 t-if="date">
+                                   <span t-esc="date"/>
+                               </h4>
+                            <table class="table table-condensed table-bordered" style="border: 1px solid black;" >
                                 <tr style="border: 1px solid black;">
-                                    <th style="border: 1px solid black;text-align: center;">Product SKU</th>
+                                    <th style="border: 1px solid black;text-align: center; width:130px;">Product SKU</th>
                                     <th style="border: 1px solid black;text-align: center;">Product Name</th>
-                                    <th style="border: 1px solid black;text-align: center;">Tracking</th>
-                                    <th style="border: 1px solid black;text-align: center;">Qty</th>
-                                    <th style="border: 1px solid black;text-align: center;">Created Date</th>
-                                    <th style="border: 1px solid black;text-align: center;">Days</th>
-
+                                    <th style="border: 1px solid black;text-align: center; width:100px">Lot#</th>
+                                    <th style="border: 1px solid black;text-align: center; width:100px">Product Qty</th>
+                                    <th style="border: 1px solid black;text-align: center;width:70px">UOM</th>
+                                    <th style="border: 1px solid black;text-align: center;width:150px">Created Date</th>
+                                    <th style="border: 1px solid black;text-align: center;width:150px">Expiry Date</th>
+                                    <th style="border: 1px solid black;text-align: center;width:70px">Days</th>
                                 </tr>
+                                <t t-foreach="records" t-as="record">
+                                    <tr>
+                                        <td align="center" class="col-xs-2" style="border: 1px solid #000;" >
+                                            <span t-esc="record['sku']"/>
+                                        </td>
 
+                                        <td align="left" class="col-xs-2" style="border: 1px solid #000;">
+                                            <span t-esc="record['product']"/>
+                                        </td>
 
-                                    <t t-foreach="data" t-as="o">
-                                        <tr>
+                                        <td align="center" class="col-xs-2" style="border: 1px solid #000;">
+                                            <span t-esc="record['lot']"/>
+                                         </td>
+                                        <td align="center" class="col-xs-2" style="border: 1px solid #000;">
+                                            <span t-esc="record['qty']"/>
+                                        </td>
+                                       <td align="center" class="col-xs-2" style="border: 1px solid #000;">
+                                            <span t-esc="record['uom']"/>
+                                       </td>
+                                      <td align="center" class="col-xs-2" style="border: 1px solid #000;">
+                                            <span t-esc="record['cr_date']"/>
+                                        </td>
+                                        <td align="center" class="col-xs-2" style="border: 1px solid #000;">
+                                            <span t-esc="record['exp_date']"/>
+                                        </td>
+                                        <td align="center" class="col-xs-2" style="border: 1px solid #000;">
+                                            <span t-esc="record['days']"/>
+                                        </td>
+                                    </tr>
 
-                                             <td align="left" class="col-xs-2" style="border: 1px solid #000;">
-                                                <span t-esc="o.name"/>
-                                            </td>
-
-                                            <td  align="left" class="col-xs-2" style="border: 1px solid #000;">
-                                                <span t-esc="o.pr_sku"/>
-                                            </td>
-
-                                            <td align="left" class="col-xs-2" style="border: 1px solid #000;">
-                                                <span t-esc="o.pr_name"/>
-                                            </td>
-                                            <td align="left" class="col-xs-2" style="border: 1px solid #000;">
-                                                <span t-esc="o.pr_type"/>
-                                            </td>
-                                             <td align="right" class="col-xs-2" style="border: 1px solid #000;">
-                                                <span t-esc="o.p_qty"/>
-                                            </td>
-                                            <td align="right" class="col-xs-2" style="border: 1px solid #000;">
-                                                <span t-esc="o.p_qty"/>
-                                            </td>
-
-                                        </tr>
-                                    </t>
-
+                                </t>
                             </table>
-                        </div>
+                        </t>
+                    </div>
 
                 </page>
             </t>
