@@ -30,7 +30,9 @@
             <field name="res_model">res.partner</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-             <field name="priority">51</field>
+            <field name="context">{"search_default_customer":1}</field>
+            <field name="search_view_id" ref="base.view_res_partner_filter"/>
+            <field name="priority">51</field>
             <field name="view_id" ref="trending_report_list"/>
        </record>
 
