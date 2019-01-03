@@ -5,7 +5,7 @@ from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
 
 
 class ReportPickTicketGroupByOrderDate(models.TransientModel):
-    _name = 'report.pick.ticket.groupby.order'
+    _name = 'popup.pick.ticket'
     _description = 'Pick Ticket Group By Order'
 
     compute_at_date = fields.Selection([
@@ -64,7 +64,7 @@ class ReportPickTicketGroupByOrderDate(models.TransientModel):
 
 
 class PickTicketReport(models.Model):
-    _name = "report.order.pick.ticket"
+    _name = "report.pick.ticket"
     _auto = False
 
     _inherits = {'stock.picking': 'picking_id'}
@@ -85,6 +85,8 @@ class PickTicketReport(models.Model):
     warehouse_id = fields.Many2one('stock.warehouse', 'Warehouse')
     scheduled_date = fields.Date(stirng='Scheduled Date')
 
+    picking_type = fields.Char(string='Type', )
+
     @api.model_cr
     def init(self):
         self.init_table()
@@ -95,51 +97,57 @@ class PickTicketReport(models.Model):
         select_query = """ 
             SELECT
                 CASE
-                   WHEN res_partner.carrier_info IS NOT NULL
-                   THEN res_partner.carrier_info
-                   ELSE delivery_carrier.name
-                       END AS carrier_info,
-                       stock_move_line.move_id,
-                       stock_move_line.qty_done,
-                       stock_move_line.location_id,
-                       stock_move_line.location_dest_id,
-                       stock_move_line.state,
-                       sale_order.id as sale_id ,
-                       stock_move_line.id as id,
-                       sale_order.partner_id,
-                       sale_order.carrier_id,
-                       stock_move_line.product_id,
-                       stock_move_line.picking_id,
-                       stock_move_line.product_uom_id,
-                       sale_order.warehouse_id,
-                       stock_picking.scheduled_date
-                        FROM
-                           stock_move_line
-                        INNER JOIN
-                           stock_picking
-                        ON
-                           (
-                               stock_move_line.picking_id = stock_picking.id)
-                        INNER JOIN
-                           sale_order
-                        ON
-                           (
-                               stock_picking.sale_id = sale_order.id)
-                        INNER JOIN
-                           res_partner
-                        ON
-                           (
-                               sale_order.partner_id = res_partner.id)
-                        LEFT OUTER JOIN
-                           delivery_carrier
-                        ON
-                       (
-                           sale_order.carrier_id = delivery_carrier.id)
-                          INNER JOIN
-                        product_product
-                    ON
-                        (
-                            stock_move_line.product_id = product_product.id)
+                    WHEN res_partner.carrier_info IS NOT NULL
+                    THEN res_partner.carrier_info
+                    ELSE delivery_carrier.name
+                END AS carrier_info,
+                public.stock_move_line.move_id,
+                public.stock_move_line.qty_done,
+                public.stock_move_line.location_id,
+                public.stock_move_line.location_dest_id,
+                public.stock_move_line.state,
+                public.sale_order.id      AS sale_id,
+                public.stock_move_line.id AS id,
+                public.sale_order.partner_id,
+                public.sale_order.carrier_id,
+                public.stock_move_line.product_id,
+                public.stock_move_line.picking_id,
+                public.stock_move_line.product_uom_id,
+                public.sale_order.warehouse_id,
+                public.stock_picking.scheduled_date,
+                public.stock_picking_type.name as picking_type
+            FROM
+                public.stock_move_line
+            INNER JOIN
+                public.stock_picking
+            ON
+                (
+                    public.stock_move_line.picking_id = public.stock_picking.id)
+            INNER JOIN
+                public.sale_order
+            ON
+                (
+                    public.stock_picking.sale_id = public.sale_order.id)
+            INNER JOIN
+                public.res_partner
+            ON
+                (
+                    public.sale_order.partner_id = public.res_partner.id)
+            LEFT OUTER JOIN
+                public.delivery_carrier
+            ON
+                (
+                    public.sale_order.carrier_id = public.delivery_carrier.id)
+            INNER JOIN
+                public.product_product
+            ON
+                (
+                    public.stock_move_line.product_id = public.product_product.id)
+            INNER JOIN
+                public.stock_picking_type
+            ON
+                (
+                    public.stock_picking.picking_type_id = public.stock_picking_type.id)
                             """
 
         where_clause = "  WHERE  stock_picking.scheduled_date IS NOT NULL "

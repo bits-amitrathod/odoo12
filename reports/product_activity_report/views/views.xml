@@ -42,7 +42,7 @@
         <field name="name">product_activity_report_list</field>
         <field name="model">product.activity.report</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree create="false" edit="false">
                 <field name="warehouse"/>
                 <field name="date"/>
                 <field name="location"/>
