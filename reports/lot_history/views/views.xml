@@ -5,7 +5,7 @@
             <field name="model">lot.history.report</field>
             <field name="priority">20</field>
             <field name="arch" type="xml">
-                 <tree>
+                 <tree create="false" edit="false">
                     <field name="sku_code"/>
                     <field name="description"/>
                     <field name="type"/>

@@ -43,7 +43,7 @@
             <field name="model">mtd_sales</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree string="MTD Sales">
+                <tree create="false" edit="false" string="MTD Sales">
                     <field name="day_of_month"/>
                     <field name="amount_total" widget='monetary'/>
                 </tree>
@@ -55,7 +55,7 @@
             <field name="model">mtd_sales</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <from string="MTD Sales" create="False" update="False" delete="False">
+                <from string="MTD Sales" update="False" delete="False">
                     <group>
                         <field name="day_of_month"/>
                         <field name="amount_total" widget='monetary'/>

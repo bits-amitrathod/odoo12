@@ -39,7 +39,7 @@
             <field name="name">product.on.order.view.list</field>
             <field name="model">report.products.on.order</field>
             <field name="arch" type="xml">
-                <tree>
+                <tree create="false" edit="false">
                     <field name="order_id" string="Sales Order" />
                     <field name="product_id" string="Product Name" invisible="1"/>
                     <field name="partner_id" string="Customer Name"/>

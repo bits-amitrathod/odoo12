@@ -36,7 +36,7 @@
               <field name="model">sales_by_month</field>
               <field name="priority">21</field>
               <field name="arch" type="xml">
-                <tree>
+                <tree create="false" edit="false">
                     <field name="sku_code" string="Product SKU"/>
                     <field name="p_name"/>
                     <field name="product_price" widget="monetary"/>

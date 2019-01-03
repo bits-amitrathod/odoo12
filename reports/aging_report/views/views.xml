@@ -6,7 +6,7 @@
             <field name="model">aging.report</field>
             <field name="priority">20</field>
             <field name="arch" type="xml">
-                <tree create="false">
+                <tree create="false" edit="false">
                       <field name="sku_code"/>
                       <field name="product_name"/>
                       <field name="lot_name"/>
