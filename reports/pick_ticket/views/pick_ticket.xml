@@ -6,7 +6,7 @@
             <field name="model">report.order.pick.ticket</field>
             <field name="priority">20</field>
             <field name="arch" type="xml">
-                <tree create="false" edit="false">
+                <tree create="false" edit="false" delete="false">
                     <field name="sale_id" string="Sale Order"/>
                     <field name="priority"/>
                     <field name="product_id" string="Product Name"/>

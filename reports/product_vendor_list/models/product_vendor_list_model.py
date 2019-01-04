@@ -16,9 +16,10 @@ class ProductVendorListView(models.Model):
 
         for order in self:
             order.sku_code_product= order.product_id.sku_code
-            order.cost=order.product_id.list_price
+            order.last_sold = order.date_order
 
-            sale_orders = self.env['sale.order'].search([('product_id', '=', order.product_id.id), ('state', '=', 'sale')],order = "confirmation_date desc", limit = 1)
-            for order_temp in sale_orders:
-                order.last_sold=fields.Datetime.from_string(order_temp.confirmation_date).date()
+            for order_line in order.order_line:
+                if order_line.product_id.id == order.product_id.id :
+                    order.cost = order_line.price_unit
+                    break
 

@@ -39,7 +39,7 @@
               <field name="model">sale.order</field>
               <field name="priority">20</field>
               <field name="arch" type="xml">
-                <tree>
+                <tree create="false" edit="false" delete="false">
                     <field name="name" string="Sales Order#"/>
                     <field name="partner_id"/>
                     <field name="r_line_item"/>

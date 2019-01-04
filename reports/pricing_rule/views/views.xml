@@ -32,7 +32,7 @@
           <field name="model">res.pricing_rule</field>
           <field name="priority">20</field>
           <field name="arch" type="xml">
-            <tree create="false" edit="false" >
+            <tree create="false" edit="false" delete="false" >
                 <field name="currency_id" invisible="1"/>
                 <field name="customer_name" invisible="1"/>
                 <field name="product_code"/>

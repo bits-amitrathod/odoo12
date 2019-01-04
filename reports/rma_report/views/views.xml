@@ -6,7 +6,7 @@
             <field name="model">stock.picking</field>
             <field name="priority">20</field>
             <field name="arch" type="xml">
-                <tree create="false" edit="false">
+                <tree create="false" edit="false" delete="false">
 
                     <field name="customer"/>
                     <field name="created"/>

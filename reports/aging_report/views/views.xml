@@ -6,7 +6,8 @@
             <field name="model">aging.report</field>
             <field name="priority">20</field>
             <field name="arch" type="xml">
-                <tree create="false" edit="false">
+                <tree create="false" edit="false" delete="false">
+
                       <field name="sku_code"/>
                       <field name="product_name"/>
                       <field name="lot_name"/>
@@ -20,11 +21,12 @@
         </record>
 
 
+
            <record model="ir.ui.view" id="aging_report_form">
             <field name="name">aging.report.form</field>
             <field name="model">aging.report</field>
             <field name="arch" type="xml">
-                <form string="Aging Form" create="false" edit="false">
+                <form create="false" edit="false" delete="false">
                     <sheet>
                         <group>
                             <field name="warehouse_id"/>
@@ -41,8 +43,10 @@
                 </form>
             </field>
         </record>
+
+
         <!--</record>-->
-        <record id="view_stock_quantity" model="ir.ui.view">
+         <record id="view_stock_quantity" model="ir.ui.view">
         <field name="name">Aging Report</field>
         <field name="model">aging_popup.view.model</field>
         <field name="arch" type="xml">

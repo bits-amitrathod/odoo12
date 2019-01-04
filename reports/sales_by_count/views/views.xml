@@ -22,7 +22,7 @@
             <field name="model">report.sales.by.count</field>
             <field name="priority">20</field>
             <field name="arch" type="xml">
-                <tree create="false" edit="false">
+                <tree create="false" edit="false" delete="false">
                     <!--<field name="location"/>-->
                     <field name="sku_code"/>
                     <field name="product_name"/>

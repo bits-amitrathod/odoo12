@@ -6,7 +6,7 @@
             <field name="name">gross.sales.by.salesperson.tree</field>
             <field name="model">sale.order</field>
             <field name="arch" type="xml">
-                <tree>
+                <tree create="false" edit="false" delete="false">
                     <field name="name" string="Sales Order #"/>
                     <field name="confirmation_date" string="Order Date" widget="date"/>
                     <field name="partner_id" string="Customer Name"/>
