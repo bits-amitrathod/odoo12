@@ -31,4 +31,11 @@ class ReportPickTicketOrderOrDate(models.AbstractModel):
                     'picking': pick.picking_id.name,
                     'product': [product]}
 
-        return {'picks': picks}
+        popup = self.env['popup.pick.ticket'].search([('create_uid', '=', self._uid)], limit=1,
+                                    order="id desc")
+        if popup.compute_at_date:
+            date = popup.start_date + " to " + popup.end_date
+        else:
+            date = False
+
+        return {'picks': picks,'date': date}

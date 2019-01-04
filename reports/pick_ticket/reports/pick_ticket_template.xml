@@ -9,7 +9,13 @@
                         <center>
                             <b>
                                 <h2>Surgical Product Solution</h2>
-                                <h4>Pick Ticket</h4>
+                                <h4>Pick Ticket
+                                    <span t-if="date"> - By Date</span>
+                                    <span t-else=""> - By Order</span>
+                                </h4>
+                                <h4 t-if="date">
+                                    <span t-esc="date"/>
+                                </h4>
                             </b>
                         </center>
                         <br/>

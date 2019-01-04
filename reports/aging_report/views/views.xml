@@ -6,7 +6,7 @@
             <field name="model">aging.report</field>
             <field name="priority">20</field>
             <field name="arch" type="xml">
-                <tree>
+                <tree create="false" edit="false" delete="false">
 
                       <field name="sku_code"/>
                       <field name="product_name"/>
@@ -26,7 +26,7 @@
             <field name="name">aging.report.form</field>
             <field name="model">aging.report</field>
             <field name="arch" type="xml">
-                <form string="Course Form">
+                <form create="false" edit="false" delete="false">
                     <sheet>
                         <group>
                             <field name="warehouse_id"/>

@@ -43,7 +43,7 @@
             <field name="name">product.on.order.view.list</field>
             <field name="model">margins</field>
             <field name="arch" type="xml">
-                <tree>
+                <tree create="false" edit="false" delete="false">
                     <field name="product_id" invisible="1"/>
                     <field name="sku_code" invisible="1"/>
                     <!--<field name="partner_id"/>-->
@@ -63,7 +63,7 @@
             <field name="name">product.on.order.view.form</field>
             <field name="model">margins</field>
             <field name="arch" type="xml">
-                <form create="false" update="false">
+                <form create="false" edit="false" delete="false">
                     <group>
                         <group>
                             <field name="partner_id"/>
@@ -90,7 +90,7 @@
             <field name="name">product.on.order.view.list</field>
             <field name="model">margins.group_by_cust</field>
             <field name="arch" type="xml">
-                <tree>
+                <tree create="false" edit="false" delete="false">
                     <field name="product_id" invisible="1"/>
                     <field name="sku_code" invisible="1"/>
                     <!--<field name="partner_id"/>-->

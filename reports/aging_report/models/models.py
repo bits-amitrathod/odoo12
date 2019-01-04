@@ -11,6 +11,7 @@ logger = logging.getLogger(__name__)
 class aging_report(models.Model):
     _name = 'aging.report'
     _auto = False
+    _rec_name = 'product_id'
 
     # cr_date = fields.Date("Created date")
     qty = fields.Integer("Product Qty", compute='get_quantity_byorm', store=False)
@@ -28,7 +29,6 @@ class aging_report(models.Model):
     warehouse_name = fields.Char(string="Warehouse", store=False)
     product_uom_id = fields.Char(string="UOM", store=False)
 
-    # product_id = fields.Integer()
     current_date = date.today()
     use_date = fields.Date(string="Expiry Date" ,store=False)
     product_id = fields.Many2one('product.template', 'Product')

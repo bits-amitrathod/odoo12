@@ -6,7 +6,7 @@
             <field name="model">report.order.pick.ticket</field>
             <field name="priority">20</field>
             <field name="arch" type="xml">
-                <tree>
+                <tree create="false" edit="false" delete="false">
                     <field name="sale_id" string="Sale Order"/>
                     <field name="priority"/>
                     <field name="product_id" string="Product Name"/>
@@ -36,7 +36,7 @@
                         <group>
                             <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
                             <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
-                            <field name="picking_id" attrs="{'invisible': [('compute_at_date', '=', 1)]}"
+                            <field name="picking_id" attrs="{'invisible': [('compute_at_date', '=', 1)], 'required' : [('compute_at_date', '=', 0)]}"
                                    widget="many2many_tags"/>
                         </group>
                     </group>

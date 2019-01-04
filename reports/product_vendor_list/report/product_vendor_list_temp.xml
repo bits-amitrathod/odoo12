@@ -21,9 +21,9 @@
                         <thead>
                             <tr style="border: 1px solid black;">
                                 <th style="border: 1px solid black;text-align: center;">Vendor</th>
-                                <th style="border: 1px solid black;text-align: center;">Product Number</th>
+                                <th style="border: 1px solid black;text-align: center;">Product SKU</th>
                                 <th style="border: 1px solid black;text-align: center;">Product</th>
-                                <th style="border: 1px solid black;text-align: center;">last Sold</th>
+                                <th style="border: 1px solid black;text-align: center;">Last Sold</th>
                                 <th style="border: 1px solid black;text-align: center;">Cost</th>
                             </tr>
                         </thead>
