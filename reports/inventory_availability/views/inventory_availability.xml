@@ -4,7 +4,7 @@
         <field name="name">product.product.tree</field>
         <field name="model">product.product</field>
         <field name="arch" type="xml">
-            <tree create="false" edit="false" string="Inventory Availability">
+            <tree create="false" edit="false" delete="false" string="Inventory Availability">
                 <field name="product_tmpl_id" invisible="1"/>
                 <field name="sku_code" string="Product SKU" />
                 <field name="uom_id" string="UOM"/>

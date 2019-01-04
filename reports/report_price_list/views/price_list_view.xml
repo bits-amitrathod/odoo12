@@ -62,7 +62,7 @@
           <field name="model">inv.customer_price_list</field>
           <field name="priority">20</field>
           <field name="arch" type="xml">
-            <tree create="false" edit="false" >
+            <tree create="false" edit="false" delete="false" >
                 <field name="currency_id" invisible="1"/>
                 <field name="customer_name" invisible="1"/>
                 <field name="product_code"/>
@@ -78,7 +78,7 @@
           <field name="model">product.product</field>
           <field name="priority">20</field>
           <field name="arch" type="xml">
-            <tree create="false" edit="false" >
+            <tree create="false" edit="false" delete="false" >
                 <field name="currency_id" invisible="1"/>
                 <field name="product_tmpl_id" invisible="1"/>
                 <field name="sku_code" string="Product SKU"/>

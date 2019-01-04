@@ -37,7 +37,7 @@
               <field name="model">purchase.order</field>
               <field name="priority">20</field>
               <field name="arch" type="xml">
-                <tree create="false" edit="false" >
+                <tree create="false" edit="false" delete="false" >
                     <field name="appraisal_no" />
                       <field name="priority" />
                       <field name="revision"  />

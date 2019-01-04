@@ -40,7 +40,7 @@
               <field name="model">sale.order.line</field>
               <field name="priority">21</field>
               <field name="arch" type="xml">
-                <tree>
+                <tree create="false" edit="false" delete="false">
 
                     <field name="product_sku_ref" string="Product SKU"/>
                     <field name="customer_name" string="Customer Name"/>
@@ -59,7 +59,7 @@
             <field name="name">sale.order.line.view</field>
             <field name="model">sale.order.line</field>
             <field name="arch" type="xml">
-                <form edit="false">
+                <form create="false" edit="false" delete="false">
                     <sheet>
                         <div class="oe_title">
                             <h1>

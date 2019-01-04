@@ -6,7 +6,7 @@
               <field name="model">res.partner</field>
                <field name="priority">21</field>
               <field name="arch" type="xml">
-                <tree create="false" edit="false" >
+                <tree create="false" edit="false" delete="false" >
                     <field name="name" string="Customer Name"/>
                     <field name="month_count"/>
                     <field name="month6" widget="monetary" />

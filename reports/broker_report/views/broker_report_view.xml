@@ -35,7 +35,7 @@
               <field name="model">purchase.order</field>
               <field name="priority">20</field>
               <field name="arch" type="xml">
-                <tree create="false" edit="false" >
+                <tree create="false" edit="false" delete="false" >
 
                      <field name="broker_desc" />
                      <field name="total_retail_broker" />

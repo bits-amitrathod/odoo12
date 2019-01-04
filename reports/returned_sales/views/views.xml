@@ -40,7 +40,7 @@
             <field name="name">product.on.order.view.list</field>
             <field name="model">report.returned.sales.order</field>
             <field name="arch" type="xml">
-                <tree create="false" edit="false">
+                <tree create="false" edit="false" delete="false">
                     <field name="order_id" string="Sales Order #"/>
                     <field name="partner_id" string="Customer Name"/>
                     <field name="product_id" string="Product Name"/>
@@ -57,7 +57,7 @@
             <field name="name">product.on.order.view.list</field>
             <field name="model">report.returned.sales.order</field>
             <field name="arch" type="xml">
-                <form>
+                <form create="false" edit="false" delete="false">
                     <group>
                         <group>
                             <field name="order_id" string="Order #"/>
