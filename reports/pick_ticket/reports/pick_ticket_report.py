@@ -6,7 +6,7 @@ class ReportPickTicketOrderOrDate(models.AbstractModel):
 
     @api.model
     def get_report_values(self, docids, data=None):
-        pick_report = self.env['report.order.pick.ticket'].search([('id','in',docids)], order='picking_id')
+        pick_report = self.env['report.pick.ticket'].search([('id','in',docids)], order='picking_id')
 
         old = 0
         picks = {}

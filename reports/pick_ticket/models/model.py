@@ -31,7 +31,7 @@ class ReportPickTicketGroupByOrderDate(models.TransientModel):
 
         tree_view_id = self.env.ref('pick_ticket.pick_report_list_view').id
 
-        res_model = 'report.order.pick.ticket'
+        res_model = 'report.pick.ticket'
         action = {
             'type': 'ir.actions.act_window',
             'views': [(tree_view_id, 'tree')],
