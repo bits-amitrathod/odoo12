@@ -54,11 +54,11 @@ class ProductSaleByCount(models.Model):
 
 
         if start_date  and end_date and not start_date is None and not end_date is None :
-            select_query = select_query + """where sml.state in ('done','partially_available') and so.confirmation_date>=%s and so.confirmation_date<=%s group by pt.id,pt.name,pt.sku_code,sol.price_unit,curr.id,curr.symbol"""
+            select_query = select_query + """where pt.type='product' and sml.state in ('done','partially_available') and so.confirmation_date>=%s and so.confirmation_date<=%s group by pt.id,pt.name,pt.sku_code,sol.price_unit,curr.id,curr.symbol"""
             sql_query = "CREATE VIEW " + view + " AS ( " + select_query + ")"
             self._cr.execute(sql_query, (str(s_date), str(e_date), str(start_date), str(end_date),))
         else:
-            select_query = select_query + """where sml.state in ('done','partially_available') group by pt.id,pt.name,pt.sku_code,sol.price_unit,curr.id,curr.symbol"""
+            select_query = select_query + """where pt.type='product' and sml.state in ('done','partially_available') group by pt.id,pt.name,pt.sku_code,sol.price_unit,curr.id,curr.symbol"""
             sql_query = "CREATE VIEW " + view + " AS ( " + select_query + ")"
             self._cr.execute(sql_query,(str(s_date), str(e_date),) )
 
