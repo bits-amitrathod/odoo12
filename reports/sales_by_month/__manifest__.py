@@ -9,7 +9,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'sale', 'prioritization_engine'],
+    'depends': ['base','stock', 'sale', 'prioritization_engine'],
 
     # always loaded
     'data': [
