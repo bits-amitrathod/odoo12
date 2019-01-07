@@ -2,8 +2,8 @@
     <data>
 
         <record id="pick_report_list_view" model="ir.ui.view">
-            <field name="name">report.order.pick.ticket.list</field>
-            <field name="model">report.order.pick.ticket</field>
+            <field name="name">report.pick.ticket.list</field>
+            <field name="model">report.pick.ticket</field>
             <field name="priority">20</field>
             <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false">
@@ -26,7 +26,7 @@
 
         <record id="pick_ticket_groupby_order_popup_view" model="ir.ui.view">
             <field name="name">Pick Ticket Report</field>
-            <field name="model">report.pick.ticket.groupby.order</field>
+            <field name="model">popup.pick.ticket</field>
             <field name="arch" type="xml">
                 <form string="Choose your date">
                     <group>
@@ -50,7 +50,7 @@
 
         <record id="action_pick_ticket_groupby_order" model="ir.actions.act_window">
             <field name="name">Pick Ticket Report</field>
-            <field name="res_model">report.pick.ticket.groupby.order</field>
+            <field name="res_model">popup.pick.ticket</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
