@@ -48,7 +48,7 @@ class PopUp(models.TransientModel):
                 'type': 'ir.actions.act_window',
                 'views': [(tree_view_id, 'tree'),(form_view_id, 'form')],
                 'view_mode': 'tree,form',
-                'name': _('Inventory Adjustment'),
+                'name': _('Adjustment Report'),
                 'res_model': 'stock.inventory',
                 'domain': [],
             }
