@@ -14,8 +14,14 @@
         <field name="arch" type="xml">
             <form string="Choose your date">
                 <group>
-                    <field name="start_date"/>
-                    <field name="end_date"/>
+                    <group>
+                        <field name="start_date"/>
+                        <field name="end_date"/>
+                    </group>
+                    <group>
+                        <field name="sku"/>
+                        <field name="location_id"/>
+                    </group>
                 </group>
                 <footer>
                     <button name="open_table" string="View Report" type="object" class="btn-primary"/>
@@ -38,11 +44,11 @@
     </record>
 
     <!-- LIST VIEW -->
-    <record model="ir.ui.view" id="product_activity_report.list">
+    <record model="ir.ui.view" id="product_activity_report_list">
         <field name="name">product_activity_report_list</field>
         <field name="model">product.activity.report</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree create="false" edit="false" delete="false">
                 <field name="warehouse"/>
                 <field name="date"/>
                 <field name="location"/>
@@ -50,6 +56,7 @@
                 <field name="change_qty"/>
                 <field name="agent"/>
                 <field name="sku"/>
+                <field name="lot"/>
                 <field name="expiration_date"/>
                 <!--<field name="type"/>-->
             </tree>

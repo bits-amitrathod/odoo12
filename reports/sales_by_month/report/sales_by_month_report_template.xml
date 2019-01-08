@@ -42,32 +42,38 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                 <field name="sku_code" string="Product SKU"/>
+                    <field name="product_id"/>
+                    <field name="product_price" widget="monetary"/>
+                    <field name="total_sale_quantity" string="Total Sale Qty"/>
+                    <field name="total_amount" widget="monetary" sum="Total"/>
                                 <tr t-foreach="data" t-as="product">
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="product[0]"/>
+                                        <span t-esc="product.sku_code"/>
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="product[1]"/>
+                                        <span t-esc="product.product_id.name"/>
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="product[2]"/>
+                                        <span t-esc="product.product_price"/>
                                     </td>
                                     <td align="right" style="border: 1px solid black;">
-                                        <span t-esc="product[3]"/>
+                                        <span t-esc="product.total_sale_quantity"/>
                                     </td>
                                     <td align="right" style="border: 1px solid black;">
-                                        <span t-esc="product[8]"/> <span t-esc="product[4]" />
-                                        <t t-set="total_qty" t-value="total_qty + product[3]" />
-                                        <t t-set="total_price" t-value="total_price + product[4]" />
+                                        <span t-esc="product.total_amount"/>
+                                        <t t-set="total_qty" t-value="total_qty + product.total_sale_quantity" />
+                                        <t t-set="total_price" t-value="total_price +product.total_amount" />
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="3" align="right" style="border: 1px solid black;">Total</td>
+
+                                    <td colspan="4" align="right" style="border: 1px solid black;">Total</td>
+                                    <!--<td align="right" style="border: 1px solid black;">-->
+                                        <!--<span t-esc="total_qty"/>-->
+                                    <!--</td>-->
                                     <td align="right" style="border: 1px solid black;">
-                                        <span t-esc="total_qty"/>
-                                    </td>
-                                    <td align="right" style="border: 1px solid black;">
-                                        <span t-esc="data[0][8]"/> <span t-esc="total_price"/>
+                                        <span t-esc="total_price"/>
                                     </td>
                                 </tr>
                             </tbody>

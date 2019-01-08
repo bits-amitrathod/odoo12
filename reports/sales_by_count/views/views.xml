@@ -22,11 +22,12 @@
             <field name="model">report.sales.by.count</field>
             <field name="priority">20</field>
             <field name="arch" type="xml">
-                <tree>
+                <tree create="false" edit="false" delete="false">
                     <!--<field name="location"/>-->
                     <field name="sku_code"/>
                     <field name="product_name"/>
                     <field name="quantity"/>
+                    <field name="product_uom"/>
                 </tree>
             </field>
         </record>

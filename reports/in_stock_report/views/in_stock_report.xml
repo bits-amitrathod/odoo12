@@ -16,7 +16,7 @@
         <field name="name">report.in.stock.report.tree</field>
         <field name="model">report.in.stock.report</field>
         <field name="arch" type="xml">
-            <tree create="false" edit="false" string="In Stock Report">
+            <tree create="false" edit="false" delete="false" string="In Stock Report">
                 <field name="partner_id"/>
                 <field name="product_brand_id"/>
                 <field name="sku_code"/>
