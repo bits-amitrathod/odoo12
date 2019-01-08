@@ -8,23 +8,25 @@ _logger = logging.getLogger(__name__)
 class TrendingReportListPopUp(models.TransientModel):
     _name = 'inventory.pricing_rules_popup'
     _description = 'Inventory Pricing Rule Report PopUp'
-    price_list = fields.Many2one('product.pricelist',string='Pricing Rule', required=True)
+    price_list = fields.Many2one('product.pricelist',string='Pricing Rule',domain=[('id', '!=', 1)])
     def open_table(self):
         #print(self.env.ref('inventory__allocation_so.view_inv_all_so_tree').id)
         tree_view_id = self.env.ref('pricing_rule.view_inv_all_pricing_rule_tree').id
         # form_view_id = self.env.ref('pricing_rule.inv_sale_order_form_view')
 
 
-        price_list = self.env['product.pricelist.item'].search([('pricelist_id', '=', self.price_list.id),('applied_on','=','3_global')])
-        if price_list:
-            products=self.env['product.product'].search([])
+
+        price_lst=[]
+        product_ids=[]
+        if self.price_list:
+            price_lst=[self.price_list.id]
         else:
-            products=self.env['product.product'].search(
-                [('product_tmpl_id', 'in',self.env['product.pricelist.item'].search(
-                [('pricelist_id', '=', self.price_list.id), ('applied_on', '=', '1_product')]).mapped('product_tmpl_id.id') )])
+            price_lst=self.env['product.pricelist'].search(
+                [('id', '!=', 1)]).ids
 
 
-        margins_context = {'price_list': self.price_list,'product_id':products}
+
+        margins_context = {'price_list': price_lst}
         group_by_domain = ['customer_name']
         x_res_model = 'res.pricing_rule'
 

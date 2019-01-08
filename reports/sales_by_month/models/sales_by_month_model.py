@@ -9,19 +9,18 @@ _logger = logging.getLogger(__name__)
 
 
 class ProductSaleByCount(models.Model):
-    _inherit = "product.product"
     _name = "sales_by_month"
     _auto = False
-
+    _rec_name="product_id"
     sku_code = fields.Char("Product SKU")
     currency_id = fields.Many2one("res.currency", string="Currency", readonly=True)
     currency_symbol = fields.Char("currency symbol")
-    p_name = fields.Char("Product Name")
     product_price = fields.Monetary(string='Sales Price', currency_field='currency_id')
     total_sale_quantity = fields.Float("Sales Quantity")
     total_amount = fields.Monetary(string='Total', currency_field='currency_id')
     start_date = fields.Date("start_date")
     end_date = fields.Date("end_date")
+    product_id = fields.Many2one('product.template', 'Product')
 
     @api.model_cr
     def init(self):
@@ -38,7 +37,7 @@ class ProductSaleByCount(models.Model):
             s_date = (str(start_date)).replace("-", "/")
             e_date = str(end_date).replace("-", "/")
 
-        select_query = """ SELECT Distinct pp.*,%s as start_date , %s as end_date,pt.sku_code as sku_code,pt.name as p_name,sol.price_unit as product_price,curr.id as currency_id,curr.symbol as currency_symbol,sum(sml.qty_done) as total_sale_quantity, sum(sml.qty_done) * sol.price_unit as total_amount 
+        select_query = """ SELECT  pt.*, pt.id as product_id,%s as start_date , %s as end_date,sol.price_unit as product_price,curr.id as currency_id,curr.symbol as currency_symbol,sum(sml.qty_done) as total_sale_quantity, sum(sml.qty_done) * sol.price_unit as total_amount 
                             FROM product_product pp                                  
                             INNER JOIN sale_order_line sol ON sol.product_id=pp.id
                             INNER JOIN product_template pt ON pt.id=pp.product_tmpl_id 
@@ -55,11 +54,11 @@ class ProductSaleByCount(models.Model):
 
 
         if start_date  and end_date and not start_date is None and not end_date is None :
-            select_query = select_query + """where sml.state in ('done','partially_available') and so.confirmation_date>=%s and so.confirmation_date<=%s group by pp.id,pt.name,pt.sku_code,sol.price_unit,curr.id,curr.symbol """
+            select_query = select_query + """where pt.type='product' and sml.state in ('done','partially_available') and so.confirmation_date>=%s and so.confirmation_date<=%s group by pt.id,pt.name,pt.sku_code,sol.price_unit,curr.id,curr.symbol"""
             sql_query = "CREATE VIEW " + view + " AS ( " + select_query + ")"
             self._cr.execute(sql_query, (str(s_date), str(e_date), str(start_date), str(end_date),))
         else:
-            select_query = select_query + """where sml.state in ('done','partially_available')  group by pp.id,pt.name,pt.sku_code,sol.price_unit,curr.id,curr.symbol  """
+            select_query = select_query + """where pt.type='product' and sml.state in ('done','partially_available') group by pt.id,pt.name,pt.sku_code,sol.price_unit,curr.id,curr.symbol"""
             sql_query = "CREATE VIEW " + view + " AS ( " + select_query + ")"
             self._cr.execute(sql_query,(str(s_date), str(e_date),) )
 

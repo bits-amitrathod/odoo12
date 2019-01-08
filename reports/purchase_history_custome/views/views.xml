@@ -5,7 +5,7 @@
           <field name="model">purchase.order</field>
           <field name="priority">20</field>
           <field name="arch" type="xml">
-              <tree>
+              <tree create="false" edit="false" delete="false">
                   <field name="name" string="Purchase Order#"/>
                   <field name="sku"/>
                   <!--<field name="manufacturer_rep"/>-->

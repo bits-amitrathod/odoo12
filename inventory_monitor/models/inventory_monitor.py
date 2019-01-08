@@ -21,7 +21,7 @@ class ProductTemplate(models.Model):
     max_inventory_future_percent = fields.Char("Future % of Max Inv Level", compute='_compute_max_inventory_level')
     inventory_percent_color=fields.Integer("Inv Percent Color", compute='_compute_max_inventory_level')
     future_percent_color = fields.Integer("Inv Percent Color", compute='_compute_max_inventory_level')
-    inventory_monitor=fields.Boolean("Can be Monitor")
+    inventory_monitor=fields.Boolean("Can be Monitored")
 
     def _compute_max_inventory_level(self):
         params = self.env['ir.config_parameter'].sudo()
