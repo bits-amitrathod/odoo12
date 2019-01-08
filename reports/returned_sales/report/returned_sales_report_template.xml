@@ -10,14 +10,17 @@
                             <b>
                                 <h2>Surgical Product Solutions</h2>
                                 <h4>Returned Sales</h4>
+                                <h4 t-if="date">
+                                   <span t-esc="date"/>
+                               </h4>
                             </b>
                         </center>
 
                     </div>
                     <br/>
                     <t t-set="currency" t-value="0"/>
-                    <t t-if="data['form'] is not None">
-                        <t t-foreach="data['form']" t-as="returned_sales">
+                    <t t-if="form is not None">
+                        <t t-foreach="form" t-as="returned_sales">
                             <center>
                                 <b>
                                     <span>Product Name:</span>
