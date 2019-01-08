@@ -46,7 +46,7 @@
 
 
     <menuitem id="menu_inv_allow_pricing_list_report"
-              name="Inventory Pricing Rules"
+              name="Pricing Rules"
               parent="sale.menu_sale_report"
               action="action_price_rule_customer"
              />
