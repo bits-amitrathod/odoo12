@@ -6,7 +6,7 @@ class ReportPickTicketOrderOrDate(models.AbstractModel):
 
     @api.model
     def get_report_values(self, docids, data=None):
-        pick_report = self.env['report.order.pick.ticket'].search([('id','in',docids)], order='picking_id')
+        pick_report = self.env['report.pick.ticket'].search([('id','in',docids)], order='picking_id')
 
         old = 0
         picks = {}
@@ -31,4 +31,11 @@ class ReportPickTicketOrderOrDate(models.AbstractModel):
                     'picking': pick.picking_id.name,
                     'product': [product]}
 
-        return {'picks': picks}
+        popup = self.env['popup.pick.ticket'].search([('create_uid', '=', self._uid)], limit=1,
+                                    order="id desc")
+        if popup.compute_at_date:
+            date = popup.start_date + " to " + popup.end_date
+        else:
+            date = False
+
+        return {'picks': picks,'date': date}

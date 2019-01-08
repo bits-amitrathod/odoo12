@@ -36,7 +36,7 @@ class ProductVendorListPopUp(models.TransientModel):
                 action["domain"].append(('date_order', '<=', self.end_date))
 
         if self.product_id.id:
-            action['domain'].append(('product_id', '=', self.product_id.id))
+            action['domain'].append(('order_line', 'in', self.product_id.id))
 
         return action
 

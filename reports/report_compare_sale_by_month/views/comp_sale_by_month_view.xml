@@ -56,7 +56,7 @@
               <field name="model">product.product</field>
               <field name="priority">20</field>
               <field name="arch" type="xml">
-                <tree>
+                <tree create="false" edit="false" delete="false">
                     <field name="sku_code"/>
                     <field name="name"/>
                     <field name="last_month_total_qty" />

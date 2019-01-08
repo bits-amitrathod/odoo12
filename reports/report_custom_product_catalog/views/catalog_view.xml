@@ -7,7 +7,7 @@
             <field name="model">product.product</field>
             <field name="priority">20</field>
             <field name="arch" type="xml">
-                <tree>
+                <tree create="false" edit="false" delete="false">
                     <field name="type"/>
                     <field name="sku_code"  string="Product SKU"/>
                     <field name="product_brand_id"/>
@@ -25,7 +25,7 @@
             <field name="model">product.product</field>
             <field name="priority">20</field>
             <field name="arch" type="xml">
-                <tree>
+                <tree create="false" edit="false" delete="false">
                     <field name="sku_code"  string="Product SKU"/>
                     <field name="name" string="Product Name"/>
                     <field name="list_price" widget="monetary"/>

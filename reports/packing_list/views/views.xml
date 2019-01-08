@@ -38,7 +38,7 @@
           <field name="model">res.stock_packing_list</field>
           <field name="priority">20</field>
           <field name="arch" type="xml">
-            <tree create="false" edit="false" >
+            <tree create="false" edit="false" delete="false" >
                 <field name="origin"/>
                  <field name="partner_id"/>
                 <field name="carrier_id"/>

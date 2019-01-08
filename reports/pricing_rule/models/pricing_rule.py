@@ -41,16 +41,28 @@ class PricingRule(models.Model):
         self._cr.execute(sql_query)
         insert_query="""INSERT INTO res_pricing_rule(customer_name, product_code, product_name, cost,currency_id,currency_symbol) values """
         price_list=self.env.context.get('price_list')
-        products = self.env.context.get('product_id')
-        partners = self.env['res.partner'].search([('active','=',True),('customer','=',True),('is_parent','=',True)])
-        for part in partners:
-            _logger.info("res_partner : %r", part)
-            if part.property_product_pricelist and part.property_product_pricelist == price_list:
-                for product in products:
-                    product_price = part.property_product_pricelist.get_product_price(product, 1.0, part)
-                    values="(%s,%s,%s,%s,%s,%s)"
-                    final_query=insert_query + " " + values
-                    self._cr.execute(final_query,(str(part.display_name),str(product.product_tmpl_id.sku_code),str(product.product_tmpl_id.name),str(product_price),str(product.product_tmpl_id.company_id.currency_id.id),str(product.product_tmpl_id.company_id.currency_id.symbol),))
+        if price_list and  not price_list is None :
+            partners = self.env['res.partner'].search([('active','=',True),('customer','=',True),('is_parent','=',True)])
+            for part in partners:
+                if part.property_product_pricelist and part.property_product_pricelist.id in price_list:
+                    product_price_list_item = self.env['product.pricelist.item'].search(
+                        [('pricelist_id', '=', part.property_product_pricelist.id)])
+                    product_ids=[]
+                    if product_price_list_item:
+                        product = product_price_list_item.mapped('product_tmpl_id.id')
+                        if product:
+                            product_ids.extend(product)
+                        product = product_price_list_item.mapped('product_id.id')
+                        if product:
+                            product_ids.extend(product)
+                    products = self.env['product.product'].search(
+                        [('id', 'in', product_ids)])
+                    i=0
+                    for product in products:
+                        product_price = part.property_product_pricelist.get_product_price(product, 1.0, part)
+                        values="(%s,%s,%s,%s,%s,%s)"
+                        final_query=insert_query + " " + values
+                        self._cr.execute(final_query,(str(part.display_name),str(product.product_tmpl_id.sku_code),str(product.product_tmpl_id.name),str(product_price),str(product.product_tmpl_id.company_id.currency_id.id),str(product.product_tmpl_id.company_id.currency_id.symbol)))
 
     @api.model_cr
     def delete_and_create(self):
