@@ -17,7 +17,7 @@
         <field name="name">inventory_valuation_summary_list</field>
         <field name="model">report.inventory.valuation.summary</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree create="false" edit="false" delete="false">
                 <field name="sku_code"/>
                 <field name="name"/>
                 <field name="quantity"/>
