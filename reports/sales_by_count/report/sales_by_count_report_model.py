@@ -1,5 +1,6 @@
 import logging
 from odoo import api, fields, models
+from datetime import datetime
 
 log = logging.getLogger(__name__)
 
@@ -28,7 +29,8 @@ class ReportProductSaleByCount(models.AbstractModel):
 
         popup = self.env['popup.sales.by.count'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
         if popup.compute_at_date:
-            date = popup.start_date + " to " + popup.end_date
+            date = datetime.strptime(popup.start_date, '%Y-%m-%d').strftime('%m/%d/%Y') + " - " + datetime.strptime(
+                popup.end_date, '%Y-%m-%d').strftime('%m/%d/%Y')
         else:
             date = False
 
