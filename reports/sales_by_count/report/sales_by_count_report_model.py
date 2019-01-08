@@ -18,7 +18,8 @@ class ReportProductSaleByCount(models.AbstractModel):
             product = {
                 'sku_code': record.sku_code,
                 'product_name': record.product_name,
-                'quantity': int(float(record.quantity))}
+                'quantity': int(float(record.quantity)),
+                'product_uom': record.product_uom}
             if old == record.location:
                 sales[old]['product'].append(product)
             else:
