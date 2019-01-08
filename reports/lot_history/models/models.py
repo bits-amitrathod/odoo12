@@ -21,6 +21,7 @@ class LotHistory(models.TransientModel):
     vendor = fields.Char(string="Vendor Name")
     phone = fields.Char(string="Phone")
     email = fields.Char(string="Email")
+    product_id = fields.Many2one('product.product', string='Product Name')
 
     def init(self):
         self.init_table()
@@ -34,7 +35,7 @@ class LotHistory(models.TransientModel):
         lot_id = self.env.context.get('lot_id')
         sku_code = self.env.context.get('sku_code')
         insert_start = "INSERT INTO lot_history_report" \
-                       "(sku_code, description, type,event,event_date,change,lot_no"
+                       "(sku_code, description, type,event,event_date,change,lot_no,product_id"
         insert_mid = ",vendor,phone,email"
         insert_end = ") "
 
@@ -55,9 +56,11 @@ class LotHistory(models.TransientModel):
                     purchase_order.date_order        AS event_date,
                     stock_move_line.qty_done         AS change,
                     stock_production_lot.name        AS lot_no,
+                    stock_move_line.product_id       AS product_id,
                     res_partner.name                 AS vendor,
                     res_partner.phone,
                     res_partner.email
+                    
                 FROM
                     purchase_order_line
                 INNER JOIN 
@@ -114,9 +117,10 @@ class LotHistory(models.TransientModel):
                     sale_order.confirmation_date  AS event_date,
                     stock_move_line.qty_done      AS change,
                     stock_production_lot.name     AS lot_no,
+                    stock_move_line.product_id    AS product_id,
                     res_partner.name              AS vendor,
                     res_partner.phone,
-                    res_partner.email
+                    res_partner.email                    
                 FROM
                     sale_order
                 INNER JOIN
@@ -172,7 +176,8 @@ class LotHistory(models.TransientModel):
                 stock_inventory.name as event,
                 stock_inventory.date as event_date,
                 stock_inventory_line.product_qty as change,
-                stock_production_lot.name as lot_no
+                stock_production_lot.name as lot_no,
+                stock_inventory_line.product_id as product_id
             FROM
                 stock_inventory_line
             INNER JOIN
@@ -209,7 +214,8 @@ class LotHistory(models.TransientModel):
                 stock_scrap.name as event,
                 stock_scrap.date_expected as event_date,
                 stock_scrap.scrap_qty * -1 as change,
-                stock_production_lot.name as lot_no
+                stock_production_lot.name as lot_no,
+                stock_scrap.product_id as product_id
             FROM
                 product_product
             INNER JOIN
@@ -244,9 +250,11 @@ class LotHistory(models.TransientModel):
 
     def delete_and_create(self):
         self.init_table()
-
+        tree_view_id = self.env.ref('lot_history.view_lot_history').id
+        form_view_id = self.env.ref('lot_history.lot_history_form_view').id
         return {
             "type": "ir.actions.act_window",
+            'views': [(tree_view_id, 'tree'),(form_view_id, 'form')],
             "view_mode": "tree",
             "res_model": self._name,
             "name": "Lot History"
