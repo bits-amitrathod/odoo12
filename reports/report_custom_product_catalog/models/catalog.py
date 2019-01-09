@@ -4,7 +4,8 @@ from odoo import api, fields, models
 class InventoryValuationPopUp(models.TransientModel):
     _name = 'popup.product.catalog'
 
-    sku_code = fields.Char('Product SKU')
+    sku_code = fields.Many2one('product.product', string='Product SKU',
+                               domain="[('active','=',True),('product_tmpl_id.type','=','product')]")
 
     def open_table(self):
         res_model = 'product.product'
