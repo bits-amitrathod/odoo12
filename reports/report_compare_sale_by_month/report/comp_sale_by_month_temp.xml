@@ -42,25 +42,30 @@
                             <tbody>
                                 <tr t-foreach="data" t-as="order">
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.sku_code"/>
+                                        <span t-esc="order['sku_code']"/>
                                     </td>
                                     <td style="border: 1px solid black;width: 250px;">
-                                        <span t-esc="order.name"/>
+                                        <span t-esc="order['product_name']"/>
                                     </td>
                                     <td align="right" style="border: 1px solid black;">
-                                        <span t-esc="order.last_month_total_qty"/>
+                                        <span t-esc="order['last_month_total_qty']"/>
                                     </td>
                                     <td align="right" style="border: 1px solid black;white-space: nowrap;">
-                                        <span t-esc="order.last_month_total_amount"
-                                              t-options='{"widget": "monetary","display_currency": order.currency_id}'/>
+                                         <span t-esc="order['currency_symbol']"
+                                             />
+                                        <span t-esc="order['last_month_total_amount']"
+                                             />
                                     </td>
 
                                     <td align="right" style="border: 1px solid black;">
-                                        <span t-esc="order.current_month_total_qty"/>
+                                        <span t-esc="order['current_month_total_qty']"/>
                                     </td>
                                     <td align="right" style="border: 1px solid black;white-space: nowrap;">
-                                        <span t-esc="order.current_month_total_amount"
-                                              t-options='{"widget": "monetary","display_currency": order.currency_id}'/>
+
+                                         <span t-esc="order['currency_symbol']"
+                                             />
+                                        <span t-esc="order['current_month_total_amount']"
+                                             />
                                     </td>
                                 </tr>
                             </tbody>
