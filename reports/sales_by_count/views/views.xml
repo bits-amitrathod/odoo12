@@ -27,6 +27,7 @@
                     <field name="sku_code"/>
                     <field name="product_name"/>
                     <field name="quantity"/>
+                    <field name="product_uom"/>
                 </tree>
             </field>
         </record>

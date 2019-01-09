@@ -15,6 +15,9 @@
                             <b>
                                 <h2>Surgical Product Solutions</h2>
                                 <h4>Product Activity Report</h4>
+                                 <h4 t-if="date">
+                                    <span t-esc="date"/>
+                                </h4>
                             </b>
                         </center>
 
