@@ -80,14 +80,17 @@ class ProductsOnHandByExpiryPopUp(models.TransientModel):
                 print('filter_state value : ',str(filter_state))
                 domain.append(('status', '=', str(filter_state)))
 
+        group_by_domain = ['location_id']
         action= {
             'type': 'ir.actions.act_window',
             'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
             'view_mode': 'tree,form',
             'name': _('On Hand By Expiration'),
+            'context': {'group_by': group_by_domain, 'order_by': group_by_domain},
             'res_model': 'on_hand_by_expiry',
             'target': 'main',
             'domain' : domain
+
         }
 
         return action
