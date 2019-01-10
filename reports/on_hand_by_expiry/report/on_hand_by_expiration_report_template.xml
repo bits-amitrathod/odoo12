@@ -10,7 +10,7 @@
                             <b>
                                 <h2>Surgical Product Solutions</h2>
                                 <h4>On Hand By Expiration Date</h4>
-                                <h4>Reporting Date: <span t-esc="data['report_date']" t-options="{'widget':'date'}"/></h4>
+                                <h4>Reporting Date: <span t-esc="report_date" t-options="{'widget':'date'}"/></h4>
                             </b>
                         </center>
                         <br/>
@@ -28,9 +28,9 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr t-foreach="data['items']" t-as="product">
+                                        <tr t-foreach="items" t-as="product">
                                             <td style="border: 1px solid black; width: 15%;">
-                                                <span t-esc="product.name"/>
+                                                <span t-esc="product.product_sku"/>
                                                 <t t-set="color_value" t-value="product.color_value"/>
                                             </td>
                                             <td align="left" style="border: 1px solid black;width: 35%;">
