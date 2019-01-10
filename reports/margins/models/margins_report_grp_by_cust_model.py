@@ -28,8 +28,7 @@ class MarginsReport(models.Model):
 
     @api.model_cr
     def init(self):
-        # self.init_table()
-        pass
+        self.init_table()
 
     def init_table(self):
 
@@ -60,18 +59,18 @@ class MarginsReport(models.Model):
         CASE 
                 WHEN ol.purchase_price IS NULL OR TRUNC(ol.purchase_price, 2) = 0.00 THEN 100
                 ELSE TRUNC(( ol.price_subtotal /(ol.price_subtotal - (ol.product_uom_qty * ol.purchase_price))), 2)
-        END as margin_percentage """\
+        END as margin_percentage """
 
         if not group_by is None:
             select_query = select_query + ", '" + str(group_by) + "' as group_by "
 
-        from_clause = """ FROM 
+        from_clause = """  FROM 
             sale_order_line ol INNER JOIN  product_product p ON ol.product_id = p.id
             INNER JOIN sale_order o ON ol.order_id = o.id
             INNER JOIN product_template t ON p.product_tmpl_id = t.id
             LEFT JOIN res_partner r ON o.partner_id = r.id """
 
-        where_clause = " WHERE o.confirmation_date IS NOT NULL "
+        where_clause = """ WHERE o.confirmation_date IS NOT NULL  """
 
         AND = " AND "
         date_range = ""

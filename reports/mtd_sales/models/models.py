@@ -15,8 +15,8 @@ class mtd_sales(models.Model):
 
     @api.model_cr
     def init(self):
-        # self.init_table()
-        pass
+        self.init_table()
+
 
     @api.model_cr
     def init_table(self):
@@ -31,12 +31,14 @@ class mtd_sales(models.Model):
                         EXTRACT(day FROM  so.confirmation_date) as day_from_date, 
                         SUM(so.amount_total) as amount_total 
                         FROM sale_order so """
-        if not year is None and not month is None:
-            sql_query = sql_query + """ WHERE 
-                        EXTRACT(month FROM  so.confirmation_date) = """ + str(month) + """ AND 
-                        EXTRACT(year FROM so.confirmation_date) = """ + str(year) + """  AND so.state = 'sale'                           
-                       GROUP BY EXTRACT(day FROM  so.confirmation_date)) q                       
-                       ON q.day_from_date = day_of_month """
+        if year is None and  month is None:
+            month=1
+            year=2018
+        sql_query = sql_query + """ WHERE 
+                    EXTRACT(month FROM  so.confirmation_date) = """ + str(month) + """ AND 
+                    EXTRACT(year FROM so.confirmation_date) = """ + str(year) + """  AND so.state = 'sale'                           
+                   GROUP BY EXTRACT(day FROM  so.confirmation_date)) q                       
+                   ON q.day_from_date = day_of_month """
 
         sql_query = sql_query + """ ) """
 

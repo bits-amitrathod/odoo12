@@ -4,6 +4,7 @@ from odoo import api, fields, models ,_
 import logging
 import datetime
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, pycompat, misc
+
 from dateutil.relativedelta import relativedelta
 
 _logger = logging.getLogger(__name__
@@ -18,9 +19,9 @@ class ProductSaleByCountPopUp(models.TransientModel):
         (1, 'Date Range ')
     ], string="Compute", default=0, help="Choose to analyze the Show Summary or from a specific date in the past.")
 
-    start_date = fields.Date('Start Date', default=fields.Date.today())
+    start_date = fields.Date('Start Date', default=( fields.date.today() - datetime.timedelta(days=30) ), required=True)
 
-    end_date = fields.Date('End Date', default = fields.Date.today())
+    end_date = fields.Date('End Date', default = fields.Date.today(), required=True)
 
 
 
