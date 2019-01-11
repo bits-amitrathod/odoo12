@@ -7,7 +7,7 @@
                 <form string="Choose your date">
                     <group>
                         <group>
-                            <field name="sale_person_id" domain="[('sales_person','=', 1)]"/>
+                            <field name="sale_person_id"/>
                             <field name="customer_id"/>
                             <field name="sku_code"/>
                         </group>
