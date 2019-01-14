@@ -112,7 +112,7 @@ class VendorOffer(models.Model):
         ('cancel', 'Cancelled')
     ], string='Status', readonly=True, index=True, copy=False, default='draft', track_visibility='onchange')
 
-    carrier_id = fields.Many2one('delivery.carrier', 'Carrier', required=True, ondelete='cascade')
+    
 
     @api.model_cr
     def init(self):
