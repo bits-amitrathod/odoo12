@@ -53,7 +53,7 @@
                                     </td>
 
                                     <td align="right" style="border: 1px solid black;white-space:nowrap;">
-                                        <span t-esc="product.price_list"t-options='{"widget": "monetary","display_currency": product.currency_id}'/>
+                                        <span t-esc="product.price_list" t-options='{"widget": "monetary","display_currency": product.currency_id}'/>
                                     </td>
                                     <td align="right" style="border: 1px solid black;white-space:nowrap;">
                                         <span t-esc="product.min_expiration_date" t-options='{"widget": "date"}'/>
