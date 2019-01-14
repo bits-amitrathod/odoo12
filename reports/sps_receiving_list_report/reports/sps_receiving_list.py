@@ -2,7 +2,7 @@ from odoo import api, models
 
 
 class ReportSpsReceivingList(models.AbstractModel):
-    _name = 'report.sps_receiving_list_report.adjustment_report1'
+    _name = 'report.sps_receiving_list_report.adjustment_report'
 
     @api.model
     def get_report_values(self, docids, data=None):
