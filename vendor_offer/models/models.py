@@ -112,8 +112,6 @@ class VendorOffer(models.Model):
         ('cancel', 'Cancelled')
     ], string='Status', readonly=True, index=True, copy=False, default='draft', track_visibility='onchange')
 
-    
-
     @api.model_cr
     def init(self):
         for order in self:
@@ -135,20 +133,6 @@ class VendorOffer(models.Model):
             return multi.button_validate()
         elif self.picking_count > 1:
             raise ValidationError(_('Validate is not possible for multiple Shipping please do validate one by one'))'''
-
-    def action_tracking(self):
-        self.ensure_one()
-        partner=self.partner_id
-        currency=self.currency_id
-        company=self.company_id
-        print("inside Action Tracking")
-        print(self.env['delivery.carrier'].search([]))
-        obj= self.env['delivery.carrier'].search([])[1]
-        print(obj)
-        res=obj.fedex_send_shipping1(partner,currency,company,self)
-        #res = self.carrier_id.send_shipping(self)[0]
-        msg = _("Shipment sent to carrier Fedex US for shipping with tracking number ")
-        self.message_post(body=msg)
 
     def action_assign(self):
         multi = self.env['stock.picking'].search([('purchase_id', '=', self.id)])
@@ -803,39 +787,29 @@ class ProductTemplate(models.Model):
 class FedexDelivery(models.Model):
     _inherit = 'delivery.carrier'
 
-    def fedex_send_shipping1(self,partner,currency,company,order):
+    def fedex_send_shipping_label(self,order,product_packaging):
         res = []
-        print("inside **************FedexDelivery***********fedex_send_shipping")
-        #for picking in pickings:
-
         srm = FedexRequest(self.log_xml, request_type="shipping", prod_environment=self.prod_environment)
         superself = self.sudo()
         srm.web_authentication_detail(superself.fedex_developer_key, superself.fedex_developer_password)
         srm.client_detail(superself.fedex_account_number, superself.fedex_meter_number)
-        srm.transaction_detail(12334)
-        self.delivery_type='fedex'
-        self.fedex_service_type='PRIORITY_OVERNIGHT'
-        self.fedex_droppoff_type='REGULAR_PICKUP'
-        self.fedex_saturday_delivery=False
-        self.fedex_weight_unit='LB'
-        package_type ='FEDEX_BOX' #picking.package_ids and picking.package_ids[0].packaging_id.shipper_package_code or self.fedex_default_packaging_id.shipper_package_code
-        srm.shipment_request(self.fedex_droppoff_type,'PRIORITY_OVERNIGHT', package_type, 'LB', self.fedex_saturday_delivery)
-        srm.set_currency(_convert_curr_iso_fdx(currency.name))
-        srm.set_shipper(partner,company.partner_id)
-        srm.set_recipient(company.partner_id)
+        srm.transaction_detail(order.id)
+        package_type =product_packaging.name #'FEDEX_BOX' #picking.package_ids and picking.package_ids[0].packaging_id.shipper_package_code or self.fedex_default_packaging_id.shipper_package_code
+        srm.shipment_request(self.fedex_droppoff_type,self.fedex_service_type, package_type, self.fedex_weight_unit, self.fedex_saturday_delivery)
+        srm.set_currency(_convert_curr_iso_fdx(order.currency_id.name))
+        srm.set_shipper( order.partner_id,order.company_id.partner_id)
+        srm.set_recipient(order.company_id.partner_id)
         srm.shipping_charges_payment(superself.fedex_account_number)
         srm.shipment_label('COMMON2D', self.fedex_label_file_type, self.fedex_label_stock_type, 'TOP_EDGE_OF_TEXT_FIRST', 'SHIPPING_LABEL_FIRST')
-
-        order_currency = currency
-
+        order_currency = order.currency_id
         net_weight = _convert_weight(1, 'LB')
 
         # Commodities for customs declaration (international shipping)
-        if self.fedex_service_type in ['INTERNATIONAL_ECONOMY', 'INTERNATIONAL_PRIORITY'] or (partner.country_id.code == 'IN' and company.partner_id.country_id.code == 'IN'):
+        if self.fedex_service_type in ['INTERNATIONAL_ECONOMY', 'INTERNATIONAL_PRIORITY'] or (order.partner_id.country_id.code == 'IN' and order.company_id.partner_id.country_id.code == 'IN'):
 
             commodity_currency = order_currency
             total_commodities_amount = 0.0
-            commodity_country_of_manufacture = company.partner_id.country_id.code
+            commodity_country_of_manufacture = order.company_id.partner_id.country_id.code
 
             '''for operation in picking.move_line_ids:
                 commodity_amount = order_currency.compute(operation.product_id.list_price, commodity_currency)
@@ -851,7 +825,7 @@ class FedexDelivery(models.Model):
                             'LB', 10, 'test',
                             commodity_country_of_manufacture, 1, 'EA')'''
             srm.customs_value(_convert_curr_iso_fdx(commodity_currency.name), total_commodities_amount, "NON_DOCUMENTS")
-            srm.duties_payment(company.partner_id.country_id.code, superself.fedex_account_number)
+            srm.duties_payment(order.company_id.partner_id.country_id.code, superself.fedex_account_number)
 
         # TODO RIM master: factorize the following crap
         srm.add_package(net_weight)
@@ -870,7 +844,7 @@ class FedexDelivery(models.Model):
                 carrier_price = request['price'][_convert_curr_iso_fdx(order_currency.name)]
             else:
                 _logger.info("Preferred currency has not been found in FedEx response")
-                company_currency = currency
+                company_currency = order.currency_id
                 if _convert_curr_iso_fdx(company_currency.name) in request['price']:
                     carrier_price = company_currency.compute(request['price'][_convert_curr_iso_fdx(company_currency.name)], order_currency)
                 else:
