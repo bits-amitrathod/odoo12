@@ -66,9 +66,6 @@ class ProductTemplate(models.Model):
                 ml.inventory_percent_color=0
                 ml.future_percent_color=0
 
-
-
-
 class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
     max_inventory_level=fields.Boolean("Max Inventory Level")
