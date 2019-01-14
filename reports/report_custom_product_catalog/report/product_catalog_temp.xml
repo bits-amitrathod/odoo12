@@ -9,7 +9,7 @@
                     <center>
                         <b>
                             <h2> Surgical Product Solutions </h2>
-                            <h4> Custom Purchase History </h4>
+                            <h4> Custom Product Catalog </h4>
                         </b>
                     </center>
                     </div>
@@ -41,7 +41,7 @@
                                         <span t-esc="order.sku_code"/>
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.name"/>
+                                        <span t-esc="order.product_templ_id.name"/>
                                     </td>
                                     <td align="right" style="border: 1px solid black;">
                                         <span t-esc="order.product_qty"/>

@@ -10,10 +10,12 @@ _logger = logging.getLogger(__name__)
 class InventoryAvailabilityPopUp(models.TransientModel):
     _name = 'inventory_availability_popup'
     _description = 'Inventory Availability PopUp'
-    location_group = fields.Many2one('stock.warehouse', string='Location Group', domain="[('active','=',True)]",
+    location_group = fields.Many2one('stock.warehouse', string='Warehouse', domain="[('active','=',True)]",
                                      default=1)
     products = fields.Many2one('product.product', string='Product SKU',
                                domain="[('active','=',True),('product_tmpl_id.type','=','product')]")
+
+    product_sku = fields.Char(string='Product SKU')
 
     def open_table(self):
         # print(self.env.ref('inventory__allocation_so.view_inv_all_so_tree').id)
@@ -22,7 +24,7 @@ class InventoryAvailabilityPopUp(models.TransientModel):
         location_group = self.location_group
         product_ids = []
 
-        if not self.products and location_group:
+        if not self.product_sku and location_group:
             list = []
             list.append(location_group.view_location_id.id)
             list.append(location_group.lot_stock_id.id)
@@ -50,7 +52,7 @@ class InventoryAvailabilityPopUp(models.TransientModel):
             products = self._cr.fetchone()
             if products and products[0]:
                 product_ids = products[0]
-        elif self.products and location_group:
+        elif self.product_sku and location_group:
             list = []
             list.append(location_group.view_location_id.id)
             list.append(location_group.lot_stock_id.id)
@@ -65,16 +67,17 @@ class InventoryAvailabilityPopUp(models.TransientModel):
 
             stock_quant = """ select ARRAY(SELECT
                             DISTINCT
-                            product_id
+                            sq.product_id
                                 FROM
-                                stock_quant
+                                stock_quant sq
+                                Inner Join product_product pp on sq.product_id = pp.id
+                                Inner Join product_template pt on pp.product_tmpl_id = pt.id
                                 where
-                                location_id in """ + str(tuple(list)) + """ and product_id= """ + str(
-                self.products.id) + """
+                                sq.location_id in """ + str(tuple(list)) + """ and pt.sku_code = '""" + str(self.product_sku) + """' 
 
                             ORDER
                             BY
-                            product_id);"""
+                            sq.product_id);"""
             self._cr.execute(stock_quant)
             products = self._cr.fetchone()
             if products and products[0]:
@@ -93,6 +96,8 @@ class InventoryAvailabilityPopUp(models.TransientModel):
             'res_model': x_res_model,
             'target': 'main'
         }
+        if self.product_sku:
+            action["domain"].append(('sku_code', '=', self.product_sku))
         # action.update({'target': 'main'})
         return action
 

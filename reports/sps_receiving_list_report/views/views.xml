@@ -29,6 +29,25 @@
                 </tree>
             </field>
         </record>
+        <record model="ir.ui.view" id="sps_receving_list_form">
+            <field name="name">sps.receiving.report.view.form</field>
+            <field name="model">stock.move.line</field>
+            <field name="arch" type="xml">
+                <form create="false" edit="false" delete="false">
+                    <sheet>
+                        <group>
+                            <field name="product_id"/>
+                            <field name="sku_code"/>
+                            <field name="lot_id"/>
+                            <field name="lot_expired_date"/>
+                            <field name="qty_done" string="Qty Received"/>
+                            <field name="product_uom_id" string="UOM"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
 
         <record id="view_sps_receive_list" model="ir.ui.view">
             <field name="name">SPS Receiving Report</field>
