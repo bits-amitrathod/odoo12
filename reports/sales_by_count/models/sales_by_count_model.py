@@ -17,7 +17,7 @@ class ProductSaleByCountReport(models.Model):
     warehouse_id = fields.Many2one('stock.warehouse', 'Warehouse')
     sku_code = fields.Char('Product SKU')
     product_name = fields.Char(string='Product Name')
-    quantity = fields.Char(string='Quantity')
+    quantity = fields.Integer(string='Quantity')
     confirmation_date = fields.Date('Confirmation Date')
     product_uom = fields.Char(string="UOM")
 
@@ -26,8 +26,6 @@ class ProductSaleByCountReport(models.Model):
         self.init_table()
 
     def init_table(self):
-        s_date = self.env.context.get('s_date')
-        e_date = self.env.context.get('e_date')
 
         tools.drop_view_if_exists(self._cr, self._name.replace(".", "_"))
 

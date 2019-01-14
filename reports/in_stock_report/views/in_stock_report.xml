@@ -22,7 +22,8 @@
                 <field name="sku_code"/>
                 <field name="product_id"/>
                 <field name="qty_available"/>
-                <field name="list_price"/>
+                <field name="list_price" widget="monetary"/>
+                <field name="currency_id"  invisible="1"/>
                 <field name="min_expiration_date"/>
                 <field name="max_expiration_date"/>
                 <!--<field name="confirmation_date"/>-->
