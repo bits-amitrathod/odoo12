@@ -306,8 +306,12 @@
             <field name="inherit_id" ref="purchase.purchase_order_form"></field>
             <field name="arch" type="xml">
                 <button name="button_unlock" position="after">
-                     <field name="show_validate" invisible="1"/>
-                     <button name="action_validate"  attrs="{'invisible': ['|', ('show_validate', '=', False),('state', 'not in', 'purchase')]}"  string="Validate" groups="stock.group_stock_user" type="object" class="oe_highlight"/>
+                     <field name="status_ven"/>
+                     <!--<button name="action_validate"  attrs="{'invisible': ['|', ('show_validate', '=', False),('state', 'not in', 'purchase')]}"  string="Validate" groups="stock.group_stock_user" type="object" class="oe_highlight"/>-->
+                    <!--<button string="Shipping Label"
+                            type="action"
+                            name="action_view_tracking_text" attrs="{'invisible': [('status_ven', 'not in', 'Accepted')]}" groups="stock.group_stock_user"/>-->
+                    <button name="action_tracking"  attrs="{'invisible': [('status_ven', 'not in', 'Accepted')]}"  string="Generate Tracking" groups="stock.group_stock_user" type="object" class="oe_highlight"/>
                 </button>
                 <xpath expr="//group/group/field[@name='origin']" position="replace">
                      <field name="origin" string="Sale Order#"/>
@@ -355,7 +359,7 @@
                                     <field name="vendor_offer_data" invisible="1"/>
                                     <field name="taxes_id" widget="many2many_tags" domain="[('type_tax_use','=','purchase')]" context="{'default_type_tax_use': 'purchase'}" options="{'no_create': True}"/>
                                     <field name="price_subtotal" widget="monetary"/>
-                                    <button name="action_show_details" string="Register lots, packs, location" type="object" icon="fa-list"  options='{"warn": true}' states="purchase"/>
+                                   <!-- <button name="action_show_details" string="Register lots, packs, location" type="object" icon="fa-list"  options='{"warn": true}' states="purchase"/>-->
 
                                 </tree>
                             </field>
@@ -430,6 +434,46 @@
         ]"/>
 
     </record>
+
+ <!-- <record id="view_tracking_text" model="ir.ui.view">
+        <field name="name">Generate Shipping Label</field>
+        <field name="model">purchase.order</field>
+        <field name="arch" type="xml">
+            <form string="Generate Tracking Text">
+                <group>
+                    <field name="carrier_id" widget="selection"></field>
+                   &lt;!&ndash; <field name="product_tmpl_id" invisible="1"/>
+                    <field name="product_variant_count" invisible="1"/>
+                    <field name="name" widget="selection"
+                        domain="[('product_tmpl_id', '=', product_tmpl_id)]"
+                        attrs="{'readonly': [('product_variant_count', '=', 1)]}"/>
+                    <field name="location_id" groups="stock.group_stock_multi_locations"/>
+                    <field name="new_quantity"/>
+                    <field name="lot_id"  context="{'search_default_product_id':product_id,'default_product_id':product_id}" groups="stock.group_production_lot"/>
+                    <p groups="stock.group_production_lot" class="oe_grey">
+                        When you select a serial number (lot), the quantity is corrected with respect to
+                        the quantity of that serial number (lot) and not to the total quantity of the product.
+                    </p>&ndash;&gt;
+                </group>
+                <footer>
+                    <button name="action_tracking" type="object" class="btn-primary"/>
+                    <button string="_Cancel" class="btn-default" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>-->
+
+  <!--<record id="action_view_tracking_text" model="ir.actions.act_window">
+        <field name="name">Generate shipping Label action</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_tracking_text"/>
+        <field name="target">new</field>
+  </record>-->
+
+
 
     <menuitem
             id="menu_product_in_config_purchase_setting" name="Setting"  sequence="99"  parent="purchase.menu_purchase_root" />
