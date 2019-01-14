@@ -6,16 +6,12 @@ class ReportProductActivityReport(models.AbstractModel):
 
     @api.model
     def get_report_values(self, docids, data=None):
-        self.env.cr.execute(""" SELECT * FROM product_activity_report where id in ("""+",".join(map(str, docids))+""")
+        self.env.cr.execute(""" SELECT * FROM product_activity_report where id in (""" + ",".join(map(str, docids)) + """)
         order by location,type """)
         warehouses = self.env.cr.dictfetchall()
 
         popup = self.env['product.activity.report.popup'].search([('create_uid', '=', self._uid)], limit=1,
-                                                      order="id desc")
-        if popup.start_date and popup.end_date:
-            date = popup.start_date + " to " + popup.end_date
-        else:
-            date = False
+                                                                 order="id desc")
 
 
         oldType = ""
@@ -41,6 +37,6 @@ class ReportProductActivityReport(models.AbstractModel):
                 oldType = activity['type']
                 activities[oldLocation] = {oldType: [product]}
         return {
-            'activities': activities,
-            'date': date
+            'activities': activities,'popup':popup
+
         }

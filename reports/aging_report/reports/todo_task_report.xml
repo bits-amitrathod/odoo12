@@ -63,10 +63,10 @@
                                             <span t-esc="record['uom']"/>
                                        </td>
                                       <td align="center" class="col-xs-2" style="border: 1px solid #000;">
-                                            <span t-esc="record['cr_date']"/>
+                                            <span t-esc="record['cr_date']" t-options='{"widget": "date"}'/>
                                         </td>
                                         <td align="center" class="col-xs-2" style="border: 1px solid #000;">
-                                            <span t-esc="record['exp_date']"/>
+                                            <span t-esc="record['exp_date']" t-options='{"widget": "date"}'/>
                                         </td>
                                         <td align="center" class="col-xs-2" style="border: 1px solid #000;">
                                             <span t-esc="record['days']"/>

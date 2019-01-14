@@ -13,7 +13,8 @@
                     <field name="product_brand_id"/>
                     <field name="product_templ_id" string="Product Name"/>
                     <field name="product_qty"/>
-                    <field name="list_price" string="Price"/>
+                    <field name="list_price" string="Price" widget="monetary"/>
+                    <field name="currency_id" invisible="1"/>
                     <field name="exp_min_date" string="Max Exp Date"/>
                     <field name="exp_max_date" string="Min Exp Date"/>
                 </tree>
