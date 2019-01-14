@@ -41,7 +41,8 @@
                     <!--<field name="qty_invoiced"/>-->
                     <!--<field name="qty_to_invoice"/>-->
                     <field name="product_uom" string="Unit of Measure" groups="product.group_uom"/>
-                    <field name="price_subtotal" sum="Total" widget="monetary"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="price_subtotal" sum="price_subtotal" widget="monetary" />
                     <field name="state" invisible="1"/>
                 </tree>
             </field>
@@ -71,6 +72,7 @@
                                 <field name="product_uom_qty"/>
                                 <field name="product_uom"/>
                                 <field name="price_unit" widget="monetary"/>
+                                <field name="currency_id" invisible="1"/>
                             </group>
 
 

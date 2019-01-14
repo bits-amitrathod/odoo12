@@ -61,19 +61,19 @@
                                         <span t-esc="product.total_sale_quantity"/>
                                     </td>
                                     <td align="right" style="border: 1px solid black;">
-                                        <span t-esc="product.total_amount"/>
+                                        <span t-esc="product.total_amount" t-options='{"widget": "monetary","display_currency": product.currency_id}'/>
                                         <t t-set="total_qty" t-value="total_qty + product.total_sale_quantity" />
-                                        <t t-set="total_price" t-value="total_price +product.total_amount" />
+                                        <t t-set="total_price" t-value="total_price +product.total_amount" t-options='{"widget": "monetary","display_currency": product.currency_id}'/>
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr t-if="len(data) &gt; 0">
 
                                     <td colspan="4" align="right" style="border: 1px solid black;">Total</td>
                                     <!--<td align="right" style="border: 1px solid black;">-->
                                         <!--<span t-esc="total_qty"/>-->
                                     <!--</td>-->
                                     <td align="right" style="border: 1px solid black;">
-                                        <span t-esc="total_price"/>
+                                        <span t-esc="total_price" t-options='{"widget": "monetary","display_currency": data[0].currency_id}'/>
                                     </td>
                                 </tr>
                             </tbody>
