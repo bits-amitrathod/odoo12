@@ -11,7 +11,7 @@
                     <field name="type"/>
                     <field name="sku_code"  string="Product SKU"/>
                     <field name="product_brand_id"/>
-                    <field name="name" string="Product Name"/>
+                    <field name="product_templ_id" string="Product Name"/>
                     <field name="product_qty"/>
                     <field name="list_price" string="Price"/>
                     <field name="exp_min_date" string="Max Exp Date"/>
@@ -27,7 +27,7 @@
             <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false">
                     <field name="sku_code"  string="Product SKU"/>
-                    <field name="name" string="Product Name"/>
+                    <field name="product_templ_id" string="Product Name"/>
                     <field name="list_price" widget="monetary"/>
                     <field name="currency_id" invisible="1"/>
                 </tree>
@@ -35,6 +35,28 @@
         </record>
 
         <record id="custom_product_catalog_popup_view" model="ir.ui.view">
+            <field name="name">Product Catalog</field>
+            <field name="model">popup.custom.product.catalog</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="start_date"/>
+                            <field name="end_date" />
+                        </group>
+                        <group>
+                            <field name="sku_code" string="Product SKU"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="product_catalog_popup_view" model="ir.ui.view">
             <field name="name">Product Catalog</field>
             <field name="model">popup.product.catalog</field>
             <field name="arch" type="xml">
@@ -55,7 +77,7 @@
 
         <record id="action_report_custom_product_catalog" model="ir.actions.act_window">
             <field name="name">Custom Product Catalog</field>
-            <field name="res_model">popup.product.catalog</field>
+            <field name="res_model">popup.custom.product.catalog</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>

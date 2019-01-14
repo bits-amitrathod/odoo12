@@ -19,10 +19,10 @@
             <tree create="false" edit="false" delete="false" string="In Stock Report">
                 <field name="partner_id"/>
                 <field name="product_brand_id"/>
-                <field name="sku_code"/>
-                <field name="product_id"/>
-                <field name="qty_available"/>
-                <field name="list_price"/>
+                <field name="sku_code" string="Product SKU"/>
+                <field name="product_id" string="Product Name"/>
+                <field name="qty_available" string="Qty In Stock"/>
+                <field name="price_list"/>
                 <field name="min_expiration_date"/>
                 <field name="max_expiration_date"/>
                 <!--<field name="confirmation_date"/>-->

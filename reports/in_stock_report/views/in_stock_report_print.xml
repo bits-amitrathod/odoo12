@@ -10,6 +10,7 @@
                             <b>
                                 <h2>Surgical Product Solutions</h2>
                                 <h4>In Stock Report</h4>
+                                <h4 t-if="dateRange"> Date Range: <span t-esc="dateRange"/></h4>
                             </b>
                         </center>
                         <center>
@@ -52,7 +53,7 @@
                                     </td>
 
                                     <td align="right" style="border: 1px solid black;white-space:nowrap;">
-                                        <span t-esc="product.list_price"/>
+                                        <span t-esc="product.price_list"/>
                                     </td>
                                     <td align="right" style="border: 1px solid black;white-space:nowrap;">
                                         <span t-esc="product.min_expiration_date" t-options='{"widget": "date"}'/>
