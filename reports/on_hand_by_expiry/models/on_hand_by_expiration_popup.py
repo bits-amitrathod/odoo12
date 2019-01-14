@@ -28,11 +28,13 @@ class ProductsOnHandByExpiryPopUp(models.TransientModel):
 
     location_id = fields.Many2one('stock.location', string='Location', required=False,)
 
-    product_id = fields.Many2one('product.product', string='Product', required=False)
+    # product_id = fields.Many2one('product.product', string='Product', required=False)
 
     start_date = fields.Date('Start Date', default=fields.Datetime.now)
 
     end_date = fields.Date('End Date', default=fields.Datetime.now)
+
+    product_sku = fields.Char(string="Product SKU")
 
     def open_table(self):
 
@@ -47,8 +49,8 @@ class ProductsOnHandByExpiryPopUp(models.TransientModel):
             if s_date > e_date:
                 raise ValidationError("Start date should eariler then end date")
         else:
-            e_date = datetime.date.today()
-            s_date = datetime.date.today().replace(day=1)
+            e_date = False
+            s_date = False
 
         on_hand_by_expiry_context = {
             's_date' : s_date,
@@ -58,8 +60,11 @@ class ProductsOnHandByExpiryPopUp(models.TransientModel):
         if self.location_id.id:
             on_hand_by_expiry_context.update({'location_id' : self.location_id.id})
 
-        if self.product_id.id:
-            on_hand_by_expiry_context.update({'product_id' : self.product_id.id})
+        # if self.product_id.id:
+        #     on_hand_by_expiry_context.update({'product_id' : self.product_id.id})
+
+        if self.product_sku:
+            on_hand_by_expiry_context.update({'product_sku' : self.product_sku})
 
         self.env['on_hand_by_expiry'].with_context(on_hand_by_expiry_context).delete_and_create()
 
@@ -72,18 +77,23 @@ class ProductsOnHandByExpiryPopUp(models.TransientModel):
             }
             filter_state = switcher.get(self.state, False)
             if filter_state:
+                print('filter_state value : ',str(filter_state))
                 domain.append(('status', '=', str(filter_state)))
 
-
-        return {
+        group_by_domain = ['location_id']
+        action= {
             'type': 'ir.actions.act_window',
             'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
             'view_mode': 'tree,form',
-            'name': _('On Hand By Expiry'),
+            'name': _('On Hand By Expiration'),
+            'context': {'group_by': group_by_domain, 'order_by': group_by_domain},
             'res_model': 'on_hand_by_expiry',
             'target': 'main',
             'domain' : domain
+
         }
+
+        return action
 
     @staticmethod
     def string_to_date(date_string):

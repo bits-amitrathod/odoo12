@@ -65,11 +65,11 @@ class MarginsReportPopup(models.TransientModel):
 
         x_res_model = 'margins'
 
+
         if self.group_by == 'partner_id':
             group_by_domain.insert(0, 'partner_id')
             x_res_model = 'margins.group_by_cust'
             tree_view_id = self.env.ref('margins.margins_grp_by_cust_list_view').id
-
         self.env[x_res_model].with_context(margins_context).delete_and_create()
 
 

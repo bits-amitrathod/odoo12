@@ -9,7 +9,7 @@
                         <group>
                             <field name="state"/>
                             <field name="location_id"/>
-                            <field name="product_id"/>
+                            <field name="product_sku"/>
                         </group>
                         <group>
                             <field name="date_range" widget="radio"/>
@@ -41,7 +41,7 @@
             <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false">
                     <field name="color_value" invisible="1"/>
-                    <field name="name"/>
+                    <field name="product_sku"/>
                     <field name="product_id"/>
                     <field name="qty"/>
                     <field name="location_id"/>
@@ -64,7 +64,7 @@
                         </div>
                         <group>
                             <group>
-                                <field name="name"/>
+                                <field name="product_sku"/>
                                 <field name="location_id"/>
                                 <field name="status"/>
                                 <field name="qty"/>

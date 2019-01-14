@@ -17,10 +17,11 @@ class OnHandByExpiry(models.Model):
     product_id = fields.Many2one('product.product', string='Product Name')
     location_id = fields.Many2one('stock.location', string='Location')
     status = fields.Char('Status')
-    name = fields.Char("Product SKU")
     expiration_date = fields.Datetime("Expiration Date")
+    alert_date = fields.Datetime("Alert Date")
     color_value =  fields.Integer("Scrab Location", compute="_set_date_fg_color")
     scrap_location = fields.Boolean("Scrap Location")
+    product_sku = fields.Char("Product SKU")
 
 
     @api.model_cr
@@ -31,19 +32,20 @@ class OnHandByExpiry(models.Model):
         tools.drop_view_if_exists(self._cr, 'on_hand_by_expiry')
         start_date = self.env.context.get('s_date')
         end_date = self.env.context.get('e_date')
-        expiration_date = fields.Date.to_string(datetime.now() + timedelta(days=30))
+        current_date = fields.Date.to_string(datetime.now())
 
         sql_query = """  CREATE VIEW on_hand_by_expiry AS (             
-            SELECT t.sku_code as name, l.product_id as product_id, l.id as id,                 
+            SELECT l.product_id as product_id, l.id as id,                 
                 sq.quantity as qty,
                 l.use_date as expiration_date,
+                l.alert_date as alert_date,
                 sq.location_id as location_id,
                 sl.scrap_location,
+                t.sku_code as product_sku,
                 CASE 
-                    WHEN sl.scrap_location = true THEN 'Expired'
-                    WHEN l.use_date <= '""" + str(expiration_date) + """' THEN 'Expiring'
-                ELSE 
-                    'Valid'
+                    WHEN l.use_date < '""" + str(current_date) + """' THEN 'Expired'
+                    WHEN l.alert_date <= '""" + str(current_date) + """' THEN 'Expiring'
+                    WHEN l.alert_date >= '""" + str(current_date) + """' THEN 'Valid'
                 END AS status
             FROM 
                 stock_production_lot l LEFT JOIN stock_quant sq ON sq.lot_id = l.id 
@@ -54,17 +56,17 @@ class OnHandByExpiry(models.Model):
                 sq.quantity > 0 AND sq.lot_id IS NOT NULL AND sq.location_id IS NOT NULL """
 
         location_id = self.env.context.get('location_id')
-        product_id = self.env.context.get('product_id')
+        product_sku_code = self.env.context.get('product_sku')
 
         AND = " AND "
-
-        if not product_id is None:
-            sql_query = sql_query + AND + " l.product_id = " + str(product_id)
 
         if not location_id is None:
             sql_query = sql_query + AND + " sq.location_id = " + str(location_id)
 
-        if not start_date is None and not end_date is None:
+        if not product_sku_code is None:
+            sql_query = sql_query + AND + " t.sku_code = '" + str(product_sku_code) + "'"
+
+        if start_date and end_date:
             sql_query = sql_query + AND + " l.use_date >='" + str(start_date) + "'" + AND + " l.use_date <='" + str(end_date)+"'"
 
         sql_query = sql_query + " )"
