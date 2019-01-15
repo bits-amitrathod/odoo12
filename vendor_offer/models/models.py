@@ -787,14 +787,14 @@ class ProductTemplate(models.Model):
 class FedexDelivery(models.Model):
     _inherit = 'delivery.carrier'
 
-    def fedex_send_shipping_label(self,order,product_packaging):
+    def fedex_send_shipping_label(self,order,popup):
         res = []
         srm = FedexRequest(self.log_xml, request_type="shipping", prod_environment=self.prod_environment)
         superself = self.sudo()
         srm.web_authentication_detail(superself.fedex_developer_key, superself.fedex_developer_password)
         srm.client_detail(superself.fedex_account_number, superself.fedex_meter_number)
         srm.transaction_detail(order.id)
-        package_type =product_packaging.name #'FEDEX_BOX' #picking.package_ids and picking.package_ids[0].packaging_id.shipper_package_code or self.fedex_default_packaging_id.shipper_package_code
+        package_type =popup.product_packaging.name #'FEDEX_BOX' #picking.package_ids and picking.package_ids[0].packaging_id.shipper_package_code or self.fedex_default_packaging_id.shipper_package_code
         srm.shipment_request(self.fedex_droppoff_type,self.fedex_service_type, package_type, self.fedex_weight_unit, self.fedex_saturday_delivery)
         srm.set_currency(_convert_curr_iso_fdx(order.currency_id.name))
         srm.set_shipper( order.partner_id,order.company_id.partner_id)
@@ -802,7 +802,7 @@ class FedexDelivery(models.Model):
         srm.shipping_charges_payment(superself.fedex_account_number)
         srm.shipment_label('COMMON2D', self.fedex_label_file_type, self.fedex_label_stock_type, 'TOP_EDGE_OF_TEXT_FIRST', 'SHIPPING_LABEL_FIRST')
         order_currency = order.currency_id
-        net_weight = _convert_weight(1, 'LB')
+        net_weight = _convert_weight(popup.weight, 'LB')
 
         # Commodities for customs declaration (international shipping)
         if self.fedex_service_type in ['INTERNATIONAL_ECONOMY', 'INTERNATIONAL_PRIORITY'] or (order.partner_id.country_id.code == 'IN' and order.company_id.partner_id.country_id.code == 'IN'):
