@@ -112,14 +112,8 @@ class ReportInStockReport(models.Model):
                 sale_order
             INNER JOIN
                 sale_order_line
-            ON
-                (
+            ON(
                     sale_order.id = sale_order_line.order_id)
-            INNER JOIN
-                stock_picking
-            ON
-                (
-                    sale_order.id = stock_picking.sale_id)
             INNER JOIN
                 product_product
             ON
@@ -130,8 +124,7 @@ class ReportInStockReport(models.Model):
             ON
                 (
                     product_product.product_tmpl_id = product_template.id)
-            WHERE
-                stock_picking.state = 'done' """
+             """
         if s_date and e_date and not s_date is None and not e_date is None:
             e_date = datetime.datetime.strptime(str(e_date), "%Y-%m-%d")
             e_date = e_date + datetime.timedelta(days=1)
