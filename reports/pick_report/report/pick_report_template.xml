@@ -20,7 +20,7 @@
                             </tr>
                             <tr>
                                 <td style="width:50%">
-                                     <b>Scheduled: </b><span t-esc="data['scheduled_date']"/>
+                                     <b>Scheduled Date: </b><span t-esc="data['scheduled_date']" t-options='{"widget": "date"}'/>
                                 </td>
                                 <td style="width:50%">
                                     <b>Type: </b><span t-esc="data['type']"/>

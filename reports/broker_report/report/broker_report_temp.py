@@ -56,8 +56,8 @@ class ReportBrokerReport(models.AbstractModel):
          apprisal_list={}
          if(data['start_date']!=False and data['end_date']!=False):
              apprisal_list= self.env['purchase.order'].search([('state', '=', 'purchase'),('status', '=', 'purchase'),('vendor_offer_data', '=', True),('date_order','>=',data['start_date']),('date_order','<=',data['end_date'])])
-             s_date = (str(data['start_date'])).replace("-", "/")
-             e_date = str(data['end_date']).replace("-", "/")
+             s_date =data['start_date'] #.replace("-", "/")
+             e_date = data['end_date']  #.replace("-", "/")
          else:
              apprisal_list = self.env['purchase.order'].search([('state', '=', 'purchase'), ('status', '=', 'purchase'), ('vendor_offer_data', '=', True) ])
              s_date=False

@@ -155,8 +155,8 @@ class ReportPrintInStockReport(models.AbstractModel):
         dates_picked = self.env['popup.report.in.stock.report'].search([('create_uid', '=', self._uid)], limit=1,
                                                                   order="id desc")
 
-        if dates_picked.start_date and dates_picked.end_date and  not dates_picked.start_date is None and not dates_picked.end_date is None:
-            date_range = (str(dates_picked.start_date)).replace("-", "/") + " - " + (str(dates_picked.end_date)).replace("-", "/")
-        else:
-            date_range = False
-        return {'dateRange':date_range ,'data': self.env['report.in.stock.report'].browse(docids)}
+        # if dates_picked.start_date and dates_picked.end_date and  not dates_picked.start_date is None and not dates_picked.end_date is None:
+        #     date_range = (str(dates_picked.start_date)).replace("-", "/") + " - " + (str(dates_picked.end_date)).replace("-", "/")
+        # else:
+        #     date_range = False
+        return {'dateRange':dates_picked ,'data': self.env['report.in.stock.report'].browse(docids)}
