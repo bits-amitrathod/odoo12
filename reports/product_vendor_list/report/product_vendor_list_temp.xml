@@ -8,8 +8,11 @@
                     <div class="row">
                         <center>
                             <b>
-                                <h2>Surgical Product Solutions</h2>
-                                <h4>Product Vendor List</h4>
+                                <h4 style="font-weight: bold;">Surgical Product Solutions</h4>
+                                <h2>Product Vendors</h2>
+                                  <t t-foreach="data" t-as="order">
+                                     <h4> <span t-esc="order.product_id.name"/> </h4>
+                                 </t>
                             </b>
                         </center>
                         <center>
@@ -22,7 +25,6 @@
                             <tr style="border: 1px solid black;">
                                 <th style="border: 1px solid black;text-align: center;">Vendor</th>
                                 <th style="border: 1px solid black;text-align: center;">Product SKU</th>
-                                <th style="border: 1px solid black;text-align: center;">Product</th>
                                 <th style="border: 1px solid black;text-align: center;">Last Sold</th>
                                 <th style="border: 1px solid black;text-align: center;">Cost</th>
                             </tr>
@@ -34,9 +36,6 @@
                                 </td>
                                 <td style="border: 1px solid black;">
                                     <span t-esc="order.sku_code_product"/>
-                                </td>
-                                <td style="border: 1px solid black;">
-                                    <span t-esc="order.product_id.name"/>
                                 </td>
                                 <td style="border: 1px solid black;white-space:nowrap;">
                                     <span t-esc="order.last_sold"/>
