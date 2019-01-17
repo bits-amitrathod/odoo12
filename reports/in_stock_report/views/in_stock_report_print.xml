@@ -10,7 +10,8 @@
                             <b>
                                 <h2>Surgical Product Solutions</h2>
                                 <h4>In Stock Report</h4>
-                                <h4 t-if="dateRange"> Date Range: <span t-esc="dateRange"/></h4>
+                                <h4 t-if="dateRange.start_date and dateRange.end_date"> Date Range: <span t-esc="dateRange.start_date" t-options='{"widget": "date"}'/>
+                                 -  <span t-esc="dateRange.end_date" t-options='{"widget": "date"}'/></h4>
                             </b>
                         </center>
                         <center>

@@ -14,7 +14,7 @@
                         </b>
                     </center>
                     <center>
-                         <h5 style="display: inline;">Date Range:<span t-esc="data[0][3]" />-<span t-esc="data[0][4]" /></h5>
+                         <h4 style="display: inline;" t-if="popup.start_date and popup.end_date">Date Range:<span t-esc="popup.start_date" t-options='{"widget": "date"}'/>-<span t-esc="popup.end_date" t-options='{"widget": "date"}'/></h4>
                         <!--Date Range: <b>-->
                         <!--<span t-esc="start_date"/>-->
                         <!-- - -->

@@ -38,7 +38,7 @@
                                     <span t-esc="order.sku_code_product"/>
                                 </td>
                                 <td style="border: 1px solid black;white-space:nowrap;">
-                                    <span t-esc="order.last_sold"/>
+                                    <span t-esc="order.last_sold"  t-options='{"widget": "date"}'/>
                                 </td>
                                 <td align="right" style="border: 1px solid black;white-space:nowrap;">
                                     <span t-esc="order.cost"
