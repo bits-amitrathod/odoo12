@@ -23,7 +23,7 @@
                    <field name="sku_code"/>
                      <field name="lot_id"/>
                   <field name="lot_expired_date"/>
-                   <field name="qty_done" string="Qty Received"/>
+                   <field name="qty_rece" string="Qty Received"/>
                    <field name="product_uom_id" string="UOM"/>
 
                 </tree>
@@ -40,7 +40,7 @@
                             <field name="sku_code"/>
                             <field name="lot_id"/>
                             <field name="lot_expired_date"/>
-                            <field name="qty_done" string="Qty Received"/>
+                            <field name="qty_rece" string="Qty Received"/>
                             <field name="product_uom_id" string="UOM"/>
                         </group>
                     </sheet>

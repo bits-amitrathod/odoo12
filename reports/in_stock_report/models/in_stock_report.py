@@ -97,45 +97,38 @@ class ReportInStockReport(models.Model):
         e_date = self.env.context.get('end_date')
 
         sql_query = """
-            SELECT
-                ROW_NUMBER () OVER (ORDER BY sale_order.partner_id) as id,
-                sale_order.partner_id,
-                sale_order.user_id,
-                sale_order.confirmation_date,
-                product_template.product_brand_id,
-                product_product.id  AS product_id,
-                product_template.id AS product_tmpl_id,
-                sale_order.warehouse_id,
-                null as min_expiration_date,
-                null as max_expiration_date
+            SELECT DISTINCT 
+            CONCAT(sale_order.partner_id, product_product.id) as id,
+            sale_order.partner_id,
+            sale_order.user_id,
+            sale_order.confirmation_date,
+            product_template.product_brand_id,
+            product_product.id AS product_id,
+            product_template.id AS product_tmpl_id,
+            sale_order.warehouse_id,
+            null as min_expiration_date,
+            null as max_expiration_date
             FROM
-                sale_order
+            sale_order
             INNER JOIN
-                sale_order_line
-            ON
-                (
-                    sale_order.id = sale_order_line.order_id)
+            sale_order_line
+            ON(
+            sale_order.id = sale_order_line.order_id)
             INNER JOIN
-                stock_picking
+            product_product
             ON
-                (
-                    sale_order.id = stock_picking.sale_id)
+            (
+            sale_order_line.product_id = product_product.id)
             INNER JOIN
-                product_product
+            product_template
             ON
-                (
-                    sale_order_line.product_id = product_product.id)
-            INNER JOIN
-                product_template
-            ON
-                (
-                    product_product.product_tmpl_id = product_template.id)
-            WHERE
-                stock_picking.state = 'done' """
+            (
+            product_product.product_tmpl_id = product_template.id)
+            """
         if s_date and e_date and not s_date is None and not e_date is None:
             e_date = datetime.datetime.strptime(str(e_date), "%Y-%m-%d")
             e_date = e_date + datetime.timedelta(days=1)
-            sql_query=sql_query+""" and sale_order.confirmation_date>=%s  and sale_order.confirmation_date<=%s"""
+            sql_query=sql_query+""" and sale_order.state in ('sale','sent') and sale_order.date_order>=%s  and sale_order.date_order<=%s"""
             sql_query = "CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + sql_query + " )"
             self._cr.execute(sql_query, (str(s_date), str(e_date)))
         else:

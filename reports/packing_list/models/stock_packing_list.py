@@ -54,6 +54,7 @@ class PricingRule(models.Model):
 
     def init_table(self):
         tools.drop_view_if_exists(self._cr, 'res_stock_packing_list')
+        stock_location_id = self.env['stock.location'].search([('name', '=', 'Output'), ]).id
         # sql_query = """
         #             TRUNCATE TABLE "res_stock_packing_list"
         #             RESTART IDENTITY;
@@ -121,7 +122,8 @@ class PricingRule(models.Model):
             select_query = select_query + " and sp.carrier_tracking_ref ='" + str(shipping_number) + "'"
         if purchase_order:
             select_query = select_query + " and so.client_order_ref ='" + str(purchase_order) + "'"
-
+        if stock_location_id:
+            select_query = select_query + " and sp.location_dest_id ='" + str(stock_location_id) + "'"
 
 
 

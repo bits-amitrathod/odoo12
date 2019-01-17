@@ -13,7 +13,7 @@ class PopUp(models.TransientModel):
 
     start_date = fields.Date('Start Date')
     end_date = fields.Date(string="End Date")
-    purchase_order = fields.Many2many('purchase.order', string="Receiving")
+    purchase_order = fields.Many2many('purchase.order', string="Receiving",domain="[('state','=','purchase')]",)
 
     compute_at_date = fields.Selection([
         (0, 'Show All'),
@@ -24,14 +24,14 @@ class PopUp(models.TransientModel):
     def open_table(self):
         tree_view_id = self.env.ref('sps_receiving_list_report.form_list_sps').id
         form_view_id = self.env.ref('sps_receiving_list_report.sps_receving_list_form').id
-
+        stock_location_id = self.env['stock.location'].search([('name', '=', 'Stock'), ]).id
         action = {
             'type': 'ir.actions.act_window',
             'views': [(tree_view_id, 'tree'),(form_view_id, 'form')],
             'view_mode': 'tree',
             'name': _('SPS Receiving List'),
             'res_model': 'stock.move.line',
-            'domain': [('state', '=', 'done')],
+            'domain': [('state', '=', 'done'),('location_dest_id.id', '=', stock_location_id)],
             'context': {"search_default_product_group": 1},
             'target': 'main'
         }
@@ -54,4 +54,5 @@ class PopUp(models.TransientModel):
             return action
         else:
             action['domain'].append(('move_id.purchase_line_id', '!=', False))
+            action['domain'].append(('move_id.to_refund', '=', False))
             return action

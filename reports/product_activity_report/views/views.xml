@@ -63,6 +63,29 @@
         </field>
     </record>
 
+    <record model="ir.ui.view" id="product_activity_report_form">
+            <field name="name">product_activity_report_form</field>
+            <field name="model">product.activity.report</field>
+            <field name="arch" type="xml">
+                <form create="false" edit="false" delete="false">
+                    <sheet>
+                        <group>
+                            <field name="warehouse"/>
+                            <field name="date"/>
+                            <field name="location"/>
+                            <field name="event"/>
+                            <field name="change_qty"/>
+                            <field name="agent"/>
+                            <field name="product_id"/>
+                            <field name="sku"/>
+                            <field name="lot"/>
+                            <field name="expiration_date"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+    </record>
+
 
     <menuitem id="menu_stock_product_activity_report" name="Product Activity Report"
               parent="stock.menu_warehouse_report" sequence="110"

@@ -103,7 +103,7 @@ class aging_report(models.Model):
             length=len(location)
             location=location[:length-2]
             location=location+")"
-            select_query=select_query + " WHERE public.stock_quant.location_id in " + str(location)
+            select_query=select_query + " WHERE public.stock_quant.location_id in " + str(location) + " and public.stock_quant.quantity>0"
 
         sql_query="CREATE VIEW aging_report AS ( " + select_query +")"
         self._cr.execute(sql_query)
