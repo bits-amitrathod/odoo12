@@ -311,14 +311,16 @@ class PrioritizationEngine(models.TransientModel):
 
             sale_order.action_confirm()
             _logger.info('sale order id  : %r  sale order state : %r', sale_order.id, sale_order.state)
-            picking = self.env['stock.picking'].search([('sale_id', '=', sale_order.id)])
-            _logger.info('picking before   : %r', picking.state)
-            picking.write(dict(state='confirmed'))
-            _logger.info('picking after   : %r', picking.state)
+
+            picking = self.env['stock.picking'].search([('sale_id', '=', sale_order.id),('picking_type_id', '=', 1)])
+            _logger.info('picking before*   : %r', picking.state)
+            picking.write(dict(state='assigned'))
+            _logger.info('picking after*   : %r', picking.state)
             sale_order.write(dict(state='engine', confirmation_date=''))
             sale_order.force_quotation_send()
-            _logger.info('sale order id  : %r  sale order state : %r', sale_order.id, sale_order.state)
+            _logger.info('sale order id*  : %r  sale order state : %r', sale_order.id, sale_order.state)
             sale_order.write(dict(state='sent', confirmation_date=''))
+            _logger.info('sale order id*  : %r  sale order state : %r', sale_order.id, sale_order.state)
 
 
     # Generate sale order for gl account
@@ -348,14 +350,17 @@ class PrioritizationEngine(models.TransientModel):
 
                 sale_order.action_confirm()
                 _logger.info('sale order id  : %r  sale order state : %r', sale_order.id, sale_order.state)
-                picking = self.env['stock.picking'].search([('sale_id', '=', sale_order.id)])
+
+                picking = self.env['stock.picking'].search([('sale_id', '=', sale_order.id), ('picking_type_id', '=', 1)])
                 _logger.info('picking before   : %r', picking.state)
-                picking.write(dict(state='confirmed'))
+                picking.write(dict(state='assigned'))
                 _logger.info('picking after   : %r', picking.state)
                 sale_order.write(dict(state='engine', confirmation_date=''))
                 sale_order.force_quotation_send()
+                _logger.info('force_quotation_send()')
                 _logger.info('sale order id  : %r  sale order state : %r', sale_order.id, sale_order.state)
                 sale_order.write(dict(state='sent', confirmation_date=''))
+                _logger.info('sale order id  : %r  sale order state : %r', sale_order.id, sale_order.state)
             else:
                 _logger.info('partner id is null')
 
@@ -456,35 +461,36 @@ class PrioritizationEngine(models.TransientModel):
 
             stock_picking = self.env['stock.picking'].search([('sale_id.id', '=', sale_order['id'])])
 
-            stock_move_lines = self.env['stock.move.line'].search([('picking_id.id', '=', stock_picking['id'])])
+            for stock_pick in stock_picking:
+                stock_move_lines = self.env['stock.move.line'].search([('picking_id.id', '=', stock_pick['id'])])
 
-            for stock_move_line in  stock_move_lines:
-                _logger.info('stock move line : %r',stock_move_line)
+                for stock_move_line in  stock_move_lines:
+                    _logger.info('stock move line : %r',stock_move_line)
 
-                # get length of hold
-                _setting_object = self.env['sps.customer.requests'].get_settings_object(sale_order['partner_id'].id, stock_move_line['product_id'].id, None, None)
-                _logger.info('length of hold %r',_setting_object.length_of_hold)
+                    # get length of hold
+                    _setting_object = self.env['sps.customer.requests'].get_settings_object(sale_order['partner_id'].id, stock_move_line['product_id'].id, None, None)
+                    _logger.info('length of hold %r',_setting_object.length_of_hold)
 
-                # get current datetime
-                current_datetime = datetime.now()
-                _logger.info('current datetime :%r ',current_datetime)
-                create_date = datetime.strptime(self.change_date_format(sale_order['create_date']), '%Y,%m,%d,%H,%M,%S')
-                # calculate datetime difference.
-                duration = current_datetime - create_date  # For build-in functions
-                duration_in_hours = self.return_duration_in_hours(duration)
-                if _setting_object and int(_setting_object.length_of_hold) <= int(duration_in_hours):
-                    if stock_move_line.move_id:
-                        _logger.info('call stock_move_line.move_id._do_unreserve()')
-                        stock_move_line.move_id._do_unreserve()
-                else:
-                     _logger.info('Product is in length of hold, unable to release quantity.')
+                    # get current datetime
+                    current_datetime = datetime.now()
+                    _logger.info('current datetime :%r ',current_datetime)
+                    create_date = datetime.strptime(self.change_date_format(sale_order['create_date']), '%Y,%m,%d,%H,%M,%S')
+                    # calculate datetime difference.
+                    duration = current_datetime - create_date  # For build-in functions
+                    duration_in_hours = self.return_duration_in_hours(duration)
+                    if _setting_object and int(_setting_object.length_of_hold) <= int(duration_in_hours):
+                        if stock_move_line.move_id:
+                            _logger.info('call stock_move_line.move_id._do_unreserve()')
+                            stock_move_line.move_id._do_unreserve()
+                    else:
+                         _logger.info('Product is in length of hold, unable to release quantity.')
 
             self.change_sale_order_state(sale_order)
 
     # change sale order state: 'cancel' when length of hold of all products in sale order is finished.
     def change_sale_order_state(self,sale_order):
         _logger.info('In change_sale_order_state()')
-        stock_picking = self.env['stock.picking'].search([('sale_id.id', '=', sale_order['id'])])
+        stock_picking = self.env['stock.picking'].search([('sale_id.id', '=', sale_order['id']),('picking_type_id', '=', 1)])
         _logger.info('stock picking id : %r ',stock_picking['id'])
         stock_move_lines = self.env['stock.move.line'].search([('picking_id.id', '=', stock_picking['id'])])
         _logger.info('stock_move_lines length : %r ', len(stock_move_lines))
