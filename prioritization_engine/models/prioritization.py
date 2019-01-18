@@ -184,6 +184,7 @@ class NotificationSetting(models.Model):
 
     start_date = fields.Date("Start Date")
     end_date = fields.Date("End Date")
+    historic_months = fields.Integer("Last XX Historic Months")
     monday = fields.Boolean("Monday")
     tuesday = fields.Boolean("Tuesday")
     wednesday = fields.Boolean("Wednesday")

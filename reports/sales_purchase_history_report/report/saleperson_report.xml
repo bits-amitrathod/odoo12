@@ -3,7 +3,7 @@
     <data>
         <report
                 id="action_report_purchase_history_wise"
-                string="Purchase History report"
+                string="Sales Purchase History report"
                 model="sale.order.line"
                 report_type="qweb-html"
                 file="sales_purchase_history_report.purchasehistory_temp"

@@ -105,13 +105,13 @@ class DiscountSummaryPopUp(models.TransientModel):
                 if int(record.product_id.id) in product_dict:
                     data = product_dict[int(record.product_id.id)]
                     data['current_month_total_qty'] = data['current_month_total_qty'] + record.qty_done
-                    data['current_month_total_amount'] = data['current_month_total_amount'] + (record.move_id.price_unit * record.qty_done)
+                    data['current_month_total_amount'] = data['current_month_total_amount'] + (record.move_id.sale_line_id.price_unit * record.qty_done)
                     # data.location = stock_move_line.location_id.name
                     product_dict[int(record.product_id.id)] = data
                 else:
                     object = self.comparebymonth()
                     object['current_month_total_qty'] = record.qty_done
-                    object['current_month_total_amount'] = record.move_id.price_unit * record.qty_done
+                    object['current_month_total_amount'] = record.move_id.sale_line_id.price_unit * record.qty_done
                     object['product_name']= record.product_id.name
                     object['sku_code'] = record.product_id.product_tmpl_id.sku_code
                     product_dict[int(record.product_id.id)] = object
@@ -121,13 +121,13 @@ class DiscountSummaryPopUp(models.TransientModel):
                     if int(record.product_id.id) in product_dict:
                         data = product_dict[int(record.product_id.id)]
                         data['last_month_total_qty']= data['last_month_total_qty'] + record.qty_done
-                        data['last_month_total_amount'] = data['last_month_total_amount'] + (record.move_id.price_unit * record.qty_done)
+                        data['last_month_total_amount'] = data['last_month_total_amount'] + (record.move_id.sale_line_id.price_unit * record.qty_done)
                         # data.location = stock_move_line.location_id.name
                         product_dict[int(record.product_id.id)] = data
                     else:
                         object = self.comparebymonth()
                         object['last_month_total_qty' ]= record.qty_done
-                        object['last_month_total_amount'] = record.move_id.price_unit * record.qty_done
+                        object['last_month_total_amount'] = record.move_id.sale_line_id.price_unit * record.qty_done
                         object['product_name'] = record.product_id.name
                         object['currency_symbol'] = record.product_id.currency_id.symbol
                         # object.location = stock_move_line.location_id.name

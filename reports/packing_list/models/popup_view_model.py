@@ -12,7 +12,7 @@ class TrendingReportListPopUp(models.TransientModel):
     start_date = fields.Date('Start Date', help="Choose a date to get the Discount Summary at that  Start date")
     end_date = fields.Date('End Date', help="Choose a date to get the Discount Summary at that  End date")
     order_number = fields.Many2many('sale.order', string="Sale Order")
-    shipping_number = fields.Char()
+    shipping_number = fields.Char("Tracking Reference")
     purchase_order = fields.Char()
     def open_table(self):
         tree_view_id = self.env.ref('packing_list.view_inv_all_packing_list_tree').id
