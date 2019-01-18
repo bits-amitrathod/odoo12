@@ -17,16 +17,15 @@ class ProductSaleByCountReport(models.Model):
     warehouse_id = fields.Many2one('stock.warehouse', 'Warehouse')
     sku_code = fields.Char('Product SKU')
     product_name = fields.Char(string='Product Name')
-    quantity = fields.Char(string='Quantity')
+    quantity = fields.Integer(string='Quantity')
     confirmation_date = fields.Date('Confirmation Date')
+    product_uom = fields.Char(string="UOM")
 
     @api.model_cr
     def init(self):
         self.init_table()
 
     def init_table(self):
-        s_date = self.env.context.get('s_date')
-        e_date = self.env.context.get('e_date')
 
         tools.drop_view_if_exists(self._cr, self._name.replace(".", "_"))
 
@@ -36,9 +35,10 @@ class ProductSaleByCountReport(models.Model):
                 stock_move_line.id,
                 sale_order.warehouse_id ,
                 stock_warehouse.name || '/' || stock_location.name AS location,
-                product_template.sku_code                   AS sku_code,
+                product_template.sku_code as sku_code,
                 product_template.name as product_name,
                 sale_order.confirmation_date,
+                product_uom.name as product_uom,
                 SUM(stock_move_line.qty_done) AS quantity
             FROM
                 sale_order
@@ -80,11 +80,15 @@ class ProductSaleByCountReport(models.Model):
                 stock_location
             ON
                 (stock_picking.location_id = stock_location.id)
+            INNER JOIN
+                product_uom
+            ON
+                ( sale_order_line.product_uom = product_uom.id)
         """
 
         where_clause = "  WHERE  sale_order.state = 'sale'"
         group_order_by = " Group by stock_warehouse.name,stock_location.name,product_template.sku_code,sale_order.confirmation_date," \
-                         "product_template.name,stock_move_line.id,sale_order.user_id,sale_order.warehouse_id " \
+                         "product_template.name,stock_move_line.id,sale_order.user_id,sale_order.warehouse_id,product_uom.name " \
                          "Order by location "
 
         sql_query = select_query + where_clause + group_order_by

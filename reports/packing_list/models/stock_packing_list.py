@@ -20,6 +20,7 @@ class PricingRule(models.Model):
     _description = "sale packing list for customer"
     _auto = False
     shipping_terms=fields.Char(string="Shipping Term")
+    requested_date=fields.Date(string="Req. Ship Date")
     # name = fields.Char(string="Name")
     # state= fields.Char(string="State")
     # carrier_id=fields.Integer(string="Carrier")
@@ -54,6 +55,7 @@ class PricingRule(models.Model):
 
     def init_table(self):
         tools.drop_view_if_exists(self._cr, 'res_stock_packing_list')
+        stock_location_id = self.env['stock.location'].search([('name', '=', 'Customers'), ]).id
         # sql_query = """
         #             TRUNCATE TABLE "res_stock_packing_list"
         #             RESTART IDENTITY;
@@ -79,6 +81,7 @@ class PricingRule(models.Model):
                 else:
                     col = col + "sp."+colmn
         select_query = """ SELECT  distinct sp.*,
+               so.requested_date,
                CASE pr.shipping_terms
                    WHEN '1'
                    THEN 'Prepaid & Billed'
@@ -97,11 +100,7 @@ class PricingRule(models.Model):
                where sp.state='done' and pt.type='product'
         """
         if not sale_number and not shipping_number and not purchase_order:
-
-
-            if (s_date is False and e_date is False) or (s_date is None and e_date is None):
-                 select_query = select_query + " " + " and FALSE"
-            else:
+            if (s_date and e_date ) or (not s_date is None and not  e_date is None):
                 if s_date and (not s_date is None):
                     start_date = datetime.datetime.strptime(str(s_date), "%Y-%m-%d")
                     select_query = select_query + " and sp.write_date >='" + str(start_date) + "'"
@@ -121,7 +120,8 @@ class PricingRule(models.Model):
             select_query = select_query + " and sp.carrier_tracking_ref ='" + str(shipping_number) + "'"
         if purchase_order:
             select_query = select_query + " and so.client_order_ref ='" + str(purchase_order) + "'"
-
+        if stock_location_id:
+            select_query = select_query + " and sp.location_dest_id ='" + str(stock_location_id) + "'"
 
 
 

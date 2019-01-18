@@ -13,11 +13,10 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'fetchmail', 'sale', 'prioritization_engine'],
+    'depends': ['base', 'fetchmail', 'sale', 'prioritization_engine','purchase'],
 
     # always loaded
     'data': [
-        'security/res_user_cust_requests.xml',
         'security/ir.model.access.csv',
         'views/voided_product_template_views.xml',
         'views/views.xml',

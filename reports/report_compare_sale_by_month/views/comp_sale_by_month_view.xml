@@ -57,8 +57,8 @@
               <field name="priority">20</field>
               <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false">
-                    <field name="sku_code"/>
-                    <field name="name"/>
+                    <field name="sku_code" string="Product SKU"/>
+                    <field name="name" string="Product Name"/>
                     <field name="last_month_total_qty" />
                     <field name="last_month_total_amount" widget="monetary" />
                     <field name="current_month_total_qty" />

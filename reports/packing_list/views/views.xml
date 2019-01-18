@@ -39,9 +39,12 @@
           <field name="priority">20</field>
           <field name="arch" type="xml">
             <tree create="false" edit="false" delete="false" >
-                <field name="origin"/>
-                 <field name="partner_id"/>
-                <field name="carrier_id"/>
+                 <field name="origin"/>
+                 <field name="partner_id" string="Customer"/>
+                 <field name="requested_date" string="Req. Ship Date"/>
+                 <field name="shipping_terms" string="Shipping Terms"/>
+                 <field name="carrier_id" string="Ship Via"/>
+                 <field name="carrier_tracking_ref" />
                  <field name="state"/>
 
             </tree>

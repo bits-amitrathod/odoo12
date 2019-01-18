@@ -9,13 +9,13 @@
                     <center>
                         <b>
                             <h2> Surgical Product Solutions </h2>
-                            <h4> Custom Purchase History </h4>
+                            <h4> Custom Product Catalog </h4>
                         </b>
                     </center>
                     </div>
                     <br/>
                         <t t-set="total_sum" t-value="0"/>
-                        <div >
+                        <div>
                         <table class="table table-condensed" style="border: 1px solid black;">
                             <thead style="display: table-header-group;">
                                 <tr style="border: 1px solid black;">
@@ -41,19 +41,19 @@
                                         <span t-esc="order.sku_code"/>
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.name"/>
+                                        <span t-esc="order.product_templ_id.name"/>
                                     </td>
                                     <td align="right" style="border: 1px solid black;">
-                                        <span t-esc="order.product_qty"/>
+                                        <span t-field="order.product_qty"/>
                                     </td>
                                     <td  align="right" style="border: 1px solid black;white-space: nowrap;">
                                         <span  t-esc="order.list_price" t-options='{"widget": "monetary","display_currency": order.currency_id}'/>
                                     </td>
                                     <td align="center" style="border: 1px solid black;">
-                                        <span t-esc="order.exp_min_date"/>
+                                        <span t-esc="order.exp_min_date" t-options='{"widget": "date"}'/>
                                     </td>
                                     <td align="center" style="border: 1px solid black;">
-                                        <span t-esc="order.exp_max_date"/>
+                                        <span t-esc="order.exp_max_date" t-options='{"widget": "date"}'/>
                                     </td>
                                 </tr>
                             </tbody>

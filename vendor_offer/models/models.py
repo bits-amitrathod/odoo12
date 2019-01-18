@@ -2,10 +2,38 @@
 
 from odoo import models, fields, api, SUPERUSER_ID, _
 from odoo.addons import decimal_precision as dp
+from .fedex_request import FedexRequest
 from odoo.exceptions import UserError, AccessError, ValidationError
 import datetime
 import math
 from random import randint
+from odoo.tools import pdf
+import logging
+
+_logger = logging.getLogger(__name__)
+# Why using standardized ISO codes? It's way more fun to use made up codes...
+# https://www.fedex.com/us/developer/WebHelp/ws/2014/dvg/WS_DVG_WebHelp/Appendix_F_Currency_Codes.htm
+FEDEX_CURR_MATCH = {
+    u'UYU': u'UYP',
+    u'XCD': u'ECD',
+    u'MXN': u'NMP',
+    u'KYD': u'CID',
+    u'CHF': u'SFR',
+    u'GBP': u'UKL',
+    u'IDR': u'RPA',
+    u'DOP': u'RDD',
+    u'JPY': u'JYE',
+    u'KRW': u'WON',
+    u'SGD': u'SID',
+    u'CLP': u'CHP',
+    u'JMD': u'JAD',
+    u'KWD': u'KUD',
+    u'AED': u'DHS',
+    u'TWD': u'NTD',
+    u'ARS': u'ARN',
+    u'LVL': u'EURO',
+}
+
 
 class VendorOffer(models.Model):
     _description = "Vendor Offer"
@@ -35,9 +63,9 @@ class VendorOffer(models.Model):
     # val_temp = fields.Char(string='Temp', default=0)
     temp_payment_term = fields.Char(string='Temp')
 
-    show_validate = fields.Boolean(
+    '''show_validate = fields.Boolean(
         compute='_compute_show_validate',
-        help='Technical field used to compute whether the validate should be shown.')
+        help='Technical field used to compute whether the validate should be shown.')'''
 
     offer_type = fields.Selection([
         ('cash', 'Cash'),
@@ -121,7 +149,7 @@ class VendorOffer(models.Model):
                 order.appraisal_no = 'AP' + str(randint(11111, 99999))
 
     @api.onchange('accelerator', 'order_line.taxes_id')
-    @api.depends('order_line.price_total','accelerator', 'order_line.price_total', 'order_line.taxes_id',
+    @api.depends('order_line.price_total', 'accelerator', 'order_line.price_total', 'order_line.taxes_id',
                  'order_line.rt_price_tax', 'order_line.product_retail', 'order_line.rt_price_total')
     def _amount_all(self):
         if self.env.context.get('vendor_offer_data'):
@@ -344,13 +372,13 @@ class VendorOfferProduct(models.Model):
 
     product_tier = fields.Many2one('tier.tier', string="Tier")
     product_sales_count = fields.Integer(string="Sales Count All", readonly=True,
-                                      compute='onchange_product_id_vendor_offer')
-    product_sales_count_month = fields.Integer(string="Sales Count Month", readonly=True,
-                                            compute='onchange_product_id_vendor_offer')
-    product_sales_count_90 = fields.Integer(string="Sales Count 90 Days", readonly=True,
                                          compute='onchange_product_id_vendor_offer')
+    product_sales_count_month = fields.Integer(string="Sales Count Month", readonly=True,
+                                               compute='onchange_product_id_vendor_offer')
+    product_sales_count_90 = fields.Integer(string="Sales Count 90 Days", readonly=True,
+                                            compute='onchange_product_id_vendor_offer')
     product_sales_count_yrs = fields.Integer(string="Sales Count Yr", readonly=True,
-                                          compute='onchange_product_id_vendor_offer')
+                                             compute='onchange_product_id_vendor_offer')
     qty_in_stock = fields.Integer(string="Quantity In Stock", readonly=True, compute='onchange_product_id_vendor_offer')
     expiration_date = fields.Datetime(string="Expiration Date", readonly=True)
     expired_inventory = fields.Char(string="Expired Inventory Items", compute='expired_inventory_cal', readonly=True)
@@ -576,3 +604,119 @@ class ProductTemplate(models.Model):
 
     tier = fields.Many2one('tier.tier', string="Tier")
     class_code = fields.Many2one('classcode.classcode', string="Class Code")
+
+
+class FedexDelivery(models.Model):
+    _inherit = 'delivery.carrier'
+
+    def fedex_send_shipping_label(self, order, popup):
+        res = []
+        srm = FedexRequest(self.log_xml, request_type="shipping", prod_environment=self.prod_environment)
+        superself = self.sudo()
+        srm.web_authentication_detail(superself.fedex_developer_key, superself.fedex_developer_password)
+        srm.client_detail(superself.fedex_account_number, superself.fedex_meter_number)
+        srm.transaction_detail(order.id)
+        package_type = popup.product_packaging.name  # 'FEDEX_BOX' #picking.package_ids and picking.package_ids[0].packaging_id.shipper_package_code or self.fedex_default_packaging_id.shipper_package_code
+        srm.shipment_request(self.fedex_droppoff_type, self.fedex_service_type, package_type, self.fedex_weight_unit,
+                             self.fedex_saturday_delivery)
+        srm.set_currency(_convert_curr_iso_fdx(order.currency_id.name))
+        srm.set_shipper(order.partner_id, order.company_id.partner_id)
+        srm.set_recipient(order.company_id.partner_id)
+        srm.shipping_charges_payment(superself.fedex_account_number)
+        srm.shipment_label('COMMON2D', self.fedex_label_file_type, self.fedex_label_stock_type,
+                           'TOP_EDGE_OF_TEXT_FIRST', 'SHIPPING_LABEL_FIRST')
+        order_currency = order.currency_id
+        net_weight = _convert_weight(popup.weight, 'LB')
+
+        # Commodities for customs declaration (international shipping)
+        if self.fedex_service_type in ['INTERNATIONAL_ECONOMY', 'INTERNATIONAL_PRIORITY'] or (
+                order.partner_id.country_id.code == 'IN' and order.company_id.partner_id.country_id.code == 'IN'):
+            commodity_currency = order_currency
+            total_commodities_amount = 0.0
+            commodity_country_of_manufacture = order.company_id.partner_id.country_id.code
+
+            '''for operation in picking.move_line_ids:
+                commodity_amount = order_currency.compute(operation.product_id.list_price, commodity_currency)
+                total_commodities_amount += (commodity_amount * operation.qty_done)
+                commodity_description = operation.product_id.name
+                commodity_number_of_piece = '1'
+                commodity_weight_units = self.fedex_weight_unit
+                commodity_weight_value = _convert_weight(operation.product_id.weight * operation.qty_done, self.fedex_weight_unit)
+                commodity_quantity = operation.qty_done
+                commodity_quantity_units = 'EA'
+            srm.commodities(_convert_curr_iso_fdx(currency.name), commodity_amount, commodity_number_of_piece, commodity_weight_units, commodity_weight_value, commodity_description, commodity_country_of_manufacture, commodity_quantity, commodity_quantity_units)
+            #srm.commodities(_convert_curr_iso_fdx('LB'), 0, '1',
+                            'LB', 10, 'test',
+                            commodity_country_of_manufacture, 1, 'EA')'''
+            srm.customs_value(_convert_curr_iso_fdx(commodity_currency.name), total_commodities_amount, "NON_DOCUMENTS")
+            srm.duties_payment(order.company_id.partner_id.country_id.code, superself.fedex_account_number)
+
+        # TODO RIM master: factorize the following crap
+        srm.add_package(net_weight)
+        srm.set_master_package(net_weight, 1)
+
+        # Ask the shipping to fedex
+        request = srm.process_shipment()
+
+        warnings = request.get('warnings_message')
+        if warnings:
+            _logger.info(warnings)
+
+        if not request.get('errors_message'):
+
+            if _convert_curr_iso_fdx(order_currency.name) in request['price']:
+                carrier_price = request['price'][_convert_curr_iso_fdx(order_currency.name)]
+            else:
+                _logger.info("Preferred currency has not been found in FedEx response")
+                company_currency = order.currency_id
+                if _convert_curr_iso_fdx(company_currency.name) in request['price']:
+                    carrier_price = company_currency.compute(
+                        request['price'][_convert_curr_iso_fdx(company_currency.name)], order_currency)
+                else:
+                    carrier_price = company_currency.compute(request['price']['USD'], order_currency)
+
+            carrier_tracking_ref = request['tracking_number']
+            logmessage = (_("Shipment created into Fedex <br/> <b>Tracking Number : </b>%s") % (carrier_tracking_ref))
+
+            fedex_labels = [('LabelFedex-%s-%s.%s' % (carrier_tracking_ref, index, self.fedex_label_file_type), label)
+                            for index, label in enumerate(srm._get_labels(self.fedex_label_file_type))]
+            order.message_post(body=logmessage, attachments=fedex_labels)
+
+            shipping_data = {'exact_price': carrier_price,
+                             'tracking_number': carrier_tracking_ref}
+            res = res + [shipping_data]
+        else:
+            raise UserError(request['errors_message'])
+        return res
+
+
+def _convert_weight(weight, unit='KG'):
+    ''' Convert picking weight (always expressed in KG) into the specified unit '''
+    if unit == 'KG':
+        return weight
+    elif unit == 'LB':
+        return weight / 0.45359237
+    else:
+        raise ValueError
+
+
+def _convert_curr_iso_fdx(code):
+    return FEDEX_CURR_MATCH.get(code, code)
+
+
+class StockPicking(models.Model):
+    _inherit = 'stock.picking'
+
+    @api.multi
+    def send_to_shipper(self):
+        self.ensure_one()
+        res = self.carrier_id.send_shipping(self)[0]
+        if self.carrier_id.free_over and self.sale_id and self.sale_id._compute_amount_total_without_delivery() >= self.carrier_id.amount:
+            res['exact_price'] = 0.0
+        self.carrier_price = res['exact_price']
+        if res['tracking_number']:
+            self.carrier_tracking_ref = res['tracking_number']
+        order_currency = self.sale_id.currency_id or self.company_id.currency_id
+        msg = _("Shipment sent to carrier %s for shipping with tracking number %s<br/>Cost: %.2f %s") % (
+        self.carrier_id.name, self.carrier_tracking_ref, self.carrier_price, order_currency.name)
+        self.message_post(body=msg)

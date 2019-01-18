@@ -20,15 +20,15 @@ class SaleOrder(models.Model):
         ('cancel', 'Cancelled'),
         ('void', 'Voided'),
     ], string='Status', readonly=True, copy=False, index=True, track_visibility='onchange', default='draft')
-    show_validate = fields.Boolean(
+    '''show_validate = fields.Boolean(
         compute='_compute_show_validate',
-        help='Technical field used to compute whether the validate should be shown.')
+        help='Technical field used to compute whether the validate should be shown.')'''
     shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
     preferred_method = fields.Selection(string='Preferred Invoice Delivery Method', related='partner_id.preferred_method', readonly=True)
     carrier_info = fields.Char("Carrier Info",related='partner_id.carrier_info',readonly=True)
     carrier_acc_no = fields.Char("Carrier Account No",related='partner_id.carrier_acc_no',readonly=True)
 
-    @api.multi
+    ''' @api.multi
     def _compute_show_validate(self):
         _logger.info('self %r',self)
         sale_order_list = [self.ids]
@@ -38,7 +38,7 @@ class SaleOrder(models.Model):
             if len(multi) == 1 and self.delivery_count ==1:
                 self.show_validate=multi.show_validate
             elif self.delivery_count > 1:
-                self.show_validate=True
+                self.show_validate=True'''
 
     @api.multi
     def action_void(self):
@@ -52,12 +52,12 @@ class SaleOrder(models.Model):
                     'You can not delete a sent quotation or a sales order! Try to cancel or void it before.')
         return models.Model.unlink(self)
 
-    def action_validate(self):
+    '''def action_validate(self):
         multi = self.env['stock.picking'].search([('sale_id', '=', self.id)])
         if len(multi) == 1 and self.delivery_count ==1:
             return multi.button_validate()
         elif self.delivery_count>1:
-            raise ValidationError(_('Validate is not possible for multiple delivery please do validate one by one'))
+            raise ValidationError(_('Validate is not possible for multiple delivery please do validate one by one'))'''
 
 
     def action_assign(self):
@@ -183,6 +183,25 @@ class StockPicking(models.Model):
             return self.action_generate_backorder_wizard()
         self.action_done()
         return
+
+    @api.multi
+    def send_to_shipper(self):
+        print("inside send to shipper")
+        print(self.carrier_tracking_ref)
+        self.ensure_one()
+        if not self.carrier_tracking_ref:
+            res = self.carrier_id.send_shipping(self)[0]
+            if self.carrier_id.free_over and self.sale_id and self.sale_id._compute_amount_total_without_delivery() >= self.carrier_id.amount:
+                res['exact_price'] = 0.0
+            self.carrier_price = res['exact_price']
+            if res['tracking_number']:
+                self.carrier_tracking_ref = res['tracking_number']
+            order_currency = self.sale_id.currency_id or self.company_id.currency_id
+            msg = _("Shipment sent to carrier %s for shipping with tracking number %s<br/>Cost: %.2f %s") % (self.carrier_id.name, self.carrier_tracking_ref, self.carrier_price, order_currency.name)
+            self.message_post(body=msg)
+        else:
+            self.message_post(body="Already tracking created")
+
 
 class AccountInvoice(models.Model):
         _inherit = 'account.invoice'

@@ -3,7 +3,7 @@
     <data>
         <report
                 id="action_pick_report"
-                string="Pick Report"
+                string="Pick Ticket"
                 model="report.pick.ticket"
                 report_type="qweb-html"
                 file="pick_ticket.pick_ticket_report1"

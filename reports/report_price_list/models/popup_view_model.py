@@ -9,12 +9,17 @@ class CustomerListPopUp(models.TransientModel):
     _name = 'inventory.customer_price_list_popup'
     _description = 'Inventory Customer Price List PopUp'
     customer_list = fields.Many2one('res.partner',string='Customer',domain="[('active','=',True),('customer','=',True),('is_parent','=',True)]", required=True)
+    products = fields.Many2one('product.product', string='Product SKU',
+                               domain="[('active','=',True),('product_tmpl_id.type','=','product')]")
     def open_table(self):
         #print(self.env.ref('inventory__allocation_so.view_inv_all_so_tree').id)
         tree_view_id = self.env.ref('report_price_list.view_inv_all_pricing_rule_customer_tree').id
-        form_view_id = self.env.ref('product.product_template_form_view').id
-
-        products=self.env['product.product'].search([])
+        form_view_id = self.env.ref('report_price_list.inv_customer_price_list_form').id
+        if self.products:
+            products=self.env['product.product'].search([('id','=',self.products.id),('product_tmpl_id.type','=','product')])
+        else:
+            products = self.env['product.product'].search(
+                [('product_tmpl_id.type', '=', 'product')])
 
         margins_context = {'customer_list': self.customer_list,'product_id':products}
         x_res_model = 'inv.customer_price_list'
@@ -24,7 +29,7 @@ class CustomerListPopUp(models.TransientModel):
         action = {
             'type': 'ir.actions.act_window',
             'view_mode': 'tree,form',
-            'views': [(tree_view_id, 'tree')],
+            'views': [(tree_view_id, 'tree'),(form_view_id,'form')],
             'name': _('Customer Price List'),
 
             'res_model': x_res_model,
@@ -54,6 +59,7 @@ class ProductListPopUp(models.TransientModel):
              'views': [(tree_view_id, 'tree'),(form_view_id,'form')],
              'name': _('Product Price List'),
              'res_model': 'product.product',
+             'domain':[('active','=',True),('product_tmpl_id.type','=','product')],
              'target': 'main'
          }
         else:
@@ -61,7 +67,7 @@ class ProductListPopUp(models.TransientModel):
             action = {
                 'type': 'ir.actions.act_window',
                 'view_mode': 'tree,form',
-                'views': [(tree_view_id, 'tree')],
+                'views': [(tree_view_id, 'tree'),(form_view_id,'form')],
                 'name': _('Product Price List'),
                 'res_model': 'product.product',
                 'domain': [('id', 'in', [products.id])],

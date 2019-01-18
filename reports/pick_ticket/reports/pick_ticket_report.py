@@ -14,7 +14,8 @@ class ReportPickTicketOrderOrDate(models.AbstractModel):
             product = {'quantity': int(float(pick.qty_done)),
                                  'product': pick.product_id.name,
                                  'location': pick.location_id.display_name,
-                                 'destination': pick.location_dest_id.display_name}
+                                 'destination': pick.location_dest_id.display_name,
+                                 'product_uom': pick.product_uom_id.name}
             if old == pick.picking_id.id:
                 picks[old]['product'].append(product)
             else:
@@ -29,6 +30,7 @@ class ReportPickTicketOrderOrDate(models.AbstractModel):
                     'picking_type': pick.picking_type_id.name,
                     'warehouse': pick.warehouse_id.name,
                     'picking': pick.picking_id.name,
+                    'product_uom': pick.product_uom_id.name,
                     'product': [product]}
 
         popup = self.env['popup.pick.ticket'].search([('create_uid', '=', self._uid)], limit=1,

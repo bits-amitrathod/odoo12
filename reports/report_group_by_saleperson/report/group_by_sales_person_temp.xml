@@ -10,8 +10,9 @@
                             <b>
                                 <h2>Surgical Product Solutions</h2>
                                 <h4>Gross Sales By Salesperson</h4>
-                                <h4 t-if="date">
-                                    <span t-esc="date"/>
+                                <h4 t-if="popup.compute_at_date">
+                                     Date Range: <span t-esc="popup.start_date" t-options='{"widget": "date"}'/>
+                                             -  <span t-esc="popup.end_date" t-options='{"widget": "date"}'/>
                                 </h4>
                             </b>
                         </center>
@@ -41,7 +42,7 @@
                             </thead>
                             <tbody>
                                 <tr t-foreach="user[1]" t-as="order">
-                                    <td style="border: 1px solid black;">
+                                    <td style="border: 1px solid black;" align="center">
                                         <span t-esc="order[0]"/>
                                     </td>
                                     <td align="center" style="border: 1px solid black;">

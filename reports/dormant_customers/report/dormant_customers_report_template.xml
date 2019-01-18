@@ -10,7 +10,9 @@
                             <b>
                                 <h2>Surgical Product Solutions</h2>
                                 <h4>Dormant Customers</h4>
-                                <h4 t-if="dateRange">Customers who have not purchased within date range: <span t-esc="dateRange"/></h4>
+                                <h4 t-if="dateRange.compute_at_date">Customers who have not purchased within date range:<span t-esc="dateRange.start_date" t-options='{"widget": "date"}'/>
+                                - <span t-esc="dateRange.end_date" t-options='{"widget": "date"}'/>
+                                </h4>
                             </b>
                         </center>
                     </div>
@@ -32,11 +34,11 @@
                                     <td align="left" style="border: 1px solid black;">
                                         <span t-esc="order.display_name"/>
                                     </td>
-                                    <td align="left" style="border: 1px solid black;">
+                                    <td align="left" style="border: 1px solid black;text-align: center;">
                                         <span t-esc="order.sale_order"/>
                                     </td>
-                                    <td align="left" style="border: 1px solid black;">
-                                        <span t-esc="order.last_purchase_date" widget="date"/>
+                                    <td align="left" style="border: 1px solid black; text-align: center;">
+                                        <span t-esc="order.last_purchase_date" t-options='{"widget": "date"}'/>
                                     </td>
                                     <!--<td align="left" style="border: 1px solid black;">-->
                                         <!--<span t-esc="order.last_purchased_product"/>-->

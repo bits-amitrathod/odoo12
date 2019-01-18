@@ -15,7 +15,7 @@
                  <div style="margin:auto;width:100%;background-color:  #ffffff;  padding-left: 60px;"/>
                     <div>
                         <div >
-                            <p>Hi Team,</p>
+                            <p>Hello</p>
                             <p> ${ctx['descrption']} </p>
                         </div>
                         <center>

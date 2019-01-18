@@ -115,24 +115,62 @@
         <menuitem action="purchase_form_action_vendor" id="purchase.menu_purchase_form_action"
                   parent="purchase.menu_procurement_management" sequence="5"/>
 
+
+        <record id="view_tracking_text" model="ir.ui.view">
+            <field name="name">Generate Shipping Label</field>
+            <field name="model">purchase.order.shipping.popup</field>
+            <field name="arch" type="xml">
+                <form string="Generate Tracking Text">
+                    <group>
+                        <field name="carrier_id"/>
+                        <field name="product_packaging"/>
+                        <field name="weight" class="oe_inline"/>
+                        <!--<field name="weight_uom_id" nolabel="1" class="oe_inline" style="margin-left:5px"/>-->
+                    </group>
+                    <footer>
+                        <button name="action_tracking" string="Generate Shipping Label" type="object"
+                                class="btn-primary"/>
+                        <button string="_Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_view_tracking_text" model="ir.actions.act_window">
+            <field name="name">Generate Shipping Label</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.order.shipping.popup</field>
+            <field name="domain">[('purchase_order','=',context.get('id'))]</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_tracking_text"/>
+            <field name="target">new</field>
+        </record>
+
         <record id="view_vendor_offer_form" model="ir.ui.view">
+
             <field name="name">purchase.order.form</field>
             <field name="model">purchase.order</field>
             <field name="context">{state: 'ven_draft'}</field>
             <field name="arch" type="xml">
                 <form string="Vendor Offer" class="o_sale_order">
                     <header>
-                        <button name="action_send_offer_email" string="Send Offer by Email" type="object"
-                                context="{'send_rfq':True}" class="btn-primary"
-                                attrs="{'invisible':[('state', 'in', ('purchase'))]}"/>
-                        <button name="action_print_vendor_offer" string="Print Vendor Offer" type="object"
+                        <button name="action_send_offer_email" string="Send" type="object" context="{'send_rfq':True}"
                                 class="btn-primary" attrs="{'invisible':[('state', 'in', ('purchase'))]}"/>
+                        <button name="action_print_vendor_offer" string="Print" type="object" class="btn-primary"
+                                attrs="{'invisible':[('state', 'in', ('purchase'))]}"/>
                         <button name="action_button_confirm" states="ven_draft,ven_sent"
                                 context="{'vendor_offer_data': True}" string="Confirm Order" type="object"/>
                         <button name="action_cancel_vendor_offer" states="ven_draft,ven_sent" string="Cancel"
                                 type="object"/>
                         <field name="status" widget="statusbar" statusbar_visible="ven_draft,ven_sent,purchase"
                                readonly="1"/>
+                        <button string="Shipping Label"
+                                type="action" class="btn-primary"
+                                name="%(action_view_tracking_text)d"
+                                attrs="{'invisible': [('status', 'not in', 'ven_draft')]}"
+                                groups="stock.group_stock_user"/>
+
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
@@ -275,19 +313,21 @@
                                 <group>
                                     <group class="oe_subtotal_footer oe_right">
 
-                                        <field name="amount_untaxed" widget="monetary" string="Untaxed Offer Price"/>
+                                        <field name="amount_untaxed" widget="monetary"
+                                               string="Untaxed Offer Price"/>
                                         <field name="amount_tax" string="Tax"/>
                                         <field name="amount_total" widget="monetary" string="Total Offer Price"/>
                                         <!--<field name="val_bool_temp" invisible="1"/>-->
                                         <!--attrs="{'invisible':[('val_bool_temp','=',False)]}"  -->
                                         <!--<button name="update_values_vendor" string="Update Values" type="object"-->
-                                                <!--class="btn-primary"/>-->
+                                        <!--class="btn-primary"/>-->
                                     </group>
                                     <group class="oe_subtotal_footer oe_right">
                                         <field name="rt_price_subtotal_amt" widget="monetary"
                                                string="Untaxed Retail Price"/>
                                         <field name="rt_price_tax_amt" string="Tax"/>
-                                        <field name="rt_price_total_amt" widget="monetary" string="Total Retail Price"/>
+                                        <field name="rt_price_total_amt" widget="monetary"
+                                               string="Total Retail Price"/>
                                     </group>
                                 </group>
                                 <field name="notes" class="oe_inline"
@@ -329,16 +369,23 @@
             </field>
         </record>
 
+
         <record id="purchase_order_form" model="ir.ui.view">
+
             <field name="name">purchase.order.form</field>
             <field name="model">purchase.order</field>
             <field name="inherit_id" ref="purchase.purchase_order_form"></field>
             <field name="arch" type="xml">
                 <button name="button_unlock" position="after">
-                    <field name="show_validate" invisible="1"/>
-                    <button name="action_validate"
-                            attrs="{'invisible': ['|', ('show_validate', '=', False),('state', 'not in', 'purchase')]}"
-                            string="Validate" groups="stock.group_stock_user" type="object" class="oe_highlight"/>
+                    <field name="status_ven" invisible="1"/>
+                    <!--<button name="action_validate"  attrs="{'invisible': ['|', ('show_validate', '=', False),('state', 'not in', 'purchase')]}"  string="Validate" groups="stock.group_stock_user" type="object" class="oe_highlight"/>-->
+                    <button string="Shipping Label"
+                            type="action" class="btn-primary"
+                            name="%(action_view_tracking_text)d"
+                            attrs="{'invisible': [('status_ven', 'not in', 'Accepted')]}"
+                            groups="stock.group_stock_user"/>
+
+
                 </button>
                 <xpath expr="//group/group/field[@name='origin']" position="replace">
                     <field name="origin" string="Sale Order#"/>
@@ -364,7 +411,6 @@
                     <field name="expected_date"></field>
                     <field name="appraisal_no"></field>
                 </xpath>
-
                 <xpath expr="//notebook/page/field[@name='order_line']" position="replace">
                     <field name="order_line" attrs="{'readonly': [('vendor_offer_data', '=', True)]}">
                         <tree string="Purchase Order Lines" editable="False">
@@ -396,8 +442,7 @@
                             <field name="taxes_id" widget="many2many_tags" domain="[('type_tax_use','=','purchase')]"
                                    context="{'default_type_tax_use': 'purchase'}" options="{'no_create': True}"/>
                             <field name="price_subtotal" widget="monetary"/>
-                            <button name="action_show_details" string="Register lots, packs, location" type="object"
-                                    icon="fa-list" options='{"warn": true}' states="purchase"/>
+                            <!-- <button name="action_show_details" string="Register lots, packs, location" type="object" icon="fa-list"  options='{"warn": true}' states="purchase"/>-->
 
                         </tree>
                     </field>
@@ -475,9 +520,11 @@
 
         </record>
 
+
         <menuitem
                 id="menu_product_in_config_purchase_setting" name="Setting" sequence="99"
                 parent="purchase.menu_purchase_root"/>
+
 
         <menuitem
                 id="menu_product_in_config_purchase_multiplier" name="Multiplier"

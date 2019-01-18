@@ -9,7 +9,7 @@ _logger = logging.getLogger(__name__)
 class DormantCustomer(models.Model):
     _inherit = "res.partner"
 
-    last_purchase_date = fields.Datetime("Last Purchased Date ", store=False, compute='_compute_last_purchase')
+    last_purchase_date = fields.Date("Last Purchased Date ", store=False, compute='_compute_last_purchase')
     sale_order=fields.Char("Sales Order#", store=False,compute='_compute_last_purchase')
     # last_purchased_product = fields.Char('Last Purchased Product', store=False)
 
