@@ -19,9 +19,9 @@ class InventoryNotificationScheduler(models.TransientModel):
 
     def process_manual_notification_scheduler(self):
         _logger.info("process_manual_notification_scheduler called..")
-        #product_lots = self.env['stock.production.lot'].search([])
-        #for product_lot in product_lots:
-            #_logger.info("product_lot:%r", product_lot)
+        product_lots = self.env['stock.production.lot'].search([])
+        for product_lot in product_lots:
+            _logger.info("product_lot:%r", product_lot)
         self.process_notification_scheduler()
 
 
@@ -29,10 +29,10 @@ class InventoryNotificationScheduler(models.TransientModel):
     @api.multi
     def process_notification_scheduler(self):
         _logger.info("process_notification_scheduler called")
-        #self.process_new_product_scheduler()
-        #self.process_notify_available()
-        #self.process_packing_list()
-        #self.process_on_hold_customer()
+        self.process_new_product_scheduler()
+        self.process_notify_available()
+        self.process_packing_list()
+        self.process_on_hold_customer()
         self.process_in_stock_scheduler()
 
     def process_in_stock_scheduler(self):
