@@ -8,6 +8,7 @@
             <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false">
 
+                       <field name="location_id"/>
                       <field name="sku_code"/>
                       <field name="product_name"/>
                       <field name="lot_name"/>
