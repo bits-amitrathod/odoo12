@@ -29,4 +29,4 @@ class ReportProductVendorList(models.AbstractModel):
     _name = 'report.product_vendor_list.productvendorlist_temp_test'
     @api.model
     def get_report_values(self, docids, data=None):
-         return {'data': self.env['purchase.order'].browse(docids)}
+         return {'data': list(self.env['purchase.order.line'].browse(docids))}
