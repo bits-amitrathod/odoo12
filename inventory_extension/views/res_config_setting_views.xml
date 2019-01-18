@@ -50,6 +50,19 @@
                     <!--<value>True</value>-->
 
          <!--</function>-->
+    <record id="vpicktree_ext" model="ir.ui.view">
+        <field name="name">stock.picking.tree</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.vpicktree"/>
+        <field name="arch" type="xml">
+             <field name="origin" position="replace">
+                 <field name="origin" invisible="1" />
+             </field>
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="origin"/>
+            </xpath>
+        </field>
+    </record>
     </data>
 </odoo>
 

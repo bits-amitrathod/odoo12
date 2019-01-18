@@ -75,6 +75,7 @@ class ReportInStockReport(models.Model):
     max_expiration_date = fields.Date("Max Expiration Date", store=False)
     price_list=fields.Float("Sales Price",compute='_calculate_max_min_lot_expiration')
     confirmation_date = fields.Date('Confirmation Date',)
+    partn_name=fields.Char()
 
     @api.multi
     def _calculate_max_min_lot_expiration(self):
@@ -98,7 +99,8 @@ class ReportInStockReport(models.Model):
 
         sql_query = """
             SELECT DISTINCT 
-            CONCAT(sale_order.partner_id, product_product.id) as id,
+             ON(CONCAT(sale_order.partner_id, product_product.id)) CONCAT(sale_order.partner_id, product_product.id) as partn_name,
+            sale_order_line.id as id,
             sale_order.partner_id,
             sale_order.user_id,
             sale_order.confirmation_date,
