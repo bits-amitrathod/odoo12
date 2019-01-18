@@ -22,12 +22,13 @@ class ReportPickTicketGroupByOrderDate(models.TransientModel):
        #                    'end_date': self.string_to_date(str(self.end_date))}
 
         tree_view_id = self.env.ref('product_activity_report.product_activity_report_list').id
+        form_view_id = self.env.ref('product_activity_report.product_activity_report_form').id
         res_model = 'product.activity.report'
         self.env[res_model].delete_and_create() #with_context(margins_context).
 
         action = {
             "type": "ir.actions.act_window",
-            'views': [(tree_view_id, 'tree')],
+            'views': [(tree_view_id, 'tree'),(form_view_id, 'form')],
             "res_model": res_model,
             "name": "Product Activity Report",
             "context": {"search_default_product_activity": 1},
@@ -67,6 +68,7 @@ class ReportProductActivity(models.TransientModel):
     lot = fields.Char(string="Lot")
     expiration_date = fields.Date(string="Expiration Date")
     type = fields.Char(string="Type")
+    product_id = fields.Many2one('product.template', 'Product')
 
     def init(self):
         self.init_table()
@@ -86,7 +88,7 @@ class ReportProductActivity(models.TransientModel):
         #     date_clause = False
 
         insert = "INSERT INTO product_activity_report" \
-                 "(warehouse, date,location_id, location,event,change_qty,agent,sku,lot,expiration_date,type)"
+                 "(warehouse, date,location_id, location,event,change_qty,agent,sku,lot,expiration_date,product_id,type)"
 
         # -------------------- purchase ------------------------
         sql_query = insert + """ 
@@ -100,7 +102,8 @@ class ReportProductActivity(models.TransientModel):
                         res_partner.name                                          AS user,
                         product_template.sku_code                                 AS sku,
                         stock_production_lot.name                                 AS lot,
-                        stock_production_lot.removal_date                         AS expiration_date,
+                        stock_production_lot.use_date                         AS expiration_date,
+                        product_template.id                                   AS product_id,
                         'Purchase' as type 
                     FROM
                         purchase_order_line
@@ -178,7 +181,8 @@ class ReportProductActivity(models.TransientModel):
                         res_partner.name                                          AS USER,
                         product_template.sku_code                                 AS sku,
                         stock_production_lot.name                                 AS lot,
-                        stock_production_lot.removal_date                         AS expiration_date,
+                        stock_production_lot.use_date                         AS expiration_date,
+                        product_template.id                                   AS product_id,
                         'Sales' as type
                     FROM
                         sale_order
@@ -258,7 +262,8 @@ class ReportProductActivity(models.TransientModel):
                         res_partner.name                                          AS USER,
                         product_template.sku_code                                 AS sku,
                         stock_production_lot.name                                 AS lot,
-                        stock_production_lot.removal_date                         AS expiration_date,
+                        stock_production_lot.use_date                         AS expiration_date,
+                        product_template.id                                   AS product_id,
                         'Stock' as type
                     FROM
                         stock_inventory_line
@@ -321,7 +326,8 @@ class ReportProductActivity(models.TransientModel):
                         res_partner.name                                          AS USER,
                         product_template.sku_code                                 AS sku,
                         stock_production_lot.name                                 AS lot,
-                        stock_production_lot.removal_date                         AS expiration_date,
+                        stock_production_lot.use_date                         AS expiration_date,
+                        product_template.id                                   AS product_id,
                         'Scrap' as type
                     FROM
                         product_product
@@ -367,6 +373,84 @@ class ReportProductActivity(models.TransientModel):
         #     sql_query = sql_query+" AND stock_scrap.date_expected" + date_clause
 
         self._cr.execute(sql_query)
+
+        # -------------------- Receive ------------------------
+        src_location = self.env['stock.location'].search(
+            [('name', '=', 'Packing Zone')]).id
+        dist_location = self.env['stock.location'].search(
+            [('name', '=', 'Stock')]).id
+        if src_location and dist_location:
+            sql_query = insert + """
+                               SELECT            
+                                   stock_warehouse.name                                      AS warehouse,
+                                   stock_picking.scheduled_date                                     AS DATE,
+                                   stock_location.id as location_id,
+                                   stock_warehouse.code || '/' || stock_location.name AS location,
+                                   sale_order.name                                           AS event,
+                                   (stock_move_line.qty_done)                                  AS change_qty,
+                                   res_partner.name                                          AS USER,
+                                   product_template.sku_code                                 AS sku,
+                                   stock_production_lot.name                                 AS lot,
+                                   stock_production_lot.use_date                         AS expiration_date,
+                                   product_template.id                                   AS product_id,
+                                   'Receive' as type
+                               FROM
+                                   stock_picking
+                               INNER JOIN sale_order
+                               
+                               ON  (sale_order.id= stock_picking.sale_id)  
+                               
+                               INNER JOIN
+                                   stock_warehouse
+                               ON
+                                   (
+                                       sale_order.warehouse_id = stock_warehouse.id)
+                              
+                               INNER JOIN
+                                   stock_move_line
+                               ON
+                                   (
+                                       stock_move_line.picking_id = stock_picking.id)
+                               
+                               INNER JOIN
+                                   product_product
+                               ON
+                                   (
+                                       product_product.id = stock_move_line.product_id)
+                               INNER JOIN
+                                   product_template
+                               ON
+                                   (
+                                       product_template.id=product_product.product_tmpl_id)        
+                               INNER JOIN
+                                   stock_production_lot
+                               ON
+                                   (
+                                       stock_production_lot.id=stock_move_line.lot_id  )
+                               
+                               INNER JOIN
+                                   stock_location
+                               ON
+                                   (
+                                       stock_location.id=stock_picking.location_dest_id )
+                                INNER JOIN
+                                   res_users
+                               ON
+                                   (
+                                       sale_order.user_id = res_users.id)
+                               INNER JOIN
+                                   res_partner
+                               ON
+                                   (
+                                       res_users.partner_id = res_partner.id)
+    
+                               WHERE stock_picking.state = 'done' and stock_picking.location_id=%s and stock_picking.location_dest_id=%s
+                                   """
+
+            # if not date_clause is False:
+            #     sql_query = sql_query+ " AND stock_picking.scheduled_date" + date_clause
+
+            self._cr.execute(sql_query,(src_location,dist_location))
 
     def delete_and_create(self):
         self.init_table()

@@ -82,7 +82,7 @@ class ProductCatalogReport(models.Model):
     product_qty = fields.Float("Product Qty", compute='_compare_qty', store=False)
     exp_min_date = fields.Date("Exp Min Date",compute='_compare_qty', store=False)
     exp_max_date = fields.Date("Exp Max Date",compute='_compare_qty', store=False)
-    product_templ_id= fields.Many2one('product.template', 'Product Name',store=False)
+    product_templ_id= fields.Many2one('product.template', 'Product Name', compute='_compare_qty', store=False)
 
     @api.multi
     def _compare_qty(self):
