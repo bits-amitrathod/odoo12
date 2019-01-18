@@ -10,9 +10,8 @@
                             <b>
                                 <h4 style="font-weight: bold;">Surgical Product Solutions</h4>
                                 <h2>Product Vendors</h2>
-                                  <t t-foreach="data" t-as="order">
-                                     <h4> <span t-esc="order.product_id.name"/> </h4>
-                                 </t>
+                                <h4> <span t-esc="data[0].product_id.name"/> </h4>
+
                             </b>
                         </center>
                         <center>
