@@ -63,7 +63,7 @@ class Customer(models.Model):
         _logger.info("pritization engin :%r",vals)
         for ml in self:
             for child_id in ml.child_ids:
-                print(child_id.child_ids)
+                #print(child_id.child_ids)
                 child_id.write({'on_hold':ml.on_hold,
                                 'is_broker':ml.is_broker,
                                 'carrier_info':ml.carrier_info,
