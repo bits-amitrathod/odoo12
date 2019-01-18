@@ -11,7 +11,7 @@
                             <h2> Surgical Product Solutions </h2>
                             <h4> Broker Report</h4>
                             <t t-if="e_date != False and s_date !=False">
-                                 <h4> Date Range: <span t-esc="s_date" />-<span t-esc="e_date" /></h4>
+                                 <h4> Date Range: <span t-esc="s_date" t-options='{"widget": "date"}'/>-<span t-esc="e_date" t-options='{"widget": "date"}'/></h4>
                             </t>
                         </b>
                     </center>
