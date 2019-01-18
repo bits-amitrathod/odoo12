@@ -32,13 +32,13 @@
 
         <record model="ir.ui.view" id="vendor_form_list">
               <field name="name">purchase.vendor.view.list</field>
-              <field name="model">purchase.order</field>
+              <field name="model">purchase.order.line</field>
               <field name="priority">20</field>
               <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false">
                     <field name="partner_id"/>
                     <field name="sku_code_product"/>
-                    <field name="product_id"/>
+                    <field name="product_id" string="Product Name"/>
                     <field name="last_sold" />
                     <field name="cost" widget="monetary"/>
                     <field name="currency_id" invisible="1"/>
@@ -48,14 +48,14 @@
         </record>
          <record model="ir.ui.view" id="product_vendor_list_report_form">
             <field name="name">purchase.vendor.view.form</field>
-            <field name="model">purchase.order</field>
+            <field name="model">purchase.order.line</field>
             <field name="arch" type="xml">
                 <form create="false" edit="false" delete="false">
                     <sheet>
                         <group>
                             <field name="partner_id"/>
                             <field name="sku_code_product"/>
-                            <field name="product_id"/>
+                            <field name="product_id" string="Product Name"/>
                             <field name="last_sold" />
                             <field name="cost" widget="monetary"/>
                             <field name="currency_id" invisible="1"/>
