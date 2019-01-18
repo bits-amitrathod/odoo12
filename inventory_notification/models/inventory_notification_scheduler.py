@@ -19,9 +19,9 @@ class InventoryNotificationScheduler(models.TransientModel):
 
     def process_manual_notification_scheduler(self):
         _logger.info("process_manual_notification_scheduler called..")
-        product_lots = self.env['stock.production.lot'].search([])
-        for product_lot in product_lots:
-            _logger.info("product_lot:%r", product_lot)
+        #product_lots = self.env['stock.production.lot'].search([])
+        #for product_lot in product_lots:
+            #_logger.info("product_lot:%r", product_lot)
         self.process_notification_scheduler()
 
 
@@ -29,10 +29,45 @@ class InventoryNotificationScheduler(models.TransientModel):
     @api.multi
     def process_notification_scheduler(self):
         _logger.info("process_notification_scheduler called")
-        self.process_new_product_scheduler()
-        self.process_notify_available()
-        self.process_packing_list()
-        self.process_on_hold_customer()
+        #self.process_new_product_scheduler()
+        #self.process_notify_available()
+        #self.process_packing_list()
+        #self.process_on_hold_customer()
+        self.process_in_stock_scheduler()
+
+    def process_in_stock_scheduler(self):
+        _logger.info("process_in_stock_scheduler called")
+        today_date = date.today()
+        today_start = fields.Date.to_string(today_date)
+        days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+        dayNumber = today_date.weekday()
+        weekday = days[dayNumber]
+        customers = self.env['res.partner'].search([('customer', '=', True),('active', '=', True),(weekday,'=',True),('start_date','<=',today_start),('end_date','>=',today_start)])
+        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
+        for customer in customers:
+            _logger.info("customer :%r", customer)
+            if(customer.historic_months>0):
+                historic_day=customer.historic_months*30
+                print('historic_day')
+                print(historic_day)
+            else:
+                historic_day=1
+            last_day = fields.Date.to_string(datetime.now() - timedelta(days=historic_day))
+            sales = self.env['sale.order'].search([('partner_id', '=', customer.id),('date_order', '>', last_day)])
+            products=set()
+            for sale in sales:
+                sale_order_lines = self.env['sale.order.line'].search([('order_id.id', '=', sale.id)])
+                for line in sale_order_lines:
+                    if line.product_id.qty_available > 0 :
+                        products.add(line.product_id)
+            subject = "Products In Stock"
+            descrption = "Please find below the list items which are in-stock now in SPS Inventory."
+            header = ['SKU Code','Manufacturer', 'Name','Price Per Unit','Qty On Hand','Min Expiration Date','Max Expiration Date']
+            columnProps = ['sku_code','product_brand_id.name', 'name','list_price','qty_available', 'minExDate', 'maxExDate']
+            #if(customer.email=="amitrathod@benchmarkitsolutions.com"):
+            self.process_common_email_notification_template(super_user, customer, subject, descrption, products,
+                                                            header, columnProps)
+            #break
 
 
     def process_new_product_scheduler(self):
@@ -200,8 +235,6 @@ class InventoryNotificationScheduler(models.TransientModel):
                 if yellow_products:
                     self.process_notify_yellow_product(yellow_products,user,super_user)
 
-
-
     def process_notification_for_in_stock_report(self,products):
         _logger.info("process_notification_for_in_stock_report called....")
         today_date = date.today()
@@ -324,25 +357,37 @@ class InventoryNotificationScheduler(models.TransientModel):
                 background_color = "#f0f8ff"
             else:
                 background_color = "#ffffff"
+            self.env.cr.execute(
+                "SELECT  min(use_date), max (use_date) FROM stock_production_lot spl LEFT JOIN   stock_quant sq ON sq.lot_id=spl.id LEFT JOIN  stock_location sl ON sl.id=sq.location_id   where (sl.usage ='internal' OR sl.usage='transit') and  sq.product_id = %s",
+                (product.id,))
+            query_result = self.env.cr.dictfetchone()
             for column_name in columnProps:
                 coln_name.append(column_name)
-                if isinstance(product, dict):
-                    column = str(product.get(column_name))
+                if column_name == 'minExDate':
+                    minExDate = fields.Date.from_string(query_result['min'])
+                    column = minExDate
+                elif column_name == 'maxExDate':
+                    maxExDate = fields.Date.from_string(query_result['max'])
+                    column = maxExDate
                 else:
-                    if column_name.find(".") == -1:
-                        column = str(product[column_name])
+                    if isinstance(product, dict):
+                        column = str(product.get(column_name))
                     else:
-                        lst = column_name.split('.')
-                        column = product[lst[0]]
-                        if isinstance(lst, list):
-                            for col in range(1, len(lst)):
-                                column = column[lst[col]]
+                        if column_name.find(".") == -1:
+                            column = str(product[column_name])
                         else:
-                            column = column[lst]
+                            lst = column_name.split('.')
+                            column = product[lst[0]]
+                            if isinstance(lst, list):
+                                for col in range(1, len(lst)):
+                                    column = column[lst[col]]
+                            else:
+                                column = column[lst]
                 product_dict[column_name] = column
             product_dict['background_color'] = background_color
             product_list.append(product_dict)
             product_dict = {}
+        #print(products)
         if products:
             vals={
                 'product_list':product_list,
@@ -364,8 +409,12 @@ class InventoryNotificationScheduler(models.TransientModel):
                          'descrption': vals['description']}
         html_file = self.env['inventory.notification.html'].search([])
         finalHTML = html_file.process_common_html(vals['subject'], vals['description'], vals['product_list'], vals['headers'], vals['coln_name'])
+        if hasattr(vals['email_to_user'],'partner_ids'):
+            partner_ids=[vals['email_to_user'].partner_ids.id]
+        else:
+            partner_ids = [vals['email_to_user'].id]
         try:
-         template_id = vals['template'].with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True, )
+            template_id = vals['template'].with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True, )
         except:
             vals['template'].with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True)
         mail = self.env["mail.thread"]
@@ -373,7 +422,7 @@ class InventoryNotificationScheduler(models.TransientModel):
             body=finalHTML,
             subject=vals['subject'],
             message_type='notification',
-            partner_ids=[vals['email_to_user'].partner_id.id],
+            partner_ids=partner_ids,
             content_subtype='html'
         )
 
