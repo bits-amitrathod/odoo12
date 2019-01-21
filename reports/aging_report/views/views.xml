@@ -7,8 +7,6 @@
             <field name="priority">20</field>
             <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false">
-
-                       <field name="location_id"/>
                       <field name="sku_code"/>
                       <field name="product_name"/>
                       <field name="lot_name"/>
@@ -31,7 +29,7 @@
                     <sheet>
                         <group>
                             <field name="warehouse_id"/>
-                            <field name="sku_code"/>
+                            <field name="sku_code" string="Product SKU"/>
                             <field name="product_id"/>
                             <field name="lot_name"/>
                             <field name="qty"/>

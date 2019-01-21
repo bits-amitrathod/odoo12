@@ -13,9 +13,10 @@ _logger = logging.getLogger(__name__)
 class PopUp(models.TransientModel):
     _name = 'aging_popup.view.model'
     current_date = date.today()
-    sku_code = fields.Char('Product SKU')
+    sku_code = fields.Many2one('product.product', string='Product SKU',
+                               domain="[('active','=',True),('product_tmpl_id.type','=','product')]")
     warehouse_id = fields.Many2one('stock.warehouse', 'Group Location',required=True,default=1)
-    location_id=fields.Selection(selection=[('wh_pack_stock_loc_id', 'Pick'), ('wh_output_stock_loc_id', 'Pack'), ('customer', 'Ship')], String='Location')
+    location_id=fields.Selection(selection=[('Receving', 'Receving'),('Shipping', 'Shipping'), ('Stock', 'Stock'), ], String='Location')
 
 
 
@@ -23,25 +24,11 @@ class PopUp(models.TransientModel):
         tree_view_id = self.env.ref('aging_report.aging_report_tree').id
         #form_view_id = self.env.ref('stock.view_production_lot_form').id
         form_view_id = self.env.ref('aging_report.aging_report_form').id
-        locations=[]
-        if self.warehouse_id and not self.warehouse_id is None:
-            if self.location_id:
-                if self.location_id == 'customer':
-                    location_id = self.env['stock.location'].search([('name', '=', 'Customers')])
-                else:
-                    location_id=self.warehouse_id[self.location_id]
-                if location_id:
-                    locations.append(location_id.id)
-            else:
-                lot_stock_id = self.env['stock.location'].search([('name', '=', 'Customers')])
-                locations.append(lot_stock_id.id)
-                if self.warehouse_id['wh_pack_stock_loc_id']:
-                    wh_pack_stock_loc_id=self.warehouse_id['wh_pack_stock_loc_id']
-                    locations.append(wh_pack_stock_loc_id.id)
-                if self.warehouse_id['wh_output_stock_loc_id']:
-                    wh_output_stock_loc_id=self.warehouse_id['wh_output_stock_loc_id']
-                    locations.append(wh_output_stock_loc_id.id)
-        margins_context = {'locations': locations}
+        cust_location_id = self.env['stock.location'].search([('name', '=', 'Customers')]).id
+        stock_location=(self.warehouse_id['lot_stock_id']).id
+        receiving_location=(self.warehouse_id['lot_stock_id']).id
+
+        margins_context = {'cust_location_id': cust_location_id,'stock_location':stock_location,'receiving_location':receiving_location}
         x_res_model = 'aging.report'
 
         self.env[x_res_model].with_context(margins_context).delete_and_create()
@@ -51,17 +38,16 @@ class PopUp(models.TransientModel):
             'view_mode': 'tree,form',
             'name': _('Aging Report'),
             'res_model': x_res_model,
-            'context': {'group_by': 'location_id'},
+            'context': {'group_by': 'type'},
             'domain':[('use_date', '>=',self.current_date)],
             'target': 'main'
         }
 
         if self.sku_code:
-            action["domain"].append(('sku_code', 'ilike', self.sku_code))
+            action["domain"].append(('product_name', 'ilike', self.sku_code.name))
 
-        if self.warehouse_id:
-           action["domain"].append(('warehouse_id', '=', self.warehouse_id.id))
-
+        if self.location_id:
+            action["domain"].append(('type', 'ilike', self.location_id))
 
         return action
 

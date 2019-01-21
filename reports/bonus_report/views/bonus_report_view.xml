@@ -38,15 +38,15 @@
               <field name="priority">20</field>
               <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false" >
-                    <field name="appraisal_no" />
+                      <field name="appraisal_no" />
                       <field name="priority" />
                       <field name="revision"  />
                       <field name="status" invisible="1"   />
                       <field name="state" invisible="1"   />
                       <field name="acq_user_id" />
                       <field name="partner_id" string ="Facility"/>
-                    <field name="amount_total" attrs="{'invisible':[('state', 'not in', ('purchase','cancel'))]}"  widget="monetary" string ="Total Offer"/>
-                   <field name="rt_price_total_amt" attrs="{'invisible':[('state', 'not in', ('purchase','cancel'))]}"  widget="monetary" string ="Total Retail"/>
+                      <field name="amount_total" attrs="{'invisible':[('state', 'not in', ('purchase','cancel'))]}"  widget="monetary" string ="Total Offer"/>
+                      <field name="rt_price_total_amt" attrs="{'invisible':[('state', 'not in', ('purchase','cancel'))]}"  widget="monetary" string ="Total Retail"/>
                       <field name="create_date" widget="date"/>
                       <field name="shipping_label_issued"  />
                       <field name="shipping_date" widget="date"/>

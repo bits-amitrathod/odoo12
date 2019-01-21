@@ -62,9 +62,8 @@
                                     <td style="border: 1px solid black;text-align: right;">
                                         <b>Total</b>
                                     </td>
-                                    <td align="right" style="border: 1px solid black;white-space: nowrap;">
-                                        $
-                                        <span t-esc="total_sum"/>
+                                    <td align="right" style="border: 1px solid black;white-space: nowrap;" t-if="len(user[1]) &gt; 0">
+                                        <span t-esc="total_sum" t-options='{"widget": "monetary","display_currency": user[1][0][3].currency_id}'/>
                                     </td>
                                 </tr>
                             </tbody>
