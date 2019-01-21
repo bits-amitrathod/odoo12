@@ -20,9 +20,9 @@ class ProductSaleByCountPopUp(models.TransientModel):
         (1, 'Date Range ')
     ], string="Compute", default=0, help="Choose to analyze the Show Summary or from a specific date in the past.")
 
-    start_date = fields.Date('Start Date', default=fields.Datetime.now)
+    start_date = fields.Date('Start Date', default=fields.date.today())
 
-    end_date = fields.Date('End Date', default=fields.Datetime.now)
+    end_date = fields.Date('End Date', default=fields.date.today())
 
     def open_table(self):
         tree_view_id = self.env.ref('sales_by_count.report_sales_by_count_list_view').id
@@ -43,6 +43,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
                 action["domain"].append(('confirmation_date', '>=', self.start_date))
 
             if self.end_date:
+                self.end_date = self.string_to_date(str(self.end_date)) + datetime.timedelta(days=1)
                 action["domain"].append(('confirmation_date', '<=', self.end_date))
 
         if self.user_id.id:
@@ -52,3 +53,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
             action["domain"].append(('warehouse_id', '=', self.warehouse_id.id))
 
         return action
+
+    @staticmethod
+    def string_to_date(date_string):
+        return datetime.datetime.strptime(date_string, DEFAULT_SERVER_DATE_FORMAT).date()
