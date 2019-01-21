@@ -12,7 +12,8 @@ class ReportPickTicketGroupByOrderDate(models.TransientModel):
 
     start_date = fields.Date('Start Date', default=datetime.datetime.now() + datetime.timedelta(-30), required=True)
     end_date = fields.Date('End Date', default=fields.Datetime.now, required=True)
-    sku = fields.Char(string="Product SKU")
+    sku = fields.Many2one('product.product', string='Product SKU',
+                               domain="[('active','=',True),('product_tmpl_id.type','=','product')]")
     location_id = fields.Many2one('stock.location', string="Location", domain="[('usage', '=', 'internal')]")
 
 

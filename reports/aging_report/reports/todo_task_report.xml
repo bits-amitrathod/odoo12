@@ -25,14 +25,15 @@
                         </center>
 
                         <!-- Report page content -->
-                        <t t-foreach="dictionary" t-as="dic_str">
-                            <t t-set="records" t-value="dictionary[dic_str]"/>
-                            <strong>Warehouse: </strong>
-                            <span t-esc="dic_str"/><br/><br/>
-                            <h4 t-if="date">
-                                   <span t-esc="date"/>
-                               </h4>
-                            <table class="table table-condensed table-bordered" style="border: 1px solid black;" >
+
+                                <span><strong>Warehouse: </strong>
+                                       <span t-esc="warehouse"/><br/><br/>
+                                </span>
+                             <t t-if="receving">
+                             <div style="width:100%;border-bottom: 1px solid black">
+                                   <p  t-if="receving" style="height:10px">Receiving</p>
+                                </div>
+                             <table class="table table-condensed table-bordered" style="border: 1px solid black;margin-top: 15px;" >
                                 <tr style="border: 1px solid black;">
                                     <th style="border: 1px solid black;text-align: center; width:130px;">Product SKU</th>
                                     <th style="border: 1px solid black;text-align: center;">Product Name</th>
@@ -43,7 +44,105 @@
                                     <th style="border: 1px solid black;text-align: center;width:150px">Expiry Date</th>
                                     <th style="border: 1px solid black;text-align: center;width:70px">Days</th>
                                 </tr>
-                                <t t-foreach="records" t-as="record">
+                                <t t-foreach="receving" t-as="record">
+                                    <tr>
+                                        <td align="center" class="col-xs-2" style="border: 1px solid #000;" >
+                                            <span t-esc="record['sku']"/>
+                                        </td>
+
+                                        <td align="left" class="col-xs-2" style="border: 1px solid #000;">
+                                            <span t-esc="record['product']"/>
+                                        </td>
+
+                                        <td align="center" class="col-xs-2" style="border: 1px solid #000;">
+                                            <span t-esc="record['lot']"/>
+                                         </td>
+                                        <td align="center" class="col-xs-2" style="border: 1px solid #000;">
+                                            <span t-esc="record['qty']"/>
+                                        </td>
+                                       <td align="center" class="col-xs-2" style="border: 1px solid #000;">
+                                            <span t-esc="record['uom']"/>
+                                       </td>
+                                      <td align="center" class="col-xs-2" style="border: 1px solid #000;">
+                                            <span t-esc="record['cr_date']" t-options='{"widget": "date"}'/>
+                                        </td>
+                                        <td align="center" class="col-xs-2" style="border: 1px solid #000;">
+                                            <span t-esc="record['exp_date']" t-options='{"widget": "date"}'/>
+                                        </td>
+                                        <td align="center" class="col-xs-2" style="border: 1px solid #000;">
+                                            <span t-esc="record['days']"/>
+                                        </td>
+                                    </tr>
+
+                                </t>
+                            </table>
+                         </t>
+                            <t t-if="shipping">
+                                 <div style="width:100%;border-bottom: 1px solid black">
+                                     <p  t-if="shipping" style="height:10px">Shipping</p>
+                                 </div>
+                                <table class="table table-condensed table-bordered" style="border: 1px solid black;margin-top: 15px;" >
+                                    <tr style="border: 1px solid black;">
+                                        <th style="border: 1px solid black;text-align: center; width:130px;">Product SKU</th>
+                                        <th style="border: 1px solid black;text-align: center;">Product Name</th>
+                                        <th style="border: 1px solid black;text-align: center; width:100px">Lot#</th>
+                                        <th style="border: 1px solid black;text-align: center; width:100px">Product Qty</th>
+                                        <th style="border: 1px solid black;text-align: center;width:70px">UOM</th>
+                                        <th style="border: 1px solid black;text-align: center;width:150px">Created Date</th>
+                                        <th style="border: 1px solid black;text-align: center;width:150px">Expiry Date</th>
+                                        <th style="border: 1px solid black;text-align: center;width:70px">Days</th>
+                                    </tr>
+                                    <t t-foreach="shipping" t-as="record">
+                                        <tr>
+                                            <td align="center" class="col-xs-2" style="border: 1px solid #000;" >
+                                                <span t-esc="record['sku']"/>
+                                            </td>
+
+                                            <td align="left" class="col-xs-2" style="border: 1px solid #000;">
+                                                <span t-esc="record['product']"/>
+                                            </td>
+
+                                            <td align="center" class="col-xs-2" style="border: 1px solid #000;">
+                                                <span t-esc="record['lot']"/>
+                                             </td>
+                                            <td align="center" class="col-xs-2" style="border: 1px solid #000;">
+                                                <span t-esc="record['qty']"/>
+                                            </td>
+                                           <td align="center" class="col-xs-2" style="border: 1px solid #000;">
+                                                <span t-esc="record['uom']"/>
+                                           </td>
+                                          <td align="center" class="col-xs-2" style="border: 1px solid #000;">
+                                                <span t-esc="record['cr_date']" t-options='{"widget": "date"}'/>
+                                            </td>
+                                            <td align="center" class="col-xs-2" style="border: 1px solid #000;">
+                                                <span t-esc="record['exp_date']" t-options='{"widget": "date"}'/>
+                                            </td>
+                                            <td align="center" class="col-xs-2" style="border: 1px solid #000;">
+                                                <span t-esc="record['days']"/>
+                                            </td>
+                                        </tr>
+
+                                    </t>
+                                </table>
+                              </t>
+
+
+                        <t t-if="stock">
+                             <div style="width:100%;border-bottom: 1px solid black">
+                                <p t-if="stock" style="height:10px">Stock</p>
+                              </div>
+                             <table class="table table-condensed table-bordered" style="border: 1px solid black;margin-top: 15px;" >
+                                <tr style="border: 1px solid black;">
+                                    <th style="border: 1px solid black;text-align: center; width:130px;">Product SKU</th>
+                                    <th style="border: 1px solid black;text-align: center;">Product Name</th>
+                                    <th style="border: 1px solid black;text-align: center; width:100px">Lot#</th>
+                                    <th style="border: 1px solid black;text-align: center; width:100px">Product Qty</th>
+                                    <th style="border: 1px solid black;text-align: center;width:70px">UOM</th>
+                                    <th style="border: 1px solid black;text-align: center;width:150px">Created Date</th>
+                                    <th style="border: 1px solid black;text-align: center;width:150px">Expiry Date</th>
+                                    <th style="border: 1px solid black;text-align: center;width:70px">Days</th>
+                                </tr>
+                                <t t-foreach="stock" t-as="record">
                                     <tr>
                                         <td align="center" class="col-xs-2" style="border: 1px solid #000;" >
                                             <span t-esc="record['sku']"/>
