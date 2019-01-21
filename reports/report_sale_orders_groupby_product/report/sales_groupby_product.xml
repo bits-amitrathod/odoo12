@@ -53,7 +53,7 @@
                                 <td class="text-center" t-esc="saleOrder[0]"/>
                                 <td class="text-center" t-esc="saleOrder[1]"/>
                                 <td class="text-center" t-esc="saleOrder[2]"/>
-                                <td class="text-center" t-esc="saleOrder[3]"/>
+                                <td class="text-center" t-esc="round(float(saleOrder[3]))"/>
                                 <td class="text-right">$
                                     <span t-esc="'{:.2f}'.format(amount)"/>
                                 </td>
