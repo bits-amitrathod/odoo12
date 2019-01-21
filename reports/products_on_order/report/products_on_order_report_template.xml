@@ -57,10 +57,10 @@
                                           <span t-esc="order[4]" t-options="{'widget': 'date'}"/>
                                     </td>
                                     <td width="10%" align="right" style="">
-                                          <span t-esc="order[5]"/>
+                                          <span t-esc="round(order[5])"/>
                                     </td>
                                     <td width="10%" align="right" style="">
-                                          <span t-esc="order[6]"/>
+                                          <span t-esc="round(order[6])"/>
                                     </td>
                                     <td width="10%" align="right" style="">
                                           <span t-esc="order[7]"/>
@@ -71,7 +71,7 @@
                                         <b>Total SO Items Remaining</b>
                                     </td>
                                     <td align="right" style="white-space: nowrap;">
-                                        <span t-esc="products_on_order[2]"/>
+                                        <span t-esc="round(products_on_order[2])"/>
                                     </td>
                                 </tr>
                             </tbody>

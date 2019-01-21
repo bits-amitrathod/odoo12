@@ -1,6 +1,6 @@
 from odoo import api, fields, models
 import datetime
-
+import odoo.addons.decimal_precision as dp
 class InventoryValuationPopUp(models.TransientModel):
     _name = 'popup.product.catalog'
 
@@ -79,7 +79,7 @@ class InventoryCustomProductPopUp(models.TransientModel):
 class ProductCatalogReport(models.Model):
     _inherit = 'product.product'
 
-    product_qty = fields.Float("Product Qty", compute='_compare_qty', store=False)
+    product_qty = fields.Float("Product Qty", compute='_compare_qty', store=False,digits=dp.get_precision('Product Unit of Measure'))
     exp_min_date = fields.Date("Exp Min Date",compute='_compare_qty', store=False)
     exp_max_date = fields.Date("Exp Max Date",compute='_compare_qty', store=False)
     product_templ_id= fields.Many2one('product.template', 'Product Name', compute='_compare_qty', store=False)

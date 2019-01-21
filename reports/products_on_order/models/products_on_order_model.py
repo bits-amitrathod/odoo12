@@ -2,6 +2,7 @@
 
 from odoo import api, fields, models, tools
 import logging
+import odoo.addons.decimal_precision as dp
 
 _logger = logging.getLogger(__name__)
 
@@ -14,10 +15,10 @@ class ProductsOnOrder(models.Model):
     order_id = fields.Many2one('sale.order', string='Order', )
     date_ordered = fields.Date('Order Date')
     date_due = fields.Date('Due Date')
-    qty_ordered = fields.Float("Qty Ordered")
+    qty_ordered = fields.Float("Qty Ordered",digits=dp.get_precision('Product Unit of Measure'))
     product_uom = fields.Many2one('product.uom', 'UOM')
     sku_code = fields.Char('Product SKU')
-    qty_remaining = fields.Float("Qty Remaining")
+    qty_remaining = fields.Float("Qty Remaining",digits=dp.get_precision('Product Unit of Measure'))
     partner_id = fields.Many2one('res.partner', string='Customer Name', )
     product_id = fields.Many2one('product.product', string='Product Name', )
 

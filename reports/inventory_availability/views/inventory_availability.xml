@@ -8,10 +8,10 @@
                 <field name="product_tmpl_id" invisible="1"/>
                 <field name="sku_code" string="Product SKU" />
                 <field name="uom_id" string="UOM"/>
-                <field name="qty_available" string="On Hand"/>
-                <field name="outgoing_qty"  string="Allocated"/>
-                <field name="virtual_available" string="Available"/>
-                <field name="incoming_qty" string="On Order"/>
+                <field name="qty_available" string="On Hand Qty"/>
+                <field name="outgoing_qty"  string="Allocated Qty"/>
+                <field name="virtual_available" string="Available Qty"/>
+                <field name="incoming_qty" string="On Order Qty"/>
             </tree>
         </field>
     </record>
