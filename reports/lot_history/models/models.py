@@ -22,6 +22,8 @@ class LotHistory(models.TransientModel):
     phone = fields.Char(string="Phone")
     email = fields.Char(string="Email")
     product_id = fields.Many2one('product.product', string='Product Name')
+    _rec_name = 'product_id'
+
 
     def init(self):
         self.init_table()

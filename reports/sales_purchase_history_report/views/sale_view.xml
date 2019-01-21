@@ -18,7 +18,7 @@
                     </group>
 
                     <footer>
-                        <button name="open_table" string="Print Report" class="btn-primary" type="object"/>
+                        <button name="open_table" string="VIEW REPORT" class="btn-primary" type="object"/>
                         <button string="Cancel" class="btn-default" special="cancel"/>
                     </footer>
                 </form>
@@ -47,6 +47,7 @@
                     <field name="order_id" string="Sales Order#"/>
                     <field name="product_id" string="Product Name"/>
                     <field name="delivered_date" string="Delivered Date"/>
+                    <field name="qty_delivered" string="Delivered Qty" />
                     <field name="qty_delivered" string="Delivered Qty" />
                     <field name="product_uom" string="UOM"/>
                     <field name="price_unit" widget="monetary" string="Unit Price" />
@@ -79,6 +80,7 @@
                                 <field name="price_unit" widget="monetary"/>
                                 <field name="price_total" string="Total Price" widget="monetary" sum="Total"/>
                                 <field name="delivered_date" string="Delivered Date"/>
+                                <field name="currency_id"  invisible="1" />
                             </group>
                         </group>
                     </sheet>
