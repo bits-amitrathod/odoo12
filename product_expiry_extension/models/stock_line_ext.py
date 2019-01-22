@@ -56,13 +56,10 @@ class inventory_exe(models.Model):
                 res['warning'] = {'title': _('Warning'), 'message': message}
         return res
 
-
-
     def _compute_show_lot_user_date(self):
             _logger.info("_compute_show_lot_user_date")
             for ml in self:
                 ml.lot_use_date= ml.lot_id.use_date
-
 
     def _action_done(self):
         """ This method is called during a move's `action_done`. It'll actually move a quant from

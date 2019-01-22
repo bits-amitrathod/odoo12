@@ -52,6 +52,7 @@
                     <field name="vendor_name"/>
                     <field name="price_unit" widget='monetary'/>
                     <field name="asset_value" widget='monetary'/>
+                    <field name="currency_id" invisible="1"/>
                 </tree>
             </field>
         </record>
@@ -65,6 +66,7 @@
                     <field name="product_name"/>
                     <field name="vendor_name"/>
                     <field name="qty_done"/>
+                    <field name="currency_id" invisible="1"/>
                 </tree>
             </field>
         </record>

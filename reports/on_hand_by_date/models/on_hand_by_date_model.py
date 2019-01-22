@@ -3,6 +3,8 @@
 from odoo import api, fields, models, tools
 import logging
 from datetime import datetime
+import odoo.addons.decimal_precision as dp
+
 
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, pycompat, misc
 
@@ -15,7 +17,7 @@ class OnHandByDate(models.Model):
 
     sku_code = fields.Char('Product SKU')
     product_name = fields.Char("Product Name")
-    qty_done = fields.Float("Product Qty")
+    qty_done = fields.Float("Product Qty",digits=dp.get_precision('Product Unit of Measure'))
     vendor_name = fields.Char("Vendor Name")
     price_unit = fields.Float("Unit Price")
     asset_value = fields.Float("Assets Value")
@@ -23,6 +25,10 @@ class OnHandByDate(models.Model):
     partner_id = fields.Integer("partner_id")
     date_order = fields.Date("date_order")
     warehouse_id = fields.Integer('Warehouse')
+    currency_id = fields.Many2one("res.currency", string="Currency", readonly=True)
+    _rec_name = 'product_name'
+
+
 
     @api.model_cr
     def init(self):
@@ -44,6 +50,7 @@ class OnHandByDate(models.Model):
                 purchase_order.partner_id,
                 purchase_order.date_order,
                 stock_warehouse.id as warehouse_id,
+                purchase_order_line.currency_id as currency_id,
                 res_partner.name     AS vendor_name
                        """
 
@@ -100,6 +107,8 @@ class OnHandByDate(models.Model):
             ON
                 (
                     purchase_order.partner_id = res_partner.id)
+                    
+         
             WHERE
                 stock_picking.state = 'done' 
                 """

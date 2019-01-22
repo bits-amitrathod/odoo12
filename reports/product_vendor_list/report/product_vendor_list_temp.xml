@@ -10,7 +10,7 @@
                             <b>
                                 <h4 style="font-weight: bold;">Surgical Product Solutions</h4>
                                 <h2>Product Vendors</h2>
-                                <h4> <span t-esc="data[0].product_id.name"/> </h4>
+                                <h> <span t-esc="data[0].product_id.name"/> </h>
 
                             </b>
                         </center>

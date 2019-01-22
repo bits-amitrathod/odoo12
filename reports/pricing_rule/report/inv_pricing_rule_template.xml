@@ -50,7 +50,7 @@
                                                 </p>
                                                <p style="font-weight: lighter">
                                                      Set the price of product(s) to be:<span t-esc="pricing_rule[0].currency_symbol"/>
-                                                    <span t-esc="pricing_rule[0].cost"/>
+                                                    <span t-esc="'{:.2f}'.format(pricing_rule[0].cost)"/>
 
 
                                                 </p>
@@ -73,7 +73,7 @@
                                                     </p>
                                                     <p style="font-weight: lighter">
                                                          Set the price of product(s) to be: <span t-esc="pricing_rule[1].currency_symbol"/>
-                                                        <span t-esc="pricing_rule[1].cost"/>
+                                                        <span t-esc="'{:.2f}'.format(pricing_rule[1].cost)"/>
 
                                                     </p>
                                                     <p style="font-weight: lighter">
