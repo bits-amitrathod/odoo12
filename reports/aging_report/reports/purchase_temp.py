@@ -10,27 +10,31 @@ class ReportPurchaseSalespersonWise(models.AbstractModel):
     def get_report_values(self, docids, data=None):
         aging_report = self.env['aging.report'].search([('id', 'in', docids)], order='warehouse_id')
 
-        index = ""
-        dictionary = {}
+        warehouse=''
+        receving=[]
+        shipping=[]
+        stock=[]
         for records in aging_report:
-            cols = {'sku': records.sku_code,
-                    'product': records.product_name,
-                    'lot': records.lot_name,
-                    'qty': records.qty,
-                    'uom': records.product_uom_id,
-                    'cr_date': records.create_date,
-                    'exp_date': records.use_date,
-                    'days': records.days
+                cols = {'sku': records.sku_code,
+                        'product': records.product_name,
+                        'lot': records.lot_name,
+                        'qty': records.qty,
+                        'uom': records.product_uom_id,
+                        'cr_date': records.create_date,
+                        'exp_date': records.use_date,
+                        'days': records.days
 
-                    }
+                        }
+                if records.type == 'Stock':
+                    stock.append(cols)
+                elif records.type == 'Shipping':
+                    shipping.append(cols)
+                else:
+                    receving.append(cols)
+                warehouse = records.warehouse_id.name
 
-            if index == records.warehouse_id.name :
-                dictionary[index].append(cols)
-            else:
-                index = records.warehouse_id.name
-                dictionary[index] = [cols]
 
-        return {'dictionary': dictionary,}
+        return {'warehouse': warehouse,'receving':receving,'shipping':shipping,'stock':stock}
 
 # return {
 #    'data': self.env['aging.report'].browse(docids)
