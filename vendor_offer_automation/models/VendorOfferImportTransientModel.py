@@ -172,7 +172,32 @@ class VendorOfferImportTransientModel(models.TransientModel):
         for row in pycompat.imap(sheet.row, range(sheet.nrows)):
             values = []
             for cell in row:
-                values.append(pycompat.text_type(cell.value))
+                if cell.ctype is xlrd.XL_CELL_NUMBER:
+                    is_float = cell.value % 1 != 0.0
+                    values.append(
+                        pycompat.text_type(cell.value)
+                        if is_float
+                        else pycompat.text_type(int(cell.value))
+                    )
+                elif cell.ctype is xlrd.XL_CELL_DATE:
+                    is_datetime = cell.value % 1 != 0.0
+                    # emulate xldate_as_datetime for pre-0.9.3
+                    dt = datetime(*xlrd.xldate.xldate_as_tuple(cell.value, book.datemode))
+                    values.append(
+                        dt.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+                        if is_datetime
+                        else dt.strftime(DEFAULT_SERVER_DATE_FORMAT)
+                    )
+                elif cell.ctype is xlrd.XL_CELL_BOOLEAN:
+                    values.append(u'True' if cell.value else u'False')
+                elif cell.ctype is xlrd.XL_CELL_ERROR:
+                    raise ValueError(
+                        _("Error cell found while reading XLS/XLSX file: %s") %
+                        xlrd.error_text_from_code.get(
+                            cell.value, "unknown error code %s" % cell.value)
+                    )
+                else:
+                    values.append(cell.value)
             if any(x for x in values if x.strip()):
                 yield values
 

@@ -44,14 +44,15 @@ class VendorOffer(models.Model):
     carrier_info = fields.Char("Carrier Info", related='partner_id.carrier_info', readonly=True)
     carrier_acc_no = fields.Char("Carrier Account No", related='partner_id.carrier_acc_no', readonly=True)
     shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
-    appraisal_no = fields.Char(string='Appraisal No#', compute="_default_appraisal_no", readonly=False)
+    appraisal_no = fields.Char(string='Appraisal No#', compute="_default_appraisal_no", readonly=False, store=True)
     acq_user_id = fields.Many2one('res.users', string='Acq  Manager ')
     date_offered = fields.Datetime(string='Date Offered', default=fields.Datetime.now)
     revision = fields.Char(string='Revision ')
+    revision_date = fields.Date('Revision Date')
     accepted_date = fields.Datetime(string="Accepted Date")
     declined_date = fields.Datetime(string="Declined Date")
-    retail_amt = fields.Monetary(string="Total Retail", readonly=True, default=0)
-    offer_amount = fields.Monetary(string="Total  Offer", readonly=True, default=0)
+    # retail_amt = fields.Monetary(string="Total Retail", readonly=True, default=0)
+    # offer_amount = fields.Monetary(string="Total  Offer", readonly=True, default=0)
 
     possible_competition = fields.Many2one('competition.competition', string="Possible Competition")
     max = fields.Char(string='Max', compute='_amount_all', default=0, readonly=True)
@@ -152,7 +153,7 @@ class VendorOffer(models.Model):
     @api.depends('order_line.price_total', 'accelerator', 'order_line.price_total', 'order_line.taxes_id',
                  'order_line.rt_price_tax', 'order_line.product_retail', 'order_line.rt_price_total')
     def _amount_all(self):
-        if self.env.context.get('vendor_offer_data'):
+        if self.env.context.get('vendor_offer_data') or self.state == 'ven_draft'  or self.state == 'ven_sent':
             for order in self:
                 if order.state == 'draft':
                     order.state = 'ven_draft'
@@ -344,6 +345,7 @@ class VendorOffer(models.Model):
             vals['state'] = 'ven_draft'
             vals['vendor_offer_data'] = True
             vals['revision'] = '1'
+            vals['revision_date'] = fields.Date.today()
 
             record = super(VendorOffer, self).create(vals)
             return record
@@ -359,6 +361,7 @@ class VendorOffer(models.Model):
 
             temp = int(self.revision) + 1
             values['revision'] = str(temp)
+            values['revision_date'] = fields.Date.today()
             record = super(VendorOffer, self).write(values)
             return record
         else:
@@ -541,7 +544,7 @@ class VendorOfferProduct(models.Model):
     @api.onchange('product_qty', 'product_offer_price', 'taxes_id', 'product_unit_price')
     def _compute_amount(self):
         for line in self:
-            if self.env.context.get('vendor_offer_data'):
+            if line.env.context.get('vendor_offer_data') or line.state == 'ven_draft' or line.state == 'ven_sent':
                 taxes1 = line.taxes_id.compute_all(float(line.product_unit_price), line.order_id.currency_id,
                                                    line.product_qty, product=line.product_id,
                                                    partner=line.order_id.partner_id)
@@ -718,5 +721,5 @@ class StockPicking(models.Model):
             self.carrier_tracking_ref = res['tracking_number']
         order_currency = self.sale_id.currency_id or self.company_id.currency_id
         msg = _("Shipment sent to carrier %s for shipping with tracking number %s<br/>Cost: %.2f %s") % (
-        self.carrier_id.name, self.carrier_tracking_ref, self.carrier_price, order_currency.name)
+            self.carrier_id.name, self.carrier_tracking_ref, self.carrier_price, order_currency.name)
         self.message_post(body=msg)
