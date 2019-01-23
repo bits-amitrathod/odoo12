@@ -19,7 +19,7 @@
                         <field name="end_date"/>
                     </group>
                     <group>
-                        <field name="sku"/>
+                        <field name="sku" string="Product SKU"/>
                         <field name="location_id"/>
                     </group>
                 </group>

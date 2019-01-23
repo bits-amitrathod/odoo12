@@ -13,7 +13,7 @@ class ReportPickTicketGroupByOrderDate(models.TransientModel):
 
     start_date = fields.Date('Start Date', default=fields.date.today() - datetime.timedelta(days=30), required=True)
 
-    end_date = fields.Date('End Date', default=fields.Datetime.now, required=True)
+    end_date = fields.Date('End Date', default=fields.date.today(), required=True)
 
     picking_id = fields.Many2many('stock.picking', string='Pick Number')
 
@@ -22,7 +22,7 @@ class ReportPickTicketGroupByOrderDate(models.TransientModel):
         context = {}
         if self.compute_at_date:
             s_date = self.string_to_date(str(self.start_date))
-            e_date = self.string_to_date(str(self.end_date))
+            e_date = self.string_to_date(str(self.end_date)) + datetime.timedelta(days=1)
             context.update({'s_date': s_date, 'e_date': e_date})
         else:
             context.update({'sale_number': self.picking_id})
@@ -46,6 +46,7 @@ class ReportPickTicketGroupByOrderDate(models.TransientModel):
                 action["domain"].append(('scheduled_date', '>=', self.start_date))
 
             if self.end_date:
+                self.end_date = self.string_to_date(str(self.end_date)) + datetime.timedelta(days=1)
                 action["domain"].append(('scheduled_date', '<=', self.end_date))
 
         else:

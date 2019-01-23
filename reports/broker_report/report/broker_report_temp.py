@@ -106,7 +106,7 @@ class ReportBrokerReport(models.AbstractModel):
                          t1t2_margin_retailamount = t1t2_margin_retailamount + order.rt_price_total_amt
                          tit2_margin_offeramount = tit2_margin_offeramount + order.amount_total
                  if (order.rt_price_total_amt != 0):
-                     if (abs(float(((order.amount_total) / float(order.retail_amt)) - 1)) < 0.4):
+                     if (abs(float(((order.amount_total) / float(order.rt_price_total_amt)) - 1)) < 0.4):
                          m40_margin_retailamount = m40_margin_retailamount + order.rt_price_total_amt
                          m40_margin_offeramount = m40_margin_offeramount + order.amount_total
 

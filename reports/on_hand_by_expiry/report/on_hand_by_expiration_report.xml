@@ -3,7 +3,7 @@
     <data>
         <report
                 id="action_report_on_hand_by_expiry"
-                string="On Hand By Expiry"
+                string="On Hand By Expiration"
                 model="on_hand_by_expiry"
                 report_type="qweb-html"
                 file="on_hand_by_expiry.templ"
