@@ -756,7 +756,7 @@
                                         </a>
                                     </td>
                                     <td>
-                                        <span t-field="order.date_order"/>
+                                        <span t-field="order.date_order" t-options='{"widget": "date"}'/>
                                     </td>
                                     <td>
                                         <t t-if="order.state == 'cancel'">
@@ -808,7 +808,7 @@
                                     <strong>Product</strong>
                                 </div>
                                 <div class="col-md-2 text-right">
-                                    <strong>Unit Price</strong>
+                                    <strong>Offer Price</strong>
                                 </div>
                                 <div class="col-md-2 text-right">
                                     <strong>Quantity</strong>
@@ -826,7 +826,7 @@
                                         <span t-esc="ol.product_id.name"/>
                                     </div>
                                     <div class="col-md-2 text-right">
-                                        <span t-field="ol.price_unit"
+                                        <span t-field="ol.product_offer_price"
                                               t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
                                     </div>
                                     <div class="col-md-2 text-right">
