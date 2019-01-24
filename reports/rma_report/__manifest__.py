@@ -26,7 +26,8 @@
     'data': [
         # 'security/ir.model.access.csv',
         'views/views.xml',
-        'reports/todo_task_report.xml',
+        'reports/rma_report.xml',
+        'reports/rma_report_template.xml',
         'views/templates.xml',
     ],
     # only loaded in demonstration mode

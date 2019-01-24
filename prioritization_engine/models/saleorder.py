@@ -1,11 +1,12 @@
-from odoo import models, fields, api,_
-from odoo.exceptions import UserError, AccessError,ValidationError
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError, AccessError, ValidationError
 from odoo.tools.float_utils import float_compare, float_is_zero, float_round
 from datetime import datetime
 
 import logging
 
 _logger = logging.getLogger(__name__)
+
 
 class SaleOrder(models.Model):
     _inherit = "sale.order"
@@ -24,9 +25,10 @@ class SaleOrder(models.Model):
         compute='_compute_show_validate',
         help='Technical field used to compute whether the validate should be shown.')'''
     shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
-    preferred_method = fields.Selection(string='Preferred Invoice Delivery Method', related='partner_id.preferred_method', readonly=True)
-    carrier_info = fields.Char("Carrier Info",related='partner_id.carrier_info',readonly=True)
-    carrier_acc_no = fields.Char("Carrier Account No",related='partner_id.carrier_acc_no',readonly=True)
+    preferred_method = fields.Selection(string='Preferred Invoice Delivery Method',
+                                        related='partner_id.preferred_method', readonly=True)
+    carrier_info = fields.Char("Carrier Info", related='partner_id.carrier_info', readonly=True)
+    carrier_acc_no = fields.Char("Carrier Account No", related='partner_id.carrier_acc_no', readonly=True)
 
     ''' @api.multi
     def _compute_show_validate(self):
@@ -47,8 +49,8 @@ class SaleOrder(models.Model):
     @api.multi
     def unlink(self):
         for order in self:
-            if order.state not in ('draft', 'cancel','void'):
-               raise UserError(
+            if order.state not in ('draft', 'cancel', 'void'):
+                raise UserError(
                     'You can not delete a sent quotation or a sales order! Try to cancel or void it before.')
         return models.Model.unlink(self)
 
@@ -59,12 +61,10 @@ class SaleOrder(models.Model):
         elif self.delivery_count>1:
             raise ValidationError(_('Validate is not possible for multiple delivery please do validate one by one'))'''
 
-
     def action_assign(self):
         multi = self.env['stock.picking'].search([('sale_id', '=', self.id)])
         if len(multi) >= 1:
             return multi.action_assign()
-
 
     @api.multi
     def do_unreserve(self):
@@ -110,16 +110,17 @@ class SaleOrder(models.Model):
             'context': ctx,
         }
 
+
 class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
     customer_request_id = fields.Many2one('sps.customer.requests', string='Request')
 
     def action_show_details(self):
-       multi= self.env['stock.move'].search([('sale_line_id', '=', self.id)])
-       if len(multi) >= 1  and self.order_id.delivery_count ==1:
-           return multi.action_show_details()
-       elif self.order_id.delivery_count>1:
-           raise ValidationError(_('Picking is not possible for multiple delivery please do picking inside Delivery'))
+        multi = self.env['stock.move'].search([('sale_line_id', '=', self.id)])
+        if len(multi) >= 1 and self.order_id.delivery_count == 1:
+            return multi.action_show_details()
+        elif self.order_id.delivery_count > 1:
+            raise ValidationError(_('Picking is not possible for multiple delivery please do picking inside Delivery'))
 
 
 class StockPicking(models.Model):
@@ -128,7 +129,7 @@ class StockPicking(models.Model):
     @api.multi
     def button_validate(self):
         _logger.info("stock :stock_picking_prioritization  button_validate called.....")
-        _logger.info("stock :stock_picking_prioritization parnter hold status %r :",self.partner_id)
+        _logger.info("stock :stock_picking_prioritization parnter hold status %r :", self.partner_id)
 
         self.ensure_one()
         if not self.move_lines and not self.move_line_ids:
@@ -168,15 +169,15 @@ class StockPicking(models.Model):
             view = self.env.ref('stock.view_immediate_transfer')
             wiz = self.env['stock.immediate.transfer'].create({'pick_ids': [(4, self.id)]})
             return {'name': _('Immediate Transfer?'), 'type': 'ir.actions.act_window', 'view_type': 'form',
-                'view_mode': 'form', 'res_model': 'stock.immediate.transfer', 'views': [(view.id, 'form')],
-                'view_id': view.id, 'target': 'new', 'res_id': wiz.id, 'context': self.env.context, }
+                    'view_mode': 'form', 'res_model': 'stock.immediate.transfer', 'views': [(view.id, 'form')],
+                    'view_id': view.id, 'target': 'new', 'res_id': wiz.id, 'context': self.env.context, }
 
         if self._get_overprocessed_stock_moves() and not self._context.get('skip_overprocessed_check'):
             view = self.env.ref('stock.view_overprocessed_transfer')
             wiz = self.env['stock.overprocessed.transfer'].create({'picking_id': self.id})
             return {'type': 'ir.actions.act_window', 'view_type': 'form', 'view_mode': 'form',
-                'res_model': 'stock.overprocessed.transfer', 'views': [(view.id, 'form')], 'view_id': view.id,
-                'target': 'new', 'res_id': wiz.id, 'context': self.env.context,}
+                    'res_model': 'stock.overprocessed.transfer', 'views': [(view.id, 'form')], 'view_id': view.id,
+                    'target': 'new', 'res_id': wiz.id, 'context': self.env.context, }
 
         # Check backorder should check for other barcodes
         if self._check_backorder():
@@ -197,25 +198,36 @@ class StockPicking(models.Model):
             if res['tracking_number']:
                 self.carrier_tracking_ref = res['tracking_number']
             order_currency = self.sale_id.currency_id or self.company_id.currency_id
-            msg = _("Shipment sent to carrier %s for shipping with tracking number %s<br/>Cost: %.2f %s") % (self.carrier_id.name, self.carrier_tracking_ref, self.carrier_price, order_currency.name)
+            msg = _("Shipment sent to carrier %s for shipping with tracking number %s<br/>Cost: %.2f %s") % (
+            self.carrier_id.name, self.carrier_tracking_ref, self.carrier_price, order_currency.name)
             self.message_post(body=msg)
         else:
             self.message_post(body="Already tracking created")
 
 
 class AccountInvoice(models.Model):
-        _inherit = 'account.invoice'
-        expiration_date=fields.Date("Expiration Date")
-        note = fields.Char("Customer Message")
-        memo = fields.Char("Memo")
-        shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
-        preferred_method = fields.Selection(string='Preferred Invoice Delivery Method',
-                                            related='partner_id.preferred_method', readonly=True)
+    _inherit = 'account.invoice'
+    expiration_date = fields.Date("Expiration Date")
+    note = fields.Char("Customer Message")
+    memo = fields.Char("Memo")
+    shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
+    preferred_method = fields.Selection(string='Preferred Invoice Delivery Method',
+                                        related='partner_id.preferred_method', readonly=True)
 
-        '''name = fields.Char(string='Purchase Order#', index=True,
-                           readonly=True, states={'draft': [('readonly', False)]}, copy=False,
-                           help='The name that will be used on account move lines')
+    '''name = fields.Char(string='Purchase Order#', index=True,
+                       readonly=True, states={'draft': [('readonly', False)]},
+                       help='The name that will be used on account move lines')  
 
-        origin = fields.Char(string='Sale Order#',
-                             help="Reference of the document that produced this invoice.",
-                             readonly=True, states={'draft': [('readonly', False)]})'''
+      origin = fields.Char(string='Sale Order#',
+                         help="Reference of the document that produced this invoice.",
+                         readonly=True, states={'draft': [('readonly', False)]})'''
+
+    purchase_order = fields.Char(string='Purchase Order#', store=False, compute="_setInvoicePurchaseOrder", readonly=True)
+
+    @api.multi
+    def _setInvoicePurchaseOrder(self):
+        for order in self:
+            if order.origin == order.name:
+                order.purchase_order = ""
+            else:
+                order.purchase_order = order.name

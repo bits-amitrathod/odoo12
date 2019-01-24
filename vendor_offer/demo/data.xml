@@ -63,11 +63,11 @@
          <!--classcode data start-->
 
           <record id="object9" model="classcode.classcode">
-             <field name="name">Class1</field>
+             <field name="name">Class I</field>
            </record>
 
          <record id="object10" model="classcode.classcode">
-             <field name="name">Class2</field>
+             <field name="name">Class II</field>
            </record>
 
         <!--classcode data end-->
