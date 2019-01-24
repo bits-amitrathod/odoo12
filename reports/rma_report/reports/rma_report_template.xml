@@ -1,0 +1,80 @@
+<odoo>
+    <template id="rma_tmpl">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <page>
+                    <div class="oe_structure"/>
+                    <div class="row">
+
+                        <center>
+                            <b>
+                                <h4>Surgical Product Solutions</h4>
+                            </b>
+                            <b>
+                                <h2>RMA Report</h2>
+                            </b>
+                        </center>
+                        <br/>
+                        <table style="width:100%">
+                            <tr>
+                                <td style="width:50%"><b>Customer : </b><span t-esc="data['partner_id']"/></td>
+                                <td style="width:50%"><b>Sale Order# : </b><span t-esc="data['sale_order_id']"/></td>
+                            </tr>
+                             <tr>
+                                 <td style="width:50%"><b>Created : </b><span t-esc="data['create_date']" t-options="{'widget':'date'}"/></td>
+                                 <td style="width:50%"><b>Status : </b><span t-esc="data['sale_order_status']"/></td>
+                             </tr>
+                            <tr>
+                                 <td style="width:50%"><b>Expires : </b><span t-esc="data['expire_date']" t-options="{'widget':'date'}"/></td>
+                             </tr>
+                        </table>
+                        <hr/>
+                            <t t-set="total_price" t-value="0"/>
+                            <table class="table table-condensed table-bordered" style="border: 1px solid black;">
+                                <tr style="border: 1px solid black;">
+                                    <th style="border: 1px solid black;text-align: center;">Product Name</th>
+                                    <th style="border: 1px solid black;text-align: center;">Product SKU</th>
+                                    <th style="border: 1px solid black;text-align: center;">Quantity</th>
+                                    <th style="border: 1px solid black;text-align: center;">UOM</th>
+                                    <th style="border: 1px solid black;text-align: center;">Unit Price</th>
+                                    <th style="border: 1px solid black;text-align: center;">Total</th>
+                                </tr>
+                                    <t t-foreach="data['moves']" t-as="product">
+                                        <tr>
+                                            <td align="center" class="col-xs-2" style="border: 1px solid #000;">
+                                                <span t-esc="product[0]"/>
+                                            </td>
+                                             <td align="center" class="col-xs-2" style="border: 1px solid #000;">
+                                                <span t-esc="product[1]"/>
+                                            </td>
+                                            <td align="center" class="col-xs-2" style="border: 1px solid #000;">
+                                                <span t-esc="product[2]"/>
+                                            </td>
+                                            <td align="center" class="col-xs-2" style="border: 1px solid #000;">
+                                                <span t-esc="product[3]"/>
+                                            </td>
+                                            <td align="center" class="col-xs-2" style="border: 1px solid #000;">
+                                                $<span t-esc="product[4]"/>
+                                            </td>
+                                            <td align="center" class="col-xs-2" style="border: 1px solid #000;">
+                                                $<span t-esc="product[5]"/>
+                                                <t t-set="total_price" t-value="total_price + product[5]" />
+                                            </td>
+                                        </tr>
+                                    </t>
+                                        <tr>
+                                           <td colspan="5" style="border: 1px solid black; text-align: right;">
+                                                <b>Total</b>
+                                            </td>
+                                            <td style="border: 1px solid black; text-align: right;">
+                                                $<span t-esc="data['amount_total']"/>
+                                            </td>
+                                        </tr>
+                            </table>
+                        </div>
+                </page>
+            </t>
+        </t>
+    </template>
+
+</odoo>
