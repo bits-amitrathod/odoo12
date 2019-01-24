@@ -35,63 +35,30 @@ class InventoryNotificationScheduler(models.TransientModel):
         self.process_on_hold_customer()
         self.process_in_stock_scheduler()
 
-    def shipment_notification_for_user(self,pickig):
-        print("inside shipment_notification_for_user ")
-        print(self)
-        print(pickig)
-        print(pickig.sale_id.user_id)
-        user=pickig.sale_id.user_id
-        sales_order = []
-        sale_order = {
-            'sales_order': pickig.sale_id.name
-        }
-        sales_order.append(sale_order)
+    def pick_notification_for_customer(self,picking):
+        Stock_Moves = self.env['stock_move'].search([('picking_id','=',picking.id)])
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
-        vals = {
-            'sale_order_lines': pickig.sale_id,
-            'subject': "shipment need to release for " + pickig.sale_id.partner_id.display_name,
-            'description': "Please release the shipment of customer: " + pickig.sale_id.partner_id.display_name,
-            'header': ['Sales order'],
-            'columnProps': ['sales_order'],
-        }
-        self.process_common_email_notification_template(super_user, user, vals['subject'], vals['description'],
-                                                        vals['sale_order_lines'], vals['header'],
-                                                        vals['columnProps'])
-
-        '''sales = self.env['sale.order'].search([('state', '=', 'sale'),('partner_id', '=', partner_id.id)])
-        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
-        users = self.env['res.users'].search([('active','=',True)])
+        users = self.env['res.users'].search([('active','=',True),('id','=', picking.sale_id.user_id.id)])
         sales_order=[]
-        for sale in sales:
-            sale_order_lines = self.env['sale.order.line'].search([('order_id.id', '=', sale.id),
-                                                                   ('move_ids.state', '=', 'assigned'),
-                                                                   ('move_ids.move_line_ids.state', '=', 'assigned')])
-
-            shipping_address = self.check_isAvailable(sale.partner_id.street) + " " + self.check_isAvailable(
-                sale.partner_id.street2) + " " \
-                               + self.check_isAvailable(sale.partner_id.zip) + " " + self.check_isAvailable(
-                sale.partner_id.city) + " " + \
-                               self.check_isAvailable(sale.partner_id.state_id.name) + " " + self.check_isAvailable(
-                sale.partner_id.country_id.name)
-            if sale_order_lines:
-                sale_order={
-                    'sales_order':sale.name,
-                    'shipping_address':shipping_address
-                }
-                sales_order.append(sale_order)
-        if sales:
+        for stock_move in Stock_Moves:
+            sale_order={
+                  'sales_order':picking.sale_id.name,
+                  'Product':stock_move.product_id,
+                  'qty':picking.product_qty
+            }
+            sales_order.append(sale_order)
             vals = {
                 'sale_order_lines': sales_order,
-                'subject': "shipment need to release for "+partner_id.display_name  ,
-                'description': "Please release the shipment of customer: " + partner_id.display_name ,
-                'header': ['Sales order', 'Shipping Address'],
-                'columnProps': ['sales_order', 'shipping_address'],
+                'subject': "shipment need to release for "+picking.sale_id.partner_id.display_name  ,
+                'description': "Please release the shipment of customer: " + picking.sale_id.partner_id.display_name ,
+                'header': ['Sales order', 'Product','Qty'],
+                'columnProps': ['sales_order', 'Product'],
             }
             for user in users:
                 has_group = user.has_group('stock.group_stock_manager')
                 if has_group:
-                    self.process_common_email_notification_template(super_user, user, vals['subject'], vals['description'],  vals['sale_order_lines'],  vals['header'],
-                                                                vals['columnProps'])'''
+                    self.process_common_email_notification_template(super_user, user, vals['subject'], vals['description'], vals['sale_order_lines'],  vals['header'],
+                                                                vals['columnProps'])
 
     def process_in_stock_scheduler(self):
         _logger.info("process_in_stock_scheduler called")
@@ -117,7 +84,9 @@ class InventoryNotificationScheduler(models.TransientModel):
                 sale_order_lines = self.env['sale.order.line'].search([('order_id.id', '=', sale.id)])
                 for line in sale_order_lines:
                     if line.product_id.qty_available > 0 :
-                        products.add(line.product_id)
+                        products.add({
+                            'id':line.product_id,
+                        })
             subject = "Products In Stock"
             descrption = "Please find below the list items which are in-stock now in SPS Inventory."
             header = ['SKU Code','Manufacturer', 'Name','Price Per Unit','Qty On Hand','Min Expiration Date','Max Expiration Date']
@@ -415,10 +384,11 @@ class InventoryNotificationScheduler(models.TransientModel):
                 background_color = "#f0f8ff"
             else:
                 background_color = "#ffffff"
-            self.env.cr.execute(
-                "SELECT  min(use_date), max (use_date) FROM stock_production_lot spl LEFT JOIN   stock_quant sq ON sq.lot_id=spl.id LEFT JOIN  stock_location sl ON sl.id=sq.location_id   where (sl.usage ='internal' OR sl.usage='transit') and  sq.product_id = %s",
-                (product.id,))
-            query_result = self.env.cr.dictfetchone()
+            if hasattr(product,'id'):
+                self.env.cr.execute(
+                    "SELECT  min(use_date), max (use_date) FROM stock_production_lot spl LEFT JOIN   stock_quant sq ON sq.lot_id=spl.id LEFT JOIN  stock_location sl ON sl.id=sq.location_id   where (sl.usage ='internal' OR sl.usage='transit') and  sq.product_id = %s",
+                    (product['id'],))
+                query_result = self.env.cr.dictfetchone()
             for column_name in columnProps:
                 coln_name.append(column_name)
                 if column_name == 'minExDate':

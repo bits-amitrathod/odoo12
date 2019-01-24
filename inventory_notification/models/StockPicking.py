@@ -15,5 +15,5 @@ class StockPicking(models.Model):
         #result=super(StockPicking,self).button_validate()
         '''print("After Notifiction button validation")
         inv_notification = self.env['inventory.notification.scheduler'].search([])
-        inv_notification.shipment_notification_for_user(self)
+        inv_notification.pick_notification_for_customer(self)
         print("After shipment_notification_for_user function")'''
