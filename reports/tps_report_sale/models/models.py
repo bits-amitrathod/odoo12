@@ -50,7 +50,7 @@ class tps_report_sale(models.Model):
         s_date = (str(start_date)).replace("-","/")
         e_date = str(end_date).replace("-","/")
 
-        select_query = """ SELECT  distinct pt.*,%s as start_date , %s as end_date , curr.id as currency_id,curr.symbol as currency_symbol, sum(sol.price_unit) as total_sales, pt.name as product_name
+        select_query = """ SELECT  distinct pt.*,%s as start_date , %s as end_date , curr.id as currency_id,curr.symbol as currency_symbol, Round(sum(sol.price_unit),2) as total_sales, pt.name as product_name
                from  product_product pp  
                       INNER JOIN sale_order_line sol ON sol.product_id=pp.id
                       INNER JOIN product_template pt ON  pt.id=pp.product_tmpl_id

@@ -35,6 +35,64 @@ class InventoryNotificationScheduler(models.TransientModel):
         self.process_on_hold_customer()
         self.process_in_stock_scheduler()
 
+    def shipment_notification_for_user(self,pickig):
+        print("inside shipment_notification_for_user ")
+        print(self)
+        print(pickig)
+        print(pickig.sale_id.user_id)
+        user=pickig.sale_id.user_id
+        sales_order = []
+        sale_order = {
+            'sales_order': pickig.sale_id.name
+        }
+        sales_order.append(sale_order)
+        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
+        vals = {
+            'sale_order_lines': pickig.sale_id,
+            'subject': "shipment need to release for " + pickig.sale_id.partner_id.display_name,
+            'description': "Please release the shipment of customer: " + pickig.sale_id.partner_id.display_name,
+            'header': ['Sales order'],
+            'columnProps': ['sales_order'],
+        }
+        self.process_common_email_notification_template(super_user, user, vals['subject'], vals['description'],
+                                                        vals['sale_order_lines'], vals['header'],
+                                                        vals['columnProps'])
+
+        '''sales = self.env['sale.order'].search([('state', '=', 'sale'),('partner_id', '=', partner_id.id)])
+        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
+        users = self.env['res.users'].search([('active','=',True)])
+        sales_order=[]
+        for sale in sales:
+            sale_order_lines = self.env['sale.order.line'].search([('order_id.id', '=', sale.id),
+                                                                   ('move_ids.state', '=', 'assigned'),
+                                                                   ('move_ids.move_line_ids.state', '=', 'assigned')])
+
+            shipping_address = self.check_isAvailable(sale.partner_id.street) + " " + self.check_isAvailable(
+                sale.partner_id.street2) + " " \
+                               + self.check_isAvailable(sale.partner_id.zip) + " " + self.check_isAvailable(
+                sale.partner_id.city) + " " + \
+                               self.check_isAvailable(sale.partner_id.state_id.name) + " " + self.check_isAvailable(
+                sale.partner_id.country_id.name)
+            if sale_order_lines:
+                sale_order={
+                    'sales_order':sale.name,
+                    'shipping_address':shipping_address
+                }
+                sales_order.append(sale_order)
+        if sales:
+            vals = {
+                'sale_order_lines': sales_order,
+                'subject': "shipment need to release for "+partner_id.display_name  ,
+                'description': "Please release the shipment of customer: " + partner_id.display_name ,
+                'header': ['Sales order', 'Shipping Address'],
+                'columnProps': ['sales_order', 'shipping_address'],
+            }
+            for user in users:
+                has_group = user.has_group('stock.group_stock_manager')
+                if has_group:
+                    self.process_common_email_notification_template(super_user, user, vals['subject'], vals['description'],  vals['sale_order_lines'],  vals['header'],
+                                                                vals['columnProps'])'''
+
     def process_in_stock_scheduler(self):
         _logger.info("process_in_stock_scheduler called")
         today_date = date.today()
@@ -409,6 +467,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                          'descrption': vals['description']}
         html_file = self.env['inventory.notification.html'].search([])
         finalHTML = html_file.process_common_html(vals['subject'], vals['description'], vals['product_list'], vals['headers'], vals['coln_name'])
+        print(finalHTML)
         if hasattr(vals['email_to_user'],'partner_ids'):
             partner_ids=[vals['email_to_user'].partner_ids.id]
         else:
