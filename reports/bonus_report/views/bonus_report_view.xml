@@ -40,7 +40,7 @@
                 <tree create="false" edit="false" delete="false" >
                       <field name="appraisal_no" />
                       <field name="priority" />
-                      <field name="revision"  />
+                      <!--<field name="revision"  />-->
                       <field name="status" invisible="1"   />
                       <field name="state" invisible="1"   />
                       <field name="acq_user_id" />

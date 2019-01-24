@@ -2,7 +2,7 @@
 
 from odoo import api, fields, models, tools
 import logging
-
+import odoo.addons.decimal_precision as dp
 _logger = logging.getLogger(__name__)
 
 
@@ -11,7 +11,7 @@ class MarginsReport(models.Model):
     _auto = False
 
     name = fields.Char(string="Name")
-    qty = fields.Float(string="Qty")
+    qty = fields.Float(string="Qty",digits=dp.get_precision('Product Unit of Measure'))
     product_id = fields.Many2one('product.product', string='Product',)
     partner_id = fields.Many2one('res.partner', string='Customer',)
     order_id = fields.Many2one('sale.order', string='Order #', )
@@ -25,8 +25,8 @@ class MarginsReport(models.Model):
     date_from = fields.Date(string='Date From')
     date_to = fields.Date(string='Date To')
     group_by = fields.Char()
-    # currency_id = fields.Many2one("res.currency", related='user_id.company_id.currency_id', string="Currency",
-    #                               readonly=True)
+    currency_id = fields.Many2one("res.currency", string="Currency",
+                                   readonly=True)
 
     @api.model_cr
     def init(self):
@@ -52,6 +52,7 @@ class MarginsReport(models.Model):
         o.partner_id as partner_id,
         ol.price_unit as unit_price,
         ol.purchase_price as unit_cost,
+        ol.currency_id as currency_id,
         ol.price_subtotal as total_unit_price,
         (ol.product_uom_qty * ol.purchase_price) as total_unit_cost,
         CASE 
