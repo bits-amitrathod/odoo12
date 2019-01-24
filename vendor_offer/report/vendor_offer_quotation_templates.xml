@@ -44,7 +44,7 @@
             <div><p>SELLER SIGNATURE:  __________________________________<span style="float:right;position:relative;right:119px;">DATE:</span></p></div>
               <div><p>PRINT NAME:<strong><span t-field="o.name"/> </strong></p></div>
             <div><p>BUYER SIGNATURE: <u>________________________________</u> </p></div>
-                <div><span style="">DATE : </span> <span style="font-weight:600;font-size:16px !important;" t-field="o.create_date"/>  </div>
+                <div><span style="">DATE : </span> <span style="font-weight:600;font-size:16px !important;" t-field="o.create_date" t-options='{"widget": "date"}'/>  </div>
               <h2><p>SURGICAL SURPLUS PURCHASE OFFER <span t-field="o.name"/></p></h2>
               <table class="table table-condensed">
                 <thead>

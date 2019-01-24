@@ -11,7 +11,7 @@
                                 <h2>Surgical Product Solutions</h2>
                                 <h4>Margins Report</h4>
                                 <h6>Date Range:
-                                    <span t-esc="data['date_from']"/> - <span t-esc="data['date_to']"/>
+                                    <span t-esc="data['date_from']" t-options='{"widget": "date"}'/> - <span t-esc="data['date_to']" t-options='{"widget": "date"}'/>
                                 </h6>
                             </b>
                         </center>
@@ -45,7 +45,7 @@
                                             <b>$</b> <span t-esc="'{:.2f}'.format(order[1])"/>
                                         </td>
                                         <td align="right" style="text-align: right;">
-                                            <span t-esc="order[2]"/> <b>ea</b>
+                                            <span t-esc="round(order[2])"/> <b>ea</b>
                                         </td>
                                         <td align="right" style="text-align: right;">
                                            <b>$</b> <span t-esc="'{:.2f}'.format(order[3])"/>

@@ -48,7 +48,7 @@ class VendorOffer(models.Model):
     acq_user_id = fields.Many2one('res.users', string='Acq  Manager ')
     date_offered = fields.Datetime(string='Date Offered', default=fields.Datetime.now)
     revision = fields.Char(string='Revision ')
-    revision_date = fields.Date('Revision Date')
+    revision_date = fields.Datetime(string='Revision Date')
     accepted_date = fields.Datetime(string="Accepted Date")
     declined_date = fields.Datetime(string="Declined Date")
     # retail_amt = fields.Monetary(string="Total Retail", readonly=True, default=0)
@@ -153,8 +153,8 @@ class VendorOffer(models.Model):
     @api.depends('order_line.price_total', 'accelerator', 'order_line.price_total', 'order_line.taxes_id',
                  'order_line.rt_price_tax', 'order_line.product_retail', 'order_line.rt_price_total')
     def _amount_all(self):
-        if self.env.context.get('vendor_offer_data') or self.state == 'ven_draft'  or self.state == 'ven_sent':
-            for order in self:
+        for order in self:
+            if order.env.context.get('vendor_offer_data') or order.state == 'ven_draft' or order.state == 'ven_sent':
                 if order.state == 'draft':
                     order.state = 'ven_draft'
 
@@ -191,14 +191,14 @@ class VendorOffer(models.Model):
                     'rt_price_tax_amt': rt_price_tax,
                     'rt_price_total_amt': rt_price_total,
                 })
-        else:
-            super(VendorOffer, self)._amount_all()
+            else:
+                super(VendorOffer, self)._amount_all()
 
     @api.multi
     def action_send_offer_email(self):
         '''
-               This function opens a window to compose an email, with the edi purchase template message loaded by default
-               '''
+        This function opens a window to compose an email, with the edi purchase template message loaded by default
+        '''
         self.temp_payment_term = self.payment_term_id.name
         if (self.payment_term_id.name == False):
             self.temp_payment_term = '0 Days '
@@ -302,10 +302,10 @@ class VendorOffer(models.Model):
             order._add_supplier_to_product()
             # Deal with double validation process
             if order.company_id.po_double_validation == 'one_step' \
-                    or (order.company_id.po_double_validation == 'two_step' \
+                    or (order.company_id.po_double_validation == 'two_step'
                         and order.amount_total < self.env.user.company_id.currency_id.compute(
-                        order.company_id.po_double_validation_amount, order.currency_id)) \
-                    or order.user_has_groups('purchase.group_purchase_manager'):
+                        order.company_id.po_double_validation_amount, order.currency_id)) or order.user_has_groups(
+                'purchase.group_purchase_manager'):
                 order.button_approve()
             else:
                 order.write({'state': 'to approve'})
@@ -345,7 +345,7 @@ class VendorOffer(models.Model):
             vals['state'] = 'ven_draft'
             vals['vendor_offer_data'] = True
             vals['revision'] = '1'
-            vals['revision_date'] = fields.Date.today()
+            vals['revision_date'] = fields.Datetime.now()
 
             record = super(VendorOffer, self).create(vals)
             return record
@@ -361,7 +361,7 @@ class VendorOffer(models.Model):
 
             temp = int(self.revision) + 1
             values['revision'] = str(temp)
-            values['revision_date'] = fields.Date.today()
+            values['revision_date'] = fields.Datetime.now()
             record = super(VendorOffer, self).write(values)
             return record
         else:
@@ -375,16 +375,18 @@ class VendorOfferProduct(models.Model):
 
     product_tier = fields.Many2one('tier.tier', string="Tier")
     product_sales_count = fields.Integer(string="Sales Count All", readonly=True,
-                                         compute='onchange_product_id_vendor_offer')
+                                         compute='onchange_product_id_vendor_offer', store=True)
     product_sales_count_month = fields.Integer(string="Sales Count Month", readonly=True,
-                                               compute='onchange_product_id_vendor_offer')
+                                               compute='onchange_product_id_vendor_offer', store=True)
     product_sales_count_90 = fields.Integer(string="Sales Count 90 Days", readonly=True,
-                                            compute='onchange_product_id_vendor_offer')
+                                            compute='onchange_product_id_vendor_offer', store=True)
     product_sales_count_yrs = fields.Integer(string="Sales Count Yr", readonly=True,
-                                             compute='onchange_product_id_vendor_offer')
-    qty_in_stock = fields.Integer(string="Quantity In Stock", readonly=True, compute='onchange_product_id_vendor_offer')
-    expiration_date = fields.Datetime(string="Expiration Date", readonly=True)
-    expired_inventory = fields.Char(string="Expired Inventory Items", compute='expired_inventory_cal', readonly=True)
+                                             compute='onchange_product_id_vendor_offer', store=True)
+    qty_in_stock = fields.Integer(string="Quantity In Stock", readonly=True, compute='onchange_product_id_vendor_offer',
+                                  store=True)
+    expiration_date = fields.Datetime(string="Expiration Date", readonly=True, )
+    expired_inventory = fields.Char(string="Expired Inventory Items", compute='expired_inventory_cal', readonly=True,
+                                    store=True)
     multiplier = fields.Many2one('multiplier.multiplier', string="Multiplier")
 
     possible_competition = fields.Many2one(related='order_id.possible_competition', store=False)
@@ -395,7 +397,7 @@ class VendorOfferProduct(models.Model):
     product_note = fields.Text(string="Notes")
 
     margin = fields.Char(string="Margin", readonly=True, compute='cal_offer_price')
-    product_unit_price = fields.Monetary(string="Retail Price", readonly=True, compute='cal_offer_price')
+    product_unit_price = fields.Monetary(string="Retail Price", readonly=True, compute='cal_offer_price', store=True)
     product_offer_price = fields.Monetary(string="Offer Price", readonly=True, compute='cal_offer_price')
 
     product_retail = fields.Monetary(string="Total Retail Price", compute='_compute_amount')
@@ -413,7 +415,7 @@ class VendorOfferProduct(models.Model):
     @api.depends('product_id')
     def onchange_product_id_vendor_offer(self):
         for line in self:
-            if (line.state == 'ven_draft' or line.state == 'ven_sent'):
+            if line.env.context.get('vendor_offer_data') or line.state == 'ven_draft' or line.state == 'ven_sent':
                 result1 = {}
                 if not line.product_id:
                     return result1
@@ -568,6 +570,14 @@ class VendorOfferProduct(models.Model):
     def qty_in_stocks(self):
         pass
 
+class PopupNotes(models.TransientModel):
+    _name = 'popup.purchase.order.notes'
+    notes = fields.Text(string="Notes", required=True)
+
+    def action_button_edit_note(self):
+        self.ensure_one()
+        order = self.env['purchase.order'].browse(self._context['active_id'])
+        order.notes_desc = self.notes
 
 class Multiplier(models.Model):
     _name = 'multiplier.multiplier'
@@ -619,7 +629,7 @@ class FedexDelivery(models.Model):
         srm.web_authentication_detail(superself.fedex_developer_key, superself.fedex_developer_password)
         srm.client_detail(superself.fedex_account_number, superself.fedex_meter_number)
         srm.transaction_detail(order.id)
-        package_type = popup.product_packaging.name  # 'FEDEX_BOX' #picking.package_ids and picking.package_ids[0].packaging_id.shipper_package_code or self.fedex_default_packaging_id.shipper_package_code
+        package_type = popup.product_packaging.name
         srm.shipment_request(self.fedex_droppoff_type, self.fedex_service_type, package_type, self.fedex_weight_unit,
                              self.fedex_saturday_delivery)
         srm.set_currency(_convert_curr_iso_fdx(order.currency_id.name))
