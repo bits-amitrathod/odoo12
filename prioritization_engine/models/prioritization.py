@@ -297,8 +297,8 @@ class StockMove(models.Model):
     _inherit = "stock.move"
     partial_UOM = fields.Boolean("Allow Partial UOM?", compute="_get_partial_UOM", readonly=True)
 
+
     @api.multi
-    @api.depends('partial_UOM')
     def _get_partial_UOM(self):
         _logger.info('partner id : %r, product id : %r',self.partner_id.id,self.product_id.id)
         if self.partner_id and self.product_id:
