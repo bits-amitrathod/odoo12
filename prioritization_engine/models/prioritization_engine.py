@@ -447,8 +447,12 @@ class PrioritizationEngine(models.TransientModel):
                     self._update_uploaded_document_status(sps_cust_uploaded_document.id,'Completed')
 
     def _update_uploaded_document_status(self,document_id,status):
-        self.env['sps.cust.uploaded.documents'].search(
-            [('id', '=', document_id)]).write(dict(status=status))
+        try:
+            self.env['sps.cust.uploaded.documents'].search(
+                [('id', '=', document_id)]).write(dict(status=status))
+        except Exception:
+            _logger.error("Unable to update document status")
+
 
     # Release reserved product quantity(Which sales order product not confirm within length of hold period)
     def release_reserved_product_quantity(self):
