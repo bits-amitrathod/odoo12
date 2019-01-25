@@ -80,10 +80,10 @@ class SpsTransientBaseImport(models.TransientModel):
             if 'customer_sku' not in import_fields:
                 raise ValueError(_("You must configure Customer Sku field to import"))
 
-            if template_type == 'Inventory' and 'quantity' not in import_fields:
+            if template_type.lower().strip() == 'inventory' and 'quantity' not in import_fields:
                 raise ValueError(_("You must configure Stock field to import"))
 
-            if template_type == 'Requirement' and 'required_quantity' not in import_fields:
+            if template_type.lower().strip() == 'requirement' and 'required_quantity' not in import_fields:
                 raise ValueError(_("You must configure Required Quantity field to import"))
 
             self._cr.execute('SAVEPOINT import')

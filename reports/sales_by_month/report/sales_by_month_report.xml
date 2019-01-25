@@ -4,7 +4,7 @@
         <report
                 id="action_report_sales_by_month"
                 string="Sales By Month"
-                model="sales_by_month"
+                model="product.product"
                 report_type="qweb-html"
                 file="sales_by_month.sales_by_month_template"
                 name="sales_by_month.sales_by_month_template"
