@@ -7,7 +7,6 @@
                 <form string="Choose your date">
                     <group>
                         <group>
-                            <field name="start_date" />
                             <field name="end_date"/>
                             <field name="product_sku_code"/>
                         </group>
@@ -32,15 +31,21 @@
 
         <record model="ir.ui.view" id="list_view">
               <field name="name">product.sale.by.count.view.list</field>
-              <field name="model">sales_by_month</field>
+              <field name="model">product.product</field>
               <field name="priority">21</field>
               <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false">
-                    <field name="sku_code" string="Product SKU"/>
-                    <field name="product_id"/>
-                    <field name="product_price" widget="monetary"/>
-                    <field name="total_sale_quantity" string="Total Sale Qty"/>
-                    <field name="total_amount" widget="monetary" sum="Total"/>
+                    <field name="sku_code"  string="Product SKU" />
+                    <field name="name"  />
+                    <field name="month1" widget="monetary" />
+                    <field name="month2" widget="monetary"/>
+                    <field name="month3" widget="monetary"/>
+                    <field name="month4" widget="monetary"  />
+                    <field name="month5" widget="monetary"/>
+                    <field name="month6" widget="monetary" />
+                    <field name="total_sale" widget="monetary"/>
+                    <field name="total_quantity" />
+                    <field name="product_uom_name" string="Product UOM"/>
                     <field name="currency_id"  invisible="1"/>
                 </tree>
               </field>
@@ -48,17 +53,17 @@
 
        <record model="ir.ui.view" id="sales_by_month_form">
             <field name="name">sales.by.month.form</field>
-            <field name="model">sales_by_month</field>
+            <field name="model">product.product</field>
             <field name="arch" type="xml">
                 <form string="Sales By Month Form">
                     <sheet>
                         <group>
-                            <field name="sku_code" string="Product SKU"/>
-                            <field name="product_id"/>
-                             <field name="product_price" widget="monetary"/>
-                             <field name="total_sale_quantity" string="Total Sale Qty"/>
-                            <field name="total_amount" widget="monetary" sum="Total"/>
-                           <field name="currency_id"  invisible="1"/>
+                            <field name="month1" string="Product SKU"/>
+                            <!--<field name="product_id"/>-->
+                             <!--<field name="product_price" widget="monetary"/>-->
+                             <!--<field name="total_sale_quantity" string="Total Sale Qty"/>-->
+                            <!--<field name="total_amount" widget="monetary" sum="Total"/>-->
+                           <!--<field name="currency_id"  invisible="1"/>-->
                         </group>
                     </sheet>
                 </form>
