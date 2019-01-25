@@ -12,7 +12,7 @@ class StockPicking(models.Model):
     @api.multi
     def button_validate(self):
         print("Inside Notifiction")
-        #result=super(StockPicking,self).button_validate()
+        super(StockPicking,self).button_validate()
         print(self.move_type)
         print(self.picking_type_id.name)
         print("After Notifiction button validation")
