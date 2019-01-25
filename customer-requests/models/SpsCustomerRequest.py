@@ -204,7 +204,7 @@ class SpsCustomerRequest(models.Model):
     @api.depends('document_id')
     def _get_qty_to_show(self):
         for record in self:
-            if record.document_id.template_type == 'Requirement':
+            if record.document_id.template_type.lower().strip() == 'requirement':
                 record.qty_to_show = str(record.required_quantity)
             else:
                 record.qty_to_show = str(record.quantity)

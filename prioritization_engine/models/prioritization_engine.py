@@ -316,11 +316,13 @@ class PrioritizationEngine(models.TransientModel):
             _logger.info('picking before*   : %r', picking.state)
             picking.write(dict(state='assigned'))
             _logger.info('picking after*   : %r', picking.state)
-            sale_order.write(dict(state='engine', confirmation_date=''))
-            sale_order.force_quotation_send()
-            _logger.info('sale order id*  : %r  sale order state : %r', sale_order.id, sale_order.state)
-            sale_order.write(dict(state='sent', confirmation_date=''))
-            _logger.info('sale order id*  : %r  sale order state : %r', sale_order.id, sale_order.state)
+            # sale_order.write(dict(state='engine', confirmation_date=''))
+            try:
+                sale_order.force_quotation_send()
+                sale_order.write(dict(state='sent', confirmation_date=''))
+            except Exception as exc:
+                raise self.retry(exc=exc)
+
 
 
     # Generate sale order for gl account
@@ -355,12 +357,12 @@ class PrioritizationEngine(models.TransientModel):
                 _logger.info('picking before   : %r', picking.state)
                 picking.write(dict(state='assigned'))
                 _logger.info('picking after   : %r', picking.state)
-                sale_order.write(dict(state='engine', confirmation_date=''))
-                sale_order.force_quotation_send()
-                _logger.info('force_quotation_send()')
-                _logger.info('sale order id  : %r  sale order state : %r', sale_order.id, sale_order.state)
-                sale_order.write(dict(state='sent', confirmation_date=''))
-                _logger.info('sale order id  : %r  sale order state : %r', sale_order.id, sale_order.state)
+                # sale_order.write(dict(state='engine', confirmation_date=''))
+                try:
+                    sale_order.force_quotation_send()
+                    sale_order.write(dict(state='sent', confirmation_date=''))
+                except Exception as exc:
+                    raise self.retry(exc=exc)
             else:
                 _logger.info('partner id is null')
 
@@ -396,8 +398,8 @@ class PrioritizationEngine(models.TransientModel):
         return count
 
     def check_product_threshold(self,prioritization_engine_request):
-        if prioritization_engine_request['quantity'] < prioritization_engine_request['min_threshold']:
-            allocate_quantity = prioritization_engine_request['max_threshold'] - prioritization_engine_request['quantity']
+        if int(prioritization_engine_request['quantity']) < int(prioritization_engine_request['min_threshold']):
+            allocate_quantity = int(prioritization_engine_request['max_threshold']) - int(prioritization_engine_request['quantity'])
             return True,allocate_quantity
         else:
             prioritization_engine_request['customer_request_logs'] += 'unable to allocate product beacause stock is greater than minimum threshold, '
@@ -417,7 +419,7 @@ class PrioritizationEngine(models.TransientModel):
             if sps_cust_uploaded_document.template_type.lower().strip() == 'requirement':
                 params = self.env['ir.config_parameter'].sudo()
                 document_processing_count = int(params.get_param('prioritization_engine.document_processing_count'))
-                print('Document Processing Count : ',document_processing_count)
+
                 if int(query_result['document_id']) == int(sps_cust_uploaded_document.id):
                     sps_customer_requirements = self.env['sps.customer.requests'].search(
                         [('document_id', '=', sps_cust_uploaded_document.id),

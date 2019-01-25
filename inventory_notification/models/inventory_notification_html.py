@@ -116,7 +116,7 @@ class InventoryNotificationHTML(models.TransientModel):
             <div style='margin:auto;width:100%;background-color: #ffffff; padding-left: 60px;' class='oe_structure'>
                 <div >
                     <h2>""" + subject + """</h2>
-                    <p>Hi Team,</p>
+                    <p>Hello ,</p>
                     """ + descrption + """ 
                 </div>
                 <div class='row'>  
