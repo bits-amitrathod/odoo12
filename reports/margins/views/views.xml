@@ -48,13 +48,14 @@
                     <field name="sku_code" invisible="1"/>
                     <!--<field name="partner_id"/>-->
                     <field name="order_id"/>
-                    <field name="unit_cost"/>
+                    <field name="unit_cost" widget="monetary"/>
                     <field name="qty"/>
-                    <field name="unit_price"/>
-                    <field name="total_unit_price" sum="total_unit_price"/>
-                    <field name="total_unit_cost" sum="total_unit_cost"/>
-                    <field name="margin" sum="margin"/>
+                    <field name="unit_price" widget="monetary"/>
+                    <field name="total_unit_price" sum="total_unit_price" widget="monetary"/>
+                    <field name="total_unit_cost" sum="total_unit_cost" widget="monetary"/>
+                    <field name="margin" sum="margin" widget="monetary"/>
                     <field name="margin_percentage" avg="margin_percentage"/>
+                    <field name="currency_id" invisible="1"/>
                 </tree>
             </field>
         </record>

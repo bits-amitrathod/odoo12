@@ -9,21 +9,23 @@ class report_sales_order_invoices(models.TransientModel):
     _description = 'Sales Order Invoice'
 
     compute_at_date = fields.Selection([
-        ('0', 'Show All '),
-        ('1', 'Selected '),
-        ('2', 'Date Range ')
-    ],default='0', string="Compute", help="Choose to analyze the Show Summary or from a specific date in the past.")
-    start_date = fields.Datetime('Start Date', help="Choose report Start date",
-                                 default=(fields.date.today() - datetime.timedelta(days=31)))
-    end_date = fields.Datetime('End Date', help="Choose report End date",
-                               default=fields.Datetime.now)
+        ('0', 'By Date Range '),
+        ('1', 'By Sales Order ')
+    ], default='0', string="Compute", help="")
 
-    order_invoices = fields.Many2many('account.invoice', domain="[('type','=', 'out_invoice')]", string='Invoices')
+    start_date = fields.Date('Start Date', help="Choose report Start date",
+                             default=(fields.date.today() - datetime.timedelta(days=31)))
+    end_date = fields.Date('End Date', help="Choose report End date",
+                           default=fields.Datetime.now)
+
+    sale_order = fields.Many2one('sale.order', string='Sales Order')
 
     def open_table(self):
 
         tree_view_id = self.env.ref('account.invoice_tree').id
         form_view_id = self.env.ref('account.invoice_form').id
+        records = self.env['sale.order'].search([])
+        list = records.mapped('name')
 
         action = {
             'type': 'ir.actions.act_window',
@@ -36,12 +38,13 @@ class report_sales_order_invoices(models.TransientModel):
         }
 
         if self.compute_at_date == '0':
+            action['domain'] = [('state', '=', 'open'), ('date_invoice', '>=', self.start_date),
+                                ('date_invoice', '<=', self.end_date),
+                                ('origin', 'in', list)
+                                ]
             return action
         elif self.compute_at_date == '1':
-            action['domain'].append(('id', 'in', self.order_invoices.ids))
-            return action
-        elif self.compute_at_date == '2':
-            action.update({'domain': [('date_invoice', '>=', self.start_date),
-                                      ('date_invoice', '<=', self.end_date),
-                                      ('state','=','open')]})
+            action['domain'] = [
+                ('origin', '=', self.env['sale.order'].search([('id', '=', self.sale_order.ids[0])])[0].name),
+                ('state', '=', 'open')]
             return action
