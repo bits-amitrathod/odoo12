@@ -15,7 +15,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
 
 
 
-    end_date = fields.Date('To Date',required=True)
+    end_date = fields.Date('To Date',default=(fields.date.today()),required=True)
     product_sku_code = fields.Many2one('product.product', 'Product SKU')
 
     def open_table(self):
