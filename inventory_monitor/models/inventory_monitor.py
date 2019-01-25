@@ -30,6 +30,7 @@ class ProductTemplate(models.Model):
         final_month = fields.Date.to_string(today_date - datetime.timedelta(days=max_inventory_level_duration))
         for ml in self:
             location_ids = self.env['stock.location'].search([('usage', '=', 'internal'), ('active', '=', True)])
+            cust_location_id = self.env['stock.location'].search([('name', '=', 'Customers')]).id
             quantity = 0
             sale_quant =0
             purchase_qty=0
@@ -37,8 +38,8 @@ class ProductTemplate(models.Model):
             products = self.env['product.product'].search([('product_tmpl_id', '=', ml.id),('qty_available','>',0)])
             for product_id in products:
                 self.env.cr.execute(
-                    "SELECT sum(sml.qty_done) FROM sale_order_line AS sol LEFT JOIN stock_picking AS sp ON sp.sale_id=sol.id LEFT JOIN stock_move_line AS sml ON sml.picking_id=sp.id WHERE sml.state='done' AND sml.product_id =%s AND sml.write_date>=%s",
-                    (product_id.id, final_month))
+                    "SELECT sum(sml.qty_done) FROM sale_order_line AS sol LEFT JOIN stock_picking AS sp ON sp.sale_id=sol.id LEFT JOIN stock_move_line AS sml ON sml.picking_id=sp.id WHERE sml.state='done' AND sml.location_dest_id =%s AND sml.product_id =%s AND sp.date_done>=%s",
+                    (cust_location_id,product_id.id, final_month))
                 quant = self.env.cr.fetchone()
                 if quant[0] is not None and max_inventory_level_duration>0:
                     sale_quant = sale_quant + int(quant[0])
