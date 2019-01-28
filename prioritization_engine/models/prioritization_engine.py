@@ -215,13 +215,11 @@ class PrioritizationEngine(models.TransientModel):
 
     # update customer status
     def update_customer_request_status(self,prioritization_engine_request,status):
-        customer_request = self.env['sps.customer.requests'].search([('id', '=', prioritization_engine_request['customer_request_id'])])
-        customer_request.write(dict(status=status))
+        self.env['sps.customer.requests'].search([('id', '=', prioritization_engine_request['customer_request_id'])]).write(dict(status=status))
         prioritization_engine_request['customer_request_logs'] += 'Updated customer request status.'
 
     def update_customer_request_logs(self, prioritization_engine_request):
-        customer_request = self.env['sps.customer.requests'].search([('id', '=', prioritization_engine_request['customer_request_id'])])
-        customer_request.write(dict(customer_request_logs=prioritization_engine_request['customer_request_logs']))
+        self.env['sps.customer.requests'].search([('id', '=', prioritization_engine_request['customer_request_id'])]).write(dict(customer_request_logs=prioritization_engine_request['customer_request_logs']))
 
     # get product create date for to calculate length of hold and cooling period.
     def get_product_create_date(self, prioritization_engine_request):
