@@ -365,10 +365,11 @@ class VendorOffer(models.Model):
     @api.multi
     def write(self, values):
         if (self.state == 'ven_draft' or self.state == 'ven_sent'):
-
-            temp = int(self.revision) + 1
-            values['revision'] = str(temp)
-            values['revision_date'] = fields.Datetime.now()
+            # Fix for revion change on send button email template
+            if not 'message_follower_ids' in values :
+                temp = int(self.revision) + 1
+                values['revision'] = str(temp)
+                values['revision_date'] = fields.Datetime.now()
             record = super(VendorOffer, self).write(values)
             return record
         else:
