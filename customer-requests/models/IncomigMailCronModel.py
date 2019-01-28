@@ -163,7 +163,7 @@ class IncomingMailCronModel(models.Model):
                                             users_model = self.env['res.partner'].search(
                                                 [("email", "=", email_from)])
                                             if users_model:
-                                                if len(users_model):
+                                                if len(users_model) == 1:
                                                     user_attachment_dir = ATTACHMENT_DIR + str(
                                                         datetime.now().strftime("%d%m%Y")) + "/" + str(
                                                         users_model.id) + "/"

@@ -93,43 +93,44 @@ class TrendingReportListView(models.Model):
     @api.model
     def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
         popup = self.env['salesbymonth.popup'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
-        if popup and popup.end_date and not popup.end_date is None:
-            today = datetime.date(datetime.strptime(popup.end_date, "%Y-%m-%d"))
-            View = self.env['ir.ui.view']
 
-            # Get the view arch and all other attributes describing the composition of the view
-            result = self._fields_view_get(view_id=view_id, view_type=view_type, toolbar=toolbar, submenu=submenu)
+        View = self.env['ir.ui.view']
 
-            # Override context for postprocessing
-            if view_id and result.get('base_model', self._name) != self._name:
-                View = View.with_context(base_model_name=result['base_model'])
+        # Get the view arch and all other attributes describing the composition of the view
+        result = self._fields_view_get(view_id=view_id, view_type=view_type, toolbar=toolbar, submenu=submenu)
 
-            # Apply post processing, groups and modifiers etc...
-            xarch, xfields = View.postprocess_and_fields(self._name, etree.fromstring(result['arch']), view_id)
-            result['arch'] = xarch
-            result['fields'] = xfields
+        # Override context for postprocessing
+        if view_id and result.get('base_model', self._name) != self._name:
+            View = View.with_context(base_model_name=result['base_model'])
 
-            # Add related action information if aksed
-            if toolbar:
-                bindings = self.env['ir.actions.actions'].get_bindings(self._name)
-                resreport = [action
-                             for action in bindings['report']
-                             if view_type == 'tree' or not action.get('multi')]
-                resaction = [action
-                             for action in bindings['action']
-                             if view_type == 'tree' or not action.get('multi')]
-                resrelate = []
-                if view_type == 'form':
-                    resrelate = bindings['action_form_only']
+        # Apply post processing, groups and modifiers etc...
+        xarch, xfields = View.postprocess_and_fields(self._name, etree.fromstring(result['arch']), view_id)
+        result['arch'] = xarch
+        result['fields'] = xfields
 
-                for res in itertools.chain(resreport, resaction):
-                    res['string'] = res['name']
+        # Add related action information if aksed
+        if toolbar:
+            bindings = self.env['ir.actions.actions'].get_bindings(self._name)
+            resreport = [action
+                         for action in bindings['report']
+                         if view_type == 'tree' or not action.get('multi')]
+            resaction = [action
+                         for action in bindings['action']
+                         if view_type == 'tree' or not action.get('multi')]
+            resrelate = []
+            if view_type == 'form':
+                resrelate = bindings['action_form_only']
 
-                result['toolbar'] = {
-                    'print': resreport,
-                    'action': resaction,
-                    'relate': resrelate,
-                }
+            for res in itertools.chain(resreport, resaction):
+                res['string'] = res['name']
+
+            result['toolbar'] = {
+                'print': resreport,
+                'action': resaction,
+                'relate': resrelate,
+            }
+            if popup and popup.end_date and not popup.end_date is None:
+                today = datetime.date(datetime.strptime(popup.end_date, "%Y-%m-%d"))
                 if(result['name']=="product.sale.by.count.view.list"):
                     doc = etree.XML(result['arch'])
                     for node in doc.xpath("//field[@name='month6']"):
@@ -147,4 +148,4 @@ class TrendingReportListView(models.Model):
 
                     result['arch'] = etree.tostring(doc, encoding='unicode')
 
-            return result
+        return result
