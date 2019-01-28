@@ -38,8 +38,8 @@ class AvailableProductDict(models.TransientModel):
                 updated_dict = {'quantity': available_production_lot.get(list(available_production_lot.keys()).pop(0), {})['available_quantity'],
                                 'reserved_quantity': available_production_lot.get(list(available_production_lot.keys()).pop(0), {})['reserved_quantity']}
 
-                self.env['stock.quant'].search([('id', '=', available_production_lot.get(list(available_production_lot.keys()).pop(0), {})['stock_quant_id'])]).write(
-                     dict(updated_dict))
+                stock_quant = self.env['stock.quant'].search([('id', '=', available_production_lot.get(list(available_production_lot.keys()).pop(0), {})['stock_quant_id'])])
+                stock_quant.write(dict(updated_dict))
 
     def get_available_production_lot(self):
         available_production_lot_dict={}

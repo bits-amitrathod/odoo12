@@ -215,13 +215,11 @@ class PrioritizationEngine(models.TransientModel):
 
     # update customer status
     def update_customer_request_status(self,prioritization_engine_request,status):
-        self.env['sps.customer.requests'].search(
-            [('id', '=', prioritization_engine_request['customer_request_id'])]).write(dict(status=status))
+        self.env['sps.customer.requests'].search([('id', '=', prioritization_engine_request['customer_request_id'])]).write(dict(status=status))
         prioritization_engine_request['customer_request_logs'] += 'Updated customer request status.'
 
     def update_customer_request_logs(self, prioritization_engine_request):
-        self.env['sps.customer.requests'].search(
-            [('id', '=', prioritization_engine_request['customer_request_id'])]).write(dict(customer_request_logs=prioritization_engine_request['customer_request_logs']))
+        self.env['sps.customer.requests'].search([('id', '=', prioritization_engine_request['customer_request_id'])]).write(dict(customer_request_logs=prioritization_engine_request['customer_request_logs']))
 
     # get product create date for to calculate length of hold and cooling period.
     def get_product_create_date(self, prioritization_engine_request):
@@ -448,8 +446,8 @@ class PrioritizationEngine(models.TransientModel):
 
     def _update_uploaded_document_status(self,document_id,status):
         try:
-            self.env['sps.cust.uploaded.documents'].search(
-                [('id', '=', document_id)]).write(dict(status=status))
+            uploaded_document = self.env['sps.cust.uploaded.documents'].search([('id', '=', document_id)])
+            uploaded_document.write(dict(status=status))
         except Exception:
             _logger.error("Unable to update document status")
 

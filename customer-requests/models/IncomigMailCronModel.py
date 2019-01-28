@@ -163,29 +163,32 @@ class IncomingMailCronModel(models.Model):
                                             users_model = self.env['res.partner'].search(
                                                 [("email", "=", email_from)])
                                             if users_model:
-                                                user_attachment_dir = ATTACHMENT_DIR + str(
-                                                    datetime.now().strftime("%d%m%Y")) + "/" + str(
-                                                    users_model.id) + "/"
-                                                if not os.path.exists(os.path.dirname(user_attachment_dir)):
-                                                    try:
-                                                        os.makedirs(os.path.dirname(user_attachment_dir))
-                                                    except OSError as exc:
-                                                        if exc.errno != errno.EEXIST:
-                                                            raise
-                                                for attachment in attachments:
-                                                    filename = getattr(attachment, 'fname')
-                                                    if not filename is None:
+                                                if len(users_model) == 1:
+                                                    user_attachment_dir = ATTACHMENT_DIR + str(
+                                                        datetime.now().strftime("%d%m%Y")) + "/" + str(
+                                                        users_model.id) + "/"
+                                                    if not os.path.exists(os.path.dirname(user_attachment_dir)):
                                                         try:
-                                                            file_contents_bytes = getattr(attachment, 'content')
-                                                            file_path = user_attachment_dir + str(filename)
-                                                            file_ref = open(str(file_path), "wb+")
-                                                            file_ref.write(file_contents_bytes)
-                                                            file_ref.close()
-                                                            self.env[
-                                                                'sps.document.process'].process_document(
-                                                                users_model, file_path, tmpl_type,filename, 'Email')
-                                                        except Exception as e:
-                                                            _logger.info(str(e))
+                                                            os.makedirs(os.path.dirname(user_attachment_dir))
+                                                        except OSError as exc:
+                                                            if exc.errno != errno.EEXIST:
+                                                                raise
+                                                    for attachment in attachments:
+                                                        filename = getattr(attachment, 'fname')
+                                                        if not filename is None:
+                                                            try:
+                                                                file_contents_bytes = getattr(attachment, 'content')
+                                                                file_path = user_attachment_dir + str(filename)
+                                                                file_ref = open(str(file_path), "wb+")
+                                                                file_ref.write(file_contents_bytes)
+                                                                file_ref.close()
+                                                                self.env[
+                                                                    'sps.document.process'].process_document(
+                                                                    users_model, file_path, tmpl_type,filename, 'Email')
+                                                            except Exception as e:
+                                                                _logger.info(str(e))
+                                                else:
+                                                    _logger.error('Presents Same Email Id for multiple users')
                                             else:
                                                 _logger.info('user not found for %r',
                                                              email_from)

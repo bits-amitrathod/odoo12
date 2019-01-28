@@ -64,7 +64,7 @@ class VendorOfferImportTransientModel(models.TransientModel):
         import_fields = [f for f in fields if f]
 
         if 'mf_customer_sku' not in import_fields:
-            raise ValueError(_("You must configure Customer Sku field to import"))
+            raise ValueError(_("You must configure Customer SKU field to import"))
 
         rows_to_import = self._read_file(options)
         if options.get('headers'):
