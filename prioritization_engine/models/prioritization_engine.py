@@ -215,13 +215,13 @@ class PrioritizationEngine(models.TransientModel):
 
     # update customer status
     def update_customer_request_status(self,prioritization_engine_request,status):
-        self.env['sps.customer.requests'].search(
-            [('id', '=', prioritization_engine_request['customer_request_id'])]).write(dict(status=status))
+        customer_request = self.env['sps.customer.requests'].search([('id', '=', prioritization_engine_request['customer_request_id'])])
+        customer_request.write(dict(status=status))
         prioritization_engine_request['customer_request_logs'] += 'Updated customer request status.'
 
     def update_customer_request_logs(self, prioritization_engine_request):
-        self.env['sps.customer.requests'].search(
-            [('id', '=', prioritization_engine_request['customer_request_id'])]).write(dict(customer_request_logs=prioritization_engine_request['customer_request_logs']))
+        customer_request = self.env['sps.customer.requests'].search([('id', '=', prioritization_engine_request['customer_request_id'])])
+        customer_request.write(dict(customer_request_logs=prioritization_engine_request['customer_request_logs']))
 
     # get product create date for to calculate length of hold and cooling period.
     def get_product_create_date(self, prioritization_engine_request):
@@ -447,8 +447,12 @@ class PrioritizationEngine(models.TransientModel):
                     self._update_uploaded_document_status(sps_cust_uploaded_document.id,'Completed')
 
     def _update_uploaded_document_status(self,document_id,status):
-        self.env['sps.cust.uploaded.documents'].search(
-            [('id', '=', document_id)]).write(dict(status=status))
+        try:
+            uploaded_document = self.env['sps.cust.uploaded.documents'].search([('id', '=', document_id)])
+            uploaded_document.write(dict(status=status))
+        except Exception:
+            _logger.error("Unable to update document status")
+
 
     # Release reserved product quantity(Which sales order product not confirm within length of hold period)
     def release_reserved_product_quantity(self):
