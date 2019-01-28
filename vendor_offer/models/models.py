@@ -2,6 +2,8 @@
 
 from odoo import models, fields, api, SUPERUSER_ID, _
 from odoo.addons import decimal_precision as dp
+from werkzeug.urls import url_encode
+
 from .fedex_request import FedexRequest
 from odoo.exceptions import UserError, AccessError, ValidationError
 import datetime
@@ -199,9 +201,9 @@ class VendorOffer(models.Model):
         '''
         This function opens a window to compose an email, with the edi purchase template message loaded by default
         '''
-        self.temp_payment_term = self.payment_term_id.name
-        if (self.payment_term_id.name == False):
-            self.temp_payment_term = '0 Days '
+        temp_payment_term = self.payment_term_id.name
+        if (temp_payment_term == False):
+            temp_payment_term = '0 Days '
         self.ensure_one()
         ir_model_data = self.env['ir.model.data']
         try:
@@ -225,7 +227,12 @@ class VendorOffer(models.Model):
             'custom_layout': "vendor_offer.mail_template_data_notification_email_vendor_offer",
             'force_email': True
         })
-        self.write({'status': 'ven_sent', 'state': 'ven_sent'})
+        if self.temp_payment_term != temp_payment_term or self.status != 'ven_sent' :
+            self.write({
+                'temp_payment_term': temp_payment_term,
+                'status': 'ven_sent',
+                'state': 'ven_sent'}
+            )
         return {
             'name': _('Compose Email'),
             'type': 'ir.actions.act_window',
@@ -358,14 +365,28 @@ class VendorOffer(models.Model):
     @api.multi
     def write(self, values):
         if (self.state == 'ven_draft' or self.state == 'ven_sent'):
-
-            temp = int(self.revision) + 1
-            values['revision'] = str(temp)
-            values['revision_date'] = fields.Datetime.now()
+            # Fix for revion change on send button email template
+            if not 'message_follower_ids' in values :
+                temp = int(self.revision) + 1
+                values['revision'] = str(temp)
+                values['revision_date'] = fields.Datetime.now()
             record = super(VendorOffer, self).write(values)
             return record
         else:
             return super(VendorOffer, self).write(values)
+
+    def get_mail_url(self):
+        self.ensure_one()
+        params = {
+            'model': self._name,
+            'res_id': self.id,
+        }
+        if hasattr(self, 'access_token') and self.access_token:
+            params['access_token'] = self.access_token
+        if hasattr(self, 'partner_id') and self.partner_id:
+            params.update(self.partner_id.signup_get_auth_param()[self.partner_id.id])
+
+        return '/mail/view?' + url_encode(params)
 
 
 class VendorOfferProduct(models.Model):
@@ -471,11 +492,11 @@ class VendorOfferProduct(models.Model):
                     if line.tier.code == False:
                         multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'out of scope')])
                         line.multiplier = multiplier_list.id
-                    elif line.product_sales_count == '0':
+                    elif line.product_sales_count == 0:
                         multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'no history')])
                         line.multiplier = multiplier_list.id
                     elif float(line.qty_in_stock) > (
-                            float(line.product_sales_count) * 2) and line.product_sales_count != '0':
+                            line.product_sales_count * 2) and line.product_sales_count != 0:
                         multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'overstocked')])
                         line.multiplier = multiplier_list.id
                     elif line.product_id.product_tmpl_id.premium == True:
@@ -490,12 +511,11 @@ class VendorOfferProduct(models.Model):
 
                 line.update_product_expiration_date()
 
-                for order in self:
-                    for line in order:
-                        if (line.product_qty == False):
-                            line.product_qty = '1'
-                            line.price_subtotal = line.list_price
-                            line.product_unit_price = line.list_price
+
+                if (line.product_qty == False):
+                    line.product_qty = '1'
+                    line.price_subtotal = line.list_price
+                    line.product_unit_price = line.list_price
 
                 # line.cal_offer_price()
                 line.product_tier = line.product_id.tier

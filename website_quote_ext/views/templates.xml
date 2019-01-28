@@ -803,8 +803,11 @@
                                 <span t-field="order.date_order" t-options='{"widget": "date"}'/>
                             </div>
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-5">
                                     <strong>Product</strong>
+                                </div>
+                                 <div class="col-md-1">
+                                    <strong>SKU</strong>
                                 </div>
                                 <div class="col-md-2 text-right">
                                     <strong>Offer Price</strong>
@@ -821,8 +824,11 @@
                                     <div class="col-md-1 text-center">
                                         <img t-att-src="'/web/image/purchase.order.line/%s/product_image/48x48' % ol.id"/>
                                     </div>
-                                    <div id='product_name' class="col-md-5">
+                                    <div id='product_name' class="col-md-4">
                                         <span t-esc="ol.product_id.name"/>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <span t-esc="ol.sku_code"/>
                                     </div>
                                     <div class="col-md-2 text-right">
                                         <span t-field="ol.product_offer_price"
