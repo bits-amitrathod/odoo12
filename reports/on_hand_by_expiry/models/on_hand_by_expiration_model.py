@@ -3,7 +3,7 @@
 from odoo import api, fields, models, tools
 import logging
 from datetime import datetime,timedelta
-
+import odoo.addons.decimal_precision as dp
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, pycompat, misc
 
 _logger = logging.getLogger(__name__)
@@ -13,7 +13,7 @@ class OnHandByExpiry(models.Model):
     _name = "on_hand_by_expiry"
     _auto = False
 
-    qty = fields.Float("Product Qty")
+    qty = fields.Float("Product Qty",digits=dp.get_precision('Product Unit of Measure'))
     product_id = fields.Many2one('product.product', string='Product Name')
     warehouse_id = fields.Many2one('stock.warehouse', 'Warehouse')
     location_id = fields.Many2one('stock.location', string='Location')
@@ -23,7 +23,7 @@ class OnHandByExpiry(models.Model):
     color_value =  fields.Integer("Scrab Location", compute="_set_date_fg_color")
     scrap_location = fields.Boolean("Scrap Location")
     sku_code = fields.Char("Product SKU")
-
+    _rec_name = 'product_id'
 
     @api.model_cr
     def init(self):

@@ -10,11 +10,11 @@
                             <b>
                                 <h2>Surgical Product Solution</h2>
                                 <h4>Pick Ticket
-                                    <span t-if="date"> - By Date</span>
+                                    <span t-if="popup.compute_at_date"> - By Date</span>
                                     <span t-else=""> - By Order</span>
                                 </h4>
-                                <h4 t-if="date">
-                                    <span t-esc="date"/>
+                                <h4 t-if="popup.compute_at_date">
+                                    <span t-esc="popup.start_date" t-options='{"widget": "date"}'/> to <span t-esc="popup.end_date" t-options='{"widget": "date"}'/>
                                 </h4>
                             </b>
                         </center>
@@ -48,7 +48,7 @@
                                     <span t-esc="pick['scheduled_date']" t-options='{"widget": "date"}'/>
                                 </td>
                                 <td style="border: none;">
-                                    <strong>Customer:</strong>
+                                    <strong>Customer Name:</strong>
                                     <span t-esc="pick['customer']"/>
                                 </td>
                                 <td style="border: none;">
@@ -86,7 +86,7 @@
                                     <td style="border: 1px solid black;">
                                         <span t-esc="product['product']"/>
                                     </td>
-                                    <td style="border: 1px solid black;">
+                                    <td style="border: 1px solid black;" align="center">
                                         <span t-esc="product['quantity']"/>
                                     </td>
                                     <td style="border: 1px solid black;">

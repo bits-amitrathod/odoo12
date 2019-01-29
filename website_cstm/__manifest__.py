@@ -2,7 +2,7 @@
 {
     'name': "Website CSTM",
 
-     'author': "Benchmark IT Solutions (I) Pvt Ltd.",
+     'author': "Benchmark IT Solutions",
     'website': "http://www.benchmarkitsolutions.com",
     'sequence': 57,
     'category': 'Theme',

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': "Priority Engine",
-    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
+    'author': "Benchmark IT Solutions",
     'website': "http://www.benchmarkitsolutions.com",
 
     # Categories can be used to filter modules in modules listing

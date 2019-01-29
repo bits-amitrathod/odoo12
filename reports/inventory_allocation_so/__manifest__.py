@@ -3,14 +3,14 @@
     'name': "Inventory SO Allocation",
 
      'summary': """
-        Short (1 phrase/line) summary of the module's purpose, used as
-        subtitle on modules listing or apps.openerp.com""",
+      Report
+        """,
 
     'description': """
-        Long description of module's purpose
+        
     """,
 
-    'author': "Benchmark It Solutions Pvt ltd",
+    'author': "Benchmark IT Solutions",
     'website': "http://www.benchmarkitsolutions.com",
 
     # Categories can be used to filter modules in modules listing

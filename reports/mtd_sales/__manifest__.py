@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 {
     'name': "MTD Sales",
+    'summary': "Report",
 
-    'author': "Benchmark IT Solutions (I) Pvt Ltd",
+    'author': "Benchmark IT Solutions",
     'website': "http://www.benchmarkitsolutions.com",
 
     'depends': ['base'],
