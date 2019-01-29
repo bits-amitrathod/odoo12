@@ -2,13 +2,15 @@
 {
     'name': "TPS Report",
 
-    # 'summary': """""",
-    #
+    'summary': """
+          Report
+    """,
+
     # 'description': """
-    #      This module provides Sales Report Total Product sale.
+    #
     # """,
 
-    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
+    'author': "Benchmark IT Solutions",
     'website': "http://www.benchmarkitsolutions.com",
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/master/odoo/addons/base/module/module_data.xml

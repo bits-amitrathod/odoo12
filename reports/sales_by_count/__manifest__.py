@@ -2,8 +2,8 @@
 {
 
     'name': "Sales By Count",
-
-    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
+    'summary':"Report",
+    'author': "Benchmark IT Solutions",
     'website': "http://www.benchmarkitsolutions.com",
 
     'category': 'Uncategorized',
@@ -21,5 +21,5 @@
     ],
     'auto_install': False,
     'installable': True,
-    'application': False,
+    'application': True,
 }

@@ -69,7 +69,7 @@
                                 <field name="location_id"/>
                                 <field name="status"/>
                                 <field name="qty"/>
-                                <field name="expiration_date"/>
+                                <field name="expiration_date" widget="date"/>
                             </group>
                         </group>
                     </sheet>

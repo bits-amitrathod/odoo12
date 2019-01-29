@@ -3,13 +3,14 @@
     'name': "Lot History",
 
     'summary': """
+     Report
         """,
 
     'description': """
         
     """,
 
-    'author': "Benchmark It Solutions",
+    'author': "Benchmark IT Solutions",
     'website': "http://www.benchmarkitsolutions.com",
 
 

@@ -1,5 +1,5 @@
 from odoo import api, fields, models, tools
-
+import odoo.addons.decimal_precision as dp
 
 class PickTicketReport(models.Model):
     _name = "report.pick.ticket"
@@ -9,7 +9,7 @@ class PickTicketReport(models.Model):
 
     carrier_info = fields.Char(string="Sale Order#")
     move_id = fields.Many2one('stock.move', string="Customer Name")
-    qty_done = fields.Char(string="Quantity")
+    qty_done = fields.Float(string="Quantity",digits=dp.get_precision('Product Unit of Measure'))
     location_id = fields.Many2one('stock.location', string="Location")
     location_dest_id = fields.Many2one('stock.location', string='Destionation', )
     state = fields.Char(string='state', )
@@ -17,12 +17,10 @@ class PickTicketReport(models.Model):
     partner_id = fields.Many2one('res.partner', string="Partner Id")
     carrier_id = fields.Many2one('delivery.carrier', string="Carrier Id")
     product_id = fields.Many2one('product.product', string="Carrier Id")
-
     picking_id = fields.Many2one('stock.picking', string='Pick Number')
     product_uom_id = fields.Many2one('product.uom', 'UOM ')
     warehouse_id = fields.Many2one('stock.warehouse', 'Warehouse')
     scheduled_date = fields.Date(stirng='Scheduled Date')
-
     picking_type = fields.Char(string='Type', )
 
     @api.model_cr

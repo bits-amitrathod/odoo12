@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': "Inventory Monitor",
-
-    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
+    'author': "Benchmark IT Solutions",
     'website': "http://www.benchmarkitsolutions.com",
 
     # Categories can be used to filter modules in modules listing
@@ -14,8 +13,6 @@
     # any module necessary for this one to work correctly
     'depends': ['base','stock','product_brand','prioritization_engine','inventory_extension','purchase'],
     # always loaded
-
-
 
     'data': [
         'views/inventory_monitor.xml',
