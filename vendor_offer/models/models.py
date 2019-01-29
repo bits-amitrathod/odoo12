@@ -227,7 +227,7 @@ class VendorOffer(models.Model):
             'custom_layout': "vendor_offer.mail_template_data_notification_email_vendor_offer",
             'force_email': True
         })
-        if self.temp_payment_term != temp_payment_term or self.status != 'ven_sent' :
+        if self.temp_payment_term != temp_payment_term or self.status != 'ven_sent':
             self.write({
                 'temp_payment_term': temp_payment_term,
                 'status': 'ven_sent',
@@ -366,7 +366,7 @@ class VendorOffer(models.Model):
     def write(self, values):
         if (self.state == 'ven_draft' or self.state == 'ven_sent'):
             # Fix for revion change on send button email template
-            if not 'message_follower_ids' in values :
+            if not 'message_follower_ids' in values:
                 temp = int(self.revision) + 1
                 values['revision'] = str(temp)
                 values['revision_date'] = fields.Datetime.now()
@@ -377,16 +377,11 @@ class VendorOffer(models.Model):
 
     def get_mail_url(self):
         self.ensure_one()
-        params = {
-            'model': self._name,
-            'res_id': self.id,
-        }
-        if hasattr(self, 'access_token') and self.access_token:
-            params['access_token'] = self.access_token
+        params = {}
         if hasattr(self, 'partner_id') and self.partner_id:
             params.update(self.partner_id.signup_get_auth_param()[self.partner_id.id])
 
-        return '/mail/view?' + url_encode(params)
+        return '/my/vendor/' + str(self.id) + '?' + url_encode(params)
 
 
 class VendorOfferProduct(models.Model):
@@ -511,7 +506,6 @@ class VendorOfferProduct(models.Model):
 
                 line.update_product_expiration_date()
 
-
                 if (line.product_qty == False):
                     line.product_qty = '1'
                     line.price_subtotal = line.list_price
@@ -590,6 +584,7 @@ class VendorOfferProduct(models.Model):
     def qty_in_stocks(self):
         pass
 
+
 class PopupNotes(models.TransientModel):
     _name = 'popup.purchase.order.notes'
     notes = fields.Text(string="Notes", required=True)
@@ -598,6 +593,7 @@ class PopupNotes(models.TransientModel):
         self.ensure_one()
         order = self.env['purchase.order'].browse(self._context['active_id'])
         order.notes_desc = self.notes
+
 
 class Multiplier(models.Model):
     _name = 'multiplier.multiplier'
