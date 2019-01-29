@@ -21,10 +21,11 @@
 
 {
     'name': 'Sales purchase History',
+    'summary':"Report",
     'category': 'sale',
     'version': '11.0.0.1',
     # 'summary': 'This module provides Sales purchase History',
-    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
+    'author': "Benchmark IT Solutions",
     'website': "http://www.benchmarkitsolutions.com",
     # 'description': '''This module provides  sale purchase History.
     #                   With the help of this moudule you can print sales purchase History .
@@ -39,5 +40,5 @@
     'images': ['static/description/banner.png'],
     'auto_install': False,
     'installable': True,
-    'application': False,
+    'application': True,
 }

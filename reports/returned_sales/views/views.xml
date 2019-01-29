@@ -41,14 +41,15 @@
             <field name="model">report.returned.sales.order</field>
             <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false">
-                    <field name="order_id" string="Sales Order #"/>
+                    <field name="order_id" string="Sales Order#"/>
                     <field name="partner_id" string="Customer Name"/>
                     <field name="product_id" string="Product Name"/>
                     <field name="sku_code"/>
                     <field name="user_id"/>
                     <field name="done_qty" string="Qty Done"/>
                     <field name="product_uom_id"/>
-                    <field name="cost_price" string="Selling Cost"/>
+                    <field name="cost_price" string="Selling Cost" widget="monetary"/>
+                    <field name="currency_id" invisible="1"/>
                 </tree>
             </field>
         </record>
@@ -60,14 +61,16 @@
                 <form create="false" edit="false" delete="false">
                     <group>
                         <group>
-                            <field name="order_id" string="Order #"/>
+                            <field name="product_id" string="Product Name"/>
+                            <field name="order_id" string="Order#"/>
                             <field name="sku_code" string="Product"/>
                             <field name="partner_id" string="Customer Name"/>
                         </group>
                         <group>
                             <field name="done_qty" string="Quantity"/>
-                            <field name="cost_price" string="Cost"/>
+                            <field name="cost_price" string="Cost" widget="monetary"/>
                             <field name="moved_date" />
+                            <field name="currency_id" invisible="1"/>
                         </group>
                     </group>
                 </form>

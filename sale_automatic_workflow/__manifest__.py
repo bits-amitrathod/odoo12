@@ -9,7 +9,7 @@
     'category': 'Sales Management',
 
     'license': 'AGPL-3',
-       'author': "Benchmark IT Solutions (I) Pvt Ltd.",
+       'author': "Benchmark IT Solutions",
     'website': "http://www.benchmarkitsolutions.com",
     'depends': ['sale_stock',
                 'sales_team',

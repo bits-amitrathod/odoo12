@@ -1,8 +1,9 @@
 {
     'name': 'Gross Sales By Salesperson',
+    'summary':"Report",
     'category': 'sale',
     'version': '11.0.0.1',
-    'author': 'Benchmark It Solutions',
+    'author': 'Benchmark IT Solutions',
     'depends': ['base', 'sale', 'sale_order_dates'],
     'data': [
         'views/groupby_view.xml',
@@ -12,5 +13,5 @@
     'images': ['static/description/banner.png'],
     'auto_install': False,
     'installable': True,
-    'application': False,
+    'application': True,
 }
