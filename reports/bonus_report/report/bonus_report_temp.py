@@ -28,4 +28,4 @@ class ReportProductVendorList(models.AbstractModel):
         else:
             date = False
 
-        return {'data': self.env['purchase.order'].browse(docids), 'date': date}
+        return {'data': self.env['purchase.order'].with_context(vendor_offer_data=True).browse(docids), 'date': date}

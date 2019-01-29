@@ -35,63 +35,75 @@ class InventoryNotificationScheduler(models.TransientModel):
         self.process_on_hold_customer()
         self.process_in_stock_scheduler()
 
-    def shipment_notification_for_user(self,pickig):
-        print("inside shipment_notification_for_user ")
-        print(self)
-        print(pickig)
-        print(pickig.sale_id.user_id)
-        user=pickig.sale_id.user_id
-        sales_order = []
-        sale_order = {
-            'sales_order': pickig.sale_id.name
-        }
-        sales_order.append(sale_order)
+    def pick_notification_for_customer(self,picking):
+        Stock_Moves = self.env['stock.move'].search([('picking_id','=',picking.id)])
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
-        vals = {
-            'sale_order_lines': pickig.sale_id,
-            'subject': "shipment need to release for " + pickig.sale_id.partner_id.display_name,
-            'description': "Please release the shipment of customer: " + pickig.sale_id.partner_id.display_name,
-            'header': ['Sales order'],
-            'columnProps': ['sales_order'],
-        }
-        self.process_common_email_notification_template(super_user, user, vals['subject'], vals['description'],
-                                                        vals['sale_order_lines'], vals['header'],
-                                                        vals['columnProps'])
-
-        '''sales = self.env['sale.order'].search([('state', '=', 'sale'),('partner_id', '=', partner_id.id)])
-        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
-        users = self.env['res.users'].search([('active','=',True)])
+        users = self.env['res.users'].search([('active','=',True),('id','=', picking.sale_id.user_id.id)])
         sales_order=[]
-        for sale in sales:
-            sale_order_lines = self.env['sale.order.line'].search([('order_id.id', '=', sale.id),
-                                                                   ('move_ids.state', '=', 'assigned'),
-                                                                   ('move_ids.move_line_ids.state', '=', 'assigned')])
-
-            shipping_address = self.check_isAvailable(sale.partner_id.street) + " " + self.check_isAvailable(
-                sale.partner_id.street2) + " " \
-                               + self.check_isAvailable(sale.partner_id.zip) + " " + self.check_isAvailable(
-                sale.partner_id.city) + " " + \
-                               self.check_isAvailable(sale.partner_id.state_id.name) + " " + self.check_isAvailable(
-                sale.partner_id.country_id.name)
-            if sale_order_lines:
-                sale_order={
-                    'sales_order':sale.name,
-                    'shipping_address':shipping_address
-                }
-                sales_order.append(sale_order)
-        if sales:
-            vals = {
-                'sale_order_lines': sales_order,
-                'subject': "shipment need to release for "+partner_id.display_name  ,
-                'description': "Please release the shipment of customer: " + partner_id.display_name ,
-                'header': ['Sales order', 'Shipping Address'],
-                'columnProps': ['sales_order', 'shipping_address'],
+        for stock_move in Stock_Moves:
+            sale_order={
+                  'sales_order':picking.sale_id.name,
+                  'sku':stock_move.product_id.product_tmpl_id.default_code,
+                  'Product':stock_move.product_id.name,
+                  'qty':stock_move.product_qty
             }
-            for user in users:
-                has_group = user.has_group('stock.group_stock_manager')
-                if has_group:
-                    self.process_common_email_notification_template(super_user, user, vals['subject'], vals['description'],  vals['sale_order_lines'],  vals['header'],
-                                                                vals['columnProps'])'''
+            sales_order.append(sale_order)
+        vals = {
+            'sale_order_lines': sales_order,
+            'subject': "Picking Done For Sale Order # "+picking.sale_id.name ,
+            'description': "Please find detail for your Sale Order: " + picking.sale_id.name,
+            'header': ['SKU','Product','Qty'],
+            'columnProps': ['sku', 'Product','qty'],
+        }
+        self.process_common_email_notification_template(super_user, picking.sale_id.partner_id, vals['subject'], vals['description'], vals['sale_order_lines'],  vals['header'],
+                                                            vals['columnProps'])
+    def pull_notification_for_user(self,picking):
+        Stock_Moves = self.env['stock.move'].search([('picking_id','=',picking.id)])
+        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
+        users = self.env['res.users'].search([('active','=',True),('id','=', picking.sale_id.user_id.id)])
+        sales_order=[]
+        for stock_move in Stock_Moves:
+            sale_order={
+                  'sales_order':picking.sale_id.name,
+                  'sku':stock_move.product_id.product_tmpl_id.default_code,
+                  'Product':stock_move.product_id.name,
+                  'qty':stock_move.product_qty
+            }
+            sales_order.append(sale_order)
+        vals = {
+            'sale_order_lines': sales_order,
+            'subject': "Pull Done For Sale Order # "+picking.sale_id.name ,
+            'description': "Please find detail Of Sale Order: " + picking.sale_id.name,
+            'header': ['SKU','Product','Qty'],
+            'columnProps': ['sku', 'Product','qty'],
+        }
+        for user in users:
+            has_group = user.has_group('stock.group_stock_manager')
+            if has_group:
+                self.process_common_email_notification_template(super_user, user, vals['subject'], vals['description'], vals['sale_order_lines'],  vals['header'],
+                                                            vals['columnProps'])
+    def out_notification_for_sale(self,picking):
+        Stock_Moves = self.env['stock.move'].search([('picking_id','=',picking.id)])
+        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
+        users = self.env['res.users'].search([('active','=',True),('id','=', picking.sale_id.user_id.id)])
+        sales_order=[]
+        for stock_move in Stock_Moves:
+            sale_order={
+                  'sales_order':picking.sale_id.name,
+                  'sku':stock_move.product_id.product_tmpl_id.default_code,
+                  'Product':stock_move.product_id.name,
+                  'qty':stock_move.product_qty
+            }
+            sales_order.append(sale_order)
+        vals = {
+            'sale_order_lines': sales_order,
+            'subject': "Sale Order # "+picking.sale_id.name+" is Out for Delivery for customer " + picking.sale_id.partner_id.name  ,
+            'description': "Please find detail Of Sale Order: " + picking.sale_id.name+" and their tracking is "+str(picking.carrier_tracking_ref) ,
+            'header': ['SKU','Product','Qty'],
+            'columnProps': ['sku', 'Product','qty'],
+        }
+        self.process_common_email_notification_template(super_user, picking.sale_id.user_id, vals['subject'], vals['description'], vals['sale_order_lines'],  vals['header'],
+                                                            vals['columnProps'])
 
     def process_in_stock_scheduler(self):
         _logger.info("process_in_stock_scheduler called")
@@ -117,15 +129,15 @@ class InventoryNotificationScheduler(models.TransientModel):
                 sale_order_lines = self.env['sale.order.line'].search([('order_id.id', '=', sale.id)])
                 for line in sale_order_lines:
                     if line.product_id.qty_available > 0 :
-                        products.add(line.product_id)
+                        products.add({
+                            'id':line.product_id,
+                        })
             subject = "Products In Stock"
-            descrption = "Please find below the list items which are in-stock now in SPS Inventory."
-            header = ['SKU Code','Manufacturer', 'Name','Price Per Unit','Qty On Hand','Min Expiration Date','Max Expiration Date']
-            columnProps = ['sku_code','product_brand_id.name', 'name','list_price','qty_available', 'minExDate', 'maxExDate']
-            #if(customer.email=="amitrathod@benchmarkitsolutions.com"):
+            descrption = "Please find below the items which are back in stock now ! Please find the Website URL: https:/Sps.com."
+            header = ['SKU Code','Manufacturer', 'Name','Sales Price','Qty On Hand','Min Expiration Date','Max Expiration Date','Unit Of Measure']
+            columnProps = ['sku_code','product_brand_id.name', 'name','list_price','qty_available', 'minExDate', 'maxExDate','product_uom']
             self.process_common_email_notification_template(super_user, customer, subject, descrption, products,
                                                             header, columnProps)
-            #break
 
 
     def process_new_product_scheduler(self):
@@ -415,10 +427,11 @@ class InventoryNotificationScheduler(models.TransientModel):
                 background_color = "#f0f8ff"
             else:
                 background_color = "#ffffff"
-            self.env.cr.execute(
-                "SELECT  min(use_date), max (use_date) FROM stock_production_lot spl LEFT JOIN   stock_quant sq ON sq.lot_id=spl.id LEFT JOIN  stock_location sl ON sl.id=sq.location_id   where (sl.usage ='internal' OR sl.usage='transit') and  sq.product_id = %s",
-                (product.id,))
-            query_result = self.env.cr.dictfetchone()
+            if hasattr(product,'id'):
+                self.env.cr.execute(
+                    "SELECT  min(use_date), max (use_date) FROM stock_production_lot spl LEFT JOIN   stock_quant sq ON sq.lot_id=spl.id LEFT JOIN  stock_location sl ON sl.id=sq.location_id   where (sl.usage ='internal' OR sl.usage='transit') and  sq.product_id = %s",
+                    (product['id'],))
+                query_result = self.env.cr.dictfetchone()
             for column_name in columnProps:
                 coln_name.append(column_name)
                 if column_name == 'minExDate':
@@ -467,7 +480,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                          'descrption': vals['description']}
         html_file = self.env['inventory.notification.html'].search([])
         finalHTML = html_file.process_common_html(vals['subject'], vals['description'], vals['product_list'], vals['headers'], vals['coln_name'])
-        print(finalHTML)
+        #print(finalHTML)
         if hasattr(vals['email_to_user'],'partner_ids'):
             partner_ids=[vals['email_to_user'].partner_ids.id]
         else:

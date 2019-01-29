@@ -314,8 +314,8 @@ class StockMove(models.Model):
     partial_UOM = fields.Boolean("Allow Partial UOM?", compute="_get_partial_UOM", readonly=True)
     default_code = fields.Char("SKU", store=False, readonly=True,compute="_get_default_code")
 
+
     @api.multi
-    @api.depends('partial_UOM')
     def _get_partial_UOM(self):
         _logger.info('partner id : %r, product id : %r', self.partner_id.id, self.product_id.id)
         if self.partner_id and self.product_id:
