@@ -42,7 +42,7 @@
                 <tree create="false" edit="false" delete="false">
                     <field name="name" string="Sales Order#"/>
                     <field name="partner_id"/>
-                    <field name="r_line_item"/>
+                   <!-- <field name="r_line_item"/>-->
                     <field name="confirmation_date" widget="date"/>
                     <field name="r_discount" widget="monetary"/>
                     <field name="r_amount" widget="monetary"/>
