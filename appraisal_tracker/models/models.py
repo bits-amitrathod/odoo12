@@ -23,7 +23,7 @@ class apprisal_tracker_vendor(models.Model):
                         'broker_margin': 'Margin < 40%',
                         'color': 1
                     })
-                elif (order.partner_id.is_broker):
+                elif order.partner_id.is_broker:
                     if (abs(float(order.amount_total / order.rt_price_total_amt)) < 0.52):
                         order.update({
                             'broker_margin': 'T1 BROKER',

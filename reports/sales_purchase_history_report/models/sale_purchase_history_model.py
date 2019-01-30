@@ -34,5 +34,6 @@ class SalePurchaseHistory(models.Model):
                     if stock_picking:
                         for picking in stock_picking:
                             sale_order_line.delivered_date = picking.date_done
+
                     else:
                         sale_order_line.delivered_date = None

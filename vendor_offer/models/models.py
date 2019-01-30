@@ -274,7 +274,6 @@ class VendorOffer(models.Model):
         if self.env.context.get('vendor_offer_data'):
 
             purchase = self.env['purchase.order'].search([('id', '=', self.id)])
-            print('in   vendor_offer_data ')
             print(purchase)
             purchase.button_confirm()
             # self.write({'state': 'purchase'})
