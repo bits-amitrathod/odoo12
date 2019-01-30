@@ -32,6 +32,7 @@ class SalePurchaseHistory(models.Model):
                 if stock_location:
                     stock_picking = self.env['stock.picking'].search([('sale_id', '=', sale_order_line.order_id.id),('state', '=', 'done'),('location_id','=',stock_location.id)])
                     if stock_picking:
-                        sale_order_line.delivered_date = stock_picking.date_done
+                        for stock_pick in stock_picking:
+                            sale_order_line.delivered_date = stock_pick.date_done
                     else:
                         sale_order_line.delivered_date = None
