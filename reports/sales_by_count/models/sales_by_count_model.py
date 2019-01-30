@@ -12,14 +12,10 @@ class ProductSaleByCountReport(models.Model):
     _name = "report.sales.by.count"
     _auto = False
 
-    location = fields.Char(string='Location')
-    user_id = fields.Many2one('res.users', 'Salesperson')
-    warehouse_id = fields.Many2one('stock.warehouse', 'Warehouse')
     sku_code = fields.Char('Product SKU')
     product_name = fields.Char(string='Product Name')
-    quantity = fields.Integer(string='Quantity')
-    confirmation_date = fields.Date('Confirmation Date')
     product_uom = fields.Char(string="UOM")
+    quantity = fields.Integer(string='Quantity')
 
     @api.model_cr
     def init(self):
@@ -31,67 +27,78 @@ class ProductSaleByCountReport(models.Model):
 
         select_query = """  
             SELECT
-                sale_order.user_id,
-                stock_move_line.id,
-                sale_order.warehouse_id ,
-                stock_warehouse.name || '/' || stock_location.name AS location,
-                product_template.sku_code as sku_code,
-                product_template.name as product_name,
-                sale_order.confirmation_date,
-                product_uom.name as product_uom,
-                SUM(stock_move_line.qty_done) AS quantity
+                ROW_NUMBER () OVER (ORDER BY product_template.name) as id, 
+                public.product_template.sku_code     AS sku_code,
+                public.product_template.name         AS product_name,
+                public.product_uom.name              AS product_uom,
+                SUM(public.stock_move_line.qty_done) AS quantity
             FROM
-                sale_order
+                public.sale_order
             INNER JOIN
-                stock_warehouse
+                public.sale_order_line
             ON
                 (
-                    sale_order.warehouse_id = stock_warehouse.id)
+                    public.sale_order.id = public.sale_order_line.order_id)
             INNER JOIN
-                sale_order_line
+                public.product_product
             ON
                 (
-                    sale_order.id = sale_order_line.order_id)
+                    public.sale_order_line.product_id = public.product_product.id)
             INNER JOIN
-                product_product
+                public.product_template
             ON
                 (
-                    sale_order_line.product_id = product_product.id)
+                    public.product_product.product_tmpl_id = public.product_template.id)
             INNER JOIN
-                product_template
+                public.stock_move
             ON
                 (
-                    product_product.product_tmpl_id = product_template.id)
+                    public.sale_order_line.id = public.stock_move.sale_line_id)
             INNER JOIN
-                stock_move
+                public.stock_move_line
             ON
                 (
-                    sale_order_line.id = stock_move.sale_line_id)
+                    public.stock_move.id = public.stock_move_line.move_id)
             INNER JOIN
-                stock_move_line
+                public.stock_picking
             ON
                 (
-                    stock_move.id = stock_move_line.move_id)
+                    public.stock_move_line.picking_id = public.stock_picking.id)
             INNER JOIN
-                stock_picking
+                public.product_uom
             ON
-                ( stock_move_line.picking_id = stock_picking.id)
-            INNER JOIN
-                stock_location
-            ON
-                (stock_picking.location_id = stock_location.id)
-            INNER JOIN
-                product_uom
-            ON
-                ( sale_order_line.product_uom = product_uom.id)
+                (
+                    public.sale_order_line.product_uom = public.product_uom.id)
+            
         """
+        start_date = self.env.context.get('start_date')
+        end_date = self.env.context.get('end_date')
+        compute_at = self.env.context.get('compute_at')
+        user_id = self.env.context.get('user_id')
 
-        where_clause = "  WHERE  sale_order.state = 'sale'"
-        group_order_by = " Group by stock_warehouse.name,stock_location.name,product_template.sku_code,sale_order.confirmation_date," \
-                         "product_template.name,stock_move_line.id,sale_order.user_id,sale_order.warehouse_id,product_uom.name " \
-                         "Order by location "
+        isWhereClauseAdded = False
+        if compute_at:
+            if start_date and not start_date is None and end_date and not end_date is None:
 
-        sql_query = select_query + where_clause + group_order_by
+                select_query = select_query + " where sale_order.confirmation_date  BETWEEN '" + str(
+                    start_date) + "'" + " and '" + str(end_date) + "'"
+                isWhereClauseAdded = True
+        if user_id:
+            if isWhereClauseAdded :
+                select_query = select_query + " and "
+            else :
+                select_query = select_query + " where "
+            select_query = select_query + " sale_order.user_id <='" + str(user_id) + "'"
+
+        group_by = """
+            GROUP BY
+                public.product_template.sku_code,
+                public.product_template.name,
+                public.product_uom.name
+                """
+
+        sql_query = select_query + group_by
+
         self._cr.execute("CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + sql_query + " )")
 
     @api.model_cr

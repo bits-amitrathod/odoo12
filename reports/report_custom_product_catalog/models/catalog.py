@@ -19,8 +19,9 @@ class InventoryValuationPopUp(models.TransientModel):
             "domain": []
         }
         tree_view_id = self.env.ref('report_custom_product_catalog.product_list_view').id
+        form_view_id = self.env.ref('product.product_template_form_view').id
         action['name'] = "Product Catalog"
-        action['views'] = [(tree_view_id, 'tree')]
+        action['views'] = [(tree_view_id, 'tree'),(form_view_id, 'form')]
 
         if self.sku_code:
             action["domain"].append(('sku_code', 'ilike', self.sku_code.sku_code))
@@ -68,8 +69,9 @@ class InventoryCustomProductPopUp(models.TransientModel):
            action["domain"].append(('id', 'in', product_list[0]))
 
         tree_view_id = self.env.ref('report_custom_product_catalog.custom_list_view').id
+        form_view_id = self.env.ref('product.product_template_form_view').id
         action['name'] = "Custom Product Catalog"
-        action['views'] = [(tree_view_id, 'tree')]
+        action['views'] = [(tree_view_id, 'tree'),(form_view_id, 'form')]
 
         if self.sku_code:
             action["domain"].append(('sku_code', 'ilike', self.sku_code.sku_code))
