@@ -10,7 +10,7 @@ class RmaPopUp(models.TransientModel):
 
     _name = 'rma.report.popup'
 
-    sale_order_id = fields.Many2one('sale.order', string='Sale Order', required=True, domain="[('amount_total','<',0), ('state', '=', 'return')]")
+    sale_order_id = fields.Many2one('sale.order', string='Sale Order', required=True, domain="['|',('state', '=', 'return'),'&', ('picking_ids.state','=','done'),('picking_ids.location_dest_id','=',14)]")
 
     def open_table(self):
         if self.sale_order_id.id:
