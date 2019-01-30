@@ -10,7 +10,8 @@ class MailComposeForEngine(models.TransientModel):
     def send_mail(self, auto_commit=False):
         if self._context.get('default_model') == 'sale.order' and self._context.get('default_res_id') and self._context.get('mark_so_as_sent'):
             order = self.env['sale.order'].browse([self._context['default_res_id']])
-            if order.state == 'engine':
+            print('Team Type : %r', order.team_id.team_type)
+            if order.team_id.team_type == 'engine':
                 order.with_context(tracking_disable=True).state = 'sent'
             self = self.with_context(mail_post_autofollow=True)
         return super(MailComposeForEngine, self).send_mail(auto_commit=auto_commit)

@@ -215,8 +215,10 @@ class PrioritizationEngine(models.TransientModel):
 
     # update customer status
     def update_customer_request_status(self,prioritization_engine_request,status):
+        _logger.info('customer request id %r', prioritization_engine_request['customer_request_id'])
+        _logger.info('status : ' + str(status))
         self.env['sps.customer.requests'].search([('id', '=', prioritization_engine_request['customer_request_id'])]).write(dict(status=status))
-        prioritization_engine_request['customer_request_logs'] += 'Updated customer request status.'
+        # prioritization_engine_request['customer_request_logs'] += 'Updated customer request status.'
 
     def update_customer_request_logs(self, prioritization_engine_request):
         self.env['sps.customer.requests'].search([('id', '=', prioritization_engine_request['customer_request_id'])]).write(dict(customer_request_logs=prioritization_engine_request['customer_request_logs']))
@@ -318,10 +320,8 @@ class PrioritizationEngine(models.TransientModel):
             try:
                 sale_order.force_quotation_send()
                 sale_order.write(dict(state='sent', confirmation_date=''))
-            except Exception as exc:
-                raise self.retry(exc=exc)
-
-
+            except Exception:
+                _logger.error('Unable to send email')
 
     # Generate sale order for gl account
     def generate_sale_order_for_gl_account(self):
@@ -359,8 +359,8 @@ class PrioritizationEngine(models.TransientModel):
                 try:
                     sale_order.force_quotation_send()
                     sale_order.write(dict(state='sent', confirmation_date=''))
-                except Exception as exc:
-                    raise self.retry(exc=exc)
+                except Exception:
+                    _logger.error('Unable to send email')
             else:
                 _logger.info('partner id is null')
 
@@ -447,6 +447,8 @@ class PrioritizationEngine(models.TransientModel):
     def _update_uploaded_document_status(self,document_id,status):
         try:
             uploaded_document = self.env['sps.cust.uploaded.documents'].search([('id', '=', document_id)])
+            _logger.info('***********uploaded_document***')
+            _logger.info(uploaded_document)
             uploaded_document.write(dict(status=status))
         except Exception:
             _logger.error("Unable to update document status")
