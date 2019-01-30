@@ -16,8 +16,7 @@
                             </b>
                         </center>
                     </div>
-                    <t t-foreach="sales" t-as="location">
-                        <t t-set="sale" t-value="sales[location]"/>
+
                         <div>
                             <strong>
                             <span t-esc="location"/></strong>
@@ -40,23 +39,22 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr t-foreach="sale['product']" t-as="product">
+                                <tr t-foreach="sales" t-as="sale">
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="product['sku_code']"/>
+                                        <span t-esc="sale.sku_code"/>
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="product['product_name']"/>
+                                        <span t-esc="sale.product_name"/>
                                     </td>
                                     <td style="border: 1px solid black;text-align: center;">
-                                        <span t-esc="product['quantity']"/>
+                                        <span t-esc="sale.quantity"/>
                                     </td>
                                     <td style="border: 1px solid black;text-align: center;">
-                                        <span t-esc="product['product_uom']"/>
+                                        <span t-esc="sale.product_uom"/>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
-                    </t>
                 </page>
             </t>
         </t>
