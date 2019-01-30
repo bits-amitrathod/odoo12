@@ -113,7 +113,16 @@ class SaleOrder(models.Model):
 
 class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
+    #customer_request_count = fields.Boolean(string='Request count', compute="_get_customer_request_count")
     customer_request_id = fields.Many2one('sps.customer.requests', string='Request')
+    req_no = fields.Char(string='Requisition Number')
+
+    '''@api.multi
+    def _get_customer_request_count(self):
+        print(self)
+        print(self.customer_request_id)
+        print(len(self.customer_request_id))
+        self.customer_request_count=len(self.customer_request_id)>0'''
 
     def action_show_details(self):
         multi = self.env['stock.move'].search([('sale_line_id', '=', self.id)])
