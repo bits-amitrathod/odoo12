@@ -19,12 +19,16 @@ class InventoryValuationPopUp(models.TransientModel):
 
     def open_table(self):
 
+        tree_view_id = self.env.ref('inventory_valuation_summary.inventory_valuation_summary_list').id
+        form_view_id = self.env.ref('inventory_valuation_summary.inventory_valuation_summary_form').id
+
         res_model = 'report.inventory.valuation.summary'
 
         self.env[res_model].delete_and_create()
         action = {
             "type": "ir.actions.act_window",
-            "view_mode": "tree",
+            'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
+            "view_mode": "tree,form",
             "res_model": res_model,
             "name": "Inventory Valuation Summary",
             "context": {"search_default_valuation_summary": 1},
