@@ -16,6 +16,7 @@ class SaleOrder(models.Model):
         ('draft', 'Quotation'),
         ('engine', 'Prioritization'),
         ('sent', 'Quotation Sent'),
+        ('return','Return'),
         ('sale', 'Sales Order'),
         ('done', 'Locked'),
         ('cancel', 'Cancelled'),

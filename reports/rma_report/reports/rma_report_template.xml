@@ -57,8 +57,8 @@
                                                 $<span t-esc="product[4]"/>
                                             </td>
                                             <td align="center" class="col-xs-2" style="border: 1px solid #000;">
-                                                $<span t-esc="product[5]"/>
-                                                <t t-set="total_price" t-value="total_price + product[5]" />
+                                                $<span t-esc="product[2] * product[4]"/>
+                                                <t t-set="total_price" t-value="product[2] * product[4]" />
                                             </td>
                                         </tr>
                                     </t>
