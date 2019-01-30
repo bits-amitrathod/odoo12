@@ -21,6 +21,7 @@ class SpsCustomerRequest(models.Model):
     document_name = fields.Char(string="Document Name", compute="_get_document_name")
 
     customer_sku = fields.Char()
+    req_no = fields.Char()
     mfr_catalog_no = fields.Char()
     sps_sku = fields.Char()
     status = fields.Char()
@@ -189,7 +190,7 @@ class SpsCustomerRequest(models.Model):
         if status.lower().strip() != 'unprocessed':
             # update status Unprocessed
             self.env['sps.customer.requests'].search(
-                [('id', '=', sps_customer_request_id)]).write(dict(status="Unprocessed",customer_request_logs=log))
+                [('id', '=', sps_customer_request_id)]).write({'status':'Unprocessed','customer_request_logs':log})
 
     # update document processed count
     def update_document_processed_count(self, document_id, document_processed_count):
@@ -197,8 +198,8 @@ class SpsCustomerRequest(models.Model):
             self.document_id_set.add(document_id)
             _logger.info('document id : %r, document processed count : %r',document_id, document_processed_count)
             document_processed_count = int(document_processed_count) + 1
-            self.env['sps.cust.uploaded.documents'].search([('id', '=', document_id)]).write(
-                    dict(document_processed_count=document_processed_count))
+            update_document_processed_count_val = self.env['sps.cust.uploaded.documents'].search([('id', '=', document_id)])
+            update_document_processed_count_val.write({'document_processed_count': document_processed_count})
 
     @api.multi
     @api.depends('document_id')

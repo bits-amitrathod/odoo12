@@ -6,7 +6,7 @@
     'category': 'Hidden/Dependency',
     'version': '11.0.1.0.1',
     'depends': ['web'],
-    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
+    'author': "Benchmark IT Solutions",
     'website': "http://www.benchmarkitsolutions.com",
     'demo': [
         "demo/res_users.xml",

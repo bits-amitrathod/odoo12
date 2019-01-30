@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 {
     'name': "Pick Ticket",
-
-    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
+    'summary':"Report",
+    'author': "Benchmark IT Solutions",
     'category': 'sale',
     'version': '11.0.0.1',
 
@@ -18,6 +18,6 @@
     ],
     'images': ['static/description/banner.png'],
     'installable': True,
-    'application': False,
+    'application': True,
     'auto_install': False,
 }

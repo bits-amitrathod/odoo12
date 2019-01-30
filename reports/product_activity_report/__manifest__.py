@@ -2,10 +2,10 @@
     'name': "Product Activity Report",
 
     'summary': """
-      Product Activity Report
+      Report
       """,
 
-    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
+    'author': "Benchmark IT Solutions",
     'website': "http://www.benchmarkitsolutions.com",
 
     'category': 'Report',

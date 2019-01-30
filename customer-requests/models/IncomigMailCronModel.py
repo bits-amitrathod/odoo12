@@ -188,7 +188,7 @@ class IncomingMailCronModel(models.Model):
                                                             except Exception as e:
                                                                 _logger.info(str(e))
                                                 else:
-                                                    _logger.error('Presents Same Email Id for multiple users')
+                                                    _logger.error('Presents Same Email Id for multiple users %r', email_from)
                                             else:
                                                 _logger.info('user not found for %r',
                                                              email_from)

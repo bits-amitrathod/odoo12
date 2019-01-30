@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 {
     'name': "Sales order invoices",
-    'description': """
-        Sales order invoices with date filter
-    """,
+    'summary': """
+      Report       
+    """
+    ,
+    # 'description': """
+    #     Sales order invoices with date filter
+    # """,
 
-    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
+    'author': "Benchmark IT Solutions",
     'website': "http://www.benchmarkitsolutions.com",
     'category': 'Report',
     'version': '0.1',

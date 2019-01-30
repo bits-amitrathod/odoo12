@@ -215,11 +215,13 @@ class PrioritizationEngine(models.TransientModel):
 
     # update customer status
     def update_customer_request_status(self,prioritization_engine_request,status):
-        self.env['sps.customer.requests'].search([('id', '=', prioritization_engine_request['customer_request_id'])]).write(dict(status=status))
-        prioritization_engine_request['customer_request_logs'] += 'Updated customer request status.'
+        _logger.info('customer request id %r', prioritization_engine_request['customer_request_id'])
+        _logger.info('status : ' + str(status))
+        self.env['sps.customer.requests'].search([('id', '=', prioritization_engine_request['customer_request_id'])]).write({'status':status})
+        # prioritization_engine_request['customer_request_logs'] += 'Updated customer request status.'
 
     def update_customer_request_logs(self, prioritization_engine_request):
-        self.env['sps.customer.requests'].search([('id', '=', prioritization_engine_request['customer_request_id'])]).write(dict(customer_request_logs=prioritization_engine_request['customer_request_logs']))
+        self.env['sps.customer.requests'].search([('id', '=', prioritization_engine_request['customer_request_id'])]).write({'customer_request_logs':prioritization_engine_request['customer_request_logs']})
 
     # get product create date for to calculate length of hold and cooling period.
     def get_product_create_date(self, prioritization_engine_request):
@@ -312,16 +314,14 @@ class PrioritizationEngine(models.TransientModel):
 
             picking = self.env['stock.picking'].search([('sale_id', '=', sale_order.id),('picking_type_id', '=', 1)])
             _logger.info('picking before*   : %r', picking.state)
-            picking.write(dict(state='assigned'))
+            picking.write({'state':'assigned'})
             _logger.info('picking after*   : %r', picking.state)
             # sale_order.write(dict(state='engine', confirmation_date=''))
             try:
                 sale_order.force_quotation_send()
-                sale_order.write(dict(state='sent', confirmation_date=''))
-            except Exception as exc:
-                raise self.retry(exc=exc)
-
-
+                sale_order.write({'state':'sent', 'confirmation_date':''})
+            except Exception:
+                _logger.error('Unable to send email')
 
     # Generate sale order for gl account
     def generate_sale_order_for_gl_account(self):
@@ -353,14 +353,14 @@ class PrioritizationEngine(models.TransientModel):
 
                 picking = self.env['stock.picking'].search([('sale_id', '=', sale_order.id), ('picking_type_id', '=', 1)])
                 _logger.info('picking before   : %r', picking.state)
-                picking.write(dict(state='assigned'))
+                picking.write({'state':'assigned'})
                 _logger.info('picking after   : %r', picking.state)
                 # sale_order.write(dict(state='engine', confirmation_date=''))
                 try:
                     sale_order.force_quotation_send()
-                    sale_order.write(dict(state='sent', confirmation_date=''))
-                except Exception as exc:
-                    raise self.retry(exc=exc)
+                    sale_order.write({'state':'sent', 'confirmation_date':''})
+                except Exception:
+                    _logger.error('Unable to send email')
             else:
                 _logger.info('partner id is null')
 
@@ -431,6 +431,7 @@ class PrioritizationEngine(models.TransientModel):
                 else:
                     self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'In Process')
 
+
             elif sps_cust_uploaded_document.template_type.lower().strip() == 'inventory':
                 if int(query_result['document_id']) == int(sps_cust_uploaded_document.id):
                     sps_customer_requirements = self.env['sps.customer.requests'].search(
@@ -446,8 +447,8 @@ class PrioritizationEngine(models.TransientModel):
 
     def _update_uploaded_document_status(self,document_id,status):
         try:
-            uploaded_document = self.env['sps.cust.uploaded.documents'].search([('id', '=', document_id)])
-            uploaded_document.write(dict(status=status))
+            uploaded_document_val = self.env['sps.cust.uploaded.documents'].search([('id', '=', document_id)])
+            uploaded_document_val.write({'status':status})
         except Exception:
             _logger.error("Unable to update document status")
 
