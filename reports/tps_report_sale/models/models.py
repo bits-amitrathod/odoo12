@@ -17,6 +17,7 @@ class tps_report_sale(models.Model):
 
     total_sales = fields.Monetary(string='Sales', currency_field='currency_id')
     currency_id = fields.Many2one("res.currency", string="Currency", readonly=True)
+    product_tmpl_id = fields.Many2one('product.template', "Product")
     product_name=fields.Char("Product Name")
     sku_code = fields.Char("Product SKU")
     start_date=fields.Date("start_date")
@@ -50,7 +51,7 @@ class tps_report_sale(models.Model):
         s_date = (str(start_date)).replace("-","/")
         e_date = str(end_date).replace("-","/")
 
-        select_query = """ SELECT  distinct pt.*,%s as start_date , %s as end_date , curr.id as currency_id,curr.symbol as currency_symbol, Round(sum(sol.price_unit),2) as total_sales, pt.name as product_name
+        select_query = """ SELECT  distinct pt.*,%s as start_date , %s as end_date , curr.id as currency_id,curr.symbol as currency_symbol, Round(sum(sol.price_unit),2) as total_sales, pt.id as product_tmpl_id, pt.name as product_name
                from  product_product pp  
                       INNER JOIN sale_order_line sol ON sol.product_id=pp.id
                       INNER JOIN product_template pt ON  pt.id=pp.product_tmpl_id
