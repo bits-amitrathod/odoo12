@@ -129,6 +129,7 @@ class SpsCustomerRequest(models.Model):
             if _setting_object:
                 sps_customer_request.write({'customer_request_logs': 'Customer prioritization setting is True, '})
                 pr_model = dict(customer_request_id=sps_customer_request.id,
+                                req_no=sps_customer_request.req_no,
                                 template_type=sps_customer_request.document_id.template_type,
                                 customer_id=sps_customer_request['customer_id'].id,
                                 gl_account=sps_customer_request['gl_account'],
@@ -190,7 +191,7 @@ class SpsCustomerRequest(models.Model):
         if status.lower().strip() != 'unprocessed':
             # update status Unprocessed
             self.env['sps.customer.requests'].search(
-                [('id', '=', sps_customer_request_id)]).write(dict(status="Unprocessed",customer_request_logs=log))
+                [('id', '=', sps_customer_request_id)]).write({'status':'Unprocessed','customer_request_logs':log})
 
     # update document processed count
     def update_document_processed_count(self, document_id, document_processed_count):
@@ -198,8 +199,8 @@ class SpsCustomerRequest(models.Model):
             self.document_id_set.add(document_id)
             _logger.info('document id : %r, document processed count : %r',document_id, document_processed_count)
             document_processed_count = int(document_processed_count) + 1
-            self.env['sps.cust.uploaded.documents'].search([('id', '=', document_id)]).write(
-                    dict(document_processed_count=document_processed_count))
+            update_document_processed_count_val = self.env['sps.cust.uploaded.documents'].search([('id', '=', document_id)])
+            update_document_processed_count_val.write({'document_processed_count': document_processed_count})
 
     @api.multi
     @api.depends('document_id')

@@ -64,15 +64,16 @@ class AgingReport(models.Model):
                  "(prod_lot_id,product_name,qty,lot_name, create_date,use_date,warehouse_id,location_id,product_id,type)"
         # Stock Location
         select_query=insert + """ SELECT
-           distinct ON (public.stock_production_lot.id)  public.stock_production_lot.id as prod_lot_id  ,
+            public.stock_production_lot.id as prod_lot_id  ,
            public.product_template.name as product_name,
-           public.stock_quant.quantity as qty ,
+           sum(public.stock_quant.quantity) as qty ,
            public.stock_production_lot.name as lot_name,
-           public.stock_production_lot.create_date as create_date,
-           public.stock_production_lot.use_date as use_date,
-           public.stock_warehouse.id as warehouse_id, 
-           public.stock_quant.location_id as location_id,
+           date(public.stock_production_lot.create_date) as create_date,
+           date(public.stock_production_lot.use_date) as use_date,
+           public.stock_warehouse.id as warehouse_id,
+           14 as location_id, 
            public.product_template.id as product_id,
+          
            'Stock' as type
            FROM
            public.product_product
@@ -95,12 +96,13 @@ class AgingReport(models.Model):
            INNER JOIN
                public.stock_warehouse
                ON
-                (public.stock_location.id = public.stock_warehouse.lot_stock_id)
-             WHERE public.stock_quant.quantity>0
+                (public.stock_location.id in (public.stock_warehouse.lot_stock_id,public.stock_warehouse.wh_output_stock_loc_id,wh_pack_stock_loc_id))
+             WHERE public.stock_quant.quantity>0  group by  public.stock_production_lot.id ,public.product_template.name,public.stock_production_lot.name,public.stock_production_lot.create_date,
+             public.stock_production_lot.use_date, public.stock_warehouse.id, public.product_template.id
         """
         if stock_location and not stock_location is None :
-            select_query=select_query + " and public.stock_quant.location_id =%s "
-            self._cr.execute(select_query,(stock_location,))
+            # select_query=select_query + " and public.stock_quant.location_id =%s "
+            self._cr.execute(select_query)
 
         # Shipping
         select_query = insert + """ SELECT 
@@ -116,38 +118,38 @@ class AgingReport(models.Model):
                                              'Shipping' as type
                                              FROM 
                                              public.sale_order 
-                                       INNER JOIN
+                                       RIGHT JOIN
                                              public.sale_order_line 
                                          ON 
                                            (public.sale_order_line.order_id = public.sale_order.id) 
-                                        INNER JOIN             
+                                        RIGHT JOIN             
                                              public.stock_move
                                          ON 
                                            (public.stock_move.sale_line_id = public.sale_order_line.id)      
-                                       INNER JOIN
+                                       RIGHT JOIN
                                          public.product_product
                                          ON
                                          (public.product_product.id = public.stock_move.product_id)       
-                                      INNER JOIN
+                                      RIGHT JOIN
                                          public.product_template
                                          ON
                                          (public.product_template.id=public.product_product.product_tmpl_id)        
-                                     INNER JOIN
+                                     RIGHT JOIN
                                          public.stock_move_line
                                          ON
-                                         (public.stock_move_line.id = public.stock_move.id)
-                                     INNER JOIN
+                                         (public.stock_move_line.move_id = public.stock_move.id)
+                                     RIGHT JOIN
                                          public.stock_production_lot
                                          ON
                                          (public.stock_production_lot.id = public.stock_move_line.lot_id)    
-                                     INNER JOIN
+                                     RIGHT JOIN
                                           public.stock_location
                                           ON 
-                                          (public.stock_location.id=public.stock_move.location_id )
-                                     INNER JOIN
+                                          (public.stock_location.id=public.stock_move.location_dest_id )
+                                     RIGHT JOIN
                                           public.stock_warehouse
                                           ON
-                                          (public.stock_warehouse.wh_output_stock_loc_id = public.stock_location.id)     
+                                          (public.stock_warehouse.wh_pack_stock_loc_id = public.stock_location.id)     
 
                                      where  public.stock_move.state in ('waiting','assigned')        
                                 """

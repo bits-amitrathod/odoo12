@@ -14,7 +14,13 @@ class ReportPickTicketGroupByOrderDate(models.TransientModel):
     end_date = fields.Date('End Date', default=fields.Datetime.now, required=True)
     sku = fields.Many2one('product.product', string='Product SKU',
                                domain="[('active','=',True),('product_tmpl_id.type','=','product')]")
-    location_id = fields.Many2one('stock.location', string="Location", domain="[('usage', '=', 'internal')]")
+    location_id = fields.Selection([
+        ('Purchase', 'Purchase'),
+        ('Sales', 'Sales'),
+        ('Receive', 'Receive'),
+        ('Stock', 'Stock'),
+        ('Scrap','Scrap')
+    ], string="Location", default=0, help="Choose to analyze the Show Summary or from a specific location.")
 
 
 
@@ -42,10 +48,10 @@ class ReportPickTicketGroupByOrderDate(models.TransientModel):
                 action["domain"].append(('date', '<=', self.end_date))
 
         if self.sku:
-                action["domain"].append(('sku', 'ilike', self.sku))
+                action["domain"].append(('sku', 'ilike', self.sku.sku_code))
 
-        if self.location_id.id :
-                action["domain"].append(('location_id', '=', self.location_id.id))
+        if self.location_id:
+                action["domain"].append(('type', '=', self.location_id))
 
         return action
 
@@ -171,12 +177,14 @@ class ReportProductActivity(models.TransientModel):
         self._cr.execute(sql_query)
 
         # -------------------- Sales ------------------------
+        dist_location = self.env['stock.location'].search(
+            [('name', '=', 'Customers')]).id
         sql_query = insert + """
                     SELECT
                         stock_warehouse.name                                      AS warehouse,
                         stock_picking.scheduled_date                                     AS DATE,
                         stock_location.id as location_id,
-                        stock_warehouse.code || '/' || stock_location.name AS location,
+                        stock_warehouse.code || '/' || 'Customers' AS location,
                         sale_order.name                                           AS event,
                         (stock_move_line.qty_done*-1)                                  AS change_qty,
                         res_partner.name                                          AS USER,
@@ -243,23 +251,23 @@ class ReportProductActivity(models.TransientModel):
                         (
                             res_users.partner_id = res_partner.id)
                     
-                    WHERE stock_picking.state = 'done'
+                    WHERE stock_picking.state = 'done' and stock_picking.location_dest_id=%s
                         """
 
         # if not date_clause is False:
         #     sql_query = sql_query+ " AND stock_picking.scheduled_date" + date_clause
 
-        self._cr.execute(sql_query)
+        self._cr.execute(sql_query,(dist_location,))
 
         # -------------------- Stock ------------------------
         sql_query = insert + """
                     SELECT
                         stock_warehouse.name                                      AS warehouse,
-                        stock_inventory.date,
+                        stock_quant.in_date,
                         stock_location.id as location_id,
                         stock_warehouse.code || '/' || stock_location.name AS location,
-                        stock_inventory.name                                      AS event,
-                        stock_inventory_line.product_qty                          AS change_qty,
+                        product_template.name                                      AS event,
+                        stock_quant.quantity                                 AS change_qty,
                         res_partner.name                                          AS USER,
                         product_template.sku_code                                 AS sku,
                         stock_production_lot.name                                 AS lot,
@@ -267,27 +275,22 @@ class ReportProductActivity(models.TransientModel):
                         product_template.id                                   AS product_id,
                         'Stock' as type
                     FROM
-                        stock_inventory_line
+                        stock_quant
                     INNER JOIN
                         stock_location
                     ON
                         (
-                            stock_inventory_line.location_id = stock_location.id)
+                            stock_quant.location_id = stock_location.id)
                     INNER JOIN
                         stock_warehouse
                     ON
                         (
-                            stock_location.id = stock_warehouse.lot_stock_id)
-                    INNER JOIN
-                        stock_inventory
-                    ON
-                        (
-                            stock_inventory_line.inventory_id = stock_inventory.id)
+                            stock_location.id  =  stock_warehouse.lot_stock_id)
                     INNER JOIN
                         res_users
                     ON
                         (
-                            stock_inventory_line.write_uid = res_users.id)
+                            stock_quant.write_uid = res_users.id)
                     INNER JOIN
                         res_partner
                     ON
@@ -297,7 +300,7 @@ class ReportProductActivity(models.TransientModel):
                         product_product
                     ON
                         (
-                            stock_inventory_line.product_id = product_product.id)
+                            stock_quant.product_id = product_product.id)
                     INNER JOIN
                         product_template
                     ON
@@ -307,8 +310,8 @@ class ReportProductActivity(models.TransientModel):
                         stock_production_lot
                     ON
                         (
-                            stock_inventory_line.prod_lot_id = stock_production_lot.id)
-                    WHERE stock_inventory.state = 'done'
+                            stock_quant.lot_id = stock_production_lot.id)
+                    WHERE stock_quant.quantity > 0
                         """
         # if not date_clause is False:
         #     sql_query = sql_query+ " and stock_inventory.date" + date_clause
@@ -376,11 +379,10 @@ class ReportProductActivity(models.TransientModel):
         self._cr.execute(sql_query)
 
         # -------------------- Receive ------------------------
-        src_location = self.env['stock.location'].search(
-            [('name', '=', 'Packing Zone')]).id
+
         dist_location = self.env['stock.location'].search(
             [('name', '=', 'Stock')]).id
-        if src_location and dist_location:
+        if  dist_location:
             sql_query = insert + """
                                SELECT            
                                    stock_warehouse.name                                      AS warehouse,
@@ -445,13 +447,13 @@ class ReportProductActivity(models.TransientModel):
                                    (
                                        res_users.partner_id = res_partner.id)
     
-                               WHERE stock_picking.state = 'done' and stock_picking.location_id=%s and stock_picking.location_dest_id=%s
+                               WHERE stock_picking.state = 'done' and  stock_picking.location_dest_id=%s
                                    """
 
             # if not date_clause is False:
             #     sql_query = sql_query+ " AND stock_picking.scheduled_date" + date_clause
 
-            self._cr.execute(sql_query,(src_location,dist_location))
+            self._cr.execute(sql_query,(dist_location,))
 
     def delete_and_create(self):
         self.init_table()

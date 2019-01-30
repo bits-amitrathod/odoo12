@@ -56,11 +56,12 @@ class MarginsReport(models.Model):
         ol.price_subtotal as total_unit_price,
         (ol.product_uom_qty * ol.purchase_price) as total_unit_cost,
         CASE 
-                WHEN ol.purchase_price IS NULL OR TRUNC(ol.purchase_price, 2) = 0.00 THEN ol.price_subtotal
-                ELSE (ol.price_subtotal - (ol.product_uom_qty * ol.purchase_price))
+                WHEN ol.purchase_price IS NULL OR TRUNC(ol.purchase_price, 2) = 0.00 
+                  THEN  CASE WHEN ol.price_subtotal >= 0 THEN ol.price_subtotal ELSE 0 END
+                ELSE CASE  WHEN 0 <=(ol.price_subtotal - (ol.product_uom_qty * ol.purchase_price)) THEN (ol.price_subtotal - (ol.product_uom_qty * ol.purchase_price)) ELSE 0 END
         END as margin, 
         CASE 
-                WHEN ol.purchase_price IS NULL OR TRUNC(ol.purchase_price, 2) = 0.00 THEN 100
+                WHEN ol.purchase_price IS NULL OR TRUNC(ol.purchase_price, 2) = 0.00 THEN CASE WHEN ol.price_subtotal <= 0 THEN 0 ELSE 100 END
                 ELSE TRUNC(( ol.price_subtotal /(ol.price_subtotal - (ol.product_uom_qty * ol.purchase_price))), 2)
         END as margin_percentage """\
 

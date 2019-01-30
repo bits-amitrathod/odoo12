@@ -191,6 +191,7 @@ class PrioritizationEngine(models.TransientModel):
             _logger.debug("Allocated all required product quantity.")
 
             self.allocated_product_to_customer(prioritization_engine_request['customer_id'],
+                                               prioritization_engine_request['req_no'],
                                                prioritization_engine_request['gl_account'],
                                                prioritization_engine_request['customer_request_id'],
                                                prioritization_engine_request['required_quantity'],
@@ -204,6 +205,7 @@ class PrioritizationEngine(models.TransientModel):
             _logger.debug(str(" Allocated Partial order product."))
 
             self.allocated_product_to_customer(prioritization_engine_request['customer_id'],
+                                               prioritization_engine_request['req_no'],
                                                prioritization_engine_request['gl_account'],
                                                prioritization_engine_request['customer_request_id'],
                                                prioritization_engine_request['required_quantity'],
@@ -217,11 +219,11 @@ class PrioritizationEngine(models.TransientModel):
     def update_customer_request_status(self,prioritization_engine_request,status):
         _logger.info('customer request id %r', prioritization_engine_request['customer_request_id'])
         _logger.info('status : ' + str(status))
-        self.env['sps.customer.requests'].search([('id', '=', prioritization_engine_request['customer_request_id'])]).write(dict(status=status))
+        self.env['sps.customer.requests'].search([('id', '=', prioritization_engine_request['customer_request_id'])]).write({'status':status})
         # prioritization_engine_request['customer_request_logs'] += 'Updated customer request status.'
 
     def update_customer_request_logs(self, prioritization_engine_request):
-        self.env['sps.customer.requests'].search([('id', '=', prioritization_engine_request['customer_request_id'])]).write(dict(customer_request_logs=prioritization_engine_request['customer_request_logs']))
+        self.env['sps.customer.requests'].search([('id', '=', prioritization_engine_request['customer_request_id'])]).write({'customer_request_logs':prioritization_engine_request['customer_request_logs']})
 
     # get product create date for to calculate length of hold and cooling period.
     def get_product_create_date(self, prioritization_engine_request):
@@ -244,8 +246,8 @@ class PrioritizationEngine(models.TransientModel):
             return None
 
     # allocated product to customer
-    def allocated_product_to_customer(self, customer_id, gl_account, customer_request_id, required_quantity, product_id, allocated_product_from_lot):
-        allocated_product = {'customer_request_id':customer_request_id, 'customer_required_quantity':required_quantity,
+    def allocated_product_to_customer(self, customer_id,req_no, gl_account, customer_request_id, required_quantity, product_id, allocated_product_from_lot):
+        allocated_product = {'customer_request_id':customer_request_id,'req_no':req_no, 'customer_required_quantity':required_quantity,
                                  'product_id':product_id, 'allocated_product_quantity':allocated_product_from_lot}
         # add data in allocated_product_for_gl_account_dict
         if gl_account and not gl_account is None:
@@ -304,7 +306,7 @@ class PrioritizationEngine(models.TransientModel):
                 _logger.info('customer_request_id  :**** ')
                 _logger.info('customer_request_id  :  %r  ', allocated_product['customer_request_id'])
 
-                sale_order_line_dict = {'customer_request_id': allocated_product['customer_request_id'], 'order_id': sale_order['id'], 'product_id': allocated_product['product_id'],
+                sale_order_line_dict = {'customer_request_id': allocated_product['customer_request_id'],'req_no': allocated_product['req_no'], 'order_id': sale_order['id'], 'product_id': allocated_product['product_id'],
                                         'order_partner_id' : partner_id_key, 'product_uom_qty' : allocated_product['allocated_product_quantity']}
 
                 self.env['sale.order.line'].create(dict(sale_order_line_dict))
@@ -314,12 +316,12 @@ class PrioritizationEngine(models.TransientModel):
 
             picking = self.env['stock.picking'].search([('sale_id', '=', sale_order.id),('picking_type_id', '=', 1)])
             _logger.info('picking before*   : %r', picking.state)
-            picking.write(dict(state='assigned'))
+            picking.write({'state':'assigned'})
             _logger.info('picking after*   : %r', picking.state)
             # sale_order.write(dict(state='engine', confirmation_date=''))
             try:
                 sale_order.force_quotation_send()
-                sale_order.write(dict(state='sent', confirmation_date=''))
+                sale_order.write({'state':'sent', 'confirmation_date':''})
             except Exception:
                 _logger.error('Unable to send email')
 
@@ -342,7 +344,7 @@ class PrioritizationEngine(models.TransientModel):
 
                 for allocated_product in self.allocated_product_for_gl_account_dict.get(gl_account_key, {}):
                     sale_order_line_dict = {
-                        'customer_request_id': allocated_product['customer_request_id'], 'order_id': sale_order['id'],
+                        'customer_request_id': allocated_product['customer_request_id'],'req_no': allocated_product['req_no'], 'order_id': sale_order['id'],
                         'product_id': allocated_product['product_id'],'order_partner_id': res_partner.id,
                         'product_uom_qty': allocated_product['allocated_product_quantity']}
 
@@ -353,12 +355,12 @@ class PrioritizationEngine(models.TransientModel):
 
                 picking = self.env['stock.picking'].search([('sale_id', '=', sale_order.id), ('picking_type_id', '=', 1)])
                 _logger.info('picking before   : %r', picking.state)
-                picking.write(dict(state='assigned'))
+                picking.write({'state':'assigned'})
                 _logger.info('picking after   : %r', picking.state)
                 # sale_order.write(dict(state='engine', confirmation_date=''))
                 try:
                     sale_order.force_quotation_send()
-                    sale_order.write(dict(state='sent', confirmation_date=''))
+                    sale_order.write({'state':'sent', 'confirmation_date':''})
                 except Exception:
                     _logger.error('Unable to send email')
             else:
@@ -431,6 +433,7 @@ class PrioritizationEngine(models.TransientModel):
                 else:
                     self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'In Process')
 
+
             elif sps_cust_uploaded_document.template_type.lower().strip() == 'inventory':
                 if int(query_result['document_id']) == int(sps_cust_uploaded_document.id):
                     sps_customer_requirements = self.env['sps.customer.requests'].search(
@@ -446,10 +449,8 @@ class PrioritizationEngine(models.TransientModel):
 
     def _update_uploaded_document_status(self,document_id,status):
         try:
-            uploaded_document = self.env['sps.cust.uploaded.documents'].search([('id', '=', document_id)])
-            _logger.info('***********uploaded_document***')
-            _logger.info(uploaded_document)
-            uploaded_document.write(dict(status=status))
+            uploaded_document_val = self.env['sps.cust.uploaded.documents'].search([('id', '=', document_id)])
+            uploaded_document_val.write({'status':status})
         except Exception:
             _logger.error("Unable to update document status")
 

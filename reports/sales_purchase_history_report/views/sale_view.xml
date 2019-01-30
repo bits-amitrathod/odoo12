@@ -48,7 +48,6 @@
                     <field name="product_id" string="Product Name"/>
                     <field name="delivered_date" string="Delivered Date"/>
                     <field name="qty_delivered" string="Delivered Qty" />
-                    <field name="qty_delivered" string="Delivered Qty" />
                     <field name="product_uom" string="UOM"/>
                     <field name="price_unit" widget="monetary" string="Unit Price" />
                     <field name="price_total" widget="monetary" string="Total" sum="Total"/>

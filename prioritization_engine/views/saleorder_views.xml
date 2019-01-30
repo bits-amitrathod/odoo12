@@ -31,11 +31,11 @@
                     <field name="carrier_info"/>
                     <field name="carrier_acc_no"/>
                 </field>
-                <!--<xpath expr="/form/sheet/notebook/page[1]/field[@name='order_line']/tree/field[@name='currency_id']"
+                <xpath expr="/form/sheet/notebook/page[1]/field[@name='order_line']/tree/field[@name='product_id']"
                        position="after">
-                    <button name="action_show_details" string="Register lots, packs, location" type="object"
-                            icon="fa-list" options='{"warn": true}' states="sale"/>
-                </xpath>-->
+                        <!--<field name="customer_request_count" />-->
+                        <field name="req_no"/>
+                </xpath>
             </field>
         </record>
         <record id="view_invoice_form_ex" model="ir.ui.view">
@@ -90,7 +90,6 @@
                 </xpath>
             </field>
         </record>
-
         <record id="view_order_form_cstm" model="ir.ui.view">
             <field name="name">sale.order.form.cstm</field>
             <field name="model">sale.order</field>
