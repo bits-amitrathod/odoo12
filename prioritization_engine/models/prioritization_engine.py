@@ -191,6 +191,7 @@ class PrioritizationEngine(models.TransientModel):
             _logger.debug("Allocated all required product quantity.")
 
             self.allocated_product_to_customer(prioritization_engine_request['customer_id'],
+                                               prioritization_engine_request['req_no'],
                                                prioritization_engine_request['gl_account'],
                                                prioritization_engine_request['customer_request_id'],
                                                prioritization_engine_request['required_quantity'],
@@ -204,6 +205,7 @@ class PrioritizationEngine(models.TransientModel):
             _logger.debug(str(" Allocated Partial order product."))
 
             self.allocated_product_to_customer(prioritization_engine_request['customer_id'],
+                                               prioritization_engine_request['req_no'],
                                                prioritization_engine_request['gl_account'],
                                                prioritization_engine_request['customer_request_id'],
                                                prioritization_engine_request['required_quantity'],
@@ -244,8 +246,8 @@ class PrioritizationEngine(models.TransientModel):
             return None
 
     # allocated product to customer
-    def allocated_product_to_customer(self, customer_id, gl_account, customer_request_id, required_quantity, product_id, allocated_product_from_lot):
-        allocated_product = {'customer_request_id':customer_request_id, 'customer_required_quantity':required_quantity,
+    def allocated_product_to_customer(self, customer_id,req_no, gl_account, customer_request_id, required_quantity, product_id, allocated_product_from_lot):
+        allocated_product = {'customer_request_id':customer_request_id,'req_no':req_no, 'customer_required_quantity':required_quantity,
                                  'product_id':product_id, 'allocated_product_quantity':allocated_product_from_lot}
         # add data in allocated_product_for_gl_account_dict
         if gl_account and not gl_account is None:
@@ -304,7 +306,7 @@ class PrioritizationEngine(models.TransientModel):
                 _logger.info('customer_request_id  :**** ')
                 _logger.info('customer_request_id  :  %r  ', allocated_product['customer_request_id'])
 
-                sale_order_line_dict = {'customer_request_id': allocated_product['customer_request_id'], 'order_id': sale_order['id'], 'product_id': allocated_product['product_id'],
+                sale_order_line_dict = {'customer_request_id': allocated_product['customer_request_id'],'req_no': allocated_product['req_no'], 'order_id': sale_order['id'], 'product_id': allocated_product['product_id'],
                                         'order_partner_id' : partner_id_key, 'product_uom_qty' : allocated_product['allocated_product_quantity']}
 
                 self.env['sale.order.line'].create(dict(sale_order_line_dict))
@@ -342,7 +344,7 @@ class PrioritizationEngine(models.TransientModel):
 
                 for allocated_product in self.allocated_product_for_gl_account_dict.get(gl_account_key, {}):
                     sale_order_line_dict = {
-                        'customer_request_id': allocated_product['customer_request_id'], 'order_id': sale_order['id'],
+                        'customer_request_id': allocated_product['customer_request_id'],'req_no': allocated_product['req_no'], 'order_id': sale_order['id'],
                         'product_id': allocated_product['product_id'],'order_partner_id': res_partner.id,
                         'product_uom_qty': allocated_product['allocated_product_quantity']}
 

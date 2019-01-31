@@ -8,7 +8,7 @@ class ReportPurchaseSalespersonWise(models.AbstractModel):
 
     @api.model
     def get_report_values(self, docids, data=None):
-        purchase_orders = self.env['stock.inventory'].browse(docids)
+        purchase_orders = self.env['stock.move.line'].browse(docids)
 
         popup = self.env['adj_popup.view.model'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
 
