@@ -13,7 +13,7 @@ class SalePurchaseHistory(models.Model):
 
     # product_name = fields.Char("Product Name", compute='_compare_data',store=False)
     product_sku_ref = fields.Char("Product SKU", compute='_compare_data', store=False)
-    customer_name = fields.Char("Customer Name", store=False)
+    customer_name = fields.Char("Customer Name",compute='_compare_data', store=False)
     delivered_date = fields.Date("Delivered Date",compute='_compare_data', store=False)
     # qty_delivered = fields.Float("Delivered Qty", store=False)
     # unit_price = fields.Monetary("Unit Price", currency_field='currency_id', store=False)
@@ -28,11 +28,12 @@ class SalePurchaseHistory(models.Model):
             sale_order_line.customer_name=sale_order_line.order_id.partner_id.name
             sale_order_line.product_sku_ref=sale_order_line.product_id.product_tmpl_id.sku_code
             if sale_order_line.order_id.state != 'cancel':
-                stock_location=self.env['stock.location'].search([('name', '=', 'Output')])
+                stock_location=self.env['stock.location'].search([('name', '=', 'Customers')])
                 if stock_location:
-                    stock_picking = self.env['stock.picking'].search([('sale_id', '=', sale_order_line.order_id.id),('state', '=', 'done'),('location_id','=',stock_location.id)])
+                    stock_picking = self.env['stock.picking'].search([('sale_id', '=', sale_order_line.order_id.id),('state', '=', 'done'),('location_dest_id','=',stock_location.id)])
                     if stock_picking:
-                        for stock_pick in stock_picking:
-                            sale_order_line.delivered_date = stock_pick.date_done
+                        for picking in stock_picking:
+                            sale_order_line.delivered_date = picking.date_done
+
                     else:
                         sale_order_line.delivered_date = None
