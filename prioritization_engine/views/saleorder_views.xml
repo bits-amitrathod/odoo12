@@ -30,6 +30,7 @@
                 <field name="payment_term_id" position="after">
                     <field name="carrier_info"/>
                     <field name="carrier_acc_no"/>
+                    <field name="sale_margine"/>
                 </field>
                 <xpath expr="/form/sheet/notebook/page[1]/field[@name='order_line']/tree/field[@name='product_id']"
                        position="after">
@@ -48,6 +49,7 @@
                     <field name="shipping_terms"/>
                 </field>
                 <field name="date_due" position="after">
+                   <!-- <field name="sale_margine"/>-->
                     <field name="expiration_date"/>
                 </field>
                 <field name="comment" position="before">

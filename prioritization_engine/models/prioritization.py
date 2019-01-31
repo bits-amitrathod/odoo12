@@ -32,6 +32,7 @@ class Customer(models.Model):
     having_carrier = fields.Boolean("Having Carrier?")
     notification_email = fields.Char("Notification Email")
     saleforce_ac = fields.Char("SF A/C No#")
+    sale_margine = fields.Char("Sales Level Margine")
     preferred_method = fields.Selection([
         ('mail', 'Mail'),
         ('email', 'E Mail'),
