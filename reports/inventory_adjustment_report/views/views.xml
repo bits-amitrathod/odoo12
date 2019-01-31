@@ -1,9 +1,9 @@
 <odoo>
   <data>
 
-    <record model="ir.ui.view" id="form_list_adjustment">
+      <record model="ir.ui.view" id="form_list_adjustment">
           <field name="name">adjustment.report.view.list</field>
-          <field name="model">stock.inventory</field>
+          <field name="model">stock.move.line</field>
           <field name="priority">21</field>
           <field name="arch" type="xml">
               <tree create="false" edit="false" delete="false">
@@ -16,12 +16,13 @@
                   <field name="p_qty" string="Product Qty"/>
                   <field name="amount" widget="monetary"/>
                   <field name="total_amt" widget="monetary" sum="Total"/>
+                  <field name="adj_status"/>
                   <field name="currency_id" invisible="1" />
               </tree>
           </field>
       </record>
 
-       <record id="view_stock_quantity_history" model="ir.ui.view">
+      <record id="view_stock_quantity_history" model="ir.ui.view">
         <field name="name">Adjustment Report</field>
         <field name="model">adj_popup.view.model</field>
         <field name="arch" type="xml">
