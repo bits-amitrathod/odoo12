@@ -129,6 +129,7 @@ class SpsCustomerRequest(models.Model):
             if _setting_object:
                 sps_customer_request.write({'customer_request_logs': 'Customer prioritization setting is True, '})
                 pr_model = dict(customer_request_id=sps_customer_request.id,
+                                req_no=sps_customer_request.req_no,
                                 template_type=sps_customer_request.document_id.template_type,
                                 customer_id=sps_customer_request['customer_id'].id,
                                 gl_account=sps_customer_request['gl_account'],

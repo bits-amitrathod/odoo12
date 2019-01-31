@@ -1,6 +1,6 @@
 
 {
-    'name': 'Report Price List',
+    'name': 'Customer and Product Price List Report',
     'summary':"Report",
     'category': 'sale',
     'version': '11.0.0.1',
