@@ -17,11 +17,15 @@
                             <tr>
                                 <td style="border: none;">
                                     <strong>Order Number:</strong>
-                                    <span t-esc="data[0].order_id.name"/>
+                                     <t t-if="data">
+                                    <span  t-esc="data[0].order_id.name"/>
+                                     </t>
                                 </td>
                                 <td style="border: none;">
                                     <strong>Status:</strong>
-                                    <span t-esc="dict(data[0].fields_get('state')['state']['selection'])[data[0].state]"/>
+                                     <t t-if="data">
+                                         <span  t-esc="dict(data[0].fields_get('state')['state']['selection'])[data[0].state]"/>
+                                     </t>
                                 </td>
                             </tr>
                             <tr>
@@ -32,17 +36,23 @@
                                     <t t-else="">
                                         <strong>Vendor Name:</strong>
                                     </t>
-                                    <span t-esc="data[0].partner_id.name"/>
+                                     <t t-if="data">
+                                         <span t-esc="data[0].partner_id.name"/>
+                                     </t>
                                 </td>
                                 <td style="border: none;">
                                     <strong>Type:</strong>
-                                    <span t-esc="data[0].picking_type_id.name"/>
+                                     <t t-if="data">
+                                         <span   t-esc="data[0].picking_type_id.name"/>
+                                     </t>
                                 </td>
                             </tr>
                             <tr>
                                 <td style="border: none;">
                                     <strong>Warehouse:</strong>
-                                    <span t-esc="data[0].warehouse_id.name"/>
+                                     <t t-if="data">
+                                        <span  t-esc="data[0].warehouse_id.name"/>
+                                     </t>
                                 </td>
                             </tr>
                         </table>
