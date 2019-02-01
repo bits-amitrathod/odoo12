@@ -17,15 +17,17 @@ class ReceivingListPopUp(models.TransientModel):
     ], string="Order Type", default=1, help="Choose to analyze the Show Summary or from a specific date in the past.",
         required=True)
 
-    sale_order_id = fields.Many2one('sale.order', string='Order Number', )
+    sale_order_id = fields.Many2one('sale.order', string='Order Number',domain="[('picking_ids.state','=','assigned'),('picking_ids.picking_type_id','=',2)]" , )
 
-    purchase_order_id = fields.Many2one('purchase.order', string='Order Number', order='picking_name')
+    purchase_order_id = fields.Many2one('purchase.order', string='Order Number', domain="[('picking_ids.state','=','assigned'),('picking_type_id.code','=','incoming')]" , order='picking_name')
 
     def open_table(self):
         data = {'order_type': self.order_type}
         if self.order_type == 1:
+            self.env['report.receiving.list.po'].delete_and_create()
             data['order_id'] = self.purchase_order_id.id
         else:
+            self.env['report.receiving.list.so'].delete_and_create()
             data['order_id'] =  self.sale_order_id.id
 
         action = self.env.ref('receiving_list.action_report_receiving_list').report_action([], data= data)
@@ -61,7 +63,6 @@ class ReceivingListPoReport(models.Model):
 
     def init_table(self):
         tools.drop_view_if_exists(self._cr, self._name.replace(".", "_"))
-
         select_query = """
                 SELECT
                     ROW_NUMBER () OVER (ORDER BY stock_move_line.id) as id, 
@@ -132,7 +133,7 @@ class ReceivingListPoReport(models.Model):
 
     @api.model_cr
     def delete_and_create(self):
-        pass;
+        self.init_table()
 
 
 class ReceivingListReport(models.Model):
@@ -166,7 +167,7 @@ class ReceivingListReport(models.Model):
         select_query = """
                 SELECT
                     ROW_NUMBER () OVER (ORDER BY stock_move_line.id) as id, 
-                    sale_order_line.order_id,
+                    stock_picking.sale_id as order_id,
                     sale_order.partner_id,
                     sale_order.warehouse_id,
                     stock_picking.state,
@@ -177,32 +178,24 @@ class ReceivingListReport(models.Model):
                     stock_move_line.product_uom_qty,
                     stock_move_line.product_uom_id
                 FROM
-                    stock_move
+                    stock_picking
                 INNER JOIN
                     stock_move_line
                 ON
                     (
-                        stock_move.id = stock_move_line.move_id)
-                INNER JOIN
-                    stock_picking
-                ON
-                    (
                         stock_move_line.picking_id = stock_picking.id)
+             
                 INNER JOIN
                     stock_picking_type
                 ON
                     (
                         stock_picking.picking_type_id = stock_picking_type.id)
-                INNER JOIN
-                    sale_order_line
-                ON
-                    (
-                        stock_move.sale_line_id = sale_order_line.id)
+               
                 INNER JOIN
                     product_product
                 ON
                     (
-                        sale_order_line.product_id = product_product.id)
+                        stock_move_line.product_id = product_product.id)
                 INNER JOIN
                     product_template
                 ON
@@ -212,10 +205,9 @@ class ReceivingListReport(models.Model):
                     sale_order
                 ON
                     (
-                        sale_order_line.order_id = sale_order.id)
+                        stock_picking.sale_id = sale_order.id)
                 WHERE
-                    stock_picking_type.code = 'incoming'
-                AND stock_picking.state = 'assigned'
+                    stock_picking.state = 'assigned' and stock_picking.location_id in (12,16,9)
         """
 
         sql_query = "CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + select_query + " )"
@@ -223,4 +215,4 @@ class ReceivingListReport(models.Model):
 
     @api.model_cr
     def delete_and_create(self):
-        pass;
+        self.init_table()

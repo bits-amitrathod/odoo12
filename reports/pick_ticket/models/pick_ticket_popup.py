@@ -2,6 +2,7 @@ from odoo import api, fields, models, tools
 import datetime
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
 
+
 class ReportPickTicketGroupByOrderDate(models.TransientModel):
     _name = 'popup.pick.ticket'
     _description = 'Pick Ticket Group By Order'
@@ -15,17 +16,9 @@ class ReportPickTicketGroupByOrderDate(models.TransientModel):
 
     end_date = fields.Date('End Date', default=fields.date.today(), required=True)
 
-    picking_id = fields.Many2many('stock.picking', string='Pick Number')
+    picking_id = fields.Many2many('stock.picking', string='Pick Number',domain=[('sale_id.id', '!=', False)])
 
     def open_table(self):
-
-        context = {}
-        if self.compute_at_date:
-            s_date = self.string_to_date(str(self.start_date))
-            e_date = self.string_to_date(str(self.end_date)) + datetime.timedelta(days=1)
-            context.update({'s_date': s_date, 'e_date': e_date})
-        else:
-            context.update({'sale_number': self.picking_id})
 
         tree_view_id = self.env.ref('pick_ticket.pick_report_list_view').id
         form_view_id = self.env.ref('pick_ticket.pick_ticket_form_view').id
@@ -33,7 +26,7 @@ class ReportPickTicketGroupByOrderDate(models.TransientModel):
         res_model = 'report.pick.ticket'
         action = {
             'type': 'ir.actions.act_window',
-            'views': [(tree_view_id, 'tree'),(form_view_id, 'form')],
+            'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
             'view_mode': 'tree',
             'name': 'Pick Ticket',
             'res_model': res_model,
@@ -46,8 +39,8 @@ class ReportPickTicketGroupByOrderDate(models.TransientModel):
                 action["domain"].append(('scheduled_date', '>=', self.start_date))
 
             if self.end_date:
-                self.end_date = self.string_to_date(str(self.end_date)) + datetime.timedelta(days=1)
-                action["domain"].append(('scheduled_date', '<=', self.end_date))
+                action["domain"].append(
+                    ('scheduled_date', '<=', self.string_to_date(str(self.end_date)) + datetime.timedelta(days=1)))
 
         else:
             if len(self.picking_id.ids) > 0:

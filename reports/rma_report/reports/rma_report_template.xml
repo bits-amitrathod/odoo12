@@ -22,7 +22,7 @@
                             </tr>
                              <tr>
                                  <td style="width:50%"><b>Created : </b><span t-esc="data['create_date']" t-options="{'widget':'date'}"/></td>
-                                 <td style="width:50%"><b>Status : </b><span t-esc="data['sale_order_status']"/></td>
+                                 <td style="width:50%"><b>Status : </b><span>Return</span></td>
                              </tr>
                             <tr>
                                  <td style="width:50%"><b>Expires : </b><span t-esc="data['expire_date']" t-options="{'widget':'date'}"/></td>

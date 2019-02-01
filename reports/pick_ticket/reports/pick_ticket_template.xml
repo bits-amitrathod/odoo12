@@ -10,11 +10,13 @@
                             <b>
                                 <h2>Surgical Product Solution</h2>
                                 <h4>Pick Ticket
-                                    <span t-if="popup.compute_at_date"> - By Date</span>
-                                    <span t-else=""> - By Order</span>
+                                    <span t-if="popup.compute_at_date">- By Date</span>
+                                    <span t-else="">- By Order</span>
                                 </h4>
                                 <h4 t-if="popup.compute_at_date">
-                                    <span t-esc="popup.start_date" t-options='{"widget": "date"}'/> to <span t-esc="popup.end_date" t-options='{"widget": "date"}'/>
+                                    <span t-esc="popup.start_date" t-options='{"widget": "date"}'/>
+                                    to
+                                    <span t-esc="popup.end_date" t-options='{"widget": "date"}'/>
                                 </h4>
                             </b>
                         </center>
@@ -41,6 +43,10 @@
                                     <strong>Warehouse:</strong>
                                     <span t-esc="pick['warehouse']"/>
                                 </td>
+                                <td style="border: none;">
+                                    <strong>Priority:</strong>
+                                    <span t-esc="pick['priority']"/>
+                                </td>
                             </tr>
                             <tr>
                                 <td style="border: none;">
@@ -52,10 +58,10 @@
                                     <span t-esc="pick['customer']"/>
                                 </td>
                                 <td style="border: none;">
-                                    <strong>State:</strong>
+                                    <strong>Status:</strong>
                                     <span t-esc="pick['state']"/>
                                 </td>
-                                 <td style="border: none;">
+                                <td style="border: none;">
                                     <strong>Operation Type:</strong>
                                     <span t-esc="pick['picking_type']"/>
                                 </td>
@@ -67,10 +73,10 @@
                                     <th style="border: 1px solid black;text-align:  center !important;">
                                         Product Name
                                     </th>
-                                     <th style="border: 1px solid black;text-align:  center !important;">
+                                    <th style="border: 1px solid black;text-align:  center !important;">
                                         Quantity
                                     </th>
-                                     <th style="border: 1px solid black;text-align:  center !important;">
+                                    <th style="border: 1px solid black;text-align:  center !important;">
                                         UOM
                                     </th>
                                     <th style="border: 1px solid black;text-align:  center !important;">
