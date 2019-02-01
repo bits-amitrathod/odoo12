@@ -124,7 +124,7 @@ class ReportBrokerReport(models.AbstractModel):
                         margin40tot = float(margin40tot) + order.rt_price_total_amt
 
             bonus_eligible = apprisal_list_rtl_val.total_retail_broker - margin40tot
-            eligible_offer = tot_offer - margin40tot
+            eligible_offer = tot_offer - m40_margin_offeramount
             hospital_total = float(apprisal_list_rtl_val.total_retail_broker) - float(
                 margin_retailamount)
             broker_total = margin_retailamount
@@ -174,7 +174,7 @@ class ReportBrokerReport(models.AbstractModel):
 
             if (apprisal_list_rtl_val.total_retail_broker != 0):
                 apprisal_list_mar_val.total_retail_broker_mar = str(
-                    abs(round(1 - (tot_offer / apprisal_list_rtl_val.total_retail_broker) * 100, 2))) + ' %'
+                    abs(round((1 - (tot_offer / apprisal_list_rtl_val.total_retail_broker)) * 100, 2))) + ' %'
 
             else:
                 apprisal_list_mar_val.total_retail_broker_mar = "0 %"
@@ -197,7 +197,7 @@ class ReportBrokerReport(models.AbstractModel):
 
             if margin_retailamount != 0:
                 apprisal_list_mar_val.broker_total_mar = str(
-                    abs(abs(round((1 - float(margin_offeramount)) / margin_retailamount, 2)))) + "%"
+                    abs(abs(round(1 - float(margin_offeramount) / margin_retailamount, 2)))) + "%"
             else:
                 apprisal_list_mar_val.broker_total_mar = "0 %"
 
