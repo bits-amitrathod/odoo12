@@ -14,13 +14,14 @@ class tps_report_sale(models.Model):
     _auto = False
 
 
-    total_sales = fields.Monetary(string='Sales', currency_field='currency_id',compute="_compare_data",store=False)
-    currency_id = fields.Many2one("res.currency", compute="_compare_data",string="Currency", readonly=True)
+    total_sales = fields.Monetary(string='Sales', currency_field='currency_id')
+    currency_id = fields.Many2one("res.currency", string="Currency", readonly=True)
     product_tmpl_id = fields.Many2one('product.template', "Product")
     product_name=fields.Char("Product Name")
     sku_code = fields.Char("Product SKU")
     start_date=fields.Date("start_date")
     end_date=fields.Date("end_date")
+
     @api.multi
     def _compare_data(self):
         popup = self.env['tps.popup.view'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
@@ -53,7 +54,7 @@ class tps_report_sale(models.Model):
         s_date = (str(start_date)).replace("-","/")
         e_date = str(end_date).replace("-","/")
 
-        select_query = """ SELECT  distinct pp.id,%s as start_date , %s as end_date ,pt.sku_code, pt.name as product_name,pp.product_tmpl_id
+        select_query = """ SELECT  distinct pp.id,%s as start_date , %s as end_date ,sum(sol.price_total) as total_sales,sol.currency_id,pt.sku_code, pt.name as product_name,pp.product_tmpl_id
                from  product_product pp  
                       INNER JOIN sale_order_line sol ON sol.product_id=pp.id
                       INNER JOIN product_template pt ON  pt.id=pp.product_tmpl_id
@@ -66,7 +67,7 @@ class tps_report_sale(models.Model):
         if start_date == end_date:
             end_date=end_date+ datetime.timedelta(days=1)
 
-        select_query=select_query +"""where so.confirmation_date>=%s and so.confirmation_date<=%s """ + """ group by pp.id,pt.name,sku_code,pp.product_tmpl_id"""
+        select_query=select_query +"""where so.confirmation_date>=%s and so.confirmation_date<=%s """ + """ group by pp.id,pt.name,sku_code,pp.product_tmpl_id,sol.currency_id"""
         sql_query = "CREATE VIEW " + view + " AS ( " + select_query + ")"
         self._cr.execute(sql_query, (str(s_date),str(e_date),str(start_date),str(end_date),))
 
