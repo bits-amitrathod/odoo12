@@ -29,9 +29,9 @@
                     <table class="table table-condensed table-bordered" >
                         <tr>
                             <!--<th style="border: 1px solid black;text-align: center;">Internal Reference</th>-->
-                            <th style="border: 1px solid white;border-bottom: 1px solid black;">Product SKU</th>
+                            <th style="border: 1px solid white;border-bottom: 1px solid black;width: 20%;">Product SKU</th>
                             <th style="border: 1px solid white;border-bottom: 1px solid black;" >Product Name</th>
-                            <th class="text-right"  style="border: 1px solid white;border-bottom: 1px solid black;">Sales</th>
+                            <th class="text-right"  style="border: 1px solid white;border-bottom: 1px solid black;width: 20%;">Sales</th>
 
                         </tr>
 
@@ -49,7 +49,7 @@
                                 </td>
 
                                 <td align="right" class="text-right" style="border: 1px solid white;">
-                                    <span t-esc="a.total_sales" />
+                                    <span t-esc="a.total_sales"  t-options='{"widget": "monetary","display_currency": a.currency_id}'/>
                                 </td>
                             </tr>
                         </t>
