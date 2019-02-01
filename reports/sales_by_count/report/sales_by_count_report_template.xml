@@ -44,7 +44,7 @@
                                         <span t-esc="sale.sku_code"/>
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="sale.product_name"/>
+                                        <span t-field="sale.product_tmpl_id"/>
                                     </td>
                                     <td style="border: 1px solid black;text-align: center;">
                                         <span t-esc="sale.quantity"/>
