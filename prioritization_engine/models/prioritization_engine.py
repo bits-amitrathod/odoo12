@@ -108,7 +108,7 @@ class PrioritizationEngine(models.TransientModel):
                         self.update_customer_request_status(prioritization_engine_request, 'Inprocess')
                     flag = True
                 else:
-                    if prioritization_engine_request['status'].lower().strip() != 'incoolingperiod':
+                    if prioritization_engine_request['status'].lower().strip() != 'incoolingperiod' and prioritization_engine_request['status'].lower().strip() != 'partial':
                         # update status In cooling period
                         self.update_customer_request_status(prioritization_engine_request, 'InCoolingPeriod')
                     flag = False
@@ -135,7 +135,7 @@ class PrioritizationEngine(models.TransientModel):
                 flag = True
             else:
                 # update status In cooling period
-                if prioritization_engine_request['status'].lower().strip() != 'incoolingperiod':
+                if prioritization_engine_request['status'].lower().strip() != 'incoolingperiod' and prioritization_engine_request['status'].lower().strip() != 'partial':
                     self.update_customer_request_status(prioritization_engine_request, 'InCoolingPeriod')
                 flag = False
         else:

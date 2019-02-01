@@ -10,7 +10,6 @@ _logger = logging.getLogger(__name__)
 
 
 class tps_report_sale(models.Model):
-    _inherit = "product.template"
     _name = "total_product_sale"
     _auto = False
 
@@ -22,18 +21,22 @@ class tps_report_sale(models.Model):
     sku_code = fields.Char("Product SKU")
     start_date=fields.Date("start_date")
     end_date=fields.Date("end_date")
+
     @api.multi
     def _compare_data(self):
-        start_date = self.env.context.get('start_date')
-        end_date = self.env.context.get('end_date')
+        popup = self.env['tps.popup.view'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
+        start_date =popup.start_date
+        end_date = popup.end_date
+        end_date=datetime.datetime.strptime(str(end_date), "%Y-%m-%d")
+        end_date = end_date + datetime.timedelta(days=1)
 
         for product in self:
             product.product_name = product.product_tmpl_id.name
             product.sku_name = product.product_tmpl_id.sku_code
-            sale_order_lines = self.env['sale.order.line'].search([('product_id', '=', product.id),('order_id.confirmation_date', '>=', start_date),('order_id.confirmation_date','<=', end_date)])
+            sale_order_lines = self.env['sale.order.line'].search([('product_id', '=', product.id),('order_id.confirmation_date', '>=', start_date),('order_id.confirmation_date','<=', str(end_date))])
             for sale_order_line in sale_order_lines:
-                product.total_sale_qty = product.total_sale_qty + sale_order_line.product_uom_qty
-                product.total_sales = product.total_sales+sale_order_line.price_unit
+                product.currency_id=sale_order_line.currency_id
+                product.total_sales = product.total_sales+sale_order_line.price_total
 
     @api.model_cr
     def init(self):
@@ -51,13 +54,10 @@ class tps_report_sale(models.Model):
         s_date = (str(start_date)).replace("-","/")
         e_date = str(end_date).replace("-","/")
 
-        select_query = """ SELECT  distinct pt.*,%s as start_date , %s as end_date , curr.id as currency_id,curr.symbol as currency_symbol, Round(sum(sol.price_unit),2) as total_sales, pt.id as product_tmpl_id, pt.name as product_name
+        select_query = """ SELECT  distinct pp.id,%s as start_date , %s as end_date ,sum(sol.price_total) as total_sales,sol.currency_id,pt.sku_code, pt.name as product_name,pp.product_tmpl_id
                from  product_product pp  
                       INNER JOIN sale_order_line sol ON sol.product_id=pp.id
                       INNER JOIN product_template pt ON  pt.id=pp.product_tmpl_id
-                      INNER JOIN stock_move sm ON sm.sale_line_id=sol.id
-                      INNER JOIN res_company cmpy ON cmpy.id=pt.company_id 
-                      INNER JOIN res_currency curr ON curr.id=cmpy.currency_id
                       INNER JOIN sale_order so ON so.id=sol.order_id  
                       
                """
@@ -67,7 +67,7 @@ class tps_report_sale(models.Model):
         if start_date == end_date:
             end_date=end_date+ datetime.timedelta(days=1)
 
-        select_query=select_query +"""where so.confirmation_date>=%s and so.confirmation_date<=%s """ + """ group by pt.id,pt.name,curr.id,curr.symbol"""
+        select_query=select_query +"""where so.confirmation_date>=%s and so.confirmation_date<=%s """ + """ group by pp.id,pt.name,sku_code,pp.product_tmpl_id,sol.currency_id"""
         sql_query = "CREATE VIEW " + view + " AS ( " + select_query + ")"
         self._cr.execute(sql_query, (str(s_date),str(e_date),str(start_date),str(end_date),))
 
