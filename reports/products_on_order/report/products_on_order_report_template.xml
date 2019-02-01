@@ -15,8 +15,11 @@
 
                     </div>
                     <br/>
+                    <t t-set="uom" t-value="0" />
+                     <t t-set="qty_remaining" t-value="0" />
                     <t t-set="currency" t-value="0" />
                     <t t-foreach="data['form']" t-as="products_on_order">
+                        <t t-set="qty_remaining" t-value="0" />
                         <center>
                             <b>
                                 <span>Product# :</span>
@@ -29,18 +32,18 @@
                         <table class="table table-condensed" style="">
                             <thead>
                                 <tr style="">
-                                    <th width="10%" style="text-align: center;center;">Sales Order</th>
-                                    <th>Customer Name</th>
-                                    <th>Product SKU</th>
-                                    <th style="text-align: center;">Order Date</th>
-                                    <th style="text-align: center;">Due Date</th>
-                                    <th width="10%" style="text-align: right;">Qty Ordered</th>
-                                    <th width="10%" style="text-align: right;">Qty Remaining</th>
-                                    <th width="10%" style="text-align: right;">UOM</th>
+                                    <th width="10%" style="text-align: center;center;border: 1px solid black; border-bottom: 1px solid #555555 !important;" >Sales Order</th>
+                                    <th style="text-align: center;center;border: 1px solid black; border-bottom: 1px solid #555555 !important;" >Customer Name</th>
+                                    <th style="text-align: center;center;border: 1px solid black; border-bottom: 1px solid #555555 !important;" >Product SKU</th>
+                                    <th style="text-align: center;border: 1px solid black; border-bottom: 1px solid #555555 !important;">Order Date</th>
+                                    <th style="text-align: center;border: 1px solid black; border-bottom: 1px solid #555555 !important;">Due Date</th>
+                                    <th width="10%" style="text-align: right;border: 1px solid black; border-bottom: 1px solid #555555 !important;">Qty Ordered</th>
+                                    <th width="10%" style="text-align: right;border: 1px solid black; border-bottom: 1px solid #555555 !important;">Qty Remaining</th>
+
                                 </tr>
                                </thead>
                             <tbody>
-                                <tr t-foreach="products_on_order[1]" t-as="order">
+                                <tr t-foreach="products_on_order[1]" t-as="order"  style="border: 1px solid black;">
                                     <td width="10%" style="text-align: center;center;">
                                         <span t-esc="order[0]"/>
                                     </td>
@@ -58,20 +61,27 @@
                                     </td>
                                     <td width="10%" align="right" style="">
                                           <span t-esc="round(order[5])"/>
+                                          <span t-esc="order[7]"/>
                                     </td>
                                     <td width="10%" align="right" style="">
                                           <span t-esc="round(order[6])"/>
-                                    </td>
-                                    <td width="10%" align="right" style="">
                                           <span t-esc="order[7]"/>
+                                           <t t-set="qty_remaining" t-value="qty_remaining +round(order[6])" />
+                                          <t t-if="order[7]">
+                                               <t t-set="uom" t-value="order[7]" />
+                                          </t>
+
                                     </td>
+
                                 </tr>
                                 <tr>
-                                    <td colspan="5" style="text-align: right;">
+
+                                    <td colspan="6" style="text-align: right;">
                                         <b>Total SO Items Remaining</b>
                                     </td>
                                     <td align="right" style="white-space: nowrap;">
-                                        <span t-esc="round(products_on_order[2])"/>
+                                        <span t-esc="qty_remaining"/>
+                                         <span t-esc="uom"/>
                                     </td>
                                 </tr>
                             </tbody>

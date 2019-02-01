@@ -2,6 +2,7 @@ import time
 
 from odoo import api, fields, models, _
 import datetime
+from dateutil.relativedelta import relativedelta
 
 class comparebymonth(object):
     product_name = ''
@@ -65,10 +66,13 @@ class DiscountSummaryPopUp(models.TransientModel):
             ps_date =(fields.Datetime.from_string( self.last_start_date).date())
             pl_date = (fields.Datetime.from_string(self.last_end_date).date())
         else :
-            s_date = (fields.date.today() - datetime.timedelta(days=30))
+            today = fields.date.today().replace(day=1)
+            s_date = today
             l_date = (fields.date.today())
-            ps_date = (fields.date.today() - datetime.timedelta(days=60))
-            pl_date = (fields.date.today() - datetime.timedelta(days=31))
+            ps_date = (today - relativedelta(day=1, months=1))
+            pl_date = (ps_date + relativedelta(day=1, months=1, days=-1))
+
+
         stock_location_id=  self.env['stock.location'].search([('usage', '=', 'customer'),]).id
         stock_move_line = self.env['stock.move.line'].search(
             [ ('state', 'in', ('done', 'partially_available')),('location_dest_id.id','=',stock_location_id), ('date', '>=', str(ps_date)),('date','<=',str(l_date))])
