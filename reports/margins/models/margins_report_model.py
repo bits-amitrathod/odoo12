@@ -87,7 +87,9 @@ class MarginsReport(models.Model):
 
         if not e_date is None:
             select_query = select_query + ", '" + str(e_date) + "' as date_to "
-            where_clause = where_clause + AND + " o.confirmation_date <= '" + str(e_date+ datetime.timedelta(days=1)) + "'"
+            _logger.info(str(e_date + datetime.timedelta(days=1)))
+            where_clause = where_clause + AND + " o.confirmation_date <= '" + str(e_date + datetime.timedelta(days=1)) + "'"
+            _logger.info(where_clause)
 
         if not partner_id is None:
             where_clause = where_clause + AND + " o.partner_id = " + str(partner_id)
