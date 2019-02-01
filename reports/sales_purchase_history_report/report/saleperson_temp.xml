@@ -59,10 +59,10 @@
                                         <span t-esc="order.product_uom.name"/>
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.price_unit" t-options='{"widget": "monetary","display_currency": order.product_id.currency_id}' />
+                                        <span t-esc="order.price_unit" t-options='{"widget": "monetary","display_currency": order.currency_id}' />
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.price_total" t-options='{"widget": "monetary","display_currency": order.product_id.currency_id}'/>
+                                        <span t-esc="order.price_total" t-options='{"widget": "monetary","display_currency": order.currency_id}'/>
                                         <t t-set="total_price" t-value="total_price + order.price_total" />
                                     </td>
                                 </tr>
@@ -71,7 +71,7 @@
                                         <b>Total</b>
                                     </td>
                                     <td style="border: 1px solid black; text-align: right;">
-                                         <span t-esc="total_price" t-options='{"widget": "monetary","display_currency": data[0].product_id.currency_id}'/>
+                                         <span t-esc="total_price" t-options='{"widget": "monetary","display_currency": data[0].currency_id}'/>
                                     </td>
                                 </tr>
                             </tbody>

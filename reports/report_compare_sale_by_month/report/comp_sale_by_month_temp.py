@@ -15,10 +15,10 @@ class ReportCompareSaleByMonthWise(models.AbstractModel):
         products = self.env['product.product'].search([('create_uid', '=', self._uid)], limit=1,)
         if popup.compute_at_date:
             date = datetime.datetime.strptime(popup.last_start_date, '%Y-%m-%d').strftime('%m/%d/%Y') + " - " + \
-                   datetime.datetime.strptime(popup.last_end_date, '%Y-%m-%d').strftime('%m/%d/%Y')+"      "+ \
+                   datetime.datetime.strptime(popup.last_end_date, '%Y-%m-%d').strftime('%m/%d/%Y')+"        "+ \
                    datetime.datetime.strptime(popup.current_start_date, '%Y-%m-%d').strftime('%m/%d/%Y') + " - " + \
                    datetime.datetime.strptime(popup.current_end_date, '%Y-%m-%d').strftime('%m/%d/%Y')
-            s_date = (fields.Datetime.from_string(popup.last_start_date).date())
+            s_date = (fields.Datetime.from_string(popup.current_start_date).date())
             l_date = (fields.Datetime.from_string(popup.current_end_date).date())
             ps_date = (fields.Datetime.from_string(popup.last_start_date).date())
             pl_date = (fields.Datetime.from_string(popup.last_end_date).date())
@@ -26,9 +26,9 @@ class ReportCompareSaleByMonthWise(models.AbstractModel):
             today=fields.date.today().replace(day=1)
             s_date = today
             l_date = (fields.date.today())
-            ps_date = (today - relativedelta(day=1,months=2))
+            ps_date = (today - relativedelta(day=1,months=1))
             pl_date = (ps_date+ relativedelta(day=1,months=1, days=-1))
-            date= ps_date.strftime('%m/%d/%Y')+" - "+pl_date.strftime('%m/%d/%Y')+"   "+s_date.strftime('%m/%d/%Y') +" - "+ l_date.strftime('%m/%d/%Y')
+            date= ps_date.strftime('%m/%d/%Y')+" - "+pl_date.strftime('%m/%d/%Y')+"       "+s_date.strftime('%m/%d/%Y') +" - "+ l_date.strftime('%m/%d/%Y')
 
         stock_location_id = self.env['stock.location'].search([('usage', '=', 'customer'), ]).id
         stock_move_line = self.env['stock.move.line'].search(
