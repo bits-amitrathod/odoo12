@@ -217,8 +217,6 @@ class PrioritizationEngine(models.TransientModel):
 
     # update customer status
     def update_customer_request_status(self,prioritization_engine_request,status):
-        _logger.info('customer request id %r', prioritization_engine_request['customer_request_id'])
-        _logger.info('status : ' + str(status))
         self.env['sps.customer.requests'].search([('id', '=', prioritization_engine_request['customer_request_id'])]).write({'status':status})
         # prioritization_engine_request['customer_request_logs'] += 'Updated customer request status.'
 
@@ -402,7 +400,8 @@ class PrioritizationEngine(models.TransientModel):
             allocate_quantity = int(prioritization_engine_request['max_threshold']) - int(prioritization_engine_request['quantity'])
             return True,allocate_quantity
         else:
-            prioritization_engine_request['customer_request_logs'] += 'unable to allocate product beacause stock is greater than minimum threshold, '
+            self.update_customer_request_status(prioritization_engine_request, 'Inprocess')
+            prioritization_engine_request['customer_request_logs'] += 'Unable to allocate product beacause stock is greater than minimum threshold, '
             return False,0
 
     # Update uploaded document status
@@ -449,8 +448,7 @@ class PrioritizationEngine(models.TransientModel):
 
     def _update_uploaded_document_status(self,document_id,status):
         try:
-            uploaded_document_val = self.env['sps.cust.uploaded.documents'].search([('id', '=', document_id)])
-            uploaded_document_val.write({'status':status})
+            self.env['sps.cust.uploaded.documents'].search([('id', '=', document_id)]).write({'status':status})
         except Exception:
             _logger.error("Unable to update document status")
 
