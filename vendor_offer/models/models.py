@@ -379,8 +379,8 @@ class VendorOffer(models.Model):
         params = {}
         if hasattr(self, 'partner_id') and self.partner_id:
             params.update(self.partner_id.signup_get_auth_param()[self.partner_id.id])
-
-        return '/my/vendor/' + str(self.id) + '?' + url_encode(params)
+            # ' + str(self.id) + '
+        return '/my/vendor?' + url_encode(params)
 
 
 class VendorOfferProduct(models.Model):

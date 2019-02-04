@@ -13,7 +13,7 @@ class ProductSaleByCountReport(models.Model):
     _auto = False
 
     sku_code = fields.Char('Product SKU')
-    product_name = fields.Char(string='Product Name')
+    product_tmpl_id = fields.Many2one('product.template', "Product")
     product_uom = fields.Char(string="UOM")
     quantity = fields.Integer(string='Quantity')
 
@@ -29,7 +29,7 @@ class ProductSaleByCountReport(models.Model):
             SELECT
                 ROW_NUMBER () OVER (ORDER BY product_template.name) as id, 
                 public.product_template.sku_code     AS sku_code,
-                public.product_template.name         AS product_name,
+                public.product_template.id         AS product_tmpl_id,
                 public.product_uom.name              AS product_uom,
                 SUM(public.stock_move_line.qty_done) AS quantity
             FROM
@@ -79,21 +79,20 @@ class ProductSaleByCountReport(models.Model):
         isWhereClauseAdded = False
         if compute_at:
             if start_date and not start_date is None and end_date and not end_date is None:
-
                 select_query = select_query + " where sale_order.confirmation_date  BETWEEN '" + str(
-                    start_date) + "'" + " and '" + str(end_date) + "'"
+                    start_date) + "'" + " and '" + str(self.string_to_date(end_date) + datetime.timedelta(days=1)) + "'"
                 isWhereClauseAdded = True
         if user_id:
-            if isWhereClauseAdded :
+            if isWhereClauseAdded:
                 select_query = select_query + " and "
-            else :
+            else:
                 select_query = select_query + " where "
             select_query = select_query + " sale_order.user_id <='" + str(user_id) + "'"
 
         group_by = """
             GROUP BY
                 public.product_template.sku_code,
-                public.product_template.name,
+                public.product_template.id,
                 public.product_uom.name
                 """
 
@@ -104,3 +103,6 @@ class ProductSaleByCountReport(models.Model):
     @api.model_cr
     def delete_and_create(self):
         self.init_table()
+
+    def string_to_date(self, date_string):
+        return datetime.datetime.strptime(date_string, DEFAULT_SERVER_DATE_FORMAT).date()
