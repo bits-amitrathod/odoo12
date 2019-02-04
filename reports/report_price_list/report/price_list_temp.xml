@@ -39,8 +39,7 @@
                                         <span t-esc="order.product_tmpl_id.name"/>
                                     </td>
                                     <td align="right" style="border: 1px solid black;white-space: nowrap;">
-                                        <span t-esc="order.lst_price"
-                                              t-options='{"widget": "monetary","display_currency": order.currency_id}'/>
+                                        <span t-esc="order.product_tmpl_id.list_price" />
                                     </td>
                                 </tr>
                             </tbody>
