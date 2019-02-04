@@ -107,6 +107,3 @@ class MarginsReport(models.Model):
     @api.model_cr
     def delete_and_create(self):
         self.init_table()
-
-    def string_to_date(self,date_string):
-        return datetime.datetime.strptime(date_string, DEFAULT_SERVER_DATE_FORMAT).date()
