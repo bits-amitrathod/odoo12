@@ -449,8 +449,7 @@ class PrioritizationEngine(models.TransientModel):
 
     def _update_uploaded_document_status(self,document_id,status):
         try:
-            uploaded_document_val = self.env['sps.cust.uploaded.documents'].search([('id', '=', document_id)])
-            uploaded_document_val.write({'status':status})
+            self.env['sps.cust.uploaded.documents'].search([('id', '=', document_id)]).write({'status':status})
         except Exception:
             _logger.error("Unable to update document status")
 
