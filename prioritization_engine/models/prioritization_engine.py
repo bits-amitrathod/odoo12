@@ -309,6 +309,7 @@ class PrioritizationEngine(models.TransientModel):
 
                 self.env['sale.order.line'].create(dict(sale_order_line_dict))
 
+            sale_order.force_quotation_send()
             sale_order.action_confirm()
             _logger.info('sale order id  : %r  sale order state : %r', sale_order.id, sale_order.state)
 
@@ -317,11 +318,9 @@ class PrioritizationEngine(models.TransientModel):
             picking.write({'state':'assigned'})
             _logger.info('picking after*   : %r', picking.state)
             # sale_order.write(dict(state='engine', confirmation_date=''))
-            try:
-                sale_order.force_quotation_send()
-                sale_order.write({'state':'sent', 'confirmation_date':''})
-            except Exception:
-                _logger.error('Unable to send email')
+            # sale_order.force_quotation_send()
+            sale_order.write({'state':'sent', 'confirmation_date':''})
+
 
     # Generate sale order for gl account
     def generate_sale_order_for_gl_account(self):
@@ -348,6 +347,7 @@ class PrioritizationEngine(models.TransientModel):
 
                     self.env['sale.order.line'].create(dict(sale_order_line_dict))
 
+                sale_order.force_quotation_send()
                 sale_order.action_confirm()
                 _logger.info('sale order id  : %r  sale order state : %r', sale_order.id, sale_order.state)
 
@@ -356,11 +356,9 @@ class PrioritizationEngine(models.TransientModel):
                 picking.write({'state':'assigned'})
                 _logger.info('picking after   : %r', picking.state)
                 # sale_order.write(dict(state='engine', confirmation_date=''))
-                try:
-                    sale_order.force_quotation_send()
-                    sale_order.write({'state':'sent', 'confirmation_date':''})
-                except Exception:
-                    _logger.error('Unable to send email')
+                # sale_order.force_quotation_send()
+                sale_order.write({'state':'sent', 'confirmation_date':''})
+
             else:
                 _logger.info('partner id is null')
 

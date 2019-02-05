@@ -34,8 +34,8 @@
           <field name="target">new</field>
       </record>
     <record id="view_inv_all_packing_list_tree" model="ir.ui.view" >
-          <field name="name">Inventory Packing List</field>
-          <field name="model">res.stock_packing_list</field>
+          <field name="name">Packing List</field>
+          <field name="model">stock.picking</field>
           <field name="priority">20</field>
           <field name="arch" type="xml">
             <tree create="false" edit="false" delete="false" >
@@ -54,7 +54,7 @@
 
 
     <menuitem id="menu_inv_allow_pricing_list_report"
-              name="Sale Packing List"
+              name="Packing List"
               parent="sale.menu_sale_report"
               action="action_packing_list_customer"
              />
