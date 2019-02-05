@@ -15,7 +15,7 @@ class OnHandByDateReportModel(models.AbstractModel):
         else:
             ids=tuple(docids)
         select = """ SELECT sale_order_name, 
-                concat(sum(so.cost),' ',so.currency_symbol)  as total_cost,
+                concat(so.currency_symbol,' ',sum(so.cost))  as total_cost,
                 array_agg(ARRAY[ 
                  CASE WHEN so.product_code IS NULL THEN
                  ''
@@ -35,9 +35,9 @@ class OnHandByDateReportModel(models.AbstractModel):
                 CASE WHEN so.cost IS NULL THEN
                  ''
                  ELSE
-                 concat(cast(so.cost as varchar),' ',so.currency_symbol) END
+                 concat(so.currency_symbol,' ',cast(so.cost as varchar)) END
                 ]) as type ,
-                sum(so.product_quantity) as total_qty
+                concat(sum(so.product_quantity),' ', so.product_uom) as total_qty
                 FROM inventory_allocation_so so where id in """
         select=select+ ' '+str(ids)+ ' '+""" 
                 GROUP BY sale_order_name,currency_symbol   """
