@@ -50,6 +50,7 @@ class IncomingMailCronModel(models.Model):
 
     @api.multi
     def fetch_mail(self):
+        print('In fetch_mail() method')
         for server in self:
             count, failed = 0, 0
             pop_server = None
@@ -58,6 +59,8 @@ class IncomingMailCronModel(models.Model):
                 try:
                     while True:
                         pop_server = server.connect()
+                        print('pop server')
+                        print(pop_server)
                         (num_messages, total_size) = pop_server.stat()
                         pop_server.list()
                         _logger.info('Server tpye is POP inside while')
@@ -192,11 +195,13 @@ class IncomingMailCronModel(models.Model):
                                             else:
                                                 _logger.info('user not found for %r',
                                                              email_from)
+                                                #TODO forward email to admin
                                         else:
                                             _logger.info('domain not matched for forwarded email')
+                                            # TODO forward email to admin
                                     else:
                                         _logger.info("No attachements found")
-
+                                        # TODO forward email to admin
                                 else:
                                     _logger.info('Not a Multipart email')
 
