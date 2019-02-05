@@ -19,12 +19,11 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','stock','product','purchase','sale_management'],
+    'depends': ['base','stock','product','purchase','sale_management','prioritization_engine'],
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
-
+        'security/ir.model.access.csv',
         'views/tps_report_view.xml',
         'report/selected_product_report.xml',
         'report/selected_product_template.xml',
