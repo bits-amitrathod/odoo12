@@ -15,13 +15,13 @@
                         <br/>
                         <table class="table table-condensed" style="margin-bottom: 0px;">
                             <tr>
-                                <td style="border: none;">
+                                <td style="border: 1px solid #ffffff;width:40%">
                                     <strong>Order Number:</strong>
                                      <t t-if="data">
                                     <span  t-esc="data[0].order_id.name"/>
                                      </t>
                                 </td>
-                                <td style="border: none;">
+                                <td style="border: 1px solid #ffffff;background-color:#ffffff">
                                     <strong>Status:</strong>
                                      <t t-if="data">
                                          <span  t-esc="dict(data[0].fields_get('state')['state']['selection'])[data[0].state]"/>
@@ -29,7 +29,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="border: none;">
+                                <td style="border: 1px solid #ffffff;width:40%">
                                     <t t-if="order_type">
                                         <strong>Order Name:</strong>
                                     </t>
@@ -40,7 +40,7 @@
                                          <span t-esc="data[0].partner_id.name"/>
                                      </t>
                                 </td>
-                                <td style="border: none;">
+                                <td style="border: 1px solid #ffffff;background-color:#ffffff">
                                     <strong>Type:</strong>
                                      <t t-if="data">
                                          <span   t-esc="data[0].picking_type_id.name"/>
@@ -48,11 +48,15 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="border: none;">
+                                <td style="border: 1px solid #ffffff;width:40%;">
                                     <strong>Warehouse:</strong>
                                      <t t-if="data">
                                         <span  t-esc="data[0].warehouse_id.name"/>
                                      </t>
+                                </td>
+                                 <td style="border: 1px solid #ffffff;background-color:#ffffff">
+
+
                                 </td>
                             </tr>
                         </table>
@@ -61,12 +65,12 @@
                         <table class="table table-condensed">
                             <thead>
                                 <tr>
-                                    <th>Product Name</th>
-                                    <th>Product SKU</th>
-                                    <th>Picking</th>
-                                    <th>Destination Location</th>
-                                    <th>Qty To Receive</th>
-                                    <th>Qty Received</th>
+                                    <th style="border: 1px solid black;border-bottom: 1px solid #555555 !important;">Product Name</th>
+                                    <th style="border: 1px solid black;border-bottom: 1px solid #555555 !important;">Product SKU</th>
+                                    <th style="border: 1px solid black;border-bottom: 1px solid #555555 !important;">Picking</th>
+                                    <th style="border: 1px solid black;border-bottom: 1px solid #555555 !important;">Destination Location</th>
+                                    <th style="border: 1px solid black;border-bottom: 1px solid #555555 !important;">Qty To Receive</th>
+                                    <th style="border: 1px solid black;border-bottom: 1px solid #555555 !important;">Qty Received</th>
                                 </tr>
                             </thead>
                             <tbody>
