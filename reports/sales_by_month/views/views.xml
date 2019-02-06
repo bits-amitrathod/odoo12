@@ -36,7 +36,7 @@
               <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false">
                     <field name="sku_code"  string="Product SKU" />
-                    <field name="name" string="Product Name" />
+                    <field name="product_tmpl_id" string="Product Name" />
                     <field name="month1" widget="monetary" />
                     <field name="month2" widget="monetary"/>
                     <field name="month3" widget="monetary"/>
@@ -55,15 +55,44 @@
             <field name="name">sales.by.month.form</field>
             <field name="model">product.product</field>
             <field name="arch" type="xml">
-                <form string="Sales By Month Form">
+                <form create="false" edit="false" delete="false" string="Sales By Month Form">
                     <sheet>
                         <group>
-                            <field name="month1" string="Product SKU"/>
-                            <!--<field name="product_id"/>-->
-                             <!--<field name="product_price" widget="monetary"/>-->
-                             <!--<field name="total_sale_quantity" string="Total Sale Qty"/>-->
-                            <!--<field name="total_amount" widget="monetary" sum="Total"/>-->
-                           <!--<field name="currency_id"  invisible="1"/>-->
+                            <field name="sku_code"  string="Product SKU" />
+                            <field name="product_tmpl_id" string="Product Name" />
+                        </group>
+                        <group>
+                            <group>
+                                <field name="month1_quantity"/>
+                                <field name="month2_quantity"/>
+                                <field name="month3_quantity"/>
+                            </group>
+                            <group>
+                                 <field name="month1" widget="monetary" />
+                                 <field name="month2" widget="monetary"/>
+                                 <field name="month3" widget="monetary"/>
+                            </group>
+
+                        </group>
+                        <group>
+
+                            <group>
+                                <field name="month4_quantity"   />
+                                <field name="month5_quantity" />
+                                 <field name="month6_quantity"  />
+                            </group>
+                            <group>
+                                <field name="month4" widget="monetary"  />
+                                <field name="month5" widget="monetary"/>
+                                 <field name="month6" widget="monetary" />
+                            </group>
+
+                        </group>
+                        <group>
+                             <field name="total_sale" widget="monetary"/>
+                             <field name="total_quantity" />
+                             <field name="product_uom_name" string="Product UOM"/>
+                             <field name="currency_id"  invisible="1"/>
                         </group>
                     </sheet>
                 </form>
