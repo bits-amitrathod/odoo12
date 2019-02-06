@@ -47,7 +47,7 @@
                                         <span t-field="order.product_qty"/>
                                     </td>
                                     <td  align="right" style="border: 1px solid black;white-space: nowrap;">
-                                        <span  t-esc="float(order.list_price)" t-options='{"widget": "monetary","display_currency": order.currency_id}'/>
+                                        <span  t-esc="float(order.list_price)" t-options='{"widget": "monetary","display_currency": order.responsible_id.company_id.currency_id}'/>
                                     </td>
                                     <td align="center" style="border: 1px solid black;">
                                         <span t-esc="order.exp_min_date" t-options='{"widget": "date"}'/>
@@ -97,7 +97,7 @@
                                         <span t-esc="order.name"/>
                                     </td>
                                     <td style="border: 1px solid black;text-align: right;white-space: nowrap;">
-                                         <span t-esc="float(order.list_price)" t-options='{"widget": "monetary","display_currency": order.currency_id}'/>
+                                         <span t-esc="float(order.list_price)" t-options='{"widget": "monetary","display_currency": order.responsible_id.company_id.currency_id}'/>
                                     </td>
                                 </tr>
                             </tbody>

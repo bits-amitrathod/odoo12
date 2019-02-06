@@ -31,7 +31,7 @@ class ProductSaleByCountReport(models.Model):
                 public.product_template.sku_code     AS sku_code,
                 public.product_template.id         AS product_tmpl_id,
                 public.product_uom.name              AS product_uom,
-                SUM(public.stock_move_line.qty_done) AS quantity
+                SUM(sale_order_line.qty_delivered) AS quantity
             FROM
                 public.sale_order
             INNER JOIN
@@ -49,21 +49,6 @@ class ProductSaleByCountReport(models.Model):
             ON
                 (
                     public.product_product.product_tmpl_id = public.product_template.id)
-            INNER JOIN
-                public.stock_move
-            ON
-                (
-                    public.sale_order_line.id = public.stock_move.sale_line_id)
-            INNER JOIN
-                public.stock_move_line
-            ON
-                (
-                    public.stock_move.id = public.stock_move_line.move_id)
-            INNER JOIN
-                public.stock_picking
-            ON
-                (
-                    public.stock_move_line.picking_id = public.stock_picking.id)
             INNER JOIN
                 public.product_uom
             ON
