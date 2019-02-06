@@ -1,2 +1,2 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_inventory_monitor_inventory_monitor,inventory_monitor.inventory_monitor,model_inventory_monitor_inventory_monitor,,1,0,0,0
+access_res_pricing_rule,access_res_pricing_rule,model_res_pricing_rule,,1,0,0,0

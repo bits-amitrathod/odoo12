@@ -14,6 +14,7 @@
     'depends': ['stock_account','prioritization_engine'],
 
     'data': [
+        'security/ir.model.access.csv',
         'views/views.xml',
         'report/report_product_activity_report.xml',
         'report/product_activity_report.xml'
