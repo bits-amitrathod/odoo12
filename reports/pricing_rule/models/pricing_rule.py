@@ -51,6 +51,8 @@ class PricingRule(models.Model):
                     if product_price_list_item:
                         product = product_price_list_item.mapped('product_tmpl_id.id')
                         if product:
+                            product = self.env['product.product'].search(
+                                [('product_tmpl_id', 'in', product)]).ids
                             product_ids.extend(product)
                         product = product_price_list_item.mapped('product_id.id')
                         if product:
