@@ -11,6 +11,18 @@ import html2text
 import errno
 from collections import namedtuple
 
+import werkzeug.local
+import werkzeug.wsgi
+from odoo import SUPERUSER_ID
+
+#----------------------------------------------------------
+# RequestHandler
+#----------------------------------------------------------
+# Thread local global request object
+_request_stack = werkzeug.local.LocalStack()
+
+request = _request_stack()
+
 try:
     import xlrd
 
@@ -50,7 +62,6 @@ class IncomingMailCronModel(models.Model):
 
     @api.multi
     def fetch_mail(self):
-        print('In fetch_mail() method')
         for server in self:
             count, failed = 0, 0
             pop_server = None
@@ -59,8 +70,6 @@ class IncomingMailCronModel(models.Model):
                 try:
                     while True:
                         pop_server = server.connect()
-                        print('pop server')
-                        print(pop_server)
                         (num_messages, total_size) = pop_server.stat()
                         pop_server.list()
                         _logger.info('Server tpye is POP inside while')
@@ -71,6 +80,7 @@ class IncomingMailCronModel(models.Model):
                             (header, messages, octets) = pop_server.retr(num)
                             message = (b'\n').join(messages)
                             res_id = None
+                            response = {'errorCode':100, 'message':'File Uploaded Successfully'}
                             try:
                                 if isinstance(message, xmlrpclib.Binary):
                                     message = bytes(message.data)
@@ -185,31 +195,32 @@ class IncomingMailCronModel(models.Model):
                                                                 file_ref = open(str(file_path), "wb+")
                                                                 file_ref.write(file_contents_bytes)
                                                                 file_ref.close()
-                                                                self.env[
-                                                                    'sps.document.process'].process_document(
+                                                                response = self.env['sps.document.process'].process_document(
                                                                     users_model, file_path, tmpl_type,filename, 'Email')
                                                             except Exception as e:
                                                                 _logger.info(str(e))
                                                 else:
                                                     _logger.error('Presents Same Email Id for multiple users %r', email_from)
+                                                    response = dict(errorCode=101, message='Presents Same Email Id for multiple users : ' + str(email_from))
                                             else:
-                                                _logger.info('user not found for %r',
-                                                             email_from)
-                                                #TODO forward email to admin
+                                                _logger.info('user not found for %r', email_from)
+                                                response = dict(errorCode=102, message='User not found for : ' + str(email_from))
                                         else:
                                             _logger.info('domain not matched for forwarded email')
-                                            # TODO forward email to admin
+                                            response = dict(errorCode=103, message='Domain not matched for forwarded email : ' + str(email_from))
                                     else:
                                         _logger.info("No attachements found")
-                                        # TODO forward email to admin
+                                        response = dict(errorCode=104, message='No attachements found : '+str(email_from))
                                 else:
                                     _logger.info('Not a Multipart email')
-
+                                    response = dict(errorCode=105, message='Not a Multipart email'+str(email_from))
                                 pop_server.dele(num)
 
+                                if "errorCode" in response:
+                                    self.send_mail("Sending Email Response as " + str(response['message']) + " for user " + str(email_from))
+
                             except Exception:
-                                _logger.info('Failed to process mail from %s server %s.', server.type, server.name,
-                                             exc_info=True)
+                                _logger.info('Failed to process mail from %s server %s.', server.type, server.name, exc_info=True)
                                 failed += 1
 
                             if res_id and server.action_id:
@@ -233,8 +244,17 @@ class IncomingMailCronModel(models.Model):
                     if pop_server:
                         pop_server.quit()
             server.write({'date': fields.Datetime.now()})
+
         return super(IncomingMailCronModel, self).fetch_mail()
 
     @staticmethod
     def random_string_generator(size=10, chars=string.ascii_lowercase + string.digits):
         return ''.join(random.choice(chars) for _ in range(size))
+
+    def send_mail(self, body):
+        template = self.env.ref('customer-requests.set_log_email_response').sudo()
+        local_context = {'body': body}
+        try:
+            template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True, )
+        except:
+            response = {'message': 'Unable to connect to SMTP Server'}

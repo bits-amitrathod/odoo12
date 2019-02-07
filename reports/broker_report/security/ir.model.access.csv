@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_broker_report_broker_report,broker_report.broker_report,model_broker_report_broker_report,,1,0,0,0
+access_broker_report_broker_report_manager,broker_report_broker_report_manager,model_broker_report_broker_report,purchase.group_purchase_manager,1,1,1,1
+access_broker_report_broker_report_user,broker_report_broker_report_user,model_broker_report_broker_report,purchase.group_purchase_user,1,1,0,0

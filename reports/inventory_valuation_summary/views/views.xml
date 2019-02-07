@@ -58,7 +58,7 @@
     </record>
 
     <record id="inventory_valuation_summary_popup_view" model="ir.ui.view">
-        <field name="name">Pick Ticket Report</field>
+        <field name="name">Inventory Valuation Summary </field>
         <field name="model">popup.inventory.valuation.summary</field>
         <field name="arch" type="xml">
             <form string="Choose your date">
@@ -83,7 +83,7 @@
     </record>
 
     <record id="action_stock_inventory_valuation_summary" model="ir.actions.act_window">
-        <field name="name">Pick Ticket Report</field>
+        <field name="name">Inventory Valuation Summary</field>
         <field name="res_model">popup.inventory.valuation.summary</field>
         <field name="view_type">form</field>
         <field name="view_mode">form</field>
