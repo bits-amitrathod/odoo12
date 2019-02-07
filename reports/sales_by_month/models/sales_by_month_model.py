@@ -24,7 +24,7 @@ class TrendingReportListView(models.Model):
     month4_quantity = fields.Integer(compute='_compute_sales_vals', store=False)
     month5_quantity = fields.Integer(compute='_compute_sales_vals', store=False)
     month6_quantity = fields.Integer(compute='_compute_sales_vals', store=False)
-    total_sale=fields.Monetary(string="Product Totals", compute='_compute_sales_vals',currency_field='currency_id', store=False)
+    total_sale=fields.Monetary(string="Total Sales", compute='_compute_sales_vals',currency_field='currency_id', store=False)
     total_quantity = fields.Integer(compute='_compute_sales_vals', store=False)
     product_uom_name=fields.Char(string="Product UOM",compute='_compute_sales_vals', store=False)
 
@@ -53,34 +53,34 @@ class TrendingReportListView(models.Model):
                     scheduled_date=datetime.date(datetime.strptime(stock_move.picking_id.date_done,"%Y-%m-%d %H:%M:%S"))
                     for stock_move_line in stock_move.move_line_ids:
                         product.product_uom_name=stock_move_line.product_uom_id.name
-                        product.total_sale=product.total_sale + stock_move.sale_line_id.price_unit * stock_move_line.qty_done
+                        product.total_sale=product.total_sale + stock_move.sale_line_id.price_total
                         product.total_quantity=product.total_quantity+stock_move_line.qty_done
                         if ((scheduled_date.month == (today).month) and (scheduled_date.year == (today).year)):
                             product.month1 = product.month1 + (
-                                        stock_move.sale_line_id.price_unit * stock_move_line.qty_done)
+                                        stock_move.sale_line_id.price_total )
                             product.month1_quantity =product.month1_quantity + int(stock_move_line.qty_done)
                         if ((scheduled_date.month == (today - relativedelta(months=1)).month) and (
                                 scheduled_date.year == (today - relativedelta(months=1)).year)):
                             product.month2 = product.month2 + (
-                                        stock_move.sale_line_id.price_unit * stock_move_line.qty_done)
+                                        stock_move.sale_line_id.price_total)
                             product.month2_quantity = product.month2_quantity + int(stock_move_line.qty_done)
                         if ((scheduled_date.month == (today - relativedelta(months=2)).month) and (
                                 scheduled_date.year == (today - relativedelta(months=2)).year)):
                             product.month3 = product.month3 + (
-                                        stock_move.sale_line_id.price_unit * stock_move_line.qty_done)
+                                        stock_move.sale_line_id.price_total)
                             product.month3_quantity = product.month3_quantity + int(stock_move_line.qty_done)
                         if ((scheduled_date.month == (today - relativedelta(months=3)).month) and (
                                 scheduled_date.year == (today - relativedelta(months=3)).year)):
                             product.month4 = product.month4 + (
-                                        stock_move.sale_line_id.price_unit * stock_move_line.qty_done)
+                                        stock_move.sale_line_id.price_total)
                             product.month4_quantity = product.month4_quantity + int(stock_move_line.qty_done)
                         if ((scheduled_date.month == (today - relativedelta(months=4)).month) and (
                                 scheduled_date.year == (today - relativedelta(months=4)).year)):
                             product.month5 = product.month5 + (
-                                        stock_move.sale_line_id.price_unit * stock_move_line.qty_done)
+                                        stock_move.sale_line_id.price_total )
                             product.month5_quantity = product.month5_quantity + int(stock_move_line.qty_done)
                         if((scheduled_date.month == (today - relativedelta(months=5)).month) and (scheduled_date.year ==  (today - relativedelta(months=5)).year)):
-                            product.month6 = product.month6 + (stock_move.sale_line_id.price_unit * stock_move_line.qty_done)
+                            product.month6 = product.month6 + (stock_move.sale_line_id.price_total)
                             product.month6_quantity = product.month6_quantity + int(stock_move_line.qty_done)
 
 
@@ -131,7 +131,7 @@ class TrendingReportListView(models.Model):
             }
             if popup and popup.end_date and not popup.end_date is None:
                 today = datetime.date(datetime.strptime(popup.end_date, "%Y-%m-%d"))
-                if(result['name']=="product.sale.by.count.view.list"):
+                if(result['name']=="product.sale.by.count.view.list" ):
                     doc = etree.XML(result['arch'])
                     for node in doc.xpath("//field[@name='month6']"):
                         node.set('string', (today - relativedelta(months=5)).strftime('%b-%Y')+" (Sale)")
@@ -145,6 +145,35 @@ class TrendingReportListView(models.Model):
                         node.set('string', (today - relativedelta(months=1)).strftime('%b-%Y')+" (Sale)")
                     for node in doc.xpath("//field[@name='month1']"):
                         node.set('string', (today).strftime('%b-%Y')+" (Sale)")
+
+                    result['arch'] = etree.tostring(doc, encoding='unicode')
+
+                if(result['name']=="sales.by.month.form"):
+                    doc = etree.XML(result['arch'])
+                    for node in doc.xpath("//field[@name='month6']"):
+                        node.set('string', (today - relativedelta(months=5)).strftime('%b-%Y') + " (Sale)")
+                    for node in doc.xpath("//field[@name='month5']"):
+                        node.set('string', (today - relativedelta(months=4)).strftime('%b-%Y') + " (Sale)")
+                    for node in doc.xpath("//field[@name='month4']"):
+                        node.set('string', (today - relativedelta(months=3)).strftime('%b-%Y') + " (Sale)")
+                    for node in doc.xpath("//field[@name='month3']"):
+                        node.set('string', (today - relativedelta(months=2)).strftime('%b-%Y') + " (Sale)")
+                    for node in doc.xpath("//field[@name='month2']"):
+                        node.set('string', (today - relativedelta(months=1)).strftime('%b-%Y') + " (Sale)")
+                    for node in doc.xpath("//field[@name='month1']"):
+                        node.set('string', (today).strftime('%b-%Y') + " (Sale)")
+                    for node in doc.xpath("//field[@name='month6_quantity']"):
+                        node.set('string', (today - relativedelta(months=5)).strftime('%b-%Y') + " (Quantity)")
+                    for node in doc.xpath("//field[@name='month5_quantity']"):
+                        node.set('string', (today - relativedelta(months=4)).strftime('%b-%Y') + " (Quantity)")
+                    for node in doc.xpath("//field[@name='month4_quantity']"):
+                        node.set('string', (today - relativedelta(months=3)).strftime('%b-%Y') + " (Quantity)")
+                    for node in doc.xpath("//field[@name='month3_quantity']"):
+                        node.set('string', (today - relativedelta(months=2)).strftime('%b-%Y') + " (Quantity)")
+                    for node in doc.xpath("//field[@name='month2_quantity']"):
+                        node.set('string', (today - relativedelta(months=1)).strftime('%b-%Y') + " (Quantity)")
+                    for node in doc.xpath("//field[@name='month1_quantity']"):
+                        node.set('string', (today).strftime('%b-%Y') + " (Quantity)")
 
                     result['arch'] = etree.tostring(doc, encoding='unicode')
 
