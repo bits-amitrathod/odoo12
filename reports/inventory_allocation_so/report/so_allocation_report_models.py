@@ -40,7 +40,7 @@ class OnHandByDateReportModel(models.AbstractModel):
                 concat(sum(so.product_quantity),' ', so.product_uom) as total_qty
                 FROM inventory_allocation_so so where id in """
         select=select+ ' '+str(ids)+ ' '+""" 
-                GROUP BY sale_order_name,currency_symbol   """
+                GROUP BY sale_order_name,currency_symbol,product_uom   """
         self._cr.execute(select)
         result = self.env.cr.fetchall()
         _logger.info("selct :%r", result)

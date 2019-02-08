@@ -63,6 +63,9 @@ class ReceivingListPoReport(models.Model):
 
     def init_table(self):
         tools.drop_view_if_exists(self._cr, self._name.replace(".", "_"))
+        purchase = self.env['purchase.order'].search(
+            [('id', '=', 7499)])
+        _logger.info("id :%r",purchase)
         select_query = """
                 SELECT
                     ROW_NUMBER () OVER (ORDER BY stock_move_line.id) as id, 
