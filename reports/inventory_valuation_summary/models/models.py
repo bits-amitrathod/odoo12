@@ -70,7 +70,8 @@ class ReportInventoryValuationSummary(models.TransientModel):
     cost_method = fields.Char(string="Cost Method")
 
     def init(self):
-        self.init_table()
+        pass
+        # self.init_table()
 
     def init_table(self):
         sql_query = """ 
