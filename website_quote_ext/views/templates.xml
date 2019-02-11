@@ -83,14 +83,13 @@
         </template>
 
         <template id="cart_lines" name="Shopping Cart Lines">
-            <!--<div t-if="not website_sale_order or not website_sale_order.website_order_line" class="js_cart_lines well well-lg">
-              Your cart is empty!
-            </div>-->
+
             <section id="quote" class="engine">
                 <t t-foreach="quotation.order_lines_layouted()" t-as="page">
                     <table class="table table-striped table-condensed js_cart_lines" id="cart_products">
                         <thead>
                             <tr>
+                                <th class="text-center td-qty">Req no</th>
                                 <th class="td-img">Product</th>
                                 <th></th>
                                 <th class="text-center td-qty">Quantity</th>
@@ -103,6 +102,9 @@
                             <t t-foreach="page" t-as="layout_category">
                                 <t t-foreach="layout_category['lines']" t-as="line">
                                     <tr>
+                                        <td class="text-center" name="Req no">
+                                            <div t-field="line.req_no"/>
+                                        </td>
                                         <td colspan="2" t-if="not line.product_id.product_tmpl_id" class='td-img'></td>
                                         <td align="center" t-if="line.product_id.product_tmpl_id" class='td-img'>
                                             <span t-field="line.product_id.image_small"
@@ -146,8 +148,6 @@
                                             </div>
                                         </td>
                                         <td class="text-center td-quantity" name="quantity">
-                                            <!--  <div onload="startfun()"/>-->
-                                            <!--<t t-call="website.fun()"/>-->
                                         </td>
                                         <td class="text-center td-price" name="price">
                                             <div t-field="line.price_unit"
@@ -160,8 +160,6 @@
                                                 <t t-esc="(line.product_uom_qty*line.price_unit)"
                                                    t-options='{"widget": "monetary", "display_currency": quotation.pricelist_id.currency_id}'/>
                                             </div>
-                                            <!--  <span  t-att-data-line-id="line.id" t-esc="line.product_uom_qty*line.price_unit"
-                                                    t-options='{"widget": "monetary", "display_currency": quotation.pricelist_id.currency_id}'/>-->
                                         </td>
                                     </tr>
                                 </t>
@@ -192,6 +190,7 @@
                     <table class="table wq-table">
                         <thead>
                             <tr>
+                                <th class="text-center td-qty">Req no</th>
                                 <th>Products</th>
                                 <th>Quantity</th>
                                 <th>
@@ -211,6 +210,7 @@
                         </thead>
                         <tbody>
                             <t t-foreach="page" t-as="layout_category">
+
                                 <t t-if="layout_category_size > 1 or page_size > 1" groups="sale.group_sale_layout">
                                     <tr class="active">
                                         <td colspan="7" style="font-weight: bold; border-bottom: 1px solid black;">&amp;bull;
@@ -221,6 +221,9 @@
                                 <!-- Lines associated -->
                                 <t t-foreach="layout_category['lines']" t-as="line">
                                     <tr>
+                                         <td class="text-center" name="Req no">
+                                            <div t-field="line.req_no"/>
+                                        </td>
                                         <td>
                                             <span t-field="line.name"/>
                                         </td>
@@ -251,13 +254,7 @@
                                                 discount
                                             </strong>
                                         </td>
-                                        <!--<td class="text-center td-price" name="price">
-                                              <t t-if="(compute_currency(line.product_id.lst_price) - line.price_reduce ) &gt; 0.01">
-                                                  <del t-attf-class="#{'text-danger mr8'}" style="white-space: nowrap;" t-esc="compute_currency(line.product_id.website_public_price)" t-options="{'widget': 'monetary', 'display_currency': website.get_current_pricelist().currency_id, 'from_currency': website.currency_id}" />
-                                              </t>
-                                              &lt;!&ndash;<span t-field="line.price_reduce_taxexcl" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'from_currency': website_sale_order.pricelist_id.currency_id, 'display_currency': website.currency_id}" groups="sale.group_show_price_subtotal" />
-                                              <span t-field="line.price_reduce_taxinc" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'from_currency': website_sale_order.pricelist_id.currency_id, 'display_currency': website.currency_id}" groups="sale.group_show_price_total" />&ndash;&gt;
-                                        </td>-->
+
                                         <td class="text-right">
                                             <div t-field="line.price_unit"
                                                  t-options='{"widget": "monetary", "display_currency": quotation.pricelist_id.currency_id}'
@@ -273,13 +270,8 @@
                                                 <t t-esc="(line.product_uom_qty*line.price_unit)"
                                                    t-options='{"widget": "monetary", "display_currency": quotation.pricelist_id.currency_id}'/>
                                             </div>
-                                            <!--  <span  t-att-data-line-id="line.id" t-esc="line.product_uom_qty*line.price_unit"
-                                                    t-options='{"widget": "monetary", "display_currency": quotation.pricelist_id.currency_id}'/>-->
-                                        </td>
-                                        <!--<td class="text-right price_total" groups="sale.group_show_price_total">-->
-                                        <!--<span t-field="line.price_total" t-esc="compute_currency(line.product_uom_qty,line.price_unit)"-->
-                                        <!--t-options='{"widget": "monetary", "display_currency": quotation.pricelist_id.currency_id}'/>-->
-                                        <!--</td>-->
+                                         </td>
+
                                         <td class="text-center">
                                             <a t-attf-href="./update_line/#{ line.id }/?order_id=#{ quotation.id }&amp;unlink=True&amp;token=#{ quotation.access_token }"
                                                class="mb8 js_update_line_json hidden-print" t-if="line.option_line_id">
@@ -639,18 +631,6 @@
                                 <i class="fa fa-times"></i>
                                 Reject
                             </a>
-                            <!--<div class="row" t-if="order.state == 'sent' and portal_confirmation == 'sign'" id="portal_sign">-->
-                            <!--<div class="col-md-offset-3 col-md-6">-->
-                            <!--<h4>Accept &amp; Sign</h4>-->
-                            <!--<t t-call="portal.portal_signature">-->
-                            <!--<t t-set="object" t-value="order"/>-->
-                            <!--<t t-set="partner_name" t-value="order.partner_id.name"/>-->
-                            <!--<t t-set="callUrl" t-value="'/my/quotes/accept'"/>-->
-                            <!--<t t-set="signLabel" t-value="'Accept Order'"/>-->
-                            <!--<t t-set="accessToken" t-value="order.access_token"/>-->
-                            <!--</t>-->
-                            <!--</div>-->
-                            <!--</div>-->
                         </div>
                         <div class="modal" id="accept" role="dialog" aria-hidden="true">
                             <div class="modal-dialog">
@@ -902,13 +882,7 @@
                                     <h4 class="modal-title">Validate Order</h4>
                                 </div>
                                 <div class="modal-body" id="sign-dialog">
-                                    <!--<p>
-                                        <span>I agree that by signing this proposal, I
-                                        accept it on the behalf of </span><b t-field="order.partner_id.commercial_partner_id"/><span>, for an amount of </span>
-                                        <b data-id="total_amount" t-field="order.amount_total"
-                                            t-options='{"widget": "monetary", "display_currency": order.pricelist_id.currency_id}'/>
-                                        <span>with payment terms: </span><b t-field="order.payment_term_id"/>.
-                                    </p>-->
+
                                     <t t-call="portal.portal_signature">
                                         <t t-set="object" t-value="order"/>
                                         <t t-set="partner_name" t-value="order.partner_id.name"/>
@@ -929,13 +903,7 @@
                                     <h4 class="modal-title">Reject Order</h4>
                                 </div>
                                 <div class="modal-body" id="sign-dialog">
-                                    <!--<p>
-                                        <span>I agree that by signing this proposal, I
-                                        accept it on the behalf of </span><b t-field="order.partner_id.commercial_partner_id"/><span>, for an amount of </span>
-                                        <b data-id="total_amount" t-field="order.amount_total"
-                                            t-options='{"widget": "monetary", "display_currency": order.pricelist_id.currency_id}'/>
-                                        <span>with payment terms: </span><b t-field="order.payment_term_id"/>.
-                                    </p>-->
+
                                     <t t-call="portal.portal_signature">
                                         <t t-set="object" t-value="order"/>
                                         <t t-set="partner_name" t-value="order.partner_id.name"/>

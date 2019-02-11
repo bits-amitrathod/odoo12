@@ -22,9 +22,6 @@ class SaleOrder(models.Model):
         ('cancel', 'Cancelled'),
         ('void', 'Voided'),
     ], string='Status', readonly=True, copy=False, index=True, track_visibility='onchange', default='draft')
-    '''show_validate = fields.Boolean(
-        compute='_compute_show_validate',
-        help='Technical field used to compute whether the validate should be shown.')'''
     shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
     preferred_method = fields.Selection(string='Preferred Invoice Delivery Method',
                                         related='partner_id.preferred_method', readonly=True)
@@ -222,7 +219,7 @@ class AccountInvoice(models.Model):
     note = fields.Char("Customer Message")
     memo = fields.Char("Memo")
     shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
-    #sale_margine = fields.Selection(string='Sale Level margin', related='partner_id.sale_margine', readonly=True)
+    sale_margine = fields.Char(string='Sale Level margin', related='partner_id.sale_margine', readonly=True)
     preferred_method = fields.Selection(string='Preferred Invoice Delivery Method',
                                         related='partner_id.preferred_method', readonly=True)
 

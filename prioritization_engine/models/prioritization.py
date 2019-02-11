@@ -177,7 +177,7 @@ class Customer(models.Model):
             raise ValidationError(_('Global Priority Configuration->Min Threshold field must be less 999'))
 
 
-class ffProductTemplate(models.Model):
+class ProductTemplate(models.Model):
     _inherit = 'product.template'
     location = fields.Char("Location")
     premium = fields.Boolean("Premium")

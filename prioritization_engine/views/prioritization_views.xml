@@ -62,8 +62,6 @@
 
                                     </group>
                                 </group>
-                                <!--<field name="price" invisible="not context.get('pricelist',False)" readonly="True"/>-->
-                                <!--<field name="uom_id" options="{'no_open': True, 'no_create': True}" groups="product.group_uom"/>-->
                             </form>
                             <tree editable="bottom">
                                 <field name="sequence" widget="handle"/>
@@ -79,8 +77,6 @@
                                 <field name="cooling_period"/>
                                 <field name="partial_ordering"/>
                                 <field name="partial_UOM"/>
-                                <!--<field name="price" invisible="not context.get('pricelist',False)" readonly="True"/>-->
-                                <!--<field name="uom_id" options="{'no_open': True, 'no_create': True}" groups="product.group_uom"/>-->
                             </tree>
                         </field>
                     </page>
@@ -120,28 +116,6 @@
                 </xpath>
             </field>
         </record>
-
-        <!--<record id="view_tree_prioritization_customer" model="ir.ui.view">-->
-        <!--<field name="name">Prioritization customer Tree</field>-->
-        <!--<field name="model">res.partner</field>-->
-        <!--<field eval="12" name="priority"/>-->
-        <!--<field name="arch" type="xml">-->
-
-        <!--<tree string="Contacts">-->
-        <!--<field name="display_name" string="Name"/>-->
-        <!--<field name="function" invisible="1"/>-->
-        <!--<field name="company_type" string="Company"/>-->
-        <!--<field name="phone"/>-->
-        <!--<field name="email"/>-->
-        <!--<field name="user_id" invisible="1"/>-->
-        <!--<field name="is_company" invisible="1"/>-->
-        <!--<field name="country_id" invisible="1"/>-->
-        <!--<field name="parent_id" invisible="1"/>-->
-        <!--<field name="active" invisible="1"/>-->
-        <!--</tree>-->
-        <!--</field>-->
-        <!--</record>-->
-
 
         <record id="contact_tree_ex" model="ir.ui.view">
             <field name="name">res.partner.tree_ex</field>
@@ -190,7 +164,6 @@
             <field name="res_model">res.partner</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <!--<field name="view_id" ref="view_tree_prioritization_customer"/>-->
             <field name="context">{'default_customer':1, 'search_default_customer':1, 'default_company_type':
                 'company','default_is_company': 1}
             </field>
@@ -212,7 +185,6 @@
             <field name="res_model">prioritization.transient</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
-            <!--  <field name="target">new</field>-->
             <field name="target">new</field>
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
@@ -383,10 +355,6 @@
 
         <menuitem name="Run Scheduler" id="prioritization_run_scheduler_menu" parent="prioritization_operation_menu"
                   action="prioritization_run_scheduler"/>
-        <!-- actions -->
-        <!-- <menuitem name="Import Document" id="prioritization_engine.prioritization_import_menu" parent="prioritization_engine.prioritization_imenu"
-                action="action_notification_setting"/>-->
 
-        <!--<menuitem name="menu_name" id="unique_id" web_icon="module_name,path_of_icon" sequence="1"/>-->
     </data>
 </odoo>

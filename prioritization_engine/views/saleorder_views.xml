@@ -7,7 +7,6 @@
             <field name="arch" type="xml">
 
                 <button name="action_quotation_send" position="after">
-                    <!--<field name="show_validate" invisible="1"/>-->
                     <button name="action_quotation_send" string="Send by Email" type="object" states="engine"
                             class="btn-primary"/>
                     <button name="print_quotation" string="Print" type="object" states="engine"
@@ -16,9 +15,6 @@
                             string="Confirm Sale" class="btn-primary" type="object"
                             attrs="{'invisible': [('state', 'not in', ['engine'])]}"/>
                     <button name="action_cancel" states="engine" type="object" string="Cancel"/>
-                    <!--<button name="action_validate"
-                            attrs="{'invisible': ['|', ('show_validate', '=', False),('state', 'not in', 'sale')]}"
-                            string="Validate" groups="stock.group_stock_user" type="object" class="oe_highlight"/>-->
                 </button>
                 <button name="action_cancel" position="after">
                     <button name="action_void" string="Voided" type="object" states="draft,sent"/>
@@ -34,7 +30,6 @@
                 </field>
                 <xpath expr="/form/sheet/notebook/page[1]/field[@name='order_line']/tree/field[@name='product_id']"
                        position="after">
-                        <!--<field name="customer_request_count" />-->
                         <field name="req_no"/>
                 </xpath>
             </field>
@@ -49,7 +44,7 @@
                     <field name="shipping_terms"/>
                 </field>
                 <field name="date_due" position="after">
-                   <!-- <field name="sale_margine"/>-->
+                    <field name="sale_margine"/>
                     <field name="expiration_date"/>
                 </field>
                 <field name="comment" position="before">
@@ -61,10 +56,7 @@
                        position="replace">
                       <field name="origin" string="Sale Order#" groups="base.group_user" attrs="{'invisible': True}"/>
                 </xpath>
-                <!--<xpath expr="/form/sheet[1]/notebook/page[@name='other_info']/group/group[2]/field[@name='name']"-->
-                       <!--position="replace" />-->
                 <xpath expr="//field[@name='team_id']" position="after">
-                  <!--  <field name="name" string="Purchase Order#"/>-->
                     <field name="purchase_order" string="Purchase Order#"/>
                     <field name="origin" string="Sale Order#" groups="base.group_user" attrs="{'invisible': [('origin', '=', False)]}"/>
                 </xpath>

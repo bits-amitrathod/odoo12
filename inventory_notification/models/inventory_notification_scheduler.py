@@ -82,6 +82,31 @@ class InventoryNotificationScheduler(models.TransientModel):
             if has_group:
                 self.process_common_email_notification_template(super_user, user, vals['subject'], vals['description'], vals['sale_order_lines'],  vals['header'],
                                                             vals['columnProps'])
+    def pick_notification_for_user(self,picking):
+        Stock_Moves = self.env['stock.move'].search([('picking_id','=',picking.id)])
+        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
+        users = self.env['res.users'].search([('active','=',True),('id','=', picking.sale_id.user_id.id)])
+        sales_order=[]
+        for stock_move in Stock_Moves:
+            sale_order={
+                  'sales_order':picking.sale_id.name,
+                  'sku':stock_move.product_id.product_tmpl_id.default_code,
+                  'Product':stock_move.product_id.name,
+                  'qty':stock_move.product_qty
+            }
+            sales_order.append(sale_order)
+        vals = {
+            'sale_order_lines': sales_order,
+            'subject': "Pick Done For Sale Order # "+picking.sale_id.name ,
+            'description': "Please find detail Of Sale Order: " + picking.sale_id.name,
+            'header': ['SKU','Product','Qty'],
+            'columnProps': ['sku', 'Product','qty'],
+        }
+        for user in users:
+            has_group = user.has_group('stock.group_stock_manager')
+            if has_group:
+                self.process_common_email_notification_template(super_user, user, vals['subject'], vals['description'], vals['sale_order_lines'],  vals['header'],
+                                                            vals['columnProps'])
     def out_notification_for_sale(self,picking):
         Stock_Moves = self.env['stock.move'].search([('picking_id','=',picking.id)])
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
