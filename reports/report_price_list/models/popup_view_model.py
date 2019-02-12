@@ -18,8 +18,7 @@ class CustomerListPopUp(models.TransientModel):
         if self.products:
             products=self.env['product.product'].search([('id','=',self.products.id),('product_tmpl_id.type','=','product')])
         else:
-            products = self.env['product.product'].search(
-                [('product_tmpl_id.type', '=', 'product')])
+            products = []
 
         margins_context = {'customer_list': self.customer_list,'product_id':products}
         x_res_model = 'inv.customer_price_list'
@@ -31,7 +30,7 @@ class CustomerListPopUp(models.TransientModel):
             'view_mode': 'tree,form',
             'views': [(tree_view_id, 'tree'),(form_view_id,'form')],
             'name': _('Customer Price List'),
-
+            'context': {'group_by': 'customer_name'},
             'res_model': x_res_model,
             'target': 'main'
         }

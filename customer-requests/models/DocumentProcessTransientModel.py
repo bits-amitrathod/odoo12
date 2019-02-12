@@ -30,8 +30,9 @@ _logger = logging.getLogger(__name__)
 class DocumentProcessTransientModel(models.TransientModel):
     _name = 'sps.document.process'
 
-    def process_document(self, user_model, uploaded_file_path, template_type_from_user, file_name, document_source='Api',
-                         ):
+    def process_document(self, user_model, uploaded_file_path, template_type_from_user, file_name, document_source='Api',):
+        print('template_type_from_user')
+        print(template_type_from_user)
         if not user_model.prioritization:
             return dict(errorCode=6, message='Prioritization is Not Enabled')
 
@@ -201,7 +202,11 @@ class DocumentProcessTransientModel(models.TransientModel):
             try:
                 if compare(template_column_list, columns):
                     column_mappings = mapped_columns
+                    print('mapped_columns :')
+                    print(mapped_columns)
                     template_type = customer_template.template_type
+                    print('template_type *')
+                    print(template_type)
                     matched_templates.update({template_type: [column_mappings, non_selected_columns, template_type]})
             except  UnboundLocalError as ue:
                 if ue:
@@ -209,10 +214,17 @@ class DocumentProcessTransientModel(models.TransientModel):
 
         _logger.info('template_type_from_user: %r', template_type_from_user)
         if len(matched_templates) > 1:
+            print('matched_template > 1')
             if template_type_from_user is None:
                 return [], [], False
             matched_template = matched_templates.get(template_type_from_user)
+            print('matched_template :')
+            print(matched_template)
             return matched_template[0], matched_template[1], matched_template[2]
+        else:
+            print('matched_template = 1')
+        print('template_type **')
+        print(template_type)
         return column_mappings, non_selected_columns, template_type
 
     @staticmethod

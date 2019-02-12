@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
+import datetime
 
 from odoo import api, fields, models, tools
 import logging
 import odoo.addons.decimal_precision as dp
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
+
 _logger = logging.getLogger(__name__)
 
 
@@ -84,7 +87,7 @@ class MarginsReport(models.Model):
 
         if not e_date is None:
             select_query = select_query + ", '" + str(e_date) + "' as date_to "
-            where_clause = where_clause + AND + " o.confirmation_date <= '" + str(e_date) + "'"
+            where_clause = where_clause + AND + " o.confirmation_date <= '" + str(e_date+ datetime.timedelta(days=1)) + "'"
 
         if not partner_id is None:
             where_clause = where_clause + AND + " o.partner_id = " + str(partner_id)

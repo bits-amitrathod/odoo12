@@ -27,6 +27,7 @@
         'views/prioritization_schedular_views.xml',
         'views/release_product_quantity_scheduler_views.xml',
         'data/sales_team_data_prioritization.xml',
+        # 'data/uom.xml',
     ],
 
     # only loaded in demonstration mode

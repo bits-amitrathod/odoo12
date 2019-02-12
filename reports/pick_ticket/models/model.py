@@ -37,53 +37,53 @@ class PickTicketReport(models.Model):
                     THEN res_partner.carrier_info
                     ELSE delivery_carrier.name
                 END AS carrier_info,
-                public.stock_move_line.move_id,
-                public.stock_move_line.qty_done,
-                public.stock_move_line.location_id,
-                public.stock_move_line.location_dest_id,
-                public.stock_move_line.state,
-                public.sale_order.id      AS sale_id,
-                public.stock_move_line.id AS id,
-                public.sale_order.partner_id,
-                public.sale_order.carrier_id,
-                public.stock_move_line.product_id,
-                public.stock_move_line.picking_id,
-                public.stock_move_line.product_uom_id,
-                public.sale_order.warehouse_id,
-                public.stock_picking.scheduled_date,
-                public.stock_picking_type.name as picking_type
+                stock_move_line.move_id,
+                stock_move_line.qty_done,
+                stock_move_line.location_id,
+                stock_move_line.location_dest_id,
+                stock_move_line.state,
+                sale_order.id      AS sale_id,
+                stock_move_line.id AS id,
+                sale_order.partner_id,
+                sale_order.carrier_id,
+                stock_move_line.product_id,
+                stock_move_line.picking_id,
+                stock_move_line.product_uom_id,
+                sale_order.warehouse_id,
+                stock_picking.scheduled_date,
+                stock_picking_type.name as picking_type
             FROM
-                public.stock_move_line
+                stock_move_line
             INNER JOIN
-                public.stock_picking
+                stock_picking
             ON
                 (
-                    public.stock_move_line.picking_id = public.stock_picking.id)
+                    stock_move_line.picking_id = stock_picking.id)
             INNER JOIN
-                public.sale_order
+                sale_order
             ON
                 (
-                    public.stock_picking.sale_id = public.sale_order.id)
+                    stock_picking.sale_id = sale_order.id)
             INNER JOIN
-                public.res_partner
+                res_partner
             ON
                 (
-                    public.sale_order.partner_id = public.res_partner.id)
+                    sale_order.partner_id = res_partner.id)
             LEFT OUTER JOIN
-                public.delivery_carrier
+                delivery_carrier
             ON
                 (
-                    public.sale_order.carrier_id = public.delivery_carrier.id)
+                    sale_order.carrier_id = delivery_carrier.id)
             INNER JOIN
-                public.product_product
+                product_product
             ON
                 (
-                    public.stock_move_line.product_id = public.product_product.id)
+                    stock_move_line.product_id = product_product.id)
             INNER JOIN
-                public.stock_picking_type
+                stock_picking_type
             ON
                 (
-                    public.stock_picking.picking_type_id = public.stock_picking_type.id)
+                    stock_picking.picking_type_id = stock_picking_type.id)
                             """
 
         where_clause = "  WHERE  stock_picking.scheduled_date IS NOT NULL "
