@@ -15,7 +15,7 @@ class Customer(models.Model):
     prioritization_ids = fields.One2many('prioritization_engine.prioritization', 'customer_id')
     min_threshold = fields.Integer("Product Min Threshold", readonly=False)
     max_threshold = fields.Integer("Product Max Threshold", readonly=False)
-    priority = fields.Integer("Product Priority", readonly=False)
+    priority = fields.Integer("Product Priority", default=-1, readonly=False)
     cooling_period = fields.Integer("Cooling Period in days", readonly=False)
     auto_allocate = fields.Boolean("Allow Auto Allocation?", readonly=False)
     length_of_hold = fields.Integer("Length Of Hold in hours", readonly=False, default=1)

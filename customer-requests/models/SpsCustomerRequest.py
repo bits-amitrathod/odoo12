@@ -80,20 +80,23 @@ class SpsCustomerRequest(models.Model):
             if sps_customer_request.document_id.template_type.lower().strip() == 'inventory':
                 # following condition use for process only latest uploaded document.
                 if int(query_result['document_id']) == int(sps_customer_request.document_id.id):
-                    pr_model = self.add_customer_request_data(sps_customer_request)
-                    if pr_model:
-                        pr_models.append(pr_model)
+                    if sps_customer_request.quantity > 0 or sps_customer_request.required_quantity > 0:
+                        pr_model = self.add_customer_request_data(sps_customer_request)
+                        if pr_model:
+                            pr_models.append(pr_model)
             # For Requirement Template, Process old document maximum 3 times and for new(latest) document processing no limit.
             elif sps_customer_request.document_id.template_type.lower().strip() == 'requirement' and int(document_processing_count) > 0:
                 # following condition use for process only latest uploaded document.
                 if int(query_result['document_id']) == int(sps_customer_request.document_id.id):
-                    pr_model = self.add_customer_request_data(sps_customer_request)
-                    if pr_model:
-                        pr_models.append(pr_model)
+                    if sps_customer_request.quantity > 0 or sps_customer_request.required_quantity > 0:
+                        pr_model = self.add_customer_request_data(sps_customer_request)
+                        if pr_model:
+                            pr_models.append(pr_model)
                 elif int(sps_customer_request.document_id.document_processed_count) < int(document_processing_count):
-                    pr_model = self.add_customer_request_data(sps_customer_request)
-                    if pr_model:
-                        pr_models.append(pr_model)
+                    if sps_customer_request.quantity > 0 or sps_customer_request.required_quantity > 0:
+                        pr_model = self.add_customer_request_data(sps_customer_request)
+                        if pr_model:
+                            pr_models.append(pr_model)
             else:
                 _logger.info('Document Processing Count is 0(Zero).')
 
@@ -152,7 +155,7 @@ class SpsCustomerRequest(models.Model):
     # check customer level or global level setting for product.
     def get_settings_object(self, customer_id,product_id,sps_customer_request_id,status):
         customer_level_setting = self.env['prioritization_engine.prioritization'].sudo().search(
-            [('customer_id', '=', customer_id),('product_id', '=', product_id)])
+            [('customer_id', '=', customer_id),('product_id', '=', product_id), ('priority', '>=', 0)])
         _logger.info("Inside get_settings_object"+str(customer_id)+" -"+str(product_id))
         _logger.info(len(customer_level_setting))
         if len(customer_level_setting) == 1:
@@ -171,7 +174,7 @@ class SpsCustomerRequest(models.Model):
                 return False
         else:
             _logger.info("Inside get_settings_object else block")
-            global_level_setting = self.env['res.partner'].sudo().search([('id', '=', customer_id)])
+            global_level_setting = self.env['res.partner'].sudo().search([('id', '=', customer_id), ('priority', '>=', 0)])
             _logger.info(global_level_setting)
             if len(global_level_setting) == 1:
                 if global_level_setting.prioritization and global_level_setting.on_hold is False:
