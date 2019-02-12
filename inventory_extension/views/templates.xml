@@ -1,22 +1,17 @@
 <odoo>
     <data>
-        <!-- <template id="listing"> -->
-        <!--   <ul> -->
-        <!--     <li t-foreach="objects" t-as="object"> -->
-        <!--       <a t-attf-href="#{ root }/objects/#{ object.id }"> -->
-        <!--         <t t-esc="object.display_name"/> -->
-        <!--       </a> -->
-        <!--     </li> -->
-        <!--   </ul> -->
-        <!-- </template> -->
-        <!-- <template id="object"> -->
-        <!--   <h1><t t-esc="object.display_name"/></h1> -->
-        <!--   <dl> -->
-        <!--     <t t-foreach="object._fields" t-as="field"> -->
-        <!--       <dt><t t-esc="field"/></dt> -->
-        <!--       <dd><t t-esc="object[field]"/></dd> -->
-        <!--     </t> -->
-        <!--   </dl> -->
-        <!-- </template> -->
+        <record id="view_picking_form_mark_all_button" model="ir.ui.view">
+            <field name="name">stock.picking.form.mark.all.button</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="/form/header/button[last()]" position="after">
+                        <button name="action_button_mark_all_done" invisible="context.get('active_model') == 'purchase.order'" type="object"
+                                string="Mark All Done"/>
+                    </xpath>
+                </data>
+            </field>
+        </record>
     </data>
 </odoo>
