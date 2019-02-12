@@ -65,6 +65,14 @@ class ResConfigSettings(models.TransientModel):
 class StockPickingMarkAllButton(models.Model):
     _inherit = "stock.picking"
 
+    is_mark_all_button_visible = fields.Boolean(string="Mark all visibility", compute='_compute_visibility', store=False)
+
+    def _compute_visibility(self):
+        for pick in self:
+            pick.is_mark_all_button_visible =  pick.sale_id.id and not pick.state in ['done','cancle']
+            print('--------------------PRINT-----------------------')
+            print(pick.is_mark_all_button_visible)
+
     def action_button_mark_all_done(self):
         self.ensure_one()
         print('--------------------PRINT-----------------------')

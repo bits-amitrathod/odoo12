@@ -7,7 +7,9 @@
             <field name="arch" type="xml">
                 <data>
                     <xpath expr="/form/header/button[last()]" position="after">
-                        <button name="action_button_mark_all_done" invisible="context.get('active_model') == 'purchase.order'" type="object"
+                        <field name="is_mark_all_button_visible" invisible="1"/>
+                        <button name="action_button_mark_all_done"  attrs="{'invisible': [('is_mark_all_button_visible', '=', False)]}"
+                                type="object"
                                 string="Mark All Done"/>
                     </xpath>
                 </data>
