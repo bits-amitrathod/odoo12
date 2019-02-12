@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_lot_history_lot_history,lot_history.lot_history,model_lot_history_lot_history,,1,0,0,0
+access_aging_report_manager,access_aging_report_manager,model_aging_report,sales_team.group_sale_manager,1,1,1,1
+access_aging_report_user,access_aging_report_user,model_aging_report,sales_team.group_sale_salesman_all_leads,1,1,0,0

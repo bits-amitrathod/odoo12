@@ -11,7 +11,7 @@ class PickingReportPopUp(models.TransientModel):
     _name = 'pick_report.popup'
     _description = 'Pick Report Popup'
 
-    picking_id = fields.Many2one('stock.picking', string='Pick Number', required=True)
+    picking_id = fields.Many2one('stock.picking', string='Pick Number', required=True, domain=[('state', '!=', 'cancel')])
 
     def open_table(self):
         location_group=""

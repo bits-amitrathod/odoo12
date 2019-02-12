@@ -12,7 +12,7 @@ class TrendingReportListPopUp(models.TransientModel):
     def open_table(self):
         #print(self.env.ref('inventory__allocation_so.view_inv_all_so_tree').id)
         tree_view_id = self.env.ref('pricing_rule.view_inv_all_pricing_rule_tree').id
-        # form_view_id = self.env.ref('pricing_rule.inv_sale_order_form_view')
+        form_view_id = self.env.ref('pricing_rule.res_pricing_rule_form_view').id
 
 
 
@@ -35,7 +35,7 @@ class TrendingReportListPopUp(models.TransientModel):
         action = {
             'type': 'ir.actions.act_window',
             'view_mode': 'tree,form',
-            'views': [(tree_view_id, 'tree')],
+            'views': [(tree_view_id, 'tree'),(form_view_id, 'form')],
             'name': _('Inventory Pricing Rule'),
             'context': {'group_by': group_by_domain, 'order_by': group_by_domain},
             'res_model': x_res_model,

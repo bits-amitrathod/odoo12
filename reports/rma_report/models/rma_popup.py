@@ -29,7 +29,7 @@ class RmaPopUp(models.TransientModel):
                 if sale_order_line.product_id.product_tmpl_id.type != 'service':
                     products_list.append([sale_order_line.product_id.product_tmpl_id.name,
                                           sale_order_line.product_id.product_tmpl_id.sku_code,
-                                          sale_order_line.product_uom_qty,
+                                          sale_order_line.product_uom_qty-sale_order_line.qty_delivered,
                                           sale_order_line.product_uom.name,
                                           sale_order_line.price_unit,
                                           sale_order_line.price_total])

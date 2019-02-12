@@ -2,6 +2,7 @@ import time
 
 from odoo import api, fields, models, _
 import datetime
+from dateutil.relativedelta import relativedelta
 
 class comparebymonth(object):
     product_name = ''
@@ -65,10 +66,13 @@ class DiscountSummaryPopUp(models.TransientModel):
             ps_date =(fields.Datetime.from_string( self.last_start_date).date())
             pl_date = (fields.Datetime.from_string(self.last_end_date).date())
         else :
-            s_date = (fields.date.today() - datetime.timedelta(days=30))
+            today = fields.date.today().replace(day=1)
+            s_date = today
             l_date = (fields.date.today())
-            ps_date = (fields.date.today() - datetime.timedelta(days=60))
-            pl_date = (fields.date.today() - datetime.timedelta(days=31))
+            ps_date = (today - relativedelta(day=1, months=1))
+            pl_date = (ps_date + relativedelta(day=1, months=1, days=-1))
+
+
         stock_location_id=  self.env['stock.location'].search([('usage', '=', 'customer'),]).id
         stock_move_line = self.env['stock.move.line'].search(
             [ ('state', 'in', ('done', 'partially_available')),('location_dest_id.id','=',stock_location_id), ('date', '>=', str(ps_date)),('date','<=',str(l_date))])
@@ -105,13 +109,13 @@ class DiscountSummaryPopUp(models.TransientModel):
                 if int(record.product_id.id) in product_dict:
                     data = product_dict[int(record.product_id.id)]
                     data['current_month_total_qty'] = data['current_month_total_qty'] + record.qty_done
-                    data['current_month_total_amount'] = data['current_month_total_amount'] + (record.move_id.sale_line_id.price_unit * record.qty_done)
+                    data['current_month_total_amount'] = data['current_month_total_amount'] + (record.move_id.sale_line_id.price_total)
                     # data.location = stock_move_line.location_id.name
                     product_dict[int(record.product_id.id)] = data
                 else:
                     object = self.comparebymonth()
                     object['current_month_total_qty'] = record.qty_done
-                    object['current_month_total_amount'] = record.move_id.sale_line_id.price_unit * record.qty_done
+                    object['current_month_total_amount'] = record.move_id.sale_line_id.price_total
                     object['product_name']= record.product_id.name
                     object['sku_code'] = record.product_id.product_tmpl_id.sku_code
                     product_dict[int(record.product_id.id)] = object
@@ -121,13 +125,13 @@ class DiscountSummaryPopUp(models.TransientModel):
                     if int(record.product_id.id) in product_dict:
                         data = product_dict[int(record.product_id.id)]
                         data['last_month_total_qty']= data['last_month_total_qty'] + record.qty_done
-                        data['last_month_total_amount'] = data['last_month_total_amount'] + (record.move_id.sale_line_id.price_unit * record.qty_done)
+                        data['last_month_total_amount'] = data['last_month_total_amount'] + record.move_id.sale_line_id.price_total
                         # data.location = stock_move_line.location_id.name
                         product_dict[int(record.product_id.id)] = data
                     else:
                         object = self.comparebymonth()
                         object['last_month_total_qty' ]= record.qty_done
-                        object['last_month_total_amount'] = record.move_id.sale_line_id.price_unit * record.qty_done
+                        object['last_month_total_amount'] = record.move_id.sale_line_id.price_total
                         object['product_name'] = record.product_id.name
                         object['currency_symbol'] = record.product_id.currency_id.symbol
                         # object.location = stock_move_line.location_id.name

@@ -65,47 +65,47 @@ class LotHistory(models.TransientModel):
                     
                 FROM
                     purchase_order_line
-                INNER JOIN 
+                LEFT JOIN 
                     purchase_order
                 ON
                     (
                         purchase_order_line.order_id = purchase_order.id)
-                INNER JOIN
+                LEFT JOIN
                     product_product
                 ON
                     (
                         purchase_order_line.product_id = product_product.id)
-                INNER JOIN
+                LEFT JOIN
                     product_template
                 ON
                     (
                         product_product.product_tmpl_id = product_template.id)
-                INNER JOIN
+                LEFT JOIN
                     stock_move
                 ON
                     (
                         purchase_order_line.id = stock_move.purchase_line_id)
-                INNER JOIN
+                LEFT JOIN
                     stock_move_line
                 ON
                     (
                         stock_move.id = stock_move_line.move_id)
-                LEFT OUTER JOIN
+                LEFT JOIN
                     stock_production_lot
                 ON
                     (
                         stock_move_line.lot_id = stock_production_lot.id)
-                INNER JOIN
+                LEFT JOIN
                     res_partner
                 ON
                     (
                         purchase_order_line.partner_id = res_partner.id)
-                INNER JOIN
+                LEFT JOIN
                     stock_picking
                 ON
                     (
                         stock_move_line.picking_id = stock_picking.id)
-                    """ + where_clause
+                   WHERE 1 = 1 """ + where_clause
 
         self._cr.execute(sql_query)
 
@@ -165,7 +165,7 @@ class LotHistory(models.TransientModel):
                 ON
                     (
                         stock_move_line.picking_id = stock_picking.id)
-                            """ + where_clause
+                    WHERE 1 = 1        """ + where_clause
 
         self._cr.execute(sql_query)
 
