@@ -55,8 +55,8 @@
                 <form string="Appraisal Tracker" class="o_sale_order" create="false" delete="false" edit="false"
                       menu="false" print="false">
                     <header>
-                        <button name="%(vendor_offer.action_purchase_order_edit_note)d" type="action"
-                                string="Edit Note"/>
+                        <button name="%(vendor_offer.action_purchase_order_edit_note)d" type="action" context="{'isFooterInvisible':False}"
+                                string="Add Note"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
@@ -210,11 +210,8 @@
                                 </group>
                             </page>
                             <page string="Notes">
-                                <group>
-                                    <group>
-                                        <field name="notes_desc"/>
-                                    </group>
-                                </group>
+                                <field name="notes_activity"
+                                       attrs="{'readonly': True}"/>
                             </page>
                         </notebook>
                     </sheet>
