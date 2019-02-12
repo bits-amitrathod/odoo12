@@ -120,10 +120,14 @@ class InventoryNotificationScheduler(models.TransientModel):
                   'qty':stock_move.product_qty
             }
             sales_order.append(sale_order)
+        if picking.carrier_tracking_ref:
+            tracking=str(picking.carrier_tracking_ref)
+        else:
+            tracking=""
         vals = {
             'sale_order_lines': sales_order,
             'subject': "Sale Order # "+picking.sale_id.name+" is Out for Delivery for customer " + picking.sale_id.partner_id.name  ,
-            'description': "Please find detail Of Sale Order: " + picking.sale_id.name+" and their tracking is "+str(picking.carrier_tracking_ref) ,
+            'description': "Please find detail Of Sale Order: " + picking.sale_id.name+" and their tracking is "+tracking ,
             'header': ['SKU','Product','Qty'],
             'columnProps': ['sku', 'Product','qty'],
         }
