@@ -53,8 +53,6 @@ class VendorOffer(models.Model):
     revision_date = fields.Datetime(string='Revision Date')
     accepted_date = fields.Datetime(string="Accepted Date")
     declined_date = fields.Datetime(string="Declined Date")
-    # retail_amt = fields.Monetary(string="Total Retail", readonly=True, default=0)
-    # offer_amount = fields.Monetary(string="Total  Offer", readonly=True, default=0)
 
     possible_competition = fields.Many2one('competition.competition', string="Possible Competition")
     max = fields.Char(string='Max', compute='_amount_all', default=0, readonly=True)
@@ -79,7 +77,7 @@ class VendorOffer(models.Model):
     delivered_date = fields.Datetime(string="Delivered Date")
     expected_date = fields.Datetime(string="Expected Date")
 
-    notes_desc = fields.Text(string="Note")
+    notes_activity = fields.One2many('purchase.notes.activity', 'order_id', string='Notes')
 
     accelerator = fields.Boolean(string="Accelerator")
     priority = fields.Selection([
@@ -172,9 +170,9 @@ class VendorOffer(models.Model):
                     rt_price_total += line.rt_price_total
 
                 if order.accelerator:
-                    amount_untaxed = product_retail * 0.50
+                    # amount_untaxed = product_retail * 0.50
                     max = rt_price_total * 0.65
-                    price_total = amount_untaxed + amount_tax
+                    # price_total = amount_untaxed + amount_tax
                 else:
                     max = 0
 
@@ -379,8 +377,8 @@ class VendorOffer(models.Model):
         params = {}
         if hasattr(self, 'partner_id') and self.partner_id:
             params.update(self.partner_id.signup_get_auth_param()[self.partner_id.id])
-
-        return '/my/vendor/' + str(self.id) + '?' + url_encode(params)
+            # ' + str(self.id) + '
+        return '/my/vendor?' + url_encode(params)
 
 
 class VendorOfferProduct(models.Model):
@@ -435,7 +433,6 @@ class VendorOfferProduct(models.Model):
                 if not line.product_id:
                     return result1
 
-                    line.qty_in_stocks()
                 groupby_dict = groupby_dict_month = groupby_dict_90 = groupby_dict_yr = {}
                 sale_orders_line = line.env['sale.order.line'].search(
                     [('product_id', '=', line.product_id.id), ('state', '=', 'sale')])
@@ -579,20 +576,6 @@ class VendorOfferProduct(models.Model):
             else:
                 super(VendorOfferProduct, self)._compute_amount()
 
-    @api.multi
-    def qty_in_stocks(self):
-        pass
-
-
-class PopupNotes(models.TransientModel):
-    _name = 'popup.purchase.order.notes'
-    notes = fields.Text(string="Notes", required=True)
-
-    def action_button_edit_note(self):
-        self.ensure_one()
-        order = self.env['purchase.order'].browse(self._context['active_id'])
-        order.notes_desc = self.notes
-
 
 class Multiplier(models.Model):
     _name = 'multiplier.multiplier'
@@ -632,6 +615,30 @@ class ProductTemplate(models.Model):
 
     tier = fields.Many2one('tier.tier', string="Tier")
     class_code = fields.Many2one('classcode.classcode', string="Class Code")
+
+
+# ------------------ NOTE ACTIVITY -----------------
+
+class ProductNotesActivity(models.Model):
+    _name = 'purchase.notes.activity'
+    _description = "Purchase Notes Activity"
+    _order = 'id desc'
+
+    order_id = fields.Many2one('purchase.order', string='Order Reference', index=True, required=True,
+                               ondelete='cascade')
+    note = fields.Text(string="Note", required=True)
+    note_date = fields.Datetime(string="Note Date",default=fields.Datetime.now,)
+
+
+# class PopupNotes(models.TransientModel):
+#     _name = 'popup.purchase.order.notes'
+#     notes = fields.Text(string="Notes", required=True)
+#
+#     def action_button_edit_note(self):
+#         self.ensure_one()
+#         order = self.env['purchase.notes.activity'].browse(self._context['active_id'])
+        # order.notes_desc = self.notes
+        # order.notes_desc_date = fields.Datetime.now()
 
 
 class FedexDelivery(models.Model):

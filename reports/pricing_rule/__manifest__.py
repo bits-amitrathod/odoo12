@@ -18,10 +18,10 @@
 
 
     'data': [
+        'security/ir.model.access.csv',
         'views/views.xml',
         'report/inv_pricing_rule_template.xml',
         'report/pricing_rule_report.xml'
-
     ],
     # only loaded in demonstration mode
     'demo': [

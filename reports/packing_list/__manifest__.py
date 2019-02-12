@@ -20,7 +20,7 @@
     'data': [
         'views/views.xml',
         'report/sale_packing_list_template.xml',
-        'report/packing_list_report.xml'
+        'report/packing_list_report.xml',
 
     ],
     # only loaded in demonstration mode

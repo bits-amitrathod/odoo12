@@ -96,8 +96,7 @@ class SpsTransientBaseImport(models.TransientModel):
                 for dictionary in dict_list:
                     resource_model_dict.update(dictionary)
                 resource_model_dict.update(dict(template_type=template_type, template_status='Active'))
-                template_resources = resource_model.search([('template_type', '=', template_type),
-                                                            ('customer_id', '=', customer_id)])
+                template_resources = resource_model.search([('customer_id', '=', customer_id)])
                 for template_resource in template_resources:
                     template_resource.write(dict(template_status='InActive'))
                 resource_model.create(resource_model_dict)

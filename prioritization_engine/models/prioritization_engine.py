@@ -108,7 +108,7 @@ class PrioritizationEngine(models.TransientModel):
                         self.update_customer_request_status(prioritization_engine_request, 'Inprocess')
                     flag = True
                 else:
-                    if prioritization_engine_request['status'].lower().strip() != 'incoolingperiod':
+                    if prioritization_engine_request['status'].lower().strip() != 'incoolingperiod' and prioritization_engine_request['status'].lower().strip() != 'partial':
                         # update status In cooling period
                         self.update_customer_request_status(prioritization_engine_request, 'InCoolingPeriod')
                     flag = False
@@ -135,7 +135,7 @@ class PrioritizationEngine(models.TransientModel):
                 flag = True
             else:
                 # update status In cooling period
-                if prioritization_engine_request['status'].lower().strip() != 'incoolingperiod':
+                if prioritization_engine_request['status'].lower().strip() != 'incoolingperiod' and prioritization_engine_request['status'].lower().strip() != 'partial':
                     self.update_customer_request_status(prioritization_engine_request, 'InCoolingPeriod')
                 flag = False
         else:
@@ -217,8 +217,6 @@ class PrioritizationEngine(models.TransientModel):
 
     # update customer status
     def update_customer_request_status(self,prioritization_engine_request,status):
-        _logger.info('customer request id %r', prioritization_engine_request['customer_request_id'])
-        _logger.info('status : ' + str(status))
         self.env['sps.customer.requests'].search([('id', '=', prioritization_engine_request['customer_request_id'])]).write({'status':status})
         # prioritization_engine_request['customer_request_logs'] += 'Updated customer request status.'
 
@@ -311,6 +309,7 @@ class PrioritizationEngine(models.TransientModel):
 
                 self.env['sale.order.line'].create(dict(sale_order_line_dict))
 
+            sale_order.force_quotation_send()
             sale_order.action_confirm()
             _logger.info('sale order id  : %r  sale order state : %r', sale_order.id, sale_order.state)
 
@@ -319,11 +318,9 @@ class PrioritizationEngine(models.TransientModel):
             picking.write({'state':'assigned'})
             _logger.info('picking after*   : %r', picking.state)
             # sale_order.write(dict(state='engine', confirmation_date=''))
-            try:
-                sale_order.force_quotation_send()
-                sale_order.write({'state':'sent', 'confirmation_date':''})
-            except Exception:
-                _logger.error('Unable to send email')
+            # sale_order.force_quotation_send()
+            sale_order.write({'state':'sent', 'confirmation_date':''})
+
 
     # Generate sale order for gl account
     def generate_sale_order_for_gl_account(self):
@@ -350,6 +347,7 @@ class PrioritizationEngine(models.TransientModel):
 
                     self.env['sale.order.line'].create(dict(sale_order_line_dict))
 
+                sale_order.force_quotation_send()
                 sale_order.action_confirm()
                 _logger.info('sale order id  : %r  sale order state : %r', sale_order.id, sale_order.state)
 
@@ -358,11 +356,9 @@ class PrioritizationEngine(models.TransientModel):
                 picking.write({'state':'assigned'})
                 _logger.info('picking after   : %r', picking.state)
                 # sale_order.write(dict(state='engine', confirmation_date=''))
-                try:
-                    sale_order.force_quotation_send()
-                    sale_order.write({'state':'sent', 'confirmation_date':''})
-                except Exception:
-                    _logger.error('Unable to send email')
+                # sale_order.force_quotation_send()
+                sale_order.write({'state':'sent', 'confirmation_date':''})
+
             else:
                 _logger.info('partner id is null')
 
@@ -402,7 +398,8 @@ class PrioritizationEngine(models.TransientModel):
             allocate_quantity = int(prioritization_engine_request['max_threshold']) - int(prioritization_engine_request['quantity'])
             return True,allocate_quantity
         else:
-            prioritization_engine_request['customer_request_logs'] += 'unable to allocate product beacause stock is greater than minimum threshold, '
+            self.update_customer_request_status(prioritization_engine_request, 'Inprocess')
+            prioritization_engine_request['customer_request_logs'] += 'Unable to allocate product beacause stock is greater than minimum threshold, '
             return False,0
 
     # Update uploaded document status
@@ -449,8 +446,7 @@ class PrioritizationEngine(models.TransientModel):
 
     def _update_uploaded_document_status(self,document_id,status):
         try:
-            uploaded_document_val = self.env['sps.cust.uploaded.documents'].search([('id', '=', document_id)])
-            uploaded_document_val.write({'status':status})
+            self.env['sps.cust.uploaded.documents'].search([('id', '=', document_id)]).write({'status':status})
         except Exception:
             _logger.error("Unable to update document status")
 
