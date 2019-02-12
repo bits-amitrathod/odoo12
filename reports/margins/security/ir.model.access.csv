@@ -1,7 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_margins_group_by_cust_manager,margins_group_by_cust purchase manager,model_margins_group_by_cust,website.group_website_designer,1,1,1,1
-access_margins_manager,margins purchase manager,model_margins,website.group_website_designer,1,1,1,1
-access_margins_popup_manager,margins_popup purchase manager,model_margins_popup,website.group_website_designer,1,1,1,1
-access_margins_report_manager,report_margins_margins_group_by_cust_temp purchase manager,model_report_margins_margins_group_by_cust_temp,website.group_website_designer,1,1,1,1
-
-
+access_margins_group_by_cust_user_sale,margins_group_by_cust user,model_margins_group_by_cust,sales_team.group_sale_salesman,0,0,0,0
+access_margins_group_by_cust_user,margins_group_by_cust user,model_margins_group_by_cust,sales_team.group_sale_salesman_all_leads,1,1,0,0
+access_margins_group_by_cust_manager,margins_group_by_cust manager,model_margins_group_by_cust,sales_team.group_sale_manager,1,1,1,1
+access_margins_user_sale,margins user,model_margins,sales_team.group_sale_salesman,0,0,0,0
+access_margins_user,margins user,model_margins,sales_team.group_sale_salesman_all_leads,1,1,0,0
+access_margins_manager,margins manager,model_margins,sales_team.group_sale_manager,1,1,1,1

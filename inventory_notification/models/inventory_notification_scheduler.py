@@ -421,6 +421,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         product_list = []
         coln_name = []
         serial_number=0
+        query_result=False
         background_color = "#f0f8ff"
         for product in products:
             coln_name = []
@@ -439,11 +440,15 @@ class InventoryNotificationScheduler(models.TransientModel):
             for column_name in columnProps:
                 coln_name.append(column_name)
                 if column_name == 'minExDate':
-                    minExDate = fields.Date.from_string(query_result['min'])
-                    column = minExDate
+                    if query_result and query_result['min']:
+                        column = fields.Date.from_string(query_result['min'])
+                    else:
+                        column=""
                 elif column_name == 'maxExDate':
-                    maxExDate = fields.Date.from_string(query_result['max'])
-                    column = maxExDate
+                    if query_result and query_result['max']:
+                        column = fields.Date.from_string(query_result['max'])
+                    else:
+                        column=""
                 else:
                     if isinstance(product, dict):
                         column = str(product.get(column_name))
