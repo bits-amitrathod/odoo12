@@ -20,7 +20,7 @@
             <tree create="false" edit="false" delete="false">
                 <field name="sku_code"/>
                 <field name="name" string="Product Name"/>
-                <field name="quantity"/>
+                <field name="quantity_cal"/>
                 <field name="currency_id" invisible="1"/>
                 <field name="unit_cost" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                 <field name="asset_value" widget="monetary" options="{'currency_field': 'currency_id'}"/>
@@ -46,7 +46,7 @@
                         <group>
                             <field name="sku_code"/>
                             <field name="name" string="Product Name"/>
-                            <field name="quantity"/>
+                            <field name="quantity_cal"/>
                             <field name="currency_id" invisible="1"/>
                             <field name="unit_cost" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                             <field name="asset_value" widget="monetary" options="{'currency_field': 'currency_id'}"/>

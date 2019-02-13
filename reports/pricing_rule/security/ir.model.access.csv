@@ -1,2 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_res_pricing_rule,access_res_pricing_rule,model_res_pricing_rule,,1,0,0,0
+access_res_pricing_rule_manager,res_pricing_rule manager,model_res_pricing_rule,sales_team.group_sale_manager,1,1,1,1
+access_res_pricing_rule_user,res_pricing_rule user,model_res_pricing_rule,sales_team.group_sale_salesman_all_leads,1,1,0,0
+

@@ -2,28 +2,42 @@
 <odoo>
     <data>
 
-        <record id="view_purchase_order_edit_note" model="ir.ui.view">
-            <field name="name">popup.purchase.order.notes.edit</field>
-            <field name="model">popup.purchase.order.notes</field>
+        <record id="view_purchase_order_edit_note_form" model="ir.ui.view">
+            <field name="name">purchase.notes.activity.edit</field>
+            <field name="model">purchase.notes.activity</field>
             <field name="arch" type="xml">
                 <form string="Edit Note">
                     <group>
-                        <field name="notes"/>
+                        <field name="note"/>
+                        <field name="note_date" invisible="not context.get('isFooterInvisible', True)"/>
+                        <field name="order_id" invisible="1"/>
                     </group>
-                    <footer>
-                        <button name="action_button_edit_note" string="Save" type="object" class="btn-primary"/>
+                    <footer invisible="context.get('isFooterInvisible', True)">
+                        <button name="write" string="Save" type="object" class="btn-primary"/>
                         <button string="Cancel" class="btn-default" special="cancel"/>
                     </footer>
                 </form>
             </field>
         </record>
 
+        <record id="view_purchase_order_edit_note_tree" model="ir.ui.view">
+            <field name="name">purchase.notes.activity.tree</field>
+            <field name="model">purchase.notes.activity</field>
+            <field name="arch" type="xml">
+                <tree string="Add Note" create="false" delete="false">
+                    <field name="note" string="Notes"/>
+                    <field name="note_date" string="Date"/>
+                </tree>
+            </field>
+        </record>
+
         <record id="action_purchase_order_edit_note" model="ir.actions.act_window">
             <field name="name">Edit Note</field>
-            <field name="res_model">popup.purchase.order.notes</field>
+            <field name="res_model">purchase.notes.activity</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
-            <field name="view_id" ref="view_purchase_order_edit_note"/>
+            <field name="context">{'default_order_id': context.get('active_id', False),}</field>
+            <field name="view_id" ref="view_purchase_order_edit_note_form"/>
             <field name="target">new</field>
         </record>
         <!-- explicit list view definition -->
@@ -146,11 +160,8 @@
                 <data>
                     <xpath expr="//form[1]/sheet[1]/notebook[1]" position="inside">
                         <page name="studio_page_ptSZN" string="Notes">
-                            <group name="studio_group_ptSZN">
-                                <group name="studio_group_ptSZN_left">
-                                    <field name="notes_desc"/>
-                                </group>
-                            </group>
+                           <field name="notes_activity"
+                                       attrs="{'readonly': True}"/>
                         </page>
                     </xpath>
                 </data>
@@ -208,6 +219,8 @@
                                 context="{'vendor_offer_data': True}" string="Confirm Order" type="object"/>
                         <button name="action_cancel_vendor_offer" states="ven_draft,ven_sent" string="Cancel"
                                 type="object"/>
+                        <button name="%(vendor_offer.action_purchase_order_edit_note)d" type="action" context="{'isFooterInvisible':False}"
+                                string="Add Note"/>
                         <field name="status" widget="statusbar" statusbar_visible="ven_draft,ven_sent,purchase"
                                readonly="1"/>
                         <button string="Shipping Label"
@@ -397,11 +410,8 @@
                                 </group>
                             </page>
                             <page string="Notes">
-                                <group>
-                                    <group>
-                                        <field name="notes_desc"/>
-                                    </group>
-                                </group>
+                                <field name="notes_activity"
+                                       attrs="{'readonly': True}"/>
                             </page>
                         </notebook>
                     </sheet>
@@ -424,6 +434,8 @@
                 <button name="button_unlock" position="after">
                     <field name="status_ven" invisible="1"/>
                     <!--<button name="action_validate"  attrs="{'invisible': ['|', ('show_validate', '=', False),('state', 'not in', 'purchase')]}"  string="Validate" groups="stock.group_stock_user" type="object" class="oe_highlight"/>-->
+                     <button name="%(vendor_offer.action_purchase_order_edit_note)d" type="action" context="{'isFooterInvisible':False}"
+                                string="Add Note"/>
                     <button string="Shipping Label"
                             type="action" class="btn-primary"
                             name="%(action_view_tracking_text)d"
@@ -482,7 +494,7 @@
                                    force_save="1"/>
                             <field name="price_unit" attrs="{'readonly': [('vendor_offer_data', '=', True)]}"/>
                             <field name="product_offer_price"
-                                   attrs="{'readonly': [('vendor_offer_data', '=', True)],'invisible': [('vendor_offer_data', '=', False)]}"></field>
+                                   attrs="{'readonly': [('vendor_offer_data', '=', True)],'invisible': [('vendor_offer_data', '=', False)]}"/>
                             <field name="vendor_offer_data" invisible="1"/>
                             <field name="taxes_id" widget="many2many_tags" domain="[('type_tax_use','=','purchase')]"
                                    context="{'default_type_tax_use': 'purchase'}" options="{'no_create': True}"/>

@@ -20,7 +20,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','sale','stock','purchase','prioritization_engine'],
+    'depends': ['base','sale'],
 
     # always loaded
     'data': [
@@ -28,7 +28,7 @@
         'views/views.xml',
         'report/inv_sale_allocation_template.xml',
         'report/so_allocation_report.xml',
-
+        'security/ir.model.access.csv',
     ],
     # only loaded in demonstration mode
     'demo': [

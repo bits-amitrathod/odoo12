@@ -30,7 +30,7 @@ class CustomerListPopUp(models.TransientModel):
             'view_mode': 'tree,form',
             'views': [(tree_view_id, 'tree'),(form_view_id,'form')],
             'name': _('Customer Price List'),
-
+            'context': {'group_by': 'customer_name'},
             'res_model': x_res_model,
             'target': 'main'
         }
