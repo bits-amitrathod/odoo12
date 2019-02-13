@@ -120,7 +120,6 @@ class InventoryNotificationScheduler(models.TransientModel):
                   'qty':stock_move.product_qty
             }
             sales_order.append(sale_order)
-
         if picking.carrier_tracking_ref:
             tracking=str(picking.carrier_tracking_ref)
         else:

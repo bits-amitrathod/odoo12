@@ -75,6 +75,7 @@ class ReportInventoryValuationSummary(models.Model):
     @api.model_cr
     def init(self):
         self.init_table()
+        # pass
 
     def init_table(self):
         tools.drop_view_if_exists(self._cr, self._name.replace(".", "_"))

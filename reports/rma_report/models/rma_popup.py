@@ -10,7 +10,7 @@ class RmaPopUp(models.TransientModel):
 
     _name = 'rma.report.popup'
 
-    sale_order_id = fields.Many2one('sale.order', string='Sale Order', required=True, domain="['|',('state', '=', 'return'),'&', ('picking_ids.state','=','done'),('picking_ids.location_dest_id','=',14)]")
+    sale_order_id = fields.Many2one('sale.order', string='Sale Order', required=True, domain="['|',('state', '=', 'return'),'&', ('picking_ids.state','=','done'),('picking_ids.location_dest_id','=',16)]")
 
     def open_table(self):
         if self.sale_order_id.id:
@@ -27,9 +27,13 @@ class RmaPopUp(models.TransientModel):
 
             for sale_order_line in sale_order_lines:
                 if sale_order_line.product_id.product_tmpl_id.type != 'service':
+                    return_qty=0
+                    for move_line in sale_order_line.move_ids:
+                        if move_line.location_dest_id.id == 15 and move_line.state == 'done':
+                            return_qty=move_line.product_uom_qty
                     products_list.append([sale_order_line.product_id.product_tmpl_id.name,
                                           sale_order_line.product_id.product_tmpl_id.sku_code,
-                                          sale_order_line.product_uom_qty-sale_order_line.qty_delivered,
+                                          return_qty,
                                           sale_order_line.product_uom.name,
                                           sale_order_line.price_unit,
                                           sale_order_line.price_total])
