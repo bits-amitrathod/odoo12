@@ -170,7 +170,7 @@
                         <field name="carrier_id"/>
                         <field name="product_packaging"/>
                         <field name="weight" class="oe_inline"/>
-                        <!--<field name="weight_uom_id" nolabel="1" class="oe_inline" style="margin-left:5px"/>-->
+                        <field name="package_count" />
                     </group>
                     <footer>
                         <button name="action_tracking" string="Generate Shipping Label" type="object"
