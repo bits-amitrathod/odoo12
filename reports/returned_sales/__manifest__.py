@@ -11,6 +11,7 @@
     'depends': ['base', 'sale'],
 
     'data': [
+        'security/ir.model.access.csv',
         'views/views.xml',
         'report/returned_sales_report.xml',
         'report/returned_sales_report_template.xml'
