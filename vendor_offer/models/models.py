@@ -686,7 +686,7 @@ class FedexDelivery(models.Model):
             srm.customs_value(_convert_curr_iso_fdx(commodity_currency.name), total_commodities_amount, "NON_DOCUMENTS")
             srm.duties_payment(order.company_id.partner_id.country_id.code, superself.fedex_account_number)
 
-        package_count = popup.package_count or 1
+        package_count = popup.package_count
 
         # TODO RIM master: factorize the following crap
 
@@ -694,7 +694,6 @@ class FedexDelivery(models.Model):
         # Multipackage #
         ################
         if package_count > 1:
-            print("inside multiple packages")
             # Note: Fedex has a complex multi-piece shipping interface
             # - Each package has to be sent in a separate request
             # - First package is called "master" package and holds shipping-
@@ -708,8 +707,7 @@ class FedexDelivery(models.Model):
             package_labels = []
             carrier_tracking_ref = ""
 
-            for sequence in range(package_count):
-
+            for sequence in range(1, package_count+1):
                 package_weight = _convert_weight(popup.weight, self.fedex_weight_unit)
                 srm.add_package(package_weight, sequence_number=sequence)
                 srm.set_master_package(net_weight, package_count, master_tracking_id=master_tracking_id)
@@ -726,6 +724,8 @@ class FedexDelivery(models.Model):
                         master_tracking_id = request['master_tracking_id']
                         package_labels.append((package_name, srm.get_label()))
                         carrier_tracking_ref = request['tracking_number']
+                        print("first")
+                        print(carrier_tracking_ref)
                     else:
                         raise UserError(request['errors_message'])
 
@@ -734,6 +734,8 @@ class FedexDelivery(models.Model):
                     if not request.get('errors_message'):
                         package_labels.append((package_name, srm.get_label()))
                         carrier_tracking_ref = carrier_tracking_ref + "," + request['tracking_number']
+                        print("Intermediary packages")
+                        print(carrier_tracking_ref)
                     else:
                         raise UserError(request['errors_message'])
 
@@ -759,7 +761,7 @@ class FedexDelivery(models.Model):
                         logmessage = _("Shipment created into Fedex<br/>"
                                        "<b>Tracking Numbers:</b> %s<br/>"
                                        "<b>Packages:</b> %s") % (
-                                     carrier_tracking_ref, ','.join([pl[0] for pl in package_labels]))
+                                     carrier_tracking_ref, ','.join([str(pl[0]) for pl in package_labels]))
                         if self.fedex_label_file_type != 'PDF':
                             attachments = [('LabelFedex-%s.%s' % (pl[0], self.fedex_label_file_type), pl[1]) for pl in
                                            package_labels]
@@ -769,6 +771,8 @@ class FedexDelivery(models.Model):
                         shipping_data = {'exact_price': carrier_price,
                                          'tracking_number': carrier_tracking_ref}
                         res = res + [shipping_data]
+                        print("Last package")
+                        print(carrier_tracking_ref)
                     else:
                         raise UserError(request['errors_message'])
 
@@ -778,7 +782,7 @@ class FedexDelivery(models.Model):
         # One package #
         ###############
         elif package_count == 1:
-            print("inside one packages")
+
             srm.add_package(net_weight)
             srm.set_master_package(net_weight, 1)
 
@@ -821,7 +825,8 @@ class FedexDelivery(models.Model):
         # No package #
         ##############
         else:
-            raise UserError(_('No packages for this picking'))
+            raise UserError(_('Please provide packages count'))
+        return res
 
 
 def _convert_weight(weight, unit='KG'):
