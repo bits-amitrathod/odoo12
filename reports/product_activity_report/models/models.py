@@ -60,7 +60,7 @@ class ReportPickTicketGroupByOrderDate(models.TransientModel):
         return datetime.datetime.strptime(date_string, DEFAULT_SERVER_DATE_FORMAT).date()
 
 
-class ReportProductActivity(models.TransientModel):
+class ReportProductActivity(models.Model):
     _name = "product.activity.report"
     _description = "report product activity report"
 

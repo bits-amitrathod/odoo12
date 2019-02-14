@@ -3,11 +3,11 @@ import datetime
 
 class PurchaseOrderPopUp(models.TransientModel):
     _name = 'purchase.order.shipping.popup'
-    _description = 'Shipping Label Generation'
 
     carrier_id = fields.Many2one('delivery.carrier', 'Carrier', required=True, ondelete='cascade')
     product_packaging = fields.Many2one('product.packaging', string='Package', default=False)
     weight = fields.Float('Weight')
+    package_count=fields.Integer("Count")
 
     def action_tracking(self):
         self.ensure_one()

@@ -9,7 +9,8 @@
     'data': [
         'views/catalog_view.xml',
         'report/product_catalog_report.xml',
-        'report/product_catalog_temp.xml'
+        'report/product_catalog_temp.xml',
+        'security/ir.model.access.csv'
     ],
     'auto_install': False,
     'installable': True,

@@ -28,7 +28,7 @@ class SaleSalespersonReport(models.TransientModel):
             'view_mode': 'tree,form',
             'name': _('Sales Purchase History'),
             'res_model': 'sale.order.line',
-            'domain': [ ('id', 'in', sale_order_line),('qty_delivered','>',0)],
+            'domain': [ ('id', 'in', sale_order_line),('qty_delivered','>',0),('price_unit','>=',0)],
             'target': 'main'
         }
 

@@ -10,6 +10,7 @@
                             <b>
                                 <h2>Surgical Product Solutions</h2>
                                 <h4>Product Price List</h4>
+
                             </b>
                         </center>
                     </div>
@@ -39,8 +40,8 @@
                                         <span t-esc="order.product_tmpl_id.name"/>
                                     </td>
                                     <td align="right" style="border: 1px solid black;white-space: nowrap;">
-                                        <span t-esc="order.lst_price"
-                                              t-options='{"widget": "monetary","display_currency": order.currency_id}'/>
+                                        <span t-esc="order.product_tmpl_id.list_price"
+                                              t-options='{"widget": "monetary","display_currency": order.responsible_id.company_id.currency_id}'/>
                                     </td>
                                 </tr>
                             </tbody>
@@ -62,6 +63,7 @@
                             <b>
                                 <h2>Surgical Product Solutions</h2>
                                 <h4>Customer Price List</h4>
+                                <h6> <span t-esc="customer_name"/></h6>
                             </b>
                         </center>
                     </div>

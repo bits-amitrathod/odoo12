@@ -15,11 +15,8 @@ class OnHandByDateReportModel(models.AbstractModel):
         #         FROM res_pricing_rule pr
         #          """
         # self._cr.execute(select)
-        result = self.env['res.stock_packing_list'].browse(docids)
-        picking = self.env['stock.picking'].search([('id','=',28)])
-        _logger.info("picking:%r",picking)
-        for sale in result:
-            _logger.info("stock.picking: %r",sale)
+        result = self.env['stock.picking'].browse(docids)
+
         # products=[]
         # it = iter(result)
         # for product in it:

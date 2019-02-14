@@ -24,7 +24,7 @@
 
                     </div>
                     <br/>
-                    <t t-set="grandAmount" t-value="0"/>
+                    <!--<t t-set="grandAmount" t-value="0"/>-->
                     <div t-foreach="warehouses" t-as="warehouse" class="row">
                         <div class="col-md-12">
                             <strong>
@@ -33,69 +33,60 @@
                             <hr style="margin: 5px 0px;"/>
                         </div>
 
-                        <t t-set="locationAmount" t-value="0"/>
-                        <div class="col-md-12" t-foreach="warehouse['type']" t-as="type">
+
+                        <div class="col-md-12" t-foreach="warehouse['locations']" t-as="location">
+                            <t t-set="locationAmount" t-value="0"/>
                             <div>
                                 <strong>
-                                    <span t-esc="type[0]"/>
+                                    <span t-esc="location['location']"/>
                                 </strong>
                                 <!--<hr style="margin: 5px 0px;"/>-->
                             </div>
 
-                            <table class="table table-condensed table-bordered table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Product SKU</th>
-                                        <th>Product Name</th>
-                                        <th class="text-right">Qty</th>
-                                        <th class="text-right">Unit Cost</th>
-                                        <th class="text-right">Asset Value</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="invoice_tbody">
-                                    <t t-set="products" t-value="type[1].split('||**||')"/>
-                                    <t t-set="totalAmount" t-value="0"/>
+                            <div class="col-md-12" t-foreach="location['types']" t-as="type">
+                                <div>
+                                    <strong>
+                                        <span t-esc="type['type']"/>
+                                    </strong>
+                                    <!--<hr style="margin: 5px 0px;"/>-->
+                                </div>
 
-
-                                    <tr t-foreach="products" t-as="product_s">
-                                        <t t-set="product" t-value="product_s.split('**|**')"/>
-                                        <t t-set="assetValue" t-value="float(product[4])"/>
-
-                                        <td>
-                                            <span t-esc="product[0]"/>
-                                        </td>
-                                        <td class="text-right">
-                                            <span t-esc="product[1]"/>
-                                        </td>
-                                        <td class="text-right">
-                                            <span t-esc="product[2]"/>
-                                        </td>
-                                         <td class="text-right">
-                                            $<span t-esc="product[3]"/>
-                                        </td>
-                                        <td class="text-right">
-                                            $
-                                            <span t-esc="assetValue"/>
-                                        </td>
-                                        <!--<td class="text-right">-->
-                                        <!--<span t-field="product.product_tmpl_id.list_price"/>-->
-                                        <!--</td>-->
-                                        <!--<td class="text-right">-->
-                                        <!--<span t-field="product.stock_value"-->
-                                        <!--t-options='{"widget": "monetary", "display_currency": product.currency_id}'/>-->
-                                        <!--</td>-->
-
-                                        <t t-set="totalAmount" t-value="totalAmount+assetValue"/>
-                                        <t t-set="locationAmount" t-value="locationAmount+assetValue"/>
-                                        <t t-set="grandAmount" t-value="grandAmount+assetValue"/>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div id="total" class="row">
-                                <div class="col-xs-4 pull-right">
-                                    <table class="table table-condensed" style="min-width: 250px;max-width: 400px;">
-                                        <tr >
+                                <table class="table table-condensed table-bordered table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th class="col-sm-1">Product SKU</th>
+                                            <th class="col-sm-8">Product Name</th>
+                                            <th class="text-right col-sm-1">Qty</th>
+                                            <th class="text-right col-sm-1">Unit Cost</th>
+                                            <th class="text-right col-sm-1">Asset Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="invoice_tbody">
+                                        <t t-set="totalAmount" t-value="0"/>
+                                        <tr t-foreach="type['record']" t-as="product">
                                             <td>
+                                                <span t-esc="product['sku_code']"/>
+                                            </td>
+                                            <td class="text-left">
+                                                <span t-esc="product['name']"/>
+                                            </td>
+                                            <td class="text-right">
+                                                <span t-esc="product['quantity_cal']"/>
+                                            </td>
+                                            <td class="text-right">
+                                                $
+                                                <span t-esc="product['unit_cost']"/>
+                                            </td>
+                                            <td class="text-right">
+                                                $
+                                                <span t-esc="product['asset_value']"/>
+                                            </td>
+                                            <t t-set="totalAmount" t-value="totalAmount+product['asset_value']"/>
+                                            <t t-set="locationAmount" t-value="locationAmount+product['asset_value']"/>
+                                            <!--<t t-set="grandAmount" t-value="grandAmount+product['asset_value']"/>-->
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right" colspan="4">
                                                 <strong>Total</strong>
                                             </td>
                                             <td class="text-right">
@@ -103,45 +94,46 @@
                                                 <span t-esc="totalAmount"/>
                                             </td>
                                         </tr>
-                                    </table>
-                                </div>
+                                    </tbody>
+                                </table>
                             </div>
+                            <!--<div id="total">-->
+                            <!--<div class="col-xs-4 pull-right">-->
+                            <!--<table class="table table-condensed" style="min-width: 250px;max-width: 400px;">-->
+                            <!--<tr>-->
+                            <!--<td>-->
+                            <!--<strong>Location Total</strong>-->
+                            <!--</td>-->
+                            <!--<td class="text-right">-->
+                            <!--$-->
+                            <!--<span t-esc="locationAmount"/>-->
+                            <!--</td>-->
+                            <!--</tr>-->
+                            <!--</table>-->
+                            <!--</div>-->
+                            <!--</div>-->
                         </div>
 
                         <!--Location Total-->
-                        <div id="total">
-                            <div class="col-xs-4 pull-right">
-                                <table class="table table-condensed" style="min-width: 250px;max-width: 400px;">
-                                    <tr>
-                                        <td>
-                                            <strong>Location Total</strong>
-                                        </td>
-                                        <td class="text-right">
-                                            $
-                                            <span t-esc="locationAmount"/>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
+
 
                     </div>
                     <!--Grand Total-->
-                    <div id="total" class="row">
-                        <div class="col-xs-4 pull-right">
-                            <table class="table table-condensed" style="min-width: 250px;max-width: 400px;">
-                                <tr>
-                                    <td>
-                                        <strong>Grand Total</strong>
-                                    </td>
-                                    <td class="text-right">
-                                        $
-                                        <span t-esc="grandAmount"/>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
+                    <!--<div id="total" class="row">-->
+                    <!--<div class="col-xs-4 pull-right">-->
+                    <!--<table class="table table-condensed" style="min-width: 250px;max-width: 400px;">-->
+                    <!--<tr>-->
+                    <!--<td>-->
+                    <!--<strong>Grand Total</strong>-->
+                    <!--</td>-->
+                    <!--&lt;!&ndash;<td class="text-right">&ndash;&gt;-->
+                    <!--&lt;!&ndash;$&ndash;&gt;-->
+                    <!--&lt;!&ndash;<span t-esc="grandAmount"/>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</td>&ndash;&gt;-->
+                    <!--</tr>-->
+                    <!--</table>-->
+                    <!--</div>-->
+                    <!--</div>-->
 
 
                 </page>

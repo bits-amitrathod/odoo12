@@ -112,14 +112,14 @@
         <menuitem id="menu_sale_report_product_list_wizard"
                   name="Product Price List"
                   action="action_product_price_list"
-                  parent="stock.menu_warehouse_report"
-                  sequence="1"/>
+                  parent="sale.menu_sale_report"
+                  sequence="12"/>
 
         <menuitem id="menu_sale_report_product_list_wizard1"
                   name="Customer Price List"
                   action="action_customer_price_list"
-                  parent="stock.menu_warehouse_report"
-                  sequence="1"/>
+                  parent="sale.menu_sale_report"
+                  sequence="13"/>
 
     </data>
 </odoo>

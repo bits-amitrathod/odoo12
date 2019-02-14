@@ -26,6 +26,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
 
     def open_table(self):
         tree_view_id = self.env.ref('sales_by_count.report_sales_by_count_list_view').id
+        form_view_id = self.env.ref('sales_by_count.report_sales_by_count_form_view').id
 
         res_model = 'report.sales.by.count'
         margins_context = {'start_date': self.start_date, 'end_date': self.end_date, 'compute_at': self.compute_at_date,
@@ -33,7 +34,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
         self.env[res_model].with_context(margins_context).delete_and_create()
         action = {
             'type': 'ir.actions.act_window',
-            'views': [(tree_view_id, 'tree')],
+            'views': [(tree_view_id, 'tree'),(form_view_id, 'form')],
             'view_mode': 'tree',
             'name': 'Sales By Count',
             'res_model': res_model,

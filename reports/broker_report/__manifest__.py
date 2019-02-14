@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 {
     'name': "Broker Report",
     'summary':"Report",

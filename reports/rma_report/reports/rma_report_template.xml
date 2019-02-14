@@ -22,7 +22,7 @@
                             </tr>
                              <tr>
                                  <td style="width:50%"><b>Created : </b><span t-esc="data['create_date']" t-options="{'widget':'date'}"/></td>
-                                 <td style="width:50%"><b>Status : </b><span t-esc="data['sale_order_status']"/></td>
+                                 <td style="width:50%"><b>Status : </b><span>Return</span></td>
                              </tr>
                             <tr>
                                  <td style="width:50%"><b>Expires : </b><span t-esc="data['expire_date']" t-options="{'widget':'date'}"/></td>
@@ -62,14 +62,6 @@
                                             </td>
                                         </tr>
                                     </t>
-                                        <tr>
-                                           <td colspan="5" style="border: 1px solid black; text-align: right;">
-                                                <b>Total</b>
-                                            </td>
-                                            <td style="border: 1px solid black; text-align: right;">
-                                                $<span t-esc="data['amount_total']"/>
-                                            </td>
-                                        </tr>
                             </table>
                         </div>
                 </page>
