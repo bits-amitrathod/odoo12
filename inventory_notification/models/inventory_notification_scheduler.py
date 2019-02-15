@@ -111,37 +111,46 @@ class InventoryNotificationScheduler(models.TransientModel):
 
     def process_in_stock_scheduler(self):
         _logger.info("process_in_stock_scheduler called")
+        product_list=[]
         today_date = date.today()
         today_start = fields.Date.to_string(today_date)
         days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
         dayNumber = today_date.weekday()
         weekday = days[dayNumber]
-        customers = self.env['res.partner'].search([('customer', '=', True),('active', '=', True),(weekday,'=',True),('start_date','<=',today_start),('end_date','>=',today_start)])
+        customers = self.env['res.partner'].search([('customer', '=', True),('is_parent','=',True),('active', '=', True),(weekday,'=',True),('start_date','<=',today_start),('end_date','>=',today_start)])
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
-        for customer in customers:
-            _logger.info("customer :%r", customer)
-            if(customer.historic_months>0):
-                historic_day=customer.historic_months*30
+        for customr in customers:
+            _logger.info("customer :%r", customr)
+            custmrs=[]
+            cust_ids=[]
+            custmrs.append(customr)
+            cust_ids.append(customr.id)
+            if customr.child_ids:
+                custmrs.extend(list(customr.child_ids))
+                cust_ids.extend(list(customr.child_ids.ids))
+            if(customr.historic_months>0):
+                historic_day=customr.historic_months*30
                 print('historic_day')
                 print(historic_day)
             else:
                 historic_day=1
             last_day = fields.Date.to_string(datetime.now() - timedelta(days=historic_day))
-            sales = self.env['sale.order'].search([('partner_id', '=', customer.id),('date_order', '>', last_day)])
-            products=set()
+            sales = self.env['sale.order'].search([('partner_id', 'in', cust_ids),('date_order', '>', last_day)])
+            products={}
             for sale in sales:
                 sale_order_lines = self.env['sale.order.line'].search([('order_id.id', '=', sale.id)])
                 for line in sale_order_lines:
                     if line.product_id.qty_available > 0 :
-                        products.add({
-                            'id':line.product_id,
-                        })
+                        products[line.product_id.id]=line.product_id
             subject = "Products In Stock"
             descrption = "Please find below the items which are back in stock now ! Please find the Website URL: https:/Sps.com."
             header = ['SKU Code','Manufacturer', 'Name','Sales Price','Qty On Hand','Min Expiration Date','Max Expiration Date','Unit Of Measure']
-            columnProps = ['sku_code','product_brand_id.name', 'name','list_price','qty_available', 'minExDate', 'maxExDate','product_uom']
-            self.process_common_email_notification_template(super_user, customer, subject, descrption, products,
-                                                            header, columnProps)
+            columnProps = ['sku_code','product_brand_id.name', 'name','list_price','qty_available', 'minExDate', 'maxExDate','uom_id.name']
+            if products:
+                product_list.extend(list(products.values()))
+                for cust in custmrs:
+                    self.process_common_email_notification_template(super_user, cust, subject, descrption, product_list,
+                                                            header, columnProps,is_employee=False)
 
 
     def process_new_product_scheduler(self):
@@ -386,7 +395,7 @@ class InventoryNotificationScheduler(models.TransientModel):
             [('write_date', '>=', last_day), ('quantity', '>', 0), ])
         products = quant.mapped('product_id')
         self.process_notification_for_product_green_status(products)
-        self.process_notification_for_in_stock_report(products)
+        # self.process_notification_for_in_stock_report(products)
 
 
 
@@ -415,7 +424,7 @@ class InventoryNotificationScheduler(models.TransientModel):
 
 
 
-    def process_common_email_notification_template(self, email_from_user, email_to_user, subject, descrption, products, header, columnProps,custom_template="inventory_notification.common_mail_template"):
+    def process_common_email_notification_template(self, email_from_user, email_to_user, subject, descrption, products, header, columnProps,custom_template="inventory_notification.common_mail_template",is_employee=True):
         template = self.env.ref(custom_template)
         product_dict = {}
         product_list = []
@@ -460,7 +469,10 @@ class InventoryNotificationScheduler(models.TransientModel):
                             column = product[lst[0]]
                             if isinstance(lst, list):
                                 for col in range(1, len(lst)):
-                                    column = column[lst[col]]
+                                    if column[lst[col]]:
+                                      column = column[lst[col]]
+                                    else:
+                                        column=""
                             else:
                                 column = column[lst]
                 product_dict[column_name] = column
@@ -477,7 +489,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                 'email_to_user':email_to_user,
                 'subject':subject,
                 'description':descrption,
-                'template':template
+                'template':template,
+                'is_employee':is_employee
             }
             self.send_email_and_notification(vals)
 
@@ -498,14 +511,15 @@ class InventoryNotificationScheduler(models.TransientModel):
             template_id = vals['template'].with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True, )
         except:
             vals['template'].with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True)
-        mail = self.env["mail.thread"]
-        mail.message_post(
-            body=finalHTML,
-            subject=vals['subject'],
-            message_type='notification',
-            partner_ids=partner_ids,
-            content_subtype='html'
-        )
+        if vals['is_employee']:
+            mail = self.env["mail.thread"]
+            mail.message_post(
+                body=finalHTML,
+                subject=vals['subject'],
+                message_type='notification',
+                partner_ids=partner_ids,
+                content_subtype='html'
+            )
 
         # mail = self.env['mail.mail'].browse(template_id)
         # attachment_value = {
