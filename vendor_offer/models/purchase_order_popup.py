@@ -5,8 +5,8 @@ from odoo.exceptions import ValidationError, AccessError
 class PurchaseOrderPopUp(models.TransientModel):
     _name = 'purchase.order.shipping.popup'
 
-    carrier_id = fields.Many2one('delivery.carrier', 'Carrier', required=True, ondelete='cascade')
-    product_packaging = fields.Many2one('product.packaging', string='Package', default=False)
+    carrier_id = fields.Many2one('delivery.carrier', 'Carrier', required=True, ondelete='cascade',domain="[('delivery_type','=','fedex')]")
+    product_packaging = fields.Many2one('product.packaging', string='Package', domain="[('package_carrier_type','=','fedex')]")
     weight = fields.Float('Weight')
     package_count=fields.Integer("Packages Count", default=1)
 

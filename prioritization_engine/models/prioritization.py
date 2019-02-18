@@ -9,6 +9,7 @@ _logger = logging.getLogger(__name__)
 # Customer Global level setting
 class Customer(models.Model):
     _inherit = 'res.partner'
+
     prioritization = fields.Boolean("Prioritization setting")
     sku_preconfig = fields.Char("SKU PreConfig")
     sku_postconfig = fields.Char("SKU PostConfig")
@@ -23,7 +24,8 @@ class Customer(models.Model):
     partial_ordering = fields.Boolean("Allow Partial Ordering?", readonly=False)
     partial_UOM = fields.Boolean("Allow Partial UOM?", readonly=False)
     order_ids = fields.One2many('sale.order', 'partner_id')
-    gl_account = fields.Char("GL Account")
+    # gl_account = fields.Char("GL Account")
+    gl_account = fields.Many2many('gl.account', 'gl_account_res_partner_rel',  string='GL Account', column1='res_partner_id', column2='gl_account_id')
     on_hold = fields.Boolean("On Hold")
     is_broker = fields.Boolean("Is a Broker?")
     carrier_info = fields.Char("Carrier Info")
@@ -337,4 +339,18 @@ class StockMove(models.Model):
                 if setting.partial_UOM and not setting.partial_UOM is None:
                     _logger.info('partial UOM** : %r', setting.partial_UOM)
                     self.partial_UOM = setting.partial_UOM
+
+
+    def _get_default_code(self):
+        for record in self:
+            record.default_code = record.product_id.product_tmpl_id.default_code
+
+class GLAccount(models.Model):
+    _name = "gl.account"
+
+    _sql_constraints = [
+        ('name', 'unique(name)', 'GL Account already exists'),
+    ]
+
+    name = fields.Char(string='GL Account', required=True, translate=True)
 
