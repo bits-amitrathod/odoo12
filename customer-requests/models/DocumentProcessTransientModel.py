@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 
 import logging
-
 import random
 import string
 from datetime import datetime
 import csv
 import collections
-
 import json
+import re
 
 try:
     import xlrd
@@ -91,7 +90,7 @@ class DocumentProcessTransientModel(models.TransientModel):
                 for req in requests:
                     print('*******Req*****',req)
                     high_priority_product = False
-                    customer_sku = req['customer_sku']
+                    customer_sku = DocumentProcessTransientModel.cleaning_code(req['customer_sku'])
                     product_sku = customer_sku
                     sku_preconfig_flag = False
                     if user_model.sku_preconfig and product_sku:
@@ -138,7 +137,7 @@ class DocumentProcessTransientModel(models.TransientModel):
                     if sps_product_id == 0:
                         print('search product id in mfr_catalog_no')
                         if 'mfr_catalog_no' in req.keys():
-                            mfr_catalog_no1 = req['mfr_catalog_no']
+                            mfr_catalog_no1 = DocumentProcessTransientModel.cleaning_code(req['mfr_catalog_no'])
                             sps_product_id = self.get_sps_product_id(user_model, mfr_catalog_no1)
                     if sps_product_id != 0:
                         sps_product_priotization = self.env[
@@ -397,3 +396,7 @@ class DocumentProcessTransientModel(models.TransientModel):
                 sps_product_id = product_model[0].id
         print('Got product id', sps_product_id)
         return sps_product_id
+
+    @staticmethod
+    def cleaning_code(str):
+        return (re.sub(r'[^A-Za-z0-9 .]', '', str))
