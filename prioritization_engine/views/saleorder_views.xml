@@ -96,5 +96,27 @@
                 </xpath>
             </field>
         </record>
+
+        <record id="view_order_list_cstm" model="ir.ui.view">
+            <field name="name">sale.order.list.cstm</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_tree"/>
+            <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="after">
+            <field name="sale_margine"/>
+            </xpath>
+            </field>
+        </record>
+
+        <record id="view_order_quotation_tree_cstm" model="ir.ui.view">
+            <field name="name">sale.order.quotation.tree.cstm</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_quotation_tree"/>
+            <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="after">
+            <field name="sale_margine"/>
+            </xpath>
+            </field>
+        </record>
     </data>
 </odoo>
