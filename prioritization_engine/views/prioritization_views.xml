@@ -14,7 +14,7 @@
                             attrs="{'invisible':['|', '|', ('is_parent', '==', False),('prioritization', '==', False)]}">
                         <span class="o_stat_text">Import Template</span>
                     </button>
-                    <button class="oe_stat_button" name="action_view_notification" type="object" icon="fa-child">
+                    <button class="oe_stat_button" name="action_gl_account" type="object" icon="fa-child">
                         <span class="o_stat_text">GL Account</span>
                     </button>
                 </button>
@@ -234,7 +234,7 @@
                 </xpath>
                 <xpath expr="/form/sheet/notebook/page[1]/field[@name='child_ids']/form[1]/sheet/group/group[2]/field[@name='name']"
                        position="after">
-                    <field name="gl_account" placeholder=" GL Account No.." widget="many2many_tags" options="{'no_create_edit': True}"/>
+                    <field name="gl_account" placeholder=" GL Account No.." widget="many2many_tags" />
                 </xpath>
             </field>
         </record>
@@ -268,6 +268,16 @@
             </field>
         </record>
 
+        <record id="view_glaccount_setting_tree" model="ir.ui.view">
+            <field name="name">gl.account.tree</field>
+            <field name="model">gl.account</field>
+            <field name="arch" type="xml">
+                <tree string="GL Account setting">
+                   <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
         <record id="action_notification_setting" model="ir.actions.act_window">
             <field name="name">Notification Setting</field>
             <field name="res_model">res.partner</field>
@@ -286,6 +296,18 @@
                     You can either do it immediately or mark it as Todo for future processing. Use your scanner to
                     validate the transferred quantity quicker.
                 </p>
+            </field>
+        </record>
+        <record id="action_glaccount_setting" model="ir.actions.act_window">
+            <field name="name">Gl Account Setting</field>
+            <field name="res_model">gl.account</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click here to create a new gl Account.
+                </p>
+
             </field>
         </record>
 
