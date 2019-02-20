@@ -19,9 +19,6 @@ class InventoryNotificationScheduler(models.TransientModel):
 
     def process_manual_notification_scheduler(self):
         _logger.info("process_manual_notification_scheduler called..")
-        product_lots = self.env['stock.production.lot'].search([])
-        for product_lot in product_lots:
-            _logger.info("product_lot:%r", product_lot)
         self.process_notification_scheduler()
 
 
@@ -136,37 +133,47 @@ class InventoryNotificationScheduler(models.TransientModel):
 
     def process_in_stock_scheduler(self):
         _logger.info("process_in_stock_scheduler called")
+        product_list=[]
         today_date = date.today()
         today_start = fields.Date.to_string(today_date)
         days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
         dayNumber = today_date.weekday()
         weekday = days[dayNumber]
-        customers = self.env['res.partner'].search([('customer', '=', True),('active', '=', True),(weekday,'=',True),('start_date','<=',today_start),('end_date','>=',today_start)])
+        customers = self.env['res.partner'].search([('customer', '=', True),('is_parent','=',True),('active', '=', True),(weekday,'=',True),('start_date','<=',today_start),('end_date','>=',today_start)])
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
-        for customer in customers:
-            _logger.info("customer :%r", customer)
-            if(customer.historic_months>0):
-                historic_day=customer.historic_months*30
+        for customr in customers:
+            _logger.info("customer :%r", customr)
+            custmrs=[]
+            cust_ids=[]
+            custmrs.append(customr)
+            cust_ids.append(customr.id)
+            if customr.child_ids:
+                custmrs.extend(list(customr.child_ids))
+                cust_ids.extend(list(customr.child_ids.ids))
+            if(customr.historic_months>0):
+                historic_day=customr.historic_months*30
                 print('historic_day')
                 print(historic_day)
             else:
                 historic_day=1
             last_day = fields.Date.to_string(datetime.now() - timedelta(days=historic_day))
-            sales = self.env['sale.order'].search([('partner_id', '=', customer.id),('date_order', '>', last_day)])
-            products=set()
+            sales = self.env['sale.order'].search([('partner_id', 'in', cust_ids),('date_order', '>', last_day)])
+            products={}
             for sale in sales:
                 sale_order_lines = self.env['sale.order.line'].search([('order_id.id', '=', sale.id)])
                 for line in sale_order_lines:
                     if line.product_id.qty_available > 0 :
-                        products.add({
-                            'id':line.product_id,
-                        })
+                        products[line.product_id.id]=line.product_id
             subject = "Products In Stock"
             descrption = "Please find below the items which are back in stock now ! Please find the Website URL: https:/Sps.com."
             header = ['SKU Code','Manufacturer', 'Name','Sales Price','Qty On Hand','Min Expiration Date','Max Expiration Date','Unit Of Measure']
-            columnProps = ['sku_code','product_brand_id.name', 'name','list_price','qty_available', 'minExDate', 'maxExDate','product_uom']
-            self.process_common_email_notification_template(super_user, customer, subject, descrption, products,
+            columnProps = ['sku_code','product_brand_id.name', 'name','list_price','qty_available', 'minExDate', 'maxExDate','uom_id.name']
+            if products:
+                product_list.extend(list(products.values()))
+                for cust in custmrs:
+                    self.process_common_email_notification_template(super_user, cust, subject, descrption, product_list,
                                                             header, columnProps)
+
 
 
     def process_new_product_scheduler(self):
@@ -177,15 +184,18 @@ class InventoryNotificationScheduler(models.TransientModel):
         subject = "New Product In Inventory"
         descrption = "Please find below list of all the new product added in SPS Inventory"
         header=['SKU Code','Name','Sales Price','Cost','Product Type','Min Expiration Date','Max Expiration Date','Qty On Hand','Forecasted Quantity','Unit Of Measure']
-        columnProps=['sku_code','product_name','sale_price','standard_price','product_type','minExDate','maxExDate','qty_on_hand','forecasted_qty','unit_of_measure']
+        columnProps=['sku_code','product_name','sale_price','standard_price','product_type','minExpDate','maxExpDate','qty_on_hand','forecasted_qty','unit_of_measure']
         self.process_common_product_scheduler(subject, descrption, products, header, columnProps)
 
     def process_packing_list(self):
         today_date = date.today()
         today_start = datetime.now().date()
         final_date = datetime.strftime(today_start, "%Y-%m-%d 00:00:00")
-        last_day = fields.Date.to_string(datetime.now() - timedelta(days=1))
-        picking = self.env['stock.picking'].search([('sale_id', '!=', False),('state', '=', 'done'),('write_date','>=',last_day),('write_date', '<', final_date)])
+        last_day = fields.Date.to_string(datetime.now() - timedelta(days=2))
+        pull_location_id = self.env['stock.location'].search([('name', '=', 'Pull Zone')]).id
+        if not pull_location_id or pull_location_id is None:
+            pull_location_id = self.env['stock.location'].search([('name', '=', 'Packing Zone')]).id
+        picking = self.env['stock.picking'].search([('sale_id.state', '=', 'sale'),('state', '=', 'done'),('date_done','>=',last_day),('location_dest_id','=',pull_location_id)])
         _logger.info("picking:%r", picking)
         vals={
              'picking_list':picking,
@@ -404,14 +414,14 @@ class InventoryNotificationScheduler(models.TransientModel):
         descrption = "Please find below the list items which are back in stock now in SPS Inventory."
         header = ['SKU Code','Name', 'Sales Price', 'Cost', 'Product Type', 'Min Expiration Date', 'Max Expiration Date',
                   'Qty On Hand', 'Forecasted Quantity', 'Unit Of Measure']
-        columnProps = ['sku_code','product_name', 'sale_price', 'standard_price', 'product_type', 'minExDate', 'maxExDate',
+        columnProps = ['sku_code','product_name', 'sale_price', 'standard_price', 'product_type', 'minExpDate', 'maxExpDate',
                        'qty_on_hand', 'forecasted_qty', 'unit_of_measure']
         self.process_common_product_scheduler(subject, descrption, products, header, columnProps)
         quant = self.env['stock.quant'].search(
             [('write_date', '>=', last_day), ('quantity', '>', 0), ])
         products = quant.mapped('product_id')
         self.process_notification_for_product_green_status(products)
-        self.process_notification_for_in_stock_report(products)
+
 
 
 
@@ -446,10 +456,10 @@ class InventoryNotificationScheduler(models.TransientModel):
         product_list = []
         coln_name = []
         serial_number=0
-        query_result=False
         background_color = "#f0f8ff"
         for product in products:
             coln_name = []
+            query_result = False
             if header[0]== 'Serial Number':
                 product_dict['Serial Number'] =serial_number+1
                 coln_name.append('Serial Number')
@@ -458,22 +468,25 @@ class InventoryNotificationScheduler(models.TransientModel):
             else:
                 background_color = "#ffffff"
             if hasattr(product,'id'):
-                self.env.cr.execute(
-                    "SELECT  min(use_date), max (use_date) FROM stock_production_lot spl LEFT JOIN   stock_quant sq ON sq.lot_id=spl.id LEFT JOIN  stock_location sl ON sl.id=sq.location_id   where (sl.usage ='internal' OR sl.usage='transit') and  sq.product_id = %s",
-                    (product['id'],))
-                query_result = self.env.cr.dictfetchone()
+                stock_warehouse_id = self.env['stock.warehouse'].search([('id', '=', 1), ])
+                stock_location_id = self.env['stock.location'].search([('id', '=', stock_warehouse_id.lot_stock_id.id),])
+                if stock_location_id:
+                    self.env.cr.execute(
+                        "SELECT  min(use_date), max (use_date) FROM stock_production_lot spl LEFT JOIN   stock_quant sq ON sq.lot_id=spl.id LEFT JOIN  stock_location sl ON sl.id=sq.location_id   where sl.id = %s and  sq.product_id = %s",
+                        (stock_location_id.id,product['id'],))
+                    query_result = self.env.cr.dictfetchone()
             for column_name in columnProps:
                 coln_name.append(column_name)
                 if column_name == 'minExDate':
                     if query_result and query_result['min']:
-                        column = fields.Date.from_string(query_result['min'])
+                        column = datetime.strptime(query_result['min'], "%Y-%m-%d %H:%M:%S")
                     else:
                         column=""
                 elif column_name == 'maxExDate':
                     if query_result and query_result['max']:
-                        column = fields.Date.from_string(query_result['max'])
+                        column = datetime.strptime(query_result['max'], "%Y-%m-%d %H:%M:%S")
                     else:
-                        column=""
+                        column = ""
                 else:
                     if isinstance(product, dict):
                         column = str(product.get(column_name))
@@ -488,7 +501,10 @@ class InventoryNotificationScheduler(models.TransientModel):
                                     column = column[lst[col]]
                             else:
                                 column = column[lst]
-                product_dict[column_name] = column
+                if column:
+                    product_dict[column_name] = column
+                else:
+                    product_dict[column_name] = ""
             product_dict['background_color'] = background_color
             product_list.append(product_dict)
             product_dict = {}
@@ -559,12 +575,15 @@ class InventoryNotificationScheduler(models.TransientModel):
             'service': "Service"
         }
         if len(products)>0:
+            stock_warehouse_id = self.env['stock.warehouse'].search([('id', '=', 1), ])
+            stock_location_id = self.env['stock.location'].search([('id', '=', stock_warehouse_id.lot_stock_id.id), ])
             for user in users:
                 has_group = user.has_group('sales_team.group_sale_manager')
                 if has_group:
                     product_list=[]
                     row = "even"
                     for product in products:
+                        query_result = False
                         if row=='even':
                             background_color = "#ffffff"
                             row="odd"
@@ -573,16 +592,22 @@ class InventoryNotificationScheduler(models.TransientModel):
                             row = "even"
                         qty_on_hand=product.qty_available
                         forecasted_qty=product.virtual_available
-
-                        self.env.cr.execute(
-                            "SELECT  min(use_date), max (use_date) FROM stock_production_lot spl LEFT JOIN   stock_quant sq ON sq.lot_id=spl.id LEFT JOIN  stock_location sl ON sl.id=sq.location_id   where (sl.usage ='internal' OR sl.usage='transit') and  sq.product_id = %s",
-                            (product.id,))
-                        query_result = self.env.cr.dictfetchone()
-                        minExDate = fields.Date.from_string(query_result['min'])
-                        maxExDate = fields.Date.from_string(query_result['max'])
+                        if stock_location_id:
+                            self.env.cr.execute(
+                                "SELECT  min(use_date), max (use_date) FROM stock_production_lot spl LEFT JOIN   stock_quant sq ON sq.lot_id=spl.id LEFT JOIN  stock_location sl ON sl.id=sq.location_id   where sl.id = %s and  sq.product_id = %s",
+                                (stock_location_id.id, product.id,))
+                            query_result = self.env.cr.dictfetchone()
+                        if query_result and query_result['min']:
+                            minExDate = datetime.strptime(query_result['min'], "%Y-%m-%d %H:%M:%S")
+                        else:
+                            minExDate = ""
+                        if query_result and query_result['max']:
+                            maxExDate = datetime.strptime(query_result['max'], "%Y-%m-%d %H:%M:%S")
+                        else:
+                            maxExDate = ""
                         vals={
-                            'minExDate':minExDate,
-                            'maxExDate':maxExDate,
+                            'minExpDate':minExDate,
+                            'maxExpDate':maxExDate,
                             'sale_price':product.lst_price,
                             'standard_price':product.product_tmpl_id.standard_price,
                             'product_type':switcher.get(product.type, " "),

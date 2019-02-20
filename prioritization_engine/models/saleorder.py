@@ -240,3 +240,8 @@ class AccountInvoice(models.Model):
                 order.purchase_order = ""
             else:
                 order.purchase_order = order.name
+
+class SaleOrderReport(models.Model):
+    _inherit = "sale.report"
+
+    req_no = fields.Char(string='Requisition Number')
