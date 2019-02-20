@@ -102,6 +102,24 @@ class Customer(models.Model):
         action['res_id'] = self.id
         return action
 
+    def action_gl_account(self):
+        '''
+        This function returns an action that display existing notification
+        of given partner ids. It can be form
+        view,
+        '''
+        print("Inside action_gl_account function")
+        action = self.env.ref('prioritization_engine.action_glaccount_setting').read()[0]
+        #action['views'] = [(self.env.ref('prioritization_engine.view_glaccount_setting_tree').id, 'tree')]
+        #action['view_ids'] = self.env.ref('prioritization_engine.view_glaccount_setting_tree').id
+        print(self.gl_account)
+        #action['res_id'] = self.gl_account
+        #action['domain'] = [('ids', 'in', self.gl_account)]
+        action['domain'] = {'id': self.gl_account}
+        print(action)
+        print("Inside action_gl_account function")
+        return action
+
     def action_view_import(self):
         '''
         This function returns an action that display existing notification
