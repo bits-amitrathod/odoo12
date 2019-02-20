@@ -3,6 +3,7 @@ import logging
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
 import re
+from odoo import SUPERUSER_ID
 
 _logger = logging.getLogger(__name__)
 
@@ -249,6 +250,23 @@ class PrioritizationEngine(models.TransientModel):
                                  'product_id':product_id, 'allocated_product_quantity':allocated_product_from_lot}
         # add data in allocated_product_for_gl_account_dict
         if gl_account and not gl_account is None:
+            print(gl_account)
+            gl_account_record = self.env['gl.account'].search([('name', '=', gl_account)])
+            if len(gl_account_record) == 1:
+                gl_account_id = gl_account_record.id
+                self.env['res.partner'].search('gl_account', '=', gl_account)
+                # res_partner_id = gl_account_id.res_partner_id
+                gl = gl_account_record.gl_account_res_partner_rel.gl_account_id
+                print('*****gl*******')
+                print(gl)
+                res_partner = self.env['res.partner']
+                _logger.info('Same GL account no for multiple partners %r', res_partner.gl_account.gl_account_id)
+                print(gl_account_id)
+                # self.send_mail("Same GL account no for multiple partners. GL Account NO : " + str(gl_account))
+            else:
+                _logger.info('Duplicate GL Account No')
+
+
             # match parent id and gl account
             res_partner = self.env['res.partner'].search([('gl_account', '=', gl_account),('parent_id', '=', customer_id)])
             if res_partner:
@@ -324,15 +342,28 @@ class PrioritizationEngine(models.TransientModel):
 
     # Generate sale order for gl account
     def generate_sale_order_for_gl_account(self):
-        _logger.debug('In generate sale order for gl account %r', self.allocated_product_for_gl_account_dict)
+        _logger.info('In generate sale order for gl account %r', self.allocated_product_for_gl_account_dict)
         # get team id
         crm_team = self.env['crm.team'].search([('team_type', '=', 'engine')])
 
         for gl_account_key in self.allocated_product_for_gl_account_dict.keys():
-            _logger.debug('gl account key : %r', gl_account_key)
-            # find partner id using gl account
-            res_partner = self.env['res.partner'].search([('gl_account', '=', gl_account_key)])
-            if res_partner:
+            _logger.info('gl account key : %r', gl_account_key)
+            gl_account = self.env['gl.account'].search([('name', '=', gl_account_key)])
+            if len(gl_account) == 1:
+                gl_account_id = gl_account.id
+                print('gl_account_id')
+                print(gl_account_id)
+            else:
+                _logger.info('Duplicate GL Account No')
+
+            # find partner id using gl_account_id
+            res_partner = self.env['res.partner'].gl_account.gl_account_id
+            print('Length of res_partner')
+            print(res_partner)
+            if len(res_partner) > 1:
+                _logger.info('Same GL account no for multiple partners')
+                self.send_mail("Same GL account no for multiple partners. GL Account NO : "+ str(gl_account_key))
+            elif res_partner:
                 _logger.debug('res_partner : %r',res_partner.id)
                 sale_order_dict = {'partner_id': res_partner.id, 'state': 'engine', 'team_id': crm_team['id']}
 
@@ -501,3 +532,12 @@ class PrioritizationEngine(models.TransientModel):
             _logger.info('sale order state before : %r', sale_order['state'])
             sale_order.action_cancel()
             _logger.info('sales order status after : %r', sale_order['state'])
+
+
+    def send_mail(self, body):
+        template = self.env.ref('prioritization_engine.set_log_gl_account_response').sudo()
+        local_context = {'body': body}
+        try:
+            template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True, )
+        except:
+            response = {'message': 'Unable to connect to SMTP Server'}
