@@ -200,7 +200,7 @@ class PrioritizationEngine(models.TransientModel):
                                                required_quantity)
 
             prioritization_engine_request['customer_request_logs'] += 'Product allocated.'
-            self.update_customer_request_status(prioritization_engine_request,'Completed')
+            self.update_customer_request_status(prioritization_engine_request,'Fulfilled')
 
         elif remaining_product_allocation_quantity > 0 and remaining_product_allocation_quantity != required_quantity:
             _logger.debug(str(" Allocated Partial order product."))
