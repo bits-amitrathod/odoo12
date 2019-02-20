@@ -24,8 +24,8 @@ class Customer(models.Model):
     partial_ordering = fields.Boolean("Allow Partial Ordering?", readonly=False)
     partial_UOM = fields.Boolean("Allow Partial UOM?", readonly=False)
     order_ids = fields.One2many('sale.order', 'partner_id')
-    # gl_account = fields.Char("GL Account")
-    gl_account = fields.Many2many('gl.account', 'gl_account_res_partner_rel',  string='GL Account', column1='res_partner_id', column2='gl_account_id')
+    gl_account = fields.Char("GL Account")
+    # gl_account_ids = fields.one2many('gl.account', 'partner_id')
     on_hold = fields.Boolean("On Hold")
     is_broker = fields.Boolean("Is a Broker?")
     carrier_info = fields.Char("Carrier Info")
@@ -114,7 +114,7 @@ class Customer(models.Model):
         #action['view_ids'] = self.env.ref('prioritization_engine.view_glaccount_setting_tree').id
         print(self.gl_account)
         #action['res_id'] = self.gl_account
-        #action['domain'] = [('ids', 'in', self.gl_account)]
+        #action['ldomain'] = [('ids', 'in', self.gl_account)]
         action['domain'] = {'id': self.gl_account}
         print(action)
         print("Inside action_gl_account function")
@@ -371,4 +371,4 @@ class GLAccount(models.Model):
     ]
 
     name = fields.Char(string='GL Account', required=True, translate=True)
-
+    partner_id = fields.Many2one('res.partner', string='Partner', required=True, ondelete="cascade")

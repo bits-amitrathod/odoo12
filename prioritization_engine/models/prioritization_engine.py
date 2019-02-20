@@ -250,23 +250,6 @@ class PrioritizationEngine(models.TransientModel):
                                  'product_id':product_id, 'allocated_product_quantity':allocated_product_from_lot}
         # add data in allocated_product_for_gl_account_dict
         if gl_account and not gl_account is None:
-            print(gl_account)
-            gl_account_record = self.env['gl.account'].search([('name', '=', gl_account)])
-            if len(gl_account_record) == 1:
-                gl_account_id = gl_account_record.id
-                self.env['res.partner'].search('gl_account', '=', gl_account)
-                # res_partner_id = gl_account_id.res_partner_id
-                gl = gl_account_record.gl_account_res_partner_rel.gl_account_id
-                print('*****gl*******')
-                print(gl)
-                res_partner = self.env['res.partner']
-                _logger.info('Same GL account no for multiple partners %r', res_partner.gl_account.gl_account_id)
-                print(gl_account_id)
-                # self.send_mail("Same GL account no for multiple partners. GL Account NO : " + str(gl_account))
-            else:
-                _logger.info('Duplicate GL Account No')
-
-
             # match parent id and gl account
             res_partner = self.env['res.partner'].search([('gl_account', '=', gl_account),('parent_id', '=', customer_id)])
             if res_partner:
@@ -348,22 +331,11 @@ class PrioritizationEngine(models.TransientModel):
 
         for gl_account_key in self.allocated_product_for_gl_account_dict.keys():
             _logger.info('gl account key : %r', gl_account_key)
-            gl_account = self.env['gl.account'].search([('name', '=', gl_account_key)])
-            if len(gl_account) == 1:
-                gl_account_id = gl_account.id
-                print('gl_account_id')
-                print(gl_account_id)
-            else:
-                _logger.info('Duplicate GL Account No')
 
-            # find partner id using gl_account_id
-            res_partner = self.env['res.partner'].gl_account.gl_account_id
-            print('Length of res_partner')
-            print(res_partner)
-            if len(res_partner) > 1:
-                _logger.info('Same GL account no for multiple partners')
-                self.send_mail("Same GL account no for multiple partners. GL Account NO : "+ str(gl_account_key))
-            elif res_partner:
+            #find partner id using gl account
+            res_partner = self.env['res.partner'].search([('gl_account', '=', gl_account_key)])
+
+            if res_partner:
                 _logger.debug('res_partner : %r',res_partner.id)
                 sale_order_dict = {'partner_id': res_partner.id, 'state': 'engine', 'team_id': crm_team['id']}
 
