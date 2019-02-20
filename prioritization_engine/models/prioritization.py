@@ -24,8 +24,7 @@ class Customer(models.Model):
     partial_ordering = fields.Boolean("Allow Partial Ordering?", readonly=False)
     partial_UOM = fields.Boolean("Allow Partial UOM?", readonly=False)
     order_ids = fields.One2many('sale.order', 'partner_id')
-    gl_account = fields.Char("GL Account")
-    # gl_account_ids = fields.one2many('gl.account', 'partner_id')
+    gl_account = fields.One2many('gl.account', 'partner_id', string="GL Account")
     on_hold = fields.Boolean("On Hold")
     is_broker = fields.Boolean("Is a Broker?")
     carrier_info = fields.Char("Carrier Info")
@@ -112,10 +111,10 @@ class Customer(models.Model):
         action = self.env.ref('prioritization_engine.action_glaccount_setting').read()[0]
         #action['views'] = [(self.env.ref('prioritization_engine.view_glaccount_setting_tree').id, 'tree')]
         #action['view_ids'] = self.env.ref('prioritization_engine.view_glaccount_setting_tree').id
-        print(self.gl_account)
-        #action['res_id'] = self.gl_account
-        #action['ldomain'] = [('ids', 'in', self.gl_account)]
-        action['domain'] = {'id': self.gl_account}
+        #print(self.gl_account)
+        action['res_id'] = self.id
+        #action['domain'] = [('ids', 'in', self.gl_account)]
+        #action['domain'] = {'id': self.gl_account}
         print(action)
         print("Inside action_gl_account function")
         return action
@@ -195,18 +194,6 @@ class Customer(models.Model):
         min_threshold = self.min_threshold
         if min_threshold and min_threshold > 999:
             raise ValidationError(_('Global Priority Configuration->Min Threshold field must be less 999'))
-
-    @api.onchange('prioritization', 'allow_purchase')
-    def _check_PO(self):
-        warning = {}
-        vals = {}
-        if self.allow_purchase == False and self.prioritization == True:
-            vals.update({'prioritization': False})
-            warning = {
-                'title': _('Warning'),
-                'message': _('Please Select Purchase Order Method For Prioritization setting'),
-            }
-        return {'value': vals,'warning':warning}
 
 
 class ProductTemplate(models.Model):
@@ -345,7 +332,8 @@ class SalesChannelPrioritization(models.Model):
 class StockMove(models.Model):
     _inherit = "stock.move"
     partial_UOM = fields.Boolean("Allow Partial UOM?", compute="_get_partial_UOM", readonly=True)
-    default_code = fields.Char("SKU", store=False, readonly=True, related='product_id.product_tmpl_id.default_code')
+    default_code = fields.Char("SKU", store=False, readonly=True,compute="_get_default_code")
+
 
     @api.multi
     def _get_partial_UOM(self):
@@ -357,7 +345,6 @@ class StockMove(models.Model):
                 if setting.partial_UOM and not setting.partial_UOM is None:
                     _logger.info('partial UOM** : %r', setting.partial_UOM)
                     self.partial_UOM = setting.partial_UOM
-
 
     def _get_default_code(self):
         for record in self:
@@ -371,4 +358,4 @@ class GLAccount(models.Model):
     ]
 
     name = fields.Char(string='GL Account', required=True, translate=True)
-    partner_id = fields.Many2one('res.partner', string='Partner', required=True, ondelete="cascade")
+    partner_id=fields.Many2one('res.partner',string='Partner')
