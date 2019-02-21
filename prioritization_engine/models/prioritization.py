@@ -24,8 +24,7 @@ class Customer(models.Model):
     partial_ordering = fields.Boolean("Allow Partial Ordering?", readonly=False)
     partial_UOM = fields.Boolean("Allow Partial UOM?", readonly=False)
     order_ids = fields.One2many('sale.order', 'partner_id')
-    # gl_account = fields.Char("GL Account")
-    gl_account = fields.Many2many('gl.account', 'gl_account_res_partner_rel',  string='GL Account', column1='res_partner_id', column2='gl_account_id')
+    gl_account = fields.One2many('gl.account', 'partner_id', string="GL Account")
     on_hold = fields.Boolean("On Hold")
     is_broker = fields.Boolean("Is a Broker?")
     carrier_info = fields.Char("Carrier Info")
@@ -100,6 +99,24 @@ class Customer(models.Model):
         action['views'] = [(self.env.ref('prioritization_engine.view_notification_setting_form').id, 'form')]
         action['view_ids'] = self.env.ref('prioritization_engine.view_notification_setting_form').id
         action['res_id'] = self.id
+        return action
+
+    def action_gl_account(self):
+        '''
+        This function returns an action that display existing notification
+        of given partner ids. It can be form
+        view,
+        '''
+        print("Inside action_gl_account function")
+        action = self.env.ref('prioritization_engine.action_glaccount_setting').read()[0]
+        #action['views'] = [(self.env.ref('prioritization_engine.view_glaccount_setting_tree').id, 'tree')]
+        #action['view_ids'] = self.env.ref('prioritization_engine.view_glaccount_setting_tree').id
+        #print(self.gl_account)
+        action['res_id'] = self.id
+        #action['domain'] = [('ids', 'in', self.gl_account)]
+        #action['domain'] = {'id': self.gl_account}
+        print(action)
+        print("Inside action_gl_account function")
         return action
 
     def action_view_import(self):
@@ -179,7 +196,7 @@ class Customer(models.Model):
             raise ValidationError(_('Global Priority Configuration->Min Threshold field must be less 999'))
 
     @api.onchange('prioritization', 'allow_purchase')
-    def _check_PO(self):
+    def _check_prioritization_setting(self):
         warning = {}
         vals = {}
         if self.allow_purchase == False and self.prioritization == True:
@@ -340,11 +357,6 @@ class StockMove(models.Model):
                     _logger.info('partial UOM** : %r', setting.partial_UOM)
                     self.partial_UOM = setting.partial_UOM
 
-
-    def _get_default_code(self):
-        for record in self:
-            record.default_code = record.product_id.product_tmpl_id.default_code
-
 class GLAccount(models.Model):
     _name = "gl.account"
 
@@ -353,4 +365,4 @@ class GLAccount(models.Model):
     ]
 
     name = fields.Char(string='GL Account', required=True, translate=True)
-
+    partner_id=fields.Many2one('res.partner',string='Partner')

@@ -398,7 +398,7 @@ class VendorOfferProduct(models.Model):
     qty_in_stock = fields.Integer(string="Quantity In Stock", readonly=True, compute='onchange_product_id_vendor_offer',
                                   store=True)
     expiration_date = fields.Datetime(string="Expiration Date", readonly=True, )
-    expired_inventory = fields.Char(string="Expired Inventory Items", compute='expired_inventory_cal', readonly=True,
+    expired_inventory = fields.Char(string="Expired Inventory Items", compute='onchange_product_id_vendor_offer', readonly=True,
                                     store=True)
     multiplier = fields.Many2one('multiplier.multiplier', string="Multiplier")
 
@@ -504,11 +504,21 @@ class VendorOfferProduct(models.Model):
 
                 if (line.product_qty == False):
                     line.product_qty = '1'
-                    line.price_subtotal = line.list_price
-                    line.product_unit_price = line.list_price
+                    # line.price_subtotal = line.list_price ???
+                    # line.product_unit_price = line.list_price
 
-                # line.cal_offer_price()
+                self.expired_inventory_cal(line)
                 line.product_tier = line.product_id.tier
+
+    def expired_inventory_cal(self, line):
+        expired_lot_count = 0
+        test_id_list = self.env['stock.production.lot'].search([('product_id', '=', line.product_id.id)])
+        for prod_lot in test_id_list:
+            if prod_lot.use_date:
+                if fields.Datetime.from_string(prod_lot.use_date).date() < fields.date.today():
+                    expired_lot_count = expired_lot_count + 1
+
+        line.expired_inventory = expired_lot_count
 
     @api.onchange('multiplier', 'order_id.possible_competition')
     @api.depends('multiplier', 'order_id.possible_competition')
@@ -540,20 +550,8 @@ class VendorOfferProduct(models.Model):
             if query_result['max'] != None:
                 self.expiration_date = fields.Datetime.from_string(str(query_result['max'])).date()
 
-    @api.depends('product_id')
-    def expired_inventory_cal(self):
-        for line in self:
-            expired_lot_count = 0
-            test_id_list = self.env['stock.production.lot'].search([('product_id', '=', line.product_id.id)])
-            for prod_lot in test_id_list:
-                if prod_lot.use_date != False:
-                    if fields.Datetime.from_string(prod_lot.use_date).date() < fields.date.today():
-                        expired_lot_count = expired_lot_count + 1
-
-            line.expired_inventory = expired_lot_count
-
-    @api.depends('product_qty', 'product_offer_price', 'taxes_id', 'product_unit_price')
-    @api.onchange('product_qty', 'product_offer_price', 'taxes_id', 'product_unit_price')
+    @api.onchange('product_qty', 'product_offer_price', 'taxes_id')
+    @api.depends('product_qty', 'product_offer_price', 'taxes_id')
     def _compute_amount(self):
         for line in self:
             if line.env.context.get('vendor_offer_data') or line.state == 'ven_draft' or line.state == 'ven_sent':
@@ -627,7 +625,7 @@ class ProductNotesActivity(models.Model):
     order_id = fields.Many2one('purchase.order', string='Order Reference', index=True, required=True,
                                ondelete='cascade')
     note = fields.Text(string="Note", required=True)
-    note_date = fields.Datetime(string="Note Date",default=fields.Datetime.now,)
+    note_date = fields.Datetime(string="Note Date", default=fields.Datetime.now, )
 
 
 # class PopupNotes(models.TransientModel):
@@ -637,8 +635,8 @@ class ProductNotesActivity(models.Model):
 #     def action_button_edit_note(self):
 #         self.ensure_one()
 #         order = self.env['purchase.notes.activity'].browse(self._context['active_id'])
-        # order.notes_desc = self.notes
-        # order.notes_desc_date = fields.Datetime.now()
+# order.notes_desc = self.notes
+# order.notes_desc_date = fields.Datetime.now()
 
 
 class FedexDelivery(models.Model):
@@ -707,7 +705,7 @@ class FedexDelivery(models.Model):
             package_labels = []
             carrier_tracking_ref = ""
 
-            for sequence in range(1, package_count+1):
+            for sequence in range(1, package_count + 1):
                 package_weight = _convert_weight(popup.weight, self.fedex_weight_unit)
                 srm.add_package(package_weight, sequence_number=sequence)
                 srm.set_master_package(net_weight, package_count, master_tracking_id=master_tracking_id)
@@ -761,7 +759,7 @@ class FedexDelivery(models.Model):
                         logmessage = _("Shipment created into Fedex<br/>"
                                        "<b>Tracking Numbers:</b> %s<br/>"
                                        "<b>Packages:</b> %s") % (
-                                     carrier_tracking_ref, ','.join([str(pl[0]) for pl in package_labels]))
+                                         carrier_tracking_ref, ','.join([str(pl[0]) for pl in package_labels]))
                         if self.fedex_label_file_type != 'PDF':
                             attachments = [('LabelFedex-%s.%s' % (pl[0], self.fedex_label_file_type), pl[1]) for pl in
                                            package_labels]
@@ -808,7 +806,7 @@ class FedexDelivery(models.Model):
 
                 carrier_tracking_ref = request['tracking_number']
                 logmessage = (
-                            _("Shipment created into Fedex <br/> <b>Tracking Number : </b>%s") % (carrier_tracking_ref))
+                        _("Shipment created into Fedex <br/> <b>Tracking Number : </b>%s") % (carrier_tracking_ref))
 
                 fedex_labels = [
                     ('LabelFedex-%s-%s.%s' % (carrier_tracking_ref, index, self.fedex_label_file_type), label)

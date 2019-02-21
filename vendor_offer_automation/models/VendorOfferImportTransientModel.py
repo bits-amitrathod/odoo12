@@ -207,14 +207,7 @@ class VendorOfferImportTransientModel(models.TransientModel):
     @api.model
     def get_fields(self, model, depth=FIELDS_RECURSION_LIMIT):
         Model = self.env['sps.vendor_offer_automation.template']
-        importable_fields = [{
-            'id': 'id',
-            'name': 'id',
-            'string': _("External ID"),
-            'required': False,
-            'fields': [],
-            'type': 'id',
-        }]
+        importable_fields = []
         model_fields = Model.fields_get()
         blacklist = models.MAGIC_COLUMNS + [Model.CONCURRENCY_CHECK_FIELD]
         for name, field in model_fields.items():
