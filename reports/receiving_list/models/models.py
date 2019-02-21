@@ -48,6 +48,7 @@ class ReceivingListPoReport(models.Model):
     picking_name = fields.Char('Picking #')
     product_tmpl_id = fields.Many2one('product.template', "Product")
     product_uom_qty = fields.Float('Quantity')
+    qty_done = fields.Float('Qty Received')
     product_uom_id = fields.Many2one('product.uom', 'UOM')
     state = fields.Selection([
         ('draft', 'New'), ('cancel', 'Cancelled'),
@@ -78,6 +79,7 @@ class ReceivingListPoReport(models.Model):
                     product_product.product_tmpl_id,
                     stock_picking.location_dest_id,
                     stock_move_line.product_uom_qty,
+                    stock_move_line.qty_done,
                     stock_move_line.product_uom_id
                 FROM
                     purchase_order_line
@@ -151,6 +153,7 @@ class ReceivingListReport(models.Model):
     picking_name = fields.Char('Picking #')
     product_tmpl_id = fields.Many2one('product.template', "Product")
     product_uom_qty = fields.Float('Quantity')
+    qty_done = fields.Float('Qty Received')
     product_uom_id = fields.Many2one('product.uom', 'UOM')
     state = fields.Selection([
         ('draft', 'New'), ('cancel', 'Cancelled'),
@@ -179,6 +182,7 @@ class ReceivingListReport(models.Model):
                     product_product.product_tmpl_id,
                     stock_picking.location_dest_id,
                     stock_move_line.product_uom_qty,
+                    stock_move_line.qty_done,
                     stock_move_line.product_uom_id
                 FROM
                     stock_picking
