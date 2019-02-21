@@ -33,7 +33,7 @@ class Customer(models.Model):
     having_carrier = fields.Boolean("Having Carrier?")
     notification_email = fields.Char("Notification Email")
     saleforce_ac = fields.Char("SF A/C No#")
-    sale_margine = fields.Char("Sales Level Margine")
+    sale_margine = fields.Char("Sales Level")
     preferred_method = fields.Selection([
         ('mail', 'Mail'),
         ('email', 'E Mail'),
@@ -102,21 +102,9 @@ class Customer(models.Model):
         return action
 
     def action_gl_account(self):
-        '''
-        This function returns an action that display existing notification
-        of given partner ids. It can be form
-        view,
-        '''
-        print("Inside action_gl_account function")
         action = self.env.ref('prioritization_engine.action_glaccount_setting').read()[0]
-        #action['views'] = [(self.env.ref('prioritization_engine.view_glaccount_setting_tree').id, 'tree')]
-        #action['view_ids'] = self.env.ref('prioritization_engine.view_glaccount_setting_tree').id
-        #print(self.gl_account)
-        action['res_id'] = self.id
-        #action['domain'] = [('ids', 'in', self.gl_account)]
-        #action['domain'] = {'id': self.gl_account}
-        print(action)
-        print("Inside action_gl_account function")
+        action['domain'] = [('partner_id', '=', self.id)]
+        action['context'] = [('partner_id', '=', self.id)]
         return action
 
     def action_view_import(self):
@@ -363,6 +351,5 @@ class GLAccount(models.Model):
     _sql_constraints = [
         ('name', 'unique(name)', 'GL Account already exists'),
     ]
-
     name = fields.Char(string='GL Account', required=True, translate=True)
     partner_id=fields.Many2one('res.partner',string='Partner')
