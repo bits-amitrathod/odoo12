@@ -344,8 +344,7 @@ class SalesChannelPrioritization(models.Model):
 class StockMove(models.Model):
     _inherit = "stock.move"
     partial_UOM = fields.Boolean("Allow Partial UOM?", compute="_get_partial_UOM", readonly=True)
-    default_code = fields.Char("SKU", store=False, readonly=True,compute="_get_default_code")
-
+    default_code = fields.Char("SKU", store=False, readonly=True, related='product_id.product_tmpl_id.default_code')
 
     @api.multi
     def _get_partial_UOM(self):
