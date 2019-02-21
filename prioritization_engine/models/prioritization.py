@@ -24,8 +24,7 @@ class Customer(models.Model):
     partial_ordering = fields.Boolean("Allow Partial Ordering?", readonly=False)
     partial_UOM = fields.Boolean("Allow Partial UOM?", readonly=False)
     order_ids = fields.One2many('sale.order', 'partner_id')
-    # gl_account = fields.Char("GL Account")
-    gl_account = fields.Many2many('gl.account', 'gl_account_res_partner_rel',  string='GL Account', column1='res_partner_id', column2='gl_account_id')
+    gl_account = fields.One2many('gl.account', 'partner_id', string="GL Account")
     on_hold = fields.Boolean("On Hold")
     is_broker = fields.Boolean("Is a Broker?")
     carrier_info = fields.Char("Carrier Info")
@@ -100,6 +99,24 @@ class Customer(models.Model):
         action['views'] = [(self.env.ref('prioritization_engine.view_notification_setting_form').id, 'form')]
         action['view_ids'] = self.env.ref('prioritization_engine.view_notification_setting_form').id
         action['res_id'] = self.id
+        return action
+
+    def action_gl_account(self):
+        '''
+        This function returns an action that display existing notification
+        of given partner ids. It can be form
+        view,
+        '''
+        print("Inside action_gl_account function")
+        action = self.env.ref('prioritization_engine.action_glaccount_setting').read()[0]
+        #action['views'] = [(self.env.ref('prioritization_engine.view_glaccount_setting_tree').id, 'tree')]
+        #action['view_ids'] = self.env.ref('prioritization_engine.view_glaccount_setting_tree').id
+        #print(self.gl_account)
+        action['res_id'] = self.id
+        #action['domain'] = [('ids', 'in', self.gl_account)]
+        #action['domain'] = {'id': self.gl_account}
+        print(action)
+        print("Inside action_gl_account function")
         return action
 
     def action_view_import(self):
@@ -327,7 +344,8 @@ class SalesChannelPrioritization(models.Model):
 class StockMove(models.Model):
     _inherit = "stock.move"
     partial_UOM = fields.Boolean("Allow Partial UOM?", compute="_get_partial_UOM", readonly=True)
-    default_code = fields.Char("SKU", store=False, readonly=True, related='product_id.product_tmpl_id.default_code')
+    default_code = fields.Char("SKU", store=False, readonly=True,compute="_get_default_code")
+
 
     @api.multi
     def _get_partial_UOM(self):
@@ -348,4 +366,4 @@ class GLAccount(models.Model):
     ]
 
     name = fields.Char(string='GL Account', required=True, translate=True)
-
+    partner_id=fields.Many2one('res.partner',string='Partner')
