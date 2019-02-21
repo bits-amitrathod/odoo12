@@ -172,15 +172,15 @@ class InventoryNotificationScheduler(models.TransientModel):
                 product_list.extend(list(products.values()))
                 for cust in custmrs:
                     self.process_common_email_notification_template(super_user, cust, subject, descrption, product_list,
-                                                            header, columnProps)
+                                                            header, columnProps,is_employee=False)
 
 
 
     def process_new_product_scheduler(self):
-        today_date = date.today()
-        today_start = fields.Date.to_string(today_date)
+        today_date = datetime.now() - timedelta(days=1)
+        today_start = datetime.strftime(today_date, "%Y-%m-%d 00:00:00")
         products = self.env['product.product'].search(
-            [('create_date', '>=', today_start), ('notification_date', '=', None)])
+            [('create_date', '>=', today_start), ('notification_date', '=', None),('product_tmpl_id.type','=','product')])
         subject = "New Product In Inventory"
         descrption = "Please find below list of all the new product added in SPS Inventory"
         header=['SKU Code','Name','Sales Price','Cost','Product Type','Min Expiration Date','Max Expiration Date','Qty On Hand','Forecasted Quantity','Unit Of Measure']
@@ -414,14 +414,14 @@ class InventoryNotificationScheduler(models.TransientModel):
         descrption = "Please find below the list items which are back in stock now in SPS Inventory."
         header = ['SKU Code','Name', 'Sales Price', 'Cost', 'Product Type', 'Min Expiration Date', 'Max Expiration Date',
                   'Qty On Hand', 'Forecasted Quantity', 'Unit Of Measure']
-        columnProps = ['sku_code','product_name', 'sale_price', 'standard_price', 'product_type', 'minExpDate', 'maxExpDate',
+        columnProps = ['sku_code','product_name', 'sale_price', 'standard_price', 'product_type', 'minExDate', 'maxExDate',
                        'qty_on_hand', 'forecasted_qty', 'unit_of_measure']
         self.process_common_product_scheduler(subject, descrption, products, header, columnProps)
         quant = self.env['stock.quant'].search(
             [('write_date', '>=', last_day), ('quantity', '>', 0), ])
         products = quant.mapped('product_id')
         self.process_notification_for_product_green_status(products)
-
+        self.process_notification_for_in_stock_report(products)
 
 
 
@@ -450,7 +450,7 @@ class InventoryNotificationScheduler(models.TransientModel):
 
 
 
-    def process_common_email_notification_template(self, email_from_user, email_to_user, subject, descrption, products, header, columnProps,custom_template="inventory_notification.common_mail_template"):
+    def process_common_email_notification_template(self, email_from_user, email_to_user, subject, descrption, products, header, columnProps,custom_template="inventory_notification.common_mail_template",is_employee=True):
         template = self.env.ref(custom_template)
         product_dict = {}
         product_list = []
@@ -518,7 +518,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                 'email_to_user':email_to_user,
                 'subject':subject,
                 'description':descrption,
-                'template':template
+                'template':template,
+                'is_employee': is_employee
             }
             self.send_email_and_notification(vals)
 
@@ -536,17 +537,31 @@ class InventoryNotificationScheduler(models.TransientModel):
         else:
             partner_ids = [vals['email_to_user'].id]
         try:
-            template_id = vals['template'].with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True, )
+            if vals['email_to_user'].email:
+                template_id = vals['template'].with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True, )
         except:
-            vals['template'].with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True)
-        mail = self.env["mail.thread"]
-        mail.message_post(
-            body=finalHTML,
-            subject=vals['subject'],
-            message_type='notification',
-            partner_ids=partner_ids,
-            content_subtype='html'
-        )
+            print("mail sending fail for email id: " + vals['email_to_user'].email +" sending error report to admin")
+            subject= "mail send fail for user "+ vals['email_to_user'].email + " (Subject: "+vals['subject']
+            cache_context = {'products': vals['product_list'], 'headers': vals['headers'],
+                             'columnProps': vals['coln_name'],
+                             'email_from': vals['email_from_user'].email, 'email_to': vals['email_from_user'].email,
+                             'subject': subject,
+                             'descrption': vals['description']}
+            try:
+                vals['template'].with_context(cache_context).send_mail(SUPERUSER_ID, raise_exception=True,force_send=True)
+                vals['template'].with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True)
+            except:
+                print("mail sending fail for email id: " + vals['email_to_user'].email)
+
+        if vals['is_employee']:
+            mail = self.env["mail.thread"]
+            mail.message_post(
+                body=finalHTML,
+                subject=vals['subject'],
+                message_type='notification',
+                partner_ids=partner_ids,
+                content_subtype='html'
+            )
 
         # mail = self.env['mail.mail'].browse(template_id)
         # attachment_value = {

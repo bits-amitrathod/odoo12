@@ -29,7 +29,8 @@ _logger = logging.getLogger(__name__)
 class DocumentProcessTransientModel(models.TransientModel):
     _name = 'sps.document.process'
 
-    def process_document(self, user_model, uploaded_file_path, template_type_from_user, file_name, document_source='Api',):
+    def process_document(self, user_model, uploaded_file_path, template_type_from_user, file_name,
+                         document_source='Api', ):
         print('template_type_from_user')
         print(template_type_from_user)
         if not user_model.prioritization:
@@ -44,7 +45,7 @@ class DocumentProcessTransientModel(models.TransientModel):
         if user_model.parent_id.id:
             user_id = user_model.parent_id.id
             gl_account_id = user_model.id
-            #return dict(errorCode=8, message='Child Customer not allowed to upload request')
+            # return dict(errorCode=8, message='Child Customer not allowed to upload request')
         else:
             user_id = user_model.id
         mapping_field_list = list(self.env['sps.customer.template'].fields_get().keys())
@@ -124,14 +125,21 @@ class DocumentProcessTransientModel(models.TransientModel):
 
                         if sku_postconfig_flag:
                             product_sku = product_sku[:-len(user_model.sku_postconfig)]
-                            print('product_sku : ', product_sku)
+
                     _logger.info('customer_sku %r product sku %r', customer_sku, product_sku)
-                    product_tmpl = self.env['product.template'].search(
-                        ['|', ('sku_code', '=', product_sku), ('manufacturer_pref', '=', product_sku)])
+
+                    self.env.cr.execute("""
+                       select * from 
+                           (SELECT id, regexp_replace(manufacturer_pref , '[^A-Za-z0-9.]', '','g') as manufacturer_pref, 
+                             regexp_replace(sku_code , '[^A-Za-z0-9.]', '','g') as sku_code_cleaned 
+                             FROM product_template) 
+                       as temp_data where sku_code_cleaned ='""" +product_sku + """' or manufacturer_pref = '""" +
+                                        product_sku + """' """)
+                    query_result = self.env.cr.dictfetchone()
                     sps_product_id = 0
-                    if len(product_tmpl) > 0:
+                    if query_result:
                         product_model = self.env['product.product'].search(
-                            [['product_tmpl_id', '=', product_tmpl[0].id]])
+                            [['product_tmpl_id', '=', query_result['id']]])
                         if len(product_model) > 0:
                             sps_product_id = product_model[0].id
                     if sps_product_id == 0:
@@ -399,4 +407,4 @@ class DocumentProcessTransientModel(models.TransientModel):
 
     @staticmethod
     def cleaning_code(str):
-        return (re.sub(r'[^A-Za-z0-9 .]', '', str))
+        return re.sub(r'[^A-Za-z0-9.]', '', str)

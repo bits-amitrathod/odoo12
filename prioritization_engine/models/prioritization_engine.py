@@ -200,7 +200,7 @@ class PrioritizationEngine(models.TransientModel):
                                                required_quantity)
 
             prioritization_engine_request['customer_request_logs'] += 'Product allocated.'
-            self.update_customer_request_status(prioritization_engine_request,'Completed')
+            self.update_customer_request_status(prioritization_engine_request,'Fulfilled')
 
         elif remaining_product_allocation_quantity > 0 and remaining_product_allocation_quantity != required_quantity:
             _logger.debug(str(" Allocated Partial order product."))
@@ -254,13 +254,14 @@ class PrioritizationEngine(models.TransientModel):
             res_partner = self.env['res.partner'].search([('gl_account', '=', gl_account),('parent_id', '=', customer_id)])
             if res_partner:
                 if len(res_partner) == 1:
-                    if gl_account in self.allocated_product_for_gl_account_dict.keys():
-                        self.allocated_product_for_gl_account_dict.get(gl_account, {}).append(allocated_product)
+                    if res_partner.id in self.allocated_product_for_gl_account_dict.keys():
+                        self.allocated_product_for_gl_account_dict.get(res_partner.id, {}).append(allocated_product)
                     else:
-                        new_gl_account_key = {gl_account: [allocated_product]}
+                        new_gl_account_key = {res_partner.id: [allocated_product]}
                         self.allocated_product_for_gl_account_dict.update(new_gl_account_key)
                 else:
                     _logger.info('same gl account for multiple customer')
+                    self.send_mail(str(gl_account) + " GL Account No presents for more than one contact.")
             else:
                 _logger.info('mismatch gl account for customer means customer id != parent id with gl account')
                 if customer_id in self.allocated_product_dict.keys():
@@ -329,41 +330,34 @@ class PrioritizationEngine(models.TransientModel):
         # get team id
         crm_team = self.env['crm.team'].search([('team_type', '=', 'engine')])
 
-        for gl_account_key in self.allocated_product_for_gl_account_dict.keys():
-            _logger.info('gl account key : %r', gl_account_key)
+        for partner_id_key in self.allocated_product_for_gl_account_dict.keys():
+            _logger.info('partner id key : %r', partner_id_key)
 
-            #find partner id using gl account
-            res_partner = self.env['res.partner'].search([('gl_account', '=', gl_account_key)])
+            _logger.debug('res_partner : %r',partner_id_key)
+            sale_order_dict = {'partner_id': partner_id_key, 'state': 'engine', 'team_id': crm_team['id']}
 
-            if res_partner:
-                _logger.debug('res_partner : %r',res_partner.id)
-                sale_order_dict = {'partner_id': res_partner.id, 'state': 'engine', 'team_id': crm_team['id']}
+            sale_order = self.env['sale.order'].create(dict(sale_order_dict))
+            _logger.debug('sale order : %r ', sale_order['id'])
 
-                sale_order = self.env['sale.order'].create(dict(sale_order_dict))
-                _logger.debug('sale order : %r ', sale_order['id'])
+            for allocated_product in self.allocated_product_for_gl_account_dict.get(partner_id_key, {}):
+                sale_order_line_dict = {
+                    'customer_request_id': allocated_product['customer_request_id'],'req_no': allocated_product['req_no'], 'order_id': sale_order['id'],
+                    'product_id': allocated_product['product_id'],'order_partner_id': partner_id_key,
+                    'product_uom_qty': allocated_product['allocated_product_quantity']}
 
-                for allocated_product in self.allocated_product_for_gl_account_dict.get(gl_account_key, {}):
-                    sale_order_line_dict = {
-                        'customer_request_id': allocated_product['customer_request_id'],'req_no': allocated_product['req_no'], 'order_id': sale_order['id'],
-                        'product_id': allocated_product['product_id'],'order_partner_id': res_partner.id,
-                        'product_uom_qty': allocated_product['allocated_product_quantity']}
+                self.env['sale.order.line'].create(dict(sale_order_line_dict))
 
-                    self.env['sale.order.line'].create(dict(sale_order_line_dict))
+            sale_order.force_quotation_send()
+            sale_order.action_confirm()
+            _logger.info('sale order id  : %r  sale order state : %r', sale_order.id, sale_order.state)
 
-                sale_order.force_quotation_send()
-                sale_order.action_confirm()
-                _logger.info('sale order id  : %r  sale order state : %r', sale_order.id, sale_order.state)
-
-                picking = self.env['stock.picking'].search([('sale_id', '=', sale_order.id), ('picking_type_id', '=', 1)])
-                _logger.info('picking before   : %r', picking.state)
-                picking.write({'state':'assigned'})
-                _logger.info('picking after   : %r', picking.state)
-                # sale_order.write(dict(state='engine', confirmation_date=''))
-                # sale_order.force_quotation_send()
-                sale_order.write({'state':'sent', 'confirmation_date':''})
-
-            else:
-                _logger.info('partner id is null')
+            picking = self.env['stock.picking'].search([('sale_id', '=', sale_order.id), ('picking_type_id', '=', 1)])
+            _logger.info('picking before   : %r', picking.state)
+            picking.write({'state':'assigned'})
+            _logger.info('picking after   : %r', picking.state)
+            # sale_order.write(dict(state='engine', confirmation_date=''))
+            # sale_order.force_quotation_send()
+            sale_order.write({'state':'sent', 'confirmation_date':''})
 
     # Change date format to calculate date difference (2018-06-25 23:08:15) to (2018, 6, 25, 23, 8, 15)
     def change_date_format(self, date):
