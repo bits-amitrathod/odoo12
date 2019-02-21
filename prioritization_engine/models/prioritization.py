@@ -179,7 +179,7 @@ class Customer(models.Model):
             raise ValidationError(_('Global Priority Configuration->Min Threshold field must be less 999'))
 
     @api.onchange('prioritization', 'allow_purchase')
-    def _check_PO(self):
+    def _check_prioritization_setting(self):
         warning = {}
         vals = {}
         if self.allow_purchase == False and self.prioritization == True:
@@ -339,11 +339,6 @@ class StockMove(models.Model):
                 if setting.partial_UOM and not setting.partial_UOM is None:
                     _logger.info('partial UOM** : %r', setting.partial_UOM)
                     self.partial_UOM = setting.partial_UOM
-
-
-    def _get_default_code(self):
-        for record in self:
-            record.default_code = record.product_id.product_tmpl_id.default_code
 
 class GLAccount(models.Model):
     _name = "gl.account"
