@@ -26,20 +26,8 @@ class SaleOrder(models.Model):
     preferred_method = fields.Selection(string='Preferred Invoice Delivery Method',
                                         related='partner_id.preferred_method', readonly=True)
     carrier_info = fields.Char("Carrier Info", related='partner_id.carrier_info', readonly=True)
-    sale_margine = fields.Char("Sale Level Margin", related='partner_id.sale_margine', readonly=True)
+    sale_margine = fields.Char("Sales Level", related='partner_id.sale_margine', readonly=True)
     carrier_acc_no = fields.Char("Carrier Account No", related='partner_id.carrier_acc_no', readonly=True)
-
-    ''' @api.multi
-    def _compute_show_validate(self):
-        _logger.info('self %r',self)
-        sale_order_list = [self.ids]
-        for sale_id in sale_order_list:
-            multi = self.env['stock.picking'].search([('sale_id', '=', sale_id)])
-            _logger.info('**multi : %r',multi)
-            if len(multi) == 1 and self.delivery_count ==1:
-                self.show_validate=multi.show_validate
-            elif self.delivery_count > 1:
-                self.show_validate=True'''
 
     @api.multi
     def action_void(self):
@@ -52,13 +40,6 @@ class SaleOrder(models.Model):
                 raise UserError(
                     'You can not delete a sent quotation or a sales order! Try to cancel or void it before.')
         return models.Model.unlink(self)
-
-    '''def action_validate(self):
-        multi = self.env['stock.picking'].search([('sale_id', '=', self.id)])
-        if len(multi) == 1 and self.delivery_count ==1:
-            return multi.button_validate()
-        elif self.delivery_count>1:
-            raise ValidationError(_('Validate is not possible for multiple delivery please do validate one by one'))'''
 
     def action_assign(self):
         multi = self.env['stock.picking'].search([('sale_id', '=', self.id)])
@@ -219,7 +200,7 @@ class AccountInvoice(models.Model):
     note = fields.Char("Customer Message")
     memo = fields.Char("Memo")
     shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
-    sale_margine = fields.Char(string='Sale Level margin', related='partner_id.sale_margine', readonly=True)
+    sale_margine = fields.Char(string='Sales Level', related='partner_id.sale_margine', readonly=True)
     preferred_method = fields.Selection(string='Preferred Invoice Delivery Method',
                                         related='partner_id.preferred_method', readonly=True)
 
