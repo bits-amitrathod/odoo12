@@ -121,9 +121,13 @@ class InventoryNotificationScheduler(models.TransientModel):
             tracking=str(picking.carrier_tracking_ref)
         else:
             tracking=""
+        if picking.sale_id and picking.sale_id.partner_id and picking.sale_id.partner_id.name:
+            partner_name=picking.sale_id.partner_id.name
+        else:
+            partner_name=""
         vals = {
             'sale_order_lines': sales_order,
-            'subject': "Sale Order # "+picking.sale_id.name+" is Out for Delivery for customer " + picking.sale_id.partner_id.name  ,
+            'subject': "Sale Order # "+picking.sale_id.name+" is Out for Delivery for customer " + partner_name  ,
             'description': "Please find detail Of Sale Order: " + picking.sale_id.name+" and their tracking is "+tracking ,
             'header': ['SKU','Product','Qty'],
             'columnProps': ['sku', 'Product','qty'],
@@ -152,17 +156,22 @@ class InventoryNotificationScheduler(models.TransientModel):
                 cust_ids.extend(list(customr.child_ids.ids))
             if(customr.historic_months>0):
                 historic_day=customr.historic_months*30
+                _logger.info("historic_day :%r", historic_day)
                 print('historic_day')
                 print(historic_day)
             else:
-                historic_day=1
+                historic_day=2
+            _logger.info("historic_day :%r", historic_day)
             last_day = fields.Date.to_string(datetime.now() - timedelta(days=historic_day))
+            _logger.info("date order  :%r", last_day)
             sales = self.env['sale.order'].search([('partner_id', 'in', cust_ids),('date_order', '>', last_day)])
+            _logger.info("sales  :%r", sales)
             products={}
             for sale in sales:
                 sale_order_lines = self.env['sale.order.line'].search([('order_id.id', '=', sale.id)])
                 for line in sale_order_lines:
-                    if line.product_id.qty_available > 0 :
+                    _logger.info(" product_id qty_available %r",line.product_id.qty_available)
+                    if line.product_id.qty_available and line.product_id.qty_available is not None and line.product_id.qty_available > 0:
                         products[line.product_id.id]=line.product_id
             subject = "Products In Stock"
             descrption = "Please find below the items which are back in stock now ! Please find the Website URL: https:/Sps.com."
@@ -421,7 +430,6 @@ class InventoryNotificationScheduler(models.TransientModel):
             [('write_date', '>=', last_day), ('quantity', '>', 0), ])
         products = quant.mapped('product_id')
         self.process_notification_for_product_green_status(products)
-        self.process_notification_for_in_stock_report(products)
 
 
 
@@ -540,6 +548,8 @@ class InventoryNotificationScheduler(models.TransientModel):
             if vals['email_to_user'].email:
                 template_id = vals['template'].with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True, )
         except:
+            erro_msg="mail sending fail for email id: %r" + vals['email_to_user'].email +" sending error report to admin"
+            _logger.info(erro_msg)
             print("mail sending fail for email id: " + vals['email_to_user'].email +" sending error report to admin")
             subject= "mail send fail for user "+ vals['email_to_user'].email + " (Subject: "+vals['subject']
             cache_context = {'products': vals['product_list'], 'headers': vals['headers'],
@@ -551,6 +561,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                 vals['template'].with_context(cache_context).send_mail(SUPERUSER_ID, raise_exception=True,force_send=True)
                 vals['template'].with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True)
             except:
+                _logger.info("mail sending fail for email id: %r" , vals['email_to_user'].email)
                 print("mail sending fail for email id: " + vals['email_to_user'].email)
 
         if vals['is_employee']:

@@ -31,7 +31,7 @@
                             <tr>
                                 <td style="border: 1px solid #ffffff;width:40%">
                                     <t t-if="order_type">
-                                        <strong>Order Name:</strong>
+                                        <strong> Vendor Name / Facility Name:</strong>
                                     </t>
                                     <t t-else="">
                                         <strong>Vendor Name:</strong>
@@ -95,7 +95,7 @@
                                     </td>
                                     <t t-if="order_type">
                                         <td>
-                                            <span t-esc="product.order_id.order_line.qty_received"/>
+                                            <span t-esc="product.qty_done"/>
                                          </td>
                                     </t>
 
