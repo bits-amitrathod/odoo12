@@ -552,14 +552,14 @@ class InventoryNotificationScheduler(models.TransientModel):
             erro_msg="mail sending fail for email id: %r" + vals['email_to_user'].email +" sending error report to admin"
             _logger.info(erro_msg)
             print("mail sending fail for email id: " + vals['email_to_user'].email +" sending error report to admin")
-            subject= "mail send fail for user "+ vals['email_to_user'].email + " (Subject: "+vals['subject']
-            cache_context = {'products': vals['product_list'], 'headers': vals['headers'],
-                             'columnProps': vals['coln_name'],
-                             'email_from': vals['email_from_user'].email, 'email_to': vals['email_from_user'].email,
-                             'subject': subject,
-                             'descrption': vals['description']}
+            # subject= "mail send fail for user "+ vals['email_to_user'].email + " (Subject: "+vals['subject']
+            # cache_context = {'products': vals['product_list'], 'headers': vals['headers'],
+            #                  'columnProps': vals['coln_name'],
+            #                  'email_from': vals['email_from_user'].email, 'email_to': vals['email_from_user'].email,
+            #                  'subject': subject,
+            #                  'descrption': vals['description']}
             try:
-                vals['template'].with_context(cache_context).send_mail(SUPERUSER_ID, raise_exception=True,force_send=True)
+                # vals['template'].with_context(cache_context).send_mail(SUPERUSER_ID, raise_exception=True,force_send=True)
                 vals['template'].with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True)
             except:
                 _logger.info("mail sending fail for email id: %r" , vals['email_to_user'].email)
