@@ -41,7 +41,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         for stock_move in Stock_Moves:
             sale_order={
                   'sales_order':picking.sale_id.name,
-                  'sku':stock_move.product_id.product_tmpl_id.default_code,
+                  'sku':stock_move.product_id.product_tmpl_id.sku_code,
                   'Product':stock_move.product_id.name,
                   'qty':stock_move.product_qty
             }
@@ -63,7 +63,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         for stock_move in Stock_Moves:
             sale_order={
                   'sales_order':picking.sale_id.name,
-                  'sku':stock_move.product_id.product_tmpl_id.default_code,
+                  'sku':stock_move.product_id.product_tmpl_id.sku_code,
                   'Product':stock_move.product_id.name,
                   'qty':stock_move.product_qty
             }
@@ -88,7 +88,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         for stock_move in Stock_Moves:
             sale_order={
                   'sales_order':picking.sale_id.name,
-                  'sku':stock_move.product_id.product_tmpl_id.default_code,
+                  'sku':stock_move.product_id.product_tmpl_id.sku_code,
                   'Product':stock_move.product_id.name,
                   'qty':stock_move.product_qty
             }
@@ -113,7 +113,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         for stock_move in Stock_Moves:
             sale_order={
                   'sales_order':picking.sale_id.name,
-                  'sku':stock_move.product_id.product_tmpl_id.default_code,
+                  'sku':stock_move.product_id.product_tmpl_id.sku_code,
                   'Product':stock_move.product_id.name,
                   'qty':stock_move.product_qty
             }
@@ -424,7 +424,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         descrption = "Please find below the list items which are back in stock now in SPS Inventory."
         header = ['SKU Code','Name', 'Sales Price', 'Cost', 'Product Type', 'Min Expiration Date', 'Max Expiration Date',
                   'Qty On Hand', 'Forecasted Quantity', 'Unit Of Measure']
-        columnProps = ['sku_code','product_name', 'sale_price', 'standard_price', 'product_type', 'minExDate', 'maxExDate',
+        columnProps = ['sku_code','product_name', 'sale_price', 'standard_price', 'product_type', 'minExpDate', 'maxExpDate',
                        'qty_on_hand', 'forecasted_qty', 'unit_of_measure']
         self.process_common_product_scheduler(subject, descrption, products, header, columnProps)
         quant = self.env['stock.quant'].search(
