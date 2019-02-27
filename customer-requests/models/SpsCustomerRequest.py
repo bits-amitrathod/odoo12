@@ -121,10 +121,12 @@ class SpsCustomerRequest(models.Model):
 
             # if status is partial check the remaining quantity to allocate to customer
             if sps_customer_request['status'].lower().strip() == 'partial':
-                sale_order_line = self.env['sale.order.line'].search(
-                    [('customer_request_id', '=', sps_customer_request.id)])
-                _logger.debug('sale_order_line.product_uom_qty : %r', sale_order_line.product_uom_qty)
-                required_quantity = sps_customer_request.required_quantity - sale_order_line.product_uom_qty
+                sale_order_lines = self.env['sale.order.line'].search([('customer_request_id', '=', sps_customer_request.id)])
+                product_uom_qty = 0
+                for sale_order_line in sale_order_lines:
+                    product_uom_qty = product_uom_qty + sale_order_line.product_uom_qty
+                _logger.debug('sale_order_line.product_uom_qty : %r', product_uom_qty)
+                required_quantity = sps_customer_request.required_quantity - product_uom_qty
                 _logger.debug('required_quantity : %r', required_quantity)
             else:
                 required_quantity = sps_customer_request.required_quantity
