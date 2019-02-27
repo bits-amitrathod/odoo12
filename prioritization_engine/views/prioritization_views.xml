@@ -14,9 +14,9 @@
                             attrs="{'invisible':['|', '|', ('is_parent', '==', False),('prioritization', '==', False)]}">
                         <span class="o_stat_text">Import Template</span>
                     </button>
-                    <button class="oe_stat_button" name="action_gl_account" type="object" icon="fa-child">
+                    <!--<button class="oe_stat_button" name="action_gl_account" type="object" icon="fa-child">
                         <span class="o_stat_text">GL Account</span>
-                    </button>
+                    </button>-->
                 </button>
                 <field name="vat" position="after">
                     <field name="sku_preconfig" attrs="{'readonly':[('is_parent', '==', False)]}"
