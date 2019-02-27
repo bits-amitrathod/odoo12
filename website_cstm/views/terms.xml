@@ -29,10 +29,10 @@
                                     <ol class="ol1">
                                         <li class="li2">
                                             <strong>
-                                                <span class="s3">APPLICABILITY</span>
+                                                <span class="s3">APPLICABILITY.</span>
                                             </strong>
                                             <span class="s1">
-                                                <strong>.</strong> &amp;nbsp;
+                                             <!--   <strong>.</strong> &amp;nbsp;-->
                                             </span>
                                             <ol class="ol2" style="list-style-type: lower-alpha;">
                                                 <li class="li2">
@@ -64,10 +64,10 @@
                                         </li>
                                         <li class="li2">
                                             <strong>
-                                                <span class="s3">DELIVERY</span>
+                                                <span class="s3">DELIVERY.</span>
                                             </strong>
                                             <span class="s1">
-                                                <strong>.</strong> &amp;nbsp;
+                                               <!-- <strong>.</strong> &amp;nbsp;-->
                                             </span>
                                             <ol class="ol2" style="list-style-type: lower-alpha;">
                                                 <li class="li2">
@@ -89,10 +89,10 @@
                                         </li>
                                         <li class="li2">
                                             <strong>
-                                                <span class="s3">QUANTITY</span>
+                                                <span class="s3">QUANTITY.</span>
                                             </strong>
                                             <span class="s1">
-                                                <strong>.</strong>
+                                               <!-- <strong>.</strong>-->
                                                 <span class="Apple-converted-space">&amp;nbsp;</span>If Seller delivers to
                                                 Buyer a quantity of Goods of up to 5% more or less than the quantity set
                                                 forth in the Sales Confirmation (or at least 75% of the quantity set
@@ -109,7 +109,7 @@
                                             </strong>
                                             <span class="s1">
                                                 <strong>AND RISK OF LOSS.
-                                                    <span class="Apple-converted-space">&amp;nbsp;</span>
+                                                    <span class="Apple-converted-space"></span>
                                                 </strong>
                                                 Delivery shall be made, and risk of loss shall pass to Buyer, FOB
                                                 Seller’s place of business.
@@ -117,10 +117,10 @@
                                         </li>
                                         <li class="li2">
                                             <strong>
-                                                <span class="s3">AMENDMENT AND MODIFICATION</span>
+                                                <span class="s3">AMENDMENT AND MODIFICATION.</span>
                                             </strong>
                                             <span class="s1">
-                                                <strong>.</strong>
+                                                <!--<strong>.</strong>-->
                                                 <span class="Apple-converted-space">&amp;nbsp;</span>These Terms may only be
                                                 amended or modified in a writing which specifically states that it
                                                 amends these Terms and is signed by an authorized representative of each
@@ -129,10 +129,10 @@
                                         </li>
                                         <li class="li2">
                                             <strong>
-                                                <span class="s3">PRICE</span>
+                                                <span class="s3">PRICE.</span>
                                             </strong>
                                             <span class="s1">
-                                                <strong>.</strong>
+                                               <!-- <strong>.</strong>-->
                                                 <span class="Apple-converted-space">&amp;nbsp;</span>Buyer shall purchase
                                                 the Goods from Seller at the price (the "<b>Price</b>") set forth in the
                                                 Sales Confirmation. All Prices are exclusive of all sales, use and
@@ -146,10 +146,10 @@
                                         </li>
                                         <li class="li2">
                                             <strong>
-                                                <span class="s3">PAYMENT TERMS</span>
+                                                <span class="s3">PAYMENT TERMS.</span>
                                             </strong>
                                             <span class="s1">
-                                                <strong>.</strong> &amp;nbsp;
+                                                <!--<strong>.</strong> &amp;nbsp;-->
                                             </span>
                                             <ol class="ol2" style="list-style-type: lower-alpha;">
                                                 <li class="li2">
@@ -189,10 +189,10 @@
                                         </li>
                                         <li class="li2">
                                             <strong>
-                                                <span class="s3">LIMITED WARRANTY</span>
+                                                <span class="s3">LIMITED WARRANTY.</span>
                                             </strong>
                                             <span class="s1">
-                                                <strong>.</strong> &amp;nbsp;
+                                             <!--   <strong>.</strong> &amp;nbsp;-->
                                             </span>
                                             <ol class="ol2" style="list-style-type: lower-alpha;">
                                                 <li class="li3">
@@ -220,7 +220,7 @@
                                                             INFRINGEMENT OF INTELLECTUAL PROPERTY RIGHTS OF A THIRD
                                                             PARTY, WHETHER EXPRESS OR IMPLIED BY LAW, COURSE OF DEALING,
                                                             COURSE OF PERFORMANCE, USAGE OF TRADE OR OTHERWISE.
-                                                            <span class="Apple-converted-space">&amp;nbsp;</span>
+                                                            <span class="Apple-converted-space"></span>
                                                         </b>
                                                         Notwithstanding the foregoing, upon request, Seller shall use
                                                         its commercially reasonable efforts to pass through to Buyer any
@@ -252,8 +252,8 @@
                                         </li>
                                         <li class="li2">
                                             <strong>
-                                                <span class="s3">LIMITATION OF LIABILITY</span>
-                                                <span class="s1">. &amp;nbsp;</span>
+                                                <span class="s3">LIMITATION OF LIABILITY.</span>
+                                                <!--<span class="s1">. &amp;nbsp;</span>-->
                                             </strong>
                                             <ol class="ol2" style="list-style-type: lower-alpha;">
                                                 <li class="li2">
@@ -292,12 +292,11 @@
                                         </li>
                                         <li class="li2">
                                             <strong>
-                                                <span class="s3">COMPLIANCE WITH LAW</span>
+                                                <span class="s3">COMPLIANCE WITH LAW.</span>
                                             </strong>
                                             <span class="s1">
-                                                <strong>.
-                                                    <span class="Apple-converted-space">&amp;nbsp;</span>
-                                                </strong>
+                                                <!--<strong>.
+                                                </strong> --><span class="Apple-converted-space"></span>
                                                 Buyer shall comply with all applicable laws, regulations and ordinances.
                                                 Buyer shall maintain in effect all the licenses, permissions,
                                                 authorizations, consents and permits that it needs to carry out its
@@ -306,10 +305,10 @@
                                         </li>
                                         <li class="li2">
                                             <strong>
-                                                <span class="s3">TERMINATION</span>
+                                                <span class="s3">TERMINATION.</span>
                                             </strong>
                                             <span class="s1">
-                                                <strong>.</strong>
+                                                <!--<strong>.</strong>-->
                                                 <span class="Apple-converted-space">&amp;nbsp;</span>In addition to any
                                                 remedies that may be provided under these Terms, Seller may terminate
                                                 this Agreement with immediate effect upon written notice to Buyer, if
@@ -324,10 +323,10 @@
                                         </li>
                                         <li class="li2">
                                             <strong>
-                                                <span class="s3">WAIVER</span>
+                                                <span class="s3">WAIVER.</span>
                                             </strong>
                                             <span class="s1">
-                                                <strong>.</strong>
+                                                <!--<strong>.</strong>-->
                                                 <span class="Apple-converted-space">&amp;nbsp;</span>No waiver by Seller of
                                                 any of the provisions of this Agreement is effective unless explicitly
                                                 set forth in writing and signed by Seller. No failure to exercise, or
@@ -340,10 +339,10 @@
                                         </li>
                                         <li class="li2">
                                             <strong>
-                                                <span class="s3">CONFIDENTIAL INFORMATION</span>
+                                                <span class="s3">CONFIDENTIAL INFORMATION.</span>
                                             </strong>
                                             <span class="s1">
-                                                <strong>.</strong>
+                                                <!--<strong>.</strong>-->
                                                 <span class="Apple-converted-space">&amp;nbsp;</span>All non-public,
                                                 confidential or proprietary information of Seller, including but not
                                                 limited to documents, data, business operations, customer lists,
@@ -362,10 +361,10 @@
                                         </li>
                                         <li class="li2">
                                             <strong>
-                                                <span class="s3">FORCE MAJEURE</span>
+                                                <span class="s3">FORCE MAJEURE.</span>
                                             </strong>
                                             <span class="s1">
-                                                <strong>.</strong>
+                                                <!--<strong>.</strong>-->
                                                 <span class="Apple-converted-space">&amp;nbsp;</span>The Seller shall not be
                                                 liable or responsible to Buyer, nor be deemed to have defaulted or
                                                 breached this Agreement, for any failure or delay in fulfilling or
@@ -384,10 +383,10 @@
                                         </li>
                                         <li class="li2">
                                             <strong>
-                                                <span class="s3">RELATIONSHIP OF THE PARTIES</span>
+                                                <span class="s3">RELATIONSHIP OF THE PARTIES.</span>
                                             </strong>
                                             <span class="s1">
-                                                <strong>.</strong>
+                                                <!--<strong>.</strong>-->
                                                 <span class="Apple-converted-space">&amp;nbsp;</span>The relationship
                                                 between the parties is that of independent contractors. Nothing
                                                 contained in this Agreement shall be construed as creating any agency,
@@ -399,10 +398,10 @@
                                         </li>
                                         <li class="li2">
                                             <strong>
-                                                <span class="s3">NO THIRD-PARTY BENEFICIARIES</span>
+                                                <span class="s3">NO THIRD-PARTY BENEFICIARIES.</span>
                                             </strong>
                                             <span class="s1">
-                                                <strong>.</strong>
+                                                <!--<strong>.</strong>-->
                                                 <span class="Apple-converted-space">&amp;nbsp;</span>This Agreement is for
                                                 the sole benefit of the parties hereto and their respective successors
                                                 and permitted assigns and nothing herein, express or implied, is
@@ -413,10 +412,10 @@
                                         </li>
                                         <li class="li2">
                                             <strong>
-                                                <span class="s3">GOVERNING LAW</span>
+                                                <span class="s3">GOVERNING LAW.</span>
                                             </strong>
                                             <span class="s1">
-                                                <strong>.</strong>
+                                                <!--<strong>.</strong>-->
                                                 <span class="Apple-converted-space">&amp;nbsp;</span>All matters arising out
                                                 of or relating to this Agreement is governed by and construed in
                                                 accordance with the internal laws of the Commonwealth of Pennsylvania
@@ -428,10 +427,10 @@
                                         </li>
                                         <li class="li2">
                                             <strong>
-                                                <span class="s3">SUBMISSION TO JURISDICTION</span>
+                                                <span class="s3">SUBMISSION TO JURISDICTION.</span>
                                             </strong>
                                             <span class="s1">
-                                                <strong>.</strong>
+                                                <!--<strong>.</strong>-->
                                                 <span class="Apple-converted-space">&amp;nbsp;</span>Any legal suit, action
                                                 or proceeding arising out of or relating to this Agreement shall be
                                                 instituted in the federal courts of the United States of America or the
@@ -443,10 +442,10 @@
                                         </li>
                                         <li class="li2">
                                             <strong>
-                                                <span class="s3">NOTICES</span>
+                                                <span class="s3">NOTICES.</span>
                                             </strong>
                                             <span class="s1">
-                                                <strong>.</strong>
+                                                <!--<strong>.</strong>-->
                                                 <span class="Apple-converted-space">&amp;nbsp;</span>All notices, request,
                                                 consents, claims, demands, waivers and other communications hereunder
                                                 (each, a "<b>Notice</b>") shall be in writing and addressed to the
@@ -463,10 +462,10 @@
                                         </li>
                                         <li class="li2">
                                             <strong>
-                                                <span class="s3">SEVERABILITY</span>
+                                                <span class="s3">SEVERABILITY.</span>
                                             </strong>
                                             <span class="s1">
-                                                <strong>.</strong>
+                                                <!--<strong>.</strong>-->
                                                 <span class="Apple-converted-space">&amp;nbsp;</span>If any term or
                                                 provision of this Agreement is invalid, illegal or unenforceable in any
                                                 jurisdiction, such invalidity, illegality or unenforceability shall not
@@ -476,12 +475,11 @@
                                         </li>
                                         <li class="li2">
                                             <strong>
-                                                <span class="s3">SURVIVAL</span>
+                                                <span class="s3">SURVIVAL.</span>
                                             </strong>
                                             <span class="s1">
-                                                <strong>.
-                                                    <span class="Apple-converted-space">&amp;nbsp;</span>
-                                                </strong>
+                                                <!--<strong>.
+                                                </strong>--><span class="Apple-converted-space"></span>
                                                 Provisions of these Terms which by their nature should apply beyond
                                                 their terms will remain in force after any termination or expiration of
                                                 this Agreement including, but not limited to, the following provisions:
