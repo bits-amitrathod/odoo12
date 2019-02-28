@@ -14,9 +14,9 @@
                             attrs="{'invisible':['|', '|', ('is_parent', '==', False),('prioritization', '==', False)]}">
                         <span class="o_stat_text">Import Template</span>
                     </button>
-                    <button class="oe_stat_button" name="action_gl_account" type="object" icon="fa-child">
+                    <!--<button class="oe_stat_button" name="action_gl_account" type="object" icon="fa-child">
                         <span class="o_stat_text">GL Account</span>
-                    </button>
+                    </button>-->
                 </button>
                 <field name="vat" position="after">
                     <field name="sku_preconfig" attrs="{'readonly':[('is_parent', '==', False)]}"
@@ -234,7 +234,7 @@
                 </xpath>
                 <xpath expr="/form/sheet/notebook/page[1]/field[@name='child_ids']/form[1]/sheet/group/group[2]/field[@name='name']"
                        position="after">
-                    <field name="gl_account" placeholder=" GL Account No.." />
+                    <field name="gl_account" placeholder=" GL Account No.." widget="one2many"/>
                 </xpath>
             </field>
         </record>
@@ -276,6 +276,15 @@
                 <tree string="GL Account setting">
                    <field name="name"/>
                 </tree>
+            </field>
+        </record>
+        <record id="view_glaccount_setting_form" model="ir.ui.view">
+            <field name="name">gl.account.form</field>
+            <field name="model">gl.account</field>
+            <field name="arch" type="xml">
+                <form string="GL Account setting">
+                   <field name="name"/>
+                </form>
             </field>
         </record>
 
