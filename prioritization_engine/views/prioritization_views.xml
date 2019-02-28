@@ -278,6 +278,15 @@
                 </tree>
             </field>
         </record>
+        <record id="view_glaccount_setting_form" model="ir.ui.view">
+            <field name="name">gl.account.form</field>
+            <field name="model">gl.account</field>
+            <field name="arch" type="xml">
+                <form string="GL Account setting">
+                   <field name="name"/>
+                </form>
+            </field>
+        </record>
 
         <record id="action_notification_setting" model="ir.actions.act_window">
             <field name="name">Notification Setting</field>
