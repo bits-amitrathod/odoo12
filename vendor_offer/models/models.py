@@ -140,8 +140,18 @@ class VendorOffer(models.Model):
         if len(multi) >= 1:
             return multi.do_unreserve()
 
-    def test_00_purchase_order_flow(self):
-        pass
+    @api.multi
+    def copy(self, default=None):
+        if self.vendor_offer_data :
+            default = {
+                'state': 'ven_draft',
+                'vendor_offer_data': True,
+                'revision': '1',
+                'revision_date': fields.Datetime.now()
+            }
+        new_po = super(VendorOffer, self).copy(default=default)
+        # vals['state'] = 'ven_draft'
+        return new_po
 
     @api.onchange('appraisal_no')
     def _default_appraisal_no(self):
@@ -385,9 +395,10 @@ class VendorOfferProduct(models.Model):
     _inherit = "purchase.order.line"
     _description = "Vendor Offer Product"
 
-    product_tier = fields.Many2one('tier.tier', string="Tier",compute='onchange_product_id_vendor_offer')
-    sku_code = fields.Char('Product SKU',compute='onchange_product_id_vendor_offer', store=False)
-    product_brand_id = fields.Many2one('product.brand', string='Manufacture',compute='onchange_product_id_vendor_offer',
+    product_tier = fields.Many2one('tier.tier', string="Tier", compute='onchange_product_id_vendor_offer')
+    sku_code = fields.Char('Product SKU', compute='onchange_product_id_vendor_offer', store=False)
+    product_brand_id = fields.Many2one('product.brand', string='Manufacture',
+                                       compute='onchange_product_id_vendor_offer',
                                        help='Select a Manufacture for this product', store=False)
     product_sales_count = fields.Integer(string="Sales Count All", readonly=True,
                                          compute='onchange_product_id_vendor_offer', store=True)
@@ -576,6 +587,7 @@ class VendorOfferProduct(models.Model):
                     'price_tax': sum(t.get('amount', 0.0) for t in taxes.get('taxes', [])),
                     'price_subtotal': taxes['total_excluded'],
                     'price_total': taxes['total_included'],
+                    # 'price_unit': line.product_offer_price,
 
                     'rt_price_tax': sum(t.get('amount', 0.0) for t in taxes1.get('taxes', [])),
                     'product_retail': taxes1['total_excluded'],
