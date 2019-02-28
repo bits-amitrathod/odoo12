@@ -89,7 +89,7 @@
                     <table class="table table-striped table-condensed js_cart_lines" id="cart_products">
                         <thead>
                             <tr>
-                                <th class="text-center td-qty">Req no</th>
+                                <!--<th class="text-center td-qty">Req no</th>-->
                                 <th class="td-img">Product</th>
                                 <th></th>
                                 <th class="text-center td-qty">Quantity</th>
@@ -102,9 +102,9 @@
                             <t t-foreach="page" t-as="layout_category">
                                 <t t-foreach="layout_category['lines']" t-as="line">
                                     <tr>
-                                        <td class="text-center" name="Req no">
+                                       <!-- <td class="text-center" name="Req no">
                                             <div t-field="line.req_no"/>
-                                        </td>
+                                        </td>-->
                                         <td colspan="2" t-if="not line.product_id.product_tmpl_id" class='td-img'></td>
                                         <td align="center" t-if="line.product_id.product_tmpl_id" class='td-img'>
                                             <span t-field="line.product_id.image_small"
@@ -190,7 +190,7 @@
                     <table class="table wq-table">
                         <thead>
                             <tr>
-                                <th class="text-center td-qty">Req no</th>
+                                <!--<th class="text-center td-qty">Req no</th>-->
                                 <th>Products</th>
                                 <th>Quantity</th>
                                 <th>
@@ -221,9 +221,9 @@
                                 <!-- Lines associated -->
                                 <t t-foreach="layout_category['lines']" t-as="line">
                                     <tr>
-                                         <td class="text-center" name="Req no">
+                                        <!-- <td class="text-center" name="Req no">
                                             <div t-field="line.req_no"/>
-                                        </td>
+                                        </td>-->
                                         <td>
                                             <span t-field="line.name"/>
                                         </td>
@@ -655,7 +655,8 @@
                                       </t>
                                     <div class="modal-body">
                                         <p>
-                                            Give your feedback, this will help us improve our services.
+                                           Your Order will be shipped Ground unless otherwise stated. If expedited shipping is needed, Please indicate below:
+                                            (First Overnight by 8:30AM / Priority Overnight by 10:30AM /2nd day AM by 10:30 AM /2nd Day /3rd Day)
                                         </p>
                                         <textarea rows="4" name="accept_message" placeholder="Your feedback....."
                                                   class="form-control"/>

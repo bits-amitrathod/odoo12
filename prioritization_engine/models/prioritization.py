@@ -352,6 +352,6 @@ class GLAccount(models.Model):
         ('name', 'unique(name)', 'GL Account already exists'),
     ]
     name = fields.Char(string='GL Account', required=True, translate=True)
-    partner_id=fields.Many2one('res.partner',string='Partner',required=True)
+    partner_id=fields.Many2one('res.partner',string='Partner')
 
 
