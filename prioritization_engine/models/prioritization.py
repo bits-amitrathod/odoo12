@@ -104,7 +104,7 @@ class Customer(models.Model):
     def action_gl_account(self):
         action = self.env.ref('prioritization_engine.action_glaccount_setting').read()[0]
         action['domain'] = [('partner_id', '=', self.id)]
-        action['context'] = [('partner_id', '=', self.id)]
+        action['context'] = {'default_partner_id': self.id}
         return action
 
     def action_view_import(self):
@@ -352,4 +352,6 @@ class GLAccount(models.Model):
         ('name', 'unique(name)', 'GL Account already exists'),
     ]
     name = fields.Char(string='GL Account', required=True, translate=True)
-    partner_id=fields.Many2one('res.partner',string='Partner')
+    partner_id=fields.Many2one('res.partner',string='Partner',required=True)
+
+
