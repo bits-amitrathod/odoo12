@@ -154,8 +154,8 @@ class PrioritizationEngine(models.TransientModel):
             required_quantity = allocate_inventory_product_quantity
             remaining_product_allocation_quantity = allocate_inventory_product_quantity
         else:
-            required_quantity = prioritization_engine_request['required_quantity']
-            remaining_product_allocation_quantity = prioritization_engine_request['required_quantity']
+            required_quantity = prioritization_engine_request['updated_quantity']
+            remaining_product_allocation_quantity = prioritization_engine_request['updated_quantity']
         for product_lot in filter_available_product_lot_dict.get(prioritization_engine_request['product_id'],{}):
             _logger.debug('**** %r',product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity'))
 
@@ -258,7 +258,7 @@ class PrioritizationEngine(models.TransientModel):
 
             # Update updated_quantity
             if prioritization_engine_request['template_type'].lower().strip() == 'requirement':
-                prioritization_engine_request['updated_quantity'] = 0
+                self.env['sps.customer.requests'].search([('id', '=', prioritization_engine_request['customer_request_id'])]).write({'updated_quantity': remaining_product_allocation_quantity})
 
         elif remaining_product_allocation_quantity > 0 and remaining_product_allocation_quantity != required_quantity:
             _logger.debug(str(" Allocated Partial order product."))
@@ -274,13 +274,13 @@ class PrioritizationEngine(models.TransientModel):
             prioritization_engine_request['customer_request_logs'] += ' Allocated Partial order product.'
             self.update_customer_request_status(prioritization_engine_request, 'Partial')
 
-            if prioritization_engine_request['uom_flag'].lower().strip() == 'false':
+            if prioritization_engine_request['uom_flag'] == 'false':
                 if prioritization_engine_request['partial_uom'] == 'false':
                     prioritization_engine_request['customer_request_logs'] += ' Partial UOM flag is False.'
                     _logger.debug('Partial UOM is False')
             # Update updated_quantity
             if prioritization_engine_request['template_type'].lower().strip() == 'requirement':
-                prioritization_engine_request['updated_quantity'] = remaining_product_allocation_quantity
+                self.env['sps.customer.requests'].search([('id', '=', prioritization_engine_request['customer_request_id'])]).write({'updated_quantity':remaining_product_allocation_quantity})
 
     # update customer status
     def update_customer_request_status(self,prioritization_engine_request,status):
