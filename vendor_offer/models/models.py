@@ -142,16 +142,17 @@ class VendorOffer(models.Model):
 
     @api.multi
     def copy(self, default=None):
-        if self.vendor_offer_data :
+        if self.vendor_offer_data:
+            self = self.with_context(vendor_offer_data=True)
             default = {
                 'state': 'ven_draft',
                 'vendor_offer_data': True,
                 'revision': '1',
+                'appraisal_no': 'AP' + str(randint(11111, 99999)),
                 'revision_date': fields.Datetime.now()
             }
         new_po = super(VendorOffer, self).copy(default=default)
-        # vals['state'] = 'ven_draft'
-        return new_po
+        return new_po.with_context(vendor_offer_data=True)
 
     @api.onchange('appraisal_no')
     def _default_appraisal_no(self):
