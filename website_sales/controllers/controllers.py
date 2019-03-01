@@ -84,6 +84,6 @@ class WebsiteSales(WebsiteSale):
     def payment_confirmation(self, **post):
         responce = super(WebsiteSales, self).payment_confirmation(**post)
         responce.qcontext['order'].workflow_process_id = 1
-        template = request.env.ref('website_sales.common_mail_template')
-        template.send_mail(responce.qcontext['order'].id, raise_exception=True, force_send=True)
+        template = request.env.ref('website_sales.common_mail_template').sudo()
+        template.send_mail(responce.qcontext['order'].id, force_send=True)
         return responce
