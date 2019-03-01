@@ -35,12 +35,12 @@ class ReportSaleOrderLineGroupByProduct(models.AbstractModel):
                              sale_order.name,
                             to_char(sale_order.date_order,'MM/DD/YYYY'),
                             product_template.sku_code,
-                            CAST (sale_order_line.product_uom_qty as text),
-                            CAST (sale_order.amount_total as text),
+                            CAST (concat(cast(round(sale_order_line.product_uom_qty) as text),'  ',product_uom.name) as text),
+                            CAST (sale_order_line.price_subtotal as text),
                             CAST (sale_order_line.currency_id as text)
                         ]) as table
                     FROM 
-                      public.sale_order_line, 
+                      public.sale_order_line left join  public.product_uom on  public.product_uom.id= public.sale_order_line.product_uom, 
                       public.sale_order, 
                       public.product_product, 
                       public.product_template
