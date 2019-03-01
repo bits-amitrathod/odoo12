@@ -86,6 +86,9 @@ class SpsTransientBaseImport(models.TransientModel):
             if template_type.lower().strip() == 'requirement' and 'required_quantity' not in import_fields:
                 raise ValueError(_("You must configure Required Quantity field to import"))
 
+            if template_type.lower().strip() == 'requirement' and 'uom' not in import_fields:
+                raise ValueError(_("You must configure UOM field to import"))
+
             self._cr.execute('SAVEPOINT import')
             if len(col) == 1:
                 resource_model = self.env[parent_model]
