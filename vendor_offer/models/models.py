@@ -633,14 +633,8 @@ class ClassCode(models.Model):
 class ProductTemplateTire(models.Model):
     _inherit = 'product.template'
 
-    tier = fields.Many2one('tier.tier', string="Tier")
+    tier = fields.Many2one('tier.tier', string="Tier", default=2)
     class_code = fields.Many2one('classcode.classcode', string="Class Code")
-
-    @api.model
-    def create(self, vals):
-        vals['tier'] = 2
-        record = super(ProductTemplateTire, self).create(vals)
-        return record
 
 
 # ------------------ NOTE ACTIVITY -----------------
