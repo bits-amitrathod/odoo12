@@ -17,10 +17,7 @@ class TrendingReportListPopUp(models.TransientModel):
     def open_table(self):
         tree_view_id = self.env.ref('packing_list.view_inv_all_packing_list_tree').id
         x_res_model = 'stock.picking'
-        pull_location_id = self.env['stock.location'].search([('name', '=', 'Pull Zone')]).id
-        if not pull_location_id or pull_location_id is None:
-            pull_location_id = self.env['stock.location'].search([('name', '=', 'Packing Zone')]).id
-
+        pull_location_id = self.env['stock.location'].search([('name', '=', 'Customers')]).id
         select_query = """ SELECT  ARRAY_AGG(DISTINCT sp.id) as id 
                       from  stock_picking sp  
                              LEFT JOIN stock_move_line sml ON sml.picking_id=sp.id

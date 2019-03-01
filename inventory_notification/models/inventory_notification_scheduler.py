@@ -26,11 +26,12 @@ class InventoryNotificationScheduler(models.TransientModel):
     @api.multi
     def process_notification_scheduler(self):
         _logger.info("process_notification_scheduler called")
+        self.process_in_stock_scheduler()
         self.process_new_product_scheduler()
         self.process_notify_available()
         self.process_packing_list()
         self.process_on_hold_customer()
-        self.process_in_stock_scheduler()
+
 
     def pick_notification_for_customer(self,picking):
         Stock_Moves = self.env['stock.move'].search([('picking_id','=',picking.id)])
@@ -40,7 +41,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         for stock_move in Stock_Moves:
             sale_order={
                   'sales_order':picking.sale_id.name,
-                  'sku':stock_move.product_id.product_tmpl_id.default_code,
+                  'sku':stock_move.product_id.product_tmpl_id.sku_code,
                   'Product':stock_move.product_id.name,
                   'qty':stock_move.product_qty
             }
@@ -62,7 +63,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         for stock_move in Stock_Moves:
             sale_order={
                   'sales_order':picking.sale_id.name,
-                  'sku':stock_move.product_id.product_tmpl_id.default_code,
+                  'sku':stock_move.product_id.product_tmpl_id.sku_code,
                   'Product':stock_move.product_id.name,
                   'qty':stock_move.product_qty
             }
@@ -87,7 +88,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         for stock_move in Stock_Moves:
             sale_order={
                   'sales_order':picking.sale_id.name,
-                  'sku':stock_move.product_id.product_tmpl_id.default_code,
+                  'sku':stock_move.product_id.product_tmpl_id.sku_code,
                   'Product':stock_move.product_id.name,
                   'qty':stock_move.product_qty
             }
@@ -112,7 +113,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         for stock_move in Stock_Moves:
             sale_order={
                   'sales_order':picking.sale_id.name,
-                  'sku':stock_move.product_id.product_tmpl_id.default_code,
+                  'sku':stock_move.product_id.product_tmpl_id.sku_code,
                   'Product':stock_move.product_id.name,
                   'qty':stock_move.product_qty
             }
@@ -423,7 +424,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         descrption = "Please find below the list items which are back in stock now in SPS Inventory."
         header = ['SKU Code','Name', 'Sales Price', 'Cost', 'Product Type', 'Min Expiration Date', 'Max Expiration Date',
                   'Qty On Hand', 'Forecasted Quantity', 'Unit Of Measure']
-        columnProps = ['sku_code','product_name', 'sale_price', 'standard_price', 'product_type', 'minExDate', 'maxExDate',
+        columnProps = ['sku_code','product_name', 'sale_price', 'standard_price', 'product_type', 'minExpDate', 'maxExpDate',
                        'qty_on_hand', 'forecasted_qty', 'unit_of_measure']
         self.process_common_product_scheduler(subject, descrption, products, header, columnProps)
         quant = self.env['stock.quant'].search(
@@ -551,14 +552,14 @@ class InventoryNotificationScheduler(models.TransientModel):
             erro_msg="mail sending fail for email id: %r" + vals['email_to_user'].email +" sending error report to admin"
             _logger.info(erro_msg)
             print("mail sending fail for email id: " + vals['email_to_user'].email +" sending error report to admin")
-            subject= "mail send fail for user "+ vals['email_to_user'].email + " (Subject: "+vals['subject']
-            cache_context = {'products': vals['product_list'], 'headers': vals['headers'],
-                             'columnProps': vals['coln_name'],
-                             'email_from': vals['email_from_user'].email, 'email_to': vals['email_from_user'].email,
-                             'subject': subject,
-                             'descrption': vals['description']}
+            # subject= "mail send fail for user "+ vals['email_to_user'].email + " (Subject: "+vals['subject']
+            # cache_context = {'products': vals['product_list'], 'headers': vals['headers'],
+            #                  'columnProps': vals['coln_name'],
+            #                  'email_from': vals['email_from_user'].email, 'email_to': vals['email_from_user'].email,
+            #                  'subject': subject,
+            #                  'descrption': vals['description']}
             try:
-                vals['template'].with_context(cache_context).send_mail(SUPERUSER_ID, raise_exception=True,force_send=True)
+                # vals['template'].with_context(cache_context).send_mail(SUPERUSER_ID, raise_exception=True,force_send=True)
                 vals['template'].with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True)
             except:
                 _logger.info("mail sending fail for email id: %r" , vals['email_to_user'].email)

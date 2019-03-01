@@ -140,8 +140,18 @@ class VendorOffer(models.Model):
         if len(multi) >= 1:
             return multi.do_unreserve()
 
-    def test_00_purchase_order_flow(self):
-        pass
+    @api.multi
+    def copy(self, default=None):
+        if self.vendor_offer_data :
+            default = {
+                'state': 'ven_draft',
+                'vendor_offer_data': True,
+                'revision': '1',
+                'revision_date': fields.Datetime.now()
+            }
+        new_po = super(VendorOffer, self).copy(default=default)
+        # vals['state'] = 'ven_draft'
+        return new_po
 
     @api.onchange('appraisal_no')
     def _default_appraisal_no(self):
@@ -383,10 +393,13 @@ class VendorOffer(models.Model):
 
 class VendorOfferProduct(models.Model):
     _inherit = "purchase.order.line"
-    _inherits = {'product.product': 'product_id'}
     _description = "Vendor Offer Product"
 
-    product_tier = fields.Many2one('tier.tier', string="Tier")
+    product_tier = fields.Many2one('tier.tier', string="Tier", compute='onchange_product_id_vendor_offer')
+    sku_code = fields.Char('Product SKU', compute='onchange_product_id_vendor_offer', store=False)
+    product_brand_id = fields.Many2one('product.brand', string='Manufacture',
+                                       compute='onchange_product_id_vendor_offer',
+                                       help='Select a Manufacture for this product', store=False)
     product_sales_count = fields.Integer(string="Sales Count All", readonly=True,
                                          compute='onchange_product_id_vendor_offer', store=True)
     product_sales_count_month = fields.Integer(string="Sales Count Month", readonly=True,
@@ -398,7 +411,8 @@ class VendorOfferProduct(models.Model):
     qty_in_stock = fields.Integer(string="Quantity In Stock", readonly=True, compute='onchange_product_id_vendor_offer',
                                   store=True)
     expiration_date = fields.Datetime(string="Expiration Date", readonly=True, )
-    expired_inventory = fields.Char(string="Expired Inventory Items", compute='onchange_product_id_vendor_offer', readonly=True,
+    expired_inventory = fields.Char(string="Expired Inventory Items", compute='onchange_product_id_vendor_offer',
+                                    readonly=True,
                                     store=True)
     multiplier = fields.Many2one('multiplier.multiplier', string="Multiplier")
 
@@ -428,6 +442,8 @@ class VendorOfferProduct(models.Model):
     @api.depends('product_id')
     def onchange_product_id_vendor_offer(self):
         for line in self:
+            line.product_tier = line.product_id.product_tmpl_id.tier
+
             if line.env.context.get('vendor_offer_data') or line.state == 'ven_draft' or line.state == 'ven_sent':
                 result1 = {}
                 if not line.product_id:
@@ -480,7 +496,7 @@ class VendorOfferProduct(models.Model):
 
                 line.qty_in_stock = line.product_id.qty_available
                 if line.multiplier.id == False:
-                    if line.tier.code == False:
+                    if line.product_tier.code == False:
                         multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'out of scope')])
                         line.multiplier = multiplier_list.id
                     elif line.product_sales_count == 0:
@@ -493,10 +509,10 @@ class VendorOfferProduct(models.Model):
                     elif line.product_id.product_tmpl_id.premium == True:
                         multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'premium')])
                         line.multiplier = multiplier_list.id
-                    elif line.tier.code == '1':
+                    elif line.product_tier.code == '1':
                         multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 't1 good 45')])
                         line.multiplier = multiplier_list.id
-                    elif line.tier.code == '2':
+                    elif line.product_tier.code == '2':
                         multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 't2 good 35')])
                         line.multiplier = multiplier_list.id
 
@@ -508,7 +524,9 @@ class VendorOfferProduct(models.Model):
                     # line.product_unit_price = line.list_price
 
                 self.expired_inventory_cal(line)
-                line.product_tier = line.product_id.tier
+
+            line.sku_code = line.product_id.product_tmpl_id.sku_code
+            line.product_brand_id = line.product_id.product_tmpl_id.product_brand_id
 
     def expired_inventory_cal(self, line):
         expired_lot_count = 0
@@ -525,7 +543,10 @@ class VendorOfferProduct(models.Model):
     def cal_offer_price(self):
         for line in self:
             multiplier_list = line.multiplier
-            product_unit_price = math.ceil(round(float(line.list_price) * (float(multiplier_list.retail) / 100), 2))
+            # Added to fix inhirit issue
+
+            product_unit_price = math.ceil(
+                round(float(line.product_id.list_price) * (float(multiplier_list.retail) / 100), 2))
             product_offer_price = round(float(product_unit_price) * (
                     float(multiplier_list.margin) / 100 + float(line.possible_competition.margin) / 100))
             margin = 0
@@ -566,6 +587,7 @@ class VendorOfferProduct(models.Model):
                     'price_tax': sum(t.get('amount', 0.0) for t in taxes.get('taxes', [])),
                     'price_subtotal': taxes['total_excluded'],
                     'price_total': taxes['total_included'],
+                    # 'price_unit': line.product_offer_price,
 
                     'rt_price_tax': sum(t.get('amount', 0.0) for t in taxes1.get('taxes', [])),
                     'product_retail': taxes1['total_excluded'],
@@ -608,10 +630,10 @@ class ClassCode(models.Model):
     name = fields.Char(string="Class Code", required=True)
 
 
-class ProductTemplate(models.Model):
+class ProductTemplateTire(models.Model):
     _inherit = 'product.template'
 
-    tier = fields.Many2one('tier.tier', string="Tier")
+    tier = fields.Many2one('tier.tier', string="Tier", default=2)
     class_code = fields.Many2one('classcode.classcode', string="Class Code")
 
 

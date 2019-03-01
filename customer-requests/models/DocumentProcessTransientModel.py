@@ -90,7 +90,7 @@ class DocumentProcessTransientModel(models.TransientModel):
                 high_priority_requests = []
                 for req in requests:
                     high_priority_product = False
-                    customer_sku = DocumentProcessTransientModel.cleaning_code(req['customer_sku'])
+                    customer_sku = req['customer_sku']
                     product_sku = customer_sku
                     sku_preconfig_flag = False
                     if user_model.sku_preconfig and product_sku:
@@ -125,7 +125,9 @@ class DocumentProcessTransientModel(models.TransientModel):
                         if sku_postconfig_flag:
                             product_sku = product_sku[:-len(user_model.sku_postconfig)]
 
+                    product_sku = DocumentProcessTransientModel.cleaning_code(product_sku)
                     _logger.info('customer_sku %r product sku %r', customer_sku, product_sku)
+
 
                     self.env.cr.execute("""
                            select * from 

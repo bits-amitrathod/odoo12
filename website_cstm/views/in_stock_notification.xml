@@ -12,7 +12,7 @@
 
         <menuitem id="menu_product_instock_notification" name="Website Product Notification"
                   action="action_product_instock_notification"
-                  parent="stock.menu_stock_warehouse_mgmt" sequence="10"/>
+                  parent="website_sale.menu_orders" sequence="5"/>
 
         <!-- LIST VIEW -->
         <record model="ir.ui.view" id="website_cstm.list">
