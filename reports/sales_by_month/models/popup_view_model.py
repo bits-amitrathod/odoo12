@@ -54,7 +54,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
             'target': 'main'
         }
         if self.product_sku_code:
-            action['domain'].append(('sku_code', 'ilike', self.product_sku_code.sku_code))
+            action['domain'].append(('sku_code', '=', self.product_sku_code.sku_code))
 
         return action
 
