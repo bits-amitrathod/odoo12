@@ -166,11 +166,11 @@ class DocumentProcessTransientModel(models.TransientModel):
                             req.update(dict(product_id=sps_product_id, status='New'))
 
                         # calculate product quantity
-                        updated_qty = self._get_updated_qty(req,template_type_from_user)
+                        updated_qty = self._get_updated_qty(req,template_type)
                         if updated_qty != 0:
                             req.update(dict(updated_quantity=updated_qty))
                         # set uom flag, if uom_flag is false then check the partial_uom flag
-                        if req['uom'].lower().strip() in ['e','ea','eac','each','un','unit','unit(s)']:
+                        if req['uom'].lower().strip() in ['e','ea','eac','each','u','un','unit','unit(s)']:
                             req.update(dict(uom_flag=True))
                         else:
                             req.update(dict(uom_flag=False))
@@ -194,14 +194,14 @@ class DocumentProcessTransientModel(models.TransientModel):
             response = dict(errorCode=2, message='Invalid File extension')
         return response
 
-    def _get_updated_qty(self, req, template_type_from_user):
+    def _get_updated_qty(self, req, template_type):
         _logger.info('_get_updated_qty, Template type from user : ')
-        _logger.info(template_type_from_user)
-        if template_type_from_user.lower().strip() == "requirement":
+        _logger.info(template_type)
+        if template_type.lower().strip() == "requirement":
             req_qty = req['required_quantity']
             # get product
             product = self.env['product.template'].search([('id', '=', req['product_id'])])
-            uom = self.env['product.uom'].search([('name', '=', 'Each')])
+            uom = self.env['product.uom'].search([('name', 'ilike', 'Unit')])
             updated_qty = product.manufacturer_uom._compute_quantity(float(req_qty), uom)
             return updated_qty
         else:

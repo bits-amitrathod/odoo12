@@ -176,17 +176,8 @@ class PrioritizationEngine(models.TransientModel):
                                 product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity']) + int(product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'])
                                 product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'] = 0
                             else:
-                                product = self.env['product.template'].search([('id', '=', prioritization_engine_request['product_id'])])
-                                uom = self.env['product.uom'].search([('name', '=', 'Each')])
-                                if product.manufacturer_uom.uom_type == 'bigger':
-                                    uom_factor = product.manufacturer_uom.factor_inv
-                                elif product.manufacturer_uom.uom_type == 'smaller':
-                                    uom_factor = product.manufacturer_uom.factor
-                                else:
-                                    uom_factor = 1
 
-                                ratio = int(product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity']/uom_factor)
-                                allocate_qty_by_partial_uom = int(product.manufacturer_uom._compute_quantity(float(ratio), uom))
+                                allocate_qty_by_partial_uom = self._get_quantity_by_partial_uom(product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'], prioritization_engine_request)
 
                                 product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity']) + int(allocate_qty_by_partial_uom)
                                 product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity']) - int(allocate_qty_by_partial_uom)
@@ -215,17 +206,7 @@ class PrioritizationEngine(models.TransientModel):
 
                                 break
                             else:
-                                product = self.env['product.template'].search([('id', '=', prioritization_engine_request['product_id'])])
-                                uom = self.env['product.uom'].search([('name', '=', 'Each')])
-                                if product.manufacturer_uom.uom_type == 'bigger':
-                                    uom_factor = product.manufacturer_uom.factor_inv
-                                elif product.manufacturer_uom.uom_type == 'smaller':
-                                    uom_factor = product.manufacturer_uom.factor
-                                else:
-                                    uom_factor = 1
-
-                                ratio = int(product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'] / uom_factor)
-                                allocate_qty_by_partial_uom = int(product.manufacturer_uom._compute_quantity(float(ratio),uom))
+                                allocate_qty_by_partial_uom = self._get_quantity_by_partial_uom(product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'], prioritization_engine_request)
 
                                 product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity']) + int(allocate_qty_by_partial_uom)
                                 product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity']) - int(allocate_qty_by_partial_uom)
@@ -281,6 +262,21 @@ class PrioritizationEngine(models.TransientModel):
             # Update updated_quantity
             if prioritization_engine_request['template_type'].lower().strip() == 'requirement':
                 self.env['sps.customer.requests'].search([('id', '=', prioritization_engine_request['customer_request_id'])]).write({'updated_quantity':remaining_product_allocation_quantity})
+
+    #get quantitty by partial uom flag
+    def _get_quantity_by_partial_uom(self, available_quantity, prioritization_engine_request):
+        product = self.env['product.template'].search([('id', '=', prioritization_engine_request['product_id'])])
+        uom = self.env['product.uom'].search([('name', 'ilike', 'Unit')])
+        if product.manufacturer_uom.uom_type == 'bigger':
+            uom_factor = product.manufacturer_uom.factor_inv
+        elif product.manufacturer_uom.uom_type == 'smaller':
+            uom_factor = product.manufacturer_uom.factor
+        else:
+            uom_factor = 1
+
+        ratio = int(available_quantity / uom_factor)
+        allocate_qty_by_partial_uom = int(product.manufacturer_uom._compute_quantity(float(ratio), uom))
+        return allocate_qty_by_partial_uom
 
     # update customer status
     def update_customer_request_status(self,prioritization_engine_request,status):
@@ -463,7 +459,7 @@ class PrioritizationEngine(models.TransientModel):
             inventory_quantity = prioritization_engine_request['quantity']
         else:
             product = self.env['product.template'].search([('id', '=', prioritization_engine_request['product_id'])])
-            uom = self.env['product.uom'].search([('name', '=', 'Each')])
+            uom = self.env['product.uom'].search([('name', 'ilike', 'Unit')])
             min_threshold = product.manufacturer_uom._compute_quantity(float(prioritization_engine_request['min_threshold']), uom)
             max_threshold = product.manufacturer_uom._compute_quantity(float(prioritization_engine_request['max_threshold']), uom)
             inventory_quantity = product.manufacturer_uom._compute_quantity(float(prioritization_engine_request['quantity']), uom)
@@ -480,7 +476,7 @@ class PrioritizationEngine(models.TransientModel):
 
 
         if int(inventory_quantity) < int(min_threshold):
-            allocate_quantity = int(max_threshold) - int(prioritization_engine_request['quantity'])
+            allocate_quantity = int(max_threshold) - int(inventory_quantity)
             return True,allocate_quantity
         else:
             self.update_customer_request_status(prioritization_engine_request, 'Inprocess')
