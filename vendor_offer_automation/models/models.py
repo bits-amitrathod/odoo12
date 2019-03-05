@@ -76,10 +76,6 @@ class vendor_offer_automation(models.Model):
                         quantity_index = excel_columns.index(mapping_fields['mf_quantity'])
 
                     if not sku_index is None:
-                        product_uom_id = 6
-                        product_uom = self.env['product.uom'].search([('name', '=', 'Each')])
-                        if len(product_uom) == 1:
-                            product_uom_id = product_uom[0].id
                         todays_date = datetime.datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
                         product_skus = []
                         excel_data_rows = vendor_offer_automation._read_xls_book(book, pricing_index, read_data=True,
@@ -97,7 +93,7 @@ class vendor_offer_automation(models.Model):
                             if not sku_code in product_skus:
                                 self.env.cr.execute("""
                                     select * from 
-                                        (SELECT id,list_price, name, premium, tier, regexp_replace(manufacturer_pref , '[^A-Za-z0-9.]', '','g') as manufacturer_pref, 
+                                        (SELECT id,list_price,uom_id, name, premium, tier, regexp_replace(manufacturer_pref , '[^A-Za-z0-9.]', '','g') as manufacturer_pref, 
                                           regexp_replace(sku_code , '[^A-Za-z0-9.]', '','g') as sku_code_cleaned 
                                           FROM product_template) 
                                     as temp_data where sku_code_cleaned ='""" + re.sub(r'[^A-Za-z0-9.]', '', product_sku) + """' or manufacturer_pref = '""" + re.sub(r'[^A-Za-z0-9.]', '', sku_code) + """' """)
@@ -109,7 +105,7 @@ class vendor_offer_automation(models.Model):
                                     if len(products) > 0:
                                         order_line_obj = dict(name=query_result['name'], product_qty=1,
                                                               date_planned=todays_date, state='ven_draft',
-                                                              product_uom=product_uom_id,
+                                                              product_uom=query_result['uom_id'],
                                                               product_tier=query_result['tier'],
                                                               order_id=self.id,
                                                               product_id=products[0].id,

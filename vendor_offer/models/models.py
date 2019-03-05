@@ -141,6 +141,19 @@ class VendorOffer(models.Model):
             return multi.do_unreserve()
 
     @api.multi
+    def action_duplicate_vendor_offer(self):
+        new_po = self.copy()
+        return {
+            'name': 'Requests for Vendor Offer',
+            'view_mode': 'form',
+            'view_id': self.env.ref('vendor_offer.view_vendor_offer_form').id,
+            'res_model': 'purchase.order',
+            'context': "{'vendor_offer_data': True}",
+            'type': 'ir.actions.act_window',
+            'res_id': new_po.id,
+        }
+
+    @api.multi
     def copy(self, default=None):
         if self.vendor_offer_data:
             self = self.with_context(vendor_offer_data=True)

@@ -160,8 +160,8 @@
                 <data>
                     <xpath expr="//form[1]/sheet[1]/notebook[1]" position="inside">
                         <page name="studio_page_ptSZN" string="Notes">
-                           <field name="notes_activity"
-                                       attrs="{'readonly': True}"/>
+                            <field name="notes_activity"
+                                   attrs="{'readonly': True}"/>
                         </page>
                     </xpath>
                 </data>
@@ -181,7 +181,7 @@
                         <field name="carrier_id"/>
                         <field name="product_packaging"/>
                         <field name="weight" class="oe_inline"/>
-                        <field name="package_count" />
+                        <field name="package_count"/>
                     </group>
                     <footer>
                         <button name="action_tracking" string="Generate Shipping Label" type="object"
@@ -219,10 +219,14 @@
                                 context="{'vendor_offer_data': True}" string="Confirm Order" type="object"/>
                         <button name="action_cancel_vendor_offer" states="ven_draft,ven_sent" string="Cancel"
                                 type="object"/>
-                        <button name="%(vendor_offer.action_purchase_order_edit_note)d" type="action" context="{'isFooterInvisible':False}"
+                        <button name="%(vendor_offer.action_purchase_order_edit_note)d" type="action"
+                                context="{'isFooterInvisible':False}"
                                 string="Add Note"/>
                         <field name="status" widget="statusbar" statusbar_visible="ven_draft,ven_sent,purchase"
                                readonly="1"/>
+                        <field name="vendor_offer_data" invisible="1"/>
+                        <button name="action_duplicate_vendor_offer" type="object" string="Duplicate Vendor Offer"
+                                attrs="{'invisible':[('vendor_offer_data', '=',  False)]}"/>
                         <button string="Shipping Label"
                                 type="action" class="btn-primary"
                                 name="%(action_view_tracking_text)d"
@@ -434,8 +438,11 @@
                 <button name="button_unlock" position="after">
                     <field name="status_ven" invisible="1"/>
                     <!--<button name="action_validate"  attrs="{'invisible': ['|', ('show_validate', '=', False),('state', 'not in', 'purchase')]}"  string="Validate" groups="stock.group_stock_user" type="object" class="oe_highlight"/>-->
-                     <button name="%(vendor_offer.action_purchase_order_edit_note)d" type="action" context="{'isFooterInvisible':False}"
-                                string="Add Note"/>
+                    <button name="%(vendor_offer.action_purchase_order_edit_note)d" type="action"
+                            context="{'isFooterInvisible':False}"
+                            string="Add Note"/>
+                    <button name="action_duplicate_vendor_offer" type="object"
+                            string="Duplicate Vendor Offer" attrs="{'invisible': [('vendor_offer_data','=',False)]}"/>
                     <button string="Shipping Label"
                             type="action" class="btn-primary"
                             name="%(action_view_tracking_text)d"
@@ -448,9 +455,10 @@
                     <field name="origin" string="Sale Order#"/>
                 </xpath>
                 <xpath expr="//group/group/field[@name='company_id']" position="after">
-                    <field name="carrier_info"></field>
-                    <field name="carrier_acc_no"></field>
-                    <field name="shipping_terms"></field>
+                    <field name="carrier_info"/>
+                    <field name="carrier_acc_no"/>
+                    <field name="shipping_terms"/>
+
 
                 </xpath>
                 <xpath expr="//group/group/field[@name='partner_ref']" position="after">
