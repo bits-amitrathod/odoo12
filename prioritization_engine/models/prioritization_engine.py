@@ -267,6 +267,8 @@ class PrioritizationEngine(models.TransientModel):
     def _get_quantity_by_partial_uom(self, available_quantity, prioritization_engine_request):
         product = self.env['product.template'].search([('id', '=', prioritization_engine_request['product_id'])])
         uom = self.env['product.uom'].search([('name', 'ilike', 'Unit')])
+        if len(uom) == 0:
+            uom = self.env['product.uom'].search([('name', 'ilike', 'Each')])
         if product.manufacturer_uom.uom_type == 'bigger':
             uom_factor = product.manufacturer_uom.factor_inv
         elif product.manufacturer_uom.uom_type == 'smaller':
@@ -460,6 +462,8 @@ class PrioritizationEngine(models.TransientModel):
         else:
             product = self.env['product.template'].search([('id', '=', prioritization_engine_request['product_id'])])
             uom = self.env['product.uom'].search([('name', 'ilike', 'Unit')])
+            if len(uom) == 0:
+                uom = self.env['product.uom'].search([('name', 'ilike', 'Each')])
             min_threshold = product.manufacturer_uom._compute_quantity(float(prioritization_engine_request['min_threshold']), uom)
             max_threshold = product.manufacturer_uom._compute_quantity(float(prioritization_engine_request['max_threshold']), uom)
             inventory_quantity = product.manufacturer_uom._compute_quantity(float(prioritization_engine_request['quantity']), uom)
