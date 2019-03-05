@@ -198,10 +198,16 @@ class Customer(models.Model):
 
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
+
+    def _get_default_uom_id(self):
+        return self.env["product.uom"].search([], limit=1, order='id').id
+
     location = fields.Char("Location")
     premium = fields.Boolean("Premium")
     sku_code = fields.Char('SKU / Catalog No')
     manufacturer_pref = fields.Char(string='Manuf. Catalog No')
+    manufacturer_uom = fields.Many2one('product.uom', 'Manufacturer Unit of Measure', default=_get_default_uom_id,
+                                       required=True)
 
 
 class NotificationSetting(models.Model):
