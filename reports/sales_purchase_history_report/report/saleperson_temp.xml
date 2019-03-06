@@ -53,16 +53,16 @@
                                         <span t-esc="order.delivered_date" t-options="{'widget':'date'}"/>
                                     </td>
                                     <td style="border: 1px solid black;" align="center">
-                                        <span t-field="order.qty_delivered"/>
+                                        <span t-field="order.qty_delivered_converted"/>
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.product_uom.name"/>
+                                        <span t-esc="order.product_uom_converted.name"/>
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.price_unit" t-options='{"widget": "monetary","display_currency": order.currency_id}' />
+                                        <span t-esc="order.unit_price_converted" t-options='{"widget": "monetary","display_currency": order.currency_id}' />
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.price_total" t-options='{"widget": "monetary","display_currency": order.currency_id}'/>
+                                        <span t-esc="order.total_price_converted" t-options='{"widget": "monetary","display_currency": order.currency_id}'/>
                                         <t t-set="total_price" t-value="total_price + order.price_total" />
                                     </td>
                                 </tr>
