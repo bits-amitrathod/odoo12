@@ -157,7 +157,6 @@ class InventoryNotificationScheduler(models.TransientModel):
                 cust_ids.extend(list(customr.child_ids.ids))
             if(customr.historic_months>0):
                 historic_day=customr.historic_months*30
-                _logger.info("historic_day :%r", historic_day)
                 print('historic_day')
                 print(historic_day)
             else:
@@ -167,6 +166,7 @@ class InventoryNotificationScheduler(models.TransientModel):
             _logger.info("date order  :%r", last_day)
             sales = self.env['sale.order'].search([('partner_id', 'in', cust_ids),('date_order', '>', last_day)])
             _logger.info("sales  :%r", sales)
+
             products={}
             for sale in sales:
                 sale_order_lines = self.env['sale.order.line'].search([('order_id.id', '=', sale.id)])
@@ -183,9 +183,6 @@ class InventoryNotificationScheduler(models.TransientModel):
                 for cust in custmrs:
                     self.process_common_email_notification_template(super_user, cust, subject, descrption, product_list,
                                                             header, columnProps,is_employee=False)
-
-
-
     def process_new_product_scheduler(self):
         today_date = datetime.now() - timedelta(days=1)
         today_start = datetime.strftime(today_date, "%Y-%m-%d 00:00:00")
@@ -433,7 +430,6 @@ class InventoryNotificationScheduler(models.TransientModel):
         self.process_notification_for_product_green_status(products)
 
 
-
     def process_packing_email_notification(self,vals):
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
         users = self.env['res.users'].search([('active','=',True)])
@@ -507,7 +503,10 @@ class InventoryNotificationScheduler(models.TransientModel):
                             column = product[lst[0]]
                             if isinstance(lst, list):
                                 for col in range(1, len(lst)):
-                                    column = column[lst[col]]
+                                    if column[lst[col]]:
+                                      column = column[lst[col]]
+                                    else:
+                                        column=""
                             else:
                                 column = column[lst]
                 if column:
