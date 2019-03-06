@@ -57,6 +57,7 @@
                     <header>
                         <button name="%(vendor_offer.action_purchase_order_edit_note)d" type="action" context="{'isFooterInvisible':False}"
                                 string="Add Note"/>
+                        <button name="action_duplicate_vendor_offer" type="object" string="Duplicate Vendor Offer"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">

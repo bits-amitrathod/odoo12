@@ -24,7 +24,7 @@ class InventoryValuationPopUp(models.TransientModel):
         action['views'] = [(tree_view_id, 'tree'),(form_view_id, 'form')]
 
         if self.sku_code:
-            action["domain"].append(('sku_code', 'ilike', self.sku_code.sku_code))
+            action["domain"].append(('sku_code', '=', self.sku_code.sku_code))
 
         return action
 
@@ -74,7 +74,7 @@ class InventoryCustomProductPopUp(models.TransientModel):
         action['views'] = [(tree_view_id, 'tree'),(form_view_id, 'form')]
 
         if self.sku_code:
-            action["domain"].append(('sku_code', 'ilike', self.sku_code.sku_code))
+            action["domain"].append(('sku_code', '=', self.sku_code.sku_code))
 
         return action
 

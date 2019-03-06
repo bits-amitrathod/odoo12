@@ -28,9 +28,10 @@ class RmaPopUp(models.TransientModel):
             for sale_order_line in sale_order_lines:
                 if sale_order_line.product_id.product_tmpl_id.type != 'service':
                     return_qty=0
-                    for move_line in sale_order_line.move_ids:
-                        if move_line.location_dest_id.name == 'Output' and move_line.state == 'done':
-                            return_qty=move_line.product_uom_qty
+                    for picking_id in sale_order_line.order_id.picking_ids:
+                        if picking_id.location_dest_id.name == 'Stock' and picking_id.state == 'done':
+                            for stock_move in picking_id.move_lines:
+                                return_qty=stock_move.product_uom_qty
                     products_list.append([sale_order_line.product_id.product_tmpl_id.name,
                                           sale_order_line.product_id.product_tmpl_id.sku_code,
                                           return_qty,

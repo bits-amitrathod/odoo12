@@ -32,9 +32,11 @@ class SpsCustomerRequest(models.Model):
     vendor_pricing = fields.Char()
     quantity = fields.Float()
     required_quantity = fields.Float()
+    updated_quantity = fields.Float()
     frequency_of_refill = fields.Integer()
     threshold = fields.Integer()
     uom = fields.Char()
+    uom_flag = fields.Boolean(help="if uom is each then set uom flag is 1(True)")
     product_description = fields.Char(string='Product Description')
     customer_request_logs = fields.Char(string='Customer Request Logs')
 
@@ -80,7 +82,7 @@ class SpsCustomerRequest(models.Model):
             if sps_customer_request.document_id.template_type.lower().strip() == 'inventory':
                 # following condition use for process only latest uploaded document.
                 if int(query_result['document_id']) == int(sps_customer_request.document_id.id):
-                    if sps_customer_request.quantity > 0 or sps_customer_request.required_quantity > 0:
+                    if sps_customer_request.quantity > 0:
                         pr_model = self.add_customer_request_data(sps_customer_request)
                         if pr_model:
                             pr_models.append(pr_model)
@@ -88,12 +90,12 @@ class SpsCustomerRequest(models.Model):
             elif sps_customer_request.document_id.template_type.lower().strip() == 'requirement' and int(document_processing_count) > 0:
                 # following condition use for process only latest uploaded document.
                 if int(query_result['document_id']) == int(sps_customer_request.document_id.id):
-                    if sps_customer_request.quantity > 0 or sps_customer_request.required_quantity > 0:
+                    if sps_customer_request.updated_quantity > 0:
                         pr_model = self.add_customer_request_data(sps_customer_request)
                         if pr_model:
                             pr_models.append(pr_model)
                 elif int(sps_customer_request.document_id.document_processed_count) < int(document_processing_count):
-                    if sps_customer_request.quantity > 0 or sps_customer_request.required_quantity > 0:
+                    if sps_customer_request.updated_quantity > 0:
                         pr_model = self.add_customer_request_data(sps_customer_request)
                         if pr_model:
                             pr_models.append(pr_model)
@@ -119,17 +121,6 @@ class SpsCustomerRequest(models.Model):
                                                        sps_customer_request['product_id'].id,
                                                        sps_customer_request['id'], sps_customer_request['status'])
 
-            # if status is partial check the remaining quantity to allocate to customer
-            if sps_customer_request['status'].lower().strip() == 'partial':
-                sale_order_lines = self.env['sale.order.line'].search([('customer_request_id', '=', sps_customer_request.id)])
-                product_uom_qty = 0
-                for sale_order_line in sale_order_lines:
-                    product_uom_qty = product_uom_qty + sale_order_line.product_uom_qty
-                _logger.debug('sale_order_line.product_uom_qty : %r', product_uom_qty)
-                required_quantity = sps_customer_request.required_quantity - product_uom_qty
-                _logger.debug('required_quantity : %r', required_quantity)
-            else:
-                required_quantity = sps_customer_request.required_quantity
             _logger.info('gl account value : %r',sps_customer_request['gl_account'])
             if _setting_object:
                 sps_customer_request.write({'customer_request_logs': 'Customer prioritization setting is True, '})
@@ -140,7 +131,7 @@ class SpsCustomerRequest(models.Model):
                                 gl_account=sps_customer_request['gl_account'],
                                 product_id=sps_customer_request['product_id'].id,
                                 status=sps_customer_request['status'],
-                                required_quantity=required_quantity,
+                                required_quantity=sps_customer_request.updated_quantity,
                                 min_threshold=_setting_object.min_threshold,
                                 max_threshold=_setting_object.max_threshold,
                                 quantity=sps_customer_request.quantity,
@@ -148,7 +139,10 @@ class SpsCustomerRequest(models.Model):
                                 auto_allocate=_setting_object.auto_allocate,
                                 cooling_period=_setting_object.cooling_period,
                                 length_of_hold=_setting_object.length_of_hold,
+                                uom_flag=sps_customer_request['uom_flag'],
                                 partial_order=_setting_object.partial_ordering,
+                                partial_uom=_setting_object.partial_UOM,
+                                updated_quantity = sps_customer_request['updated_quantity'],
                                 expiration_tolerance=_setting_object.expiration_tolerance,
                                 customer_request_logs=sps_customer_request.customer_request_logs)
                 return pr_model

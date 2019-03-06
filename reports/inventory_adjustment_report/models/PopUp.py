@@ -27,7 +27,7 @@ class PopUp(models.TransientModel):
     def open_table(self):
         tree_view_id = self.env.ref('inventory_adjustment_report.form_list_adjustment').id
         form_view_id = self.env.ref('stock.view_move_line_form').id
-        domain = ['&', ('location_id', 'in', [5,14]), ('location_dest_id', '=', [4,14])]
+        domain = ['&', ('location_id.name', 'in', ['Inventory adjustment','Input']), ('location_dest_id.name', '=', ['Scrapped','Input'])]
         action = {
             'type': 'ir.actions.act_window',
             'views': [(tree_view_id, 'tree'),(form_view_id, 'form')],

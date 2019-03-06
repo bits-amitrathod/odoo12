@@ -36,7 +36,9 @@
                              </t>
                             <div class="modal-body">
                                 <p>
-                                    Give your feedback, this will help us improve our services.
+                                    Your Order will be shipped Ground unless otherwise stated. If expedited shipping is needed, Please indicate below:
+                                            (First Overnight by 8:30AM / Priority Overnight by 10:30AM /2nd day AM by 10:30 AM /2nd Day /3rd Day)
+                                    <!--Give your feedback, this will help us improve our services.-->
                                 </p>
                                 <textarea rows="4" name="accept_message" placeholder="Your feedback....."
                                           class="form-control"/>
