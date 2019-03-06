@@ -200,13 +200,9 @@ class PrioritizationEngine(models.TransientModel):
                                 product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity']) - int(remaining_product_allocation_quantity)
 
                                 remaining_product_allocation_quantity = 0
-
-                                prioritization_engine_request['customer_request_logs'] += 'Partial UOM flag is True.'
-                                _logger.debug('Partial UOM is True')
-
                                 break
                             else:
-                                allocate_qty_by_partial_uom = self._get_quantity_by_partial_uom(product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'], prioritization_engine_request)
+                                allocate_qty_by_partial_uom = self._get_quantity_by_partial_uom(remaining_product_allocation_quantity, prioritization_engine_request)
 
                                 product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity']) + int(allocate_qty_by_partial_uom)
                                 product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity']) - int(allocate_qty_by_partial_uom)
@@ -216,12 +212,9 @@ class PrioritizationEngine(models.TransientModel):
 
         if prioritization_engine_request['template_type'].lower().strip() == 'inventory':
             if remaining_product_allocation_quantity == allocate_inventory_product_quantity:
-                prioritization_engine_request['customer_request_logs'] += 'Partial ordering flag is False.'
-                _logger.debug('Partial ordering flag is False')
-
+                self._update_logs(prioritization_engine_request)
         elif remaining_product_allocation_quantity == prioritization_engine_request['updated_quantity']:
-                prioritization_engine_request['customer_request_logs'] += 'Partial ordering flag is False.'
-                _logger.debug('Partial ordering flag is False')
+            self._update_logs(prioritization_engine_request)
 
         if remaining_product_allocation_quantity == 0:
             _logger.debug("Allocated all required product quantity.")
@@ -252,19 +245,32 @@ class PrioritizationEngine(models.TransientModel):
                                                prioritization_engine_request['product_id'],
                                                required_quantity - remaining_product_allocation_quantity)
 
+            self._update_logs(prioritization_engine_request)
             prioritization_engine_request['customer_request_logs'] += ' Allocated Partial order product.'
             self.update_customer_request_status(prioritization_engine_request, 'Partial')
 
-            if prioritization_engine_request['uom_flag'] == 'false':
-                if prioritization_engine_request['partial_uom'] == 'false':
-                    prioritization_engine_request['customer_request_logs'] += ' Partial UOM flag is False.'
-                    _logger.debug('Partial UOM is False')
             # Update updated_quantity
             if prioritization_engine_request['template_type'].lower().strip() == 'requirement':
                 self.env['sps.customer.requests'].search([('id', '=', prioritization_engine_request['customer_request_id'])]).write({'updated_quantity':remaining_product_allocation_quantity})
 
+    # Update Prioritization Engine logs.
+    def _update_logs(self, prioritization_engine_request):
+        if prioritization_engine_request['partial_order']:
+            prioritization_engine_request['customer_request_logs'] += 'Partial ordering flag is True.'
+            _logger.debug('Partial ordering flag is True')
+            if prioritization_engine_request['partial_uom']:
+                prioritization_engine_request['customer_request_logs'] += 'Partial UOM flag is True.'
+                _logger.debug('Partial UOM is True')
+            else:
+                prioritization_engine_request['customer_request_logs'] += 'Partial UOM flag is False.'
+                _logger.debug('Partial UOM is False')
+        else:
+            prioritization_engine_request['customer_request_logs'] += 'Partial ordering flag is False.'
+            _logger.debug('Partial ordering flag is False')
+
+
     #get quantitty by partial uom flag
-    def _get_quantity_by_partial_uom(self, available_quantity, prioritization_engine_request):
+    def _get_quantity_by_partial_uom(self, quantity, prioritization_engine_request):
         product = self.env['product.template'].search([('id', '=', prioritization_engine_request['product_id'])])
         uom = self.env['product.uom'].search([('name', 'ilike', 'Unit')])
         if len(uom) == 0:
@@ -276,7 +282,7 @@ class PrioritizationEngine(models.TransientModel):
         else:
             uom_factor = 1
 
-        ratio = int(available_quantity / uom_factor)
+        ratio = int(quantity / uom_factor)
         allocate_qty_by_partial_uom = int(product.manufacturer_uom._compute_quantity(float(ratio), uom))
         return allocate_qty_by_partial_uom
 
