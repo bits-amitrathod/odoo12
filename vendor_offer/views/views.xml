@@ -225,7 +225,7 @@
                         <field name="status" widget="statusbar" statusbar_visible="ven_draft,ven_sent,purchase"
                                readonly="1"/>
                         <field name="vendor_offer_data" invisible="1"/>
-                        <button name="action_duplicate_vendor_offer" type="object" string="Duplicate Vendor Offer"
+                        <button name="action_duplicate_vendor_offer" type="object" string="Duplicate Offer"
                                 attrs="{'invisible':[('vendor_offer_data', '=',  False)]}"/>
                         <button string="Shipping Label"
                                 type="action" class="btn-primary"
@@ -442,7 +442,7 @@
                             context="{'isFooterInvisible':False}"
                             string="Add Note"/>
                     <button name="action_duplicate_vendor_offer" type="object"
-                            string="Duplicate Vendor Offer" attrs="{'invisible': [('vendor_offer_data','=',False)]}"/>
+                            string="Duplicate Offer" attrs="{'invisible': [('vendor_offer_data','=',False)]}"/>
                     <button string="Shipping Label"
                             type="action" class="btn-primary"
                             name="%(action_view_tracking_text)d"
