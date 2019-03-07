@@ -71,6 +71,7 @@ class PrioritizationEngine(models.TransientModel):
 
     def filter_available_product_lot_dict(self, available_production_lot_dict, prioritization_engine_request):
         filtered_production_lot_dict_to_be_returned = {}
+        filtered_production_lot_dict_to_be_returned.clear()
         for available_production_lot in available_production_lot_dict.get(prioritization_engine_request['product_id'],{}):
             if datetime.strptime(available_production_lot.get(list(available_production_lot.keys()).pop(0), {}).get('use_date'),
                     '%Y-%m-%d %H:%M:%S') >= self.get_product_expiration_tolerance_date(prioritization_engine_request):
@@ -176,7 +177,6 @@ class PrioritizationEngine(models.TransientModel):
                                 product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity']) + int(product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'])
                                 product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'] = 0
                             else:
-
                                 allocate_qty_by_partial_uom = self._get_quantity_by_partial_uom(product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'], prioritization_engine_request)
 
                                 product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity']) + int(allocate_qty_by_partial_uom)
@@ -184,7 +184,6 @@ class PrioritizationEngine(models.TransientModel):
 
                                 remaining_product_allocation_quantity = remaining_product_allocation_quantity - allocate_qty_by_partial_uom
 
-                        _logger.debug('Quantity Updated')
                 elif int(remaining_product_allocation_quantity) < int(product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity')):
                         _logger.debug('product allocated from lot %r', list(product_lot.keys()).pop(0))
 
@@ -236,7 +235,6 @@ class PrioritizationEngine(models.TransientModel):
 
         elif remaining_product_allocation_quantity > 0 and remaining_product_allocation_quantity != required_quantity:
             _logger.debug(str(" Allocated Partial order product."))
-
             self.allocated_product_to_customer(prioritization_engine_request['customer_id'],
                                                prioritization_engine_request['req_no'],
                                                prioritization_engine_request['gl_account'],
@@ -373,7 +371,6 @@ class PrioritizationEngine(models.TransientModel):
             _logger.debug('sale order : %r ',sale_order['id'])
 
             for allocated_product in self.allocated_product_dict.get(partner_id_key, {}):
-                _logger.info('customer_request_id  :**** ')
                 _logger.info('customer_request_id  :  %r  ', allocated_product['customer_request_id'])
 
                 sale_order_line_dict = {'customer_request_id': allocated_product['customer_request_id'],'req_no': allocated_product['req_no'], 'order_id': sale_order['id'], 'product_id': allocated_product['product_id'],
@@ -386,9 +383,7 @@ class PrioritizationEngine(models.TransientModel):
             _logger.info('sale order id  : %r  sale order state : %r', sale_order.id, sale_order.state)
 
             picking = self.env['stock.picking'].search([('sale_id', '=', sale_order.id),('picking_type_id', '=', 1)])
-            _logger.info('picking before*   : %r', picking.state)
-            picking.write({'state':'assigned'})
-            _logger.info('picking after*   : %r', picking.state)
+            _logger.info('picking state   : %r', picking.state)
             # sale_order.write(dict(state='engine', confirmation_date=''))
             # sale_order.force_quotation_send()
             sale_order.write({'state':'sent', 'confirmation_date':''})

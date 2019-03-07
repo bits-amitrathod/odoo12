@@ -13,6 +13,7 @@ class AvailableProductDict(models.TransientModel):
 
     # get available production lot list, parameter product id.
     def get_available_production_lot_dict(self):
+        self.available_production_lot_dict_to_be_returned.clear()
         production_lot_list = self.env['stock.quant'].search([('quantity', '>', 0), ('location_id.usage', '=', 'internal'), ('location_id.active', '=', 'true'), ('lot_id.use_date', '>', str(date.today()))])
 
         for production_lot in production_lot_list:
