@@ -15,19 +15,25 @@ class inventory_allocation_so(models.Model):
     product_id = fields.Many2one('product.template', string='Product Name', )
     order_id = fields.Many2one('sale.order', string='Sale', )
     partner_id = fields.Many2many('res.partner', string='Customer', )
-    sale_order_line = fields.One2many('sale.order.line', string='Sales Order Line')
-    cost = fields.Float(string="Cost")
+    sale_order_line = fields.Many2one('sale.order.line', string='Sales Order Line')
     so_allocation = fields.Boolean(string="isSale", compute='_compute_so_allocation')
     product_uom =fields.Char(string="Product_UOM")
     product_code = fields.Char(string="Product SKU")
     product_name = fields.Char(string="Product Name")
-    product_quantity = fields.Integer(string="Qty")
-    product_uom_qty=fields.Integer(string="Qty")
+    product_quantity = fields.Integer(string="Qty",compute='_compute_so_allocation',)
+    product_uom_qty=fields.Char(string="Qty",compute='_compute_so_allocation',)
     currency_id = fields.Many2one("res.currency",  string="Currency",
                                    readonly=True)
-    def _compute_so_allocation(self):
-        self.so_allocation = True
+    cost = fields.Float(string="Cost",compute='_compute_so_allocation')
 
+    @api.multi
+    def _compute_so_allocation(self):
+        for this in self:
+            this.so_allocation = True
+            for sale_order in this.sale_order_line:
+                this.product_quantity = int(sale_order.product_qty)
+                this.product_uom_qty = str(sale_order.product_qty )+ " "+this.product_uom
+                this.cost=(sale_order.purchase_price)
     @api.model_cr
     def init(self):
         self.init_table()
@@ -39,20 +45,20 @@ class inventory_allocation_so(models.Model):
         e_date = self.env.context.get('e_date')
         order_id = self.env.context.get('order_id')
         product_sku = self.env.context.get('product_sku')
-        select_query = """ SELECT distinct sol.id, concat(so.name ,'-',res.display_name) as sale_order_name, round(sol.product_uom_qty, 0) as product_quantity,concat(round(sol.product_uom_qty,0),' ',puom.name) as product_uom_qty,curr.id as currency_id,curr.symbol as currency_symbol,puom.name as product_uom, so.id as order_id, sol.id as sale_order_id, res.name as customer_name, po.product_tmpl_id as product_id,so.partner_id as partner_id,
-          pt.sku_code as product_code, pt.name as product_name,round((sol.product_uom_qty*sol.purchase_price), 2) as cost """
+        select_query = """ SELECT distinct sol.id, sol.id as sale_order_line, concat(so.name ,'-',res.display_name) as sale_order_name,curr.id as currency_id,curr.symbol as currency_symbol,puom.name as product_uom, so.id as order_id, sol.id as sale_order_id, res.name as customer_name, po.product_tmpl_id as product_id,so.partner_id as partner_id,
+          pt.sku_code as product_code, pt.name as product_name """
 
 
 
         select_query = select_query + """from  sale_order so           
           LEFT JOIN res_partner res ON res.id=so.partner_id 
           LEFT JOIN sale_order_line sol ON sol.order_id=so.id 
-          LEFT JOIN product_uom puom ON  puom.id=sol.product_uom
           LEFT JOIN product_product po ON po.id=sol.product_id 
           LEFT JOIN product_template pt ON pt.id=po.product_tmpl_id
+          LEFT JOIN product_uom puom ON  puom.id=pt.uom_id
           LEFT JOIN res_company cmpy ON cmpy.id=pt.company_id 
           LEFT JOIN res_currency curr ON curr.id=cmpy.currency_id
-         LEFT JOIN stock_picking sp ON sp.sale_id=so.id
+          LEFT JOIN stock_picking sp ON sp.sale_id=so.id
           where sp.state in ('assigned','waiting') """
 
         if order_id and not order_id is None:

@@ -202,6 +202,8 @@ class DocumentProcessTransientModel(models.TransientModel):
             # get product
             product = self.env['product.template'].search([('id', '=', req['product_id'])])
             uom = self.env['product.uom'].search([('name', 'ilike', 'Unit')])
+            if len(uom) == 0:
+                uom = self.env['product.uom'].search([('name', 'ilike', 'Each')])
             updated_qty = product.manufacturer_uom._compute_quantity(float(req_qty), uom)
             return updated_qty
         else:
