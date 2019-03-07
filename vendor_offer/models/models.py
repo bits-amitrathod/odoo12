@@ -151,12 +151,13 @@ class VendorOffer(models.Model):
             'context': "{'vendor_offer_data': True}",
             'type': 'ir.actions.act_window',
             'res_id': new_po.id,
+            'target': 'main',
         }
 
     @api.multi
     def copy(self, default=None):
         if self.vendor_offer_data:
-            self = self.with_context(vendor_offer_data=True)
+            self = self.with_context({'vendor_offer_data': True, 'disable_export': True})
             default = {
                 'state': 'ven_draft',
                 'vendor_offer_data': True,
@@ -179,8 +180,8 @@ class VendorOffer(models.Model):
     def _amount_all(self):
         for order in self:
             if order.env.context.get('vendor_offer_data') or order.state == 'ven_draft' or order.state == 'ven_sent':
-                if order.state == 'draft':
-                    order.state = 'ven_draft'
+                # if order.state == 'draft':
+                #     order.state = 'ven_draft'
 
                 amount_untaxed = amount_tax = price_total = 0.0
                 rt_price_tax = product_retail = rt_price_total = potential_profit_margin = 0.0
@@ -283,21 +284,20 @@ class VendorOffer(models.Model):
             'state': 'purchase',
             'status': 'purchase'
         })
-        if (int(self.revision) > 0):
+        if int(self.revision) > 0:
             temp = int(self.revision) - 1
             self.revision = str(temp)
-        record = self.env['purchase.order']
-        recordtemp = record.button_confirm()
-        return recordtemp
+
+        return super(VendorOffer, self).button_confirm()
 
     @api.multi
     def action_button_confirm(self):
         print('in   action_button_confirm ')
         if self.env.context.get('vendor_offer_data'):
 
-            purchase = self.env['purchase.order'].search([('id', '=', self.id)])
-            print(purchase)
-            purchase.button_confirm()
+            # purchase = self.env['purchase.order'].search([('id', '=', self.id)])
+            # print(purchase)
+            self.button_confirm()
             # self.write({'state': 'purchase'})
 
             self.write({'status': 'purchase', 'status_ven': 'Accepted', 'accepted_date': fields.date.today()})
@@ -308,19 +308,19 @@ class VendorOffer(models.Model):
 
     @api.multi
     def action_button_confirm_api(self, product_id):
-        purchase = self.env['purchase.order'].search([('id', '=', product_id)])
-        purchase.button_confirm()
+        # purchase = self.env['purchase.order'].search([('id', '=', product_id)])
+        self.button_confirm()
 
-        purchase.write({
+        self.write({
             'status': 'purchase',
             'state': 'purchase',
             'status_ven': 'Accepted',
             'accepted_date': fields.date.today()
         })
 
-        if (int(purchase.revision) > 0):
-            temp = int(purchase.revision) - 1
-            purchase.revision = str(temp)
+        if (int(self.revision) > 0):
+            temp = int(self.revision) - 1
+            self.revision = str(temp)
 
     @api.multi
     def button_confirm(self):
