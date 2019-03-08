@@ -70,15 +70,10 @@ class StockPickingMarkAllButton(models.Model):
     def _compute_visibility(self):
         for pick in self:
             pick.is_mark_all_button_visible =  pick.sale_id.id and not pick.state in ['done','cancle']
-            print('--------------------PRINT-----------------------')
-            print(pick.is_mark_all_button_visible)
 
     def action_button_mark_all_done(self):
         self.ensure_one()
-        print('--------------------PRINT-----------------------')
         if self.sale_id.id:
             for lines in self.move_lines:
-                lines.quantity_done = lines.reserved_availability
-        else:
-            for lines in self.move_lines:
-                lines.quantity_done = lines.product_uom_qty
+                for line_items in lines.move_line_ids:
+                    line_items.qty_done = line_items.product_uom_qty

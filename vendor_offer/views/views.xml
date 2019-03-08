@@ -209,7 +209,7 @@
             <field name="model">purchase.order</field>
             <field name="context">{state: 'ven_draft'}</field>
             <field name="arch" type="xml">
-                <form string="Vendor Offer" class="o_sale_order">
+                <form string="Vendor Offer" class="o_sale_order" duplicate="false">
                     <header>
                         <button name="action_send_offer_email" string="Send" type="object" context="{'send_rfq':True}"
                                 class="btn-primary" attrs="{'invisible':[('state', 'in', ('purchase'))]}"/>
@@ -287,7 +287,7 @@
                             <page string="Product">
                                 <field name="order_line" mode="tree,form"
                                        attrs="{'readonly': [('state', 'not in', ('draft', 'ven_draft','ven_sent'))]}">
-                                    <form>
+                                    <form duplicate="false">
                                         <group>
                                             <group>
                                                 <field name="product_id"/>
@@ -518,6 +518,16 @@
             </field>
         </record>
 
+        <!--<record id="action_duplicate_vendor_offer" model="ir.actions.server">-->
+            <!--<field name="name">Duplicate Offer</field>-->
+            <!--<field name="type">ir.actions.server</field>-->
+            <!--<field name="model_id" ref="model_purchase_order"/>-->
+            <!--<field name="binding_model_id" ref="vendor_offer.model_purchase_order"/>-->
+            <!--<field name="state">code</field>-->
+            <!--<field attrs="{'invisible':[('vendor_offer_data', '=',  False)]}"/>-->
+            <!--<field name="code">model.action_duplicate_vendor_offer()</field>-->
+        <!--</record>-->
+
         <record id="product_template_form_view" model="ir.ui.view">
             <field name="name">product.template.common.form</field>
             <field name="model">product.template</field>
@@ -601,8 +611,7 @@
                 parent="vendor_offer.menu_product_in_config_purchase_setting" sequence="30"/>
 
         <menuitem id="menu_procurement_management_supplier_offer" name="Vendor Offers"
-                  parent="purchase.menu_procurement_management" action="vendor_offer.action_window" sequence="14"
-        />
+                  parent="purchase.menu_procurement_management" action="vendor_offer.action_window" sequence="14"/>
 
     </data>
 </odoo>
