@@ -144,45 +144,48 @@ class InventoryNotificationScheduler(models.TransientModel):
         days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
         dayNumber = today_date.weekday()
         weekday = days[dayNumber]
-        customers = self.env['res.partner'].search([('customer', '=', True),('is_parent','=',True),('active', '=', True),(weekday,'=',True),('start_date','<=',today_start),('end_date','>=',today_start)])
+        customers = self.env['res.partner'].search([('customer', '=', True),('is_parent','=',True),('active', '=', True),(weekday,'=',True),('start_date','<=',today_start)])
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
         for customr in customers:
-            _logger.info("customer :%r", customr)
-            custmrs=[]
-            cust_ids=[]
-            custmrs.append(customr)
-            cust_ids.append(customr.id)
-            if customr.child_ids:
-                custmrs.extend(list(customr.child_ids))
-                cust_ids.extend(list(customr.child_ids.ids))
-            if(customr.historic_months>0):
-                historic_day=customr.historic_months*30
-                print('historic_day')
-                print(historic_day)
+            if customr.end_date and customr.end_date <= today_start:
+                pass
             else:
-                historic_day=2
-            _logger.info("historic_day :%r", historic_day)
-            last_day = fields.Date.to_string(datetime.now() - timedelta(days=historic_day))
-            _logger.info("date order  :%r", last_day)
-            sales = self.env['sale.order'].search([('partner_id', 'in', cust_ids),('date_order', '>', last_day)])
-            _logger.info("sales  :%r", sales)
+                _logger.info("customer :%r", customr)
+                custmrs=[]
+                cust_ids=[]
+                custmrs.append(customr)
+                cust_ids.append(customr.id)
+                if customr.child_ids:
+                    custmrs.extend(list(customr.child_ids))
+                    cust_ids.extend(list(customr.child_ids.ids))
+                if(customr.historic_months>0):
+                    historic_day=customr.historic_months*30
+                    print('historic_day')
+                    print(historic_day)
+                else:
+                    historic_day=2
+                _logger.info("historic_day :%r", historic_day)
+                last_day = fields.Date.to_string(datetime.now() - timedelta(days=historic_day))
+                _logger.info("date order  :%r", last_day)
+                sales = self.env['sale.order'].search([('partner_id', 'in', cust_ids),('date_order', '>', last_day)])
+                _logger.info("sales  :%r", sales)
 
-            products={}
-            for sale in sales:
-                sale_order_lines = self.env['sale.order.line'].search([('order_id.id', '=', sale.id)])
-                for line in sale_order_lines:
-                    _logger.info(" product_id qty_available %r",line.product_id.qty_available)
-                    if line.product_id.qty_available and line.product_id.qty_available is not None and line.product_id.qty_available > 0:
-                        products[line.product_id.id]=line.product_id
-            subject = "Products In Stock"
-            descrption = "Please find below the items which are back in stock now ! Please find the Website URL: https:/Sps.com."
-            header = ['SKU Code','Manufacturer', 'Name','Sales Price','Qty On Hand','Min Expiration Date','Max Expiration Date','Unit Of Measure']
-            columnProps = ['sku_code','product_brand_id.name', 'name','list_price','qty_available', 'minExDate', 'maxExDate','uom_id.name']
-            if products:
-                product_list.extend(list(products.values()))
-                for cust in custmrs:
-                    self.process_common_email_notification_template(super_user, cust, subject, descrption, product_list,
-                                                            header, columnProps,is_employee=False)
+                products={}
+                for sale in sales:
+                    sale_order_lines = self.env['sale.order.line'].search([('order_id.id', '=', sale.id)])
+                    for line in sale_order_lines:
+                        _logger.info(" product_id qty_available %r",line.product_id.qty_available)
+                        if line.product_id.qty_available and line.product_id.qty_available is not None and line.product_id.qty_available > 0:
+                            products[line.product_id.id]=line.product_id
+                subject = "Products In Stock"
+                descrption = "Please find below the items which are back in stock now ! Please find the Website URL: https:/Sps.com."
+                header = ['SKU Code','Manufacturer', 'Name','Sales Price','Qty On Hand','Min Expiration Date','Max Expiration Date','Unit Of Measure']
+                columnProps = ['sku_code','product_brand_id.name', 'name','list_price','qty_available', 'minExDate', 'maxExDate','uom_id.name']
+                if products:
+                    product_list.extend(list(products.values()))
+                    for cust in custmrs:
+                        self.process_common_email_notification_template(super_user, cust, subject, descrption, product_list,
+                                                                header, columnProps,is_employee=False)
     def process_new_product_scheduler(self):
         today_date = datetime.now() - timedelta(days=1)
         today_start = datetime.strftime(today_date, "%Y-%m-%d 00:00:00")

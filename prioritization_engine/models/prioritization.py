@@ -33,8 +33,8 @@ class Customer(models.Model):
     having_carrier = fields.Boolean("Having Carrier?")
     notification_email = fields.Char("Notification Email")
     saleforce_ac = fields.Char("SF A/C No#")
+    is_share = fields.Boolean("Is Shared")
     sale_margine = fields.Selection([
-        ('shared', 'Shared'),
         ('gifted', 'Gifted'),
         ('legacy', 'Legacy')], string='Sales Level')
     preferred_method = fields.Selection([

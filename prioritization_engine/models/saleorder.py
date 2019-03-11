@@ -26,8 +26,8 @@ class SaleOrder(models.Model):
     preferred_method = fields.Selection(string='Preferred Invoice Delivery Method',
                                         related='partner_id.preferred_method', readonly=True)
     carrier_info = fields.Char("Carrier Info", related='partner_id.carrier_info', readonly=True)
+    is_share = fields.Boolean(string='Is Shared', related='partner_id.is_share', readonly=True)
     sale_margine = fields.Selection([
-        ('shared', 'Shared'),
         ('gifted', 'Gifted'),
         ('legacy', 'Legacy')], string='Sales Level', related='partner_id.sale_margine', readonly=True)
     carrier_acc_no = fields.Char("Carrier Account No", related='partner_id.carrier_acc_no', readonly=True)
@@ -203,8 +203,8 @@ class AccountInvoice(models.Model):
     note = fields.Char("Customer Message")
     memo = fields.Char("Memo")
     shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
-    sale_margine = fields.sale_margine = fields.Selection([
-        ('shared', 'Shared'),
+    is_share = fields.Boolean(string='Is Shared', related='partner_id.is_share', readonly=True)
+    sale_margine = fields.Selection([
         ('gifted', 'Gifted'),
         ('legacy', 'Legacy')], string='Sales Level', related='partner_id.sale_margine', readonly=True)
     preferred_method = fields.Selection(string='Preferred Invoice Delivery Method',
