@@ -16,7 +16,7 @@ class Customer(models.Model):
     prioritization_ids = fields.One2many('prioritization_engine.prioritization', 'customer_id')
     min_threshold = fields.Integer("Product Min Threshold", readonly=False)
     max_threshold = fields.Integer("Product Max Threshold", readonly=False)
-    priority = fields.Integer("Product Priority", default=-1, readonly=False)
+    priority = fields.Integer("Product Priority", default=-1, readonly=False, help="if Product Priority is -1 then Prioritization Engine will process only those products which are added in 'Customer Priority Configuration'.")
     cooling_period = fields.Integer("Cooling Period in days", readonly=False)
     auto_allocate = fields.Boolean("Allow Auto Allocation?", readonly=False)
     length_of_hold = fields.Integer("Length Of Hold in hours", readonly=False, default=1)
@@ -33,8 +33,8 @@ class Customer(models.Model):
     having_carrier = fields.Boolean("Having Carrier?")
     notification_email = fields.Char("Notification Email")
     saleforce_ac = fields.Char("SF A/C No#")
+    is_share = fields.Boolean("Is Shared")
     sale_margine = fields.Selection([
-        ('shared', 'Shared'),
         ('gifted', 'Gifted'),
         ('legacy', 'Legacy')], string='Sales Level')
     preferred_method = fields.Selection([
@@ -203,7 +203,7 @@ class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
     def _get_default_uom_id(self):
-        return self.env["product.uom"].search([], limit=1, order='id').id
+        return self.env["product.uom"].search([('name', 'ilike', 'each')], limit=1, order='id').id
 
     location = fields.Char("Location")
     premium = fields.Boolean("Premium")

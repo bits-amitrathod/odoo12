@@ -200,24 +200,24 @@ class IncomingMailCronModel(models.Model):
                                                             except Exception as e:
                                                                 _logger.info(str(e))
                                                 else:
-                                                    _logger.error('Presents Same Email Id for multiple users %r', email_from)
-                                                    response = dict(errorCode=101, message='Presents Same Email Id for multiple users : ' + str(email_from))
+                                                    _logger.error('We have found Same Email Id against multiple users %r', email_from)
+                                                    response = dict(errorCode=101, message='We have found Same Email Id against multiple users. Email Id : ' + str(email_from))
                                             else:
-                                                _logger.info('user not found for %r', email_from)
-                                                response = dict(errorCode=102, message='User not found for : ' + str(email_from))
+                                                _logger.info('We have not found user in our contact list : %r', email_from)
+                                                response = dict(errorCode=102, message='We have not found user in our contact list. Email Id : ' + str(email_from))
                                         else:
-                                            _logger.info('domain not matched for forwarded email')
-                                            response = dict(errorCode=103, message='Domain not matched for forwarded email : ' + str(email_from))
+                                            _logger.info('Domain not matched for forwarded email')
+                                            response = dict(errorCode=103, message='Domain not matched for forwarded email. Email Id : ' + str(email_from))
                                     else:
-                                        _logger.info("No attachements found")
-                                        response = dict(errorCode=104, message='No attachements found : '+str(email_from))
+                                        _logger.info("User has not attached requirement or inventory documnet.")
+                                        response = dict(errorCode=104, message='User has not attached requirement or inventory documnet. Email Id : '+str(email_from))
                                 else:
-                                    _logger.info('Not a Multipart email')
-                                    response = dict(errorCode=105, message='Not a Multipart email'+str(email_from))
+                                    _logger.info('This is not a multipart email')
+                                    response = dict(errorCode=105, message='This is not a multipart email. Email Id : '+str(email_from))
                                 pop_server.dele(num)
 
                                 if "errorCode" in response:
-                                    self.send_mail("Sending Email Response as " + str(response['message']) + " for user " + str(email_from))
+                                    self.send_mail("Email Response. " + str(response['message']))
 
                             except Exception:
                                 _logger.info('Failed to process mail from %s server %s.', server.type, server.name, exc_info=True)
