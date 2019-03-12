@@ -136,68 +136,77 @@
                                         marginwidth="0"
                                         src="https://maps.google.com/maps?f=q&amp;source=embed&amp;hl=en&amp;geocode=&amp;q=643+First+Avenue+Pittsburgh,+PA+15219&amp;z=12&amp;output=embed"/>
                             </div>
-                            <div class="col-md-4 mb48">
-                                <form action="/website_form/" method="post" data-model_name="crm.lead"
-                                      data-success_page="/contactus-thank-you"
-                                      class="s_website_form form-horizontal container-fluid"
-                                      enctype="multipart/form-data" data-editable-form="false" style="padding: 0;">
-                                    <div class="form-group form-field o_website_form_required_custom">
-                                        <label class="col-md-3 col-sm-4 control-label" for="contact_name" style="text-align: left;">Name
-                                        </label>
-                                        <div class="col-md-12 col-sm-12">
-                                            <input type="text" class="form-control o_website_form_input"
-                                                   name="contact_name"
-                                                   t-att-value="request.params.get('contact_name', '')" required=""/>
-                                        </div>
-                                    </div>
-                                    <!--<div class="form-group form-field">-->
-                                        <!--<label class="col-md-3 col-sm-4 control-label" for="phone">Phone Number</label>-->
-                                        <!--<div class="col-md-12 col-sm-12">-->
-                                            <!--<input type="text" class="form-control o_website_form_input" name="phone"-->
-                                                   <!--t-att-value="request.params.get('phone', '')"/>-->
-                                        <!--</div>-->
-                                    <!--</div>-->
-                                    <div class="form-group form-field o_website_form_required_custom">
-                                        <label class="col-md-3 col-sm-4 control-label" for="email_from" style="text-align: left;">Email</label>
-                                        <div class="col-md-12 col-sm-12">
-                                            <input type="hidden" class="form-control o_website_form_input" name="name" required="" value="Website Contact Us" />
-                                            <input type="text" class="form-control o_website_form_input"
-                                                   name="email_from" required=""
-                                                   t-att-value="request.params.get('email_from', '')"/>
-                                        </div>
-                                    </div>
+
+
+
+
+                            <!--
+                            ~~~~~~~~~~~~temp commnet ~~~~~~~~~~~~~~~~~~~~
+                            -->
+
+
+                            <!--<div class="col-md-4 mb48">-->
+                                <!--<form action="/website_form/" method="post" data-model_name="crm.lead"-->
+                                      <!--data-success_page="/contactus-thank-you"-->
+                                      <!--class="s_website_form form-horizontal container-fluid"-->
+                                      <!--enctype="multipart/form-data" data-editable-form="false" style="padding: 0;">-->
                                     <!--<div class="form-group form-field o_website_form_required_custom">-->
-                                        <!--<label class="col-md-3 col-sm-4 control-label" for="partner_name">Your Company-->
+                                        <!--<label class="col-md-3 col-sm-4 control-label" for="contact_name" style="text-align: left;">Name-->
                                         <!--</label>-->
                                         <!--<div class="col-md-12 col-sm-12">-->
                                             <!--<input type="text" class="form-control o_website_form_input"-->
-                                                   <!--name="partner_name" required=""-->
-                                                   <!--t-att-value="request.params.get('partner_name', '')"/>-->
+                                                   <!--name="contact_name"-->
+                                                   <!--t-att-value="request.params.get('contact_name', '')" required=""/>-->
                                         <!--</div>-->
                                     <!--</div>-->
-                                    <!--<div class="form-group form-field o_website_form_required">-->
-                                        <!--<label class="col-md-3 col-sm-4 control-label" for="name">Subject</label>-->
+                                    <!--&lt;!&ndash;<div class="form-group form-field">&ndash;&gt;-->
+                                        <!--&lt;!&ndash;<label class="col-md-3 col-sm-4 control-label" for="phone">Phone Number</label>&ndash;&gt;-->
+                                        <!--&lt;!&ndash;<div class="col-md-12 col-sm-12">&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<input type="text" class="form-control o_website_form_input" name="phone"&ndash;&gt;-->
+                                                   <!--&lt;!&ndash;t-att-value="request.params.get('phone', '')"/>&ndash;&gt;-->
+                                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                                    <!--<div class="form-group form-field o_website_form_required_custom">-->
+                                        <!--<label class="col-md-3 col-sm-4 control-label" for="email_from" style="text-align: left;">Email</label>-->
                                         <!--<div class="col-md-12 col-sm-12">-->
-                                            <!--<input type="text" class="form-control o_website_form_input" name="name"-->
-                                                   <!--required="" t-att-value="request.params.get('name', '')"/>-->
+                                            <!--<input type="hidden" class="form-control o_website_form_input" name="name" required="" value="Website Contact Us" />-->
+                                            <!--<input type="text" class="form-control o_website_form_input"-->
+                                                   <!--name="email_from" required=""-->
+                                                   <!--t-att-value="request.params.get('email_from', '')"/>-->
                                         <!--</div>-->
                                     <!--</div>-->
-                                    <div class="form-group form-field o_website_form_required_custom">
-                                        <label class="col-md-12 col-sm-12 control-label" for="description" style="text-align: left;">Message</label>
-                                        <div class="col-md-12 col-sm-12">
-                                            <textarea class="form-control o_website_form_input" name="description" style="margin-bottom: 0px;"
-                                              required=""><t t-esc="request.params.get('description', '')" /></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="col-sm-12">
-                                            <span id="o_website_form_result"></span>
-                                            <span class="btn btn-primary btn-lg action_button o_website_form_send" style="margin-top: 10px;">Send</span>
+                                    <!--&lt;!&ndash;<div class="form-group form-field o_website_form_required_custom">&ndash;&gt;-->
+                                        <!--&lt;!&ndash;<label class="col-md-3 col-sm-4 control-label" for="partner_name">Your Company&ndash;&gt;-->
+                                        <!--&lt;!&ndash;</label>&ndash;&gt;-->
+                                        <!--&lt;!&ndash;<div class="col-md-12 col-sm-12">&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<input type="text" class="form-control o_website_form_input"&ndash;&gt;-->
+                                                   <!--&lt;!&ndash;name="partner_name" required=""&ndash;&gt;-->
+                                                   <!--&lt;!&ndash;t-att-value="request.params.get('partner_name', '')"/>&ndash;&gt;-->
+                                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;<div class="form-group form-field o_website_form_required">&ndash;&gt;-->
+                                        <!--&lt;!&ndash;<label class="col-md-3 col-sm-4 control-label" for="name">Subject</label>&ndash;&gt;-->
+                                        <!--&lt;!&ndash;<div class="col-md-12 col-sm-12">&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<input type="text" class="form-control o_website_form_input" name="name"&ndash;&gt;-->
+                                                   <!--&lt;!&ndash;required="" t-att-value="request.params.get('name', '')"/>&ndash;&gt;-->
+                                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                                    <!--<div class="form-group form-field o_website_form_required_custom">-->
+                                        <!--<label class="col-md-12 col-sm-12 control-label" for="description" style="text-align: left;">Message</label>-->
+                                        <!--<div class="col-md-12 col-sm-12">-->
+                                            <!--<textarea class="form-control o_website_form_input" name="description" style="margin-bottom: 0px;"-->
+                                              <!--required=""><t t-esc="request.params.get('description', '')" /></textarea>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                    <!--<div class="form-group">-->
+                                        <!--<div class="col-sm-12">-->
+                                            <!--<span id="o_website_form_result"></span>-->
+                                            <!--<span class="btn btn-primary btn-lg action_button o_website_form_send" style="margin-top: 10px;">Send</span>-->
 
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                <!--</form>-->
+                            <!--</div>-->
                         </div>
                     </div>
                 </section>
