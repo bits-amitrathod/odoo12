@@ -308,7 +308,7 @@ class VendorOfferImportTransientModel(models.TransientModel):
                                               product_uom=1, product_tier=product_template.tier.id,
                                               order_id=offer_id.id,
                                               product_id=products[0].id,
-                                              list_price=product_unit_price,
+                                              # list_price=product_unit_price,
                                               qty_in_stock=products[0].qty_available,
                                               expiration_date=product_expiration_date)
                         order_line_obj.update(offer_id.get_product_sales_count(products[0].id))
@@ -332,7 +332,8 @@ class VendorOfferImportTransientModel(models.TransientModel):
                                 possible_competition_list.margin) / 100), 2))
                         order_line_obj.update(
                             {'product_offer_price': product_offer_price_comp,
-                             'offer_price': product_offer_price_comp})
+                             # 'offer_price': product_offer_price_comp
+                             })
                         order_list_list.append(order_line_obj)
                     # product_skus.append(sku_code)
             if len(order_list_list) > 0:

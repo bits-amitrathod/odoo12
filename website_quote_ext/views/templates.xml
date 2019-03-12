@@ -127,10 +127,10 @@
                                                 </t>
                                             </div>
                                             <a href='#' class='js_delete_product hidden-xs no-decoration'>
-                                                <small>
+                                                <large>
                                                     <i class='fa fa-trash-o'></i>
                                                     Remove
-                                                </small>
+                                                </large>
                                             </a>
                                         </td>
                                         <td class="text-center td-qty">
@@ -277,7 +277,7 @@
                                         <td class="text-center">
                                             <a t-attf-href="./update_line/#{ line.id }/?order_id=#{ quotation.id }&amp;unlink=True&amp;token=#{ quotation.access_token }"
                                                class="mb8 js_update_line_json hidden-print" t-if="line.option_line_id">
-                                                <span class="fa fa-trash-o"></span>
+                                                <large><span class="fa fa-trash-o"></span></large>
                                             </a>
                                         </td>
                                     </tr>
@@ -548,7 +548,7 @@
                                                            t-att-data-product-id="ol.product_id.id"
                                                            t-att-value="ol.product_uom_qty"/>
                                         <span>  </span>
-                                        <a href='#' class='js_delete_product hidden-xs no-decoration'> <small>  <i class='fa fa-trash-o'></i></small></a>
+                                        <a href='#' class='js_delete_product hidden-xs no-decoration'> <large>  <i class='fa fa-trash-o'></i></large></a>
                                     </div>
                                 </div>
                                 </t>

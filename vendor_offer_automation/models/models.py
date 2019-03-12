@@ -111,7 +111,7 @@ class vendor_offer_automation(models.Model):
                                                           product_tier=query_result['tier'],
                                                           order_id=self.id,
                                                           product_id=products[0].id,
-                                                          list_price=product_unit_price,
+                                                          # list_price=product_unit_price,
                                                           qty_in_stock=products[0].qty_available,
                                                           )
                                     if expiration_date_index >= 0:
@@ -141,7 +141,8 @@ class vendor_offer_automation(models.Model):
 
                                     order_line_obj.update(
                                         {'product_offer_price': product_offer_price_comp,
-                                         'offer_price': product_offer_price_comp})
+                                         # 'offer_price': product_offer_price_comp
+                                         })
                                     order_list_list.append(order_line_obj)
                                 # product_skus.append(sku_code)
                         if len(order_list_list) > 0:

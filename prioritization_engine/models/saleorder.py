@@ -99,6 +99,8 @@ class SaleOrderLine(models.Model):
     #customer_request_count = fields.Boolean(string='Request count', compute="_get_customer_request_count")
     customer_request_id = fields.Many2one('sps.customer.requests', string='Request')
     req_no = fields.Char(string='Requisition Number')
+    default_code = fields.Char("SKU", store=False, readonly=True, related='product_id.product_tmpl_id.default_code')
+    manufacturer_uom = fields.Char('Manufacturer Unit of Measure',related='product_id.product_tmpl_id.manufacturer_uom.name')
 
     '''@api.multi
     def _get_customer_request_count(self):
