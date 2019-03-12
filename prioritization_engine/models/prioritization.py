@@ -345,14 +345,15 @@ class StockMove(models.Model):
 
     @api.multi
     def _get_partial_UOM(self):
-        _logger.info('partner id : %r, product id : %r', self.partner_id.id, self.product_id.id)
-        if self.partner_id and self.product_id:
-            setting = self.env['sps.customer.requests'].get_settings_object(self.partner_id.id, self.product_id.id,
-                                                                            None, None)
-            if setting:
-                if setting.partial_UOM and not setting.partial_UOM is None:
-                    _logger.info('partial UOM** : %r', setting.partial_UOM)
-                    self.partial_UOM = setting.partial_UOM
+        for stock_move in self:
+            _logger.info('partner id : %r, product id : %r', stock_move.partner_id.id, stock_move.product_id.id)
+            if stock_move.partner_id and stock_move.product_id:
+                setting = self.env['sps.customer.requests'].get_settings_object(stock_move.partner_id.id, stock_move.product_id.id,
+                                                                                None, None)
+                if setting:
+                    if setting.partial_UOM and not setting.partial_UOM is None:
+                        _logger.info('partial UOM** : %r', setting.partial_UOM)
+                        stock_move.partial_UOM = setting.partial_UOM
 
 class GLAccount(models.Model):
     _name = "gl.account"
