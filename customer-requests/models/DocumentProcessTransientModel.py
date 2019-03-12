@@ -166,10 +166,22 @@ class DocumentProcessTransientModel(models.TransientModel):
                             req.update(dict(product_id=sps_product_id, status='New'))
 
                         # set uom flag, if uom_flag is false then check the partial_uom flag
-                        if req['uom'].lower().strip() in ['e','ea','eac','each','u','un','unit','unit(s)']:
-                            req.update(dict(uom_flag=True))
+                        if 'uom' in req.keys():
+                            if req['uom'].lower().strip() in ['e','ea','eac','each','u','un','unit','unit(s)']:
+                                req.update(dict(uom_flag=True))
+                            else:
+                                req.update(dict(uom_flag=False))
                         else:
-                            req.update(dict(uom_flag=False))
+                            _logger.info('Product UOM not mapped.')
+                            # Get Product UOM category id
+                            product_uom_categ = self.env['product.uom.categ'].search([('name', 'in', ['Unit', 'Each'])])
+                            # get product
+                            product = self.env['product.template'].search([('id', '=', req['product_id'])])
+                            if product.manufacturer_uom.category_id.id in product_uom_categ.ids:
+                                if product.manufacturer_uom.name.lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit','unit(s)']:
+                                    req.update(dict(uom_flag=True))
+                                else:
+                                    req.update(dict(uom_flag=False))
 
                         # calculate product quantity
                         updated_qty = self._get_updated_qty(req, template_type)

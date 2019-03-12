@@ -16,7 +16,7 @@ class Customer(models.Model):
     prioritization_ids = fields.One2many('prioritization_engine.prioritization', 'customer_id')
     min_threshold = fields.Integer("Product Min Threshold", readonly=False)
     max_threshold = fields.Integer("Product Max Threshold", readonly=False)
-    priority = fields.Integer("Product Priority", default=-1, readonly=False)
+    priority = fields.Integer("Product Priority", default=-1, readonly=False, help="if Product Priority is -1 then Prioritization Engine will process only those products which are added in 'Customer Priority Configuration'.")
     cooling_period = fields.Integer("Cooling Period in days", readonly=False)
     auto_allocate = fields.Boolean("Allow Auto Allocation?", readonly=False)
     length_of_hold = fields.Integer("Length Of Hold in hours", readonly=False, default=1)
@@ -33,8 +33,8 @@ class Customer(models.Model):
     having_carrier = fields.Boolean("Having Carrier?")
     notification_email = fields.Char("Notification Email")
     saleforce_ac = fields.Char("SF A/C No#")
+    is_share = fields.Boolean("Is Shared")
     sale_margine = fields.Selection([
-        ('shared', 'Shared'),
         ('gifted', 'Gifted'),
         ('legacy', 'Legacy')], string='Sales Level')
     preferred_method = fields.Selection([
@@ -203,7 +203,7 @@ class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
     def _get_default_uom_id(self):
-        return self.env["product.uom"].search([], limit=1, order='id').id
+        return self.env["product.uom"].search([('name', 'ilike', 'each')], limit=1, order='id').id
 
     location = fields.Char("Location")
     premium = fields.Boolean("Premium")
@@ -345,14 +345,15 @@ class StockMove(models.Model):
 
     @api.multi
     def _get_partial_UOM(self):
-        _logger.info('partner id : %r, product id : %r', self.partner_id.id, self.product_id.id)
-        if self.partner_id and self.product_id:
-            setting = self.env['sps.customer.requests'].get_settings_object(self.partner_id.id, self.product_id.id,
-                                                                            None, None)
-            if setting:
-                if setting.partial_UOM and not setting.partial_UOM is None:
-                    _logger.info('partial UOM** : %r', setting.partial_UOM)
-                    self.partial_UOM = setting.partial_UOM
+        for stock_move in self:
+            _logger.info('partner id : %r, product id : %r', stock_move.partner_id.id, stock_move.product_id.id)
+            if stock_move.partner_id and stock_move.product_id:
+                setting = self.env['sps.customer.requests'].get_settings_object(stock_move.partner_id.id, stock_move.product_id.id,
+                                                                                None, None)
+                if setting:
+                    if setting.partial_UOM and not setting.partial_UOM is None:
+                        _logger.info('partial UOM** : %r', setting.partial_UOM)
+                        stock_move.partial_UOM = setting.partial_UOM
 
 class GLAccount(models.Model):
     _name = "gl.account"

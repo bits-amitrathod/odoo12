@@ -26,11 +26,27 @@
                 <field name="payment_term_id" position="after">
                     <field name="carrier_info"/>
                     <field name="carrier_acc_no"/>
+                    <field name="is_share"/>
                     <field name="sale_margine"/>
                 </field>
                 <xpath expr="/form/sheet/notebook/page[1]/field[@name='order_line']/tree/field[@name='product_id']"
                        position="after">
                         <field name="req_no"/>
+                </xpath>
+                 <xpath expr="/form/sheet/notebook/page[1]/field[@name='order_line']/tree/field[@name='name']"
+                       position="attributes">
+                     <!-- For Hiding description column -->
+                           <attribute name="invisible">True</attribute>
+                </xpath>
+                  <xpath expr="/form/sheet/notebook/page[1]/field[@name='order_line']/tree/field[@name='product_id']"
+                       position="before">
+                        <!-- Adding SKU column -->
+                        <field name="default_code"/>
+                </xpath>
+                <xpath expr="/form/sheet/notebook/page[1]/field[@name='order_line']/tree/field[@name='product_uom']"
+                       position="after">
+                        <!-- Adding manufacturer_uom column -->
+                        <field name="manufacturer_uom"/>
                 </xpath>
             </field>
         </record>
@@ -103,7 +119,8 @@
             <field name="inherit_id" ref="sale.view_order_tree"/>
             <field name="arch" type="xml">
             <xpath expr="//field[@name='user_id']" position="after">
-            <field name="sale_margine"/>
+                <field name="is_share"/>
+                <field name="sale_margine"/>
             </xpath>
             </field>
         </record>
@@ -114,7 +131,8 @@
             <field name="inherit_id" ref="sale.view_quotation_tree"/>
             <field name="arch" type="xml">
             <xpath expr="//field[@name='user_id']" position="after">
-            <field name="sale_margine"/>
+                <field name="is_share"/>
+                <field name="sale_margine"/>
             </xpath>
             </field>
         </record>
