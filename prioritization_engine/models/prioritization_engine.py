@@ -379,7 +379,9 @@ class PrioritizationEngine(models.TransientModel):
                 self.env['sale.order.line'].create(dict(sale_order_line_dict))
 
             sale_order.force_quotation_send()
+            print('**********Before action_confirm************')
             sale_order.action_confirm()
+            print('**********After action_confirm************')
             _logger.info('sale order id  : %r  sale order state : %r', sale_order.id, sale_order.state)
 
             picking = self.env['stock.picking'].search([('sale_id', '=', sale_order.id),('picking_type_id', '=', 1)])
