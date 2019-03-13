@@ -16,7 +16,7 @@ class Customer(models.Model):
     prioritization_ids = fields.One2many('prioritization_engine.prioritization', 'customer_id')
     min_threshold = fields.Integer("Product Min Threshold", readonly=False)
     max_threshold = fields.Integer("Product Max Threshold", readonly=False)
-    priority = fields.Integer("Product Priority", default=-1, readonly=False, help="if Product Priority is -1 then Prioritization Engine will process only those products which are added in 'Customer Priority Configuration'.")
+    priority = fields.Integer("Product Priority", default=-1, readonly=False, help="If Product Priority is -1 then Prioritization Engine will process only those products which are added in 'Customer Priority Configuration'.")
     cooling_period = fields.Integer("Cooling Period in days", readonly=False)
     auto_allocate = fields.Boolean("Allow Auto Allocation?", readonly=False)
     length_of_hold = fields.Integer("Length Of Hold in hours", readonly=False, default=1)
@@ -345,14 +345,15 @@ class StockMove(models.Model):
 
     @api.multi
     def _get_partial_UOM(self):
-        _logger.info('partner id : %r, product id : %r', self.partner_id.id, self.product_id.id)
-        if self.partner_id and self.product_id:
-            setting = self.env['sps.customer.requests'].get_settings_object(self.partner_id.id, self.product_id.id,
-                                                                            None, None)
-            if setting:
-                if setting.partial_UOM and not setting.partial_UOM is None:
-                    _logger.info('partial UOM** : %r', setting.partial_UOM)
-                    self.partial_UOM = setting.partial_UOM
+        for stock_move in self:
+            _logger.info('partner id : %r, product id : %r', stock_move.partner_id.id, stock_move.product_id.id)
+            if stock_move.partner_id and stock_move.product_id:
+                setting = self.env['sps.customer.requests'].get_settings_object(stock_move.partner_id.id, stock_move.product_id.id,
+                                                                                None, None)
+                if setting:
+                    if setting.partial_UOM and not setting.partial_UOM is None:
+                        _logger.info('partial UOM** : %r', setting.partial_UOM)
+                        stock_move.partial_UOM = setting.partial_UOM
 
 class GLAccount(models.Model):
     _name = "gl.account"
