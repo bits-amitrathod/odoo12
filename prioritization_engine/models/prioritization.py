@@ -90,7 +90,10 @@ class Customer(models.Model):
                                 'length_of_hold': ml.length_of_hold,
                                 'expiration_tolerance': ml.expiration_tolerance,
                                 'cooling_period': ml.cooling_period,
-                                'max_threshold': ml.max_threshold});
+                                'max_threshold': ml.max_threshold,
+                                'is_share': ml.is_share,
+                                'sale_margine': ml.sale_margine
+                                });
 
     def action_view_notification(self):
         '''
