@@ -26,7 +26,7 @@ class SaleOrder(models.Model):
     preferred_method = fields.Selection(string='Preferred Invoice Delivery Method',
                                         related='partner_id.preferred_method', readonly=True)
     carrier_info = fields.Char("Carrier Info", related='partner_id.carrier_info', readonly=True)
-    is_share = fields.Boolean(string='Is Shared', related='partner_id.is_share', readonly=True)
+    is_share = fields.Boolean(string='Is Shared', related='partner_id.is_share', readonly=True,store=True)
     sale_margine = fields.Selection([
         ('gifted', 'Gifted'),
         ('legacy', 'Legacy')], string='Sales Level', related='partner_id.sale_margine', readonly=True)
