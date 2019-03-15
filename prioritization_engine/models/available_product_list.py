@@ -23,7 +23,8 @@ class AvailableProductDict(models.TransientModel):
                     available_product = {production_lot.lot_id.id : {'stock_quant_id':production_lot.id,
                                             'available_quantity':available_quantity,
                                             'reserved_quantity':production_lot.reserved_quantity,
-                                            'use_date':production_lot.lot_id.use_date}}
+                                            'use_date':production_lot.lot_id.use_date,
+                                            'lot_id': production_lot.lot_id}}
                     if production_lot.product_id.id in self.available_production_lot_dict_to_be_returned.keys():
                         self.available_production_lot_dict_to_be_returned.get(production_lot.product_id.id,{}).append(available_product)
                     else:

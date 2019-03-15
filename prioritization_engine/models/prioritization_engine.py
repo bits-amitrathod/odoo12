@@ -28,7 +28,7 @@ class PrioritizationEngine(models.TransientModel):
                 if prioritization_engine_request['auto_allocate']:
                     prioritization_engine_request['customer_request_logs'] += 'Auto allocate is true, '
                     _logger.debug('Auto allocate is true....')
-                    filter_available_product_lot_dict = self.filter_available_product_lot_dict(available_product_lot_dict, prioritization_engine_request)
+                    filter_available_product_lot_dict = self.filter_available_product_lot_dict(available_product_lot_dict, prioritization_engine_request['product_id'],prioritization_engine_request['expiration_tolerance'])
                     if len(filter_available_product_lot_dict) >= 1:
                         # check cooling period- method return True/False
                         if self.check_cooling_period(prioritization_engine_request):
@@ -69,18 +69,17 @@ class PrioritizationEngine(models.TransientModel):
         production_lot_dict = self.env['available.product.dict'].get_available_production_lot_dict()
         return production_lot_dict
 
-    def filter_available_product_lot_dict(self, available_production_lot_dict, prioritization_engine_request):
+    def filter_available_product_lot_dict(self, available_production_lot_dict, product_id, expiration_tolerance):
         filtered_production_lot_dict_to_be_returned = {}
         filtered_production_lot_dict_to_be_returned.clear()
-        for available_production_lot in available_production_lot_dict.get(prioritization_engine_request['product_id'],{}):
+        for available_production_lot in available_production_lot_dict.get(product_id,{}):
             if datetime.strptime(available_production_lot.get(list(available_production_lot.keys()).pop(0), {}).get('use_date'),
-                    '%Y-%m-%d %H:%M:%S') >= self.get_product_expiration_tolerance_date(prioritization_engine_request):
+                    '%Y-%m-%d %H:%M:%S') >= self.get_product_expiration_tolerance_date(expiration_tolerance):
 
-                if prioritization_engine_request['product_id'] in filtered_production_lot_dict_to_be_returned.keys():
-                    filtered_production_lot_dict_to_be_returned.get(prioritization_engine_request['product_id'],
-                                                                         {}).append(available_production_lot)
+                if product_id in filtered_production_lot_dict_to_be_returned.keys():
+                    filtered_production_lot_dict_to_be_returned.get(product_id,{}).append(available_production_lot)
                 else:
-                    dict = {prioritization_engine_request['product_id']: [available_production_lot]}
+                    dict = {product_id: [available_production_lot]}
                     filtered_production_lot_dict_to_be_returned.update(dict)
 
         _logger.debug('Filtered production lot list to be returned %r', str(filtered_production_lot_dict_to_be_returned))
@@ -145,8 +144,8 @@ class PrioritizationEngine(models.TransientModel):
         return flag
 
     # get product expiration tolerance date, expiration tolerance in months(3/6/12)
-    def get_product_expiration_tolerance_date(self,prioritization_engine_request):
-        expiration_tolerance_date = datetime.today() + relativedelta(months=+int(prioritization_engine_request['expiration_tolerance']))
+    def get_product_expiration_tolerance_date(self,expiration_tolerance):
+        expiration_tolerance_date = datetime.today() + relativedelta(months=+int(expiration_tolerance))
         return expiration_tolerance_date
 
     # Allocate product
@@ -379,9 +378,9 @@ class PrioritizationEngine(models.TransientModel):
                 self.env['sale.order.line'].create(dict(sale_order_line_dict))
 
             sale_order.force_quotation_send()
-            print('**********Before action_confirm************')
+            print('**********Before action_confirm************', sale_order.state)
             sale_order.action_confirm()
-            print('**********After action_confirm************')
+            print('**********After action_confirm************', sale_order.state)
             _logger.info('sale order id  : %r  sale order state : %r', sale_order.id, sale_order.state)
 
             picking = self.env['stock.picking'].search([('sale_id', '=', sale_order.id),('picking_type_id', '=', 1)])
@@ -560,7 +559,8 @@ class PrioritizationEngine(models.TransientModel):
 
                         # get length of hold
                         _setting_object = self.env['sps.customer.requests'].get_settings_object(sale_order['partner_id'].id, stock_move_line['product_id'].id, None, None)
-                        _logger.info('length of hold %r',_setting_object.length_of_hold)
+                        print(_setting_object)
+                        # _logger.info('length of hold %r', _setting_object.length_of_hold)
 
                         # get current datetime
                         current_datetime = datetime.now()
