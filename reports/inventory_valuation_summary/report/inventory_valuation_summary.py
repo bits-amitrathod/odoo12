@@ -31,10 +31,10 @@ class ReportInventoryProductValuationSummary(models.AbstractModel):
                     'location': location_rec['location'],
                     'location_count': location_rec['location_count'],
                     'quantity': location_rec['quantity'],
-                    'types': []
+                    'types': [],
+                    'hasRecord': False
                 }
                 warehouse['locations'].append(location)
-
 
                 types = self.env['report.inventory.valuation.summary'].read_group(domain=location_rec['__domain'],
                                                                                   fields=[],
@@ -47,8 +47,13 @@ class ReportInventoryProductValuationSummary(models.AbstractModel):
                         'type': type_rec['type'],
                         'type_count': type_rec['type_count'],
                         'quantity': type_rec['quantity'],
-                        'record': self.env['report.inventory.valuation.summary'].search_read(domain=type_rec['__domain'])
+                        'record': self.env['report.inventory.valuation.summary'].search_read(
+                            domain=type_rec['__domain'])
                     }
+
+                    if location['hasRecord'] == False and len(type['record']) > 0:
+                        location['hasRecord'] = True
+
                     location['types'].append(type)
         print("--------------end--------------------")
         return {
