@@ -376,7 +376,7 @@ class StockMove(models.Model):
             product_lot_qty_dict.clear()
             print('state : ', move.picking_id.sale_id.state)
 
-            if not move.picking_id.sale_id.team_id and (move.picking_id.sale_id.team_id.team_type.lower().strip() == 'engine' and move.picking_id.sale_id.state.lower().strip() in ('sale')):
+            if (not move.picking_id and not move.picking_id.sale_id) and (move.picking_id.sale_id.team_id.team_type.lower().strip() == 'engine' and move.picking_id.sale_id.state.lower().strip() in ('sale')):
                 print('In if')
                 available_production_lot_dict = self.env['available.product.dict'].get_available_production_lot_dict()
 
