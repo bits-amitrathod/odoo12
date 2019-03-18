@@ -375,7 +375,8 @@ class StockMove(models.Model):
         for move in self.filtered(lambda m: m.state in ['confirmed', 'waiting', 'partially_available']):
             product_lot_qty_dict.clear()
             print('state : ', move.picking_id.sale_id.state)
-            if move.picking_id.sale_id.team_id.team_type.lower().strip() == 'engine' and move.picking_id.sale_id.state.lower().strip() in ('sale'):
+
+            if (not move.picking_id and not move.picking_id.sale_id) and (move.picking_id.sale_id.team_id.team_type.lower().strip() == 'engine' and move.picking_id.sale_id.state.lower().strip() in ('sale')):
                 print('In if')
                 available_production_lot_dict = self.env['available.product.dict'].get_available_production_lot_dict()
 
@@ -553,7 +554,7 @@ class StockQuant(models.Model):
         removal_strategy = "pepr"
         print(removal_strategy)
         if removal_strategy == 'pepr':
-            return 'removal_date, in_date, id'
+            return 'removal_date ASC, id'
         return super(StockQuant, self)._get_removal_strategy_order(removal_strategy)
 
 
