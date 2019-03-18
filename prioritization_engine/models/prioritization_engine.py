@@ -453,7 +453,7 @@ class PrioritizationEngine(models.TransientModel):
                         _logger.info('*** %r',available_production_lot.get(available))
                         _logger.info('available_quantity : %r', available_production_lot.get(available).get('available_quantity'))
                         _logger.info('reserved_quantity : %r',available_production_lot.get(available).get('reserved_quantity'))
-                        count = count +(available_production_lot.get(available).get('available_quantity')-available_production_lot.get(available).get('reserved_quantity'))
+                        count = count + available_production_lot.get(available).get('available_quantity')
         return count
 
     def check_product_threshold(self,prioritization_engine_request):
