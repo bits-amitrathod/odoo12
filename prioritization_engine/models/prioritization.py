@@ -58,18 +58,14 @@ class Customer(models.Model):
     @api.multi
     def write(self, vals):
         res = super(Customer, self).write(vals)
-        print(res)
         res2 = self.copy_parent_date(vals)
-        print(res2)
         return res
 
     def copy_parent_date(self, vals):
-        # print(self)
         # self.ensure_one()
         _logger.info("pritization engin :%r", vals)
         for ml in self:
             for child_id in ml.child_ids:
-                # print(child_id.child_ids)
                 child_id.write({'on_hold': ml.on_hold,
                                 'is_broker': ml.is_broker,
                                 'carrier_info': ml.carrier_info,
@@ -361,7 +357,7 @@ class StockMove(models.Model):
                         stock_move.partial_UOM = setting.partial_UOM
 
     def _action_assign(self):
-        print('*****prioritization -> _action_assign()*********')
+        _logger.info('*****prioritization -> _action_assign()*********')
         """ Reserve stock moves by creating their stock move lines. A stock move is
         considered reserved once the sum of `product_qty` for all its move lines is
         equal to its `product_qty`. If it is less, the stock move is considered
@@ -374,10 +370,9 @@ class StockMove(models.Model):
         # product_lot_qty_dict.clear()
         for move in self.filtered(lambda m: m.state in ['confirmed', 'waiting', 'partially_available']):
             product_lot_qty_dict.clear()
-            print('state : ', move.picking_id.sale_id.state)
 
             if (not move.picking_id and not move.picking_id.sale_id) and (move.picking_id.sale_id.team_id.team_type.lower().strip() == 'engine' and move.picking_id.sale_id.state.lower().strip() in ('sale')):
-                print('In if')
+                _logger.info('sales channel is engine')
                 available_production_lot_dict = self.env['available.product.dict'].get_available_production_lot_dict()
 
                 # get expiration tolerance
@@ -390,8 +385,6 @@ class StockMove(models.Model):
                 for product_lot in filter_available_product_lot_dict.get(move.product_id.id, {}):
                     lot_id = product_lot.get(list(product_lot.keys()).pop(0), {}).get('lot_id')
                     avi_qty = product_lot.get(list(product_lot.keys()).pop(0), {}).get('available_quantity')
-                    print('*lot Id : ', lot_id)
-                    print('*available_qty', avi_qty)
                     dict1 = {lot_id:{'lot_id': lot_id, 'available_qty': avi_qty}}
                     if move.product_id.id in product_lot_qty_dict.keys():
                         product_lot_qty_dict.get(move.product_id.id, {}).append(dict1)
@@ -407,10 +400,9 @@ class StockMove(models.Model):
 
                     if need > 0:
                         taken_quantity = move._update_reserved_quantity(need, avi_qty1, move.location_id, lot_id1, strict=False)
-                        print('taken_quantity :', taken_quantity)
+                        _logger.info('taken_quantity :', taken_quantity)
                         need = need - taken_quantity
             else:
-                print('In else')
                 if move.location_id.should_bypass_reservation() \
                         or move.product_id.type == 'consu':
                     # create the move line(s) but do not impact quants
@@ -550,9 +542,8 @@ class StockQuant(models.Model):
 
     @api.model
     def _get_removal_strategy_order(self, removal_strategy):
-        print('*****Prioritization Engine Product Removal Strategy*******')
+        _logger.info('*****Prioritization Engine Product Removal Strategy*******')
         removal_strategy = "pepr"
-        print(removal_strategy)
         if removal_strategy == 'pepr':
             return 'removal_date ASC, id'
         return super(StockQuant, self)._get_removal_strategy_order(removal_strategy)
