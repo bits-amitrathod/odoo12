@@ -553,7 +553,7 @@ class StockQuant(models.Model):
         removal_strategy = "pepr"
         print(removal_strategy)
         if removal_strategy == 'pepr':
-            return 'removal_date, in_date, id'
+            return 'removal_date ASC, id'
         return super(StockQuant, self)._get_removal_strategy_order(removal_strategy)
 
 
