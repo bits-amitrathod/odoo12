@@ -1,0 +1,17 @@
+<odoo>
+    <data>
+
+
+        <record id="action_send_invitation_email" model="ir.actions.server">
+            <field name="name">Send An Invitation Email</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="base.model_res_users"/>
+            <field name="binding_model_id" ref="base.model_res_users"/>
+            <field name="state">code</field>
+            <field name="code">model.browse(env.context.get('active_ids', [])).with_context({'create_user':
+                True}).action_reset_password()
+            </field>
+        </record>
+
+    </data>
+</odoo>

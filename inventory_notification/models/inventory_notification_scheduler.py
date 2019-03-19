@@ -530,7 +530,7 @@ class InventoryNotificationScheduler(models.TransientModel):
 
     def send_email_and_notification(self,vals):
         local_context = {'products': vals['product_list'], 'headers': vals['headers'], 'columnProps': vals['coln_name'],
-                         'email_from': vals['email_from_user'].email, 'email_to': vals['email_to_user'].email, 'subject': vals['subject'],
+                         'email_from': vals['email_from_user'].sudo().email, 'email_to': vals['email_to_user'].sudo().email, 'subject': vals['subject'],
                          'descrption': vals['description']}
         html_file = self.env['inventory.notification.html'].search([])
         finalHTML = html_file.process_common_html(vals['subject'], vals['description'], vals['product_list'], vals['headers'], vals['coln_name'])
@@ -540,12 +540,12 @@ class InventoryNotificationScheduler(models.TransientModel):
         else:
             partner_ids = [vals['email_to_user'].id]
         try:
-            if vals['email_to_user'].email:
-                template_id = vals['template'].with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True, )
+            if vals['email_to_user'].sudo().email:
+                template_id = vals['template'].with_context(local_context).sudo().send_mail(SUPERUSER_ID, raise_exception=True, force_send=True, )
         except:
-            erro_msg="mail sending fail for email id: %r" + vals['email_to_user'].email +" sending error report to admin"
+            erro_msg="mail sending fail for email id: %r" + vals['email_to_user'].sudo().email +" sending error report to admin"
             _logger.info(erro_msg)
-            print("mail sending fail for email id: " + vals['email_to_user'].email +" sending error report to admin")
+            print("mail sending fail for email id: " + vals['email_to_user'].sudo().email +" sending error report to admin")
             # subject= "mail send fail for user "+ vals['email_to_user'].email + " (Subject: "+vals['subject']
             # cache_context = {'products': vals['product_list'], 'headers': vals['headers'],
             #                  'columnProps': vals['coln_name'],
@@ -554,14 +554,14 @@ class InventoryNotificationScheduler(models.TransientModel):
             #                  'descrption': vals['description']}
             try:
                 # vals['template'].with_context(cache_context).send_mail(SUPERUSER_ID, raise_exception=True,force_send=True)
-                vals['template'].with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True)
+                vals['template'].with_context(local_context).sudo().send_mail(SUPERUSER_ID, raise_exception=True)
             except:
-                _logger.info("mail sending fail for email id: %r" , vals['email_to_user'].email)
-                print("mail sending fail for email id: " + vals['email_to_user'].email)
+                _logger.info("mail sending fail for email id: %r" , vals['email_to_user'].sudo().email)
+                print("mail sending fail for email id: " + vals['email_to_user'].sudo().email)
 
         if vals['is_employee']:
             mail = self.env["mail.thread"]
-            mail.message_post(
+            mail.sudo().message_post(
                 body=finalHTML,
                 subject=vals['subject'],
                 message_type='notification',
