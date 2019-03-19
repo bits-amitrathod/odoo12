@@ -25,10 +25,10 @@ class InventoryNotificationScheduler(models.TransientModel):
     def process_notification_scheduler(self):
         _logger.info("process_notification_scheduler called")
         self.process_in_stock_scheduler()
-        self.process_new_product_scheduler()
-        self.process_notify_available()
-        self.process_packing_list()
-        self.process_on_hold_customer()
+        # self.process_new_product_scheduler()
+        # self.process_notify_available()
+        # self.process_packing_list()
+        # self.process_on_hold_customer()
 
     def pick_notification_for_customer(self,picking):
         Stock_Moves = self.env['stock.move'].search([('picking_id','=',picking.id)])
@@ -148,9 +148,9 @@ class InventoryNotificationScheduler(models.TransientModel):
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
         for customr in customers:
             if (customr.start_date == False and customr.end_date == False) \
-                    or (customr.start_date == False and InventoryNotificationScheduler.string_to_date(customr.end_date) <= today_start) \
-                    or (customr.end_date == False and InventoryNotificationScheduler.string_to_date(customr.start_date) >= today_start) \
-                    or (InventoryNotificationScheduler.string_to_date(customr.start_date) >= today_start and InventoryNotificationScheduler.string_to_date(customr.end_date) <= today_start):
+                    or (customr.start_date == False and InventoryNotificationScheduler.string_to_date(customr.end_date) >= today_start) \
+                    or (customr.end_date == False and InventoryNotificationScheduler.string_to_date(customr.start_date) <= today_start) \
+                    or (InventoryNotificationScheduler.string_to_date(customr.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(customr.end_date) >= today_start):
                 _logger.info("customer :%r", customr)
                 custmrs=[]
                 cust_ids=[]
@@ -800,6 +800,6 @@ class InventoryNotificationScheduler(models.TransientModel):
 
     @staticmethod
     def string_to_date(date_string):
-        if date_string is None:
+        if date_string == True or date_string == False :
             return None
         return datetime.strptime(date_string, DEFAULT_SERVER_DATE_FORMAT).date()
