@@ -25,10 +25,10 @@ class InventoryNotificationScheduler(models.TransientModel):
     def process_notification_scheduler(self):
         _logger.info("process_notification_scheduler called")
         self.process_in_stock_scheduler()
-        # self.process_new_product_scheduler()
-        # self.process_notify_available()
-        # self.process_packing_list()
-        # self.process_on_hold_customer()
+        self.process_new_product_scheduler()
+        self.process_notify_available()
+        self.process_packing_list()
+        self.process_on_hold_customer()
 
     def pick_notification_for_customer(self,picking):
         Stock_Moves = self.env['stock.move'].search([('picking_id','=',picking.id)])
