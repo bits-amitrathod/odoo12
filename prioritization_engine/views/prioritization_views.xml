@@ -211,7 +211,7 @@
                     <group name="Category" string="Category">
                         <group>
                             <field name="location"/>
-                            <field name="sku_code"/>
+                            <!--<field name="sku_code"/>-->
                         </group>
                         <group>
                             <field name="premium"/>
@@ -219,6 +219,31 @@
                         </group>
                     </group>
                 </page>
+            </field>
+        </record>
+
+        <record id="product_template_form_sku_code_add" model="ir.ui.view">
+            <field name="name">product.template.product.form</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <field name="sale_ok" position="before">
+                    <label for="sku_code"/>
+                    <field name="sku_code"/>
+                    <div/>
+                </field>
+            </field>
+        </record>
+
+        <record id="product_template_form_default_code_readonly" model="ir.ui.view">
+            <field name="name">product.template.product.form</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='default_code']" position="attributes">
+                    <attribute name="attrs">{"invisible": [["product_variant_count","&gt;",1]]}</attribute>
+                    <attribute name="readonly">1</attribute>
+                </xpath>
             </field>
         </record>
 
@@ -257,9 +282,9 @@
             <field name="arch" type="xml">
                 <form string="Notification Setting" create="false">
                     <sheet>
-                         <field name="is_parent" invisible="1"/>
+                        <field name="is_parent" invisible="1"/>
                         <group>
-                           <field name="historic_months" attrs="{'readonly': [('is_parent', '=', False)]}"/>
+                            <field name="historic_months" attrs="{'readonly': [('is_parent', '=', False)]}"/>
                         </group>
                         <group>
                             <group>
@@ -286,7 +311,7 @@
             <field name="model">gl.account</field>
             <field name="arch" type="xml">
                 <tree string="GL Account setting">
-                   <field name="name"/>
+                    <field name="name"/>
                 </tree>
             </field>
         </record>
@@ -295,7 +320,7 @@
             <field name="model">gl.account</field>
             <field name="arch" type="xml">
                 <form string="GL Account setting">
-                   <field name="name"/>
+                    <field name="name"/>
                 </form>
             </field>
         </record>
@@ -377,9 +402,11 @@
         <record id="set_log_gl_account_response" model="mail.template">
             <field name="name">Logs For GL Account</field>
             <field name="model_id" ref="base.model_res_users"/>
-            <field name="email_from"><![CDATA["${object.company_id.name|safe}" <${(object.company_id.email or user.email)|safe}>]]></field>
+            <field name="email_from">
+                <![CDATA["${object.company_id.name|safe}" <${(object.company_id.email or user.email)|safe}>]]></field>
             <field name="email_to">${object.email|safe}</field>
-            <field name="subject"><![CDATA[GL Account No Response for user <${(object.company_id.email or user.email)|safe}>]]></field>
+            <field name="subject">
+                <![CDATA[GL Account No Response for user <${(object.company_id.email or user.email)|safe}>]]></field>
             <field name="body_html">${ctx['body']}</field>
             <field name="user_signature" eval="False"/>
         </record>

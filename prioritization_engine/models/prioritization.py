@@ -16,7 +16,8 @@ class Customer(models.Model):
     prioritization_ids = fields.One2many('prioritization_engine.prioritization', 'customer_id')
     min_threshold = fields.Integer("Product Min Threshold", readonly=False)
     max_threshold = fields.Integer("Product Max Threshold", readonly=False)
-    priority = fields.Integer("Product Priority", default=-1, readonly=False, help="If Product Priority is -1 then Prioritization Engine will process only those products which are added in 'Customer Priority Configuration'.")
+    priority = fields.Integer("Product Priority", default=-1, readonly=False,
+                              help="If Product Priority is -1 then Prioritization Engine will process only those products which are added in 'Customer Priority Configuration'.")
     cooling_period = fields.Integer("Cooling Period in days", readonly=False)
     auto_allocate = fields.Boolean("Allow Auto Allocation?", readonly=False)
     length_of_hold = fields.Integer("Length Of Hold in hours", readonly=False, default=1)
@@ -93,7 +94,7 @@ class Customer(models.Model):
                                 'max_threshold': ml.max_threshold,
                                 'is_share': ml.is_share,
                                 'sale_margine': ml.sale_margine
-                                });
+                                })
 
     def action_view_notification(self):
         '''
@@ -199,10 +200,10 @@ class Customer(models.Model):
                 'title': _('Warning'),
                 'message': _('Please Select Purchase Order Method For Prioritization setting'),
             }
-        return {'value': vals,'warning':warning}
+        return {'value': vals, 'warning': warning}
 
 
-class ProductTemplate(models.Model):
+class ProductTemplateSku(models.Model):
     _inherit = 'product.template'
 
     def _get_default_uom_id(self):
@@ -214,6 +215,18 @@ class ProductTemplate(models.Model):
     manufacturer_pref = fields.Char(string='Manuf. Catalog No')
     manufacturer_uom = fields.Many2one('product.uom', 'Manufacturer Unit of Measure', default=_get_default_uom_id,
                                        required=True)
+
+    @api.model
+    def create(self, vals):
+        if 'sku_code' in vals:
+            vals['default_code'] = vals['sku_code']
+        return super(ProductTemplateSku, self).create(vals)
+
+    @api.multi
+    def write(self, vals):
+        if 'sku_code' in vals:
+            vals['default_code'] = vals['sku_code']
+        return super(ProductTemplateSku, self).write(vals)
 
 
 class NotificationSetting(models.Model):
@@ -351,12 +364,14 @@ class StockMove(models.Model):
         for stock_move in self:
             _logger.info('partner id : %r, product id : %r', stock_move.partner_id.id, stock_move.product_id.id)
             if stock_move.partner_id and stock_move.product_id:
-                setting = self.env['sps.customer.requests'].get_settings_object(stock_move.partner_id.id, stock_move.product_id.id,
+                setting = self.env['sps.customer.requests'].get_settings_object(stock_move.partner_id.id,
+                                                                                stock_move.product_id.id,
                                                                                 None, None)
                 if setting:
                     if setting.partial_UOM and not setting.partial_UOM is None:
                         _logger.info('partial UOM** : %r', setting.partial_UOM)
                         stock_move.partial_UOM = setting.partial_UOM
+
 
 class GLAccount(models.Model):
     _name = "gl.account"
@@ -365,6 +380,4 @@ class GLAccount(models.Model):
         ('name', 'unique(name)', 'GL Account already exists'),
     ]
     name = fields.Char(string='GL Account', required=True, translate=True)
-    partner_id=fields.Many2one('res.partner',string='Partner')
-
-
+    partner_id = fields.Many2one('res.partner', string='Partner')
