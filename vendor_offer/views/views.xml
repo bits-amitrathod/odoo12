@@ -216,7 +216,7 @@
                         <button name="action_print_vendor_offer" string="Print" type="object" class="btn-primary"
                                 attrs="{'invisible':[('state', 'in', ('purchase'))]}"/>
                         <button name="action_button_confirm" states="ven_draft,ven_sent"
-                                context="{'vendor_offer_data': True}" string="Confirm Order" type="object"/>
+                                context="{'vendor_offer_data': True}" string="Offer Accepted" type="object"/>
                         <button name="action_cancel_vendor_offer" states="ven_draft,ven_sent" string="Cancel"
                                 type="object"/>
                         <button name="%(vendor_offer.action_purchase_order_edit_note)d" type="action"
@@ -515,6 +515,18 @@
                 </xpath>
 
 
+            </field>
+        </record>
+
+        <record id="invoice_supplier_form_ex" model="ir.ui.view">
+            <field name="name">account.invoice.supplier.form_ex</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/sheet[1]/notebook/page[@name='other_info']/group/group[2]/field[@name='date']"
+                       position="after">
+                    <field name="is_vender_offer_invoice"  attrs="{'readonly': True}"/>
+                </xpath>
             </field>
         </record>
 

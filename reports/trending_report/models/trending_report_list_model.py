@@ -10,7 +10,6 @@ from dateutil.relativedelta import relativedelta
 
 
 class TrendingReportListView(models.Model):
-    _description = 'trending_report.trending'
     _inherit = 'res.partner'
 
     month1 = fields.Monetary(currency_field='currency_id', store=False)
