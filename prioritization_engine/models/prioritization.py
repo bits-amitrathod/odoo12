@@ -5,6 +5,7 @@ from itertools import groupby
 from operator import itemgetter
 from odoo.exceptions import ValidationError, AccessError
 from odoo.tools.float_utils import float_compare, float_round, float_is_zero
+
 _logger = logging.getLogger(__name__)
 
 
@@ -18,7 +19,8 @@ class Customer(models.Model):
     prioritization_ids = fields.One2many('prioritization_engine.prioritization', 'customer_id')
     min_threshold = fields.Integer("Product Min Threshold", readonly=False)
     max_threshold = fields.Integer("Product Max Threshold", readonly=False)
-    priority = fields.Integer("Product Priority", default=-1, readonly=False, help="If Product Priority is -1 then Prioritization Engine will process only those products which are added in 'Customer Priority Configuration'.")
+    priority = fields.Integer("Product Priority", default=-1, readonly=False,
+                              help="If Product Priority is -1 then Prioritization Engine will process only those products which are added in 'Customer Priority Configuration'.")
     cooling_period = fields.Integer("Cooling Period in days", readonly=False)
     auto_allocate = fields.Boolean("Allow Auto Allocation?", readonly=False)
     length_of_hold = fields.Integer("Length Of Hold in hours", readonly=False, default=1)
@@ -91,7 +93,7 @@ class Customer(models.Model):
                                 'max_threshold': ml.max_threshold,
                                 'is_share': ml.is_share,
                                 'sale_margine': ml.sale_margine
-                                });
+                                })
 
     def action_view_notification(self):
         '''
@@ -197,10 +199,10 @@ class Customer(models.Model):
                 'title': _('Warning'),
                 'message': _('Please Select Purchase Order Method For Prioritization setting'),
             }
-        return {'value': vals,'warning':warning}
+        return {'value': vals, 'warning': warning}
 
 
-class ProductTemplate(models.Model):
+class ProductTemplateSku(models.Model):
     _inherit = 'product.template'
 
     def _get_default_uom_id(self):
@@ -212,6 +214,18 @@ class ProductTemplate(models.Model):
     manufacturer_pref = fields.Char(string='Manuf. Catalog No')
     manufacturer_uom = fields.Many2one('product.uom', 'Manufacturer Unit of Measure', default=_get_default_uom_id,
                                        required=True)
+
+    @api.model
+    def create(self, vals):
+        if 'sku_code' in vals:
+            vals['default_code'] = vals['sku_code']
+        return super(ProductTemplateSku, self).create(vals)
+
+    @api.multi
+    def write(self, vals):
+        if 'sku_code' in vals:
+            vals['default_code'] = vals['sku_code']
+        return super(ProductTemplateSku, self).write(vals)
 
 
 class NotificationSetting(models.Model):
@@ -349,7 +363,8 @@ class StockMove(models.Model):
         for stock_move in self:
             _logger.info('partner id : %r, product id : %r', stock_move.partner_id.id, stock_move.product_id.id)
             if stock_move.partner_id and stock_move.product_id:
-                setting = self.env['sps.customer.requests'].get_settings_object(stock_move.partner_id.id, stock_move.product_id.id,
+                setting = self.env['sps.customer.requests'].get_settings_object(stock_move.partner_id.id,
+                                                                                stock_move.product_id.id,
                                                                                 None, None)
                 if setting:
                     if setting.partial_UOM and not setting.partial_UOM is None:
@@ -371,27 +386,31 @@ class StockMove(models.Model):
         for move in self.filtered(lambda m: m.state in ['confirmed', 'waiting', 'partially_available']):
             product_lot_qty_dict.clear()
 
-            if (not move.picking_id and not move.picking_id.sale_id) and (move.picking_id.sale_id.team_id.team_type.lower().strip() == 'engine' and move.picking_id.sale_id.state.lower().strip() in ('sale')):
+            if (not move.picking_id and not move.picking_id.sale_id) and (
+                    move.picking_id.sale_id.team_id.team_type.lower().strip() == 'engine' and move.picking_id.sale_id.state.lower().strip() in (
+                    'sale')):
                 _logger.info('sales channel is engine')
                 available_production_lot_dict = self.env['available.product.dict'].get_available_production_lot_dict()
 
                 # get expiration tolerance
-                _setting_object = self.env['sps.customer.requests'].get_settings_object(move.partner_id.id, move.product_id.id, None, None)
+                _setting_object = self.env['sps.customer.requests'].get_settings_object(move.partner_id.id,
+                                                                                        move.product_id.id, None, None)
 
                 # Search lot Id as per partner product expiration tolerance
-                filter_available_product_lot_dict = self.env['prioritization.engine.model'].filter_available_product_lot_dict(available_production_lot_dict,
-                                                                                     move.product_id.id,_setting_object.expiration_tolerance)
+                filter_available_product_lot_dict = self.env[
+                    'prioritization.engine.model'].filter_available_product_lot_dict(available_production_lot_dict,
+                                                                                     move.product_id.id,
+                                                                                     _setting_object.expiration_tolerance)
 
                 for product_lot in filter_available_product_lot_dict.get(move.product_id.id, {}):
                     lot_id = product_lot.get(list(product_lot.keys()).pop(0), {}).get('lot_id')
                     avi_qty = product_lot.get(list(product_lot.keys()).pop(0), {}).get('available_quantity')
-                    dict1 = {lot_id:{'lot_id': lot_id, 'available_qty': avi_qty}}
+                    dict1 = {lot_id: {'lot_id': lot_id, 'available_qty': avi_qty}}
                     if move.product_id.id in product_lot_qty_dict.keys():
                         product_lot_qty_dict.get(move.product_id.id, {}).append(dict1)
                     else:
                         new_dict = {move.product_id.id: [dict1]}
                         product_lot_qty_dict.update(new_dict)
-
 
                 need = move.product_qty - move.reserved_availability
                 for prdt_lot_qty in product_lot_qty_dict.get(move.product_id.id, {}):
@@ -399,7 +418,8 @@ class StockMove(models.Model):
                     avi_qty1 = prdt_lot_qty.get(list(prdt_lot_qty.keys()).pop(0), {}).get('available_qty')
 
                     if need > 0:
-                        taken_quantity = move._update_reserved_quantity(need, avi_qty1, move.location_id, lot_id1, strict=False)
+                        taken_quantity = move._update_reserved_quantity(need, avi_qty1, move.location_id, lot_id1,
+                                                                        strict=False)
                         _logger.info('taken_quantity :', taken_quantity)
                         need = need - taken_quantity
             else:
@@ -459,7 +479,8 @@ class StockMove(models.Model):
                             return (ml.location_dest_id.id, ml.lot_id.id, ml.result_package_id.id, ml.owner_id.id)
 
                         grouped_move_lines_in = {}
-                        for k, g in groupby(sorted(move_lines_in, key=_keys_in_sorted), key=itemgetter(*keys_in_groupby)):
+                        for k, g in groupby(sorted(move_lines_in, key=_keys_in_sorted),
+                                            key=itemgetter(*keys_in_groupby)):
                             qty_done = 0
                             for ml in g:
                                 qty_done += ml.product_uom_id._compute_quantity(ml.qty_done, ml.product_id.uom_id)
@@ -470,7 +491,8 @@ class StockMove(models.Model):
                         # As we defer the write on the stock.move's state at the end of the loop, there
                         # could be moves to consider in what our siblings already took.
                         moves_out_siblings = move.move_orig_ids.mapped('move_dest_ids') - move
-                        moves_out_siblings_to_consider = moves_out_siblings & (assigned_moves + partially_available_moves)
+                        moves_out_siblings_to_consider = moves_out_siblings & (
+                                assigned_moves + partially_available_moves)
                         reserved_moves_out_siblings = moves_out_siblings.filtered(
                             lambda m: m.state in ['partially_available', 'assigned'])
                         move_lines_out_reserved = (reserved_moves_out_siblings | moves_out_siblings_to_consider).mapped(
@@ -491,7 +513,8 @@ class StockMove(models.Model):
                                             key=itemgetter(*keys_out_groupby)):
                             grouped_move_lines_out[k] = sum(
                                 self.env['stock.move.line'].concat(*list(g)).mapped('product_qty'))
-                        available_move_lines = {key: grouped_move_lines_in[key] - grouped_move_lines_out.get(key, 0) for key
+                        available_move_lines = {key: grouped_move_lines_in[key] - grouped_move_lines_out.get(key, 0) for
+                                                key
                                                 in grouped_move_lines_in.keys()}
                         # pop key if the quantity available amount to 0
                         available_move_lines = dict((k, v) for k, v in available_move_lines.items() if v)
@@ -501,8 +524,9 @@ class StockMove(models.Model):
                         for move_line in move.move_line_ids.filtered(lambda m: m.product_qty):
                             if available_move_lines.get((move_line.location_id, move_line.lot_id,
                                                          move_line.result_package_id, move_line.owner_id)):
-                                available_move_lines[(move_line.location_id, move_line.lot_id, move_line.result_package_id,
-                                                      move_line.owner_id)] -= move_line.product_qty
+                                available_move_lines[
+                                    (move_line.location_id, move_line.lot_id, move_line.result_package_id,
+                                     move_line.owner_id)] -= move_line.product_qty
                         for (location_id, lot_id, package_id, owner_id), quantity in available_move_lines.items():
                             need = move.product_qty - sum(move.move_line_ids.mapped('product_qty'))
                             # `quantity` is what is brought by chained done move lines. We double check
@@ -528,6 +552,7 @@ class StockMove(models.Model):
         assigned_moves.write({'state': 'assigned'})
         self.mapped('picking_id')._check_entire_pack()
 
+
 class GLAccount(models.Model):
     _name = "gl.account"
 
@@ -535,7 +560,8 @@ class GLAccount(models.Model):
         ('name', 'unique(name)', 'GL Account already exists'),
     ]
     name = fields.Char(string='GL Account', required=True, translate=True)
-    partner_id=fields.Many2one('res.partner',string='Partner')
+    partner_id = fields.Many2one('res.partner', string='Partner')
+
 
 class StockQuant(models.Model):
     _inherit = 'stock.quant'
@@ -547,5 +573,3 @@ class StockQuant(models.Model):
         if removal_strategy == 'pepr':
             return 'removal_date ASC, id'
         return super(StockQuant, self)._get_removal_strategy_order(removal_strategy)
-
-

@@ -653,7 +653,7 @@ class ProductTemplateTire(models.Model):
     @api.model
     def create(self, vals):
 
-        if not vals['tier']:
+        if 'tier' in vals and not vals['tier']:
             vals['tier']= 2
 
         return super(ProductTemplateTire, self).create(vals)
@@ -672,15 +672,18 @@ class ProductNotesActivity(models.Model):
     note_date = fields.Datetime(string="Note Date", default=fields.Datetime.now, )
 
 
-# class PopupNotes(models.TransientModel):
-#     _name = 'popup.purchase.order.notes'
-#     notes = fields.Text(string="Notes", required=True)
-#
-#     def action_button_edit_note(self):
-#         self.ensure_one()
-#         order = self.env['purchase.notes.activity'].browse(self._context['active_id'])
-# order.notes_desc = self.notes
-# order.notes_desc_date = fields.Datetime.now()
+class VendorOfferInvoice(models.Model):
+    _inherit = "account.invoice"
+
+    is_vender_offer_invoice = fields.Boolean(string='Is Vendor Offer')
+
+    @api.onchange('purchase_id')
+    def purchase_order_change(self):
+        if not self.purchase_id:
+            return {}
+        self.is_vender_offer_invoice = self.purchase_id.vendor_offer_data
+        record = super(VendorOfferInvoice, self).purchase_order_change()
+        return record
 
 
 class FedexDelivery(models.Model):
