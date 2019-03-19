@@ -59,5 +59,65 @@
             <field name="user_signature" eval="False"/>
         </record>
 
+    <record id="in_stock_scheduler_template" model="mail.template">
+            <field name="name">Inventory Notification: Product Availability Email</field>
+            <field name="model_id" ref="base.model_res_users"/>
+            <field name="email_from">${ctx['email_from']}</field>
+            <field name="email_to">${ctx['email_to']}</field>
+            <field name="subject">${ctx['subject']}</field>
+            <field name="email_cc">${ctx['email_cc']}</field>
+            <field name="body_html">
+                <![CDATA[
+                % set products = ctx.get('products', [])
+                %set headers =  ctx.get('headers', [])
+                %set columnProps =  ctx.get('columnProps', [])
+
+                 <div style="margin:auto;width:100%;background-color:  #ffffff;  padding-left: 60px;"/>
+                    <div>
+                        <div >
+                            <p>Hello</p>
+                            <p> ${ctx['descrption']} </p>
+                        </div>
+                        <center>
+                        </center>
+                    </div>
+                    <br/>
+                    <div >
+                    <table style="border: 1px solid #efecec;width:100%">
+
+                            <thead style='border: 1px solid black;background-color:#D6DBDF;line-height: 30px'>
+                                <tr style="border: 1px solid black;">
+                                 %for header in  headers
+                                             <th style="text-align: center;">${header} </th>
+                                  % endfor
+                                </tr>
+                            </thead>
+                            <tbody>
+                               % for product in products:
+                                    <tr  style='border: 1px solid black;background-color: ${product.background_color};line-height:25px'>
+                                         %for column in  columnProps
+                                             <td style="text-align: center;">
+                                                <span>
+                                                    % if product[column] != "False":
+                                                        ${product[column]}
+                                                    % endif
+                                                 </span>
+                                            </td>
+                                          % endfor
+                                     </tr>
+                                   % endfor
+                            </tbody>
+                    </table>
+                  </div>
+                  <div  style="margin-top:20px">
+                        <p>Thanks & Regards,</p>
+                        <p> Admin Team </p>
+                  </div>
+                 </div>
+                ]]>
+            </field>
+            <field name="user_signature" eval="False"/>
+        </record>
+
 
 </odoo>
