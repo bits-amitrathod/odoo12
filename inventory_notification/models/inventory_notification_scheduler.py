@@ -438,7 +438,7 @@ class InventoryNotificationScheduler(models.TransientModel):
             if has_group:
                 local_context = {'picking_list': vals['picking_list'],
                                  'subject': 'New Sales Order',
-                         'email_from': super_user.email, 'email_to': user.email,
+                         'email_from': super_user.email, 'email_to': user.email, 'datetime':datetime,
                 }
                 html_file = self.env['inventory.notification.html'].search([])
                 finalHTML = html_file.process_packing_list_html(vals['picking_list'])
@@ -759,11 +759,11 @@ class InventoryNotificationScheduler(models.TransientModel):
                                 (stock_location_id.id, product.id,))
                             query_result = self.env.cr.dictfetchone()
                         if query_result and query_result['min']:
-                            minExDate = datetime.strptime(query_result['min'], "%Y-%m-%d %H:%M:%S")
+                            minExDate = datetime.strptime(query_result['min'], "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
                         else:
                             minExDate = ""
                         if query_result and query_result['max']:
-                            maxExDate = datetime.strptime(query_result['max'], "%Y-%m-%d %H:%M:%S")
+                            maxExDate = datetime.strptime(query_result['max'], "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
                         else:
                             maxExDate = ""
                         vals={
