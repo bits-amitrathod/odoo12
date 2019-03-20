@@ -500,36 +500,35 @@ class PrioritizationEngine(models.TransientModel):
             self.env.cr.execute("SELECT max(id) document_id FROM public.sps_cust_uploaded_documents WHERE customer_id=" +
                                     str(sps_cust_uploaded_document.customer_id.id))
             query_result = self.env.cr.dictfetchone()
-            if sps_cust_uploaded_document.template_type.lower().strip() == 'requirement':
-                params = self.env['ir.config_parameter'].sudo()
-                document_processing_count = int(params.get_param('prioritization_engine.document_processing_count'))
+            params = self.env['ir.config_parameter'].sudo()
+            document_processing_count = int(params.get_param('prioritization_engine.document_processing_count'))
 
-                if int(query_result['document_id']) == int(sps_cust_uploaded_document.id):
-                    sps_customer_requirements = self.env['sps.customer.requests'].search(
-                        [('document_id', '=', sps_cust_uploaded_document.id),
-                         ('status', 'in', ('Partial', 'InCoolingPeriod', 'New', 'Inprocess', 'Incomplete', 'Unprocessed'))])
-                    if len(sps_customer_requirements) > 0:
-                        self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'In Process')
-                    else:
-                        self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
-                elif int(sps_cust_uploaded_document.document_processed_count) >= int(document_processing_count):
+            if sps_cust_uploaded_document.template_type.lower().strip() == 'requirement':
+                if int(sps_cust_uploaded_document.document_processed_count) >= int(document_processing_count):
                     self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
                 else:
-                    self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'In Process')
-
-
-            elif sps_cust_uploaded_document.template_type.lower().strip() == 'inventory':
-                if int(query_result['document_id']) == int(sps_cust_uploaded_document.id):
-                    sps_customer_requirements = self.env['sps.customer.requests'].search(
-                        [('document_id', '=', sps_cust_uploaded_document.id),
-                         ('status', 'in',
-                          ('Partial', 'InCoolingPeriod', 'New', 'Inprocess', 'Incomplete', 'Unprocessed'))])
+                    sps_customer_requirements = self.env['sps.customer.requests'].search([('document_id', '=', sps_cust_uploaded_document.id),
+                                                        ('status', 'in', ('Partial', 'InCoolingPeriod', 'New', 'Inprocess', 'Incomplete', 'Unprocessed'))])
                     if len(sps_customer_requirements) > 0:
-                        self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'In Process')
+                        if sps_cust_uploaded_document.status != 'In Process':
+                            self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'In Process')
                     else:
                         self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
+
+            elif sps_cust_uploaded_document.template_type.lower().strip() == 'inventory':
+                if int(sps_cust_uploaded_document.document_processed_count) >= int(document_processing_count):
+                    self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
                 else:
-                    self._update_uploaded_document_status(sps_cust_uploaded_document.id,'Completed')
+                    if int(query_result['document_id']) == int(sps_cust_uploaded_document.id):
+                        sps_customer_requirements = self.env['sps.customer.requests'].search([('document_id', '=', sps_cust_uploaded_document.id),
+                                                            ('status', 'in', ('Partial', 'InCoolingPeriod', 'New', 'Inprocess', 'Incomplete', 'Unprocessed'))])
+                        if len(sps_customer_requirements) > 0:
+                            if sps_cust_uploaded_document.status != 'In Process':
+                                self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'In Process')
+                        else:
+                            self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
+                    else:
+                        self._update_uploaded_document_status(sps_cust_uploaded_document.id,'Completed')
 
     def _update_uploaded_document_status(self,document_id,status):
         try:
