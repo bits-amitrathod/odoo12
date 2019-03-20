@@ -5,6 +5,7 @@ from itertools import groupby
 from operator import itemgetter
 from odoo.exceptions import ValidationError, AccessError
 from odoo.tools.float_utils import float_compare, float_round, float_is_zero
+from collections import OrderedDict
 
 _logger = logging.getLogger(__name__)
 
@@ -386,41 +387,39 @@ class StockMove(models.Model):
         for move in self.filtered(lambda m: m.state in ['confirmed', 'waiting', 'partially_available']):
             product_lot_qty_dict.clear()
 
-            if (not move.picking_id and not move.picking_id.sale_id) and (
+            if (move.picking_id and move.picking_id.sale_id) and (
                     move.picking_id.sale_id.team_id.team_type.lower().strip() == 'engine' and move.picking_id.sale_id.state.lower().strip() in (
                     'sale')):
                 _logger.info('sales channel is engine')
                 available_production_lot_dict = self.env['available.product.dict'].get_available_production_lot_dict()
 
                 # get expiration tolerance
-                _setting_object = self.env['sps.customer.requests'].get_settings_object(move.partner_id.id,
-                                                                                        move.product_id.id, None, None)
+                _setting_object = self.env['sps.customer.requests'].get_settings_object(move.partner_id.id, move.product_id.id, None, None)
 
                 # Search lot Id as per partner product expiration tolerance
                 filter_available_product_lot_dict = self.env[
-                    'prioritization.engine.model'].filter_available_product_lot_dict(available_production_lot_dict,
-                                                                                     move.product_id.id,
-                                                                                     _setting_object.expiration_tolerance)
+                    'prioritization.engine.model'].filter_available_product_lot_dict(available_production_lot_dict, move.product_id.id, _setting_object.expiration_tolerance)
 
                 for product_lot in filter_available_product_lot_dict.get(move.product_id.id, {}):
                     lot_id = product_lot.get(list(product_lot.keys()).pop(0), {}).get('lot_id')
                     avi_qty = product_lot.get(list(product_lot.keys()).pop(0), {}).get('available_quantity')
-                    dict1 = {lot_id: {'lot_id': lot_id, 'available_qty': avi_qty}}
+                    use_date = product_lot.get(list(product_lot.keys()).pop(0), {}).get('use_date')
+                    dict1 = {'lot_id': lot_id, 'available_qty': avi_qty, 'use_date': use_date}
+
                     if move.product_id.id in product_lot_qty_dict.keys():
                         product_lot_qty_dict.get(move.product_id.id, {}).append(dict1)
                     else:
                         new_dict = {move.product_id.id: [dict1]}
                         product_lot_qty_dict.update(new_dict)
 
-                need = move.product_qty - move.reserved_availability
-                for prdt_lot_qty in product_lot_qty_dict.get(move.product_id.id, {}):
-                    lot_id1 = prdt_lot_qty.get(list(prdt_lot_qty.keys()).pop(0), {}).get('lot_id')
-                    avi_qty1 = prdt_lot_qty.get(list(prdt_lot_qty.keys()).pop(0), {}).get('available_qty')
+                dict_by_product = product_lot_qty_dict.get(move.product_id.id, {})
+                dict_asc_by_use_date = sorted(dict_by_product, key=lambda i: i['use_date'])
 
+                need = move.product_qty - move.reserved_availability
+                for prdt_lot_qty in dict_asc_by_use_date:
                     if need > 0:
-                        taken_quantity = move._update_reserved_quantity(need, avi_qty1, move.location_id, lot_id1,
-                                                                        strict=False)
-                        _logger.info('taken_quantity :', taken_quantity)
+                        taken_quantity = move._update_reserved_quantity(need, prdt_lot_qty['available_qty'], move.location_id, prdt_lot_qty['lot_id'], strict=False)
+                        _logger.info('taken_quantity : %r', taken_quantity)
                         need = need - taken_quantity
             else:
                 if move.location_id.should_bypass_reservation() \
@@ -562,14 +561,3 @@ class GLAccount(models.Model):
     name = fields.Char(string='GL Account', required=True, translate=True)
     partner_id = fields.Many2one('res.partner', string='Partner')
 
-
-class StockQuant(models.Model):
-    _inherit = 'stock.quant'
-
-    @api.model
-    def _get_removal_strategy_order(self, removal_strategy):
-        _logger.info('*****Prioritization Engine Product Removal Strategy*******')
-        removal_strategy = "pepr"
-        if removal_strategy == 'pepr':
-            return 'removal_date ASC, id'
-        return super(StockQuant, self)._get_removal_strategy_order(removal_strategy)
