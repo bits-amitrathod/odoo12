@@ -2,8 +2,9 @@
 
 from odoo import models, fields, api,SUPERUSER_ID
 import logging
-import datetime
-from datetime import date,datetime,timedelta
+from datetime import datetime
+from datetime import date ,timedelta
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, pycompat, misc
 import base64
 import calendar
 from odoo.exceptions import UserError
@@ -139,16 +140,17 @@ class InventoryNotificationScheduler(models.TransientModel):
         _logger.info("process_in_stock_scheduler called")
         product_list=[]
         today_date = date.today()
-        today_start = fields.Date.to_string(today_date)
+        today_start = today_date
         days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
         dayName = today_date.weekday()
         weekday = days[dayName]
         customers = self.env['res.partner'].search([('customer', '=', True),('is_parent','=',True),('active', '=', True),(weekday,'=',True)])
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
         for customr in customers:
-            if ( customr.start_date  and customr.end_date <= today_start)  :     # need to check end_date  is null then goto send mail proccess
-                pass
-            else:
+            if (customr.start_date == False and customr.end_date == False) \
+                    or (customr.start_date == False and InventoryNotificationScheduler.string_to_date(customr.end_date) >= today_start) \
+                    or (customr.end_date == False and InventoryNotificationScheduler.string_to_date(customr.start_date) <= today_start) \
+                    or (InventoryNotificationScheduler.string_to_date(customr.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(customr.end_date) >= today_start):
                 _logger.info("customer :%r", customr)
                 custmrs=[]
                 cust_ids=[]
@@ -190,6 +192,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                     for cust in custmrs:
                         self.process_email_in_stock_scheduler_template(super_user, cust, subject, descrption, product_list,
                                                                 header, columnProps,email_list_cc,is_employee=False)
+            else:
+                pass
 
     def process_new_product_scheduler(self):
         today_date = datetime.now() - timedelta(days=1)
@@ -793,3 +797,9 @@ class InventoryNotificationScheduler(models.TransientModel):
         if value:
             return "["+str(value)+"]"
         return ""
+
+    @staticmethod
+    def string_to_date(date_string):
+        if date_string == True or date_string == False :
+            return None
+        return datetime.strptime(date_string, DEFAULT_SERVER_DATE_FORMAT).date()
