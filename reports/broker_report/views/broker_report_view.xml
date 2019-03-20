@@ -8,8 +8,8 @@
                     <group>
                         <group>
                             <field name="compute_at_date" widget="radio"/>
-                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
-                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
                         </group>
                     </group>
                     <footer>
@@ -35,7 +35,7 @@
               <field name="model">purchase.order</field>
               <field name="priority">20</field>
               <field name="arch" type="xml">
-                <tree create="false" edit="false" delete="false" >
+                <tree create="false" edit="false" >
 
                      <field name="broker_desc" />
                      <field name="total_retail_broker" />

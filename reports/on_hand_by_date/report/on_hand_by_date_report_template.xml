@@ -11,7 +11,7 @@
                                 <h2>Surgical Product Solutions</h2>
                                 <h4>On Hand By Date</h4>
                                 <h4 t-if="popup.report_date">Reporting Date:
-                                    <span t-esc="popup.report_date" t-options="{'widget':'date'}"/>
+                                    <span t-esc="popup.report_date"/>
                                 </h4>
                             </b>
                         </center>
@@ -19,11 +19,12 @@
                         <table class="table table-condensed" style="border: 1px solid black;">
                             <thead>
                                 <tr style="">
-                                    <th style="text-align: left; border: 1px solid black;">Product SKU</th>
-                                    <th style="text-align: left; border: 1px solid black; center;">Product Name</th>
-                                    <th style="text-align: right; border: 1px solid black;">Product Qty</th>
-                                    <th style="text-align: left; border: 1px solid black;">Vendor Name</th>
-                                    <th t-if="popup.show_cost" style="text-align: right; border: 1px solid black;">
+                                    <th style="text-align: center;center; border: 1px solid black;">Product SKU
+                                    </th>
+                                    <th style="text-align: center; border: 1px solid black; center;">Product</th>
+                                    <th style="text-align: center; border: 1px solid black;">Qty</th>
+                                    <th style="text-align: center; border: 1px solid black;">Vendor</th>
+                                    <th t-if="popup.show_cost" style="text-align: center; border: 1px solid black;">
                                         Unit Price
                                     </th>
                                     <th t-if="popup.show_cost" style="text-align: right; border: 1px solid black;">
@@ -41,7 +42,7 @@
                                         <span t-esc="product.product_name"/>
                                     </td>
                                     <td align="right" style="border: 1px solid black;width: 12%;">
-                                        <span t-field="product.qty_done"/>
+                                        <span t-esc="product.qty_done"/>
                                         ea
                                     </td>
                                     <td align="left" style="border: 1px solid black;width: 12%;">
@@ -49,19 +50,21 @@
                                     </td>
                                     <td t-if="popup.show_cost" align="right"
                                         style="border: 1px solid black;width: 12%;">
-                                        <span t-esc="product.price_unit" t-options='{"widget": "monetary","display_currency": product.currency_id}'/>
+                                        $
+                                        <span t-esc="product.price_unit"/>
                                     </td>
                                     <td t-if="popup.show_cost" align="right"
                                         style="border: 1px solid black;width: 12%;">
-
-                                        <span t-esc="product.asset_value" t-options='{"widget": "monetary","display_currency": product.currency_id}'/>
-                                        <t t-set="total_assets_value" t-value="total_assets_value+product.asset_value" />
+                                        $
+                                        <span t-esc="product.asset_value"/>
+                                        <t t-set="total_assets_value" t-value="total_assets_value+product.asset_value"/>
                                     </td>
                                 </tr>
                                 <tr  t-if="popup.show_cost" >
-                                    <td colspan="5" style="text-align: right;">Total</td>
-                                    <td style="text-align: right;  border: 1px solid black;"  t-if="len(products) &gt; 0">
-                                        <span t-esc="total_assets_value" t-options='{"widget": "monetary","display_currency": products[0].currency_id}'/>
+                                    <td colspan="5">Total</td>
+                                    <td style="text-align: right;  border: 1px solid black;">
+                                        $
+                                        <span t-esc="total_assets_value"/>
                                     </td>
                                 </tr>
                             </tbody>

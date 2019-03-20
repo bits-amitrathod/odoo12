@@ -7,23 +7,20 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
-class LotHistory(models.TransientModel):
+class LotHistory(models.Model):
     _name = "lot.history.report"
     _description = "report product activity report"
 
     sku_code = fields.Char('Product SKU')
-    description = fields.Char('Product Name')
+    description = fields.Char('Description')
     type = fields.Char('Type')
     event = fields.Char('Event')
     event_date = fields.Date(string="Event Date")
     change = fields.Integer('Change')
     lot_no = fields.Char(string="Lot #")
-    vendor = fields.Char(string="Vendor Name")
+    vendor = fields.Char(string="Vendor")
     phone = fields.Char(string="Phone")
     email = fields.Char(string="Email")
-    product_id = fields.Many2one('product.product', string='Product Name')
-    _rec_name = 'product_id'
-
 
     def init(self):
         self.init_table()
@@ -35,18 +32,14 @@ class LotHistory(models.TransientModel):
             """
         self._cr.execute(sql_query)
         lot_id = self.env.context.get('lot_id')
-        sku_code = self.env.context.get('sku_code')
         insert_start = "INSERT INTO lot_history_report" \
-                       "(sku_code, description, type,event,event_date,change,lot_no,product_id"
+                       "(sku_code, description, type,event,event_date,change,lot_no"
         insert_mid = ",vendor,phone,email"
         insert_end = ") "
 
         where_clause = ""
-        if lot_id and lot_id is not None:
+        if not lot_id is None:
             where_clause = " AND stock_production_lot.id=" + str(lot_id)
-
-        if sku_code and sku_code is not None:
-            where_clause = where_clause + " AND product_template.sku_code ilike '%" + str(sku_code) + "%'"
 
         # -------------------- purchase ------------------------
         sql_query = insert_start + insert_mid + insert_end + """ 
@@ -56,56 +49,54 @@ class LotHistory(models.TransientModel):
                     'Receive'                               AS type,
                     purchase_order.name              AS event,
                     purchase_order.date_order        AS event_date,
-                    stock_move_line.qty_done         AS change,
+                    purchase_order_line.qty_received AS change,
                     stock_production_lot.name        AS lot_no,
-                    stock_move_line.product_id       AS product_id,
                     res_partner.name                 AS vendor,
                     res_partner.phone,
                     res_partner.email
-                    
                 FROM
                     purchase_order_line
-                LEFT JOIN 
+                INNER JOIN 
                     purchase_order
                 ON
                     (
                         purchase_order_line.order_id = purchase_order.id)
-                LEFT JOIN
+                INNER JOIN
                     product_product
                 ON
                     (
                         purchase_order_line.product_id = product_product.id)
-                LEFT JOIN
+                INNER JOIN
                     product_template
                 ON
                     (
                         product_product.product_tmpl_id = product_template.id)
-                LEFT JOIN
+                INNER JOIN
                     stock_move
                 ON
                     (
                         purchase_order_line.id = stock_move.purchase_line_id)
-                LEFT JOIN
+                INNER JOIN
                     stock_move_line
                 ON
                     (
                         stock_move.id = stock_move_line.move_id)
-                LEFT JOIN
+                LEFT OUTER JOIN
                     stock_production_lot
                 ON
                     (
                         stock_move_line.lot_id = stock_production_lot.id)
-                LEFT JOIN
+                INNER JOIN
                     res_partner
                 ON
                     (
                         purchase_order_line.partner_id = res_partner.id)
-                LEFT JOIN
+                INNER JOIN
                     stock_picking
                 ON
                     (
                         stock_move_line.picking_id = stock_picking.id)
-                   WHERE 1 = 1 """ + where_clause
+                    """ + where_clause
 
         self._cr.execute(sql_query)
 
@@ -117,12 +108,11 @@ class LotHistory(models.TransientModel):
                     'Ship'                               AS type,
                     sale_order.name               AS event,
                     sale_order.confirmation_date  AS event_date,
-                    stock_move_line.qty_done      AS change,
+                    sale_order_line.qty_delivered * -1 AS change,
                     stock_production_lot.name     AS lot_no,
-                    stock_move_line.product_id    AS product_id,
                     res_partner.name              AS vendor,
                     res_partner.phone,
-                    res_partner.email                    
+                    res_partner.email
                 FROM
                     sale_order
                 INNER JOIN
@@ -165,7 +155,7 @@ class LotHistory(models.TransientModel):
                 ON
                     (
                         stock_move_line.picking_id = stock_picking.id)
-                    WHERE 1 = 1        """ + where_clause
+                            """ + where_clause
 
         self._cr.execute(sql_query)
 
@@ -178,8 +168,7 @@ class LotHistory(models.TransientModel):
                 stock_inventory.name as event,
                 stock_inventory.date as event_date,
                 stock_inventory_line.product_qty as change,
-                stock_production_lot.name as lot_no,
-                stock_inventory_line.product_id as product_id
+                stock_production_lot.name as lot_no
             FROM
                 stock_inventory_line
             INNER JOIN
@@ -216,8 +205,7 @@ class LotHistory(models.TransientModel):
                 stock_scrap.name as event,
                 stock_scrap.date_expected as event_date,
                 stock_scrap.scrap_qty * -1 as change,
-                stock_production_lot.name as lot_no,
-                stock_scrap.product_id as product_id
+                stock_production_lot.name as lot_no
             FROM
                 product_product
             INNER JOIN
@@ -252,11 +240,9 @@ class LotHistory(models.TransientModel):
 
     def delete_and_create(self):
         self.init_table()
-        tree_view_id = self.env.ref('lot_history.view_lot_history').id
-        form_view_id = self.env.ref('lot_history.lot_history_form_view').id
+
         return {
             "type": "ir.actions.act_window",
-            'views': [(tree_view_id, 'tree'),(form_view_id, 'form')],
             "view_mode": "tree",
             "res_model": self._name,
             "name": "Lot History"

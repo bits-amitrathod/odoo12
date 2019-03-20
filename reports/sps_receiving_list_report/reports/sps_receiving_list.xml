@@ -4,11 +4,11 @@
             string="SPS Receiving List"
             model="stock.move.line"
             report_type="qweb-html"
-            file="sps_receiving_list_report.adjustment_report"
-            name="sps_receiving_list_report.adjustment_report"
+            file="sps_receiving_list_report.adjustment_report1"
+            name="sps_receiving_list_report.adjustment_report1"
     />
 
-    <template id="adjustment_report">
+    <template id="adjustment_report1">
         <t t-call="web.html_container">
             <t t-call="web.external_layout">
                 <div class="page">
@@ -31,7 +31,7 @@
                             <thead>
                                 <tr>
                                     <th style="border: 1px solid black;text-align:  center !important;">
-                                        Product Name
+                                        Product
                                     </th>
                                     <!--<th style="border: 1px solid black;text-align:  center !important;">
                                         Lot Expired Date

@@ -3,7 +3,7 @@
     <data>
         <report
                 id="action_report_inventory_pricing_rule"
-                string="Pricing Rule"
+                string="Inventory Pricing Rule"
                 model="res.pricing_rule"
                 report_type="qweb-html"
                 file="pricing_rule.inv_pricing_rule_template"

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 {
     'name': "In Stock Report",
-    'summary':"Report",
-    'author': "Benchmark IT Solutions",
+
+    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
     'website': "http://www.benchmarkitsolutions.com",
 
     # for the full list
@@ -14,7 +14,7 @@
 
     # always loaded
     'data': [
-        'security/ir.model.access.csv',
+        # 'security/ir.model.access.csv',
         'views/in_stock_report.xml',
         'views/in_stock_report_print.xml',
         'views/in_stock_report_pdf.xml',

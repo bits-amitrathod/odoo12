@@ -12,8 +12,8 @@
                         </group>
                         <group>
                             <field name="compute_at_date" widget="radio"/>
-                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
-                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
                         </group>
                     </group>
                     <footer>
@@ -39,11 +39,11 @@
             <field name="name">product.on.order.view.list</field>
             <field name="model">report.products.on.order</field>
             <field name="arch" type="xml">
-                <tree create="false" edit="false" delete="false">
-                    <field name="order_id" string="Sales Order" />
-                    <field name="product_id" string="Product Name" invisible="1"/>
+                <tree>
+                    <field name="order_id" string="Sales Order#" />
+                    <field name="product_id" string="Product" invisible="1"/>
                     <field name="partner_id" string="Customer Name"/>
-                    <field name="date_ordered" string="Order Date"/>
+                    <field name="date_ordered" string="Date"/>
                     <field name="sku_code"/>
                     <field name="date_due" string="Due Date"/>
                     <field name="qty_ordered"/>
@@ -57,7 +57,7 @@
             <field name="name">product.on.order.view.list</field>
             <field name="model">report.products.on.order</field>
             <field name="arch" type="xml">
-                <form create="false" edit="false" delete="false">
+                <form>
                     <group>
                         <group>
                             <field name="order_id" string="Order #"/>

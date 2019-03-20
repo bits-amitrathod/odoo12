@@ -8,9 +8,8 @@
                     <group>
                         <group>
                             <field name="state"/>
-                            <field name="warehouse_id"/>
                             <field name="location_id"/>
-                            <field name="sku_code"/>
+                            <field name="product_id"/>
                         </group>
                         <group>
                             <field name="date_range" widget="radio"/>
@@ -36,18 +35,18 @@
             <field name="context">{'valuation': True}</field>
         </record>
 
+
         <record model="ir.ui.view" id="on_hand_by_expiry_list_view">
             <field name="name">product.on.order.view.list</field>
             <field name="model">on_hand_by_expiry</field>
             <field name="arch" type="xml">
-                <tree create="false" edit="false" delete="false">
-                    <field name="color_value" invisible="1"/>
-                    <field name="sku_code"/>
+                <tree>
+                    <field name="name"/>
                     <field name="product_id"/>
-                    <field name="qty"/>
                     <field name="location_id"/>
-                    <field name="expiration_date" widget="date" options='{"fg_color": "red:color_value==1;orange:color_value==2;green:color_value==3"}'/>
-                    <field name="status" options='{"fg_color": "red:color_value==1;orange:color_value==2;green:color_value==3"}'/>
+                    <field name="status"/>
+                    <field name="qty"/>
+                    <field name="expiration_date"/>
                 </tree>
             </field>
         </record>
@@ -56,23 +55,15 @@
             <field name="name">product.on.order.view.form</field>
             <field name="model">on_hand_by_expiry</field>
             <field name="arch" type="xml">
-                <form create="false" edit="false" delete="false">
-                    <sheet>
-                        <div class="oe_title">
-                            <h1>
-                                <field name="product_id"/>
-                            </h1>
-                        </div>
-                        <group>
-                            <group>
-                                <field name="sku_code"/>
-                                <field name="location_id"/>
-                                <field name="status"/>
-                                <field name="qty"/>
-                                <field name="expiration_date" widget="date"/>
-                            </group>
-                        </group>
-                    </sheet>
+                <form create="false" update="false">
+                    <group>
+                        <field name="name"/>
+                        <field name="product_id"/>
+                        <field name="location_id"/>
+                        <field name="status"/>
+                        <field name="qty"/>
+                        <field name="expiration_date"/>
+                    </group>
                 </form>
             </field>
         </record>

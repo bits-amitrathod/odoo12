@@ -2,7 +2,6 @@
 
 from odoo import models, fields
 import logging
-import datetime
 from odoo import _
 
 _logger = logging.getLogger(__name__)
@@ -13,7 +12,7 @@ class PopUp(models.TransientModel):
 
     start_date = fields.Date('Start Date')
     end_date = fields.Date(string="End Date")
-    purchase_order = fields.Many2many('purchase.order', string="Receiving",domain="[('state','=','purchase')]",)
+    purchase_order = fields.Many2many('purchase.order', string="Receiving")
 
     compute_at_date = fields.Selection([
         (0, 'Show All'),
@@ -23,24 +22,22 @@ class PopUp(models.TransientModel):
 
     def open_table(self):
         tree_view_id = self.env.ref('sps_receiving_list_report.form_list_sps').id
-        form_view_id = self.env.ref('sps_receiving_list_report.sps_receving_list_form').id
-        stock_location_id = self.env['stock.location'].search([('name', '=', 'Stock'), ]).id
+        #form_view_id = self.env.ref('stock.view_picking_form').id
+
         action = {
             'type': 'ir.actions.act_window',
-            'views': [(tree_view_id, 'tree'),(form_view_id, 'form')],
+            'views': [(tree_view_id, 'tree')],
             'view_mode': 'tree',
             'name': _('SPS Receiving List'),
             'res_model': 'stock.move.line',
-            'domain': [('state', '=', 'done'),('location_dest_id.id', '=', stock_location_id)],
+            'domain': [('state', '=', 'done')],
             'context': {"search_default_product_group": 1},
             'target': 'main'
         }
 
         if self.compute_at_date==1:
-            e_date = datetime.datetime.strptime(str(self.end_date), "%Y-%m-%d")
-            e_date = str(e_date + datetime.timedelta(days=1))
             action['domain'].append(('date', '>=', self.start_date))
-            action['domain'].append(('date', '<=',e_date))
+            action['domain'].append(('date', '<=', self.end_date))
             action['domain'].append(('move_id.purchase_line_id', '!=', False))
             return action
         elif self.compute_at_date == 2:
@@ -48,11 +45,10 @@ class PopUp(models.TransientModel):
             print(self.purchase_order.ids)
             print(len(self.purchase_order.ids))
             if(len(self.purchase_order.ids)>0):
-                action['domain'].append(('move_id.purchase_line_id.order_id', 'in', self.purchase_order.ids))
+                action['domain'].append(('move_id.purchase_line_id.order_id', '=', 11))
             else:
                 action['domain'].append(('move_id.purchase_line_id', '!=', False))
             return action
         else:
             action['domain'].append(('move_id.purchase_line_id', '!=', False))
-            action['domain'].append(('move_id.to_refund', '=', False))
             return action

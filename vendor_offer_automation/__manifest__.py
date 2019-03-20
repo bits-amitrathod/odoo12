@@ -2,7 +2,7 @@
 {
     'name': "Vendor Offer Automation",
 
-    'author': "Benchmark IT Solutions",
+    'author': "Benchmark IT Solutions (I) Pvt. Ltd",
     'website': "http://www.benchmarkitsolutions.com",
 
     # Categories can be used to filter modules in modules listing
@@ -16,7 +16,7 @@
 
     # always loaded
     'data': [
-        'security/ir.model.access.csv',
+        # 'security/ir.model.access.csv',
         'views/views.xml',
         'views/templates.xml',
     ],

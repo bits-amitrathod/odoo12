@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Website CSTM",
+    'name': "website CSTM",
 
-     'author': "Benchmark IT Solutions",
+     'author': "Benchmark IT Solutions (I) Pvt Ltd.",
     'website': "http://www.benchmarkitsolutions.com",
     'sequence': 57,
     'category': 'Theme',
     'version': '0.1',
-# 'website_crm',
-    'depends': ['website_sales','website_product_brand','web_search','auth_signup','prioritization_engine','mass_mailing'],
+
+    'depends': ['website_sales','website_product_brand','web_search','website_crm','prioritization_engine','mass_mailing'],
 
     'data': [
         'security/ir.model.access.csv',
@@ -27,7 +27,6 @@
         'views/search.xml',
         'views/quickView.xml',
         'views/porduct_catalog.xml',
-        'views/terms.xml',
         'views/in_stock_notification.xml'
     ],
 

@@ -1,3 +1,2 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_res_stock_packing_list_user,res_stock_packing_list user,model_res_stock_packing_list,stock.group_stock_user,1,0,0,0
-access_res_stock_packing_list_mng,res_stock_packing_list manager,model_res_stock_packing_list,stock.group_stock_manager,1,1,1,1
+access_inventory_monitor_inventory_monitor,inventory_monitor.inventory_monitor,model_inventory_monitor_inventory_monitor,,1,0,0,0

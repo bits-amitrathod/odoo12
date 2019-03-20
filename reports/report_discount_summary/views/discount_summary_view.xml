@@ -12,8 +12,8 @@
                             <field name="sale_order"/>
                             <field name="partner_id"/>
                             <field name="compute_at_date" widget="radio"/>
-                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
-                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
                         </group>
                     </group>
                     <footer>
@@ -39,11 +39,11 @@
               <field name="model">sale.order</field>
               <field name="priority">20</field>
               <field name="arch" type="xml">
-                <tree create="false" edit="false" delete="false">
+                <tree>
                     <field name="name" string="Sales Order#"/>
                     <field name="partner_id"/>
-                   <!-- <field name="r_line_item"/>-->
-                    <field name="confirmation_date" widget="date"/>
+                    <field name="r_line_item"/>
+                    <field name="confirmation_date"/>
                     <field name="r_discount" widget="monetary"/>
                     <field name="r_amount" widget="monetary"/>
                     <!--<field name="r_total" widget="monetary"/>-->

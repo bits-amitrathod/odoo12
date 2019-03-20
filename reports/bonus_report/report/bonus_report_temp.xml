@@ -13,9 +13,6 @@
                         </b>
                     </center>
                     <center>
-                        <h4 t-if="date">
-                            <span t-esc="date"/>
-                        </h4>
                     </center>
                     </div>
                     <br/>
@@ -25,7 +22,7 @@
                                 <tr style="border: 1px solid black;">
                                     <th style="border: 1px solid black;text-align: center;">Appraisal No#</th>
                                     <th style="border: 1px solid black;text-align: center;">Priority</th>
-                                    <!--<th style="border: 1px solid black;text-align: center;">Revision</th>-->
+                                    <th style="border: 1px solid black;text-align: center;">Revision</th>
                                     <th style="border: 1px solid black;text-align: center;">Acq Manager</th>
                                     <th style="border: 1px solid black;text-align: center;">Facility</th>
                                     <th style="border: 1px solid black;text-align: center;">Total Offer</th>
@@ -47,9 +44,9 @@
                                         <td style="border: 1px solid black;">
                                             <span t-esc="order.priority"/>
                                         </td>
-                                        <!--<td align="center" style="border: 1px solid black;">-->
-                                            <!--<span t-esc="order.revision"/>-->
-                                        <!--</td>-->
+                                        <td align="center" style="border: 1px solid black;">
+                                            <span t-esc="order.revision"/>
+                                        </td>
                                         <td style="border: 1px solid black;white-space:nowrap;">
                                              <span t-esc="order.acq_user_id.name"/>
                                         </td>
@@ -57,22 +54,22 @@
                                              <span t-esc="order.partner_id.name"/>
                                         </td>
                                         <td style="border: 1px solid black;white-space:nowrap;">
-                                             <span t-esc="order.amount_total" t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                             <span t-esc="order.offer_amount" t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
                                         </td>
                                         <td style="border: 1px solid black;white-space:nowrap;">
-                                             <span t-esc="order.rt_price_total_amt" t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                             <span t-esc="order.retail_amt" t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
                                         </td>
                                         <td style="border: 1px solid black;white-space:nowrap;">
-                                             <span t-esc="order.create_date" t-options='{"widget": "date"}'/>
+                                             <span t-esc="order.create_date"/>
                                         </td>
                                         <td style="border: 1px solid black;white-space:nowrap;">
                                              <span t-esc="order.shipping_label_issued"/>
                                         </td>
                                         <td style="border: 1px solid black;white-space:nowrap;">
-                                             <span t-esc="order.shipping_date" t-options='{"widget": "date"}'/>
+                                             <span t-esc="order.shipping_date"/>
                                         </td>
                                         <td style="border: 1px solid black;white-space:nowrap;">
-                                             <span t-esc="order.delivered_date" t-options='{"widget": "date"}'/>
+                                             <span t-esc="order.delivered_date"/>
                                         </td>
                                          <td style="border: 1px solid black;white-space:nowrap;">
                                              <span t-esc="order.new_customer"/>

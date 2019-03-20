@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import re
 
 from odoo import models, fields, api, _
 import datetime
@@ -33,16 +32,14 @@ class vendor_offer_automation(models.Model):
     document = fields.Binary()
     # filename = fields.Char(string='File')
     # template_exists = fields.Boolean(default=False)
-    template_id = fields.Many2one('sps.vendor_offer_automation.template', string='Template', )
+    template_id = fields.Many2one('sps.vendor_offer_automation.template', string='Template',)
 
 
     @api.model
     def create(self, vals):
+
         record = super(vendor_offer_automation, self).create(vals)
-
-        if self.env.context.get('disable_export') == None :
-            record.map_customer_sku_with_catelog_number()
-
+        record.map_customer_sku_with_catelog_number()
         return record
 
     @api.model
@@ -69,17 +66,18 @@ class vendor_offer_automation(models.Model):
                     sku_index = None
                     order_list_list = []
                     expiration_date_index = -1
-                    quantity_index = False
                     if 'mf_customer_sku' in mapping_fields:
                         sku_index = excel_columns.index(mapping_fields['mf_customer_sku'])
                     if 'mf_expiration_date' in mapping_fields:
                         expiration_date_index = excel_columns.index(mapping_fields['mf_expiration_date'])
-                    if 'mf_quantity' in mapping_fields:
-                        quantity_index = excel_columns.index(mapping_fields['mf_quantity'])
 
                     if not sku_index is None:
+                        product_uom_id = 6
+                        product_uom = self.env['product.uom'].search([('name', '=', 'Each')])
+                        if len(product_uom) == 1:
+                            product_uom_id = product_uom[0].id
                         todays_date = datetime.datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
-                        # product_skus = []
+                        product_skus = []
                         excel_data_rows = vendor_offer_automation._read_xls_book(book, pricing_index, read_data=True,
                                                                                  expiration_date_index=expiration_date_index)
                         for excel_data_row in excel_data_rows:
@@ -92,59 +90,51 @@ class vendor_offer_automation(models.Model):
                             if self.partner_id.sku_postconfig and product_sku.endswith(
                                     self.partner_id.sku_postconfig):
                                 product_sku = product_sku[:-len(self.partner_id.sku_postconfig)]
-                            # if not sku_code in product_skus:
-                            self.env.cr.execute("""
-                                select * from 
-                                    (SELECT id,list_price,uom_id, name, premium, tier, regexp_replace(manufacturer_pref , '[^A-Za-z0-9.]', '','g') as manufacturer_pref, 
-                                      regexp_replace(sku_code , '[^A-Za-z0-9.]', '','g') as sku_code_cleaned 
-                                      FROM product_template) 
-                                as temp_data where sku_code_cleaned ='""" + re.sub(r'[^A-Za-z0-9.]', '', product_sku) + """' or manufacturer_pref = '""" + re.sub(r'[^A-Za-z0-9.]', '', sku_code) + """' """)
-                            query_result = self.env.cr.dictfetchone()
-                            if query_result:
-                                products = self.env['product.product'].search(
-                                    [('product_tmpl_id', '=', query_result['id'])])
-                                product_unit_price = query_result['list_price']
-                                if len(products) > 0:
-                                    order_line_obj = dict(name=query_result['name'], product_qty=1,
-                                                          date_planned=todays_date, state='ven_draft',
-                                                          product_uom=query_result['uom_id'],
-                                                          product_tier=query_result['tier'],
-                                                          order_id=self.id,
-                                                          product_id=products[0].id,
-                                                          # list_price=product_unit_price,
-                                                          qty_in_stock=products[0].qty_available,
-                                                          )
-                                    if expiration_date_index >= 0:
+                            un_matched_rows = 0
+                            if not sku_code in product_skus:
+                                product_template = self.env['product.template'].search(
+                                    ['|', ('sku_code', '=', product_sku), ('manufacturer_pref', '=', sku_code)])
+                                if product_template:
+                                    products = self.env['product.product'].search(
+                                        [('product_tmpl_id', '=', product_template.id)])
+                                    product_unit_price = product_template.list_price
+                                    if len(products) > 0:
+                                        order_line_obj = dict(name=product_template.name, product_qty=1,
+                                                              date_planned=todays_date, state='ven_draft',
+                                                              product_uom=product_uom_id, product_tier=product_template.tier.id,
+                                                              order_id=self.id,
+                                                              product_id=products[0].id,
+                                                              list_price=product_unit_price,
+                                                              qty_in_stock=products[0].qty_available,
+                                                              )
+                                        if expiration_date_index >= 0:
+                                            order_line_obj.update(
+                                                dict(expiration_date=excel_data_row[expiration_date_index]))
+                                        order_line_obj.update(self.get_product_sales_count(products[0].id))
+                                        multiplier_id = self.get_order_line_multiplier(
+                                            order_line_obj, product_template.premium)
+                                        order_line_obj.update({'multiplier': multiplier_id})
+                                        multiplier_list = self.env['multiplier.multiplier'].search(
+                                            [('id', '=', multiplier_id)])
+                                        possible_competition_list = self.env['competition.competition'].search(
+                                            [('id', '=', self.possible_competition.id)])
+                                        order_line_obj.update({'margin': multiplier_list.margin})
+                                        product_unit_price_wtih_multiplier = math.ceil(
+                                            round(float(product_unit_price) * (float(multiplier_list.retail) / 100), 2))
+                                        order_line_obj.update({
+                                            'price_unit' : product_unit_price_wtih_multiplier,
+                                                'product_retail':product_unit_price_wtih_multiplier,
+                                                'product_unit_price': product_unit_price_wtih_multiplier})
+                                        product_offer_price_comp = math.ceil(
+                                            round(float(product_unit_price_wtih_multiplier) * (
+                                                    float(multiplier_list.margin) / 100 + float(
+                                                possible_competition_list.margin) / 100), 2))
                                         order_line_obj.update(
-                                            dict(expiration_date=excel_data_row[expiration_date_index]))
-                                    order_line_obj.update(self.get_product_sales_count(products[0].id))
-                                    multiplier_id = self.get_order_line_multiplier(
-                                        order_line_obj, query_result['premium'])
-                                    order_line_obj.update({'multiplier': multiplier_id})
-                                    multiplier_list = self.env['multiplier.multiplier'].search(
-                                        [('id', '=', multiplier_id)])
-                                    possible_competition_list = self.env['competition.competition'].search(
-                                        [('id', '=', self.possible_competition.id)])
-                                    order_line_obj.update({'margin': multiplier_list.margin})
-                                    product_unit_price_wtih_multiplier = math.ceil(
-                                        round(float(product_unit_price) * (float(multiplier_list.retail) / 100), 2))
-                                    order_line_obj.update({
-                                        'price_unit': product_unit_price_wtih_multiplier,
-                                        'product_retail': product_unit_price_wtih_multiplier,
-                                        'product_unit_price': product_unit_price_wtih_multiplier})
-                                    product_offer_price_comp = math.ceil(
-                                        round(float(product_unit_price_wtih_multiplier) * (
-                                                float(multiplier_list.margin) / 100 + float(
-                                            possible_competition_list.margin) / 100), 2))
-                                    if quantity_index:
-                                        order_line_obj.update({'product_qty': excel_data_row[quantity_index]})
-
-                                    order_line_obj.update(
-                                        {'product_offer_price': product_offer_price_comp,
-                                         # 'offer_price': product_offer_price_comp
-                                         })
-                                    order_list_list.append(order_line_obj)
-                                # product_skus.append(sku_code)
+                                            {'product_offer_price': product_offer_price_comp, 'offer_price': product_offer_price_comp})
+                                        order_list_list.append(order_line_obj)
+                                else:
+                                    un_matched_rows = un_matched_rows + 1
+                                product_skus.append(sku_code)
                         if len(order_list_list) > 0:
                             for order_line_object in order_list_list:
                                 order_line_model = self.env['purchase.order.line'].with_context(order_line_object)
@@ -160,9 +150,7 @@ class vendor_offer_automation(models.Model):
             'views': [(tree_view_id, 'form')],
             'view_mode': 'form',
             'tag': 'import_offer_template',
-            'params': [
-                {'model': 'sps.vendor_offer_automation.template', 'offer_id': self.id, 'vendor_id': self.partner_id.id,
-                 'user_type': 'supplier'}],
+            'params': [{'model': 'sps.vendor_offer_automation.template', 'offer_id': self.id, 'vendor_id': self.partner_id.id, 'user_type': 'supplier'}],
         }
 
     def get_order_line_multiplier(self, order_line_obj, premium):
@@ -183,6 +171,7 @@ class vendor_offer_automation(models.Model):
         if multiplier_list is None:
             return False
         return multiplier_list.id
+
 
     @api.multi
     def get_product_sales_count(self, product_id):
@@ -294,7 +283,6 @@ class vendor_offer_automation(models.Model):
     def unlink_lines(self):
         self.env["purchase.order.line"].search([('order_id', '=', self.id)]).unlink()
 
-
 class VendorOfferProductAuto(models.Model):
     _inherit = "purchase.order.line"
 
@@ -307,3 +295,6 @@ class VendorOfferProductAuto(models.Model):
                 query_result = order.env.cr.dictfetchone()
                 if query_result['max'] != None:
                     self.expiration_date = fields.Datetime.from_string(str(query_result['max'])).date()
+
+
+

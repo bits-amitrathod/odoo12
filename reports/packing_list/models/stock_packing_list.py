@@ -16,8 +16,10 @@ import datetime
 
 class PricingRule(models.Model):
     _inherit="stock.picking"
-    shipping_terms=fields.Char(string="Shipping Term",compute='_compute_picking_vals')
-    requested_date=fields.Date(string="Req. Ship Date",compute='_compute_picking_vals')
+    _name = "res.stock_packing_list"
+    _description = "sale packing list for customer"
+    _auto = False
+    shipping_terms=fields.Char(string="Shipping Term")
     # name = fields.Char(string="Name")
     # state= fields.Char(string="State")
     # carrier_id=fields.Integer(string="Carrier")
@@ -43,18 +45,92 @@ class PricingRule(models.Model):
     # qty_shipped = fields.Char(string="Qty Shipped")
     # qty_remaining=fields.Char(string="Qty Remainig")
 
-    def _compute_picking_vals(self):
-       for picking in self:
-          if picking.sale_id:
-              picking.requested_date=picking.sale_id.requested_date
-              if picking.sale_id.shipping_terms:
-                picking.shipping_terms=self.shipping_term(picking.sale_id.shipping_terms)
+    def _compute_so_allocation(self):
+        self.so_allocation = True
 
-    def shipping_term(self,i):
-        switcher = {
-            '1': 'Prepaid & Billed',
-            '2': 'Prepaid',
-            '3': 'Freight Collect'
-        }
-        return switcher.get(i, "")
+    @api.model_cr
+    def init(self):
+        self.init_table()
+
+    def init_table(self):
+        tools.drop_view_if_exists(self._cr, 'res_stock_packing_list')
+        # sql_query = """
+        #             TRUNCATE TABLE "res_stock_packing_list"
+        #             RESTART IDENTITY;
+        # """
+        # self._cr.execute(sql_query)
+        s_date = self.env.context.get('start_date')
+        e_date = self.env.context.get('end_date')
+        sale_number = self.env.context.get('sale_number')
+        shipping_number=self.env.context.get('shipping_number')
+        purchase_order = self.env.context.get('purchase_order')
+        select_columns=""" SELECT column_name 
+                        FROM  information_schema.columns
+                        WHERE 
+                          table_name   = 'stock_picking'
+                          and column_name != 'id' """
+        self._cr.execute(select_columns)
+        columns =self._cr.fetchall()
+        col=""
+        for column in columns:
+            for colmn in column:
+                if col:
+                 col=col+","+"sp."+colmn
+                else:
+                    col = col + "sp."+colmn
+        select_query = """ SELECT  distinct sp.*,
+               CASE pr.shipping_terms
+                   WHEN '1'
+                   THEN 'Prepaid & Billed'
+                   WHEN '2'
+                   THEN 'Prepaid'
+                   WHEN '3'
+                   THEN 'Freight Collect'
+               END AS shipping_terms
+               from  stock_picking sp  
+                      LEFT JOIN stock_move_line sml ON sml.picking_id=sp.id
+                      LEFT JOIN sale_order so ON so.id=sp.sale_id  
+                      LEFT JOIN res_partner pr ON pr.id=sp.partner_id 
+                      LEFT JOIN sale_order_line sol ON sol.order_id=so.id
+                      LEFT JOIN product_product pp ON pp.id=sol.product_id
+                      LEFT JOIN product_template pt  ON pt.id=pp.product_tmpl_id 
+               where sp.state='done' and pt.type='product'
+        """
+        if not sale_number and not shipping_number and not purchase_order:
+
+
+            if (s_date is False and e_date is False) or (s_date is None and e_date is None):
+                 select_query = select_query + " " + " and FALSE"
+            else:
+                if s_date and (not s_date is None):
+                    start_date = datetime.datetime.strptime(str(s_date), "%Y-%m-%d")
+                    select_query = select_query + " and sp.write_date >='" + str(start_date) + "'"
+                if e_date and (not e_date is None):
+                    end_date = datetime.datetime.strptime(str(e_date), "%Y-%m-%d")
+                    if (s_date and (not s_date is None)) and start_date == end_date:
+                        end_date = end_date + datetime.timedelta(days=1)
+                    select_query = select_query + " and sp.write_date <='" + str(end_date) + "'"
+        if sale_number and not sale_number is None :
+            sale_order="("
+            for sale in sale_number:
+                sale_order=sale_order+str(sale.id)+","
+            sale_order = sale_order[:-1]
+            sale_order=sale_order+")"
+            select_query = select_query + """and sp.sale_id in """  + sale_order
+        if shipping_number:
+            select_query = select_query + " and sp.carrier_tracking_ref ='" + str(shipping_number) + "'"
+        if purchase_order:
+            select_query = select_query + " and so.client_order_ref ='" + str(purchase_order) + "'"
+
+
+
+
+        # select_query = select_query + """ GROUP BY sp.id,so.name,pt.name,pt.sku_code,sol.product_uom_qty,sol.qty_delivered,pr.street,pr.street2,pr.zip,pr.city,st.name,co.name,so.requested_date,
+        #            sp.carrier_tracking_ref,sp.carrier_tracking_ref,dc.name,shipment_address,bill_address,pr.shipping_terms,dc.delivery_type  """
+
+        sql_query = "CREATE VIEW res_stock_packing_list AS ( " + select_query +")"
+        self._cr.execute(sql_query)
+    @api.model_cr
+    def delete_and_create(self):
+        self.init_table()
 

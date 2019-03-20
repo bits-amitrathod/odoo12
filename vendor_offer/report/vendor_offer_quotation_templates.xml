@@ -29,7 +29,7 @@
                 </div>
             </div>
             <h2 style="color:red;font-size:16px;" align="center" ><strong>***CONFIDENTIAL***</strong></h2><hr></hr>
-            <div><p><span style="font-weight:600;font-size:16px !important;">OFFER PRICE  : </span><span style="font-weight:600;font-size:18px !important;" t-field="o.amount_total"/> <span style="font-weight:600;font-size:18px!important;"> Cash Back</span></p></div>
+            <div><p><span style="font-weight:600;font-size:16px !important;">OFFER PRICE  : </span><span style="font-weight:600;font-size:18px !important;" t-field="o.amount_total"/><span style="font-weight:600;font-size:18px!important;">Cash Back</span></p></div>
             <div><p>This offer must be accepted within 3 business days of delivery date unless otherwise noted.</p></div>
               <div><p>Once the offer is accepted, the offer price is contingent upon requirements detailed below.</p></div>
               <div><p><strong>OFFER PRICE CONDITIONAL UPON</strong>:</p></div>
@@ -44,7 +44,7 @@
             <div><p>SELLER SIGNATURE:  __________________________________<span style="float:right;position:relative;right:119px;">DATE:</span></p></div>
               <div><p>PRINT NAME:<strong><span t-field="o.name"/> </strong></p></div>
             <div><p>BUYER SIGNATURE: <u>________________________________</u> </p></div>
-                <div><span style="">DATE : </span> <span style="font-weight:600;font-size:16px !important;" t-field="o.create_date" t-options='{"widget": "date"}'/>  </div>
+                <div><span style="">DATE : </span> <span style="font-weight:600;font-size:16px !important;" t-field="o.create_date"/>  </div>
               <h2><p>SURGICAL SURPLUS PURCHASE OFFER <span t-field="o.name"/></p></h2>
               <table class="table table-condensed">
                 <thead>

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': "Priority Engine",
-    'author': "Benchmark IT Solutions",
+    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
     'website': "http://www.benchmarkitsolutions.com",
 
     # Categories can be used to filter modules in modules listing
@@ -27,7 +27,6 @@
         'views/prioritization_schedular_views.xml',
         'views/release_product_quantity_scheduler_views.xml',
         'data/sales_team_data_prioritization.xml',
-        # 'data/uom.xml',
     ],
 
     # only loaded in demonstration mode

@@ -21,7 +21,6 @@ class SpsCustomerRequest(models.Model):
     document_name = fields.Char(string="Document Name", compute="_get_document_name")
 
     customer_sku = fields.Char()
-    req_no = fields.Char()
     mfr_catalog_no = fields.Char()
     sps_sku = fields.Char()
     status = fields.Char()
@@ -32,11 +31,9 @@ class SpsCustomerRequest(models.Model):
     vendor_pricing = fields.Char()
     quantity = fields.Float()
     required_quantity = fields.Float()
-    updated_quantity = fields.Float()
     frequency_of_refill = fields.Integer()
     threshold = fields.Integer()
     uom = fields.Char()
-    uom_flag = fields.Boolean(help="if uom is each then set uom flag is 1(True)")
     product_description = fields.Char(string='Product Description')
     customer_request_logs = fields.Char(string='Customer Request Logs')
 
@@ -82,23 +79,20 @@ class SpsCustomerRequest(models.Model):
             if sps_customer_request.document_id.template_type.lower().strip() == 'inventory':
                 # following condition use for process only latest uploaded document.
                 if int(query_result['document_id']) == int(sps_customer_request.document_id.id):
-                    if sps_customer_request.quantity > 0:
-                        pr_model = self.add_customer_request_data(sps_customer_request)
-                        if pr_model:
-                            pr_models.append(pr_model)
+                    pr_model = self.add_customer_request_data(sps_customer_request)
+                    if pr_model:
+                        pr_models.append(pr_model)
             # For Requirement Template, Process old document maximum 3 times and for new(latest) document processing no limit.
             elif sps_customer_request.document_id.template_type.lower().strip() == 'requirement' and int(document_processing_count) > 0:
                 # following condition use for process only latest uploaded document.
                 if int(query_result['document_id']) == int(sps_customer_request.document_id.id):
-                    if sps_customer_request.updated_quantity > 0:
-                        pr_model = self.add_customer_request_data(sps_customer_request)
-                        if pr_model:
-                            pr_models.append(pr_model)
+                    pr_model = self.add_customer_request_data(sps_customer_request)
+                    if pr_model:
+                        pr_models.append(pr_model)
                 elif int(sps_customer_request.document_id.document_processed_count) < int(document_processing_count):
-                    if sps_customer_request.updated_quantity > 0:
-                        pr_model = self.add_customer_request_data(sps_customer_request)
-                        if pr_model:
-                            pr_models.append(pr_model)
+                    pr_model = self.add_customer_request_data(sps_customer_request)
+                    if pr_model:
+                        pr_models.append(pr_model)
             else:
                 _logger.info('Document Processing Count is 0(Zero).')
 
@@ -121,17 +115,25 @@ class SpsCustomerRequest(models.Model):
                                                        sps_customer_request['product_id'].id,
                                                        sps_customer_request['id'], sps_customer_request['status'])
 
+            # if status is partial check the remaining quantity to allocate to customer
+            if sps_customer_request['status'].lower().strip() == 'partial':
+                sale_order_line = self.env['sale.order.line'].search(
+                    [('customer_request_id', '=', sps_customer_request.id)])
+                _logger.debug('sale_order_line.product_uom_qty : %r', sale_order_line.product_uom_qty)
+                required_quantity = sps_customer_request.required_quantity - sale_order_line.product_uom_qty
+                _logger.debug('required_quantity : %r', required_quantity)
+            else:
+                required_quantity = sps_customer_request.required_quantity
             _logger.info('gl account value : %r',sps_customer_request['gl_account'])
             if _setting_object:
                 sps_customer_request.write({'customer_request_logs': 'Customer prioritization setting is True, '})
                 pr_model = dict(customer_request_id=sps_customer_request.id,
-                                req_no=sps_customer_request.req_no,
                                 template_type=sps_customer_request.document_id.template_type,
                                 customer_id=sps_customer_request['customer_id'].id,
                                 gl_account=sps_customer_request['gl_account'],
                                 product_id=sps_customer_request['product_id'].id,
                                 status=sps_customer_request['status'],
-                                required_quantity=sps_customer_request.updated_quantity,
+                                required_quantity=required_quantity,
                                 min_threshold=_setting_object.min_threshold,
                                 max_threshold=_setting_object.max_threshold,
                                 quantity=sps_customer_request.quantity,
@@ -139,10 +141,7 @@ class SpsCustomerRequest(models.Model):
                                 auto_allocate=_setting_object.auto_allocate,
                                 cooling_period=_setting_object.cooling_period,
                                 length_of_hold=_setting_object.length_of_hold,
-                                uom_flag=sps_customer_request['uom_flag'],
                                 partial_order=_setting_object.partial_ordering,
-                                partial_uom=_setting_object.partial_UOM,
-                                updated_quantity = sps_customer_request['updated_quantity'],
                                 expiration_tolerance=_setting_object.expiration_tolerance,
                                 customer_request_logs=sps_customer_request.customer_request_logs)
                 return pr_model
@@ -151,7 +150,7 @@ class SpsCustomerRequest(models.Model):
     # check customer level or global level setting for product.
     def get_settings_object(self, customer_id,product_id,sps_customer_request_id,status):
         customer_level_setting = self.env['prioritization_engine.prioritization'].sudo().search(
-            [('customer_id', '=', customer_id),('product_id', '=', product_id), ('priority', '>=', 0)])
+            [('customer_id', '=', customer_id),('product_id', '=', product_id)])
         _logger.info("Inside get_settings_object"+str(customer_id)+" -"+str(product_id))
         _logger.info(len(customer_level_setting))
         if len(customer_level_setting) == 1:
@@ -170,7 +169,7 @@ class SpsCustomerRequest(models.Model):
                 return False
         else:
             _logger.info("Inside get_settings_object else block")
-            global_level_setting = self.env['res.partner'].sudo().search([('id', '=', customer_id), ('priority', '>=', 0)])
+            global_level_setting = self.env['res.partner'].sudo().search([('id', '=', customer_id)])
             _logger.info(global_level_setting)
             if len(global_level_setting) == 1:
                 if global_level_setting.prioritization and global_level_setting.on_hold is False:
@@ -190,7 +189,7 @@ class SpsCustomerRequest(models.Model):
         if status.lower().strip() != 'unprocessed':
             # update status Unprocessed
             self.env['sps.customer.requests'].search(
-                [('id', '=', sps_customer_request_id)]).write({'status':'Unprocessed','customer_request_logs':log})
+                [('id', '=', sps_customer_request_id)]).write(dict(status="Unprocessed",customer_request_logs=log))
 
     # update document processed count
     def update_document_processed_count(self, document_id, document_processed_count):
@@ -198,14 +197,14 @@ class SpsCustomerRequest(models.Model):
             self.document_id_set.add(document_id)
             _logger.info('document id : %r, document processed count : %r',document_id, document_processed_count)
             document_processed_count = int(document_processed_count) + 1
-            update_document_processed_count_val = self.env['sps.cust.uploaded.documents'].search([('id', '=', document_id)])
-            update_document_processed_count_val.write({'document_processed_count': document_processed_count})
+            self.env['sps.cust.uploaded.documents'].search([('id', '=', document_id)]).write(
+                    dict(document_processed_count=document_processed_count))
 
     @api.multi
     @api.depends('document_id')
     def _get_qty_to_show(self):
         for record in self:
-            if record.document_id.template_type.lower().strip() == 'requirement':
+            if record.document_id.template_type == 'Requirement':
                 record.qty_to_show = str(record.required_quantity)
             else:
                 record.qty_to_show = str(record.quantity)

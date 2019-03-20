@@ -1,2 +1,2 @@
 
-from . import rma_report_temp
+from . import purchase_temp

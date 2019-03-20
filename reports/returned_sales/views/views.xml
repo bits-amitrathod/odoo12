@@ -7,14 +7,14 @@
                 <form string="Choose your date">
                     <group>
                         <group>
-                            <field name="sale_person_id"/>
+                            <field name="sale_person_id" domain="[('sales_person','=', 1)]"/>
                             <field name="customer_id"/>
                             <field name="sku_code"/>
                         </group>
                         <group>
                             <field name="compute_at_date" widget="radio"/>
-                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
-                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
                         </group>
                     </group>
                     <footer>
@@ -40,16 +40,15 @@
             <field name="name">product.on.order.view.list</field>
             <field name="model">report.returned.sales.order</field>
             <field name="arch" type="xml">
-                <tree create="false" edit="false" delete="false">
-                    <field name="order_id" string="Sales Order#"/>
+                <tree>
+                    <field name="order_id" string="Order #"/>
                     <field name="partner_id" string="Customer Name"/>
-                    <field name="product_id" string="Product Name"/>
+                    <field name="product_id" string="Product"/>
                     <field name="sku_code"/>
                     <field name="user_id"/>
-                    <field name="done_qty" string="Qty Done"/>
+                    <field name="done_qty" string="Quantity"/>
                     <field name="product_uom_id"/>
-                    <field name="cost_price" string="Selling Cost" widget="monetary"/>
-                    <field name="currency_id" invisible="1"/>
+                    <field name="cost_price" string="Cost"/>
                 </tree>
             </field>
         </record>
@@ -58,19 +57,17 @@
             <field name="name">product.on.order.view.list</field>
             <field name="model">report.returned.sales.order</field>
             <field name="arch" type="xml">
-                <form create="false" edit="false" delete="false">
+                <form>
                     <group>
                         <group>
-                            <field name="product_id" string="Product Name"/>
-                            <field name="order_id" string="Order#"/>
+                            <field name="order_id" string="Order #"/>
                             <field name="sku_code" string="Product"/>
                             <field name="partner_id" string="Customer Name"/>
                         </group>
                         <group>
                             <field name="done_qty" string="Quantity"/>
-                            <field name="cost_price" string="Cost" widget="monetary"/>
+                            <field name="cost_price" string="Cost"/>
                             <field name="moved_date" />
-                            <field name="currency_id" invisible="1"/>
                         </group>
                     </group>
                 </form>

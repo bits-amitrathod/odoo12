@@ -46,7 +46,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <t t-set="total_value" t-value="0"/>
                             <tr t-foreach="data" t-as="order">
                                 <td style="border: 1px solid black;">
                                     <span t-esc="order.name"/>
@@ -89,14 +88,8 @@
                                     <span t-esc="order.trend_val"/>
                                 </td>
                                 <td align="right" style="border: 1px solid black;white-space:nowrap;">
-                                    <span t-esc="order.total_sale" t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
-                                    <t t-set="total_value" t-value="total_value+order.total_sale"/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="11" style="text-align: right;">Total</td>
-                                <td style="text-align: right;  border: 1px solid black;">
-                                    <span t-esc="total_value" t-options='{"widget": "monetary", "display_currency": data[0].currency_id}'/>
+                                    <span t-esc="order.total_sale"
+                                          t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
                                 </td>
                             </tr>
                         </tbody>

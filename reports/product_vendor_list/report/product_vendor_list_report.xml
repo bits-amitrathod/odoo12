@@ -4,7 +4,7 @@
         <report
                 id="action_report_product_vendor_list"
                 string="Product Vendor List"
-                model="purchase.order.line"
+                model="purchase.order"
                 report_type="qweb-html"
                 file="product_vendor_list.productvendorlist_temp_test"
                 name="product_vendor_list.productvendorlist_temp_test"

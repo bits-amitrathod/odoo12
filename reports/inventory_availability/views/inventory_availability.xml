@@ -4,14 +4,14 @@
         <field name="name">product.product.tree</field>
         <field name="model">product.product</field>
         <field name="arch" type="xml">
-            <tree create="false" edit="false" delete="false" string="Inventory Availability">
+            <tree create="false" edit="false" string="Inventory Availability">
                 <field name="product_tmpl_id" invisible="1"/>
-                <field name="sku_code" string="Product SKU" />
+                 <field name="sku_code" />
                 <field name="uom_id" string="UOM"/>
-                <field name="qty_available" string="On Hand Qty"/>
-                <field name="outgoing_qty"  string="Allocated Qty"/>
-                <field name="virtual_available" string="Available Qty"/>
-                <field name="incoming_qty" string="On Order Qty"/>
+                <field name="qty_available" string="On Hand"/>
+                <field name="outgoing_qty"  string="Allocated"/>
+                <field name="virtual_available" string="Available"/>
+                <field name="incoming_qty" string="On Order"/>
             </tree>
         </field>
     </record>
@@ -27,35 +27,7 @@
         <field name="view_id" ref="view_inventory_availability_line_tree"/>
     </record>
 
-    <record id="product_action_pop_up_inventory_availability" model="ir.ui.view">
-            <field name="name">Inventory Availability</field >
-            <field name="model">inventory_availability_popup</field>
-            <field name="arch" type="xml">
-                <form string="Choose Customer">
-                    <group>
-                        <group>
-                            <field name="location_group" />
-                             <field name="product_sku" />
-                        </group>
-
-                    </group>
-                    <footer>
-                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
-                        <button string="Cancel" class="btn-default" special="cancel" />
-                    </footer>
-                </form>
-            </field>
-    </record>
-    <record id="product_normal_action_pop_up_inventory_availability" model="ir.actions.act_window">
-          <field name="name">Inventory Availability</field>
-          <field name="res_model">inventory_availability_popup</field>
-          <field name="view_type">form</field>
-          <field name="view_mode">form</field>
-          <field name="view_id" ref="product_action_pop_up_inventory_availability"/>
-          <field name="target">new</field>
-      </record>
-
       <!-- Product menu-->
-      <menuitem name="Inventory Availability" id="menu_procurement_partner_contact_inventory_availability" action="product_normal_action_pop_up_inventory_availability"
+      <menuitem name="Inventory Availability" id="menu_procurement_partner_contact_inventory_availability" action="product_normal_action_inventory_availability"
           parent="stock.menu_warehouse_report" sequence="6"/>
 </odoo>

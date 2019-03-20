@@ -1,7 +1,7 @@
 {
     'name': 'Website CSTM Autocomplete',
     'category': 'Website',
-    'author': "Benchmark IT Solutions",
+    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
     'website': "http://www.benchmarkitsolutions.com",
     'sequence': 58,
     'summary': 'Website e-commerce search autocomplete',

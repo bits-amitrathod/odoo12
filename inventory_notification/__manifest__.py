@@ -2,7 +2,7 @@
 {
     'name': "Inventory Notification",
 
-    'author': "Benchmark IT Solutions",
+    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
     'website': "http://www.benchmarkitsolutions.com",
 
     # Categories can be used to filter modules in modules listing
@@ -12,7 +12,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','base_setup','product', 'stock','vendor_offer','prioritization_engine','inventory_monitor'],
+    'depends': ['base','base_setup','product', 'stock','vendor_offer','prioritization_engine','inventory_monitor','in_stock_report'],
 
     # always loaded
     'data': [# 'security/ir.model.access.csv',

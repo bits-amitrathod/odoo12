@@ -68,7 +68,7 @@ class FileUploadController(Controller):
 
                 
         if "errorCode" in response:
-            self.send_mail("API Response. " + str(response['message']) + " for user " + username)
+            self.send_mail("Sending API Response as " + str(response['message']) + " for user " + username)
 
         return json.JSONEncoder().encode(response)
 

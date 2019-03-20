@@ -22,10 +22,10 @@
                                 <tr style="border: 1px solid black;">
                                     <th style="border: 1px solid black;text-align: center;">Product SKU</th>
                                     <th style="border: 1px solid black;text-align: center;">UOM</th>
-                                    <th style="border: 1px solid black;text-align: center;">On Hand Oty</th>
-                                    <th style="border: 1px solid black;text-align: center;">Allocated Qty</th>
-                                    <th style="border: 1px solid black;text-align: center;">Available Qty</th>
-                                    <th style="border: 1px solid black;text-align: center;">On Order Qty</th>
+                                    <th style="border: 1px solid black;text-align: center;">On Hand</th>
+                                    <th style="border: 1px solid black;text-align: center;">Allocated</th>
+                                    <th style="border: 1px solid black;text-align: center;">Available</th>
+                                    <th style="border: 1px solid black;text-align: center;">On Order</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -34,22 +34,22 @@
                                             <span t-esc="order.product_tmpl_id.sku_code"/>
                                         </td>
 
-                                        <td style="border: 1px solid black;" align="center">
+                                        <td style="border: 1px solid black;">
                                             <span t-esc="order.product_tmpl_id.uom_id.name"/>
                                         </td>
 
-                                        <td style="border: 1px solid black;" align="center">
-                                            <span t-field="order.qty_available"/>
+                                        <td style="border: 1px solid black;">
+                                            <span t-esc="order.qty_available"/>
                                         </td>
                                         <td align="center" style="border: 1px solid black;">
-                                            <span t-field="order.outgoing_qty"/>
+                                            <span t-esc="order.outgoing_qty"/>
                                         </td>
 
-                                        <td align="center" style="border: 1px solid black;white-space:nowrap;">
-                                              <span t-field="order.virtual_available" />
+                                        <td align="right" style="border: 1px solid black;white-space:nowrap;">
+                                              <span t-esc="order.virtual_available" />
                                         </td>
-                                        <td align="center" style="border: 1px solid black;white-space:nowrap;">
-                                              <span t-field="order.incoming_qty"/>
+                                        <td align="right" style="border: 1px solid black;white-space:nowrap;">
+                                              <span t-esc="order.incoming_qty"/>
                                         </td>
 
                                     </tr>

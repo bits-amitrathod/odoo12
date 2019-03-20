@@ -7,7 +7,9 @@
                 <form string="Choose your date">
                     <group>
                         <group>
-                            <field name="end_date"/>
+                            <field name="compute_at_date" widget="radio"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
                             <field name="product_sku_code"/>
                         </group>
                     </group>
@@ -31,74 +33,19 @@
 
         <record model="ir.ui.view" id="list_view">
               <field name="name">product.sale.by.count.view.list</field>
-              <field name="model">product.product</field>
+              <field name="model">sales_by_month</field>
               <field name="priority">21</field>
               <field name="arch" type="xml">
-                <tree create="false" edit="false" delete="false">
-                    <field name="sku_code"  string="Product SKU" />
-                    <field name="product_tmpl_id" string="Product Name" />
-                    <field name="month1" widget="monetary" />
-                    <field name="month2" widget="monetary"/>
-                    <field name="month3" widget="monetary"/>
-                    <field name="month4" widget="monetary"  />
-                    <field name="month5" widget="monetary"/>
-                    <field name="month6" widget="monetary" />
-                    <field name="total_sale" widget="monetary"/>
-                    <field name="total_quantity" />
-                    <field name="product_uom_name" string="Product UOM"/>
+                <tree>
+                    <field name="sku_code" string="Product SKU"/>
+                    <field name="p_name"/>
+                    <field name="product_price" widget="monetary"/>
+                    <field name="total_sale_quantity" string="Total Sale Qty"/>
+                    <field name="total_amount" widget="monetary" sum="Total"/>
                     <field name="currency_id"  invisible="1"/>
                 </tree>
               </field>
         </record>
-
-       <record model="ir.ui.view" id="sales_by_month_form">
-            <field name="name">sales.by.month.form</field>
-            <field name="model">product.product</field>
-            <field name="arch" type="xml">
-                <form create="false" edit="false" delete="false" string="Sales By Month Form">
-                    <sheet>
-                        <group>
-                            <field name="sku_code"  string="Product SKU" />
-                            <field name="product_tmpl_id" string="Product Name" />
-                        </group>
-                        <group>
-                            <group>
-                                <field name="month1_quantity"/>
-                                <field name="month2_quantity"/>
-                                <field name="month3_quantity"/>
-                            </group>
-                            <group>
-                                 <field name="month1" widget="monetary" />
-                                 <field name="month2" widget="monetary"/>
-                                 <field name="month3" widget="monetary"/>
-                            </group>
-
-                        </group>
-                        <group>
-
-                            <group>
-                                <field name="month4_quantity"   />
-                                <field name="month5_quantity" />
-                                 <field name="month6_quantity"  />
-                            </group>
-                            <group>
-                                <field name="month4" widget="monetary"  />
-                                <field name="month5" widget="monetary"/>
-                                 <field name="month6" widget="monetary" />
-                            </group>
-
-                        </group>
-                        <group>
-                             <field name="total_sale" widget="monetary"/>
-                             <field name="total_quantity" />
-                             <field name="product_uom_name" string="Product UOM"/>
-                             <field name="currency_id"  invisible="1"/>
-                        </group>
-                    </sheet>
-                </form>
-            </field>
-        </record>
-
 
     <menuitem name="Sales By Month" id="sales_by_count_menu" parent="sale.menu_sale_report"
               action="sales_by_month.action_sales_by_month"/>

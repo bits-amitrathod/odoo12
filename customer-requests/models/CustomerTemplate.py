@@ -35,7 +35,6 @@ class CustomerTemplate(models.Model):
     template_status = fields.Char(string='Template Status')
 
     mf_customer_sku = fields.Char(string='SKU')
-    mf_req_no = fields.Char(string='Requisition Number')
     mf_mfr_catalog_no = fields.Char(string='Manufacturer SKU')
     mf_required_quantity = fields.Char(string='Required Quantity')
     mf_quantity = fields.Char(string='Stock')

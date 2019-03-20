@@ -6,9 +6,9 @@ class DiscountSummaryView(models.Model):
 
     start_date = fields.Date('Start Date', store=False)
     r_line_item = fields.Integer("Line #", store=False, compute='_compute_discount')
-    r_discount = fields.Monetary(string='Discount',compute='_compute_discount', currency_field='currency_id',
+    r_discount = fields.Monetary(string='Discount', currency_field='currency_id',
                                  store=False)
-    r_amount = fields.Monetary(string='Amount',compute='_compute_discount', currency_field='currency_id', store=False)
+    r_amount = fields.Monetary(string='Amount', currency_field='currency_id', store=False)
 
     # r_total = fields.Monetary(string='Total', currency_field='currency_id', store=False)
 

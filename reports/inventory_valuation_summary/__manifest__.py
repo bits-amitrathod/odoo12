@@ -2,10 +2,10 @@
     'name': "Inventory Valuation Summary",
 
     'summary': """
-      Report
+      Inventory Valuation Summary
       """,
 
-    'author': "Benchmark IT Solutions",
+    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
     'website': "http://www.benchmarkitsolutions.com",
 
     'category': 'Report',
@@ -14,7 +14,6 @@
     'depends': ['stock_account','prioritization_engine'],
 
     'data': [
-        'security/ir.model.access.csv',
         'views/views.xml',
         'report/report_inventory_valuation_summary.xml',
         'report/inventory_valuation_summary.xml'

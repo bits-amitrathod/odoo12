@@ -18,9 +18,9 @@ class ProductSaleByCountPopUp(models.TransientModel):
         (1, 'Date Range ')
     ], string="Compute", default=0, help="Choose to analyze the Show Summary or from a specific date in the past.")
 
-    start_date = fields.Date('Start Date', default=fields.date.today())
+    start_date = fields.Date('Start Date', default=fields.Datetime.now)
 
-    end_date = fields.Date('End Date', default=fields.date.today())
+    end_date = fields.Date('End Date', default = fields.Datetime.now)
 
     product_id = fields.Many2one('product.product', string='Product', required=False)
 
@@ -32,9 +32,9 @@ class ProductSaleByCountPopUp(models.TransientModel):
 
         if self.compute_at_date:
             s_date = ProductSaleByCountPopUp.string_to_date(str(self.start_date))
-            e_date = ProductSaleByCountPopUp.string_to_date(str(self.end_date)) + datetime.timedelta(days=1)
+            e_date = ProductSaleByCountPopUp.string_to_date(str(self.end_date))
         else:
-            e_date = datetime.date.today() + datetime.timedelta(days=1)
+            e_date = datetime.date.today()
             s_date = datetime.date.today().replace(day=1)
 
         products_on_order_context = {}

@@ -12,7 +12,7 @@ class DiscountSummaryPopUp(models.TransientModel):
     ], string="Compute", help="Choose to analyze the Show Summary or from a specific date in the past.")
 
     partner_id = fields.Many2one('res.partner', string='Customer')
-    sale_order = fields.Many2one('sale.order', string='Sale Order', domain="[('order_line.discount', '>', 0)]")
+    sale_order = fields.Many2one('sale.order', string='Sale Order')
 
     start_date = fields.Date('Start Date', help="Choose a date to get the Discount Summary at that  Start date",
                                  default=(fields.date.today() - datetime.timedelta(days=31)))
@@ -28,7 +28,7 @@ class DiscountSummaryPopUp(models.TransientModel):
             'view_mode': 'tree,form',
             'name': _('Discount Summary'),
             'res_model': 'sale.order',
-            'domain': [('state', 'in', ('sale', 'done')),('order_line.discount', '>', 0)],
+            'domain': [('state', 'in', ('sale', 'done'))],
         }
 
         if self.sale_order:

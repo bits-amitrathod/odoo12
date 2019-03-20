@@ -6,12 +6,12 @@
             <field name="model">report.sale.order.invoices</field>
             <field name="arch" type="xml">
                 <form string="Choose your date">
-                     <group>
+                    <group>
                         <group>
                             <field name="compute_at_date" widget="radio"/>
-                             <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', '1')]}"/>
-                            <field name="end_date" attrs="{'invisible': [('compute_at_date','=','1')]}"/>
-                            <field name="sale_order" widget="many2one_tags" attrs="{'invisible': [('compute_at_date','=','0')]}"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '!=', '2')]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date','!=','2')]}"/>
+                            <field name="order_invoices" widget="many2many_tags" attrs="{'invisible': [('compute_at_date','!=','1')]}"/>
                         </group>
                     </group>
                     <footer>

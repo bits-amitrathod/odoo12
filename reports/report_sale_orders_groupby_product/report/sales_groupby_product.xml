@@ -19,9 +19,8 @@
                             <b>
                                 <h2>Surgical Product Solutions</h2>
                                 <h4>Gross Sales By Product</h4>
-                                 <h4 t-if="popup.compute_at_date">
-                                    Date Range: <span t-esc="popup.start_date" t-options='{"widget": "date"}'/>
-                                             -  <span t-esc="popup.end_date" t-options='{"widget": "date"}'/>
+                                 <h4 t-if="date">
+                                    <span t-esc="date"/>
                                 </h4>
                             </b>
                         </center>
@@ -50,18 +49,10 @@
                                 <t t-set="amount" t-value="float(saleOrder[4])"/>
 
                                 <td class="text-right" t-esc="index"/>
-                                <td class="text-center">
-                                    <span t-esc="saleOrder[0]"/>
-                                </td>
-                                <td class="text-center">
-                                    <span t-esc="saleOrder[1]"/>
-                                </td>
-                                <td class="text-center">
-                                    <span t-esc="saleOrder[2]"/>
-                                </td>
-                                <td class="text-center">
-                                    <span t-esc="saleOrder[3]"/>
-                                </td>
+                                <td class="text-center" t-esc="saleOrder[0]"/>
+                                <td class="text-center" t-esc="saleOrder[1]"/>
+                                <td class="text-center" t-esc="saleOrder[2]"/>
+                                <td class="text-center" t-esc="saleOrder[3]"/>
                                 <td class="text-right">$
                                     <span t-esc="'{:.2f}'.format(amount)"/>
                                 </td>
@@ -77,6 +68,7 @@
                                 </td>
                             </tr>
                         </table>
+
                     </t>
                 </page>
             </t>

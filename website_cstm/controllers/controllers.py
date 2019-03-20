@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import base64
 import werkzeug.wrappers
-# from addons.auth_signup.controllers.main import AuthSignupHome
 
 from odoo import fields, http, modules, SUPERUSER_ID
 from odoo.http import request
@@ -28,10 +27,6 @@ class WebsiteCstm(http.Controller):
     @http.route('/search', type='http', auth="public", website=True)
     def search(self):
         return http.request.render('website_cstm.search_page')
-
-    @http.route('/terms', type='http', auth="public", website=True)
-    def search(self):
-        return http.request.render('website_cstm.terms')
 
     @http.route('/product_types', type='http', auth="public", website=True)
     def product_types_page(self):
@@ -75,9 +70,3 @@ class WebsiteCstm(http.Controller):
             response.status = str(status)
             return response
         raise werkzeug.exceptions.NotFound()
-
-# class AuthSignupHomeCstm(AuthSignupHome):
-#     @http.route(['/web/signup'], type='http', auth='public', website=True, sitemap=False)
-#     def web_auth_signup(self, *args, **kw):
-#         responce = super(AuthSignupHome, self).shop(*args, **kw)
-#         return responce

@@ -1,221 +1,106 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api, tools
+from odoo import models, fields, api
 import logging
-import datetime
-from datetime import date, datetime
+import  datetime
+from datetime import datetime
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
+class aging_report(models.Model):
+    _inherit = 'stock.production.lot'
+
+    pr_sku = fields.Char("Product SKU", store=False, compute="_calculateSKU")
+    pr_name= fields.Char("Product Name", store=False)
+    tracking = fields.Char("Tracking", store=False,compute="_calculateTracking")
+    p_qty = fields.Integer('Qty', store=False)
+    cr_date = fields.Date("Created date", store=False)
+    days = fields.Char("Days", store=False)
+    maxExpDate = fields.Date("Max Exp Date", store=False, compute="_calculateDate2")
+
+    # @api.onchange('days')
+    # def _calculateDays(self):
+    #     DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
+    #     for order in self:
+    #         to_dt=datetime.datetime.strptime(fields.date.today(), '%Y-%m-%d %H:%M:%S')
+    #         from_dt = datetime.strptime(order.create_date, DATETIME_FORMAT)
+    #         to_dt = datetime.strptime(fields.date.today(), DATETIME_FORMAT)
+    #         timedelta = to_dt - from_dt
+    #         # order.days = timedelta.days + float(timedelta.seconds) / 86400
 
 
-class AgingReport(models.Model):
-    _name = 'aging.report'
-    _rec_name = 'product_id'
 
-    # cr_date = fields.Date("Created date")
-    qty = fields.Integer("Product Qty")
-    days = fields.Char("Days",compute='get_quantity_byorm', store=False)
+    @api.onchange('maxExpDate')
+    def _calculateDate2(self):
+        for order in self:
 
-    sku_code = fields.Char(string="Product SKU", compute='get_quantity_byorm', store=False)
-    prod_lot_id = fields.Many2one('stock.production.lot', 'stock production lot')
-    product_name = fields.Char(string="Product Name")
-    lot_name = fields.Char(string="Lot#")
-    create_date = fields.Date(string="Created Date")
-    use_date = fields.Date(string="Expiry Date")
+            if order.product_id.id != False:
+                order.env.cr.execute(
+                    "SELECT min(use_date), max (use_date) FROM public.stock_production_lot where product_id =" + str(
+                        order.product_id.id))
+                query_result = order.env.cr.dictfetchone()
+                order.maxExpDate = query_result['max']
 
-    warehouse_id = fields.Many2one('stock.warehouse', 'Warehouse')
-    location_id = fields.Many2one('stock.location', string="Location")
-    # tracking  = fields.Char("Tracking" ,compute='_get_Data',default=0)
-    warehouse_name = fields.Char(string="Warehouse",compute='get_quantity_byorm', store=False)
-    product_uom_id = fields.Char(string="UOM",compute='get_quantity_byorm', store=False)
-    product_id = fields.Many2one('product.template', 'Product')
-    type=fields.Char(string="Type")
+    @api.onchange('tracking')
+    def _calculateTracking(self):
+        for order in self:
+            if order.maxExpDate==False:
+                order.maxExpDate=''
+            order.tracking = 'Lot#:' + str(order.name)
 
     @api.multi
-    def get_quantity_byorm(self):
+    def _calculateSKU(self):
+
         for order in self:
-            order.sku_code=order.product_id.sku_code
-            order.product_uom_id = order.product_id.uom_id.name
-            order.warehouse_name = order.warehouse_id.name
-            date_format = "%Y-%m-%d"
-            today = date.today().strftime('%Y-%m-%d')
-            a = datetime.strptime(today, date_format)
-            b = datetime.strptime(order.create_date, date_format)
-            diff = a - b
-            order.days = diff.days
+
+            order.pr_sku = order.product_id.product_tmpl_id.sku_code
+            order.pr_name=order.product_id.product_tmpl_id.name
+            order.tracking = 'Lot#:' + str(order.name)
+            # order.cr_date = order.create_date
 
 
 
-    @api.model_cr
-    def init(self):
-        self.init_table()
+            for p in order.quant_ids:
+                order.p_qty = p.quantity
 
-    def init_table(self):
-
-        sql_query = """ 
-                    TRUNCATE TABLE "aging_report"
-                    RESTART IDENTITY;
-                """
-        self._cr.execute(sql_query)
-        stock_location = self.env.context.get('stock_location')
-        cust_location_id = self.env.context.get('cust_location_id')
-        receiving_location = self.env.context.get('receiving_location')
-        insert = "INSERT INTO aging_report" \
-                 "(prod_lot_id,product_name,qty,lot_name, create_date,use_date,warehouse_id,location_id,product_id,type)"
-        # Stock Location
-        select_query=insert + """ SELECT
-            public.stock_production_lot.id as prod_lot_id  ,
-           public.product_template.name as product_name,
-           sum(public.stock_quant.quantity) as qty ,
-           public.stock_production_lot.name as lot_name,
-           date(public.stock_production_lot.create_date) as create_date,
-           date(public.stock_production_lot.use_date) as use_date,
-           public.stock_warehouse.id as warehouse_id,
-           14 as location_id, 
-           public.product_template.id as product_id,
-          
-           'Stock' as type
-           FROM
-           public.product_product
-           INNER JOIN
-              public.product_template
-              ON
-              (public.product_product.product_tmpl_id = public.product_template.id)
-           INNER JOIN
-               public.stock_production_lot
-               ON  
-               (public.stock_production_lot.product_id=public.product_product.id )
-           INNER JOIN
-                public.stock_quant 
-                ON
-                (public.stock_quant.lot_id=public.stock_production_lot.id)   
-           INNER JOIN
-               public.stock_location
-               ON 
-               ( public.stock_location.id=public.stock_quant.location_id)
-           INNER JOIN
-               public.stock_warehouse
-               ON
-                (public.stock_location.id in (public.stock_warehouse.lot_stock_id,public.stock_warehouse.wh_output_stock_loc_id,wh_pack_stock_loc_id))
-             WHERE public.stock_quant.quantity>0  group by  public.stock_production_lot.id ,public.product_template.name,public.stock_production_lot.name,public.stock_production_lot.create_date,
-             public.stock_production_lot.use_date, public.stock_warehouse.id, public.product_template.id
-        """
-        if stock_location and not stock_location is None :
-            # select_query=select_query + " and public.stock_quant.location_id =%s "
-            self._cr.execute(select_query)
-
-        # Shipping
-        select_query = insert + """ SELECT 
-                                             public.stock_move_line.lot_id as prod_lot_id,
-                                             public.product_template.name as product_name,
-                                             public.stock_move_line.ordered_qty as qty,
-                                             public.stock_production_lot.name as lot_name, 
-                                             public.stock_move.create_date as create_date,
-                                             public.stock_production_lot.use_date as use_date,
-                                             public.stock_warehouse.id as warehouse_id, 
-                                             public.stock_move.location_id as location_id,
-                                             public.product_template.id as product_id,
-                                             'Shipping' as type
-                                             FROM 
-                                             public.sale_order 
-                                       RIGHT JOIN
-                                             public.sale_order_line 
-                                         ON 
-                                           (public.sale_order_line.order_id = public.sale_order.id) 
-                                        RIGHT JOIN             
-                                             public.stock_move
-                                         ON 
-                                           (public.stock_move.sale_line_id = public.sale_order_line.id)      
-                                       RIGHT JOIN
-                                         public.product_product
-                                         ON
-                                         (public.product_product.id = public.stock_move.product_id)       
-                                      RIGHT JOIN
-                                         public.product_template
-                                         ON
-                                         (public.product_template.id=public.product_product.product_tmpl_id)        
-                                     RIGHT JOIN
-                                         public.stock_move_line
-                                         ON
-                                         (public.stock_move_line.move_id = public.stock_move.id)
-                                     RIGHT JOIN
-                                         public.stock_production_lot
-                                         ON
-                                         (public.stock_production_lot.id = public.stock_move_line.lot_id)    
-                                     RIGHT JOIN
-                                          public.stock_location
-                                          ON 
-                                          (public.stock_location.id=public.stock_move.location_dest_id )
-                                     RIGHT JOIN
-                                          public.stock_warehouse
-                                          ON
-                                          (public.stock_warehouse.wh_pack_stock_loc_id = public.stock_location.id)     
-
-                                     where  public.stock_move.state in ('waiting','assigned')        
-                                """
-        if cust_location_id and not cust_location_id is None:
-            select_query = select_query + " and  public.stock_move.location_dest_id=%s    "
-            self._cr.execute(select_query, (cust_location_id,))
-
-
-
-        # Receiving
-        select_query = insert + """ SELECT 
-                                public.stock_move_line.lot_id as prod_lot_id,
-                                public.product_template.name as product_name,
-                                public.stock_move_line.ordered_qty as qty,
-                                public.stock_move_line.lot_name as lot_name, 
-                                public.stock_move.create_date as create_date,
-                                public.stock_move_line.lot_expired_date as use_date,
-                                public.stock_warehouse.id as warehouse_id, 
-                                public.stock_move.location_id as location_id,
-                                public.product_template.id as product_id,
-                                'Receving' as type
-                                FROM 
-                                public.purchase_order 
-                          INNER JOIN
-                                public.purchase_order_line 
-                            ON 
-                              (public.purchase_order_line.order_id = public.purchase_order.id) 
-                           INNER JOIN             
-                                public.stock_move
-                            ON 
-                              (public.stock_move.purchase_line_id = public.purchase_order_line.id)      
-                          INNER JOIN
-                            public.product_product
-                            ON
-                            (public.product_product.id = public.stock_move.product_id)       
-                         INNER JOIN
-                            public.product_template
-                            ON
-                            (public.product_template.id=public.product_product.product_tmpl_id)        
-                        INNER JOIN
-                            public.stock_move_line
-                            ON
-                            (public.stock_move_line.move_id = public.stock_move.id)
-                        INNER JOIN
-                             public.stock_location
-                             ON 
-                             (public.stock_location.id=public.stock_move.location_dest_id )
-                        INNER JOIN
-                             public.stock_warehouse
-                             ON
-                             (public.stock_warehouse.lot_stock_id = public.stock_location.id)     
-
-                        where  public.stock_move.state='assigned'      
-                   """
-        if receiving_location and not receiving_location is None:
-            select_query = select_query + " and  public.stock_move.location_dest_id=%s"
-            self._cr.execute(select_query, (receiving_location,))
-
-    @api.model_cr
-    def delete_and_create(self):
-        self.init_table()
-
+            # order.cr_date=order.create_date
+            # order.vend=order.product_id.product_tmpl_id.product_brand_id.partner_id.name
+            # order.ph=order.product_id.product_tmpl_id.product_brand_id.partner_id.phone
+            # order.email = order.product_id.product_tmpl_id.product_brand_id.partner_id.email
+            # for p in order.quant_ids:
+            #     order.p_qty = p.quantity
     # @api.multi
-    # def _get_Data(self):
-    #     for order in self:
-    #          order.tracking = 'Lot#:' + str(order.name)
+    # def get_report_values(self):
+    #     lots = self.env['stock.production.lot'].search([])
+    #     groupby_dict = {}
     #
-    #          for p in order.quant_ids:
-    #            order.qty = p.quantity
+    #     for user in self.product_id:
+    #         filtered_order = list(filter(lambda x: x.product_id == user, lots))
+    #         filtered_by_date = list( filter(lambda x: x.create_date >= self.start_date and x.create_date <= self.end_date, filtered_order))
+    #         groupby_dict[user.name] = filtered_by_date
+    #
+    #
+    #         final_dict = {}
+    #         for user in groupby_dict.keys():
+    #             temp = []
+    #             for order in groupby_dict[user]:
+    #                 temp_2 = []
+    #                 temp_2.append(order.product_id.product_tmpl_id.sku_code)
+    #                 temp_2.append(order.name)
+    #                 temp_2.append(order.product_id.product_tmpl_id.name)
+    #                 temp_2.append(datetime.datetime.strptime(str(order.create_date), '%Y-%m-%d %H:%M:%S').date().strftime('%m-%d-%Y'))
+    #                 temp_2.append(order.product_id.product_tmpl_id.product_brand_id.partner_id.name)
+    #                 temp_2.append(order.product_id.product_tmpl_id.product_brand_id.partner_id.phone)
+    #                 temp_2.append(order.product_id.product_tmpl_id.product_brand_id.partner_id.email)
+    #
+    #                 temp.append(temp_2)
+    #             final_dict[user] = temp
+    #
+    #     datas = {
+    #         'ids': self,
+    #         'model': 'product.list.report',
+    #         'form': final_dict,
+    #         'start_date': fields.Datetime.from_string(str(self.start_date)).date().strftime('%m/%d/%Y'),
+    #         'end_date': fields.Datetime.from_string(str(self.end_date)).date().strftime('%m/%d/%Y'),
+    #
+    #     }
+    #     return self.env.ref('aging_report.action_todo_model_report').report_action([], data=datas)

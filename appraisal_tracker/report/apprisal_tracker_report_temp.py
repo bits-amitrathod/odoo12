@@ -33,8 +33,7 @@ class apprisal_tracker_vendor_report(models.AbstractModel):
         # if not docids:
         #     purchase_orders = self.env['purchase.order'].search([('state', 'in', ('purchase','cancel')),('status','in',('purchase','cancel'))])
         # else:
-        # purchase_orders = self.env['purchase.order'].browse(docids)
-        purchase_orders = self.env['purchase.order'].with_context(vendor_offer_data=True).browse(docids)
+        purchase_orders = self.env['purchase.order'].browse(docids)
 
         print('===========================================  =')
         print(purchase_orders)

@@ -15,8 +15,8 @@ class mtd_sales(models.Model):
 
     @api.model_cr
     def init(self):
-        self.init_table()
-
+        # self.init_table()
+        pass
 
     @api.model_cr
     def init_table(self):
@@ -25,24 +25,38 @@ class mtd_sales(models.Model):
         month = self.env.context.get('month')
         year = self.env.context.get('year')
 
-        sql_query = """ CREATE VIEW mtd_sales AS ( 
-            SELECT ROW_NUMBER () OVER (ORDER BY day_of_month) as id,  day_of_month as day_of_month,  CASE WHEN q.amount_total IS NULL THEN 0 ELSE q.amount_total END as amount_total
-                FROM generate_series(1, 31) as day_of_month LEFT JOIN ( SELECT                              
-                        EXTRACT(day FROM  so.confirmation_date) as day_from_date, 
-                        SUM(so.amount_total) as amount_total 
-                        FROM sale_order so """
-        if year is None and  month is None:
-            month=1
-            year=2018
-        sql_query = sql_query + """ WHERE 
-                    EXTRACT(month FROM  so.confirmation_date) = """ + str(month) + """ AND 
-                    EXTRACT(year FROM so.confirmation_date) = """ + str(year) + """  AND so.state = 'sale'                           
-                   GROUP BY EXTRACT(day FROM  so.confirmation_date)) q                       
-                   ON q.day_from_date = day_of_month """
+        if not year is None and not month is None:
+            # sql_query = "CREATE VIEW mtd_sales AS ( " + self.select_query() + self.from_clause() + self.where_clause(
+            #     year,
+            #     month) + " )"
 
-        sql_query = sql_query + """ ) """
+            # sql_query = """ CREATE VIEW mtd_sales AS (
+            #             SELECT
+            #                 ROW_NUMBER () OVER (ORDER BY EXTRACT(day FROM  so.confirmation_date)) as id,
+            #                 EXTRACT(day FROM  so.confirmation_date) as day_of_month,
+            #                 SUM(so.amount_total) as amount_total
+            #             FROM
+            #                 sale_order so
+            #             WHERE
+            #                 EXTRACT(month FROM  so.confirmation_date) = """ + str(month) + """ AND
+            #                 EXTRACT(year FROM so.confirmation_date) = """ + str(year) + """ AND
+            #                 so.state = 'sale' GROUP BY EXTRACT(day FROM  so.confirmation_date) )"""
 
-        self._cr.execute(sql_query)
+            sql_query = """ CREATE VIEW mtd_sales AS ( 
+                SELECT ROW_NUMBER () OVER (ORDER BY day_of_month) as id,  day_of_month as day_of_month,  CASE WHEN q.amount_total IS NULL THEN 0 ELSE q.amount_total END as amount_total
+FROM    generate_series(1, 31) as day_of_month LEFT JOIN ( SELECT                              
+                            EXTRACT(day FROM  so.confirmation_date) as day_from_date, 
+                            SUM(so.amount_total) as amount_total 
+                        FROM 
+                            sale_order so
+                        WHERE 
+                            EXTRACT(month FROM  so.confirmation_date) = """ + str(month) + """ AND 
+                            EXTRACT(year FROM so.confirmation_date) = """ + str(year) + """  AND so.state = 'sale'                           
+                       GROUP BY EXTRACT(day FROM  so.confirmation_date)) q                       
+                       ON q.day_from_date = day_of_month
+                )
+            """
+            self._cr.execute(sql_query)
 
     def select_query(self):
         return """ SELECT 

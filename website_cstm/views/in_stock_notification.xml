@@ -12,7 +12,7 @@
 
         <menuitem id="menu_product_instock_notification" name="Website Product Notification"
                   action="action_product_instock_notification"
-                  parent="website_sale.menu_orders" sequence="5"/>
+                  parent="stock.menu_stock_warehouse_mgmt" sequence="10"/>
 
         <!-- LIST VIEW -->
         <record model="ir.ui.view" id="website_cstm.list">
@@ -35,7 +35,7 @@
             <field name="email_from">
                 <![CDATA["${object.company_id.name|safe}" <${(object.company_id.email or user.email)|safe}>]]></field>
             <field name="email_to">${ctx['email']}</field>
-            <field name="subject">Your requested product is now available with SPS</field>
+            <field name="subject">Your product is available</field>
             <field name="body_html">
                 <![CDATA[
                 % set products = ctx.get('products', [])
@@ -55,8 +55,8 @@
                                     <img src="/website_cstm/static/src/img/product-image.jpg"
                                          height="50px"
                                          width="50px"></img>
-                                <!--</td>-->
-                                <!--<td valign="top">-->
+                                </td>
+                                <td valign="top">
                                     <a href="/shop/product/${product.product_tmpl_id.id}" target="_blank">
                                         <!--<strong>${object.product_variant_id.display_name}</strong>-->
                                         <br/>${product.product_tmpl_id.product_variant_id.name}

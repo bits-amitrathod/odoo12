@@ -13,96 +13,53 @@
                             </b>
                         </center>
                         <br/>
-                        <table class="table table-condensed" style="margin-bottom: 0px;">
-                            <tr>
-                                <td style="border: 1px solid #ffffff;width:40%">
-                                    <strong>Order Number:</strong>
-                                     <t t-if="data">
-                                    <span  t-esc="data[0].order_id.name"/>
-                                     </t>
-                                </td>
-                                <td style="border: 1px solid #ffffff;">
-                                    <strong>Status:</strong>
-                                     <t t-if="data">
-                                         <span  t-esc="dict(data[0].fields_get('state')['state']['selection'])[data[0].state]"/>
-                                     </t>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="border: 1px solid #ffffff;width:40%">
-                                    <t t-if="order_type">
-                                        <strong> Vendor Name / Facility Name:</strong>
-                                    </t>
-                                    <t t-else="">
-                                        <strong>Vendor Name:</strong>
-                                    </t>
-                                     <t t-if="data">
-                                         <span t-esc="data[0].partner_id.name"/>
-                                     </t>
-                                </td>
-                                <td style="border: 1px solid #ffffff;">
-                                    <strong>Type:</strong>
-                                     <t t-if="data">
-                                         <span   t-esc="data[0].picking_type_id.name"/>
-                                     </t>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="border: 1px solid #ffffff;width:40%;">
-                                    <strong>Warehouse:</strong>
-                                     <t t-if="data">
-                                        <span  t-esc="data[0].warehouse_id.name"/>
-                                     </t>
-                                </td>
-                                 <td style="border: 1px solid #ffffff;">
-
-
-                                </td>
-                            </tr>
-                        </table>
-                        <br/>
-
-                        <table class="table table-condensed">
-                            <thead>
+                        <t>
+                            <table style="width: 100%;">
                                 <tr>
-                                    <th style="border: 1px solid black;border-bottom: 1px solid #555555 !important;">Product Name</th>
-                                    <th style="border: 1px solid black;border-bottom: 1px solid #555555 !important;">Product SKU</th>
-                                    <th style="border: 1px solid black;border-bottom: 1px solid #555555 !important;">Picking</th>
-                                    <th style="border: 1px solid black;border-bottom: 1px solid #555555 !important;">Destination Location</th>
-                                    <th style="border: 1px solid black;border-bottom: 1px solid #555555 !important;">Qty To Receive</th>
-                                    <t t-if="order_type">
-                                        <th style="border: 1px solid black;border-bottom: 1px solid #555555 !important;">Qty Received</th>
-                                    </t>
+                                    <td style="width: 50%;"><b>Order #: </b><span t-esc="data['order_id']"/></td>
+                                    <td style="width: 50%;">
+                                        <b>Order Name:</b>  <span t-esc="data['name']"/>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                <tr t-foreach="data" t-as="product">
-                                    <td>
-                                        <span t-esc="product.product_tmpl_id.name"/>
+                                <tr>
+                                    <td style="width: 50%;"><b>Type: </b><span t-esc="data['type']"/></td>
+                                    <td style="width: 50%;">
+                                        <b>State:</b>  <span t-esc="data['state']"/>
                                     </td>
-                                    <td>
-                                        <span t-esc="product.product_tmpl_id.sku_code"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="product.picking_name"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="product.location_dest_id.name"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="product.product_uom_qty"/>
-                                        <span t-esc="product.product_uom_id.name"/>
-                                    </td>
-                                    <t t-if="order_type">
-                                        <td>
-                                            <span t-esc="product.qty_done"/>
-                                         </td>
-                                    </t>
-
                                 </tr>
-                            </tbody>
-                        </table>
+                            </table>
+                            <br/>
+                            <t>
+                                <table class="table table-condensed" style="border: 1px solid black;">
+                                    <thead>
+                                        <tr style="">
+                                            <th style="text-align: center;center; border: 1px solid black; width: 10%;">Product SKU</th>
+                                            <th style="text-align: center; border: 1px solid black; center;width: 70%;">Product</th>
+                                            <th style="text-align: center; border: 1px solid black; width: 10%">Qty To Receive</th>
+                                            <th style="text-align: center; border: 1px solid black; width:10%">Qty Received</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="data['lines']" t-as="product">
+                                            <td style="border: 1px solid black; width: 10%;">
+                                                <span t-esc="product[0]"/>
+                                            </td>
+                                            <td align="center" style="border: 1px solid black;width: 70%;">
+                                                <span t-esc="product[1]"/>
+                                            </td>
+                                            <td align="right" style="border: 1px solid black;width: 10%;">
+                                                <span t-esc="product[2]"/> <b> ea</b>
+                                            </td>
+                                            <td align="right" style="border: 1px solid black;width: 10%;">
+                                                <span t-esc="product[3]"/> <b> ea</b>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </t>
+                        </t>
                     </div>
+                    <!--<br/>-->
                 </page>
             </t>
         </t>

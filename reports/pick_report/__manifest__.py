@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 {
     'name': "Pick Report",
-    'summary':"Report",
-    'author': "Benchmark IT Solutions",
+
+    'author': "Benchmark IT Solutions (I) Pvt. Ltd",
     'website': "http://www.benchmarkitsolutions.com",
 
     'category': 'Uncategorized',

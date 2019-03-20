@@ -9,15 +9,7 @@
                         <center>
                             <b>
                                 <h2>Surgical Product Solution</h2>
-                                <h4>Pick Ticket
-                                    <span t-if="popup.compute_at_date">- By Date</span>
-                                    <span t-else="">- By Order</span>
-                                </h4>
-                                <h4 t-if="popup.compute_at_date">
-                                    <span t-esc="popup.start_date" t-options='{"widget": "date"}'/>
-                                    to
-                                    <span t-esc="popup.end_date" t-options='{"widget": "date"}'/>
-                                </h4>
+                                <h4>Pick Ticket</h4>
                             </b>
                         </center>
                         <br/>
@@ -43,25 +35,21 @@
                                     <strong>Warehouse:</strong>
                                     <span t-esc="pick['warehouse']"/>
                                 </td>
-                                <td style="border: none;">
-                                    <strong>Priority:</strong>
-                                    <span t-esc="pick['priority']"/>
-                                </td>
                             </tr>
                             <tr>
                                 <td style="border: none;">
                                     <strong>Scheduled Date:</strong>
-                                    <span t-esc="pick['scheduled_date']" t-options='{"widget": "date"}'/>
+                                    <span t-esc="pick['scheduled_date']"/>
                                 </td>
                                 <td style="border: none;">
-                                    <strong>Customer Name:</strong>
+                                    <strong>Customer:</strong>
                                     <span t-esc="pick['customer']"/>
                                 </td>
                                 <td style="border: none;">
-                                    <strong>Status:</strong>
+                                    <strong>State:</strong>
                                     <span t-esc="pick['state']"/>
                                 </td>
-                                <td style="border: none;">
+                                 <td style="border: none;">
                                     <strong>Operation Type:</strong>
                                     <span t-esc="pick['picking_type']"/>
                                 </td>
@@ -71,13 +59,10 @@
                             <thead>
                                 <tr>
                                     <th style="border: 1px solid black;text-align:  center !important;">
-                                        Product Name
-                                    </th>
-                                    <th style="border: 1px solid black;text-align:  center !important;">
                                         Quantity
                                     </th>
                                     <th style="border: 1px solid black;text-align:  center !important;">
-                                        UOM
+                                        Product Name
                                     </th>
                                     <th style="border: 1px solid black;text-align:  center !important;">
                                         Location
@@ -90,13 +75,11 @@
                             <tbody>
                                 <tr t-foreach="pick['product']" t-as="product">
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="product['product']"/>
-                                    </td>
-                                    <td style="border: 1px solid black;" align="center">
                                         <span t-esc="product['quantity']"/>
+                                        ea
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="product['product_uom']"/>
+                                        <span t-esc="product['product']"/>
                                     </td>
                                     <td style="border: 1px solid black;">
                                         <span t-esc="product['location']"/>

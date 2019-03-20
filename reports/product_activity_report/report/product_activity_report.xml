@@ -15,10 +15,6 @@
                             <b>
                                 <h2>Surgical Product Solutions</h2>
                                 <h4>Product Activity Report</h4>
-                                 <h4 t-if="popup.start_date and popup.end_date">
-                                    Date Range: <span t-esc="popup.start_date" t-options='{"widget": "date"}'/>
-                                             -  <span t-esc="popup.end_date" t-options='{"widget": "date"}'/>
-                                </h4>
                             </b>
                         </center>
 
@@ -59,7 +55,7 @@
                                             <span t-esc="product['event']"/>
                                         </td>
                                         <td>
-                                            <span t-esc="product['date']" t-options='{"widget": "date"}'/>
+                                            <span t-esc="product['date']"/>
                                         </td>
                                         <td>
                                             <span t-esc="product['change_qty']"/>
@@ -74,7 +70,7 @@
                                             <span t-esc="product['lot']"/>
                                         </td>
                                         <td>
-                                            <span t-esc="product['expiration_date']" t-options='{"widget": "date"}'/>
+                                            <span t-esc="product['expiration_date']"/>
                                         </td>
                                     </tr>
                                 </tbody>

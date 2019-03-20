@@ -19,8 +19,8 @@ class PopUp(models.TransientModel):
 
 
     def open_table(self):
-        tree_view_id = self.env.ref('tps_report_sale.tree_list_tps').id
-        form_view_id = self.env.ref('tps_report_sale.form_list_tps').id
+        tree_view_id = self.env.ref('tps_report_sale.form_list_tps').id
+        form_view_id = self.env.ref('purchase.view_product_account_purchase_ok_form').id
         margins_context = {'start_date': self.start_date, 'end_date': self.end_date}
         x_res_model = 'total_product_sale'
         self.env[x_res_model].with_context(margins_context).delete_and_create()

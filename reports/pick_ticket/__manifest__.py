@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 {
     'name': "Pick Ticket",
-    'summary':"Report",
-    'author': "Benchmark IT Solutions",
+
+    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
     'category': 'sale',
     'version': '11.0.0.1',
 
@@ -11,6 +11,7 @@
 
     # always loaded
     'data': [
+        'security/res_pick_ticket.xml',
         'security/ir.model.access.csv',
         'views/pick_ticket.xml',
         'reports/pick_ticket.xml',

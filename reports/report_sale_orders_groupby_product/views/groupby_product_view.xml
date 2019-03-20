@@ -29,10 +29,10 @@
             <field name="name">popup.sale.orders.groupby.product.report.tree</field>
             <field name="model">sale.order.line</field>
             <field name="arch" type="xml">
-                <tree string="Sales Order Lines" create="false" edit="false" delete="false">
+                <tree string="Sales Order Lines" create="false">
                     <field name="product_id" invisible="1"/>
                     <field name="order_id" string="Sales Order#"/>
-                    <field name="date_order" widget="date"/>
+                    <field name="date_order"/>
                     <!--<field name="order_partner_id"/>-->
                     <field name="sku_code"/>
                     <!--<field name="salesman_id"/>-->
@@ -41,8 +41,7 @@
                     <!--<field name="qty_invoiced"/>-->
                     <!--<field name="qty_to_invoice"/>-->
                     <field name="product_uom" string="Unit of Measure" groups="product.group_uom"/>
-                    <field name="currency_id" invisible="1"/>
-                    <field name="price_subtotal" sum="price_subtotal" widget="monetary" />
+                    <field name="price_subtotal" sum="Total" widget="monetary"/>
                     <field name="state" invisible="1"/>
                 </tree>
             </field>
@@ -52,7 +51,7 @@
             <field name="name">sale.order.line.view</field>
             <field name="model">sale.order.line</field>
             <field name="arch" type="xml">
-                <form create="false" edit="false" delete="false">
+                <form create="false" edit="false">
                     <sheet>
                         <div class="oe_title">
                             <h1>
@@ -72,7 +71,6 @@
                                 <field name="product_uom_qty"/>
                                 <field name="product_uom"/>
                                 <field name="price_unit" widget="monetary"/>
-                                <field name="currency_id" invisible="1"/>
                             </group>
 
 
@@ -91,8 +89,8 @@
                     <group>
                         <group>
                             <field name="compute_at_date" widget="radio"/>
-                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
-                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
                         </group>
                     </group>
                     <footer>

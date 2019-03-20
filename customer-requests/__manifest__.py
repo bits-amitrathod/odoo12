@@ -3,7 +3,7 @@
     'name': "Customer Requests",
 
 
-    'author': "Benchmark IT Solutions",
+    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
     'website': "http://www.benchmarkitsolutions.com",
 
     # Categories can be used to filter modules in modules listing
@@ -13,10 +13,11 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'fetchmail', 'sale', 'prioritization_engine','purchase'],
+    'depends': ['base', 'fetchmail', 'sale', 'prioritization_engine'],
 
     # always loaded
     'data': [
+        'security/res_user_cust_requests.xml',
         'security/ir.model.access.csv',
         'views/voided_product_template_views.xml',
         'views/views.xml',

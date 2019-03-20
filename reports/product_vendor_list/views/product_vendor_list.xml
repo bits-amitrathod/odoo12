@@ -9,7 +9,12 @@
                 <form string="Choose your date">
                     <group>
                         <group>
-                            <field name="product_id"/>
+                            <field name="partner_id"/>
+                        </group>
+                        <group>
+                            <field name="compute_at_date" widget="radio"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
                         </group>
                     </group>
                     <footer>
@@ -32,13 +37,13 @@
 
         <record model="ir.ui.view" id="vendor_form_list">
               <field name="name">purchase.vendor.view.list</field>
-              <field name="model">purchase.order.line</field>
+              <field name="model">purchase.order</field>
               <field name="priority">20</field>
               <field name="arch" type="xml">
-                <tree create="false" edit="false" delete="false">
-                    <field name="partner_id"/>
+                <tree create="false" edit="false" >
                     <field name="sku_code_product"/>
-                    <field name="product_id" string="Product Name"/>
+                    <field name="product_id"/>
+                    <field name="partner_id"/>
                     <field name="last_sold" />
                     <field name="cost" widget="monetary"/>
                     <field name="currency_id" invisible="1"/>
@@ -46,25 +51,7 @@
                 </tree>
               </field>
         </record>
-         <record model="ir.ui.view" id="product_vendor_list_report_form">
-            <field name="name">purchase.vendor.view.form</field>
-            <field name="model">purchase.order.line</field>
-            <field name="arch" type="xml">
-                <form create="false" edit="false" delete="false">
-                    <sheet>
-                        <group>
-                            <field name="partner_id"/>
-                            <field name="sku_code_product"/>
-                            <field name="product_id" string="Product Name"/>
-                            <field name="last_sold" />
-                            <field name="cost" widget="monetary"/>
-                            <field name="currency_id" invisible="1"/>
-                            <field name="state" invisible="1" />
-                        </group>
-                    </sheet>
-                </form>
-            </field>
-        </record>
+
         <!--<record id="product_vendor_list_form" model="ir.ui.view">-->
             <!--<field name="name">productvendorlist.productvendorlist.form</field>-->
             <!--<field name="model">productvendorlist.productvendorlist</field>-->

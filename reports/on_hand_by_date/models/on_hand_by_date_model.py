@@ -3,8 +3,6 @@
 from odoo import api, fields, models, tools
 import logging
 from datetime import datetime
-import odoo.addons.decimal_precision as dp
-
 
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, pycompat, misc
 
@@ -16,51 +14,45 @@ class OnHandByDate(models.Model):
     _auto = False
 
     sku_code = fields.Char('Product SKU')
-    product_name = fields.Char("Product Name")
-    qty_done = fields.Float("Product Qty",digits=dp.get_precision('Product Unit of Measure'))
-    vendor_name = fields.Char("Vendor Name")
+    product_name = fields.Char("Product")
+    qty_done = fields.Float("Qty")
+    vendor_name = fields.Char("Vendor")
     price_unit = fields.Float("Unit Price")
     asset_value = fields.Float("Assets Value")
-    is_active = fields.Boolean("is_active")
-    partner_id = fields.Integer("partner_id")
-    date_order = fields.Date("date_order")
-    warehouse_id = fields.Integer('Warehouse')
-    currency_id = fields.Many2one("res.currency", string="Currency", readonly=True)
-    _rec_name = 'product_name'
-
-
 
     @api.model_cr
     def init(self):
         self.init_table()
 
     def init_table(self):
-        res_model = self._name.replace(".", "_")
-        res_model_cost = self._name.replace(".", "_")+"_cost"
+        tools.drop_view_if_exists(self._cr, self._name.replace(".", "_"))
 
-        tools.drop_view_if_exists(self._cr, res_model)
-        tools.drop_view_if_exists(self._cr, res_model_cost)
+        report_date = self.env.context.get('report_date')
+        partner_id = self.env.context.get('partner_id')
+        product_id = self.env.context.get('product_id')
+        quantities = self.env.context.get('quantities')
+        product_inactive = self.env.context.get('product_inactive')
+        show_cost = self.env.context.get('show_cost')
+        # costing_method = self.env.context.get('costing_method')
 
-        default_query = """ SELECT
+        column = """
                 purchase_order_line.id,
                 product_template.sku_code,
                 product_template.name AS product_name,
                 stock_move_line.qty_done,
-                product_template.active as is_active,
-                purchase_order.partner_id,
-                purchase_order.date_order,
-                stock_warehouse.id as warehouse_id,
-                purchase_order_line.currency_id as currency_id,
                 res_partner.name     AS vendor_name
                        """
 
-        cost_columns = default_query + """
+        if show_cost is not None:
+            column = column + """
             ,purchase_order_line.price_unit
             ,stock_move_line.qty_done * purchase_order_line.price_unit AS asset_value
-        """
+            """
 
-        from_query = """
-        FROM
+        select_query = """ 
+            SELECT
+                """ + column + """
+            FROM
                 purchase_order_line
             INNER JOIN
                 purchase_order
@@ -107,27 +99,30 @@ class OnHandByDate(models.Model):
             ON
                 (
                     purchase_order.partner_id = res_partner.id)
-                    
-         
             WHERE
                 stock_picking.state = 'done' 
-                """
+        """
 
-        sql_query = "CREATE VIEW " + res_model + " AS ( " + default_query + from_query+ " )"
+        if report_date is not None:
+            select_query = select_query + " AND purchase_order.date_order >='" + str(report_date) + "'"
+
+        if partner_id is not None:
+            select_query = select_query + " AND res_partner.id =" + str(partner_id)
+
+        if product_id is not None:
+            select_query = select_query + " AND product_product.id =" + str(product_id)
+
+        if product_inactive is None:
+            select_query = select_query + " AND product_template.active = TRUE "
+
+        if quantities is 0:
+            select_query = select_query + " AND stock_move_line.qty_done > 0 "
+        elif  quantities is 2:
+            select_query = select_query + " AND stock_move_line.qty_done = 0 "
+
+        sql_query = "CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + select_query + " )"
         self._cr.execute(sql_query)
 
-        sql_query = "CREATE VIEW " + res_model_cost + " AS ( " + cost_columns + from_query + " )"
-        self._cr.execute(sql_query)
-
-class OnHandByDateCost(models.Model):
-        _name = "report.on.hand.by.date.cost"
-        _inherit = 'report.on.hand.by.date'
-        _auto = False
-
-        @api.model_cr
-        def init(self):
-            self.init_table()
-
-        def init_table(self):
-            pass
-
+    @api.model_cr
+    def delete_and_create(self):
+        self.init_table()

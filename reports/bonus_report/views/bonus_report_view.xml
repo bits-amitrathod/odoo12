@@ -10,8 +10,8 @@
                     <group>
                         <group>
                             <field name="compute_at_date" widget="radio"/>
-                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
-                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
                         </group>
                     </group>
                     <footer>
@@ -37,20 +37,20 @@
               <field name="model">purchase.order</field>
               <field name="priority">20</field>
               <field name="arch" type="xml">
-                <tree create="false" edit="false" delete="false" >
-                      <field name="appraisal_no" />
+                <tree create="false" edit="false" >
+                    <field name="appraisal_no" />
                       <field name="priority" />
-                      <!--<field name="revision"  />-->
+                      <field name="revision"  />
                       <field name="status" invisible="1"   />
                       <field name="state" invisible="1"   />
                       <field name="acq_user_id" />
                       <field name="partner_id" string ="Facility"/>
-                      <field name="amount_total" attrs="{'invisible':[('state', 'not in', ('purchase','cancel'))]}"  widget="monetary" string ="Total Offer"/>
-                      <field name="rt_price_total_amt" attrs="{'invisible':[('state', 'not in', ('purchase','cancel'))]}"  widget="monetary" string ="Total Retail"/>
-                      <field name="create_date" widget="date"/>
+                    <field name="amount_total" attrs="{'invisible':[('state', 'not in', ('purchase','cancel'))]}"  widget="monetary" string ="Total Offer"/>
+                   <field name="rt_price_total_amt" attrs="{'invisible':[('state', 'not in', ('purchase','cancel'))]}"  widget="monetary" string ="Total Retail"/>
+                      <field name="create_date"  />
                       <field name="shipping_label_issued"  />
-                      <field name="shipping_date" widget="date"/>
-                      <field name="delivered_date" widget="date"/>
+                      <field name="shipping_date"  />
+                      <field name="delivered_date"  />
                       <field name="new_customer"  />
                       <field name="broker_margin" options='{"bg_color": "#f3f397 : color"+"==3;"+"#c9fbcf : color"+"==2;"+"#ff7098 : color"+"==1"}'  string="Margin Detail" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"  ></field>
                       <field name="status_ven"  />

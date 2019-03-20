@@ -10,18 +10,45 @@ class OnHandByDateReportModel(models.AbstractModel):
 
     @api.model
     def get_report_values(self, docids, data=None):
-        sale_line_order={}
-        sale_list=[]
-        sale_order_list = self.env['inventory.allocation_so'].search([('id', 'in', docids)])
-        for sale_order_line in sale_order_list:
-            if sale_order_line.sale_order_name in sale_line_order:
-                sale_list=list(sale_line_order.get(sale_order_line.sale_order_name))
-                sale_list.append(sale_order_line)
-                sale_line_order[sale_order_line.sale_order_name]=sale_list
-            else:
-                sale_line_order[sale_order_line.sale_order_name]=[sale_order_line]
+        if len(docids) == 1:
+            ids="("+str(docids[0])+")"
+        else:
+            ids=tuple(docids)
+        select = """ SELECT sale_order_name, 
+                concat(sum(so.cost),' ',so.currency_symbol)  as total_cost,
+                array_agg(ARRAY[ 
+                 CASE WHEN so.product_code IS NULL THEN
+                 ''
+                 ELSE
+                 so.product_code END
+                , 
+                CASE WHEN so.product_name IS NULL THEN
+                 ''
+                 ELSE
+                 so.product_name END
+                ,
+                 CASE WHEN so.product_uom_qty IS NULL THEN
+                 ''
+                 ELSE
+                 so.product_uom_qty END
+                ,
+                CASE WHEN so.cost IS NULL THEN
+                 ''
+                 ELSE
+                 concat(cast(so.cost as varchar),' ',so.currency_symbol) END
+                ]) as type ,
+                sum(so.product_quantity) as total_qty
+                FROM inventory_allocation_so so where id in """
+        select=select+ ' '+str(ids)+ ' '+""" 
+                GROUP BY sale_order_name,currency_symbol   """
+        self._cr.execute(select)
+        result = self.env.cr.fetchall()
+        _logger.info("selct :%r", result)
+        sale_order_list = []
+        for sale_order in result:
+            orders = [sale_order[0],sale_order[1], sale_order[2],sale_order[3]]
+            sale_order_list.append(orders)
 
-
-        return {'sale_order_list' :sale_line_order }
+        return {'sale_order_list' :sale_order_list }
 
 

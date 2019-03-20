@@ -148,15 +148,17 @@
         </div>
 
         <!--<div class="form-group field-name">-->
-            <!--<label for="name" class="control-label">Customer Account Number (optional)</label>-->
-            <!--<p>-->
-                <!--<small>-->
-                    <!--If you are not aware of your account number or if you are a first time  customer, email us at-->
-                    <!--<a href="mailto:info@surgicalproductsolutions.com"> info@surgicalproductsolutions.com </a>-->
-                    <!--or call 412-564-1280 to receive an account number.-->
-                <!--</small>-->
-            <!--</p>-->
-            <!--<input type="text" name="name" id="name" class="form-control"/>-->
+        <!--<label for="name" class="control-label">Customer Account Number (optional)</label>-->
+        <!--<p>-->
+        <!--<small>-->
+        <!--If you are not aware of your account number or if you are a first time-->
+        <!--customer, email us at <a href="mailto:info@surgicalproductsolutions.com">-->
+        <!--info@surgicalproductsolutions.com-->
+        <!--</a> or call-->
+        <!--412-564-1280 to receive an account number.-->
+        <!--</small>-->
+        <!--</p>-->
+        <!--<input type="text" name="name" id="name" class="form-control"/>-->
         <!--</div>-->
 
         <div class="form-group field-login">

@@ -3,14 +3,13 @@
     'name': "SPS Receiving List",
 
     'summary': """
-      Report
        """,
 
     'description': """
         
     """,
 
-    'author': "Benchmark IT Solutions",
+    'author': "Benchmark It Solutions",
     'website': "http://www.benchmarkitsolutions.com",
 
     'category': 'Report',

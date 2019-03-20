@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 {
     'name': "On Hand By Date",
-    'summary':"Report",
-    'author': "Benchmark IT Solutions",
+
+    'author': "Benchmark IT Solutions (I) Pvt. Ltd",
     'website': "http://www.benchmarkitsolutions.com",
 
     'category': 'Report',
@@ -13,7 +13,6 @@
 
     # always loaded
     'data': [
-        'security/ir.model.access.csv',
         'views/views.xml',
         'report/on_hand_by_date_report.xml',
         'report/on_hand_by_date_report_template.xml'

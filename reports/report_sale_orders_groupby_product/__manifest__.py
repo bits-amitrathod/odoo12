@@ -1,9 +1,8 @@
 {
     'name': 'Gross Sales By Product',
-    'summary':"Report",
     'category': 'sale',
     'version': '11.0.0.1',
-    'author': "Benchmark IT Solutions",
+    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
     'website': "http://www.benchmarkitsolutions.com",
 
     'depends': ['base', 'sale_management'],
@@ -15,5 +14,5 @@
     'images': ['static/description/banner.png'],
     'auto_install': False,
     'installable': True,
-    'application': True,
+    'application': False,
 }

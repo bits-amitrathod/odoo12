@@ -1,0 +1,12 @@
+<odoo>
+    <data>
+        <record id="product_uom_categ_each" model="uom.category">
+            <field name="name">Each</field>
+        </record>
+
+        <record id="product_uom_cm" model="uom.uom">
+            <field name="category_id" ref="product_uom_categ_each"/>
+            <field name="name">each</field>
+        </record>
+    </data>
+</odoo>

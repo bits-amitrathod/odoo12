@@ -3,8 +3,8 @@
     <data>
         <report
                 id="action_report_inventory_packing_list"
-                string="Packing List"
-                model="stock.picking"
+                string="Inventory Packing List"
+                model="res.stock_packing_list"
                 report_type="qweb-html"
                 file="packing_list.sale_packing_list_template"
                 name="packing_list.sale_packing_list_template"

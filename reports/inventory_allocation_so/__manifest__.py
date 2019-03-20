@@ -3,14 +3,14 @@
     'name': "Inventory SO Allocation",
 
      'summary': """
-      Report
-        """,
+        Short (1 phrase/line) summary of the module's purpose, used as
+        subtitle on modules listing or apps.openerp.com""",
 
     'description': """
-        
+        Long description of module's purpose
     """,
 
-    'author': "Benchmark IT Solutions",
+    'author': "Benchmark It Solutions Pvt ltd",
     'website': "http://www.benchmarkitsolutions.com",
 
     # Categories can be used to filter modules in modules listing
@@ -20,7 +20,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','sale'],
+    'depends': ['base','sale','stock','purchase','prioritization_engine'],
 
     # always loaded
     'data': [
@@ -28,7 +28,7 @@
         'views/views.xml',
         'report/inv_sale_allocation_template.xml',
         'report/so_allocation_report.xml',
-        'security/ir.model.access.csv',
+
     ],
     # only loaded in demonstration mode
     'demo': [

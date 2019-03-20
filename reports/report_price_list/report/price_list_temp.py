@@ -7,7 +7,7 @@ class ReportSalesSalespersonWise(models.AbstractModel):
 
     @api.model
     def get_report_values(self, docids, data=None):
-        return {'data': self.env['product.product'].browse(docids)}
+        return {'data': self.env['product.template'].browse(docids)}
 
 
 class CustProductPriceList(models.AbstractModel):
@@ -15,5 +15,4 @@ class CustProductPriceList(models.AbstractModel):
 
     @api.model
     def get_report_values(self, docids, data=None):
-        popup = self.env['inventory.customer_price_list_popup'].search([('create_uid', '=', self._uid)], limit=1,order="id desc")
-        return {'data': self.env['inv.customer_price_list'].browse(docids),'customer_name':popup.customer_list.display_name}
+        return {'data': self.env['product.template'].browse(docids)}

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 {
     'name': "Receiving List",
-    'summary': "Report",
-    'author': "Benchmark IT Solutions",
+
+    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
     'website': "http://www.benchmarkitsolutions.com",
 
     'category': 'Uncategorized',
@@ -11,7 +11,6 @@
     'depends': ['base', 'purchase', 'sale'],
 
     'data': [
-        'security/ir.model.access.csv',
         'views/views.xml',
         'report/receiving_list_report.xml',
         'report/receiving_list_report_template.xml'

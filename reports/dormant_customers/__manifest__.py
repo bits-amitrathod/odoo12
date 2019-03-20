@@ -2,8 +2,8 @@
 {
 
     'name': "Dormant Customers",
-    'summary':'Report',
-    'author': "Benchmark IT Solutions",
+
+    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
     'website': "http://www.benchmarkitsolutions.com",
 
     'category': 'report',
@@ -21,5 +21,5 @@
     ],
     'auto_install': False,
     'installable': True,
-    'application': True,
+    'application': False,
 }

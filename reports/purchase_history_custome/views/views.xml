@@ -5,16 +5,16 @@
           <field name="model">purchase.order</field>
           <field name="priority">20</field>
           <field name="arch" type="xml">
-              <tree create="false" edit="false" delete="false">
-                  <field name="name" string="Purchase Order#"/>
+              <tree>
+                  <field name="name"/>
                   <field name="sku"/>
                   <!--<field name="manufacturer_rep"/>-->
                   <field name="vendor"/>
                   <field name="product_name"/>
                   <field name="qty"/>
-                  <field name="minExpDate" widget="date"/>
-                  <field name="maxExpDate" widget="date"/>
                   <field name="unit_price" widget="monetary"/>
+                  <field name="minExpDate"/>
+                  <field name="maxExpDate"/>
                   <field name="currency_id" invisible="1"/>
               </tree>
           </field>
@@ -31,8 +31,8 @@
                 <group>
                     <group>
                         <field name="compute_at_date" widget="radio"/>
-                        <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
-                        <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
+                        <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                        <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
                         <field name="product_id" widget="many2many_tags" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
                     </group>
                 </group>

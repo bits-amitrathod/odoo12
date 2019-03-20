@@ -10,32 +10,28 @@
                             <b>
                                 <h2>Surgical Product Solutions</h2>
                                 <h4>Returned Sales</h4>
-                                <h4 t-if="popup.compute_at_date">
-                                   Date Range: <span t-esc="popup.start_date" t-options='{"widget": "date"}'/> -
-                                               <span t-esc="popup.end_date" t-options='{"widget": "date"}'/>
-                               </h4>
                             </b>
                         </center>
+
                     </div>
                     <br/>
                     <t t-set="currency" t-value="0"/>
-                    <t t-if="form is not None">
-                        <t t-foreach="form" t-as="returned_sales">
+                    <t t-if="data['form'] is not None">
+                        <t t-foreach="data['form']" t-as="returned_sales">
                             <center>
                                 <b>
-                                    <span>Product Name:</span>
+                                    <span>Product #:</span>
                                     <span t-esc="returned_sales[0]"/>
                                 </b>
                             </center>
                             <table class="table table-condensed" style="">
                                 <thead>
                                     <tr style="">
-                                        <th style="text-align: left;">Sales Order #</th>
-                                        <th style="text-align: left;">Customer Name</th>
+                                        <th style="text-align: left;">Order #</th>
+                                        <th style="text-align: left;">Customer</th>
                                         <th style="text-align: left;">Salesperson</th>
                                         <th style="text-align: right;">Qty Done</th>
-                                        <th style="text-align: right;">UOM</th>
-                                        <th style="text-align: right;">Selling Cost</th>
+                                        <th style="text-align: right;">Price</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -50,24 +46,21 @@
                                             <span t-esc="order[2]"/>
                                         </td>
                                         <td align="center" style="text-align: right;">
-                                            <span t-esc="round(order[3])"/>
-                                        </td>
-                                         <td style="text-align: right;">
-                                            <span t-esc="order[4]"/>
+                                            <span t-esc="order[3]"/> <span t-esc="order[4]"/>
                                         </td>
                                         <td align="right" style="text-align: right;">
-                                            <span t-esc="order[5]" t-options='{"widget": "monetary","display_currency": order[6].currency_id}'/>
+                                            <span t-esc="order[5]"/>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td style="text-align: right;" colspan="4">
-                                            <span t-esc="round(returned_sales[2])"/>
-                                        </td>
-                                         <td align="right">
+                                        <td colspan="3" style="text-align: right;">
                                             <b>Total</b>
                                         </td>
-                                        <td align="right" style="white-space: nowrap;" t-if="len(returned_sales[1]) &gt; 0">
-                                            <span t-esc="returned_sales[3]" t-options='{"widget": "monetary","display_currency": returned_sales[1][0][6].currency_id}'/>
+                                        <td style="text-align: right;">
+                                            <span t-esc="returned_sales[2]"/>
+                                        </td>
+                                        <td align="right" style="white-space: nowrap;">
+                                            <span t-esc="returned_sales[3]"/>
                                         </td>
                                     </tr>
                                 </tbody>

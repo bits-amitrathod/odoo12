@@ -7,32 +7,29 @@
             <field name="name">res.config.settings.view.form.inherit.inventory.extension</field>
             <field name="model">res.config.settings</field>
             <field name="priority" eval="30"/>
-            <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+            <field name="inherit_id" ref="base.res_config_settings_view_form" />
             <field name="arch" type="xml">
 
-                <xpath expr="//field[@name='group_stock_tracking_owner']/parent::div/parent::div" position="before">
-                    <div class="col-xs-12 col-md-6 o_setting_box"
-                         attrs="{'invisible': ['|',('module_product_expiry', '=', False),('group_stock_production_lot', '=', False)]}"
-                         title="Set alert days on lots &amp; serial numbers: best before, removal, end of life, alert. Such dates are set automatically at lot/serial number creation based on values set on the product (in days).">
-                        <div class="o_setting_left_pane">
-                            <field name="production_lot_alert_settings"/>
-                        </div>
-                        <div class="o_setting_right_pane">
-                            <label for="production_lot_alert_settings"/>
-                            <div class="text-muted">
-                                Set alert days on lots &amp; serial numbers
-                            </div>
-                            <div class="content-group">
-                                <div class="mt16"
-                                     attrs="{'invisible': [('production_lot_alert_settings', '=', False)]}">
-                                    <field name="production_lot_alert_days" class="oe_inline"/>
-                                    <span>days</span>
-                                    <div>
-                                        <p style="color: #025325;">Alert days shouldn't beyond 366 days</p>
+                <xpath expr="//field[@name='group_stock_tracking_owner']/parent::div/parent::div" position="before"  >
+                    <div class="col-xs-12 col-md-6 o_setting_box" attrs="{'invisible': ['|',('module_product_expiry', '=', False),('group_stock_production_lot', '=', False)]}" title="Set alert days on lots &amp; serial numbers: best before, removal, end of life, alert. Such dates are set automatically at lot/serial number creation based on values set on the product (in days).">
+                                <div class="o_setting_left_pane">
+                                    <field name="production_lot_alert_settings"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="production_lot_alert_settings"/>
+                                    <div class="text-muted">
+                                        Set alert days on lots &amp; serial numbers
+                                    </div>
+                                     <div class="content-group">
+                                        <div class="mt16" attrs="{'invisible': [('production_lot_alert_settings', '=', False)]}">
+                                            <field name="production_lot_alert_days" class="oe_inline"/>
+                                            <span>days</span>
+                                            <div >
+                                                <p style="color: #025325;" >Alert days shouldn't beyond 366 days</p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
                     </div>
                 </xpath>
             </field>
@@ -41,33 +38,18 @@
         <record model="res.config.settings" id="inventory_extension.product_lot_settings">
             <field name="group_stock_production_lot" eval="1"/>
             <field name="module_product_expiry" eval="1"/>
-            <field name="group_stock_multi_locations" eval="1"/>
-            <field name="group_stock_adv_location" eval="1"/>
+             <field name="group_stock_multi_locations" eval="1"/>
+             <field name="group_stock_adv_location" eval="1"/>
             <field name="production_lot_alert_days" eval="0"/>
-        </record>
-        <function model="res.config.settings" name="execute">
-            <!-- ids = -->
-            <value eval="[ref('inventory_extension.product_lot_settings')]"/>
-            <!-- context = -->
-            <value eval="{}"/>
-        </function>
-        <!--<function model ="res.config.settings" name="group_stock_production_lot_fun">-->
-        <!--<value>True</value>-->
+      </record>
+      <function model="res.config.settings" name="execute">
+        <!-- ids = -->      <value eval="[ref('inventory_extension.product_lot_settings')]"/>
+        <!-- context = -->  <value eval="{}"/>
+      </function>
+         <!--<function model ="res.config.settings" name="group_stock_production_lot_fun">-->
+                    <!--<value>True</value>-->
 
-        <!--</function>-->
-        <record id="vpicktree_ext" model="ir.ui.view">
-            <field name="name">stock.picking.tree</field>
-            <field name="model">stock.picking</field>
-            <field name="inherit_id" ref="stock.vpicktree"/>
-            <field name="arch" type="xml">
-                <field name="origin" position="replace">
-                    <field name="origin" invisible="1"/>
-                </field>
-                <xpath expr="//field[@name='name']" position="after">
-                    <field name="origin"/>
-                </xpath>
-            </field>
-        </record>
+         <!--</function>-->
     </data>
 </odoo>
 
