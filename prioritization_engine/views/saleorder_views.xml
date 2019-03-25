@@ -136,6 +136,19 @@
             </xpath>
             </field>
         </record>
+
+        <record id="view_order_form_inherit_sale_stock" model="ir.ui.view">
+            <field name="name">sale.order.form.sale.stock</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='order_line']/form/group/group/div/field[@name='product_uom']" position="replace">
+                    <field name="product_uom" groups="product.group_uom" class="oe_inline oe_no_button" domain="[()]"
+                                                    attrs="{'readonly': [('state', 'in', ('sale','done', 'cancel'))]}" options="{'no_create_edit': True, 'no_open': True}"/>
+                </xpath>
+            </field>
+        </record>
+
     </data>
 
     <template id="inherit_report_saleorder_document" inherit_id="sale.report_saleorder_document">
