@@ -411,6 +411,52 @@
             <field name="user_signature" eval="False"/>
         </record>
 
+        <record id="action_send_prioritization_credential_email" model="ir.actions.server">
+            <field name="name">Send Prioritization API Credential Email</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="binding_model_id" ref="base.model_res_partner"/>
+            <field name="state">code</field>
+            <field name="code">model.browse(env.context.get('active_ids', [])).with_context({'active':
+                True})._check_prioritization_setting_checkbox()
+            </field>
+        </record>
+
+        <!-- Email template for Send Prioritization Credentials -->
+        <record id="send_prioritization_credential_email" model="mail.template">
+            <field name="name">Send Prioritization API Credentials</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="email_from"><![CDATA[<${(object.email or user.email)|safe}>]]></field>
+            <field name="email_to">${object.email|safe}</field>
+            <field name="subject"><![CDATA[Prioritization Engine API Credentials]]></field>
+            <field name="body_html"><![CDATA[
+            <p>Hello <small>${object.name|safe},</small></p>
+                <p>
+                    Prioritization Engine API Credential with required fields are as follows.
+                </p>
+                <p style="text-align: left; margin-top: 10px;">
+                    <b>User Name</b> : ${ctx['username']}
+                </p>
+                <p>
+                    <b>Password</b> : ${ctx['password']}
+                </p>
+                <p>
+                    <b>Url</b> : ${ctx['url']}
+                </p>
+                <p>
+                    <b>Template Type</b> : 'Requirement / Inventory'
+                </p>
+                <p>
+                    <b>File</b> : 'Customer Requirement file / Customer Inventory file'
+                </p>
+                <p>
+                    Thanks.
+                </p>
+
+            ]]></field>
+            <field name="user_signature" eval="False"/>
+        </record>
+
         <!-- Top menu item -->
         <menuitem name="Priority Engine" id="prioritization_engine.menu_root"
                   web_icon="prioritization_engine,static/description/icon.png"/>
