@@ -202,6 +202,25 @@ class Customer(models.Model):
             }
         return {'value': vals, 'warning': warning}
 
+    @api.multi
+    def _check_prioritization_setting_checkbox(self):
+        for partner in self:
+            if partner.allow_purchase == True and partner.prioritization == True:
+                if partner.email and partner.api_secret:
+                    base_url = self.env['ir.config_parameter'].get_param('web.base.url')
+                    url = base_url+"/api/upload"
+                    self.send_mail(url,partner.email, partner.api_secret, partner.id)
+                else:
+                    raise ValidationError(_(partner.name + ' should have a Username and Password.'))
+
+    def send_mail(self, url, email, password, partner_id):
+        template = self.env.ref('prioritization_engine.send_prioritization_credential_email').sudo()
+        local_context = {'url': url, 'username': email, 'password': password}
+        try:
+            template.with_context(local_context).send_mail(partner_id, raise_exception=True, force_send=True, )
+        except:
+            response = {'message': 'Unable to connect to SMTP Server'}
+
 
 class ProductTemplateSku(models.Model):
     _inherit = 'product.template'
