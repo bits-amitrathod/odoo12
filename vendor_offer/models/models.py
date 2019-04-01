@@ -63,6 +63,8 @@ class VendorOffer(models.Model):
     rt_price_tax_amt = fields.Monetary(string='Tax', compute='_amount_all', readonly=True)
     # val_temp = fields.Char(string='Temp', default=0)
     temp_payment_term = fields.Char(string='Temp')
+    offer_type_pdf_text = fields.Char(string='offer type Temp')
+    credit_offer_type_pdf_text = fields.Char(string='credit offer type Temp')
 
     '''show_validate = fields.Boolean(
         compute='_compute_show_validate',
@@ -273,6 +275,12 @@ class VendorOffer(models.Model):
         self.temp_payment_term = self.payment_term_id.name
         if (self.payment_term_id.name == False):
             self.temp_payment_term = '0 Days '
+        if (self.offer_type is False) or (self.offer_type == 'cash'):
+            self.offer_type_pdf_text = 'Cash Back'
+            self.credit_offer_type_pdf_text = ''
+        elif self.offer_type == 'credit':
+            self.offer_type_pdf_text = 'Credit to Purchase'
+            self.credit_offer_type_pdf_text = 'Credit Offer is valid for 12 months from the date of issue'
         self.write({'status': 'ven_sent', 'state': 'ven_sent'})
         return self.env.ref('vendor_offer.action_report_vendor_offer').report_action(self)
 

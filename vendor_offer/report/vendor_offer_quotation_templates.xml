@@ -4,7 +4,7 @@
 
     <t t-call="web.external_layout">
         <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})"/>
-        <div><strong>SURGICAL SURPLUS PURCHASE OFFER</strong></div>
+         <h2 style="font-size:21px;" align="center" ><strong>SURGICAL SURPLUS PURCHASE OFFER</strong></h2>
         <div class="page">
             <div class="oe_structure"/>
             <div style="color:red" ><Strong>TO ENSURE SAFE DELIVERY PLEASE INCLUDE A HARD COPY OF THIS PURCHASE OFFER IN EACH SHIPMENT BOX</Strong></div>
@@ -29,7 +29,8 @@
                 </div>
             </div>
             <h2 style="color:red;font-size:16px;" align="center" ><strong>***CONFIDENTIAL***</strong></h2><hr></hr>
-            <div><p><span style="font-weight:600;font-size:16px !important;">OFFER PRICE  : </span><span style="font-weight:600;font-size:18px !important;" t-field="o.amount_total"/> <span style="font-weight:600;font-size:18px!important;"> Cash Back</span></p></div>
+            <div><p><span style="font-weight:600;font-size:16px !important;">OFFER PRICE  : </span><span style="font-weight:600;font-size:18px !important;" t-field="o.amount_total"/> <span style="font-weight:600;font-size:18px!important;" t-field="o.offer_type_pdf_text"> </span></p></div>
+           <div><p><span t-field="o.credit_offer_type_pdf_text"> </span></p></div>
             <div><p>This offer must be accepted within 3 business days of delivery date unless otherwise noted.</p></div>
               <div><p>Once the offer is accepted, the offer price is contingent upon requirements detailed below.</p></div>
               <div><p><strong>OFFER PRICE CONDITIONAL UPON</strong>:</p></div>
@@ -40,12 +41,16 @@
               <div><p><strong>ALL ITEMS MUST BE IN THE ORIGINAL MANUFACTURERS PACKAGING AND NOT REPROCESSED. NO SALES SAMPLES OR CPT PRODUCTS.</strong></p></div>
               <div><p><strong>YOU WARRANT THAT YOU ARE THE LAWFUL OWNER OF THE AFOREMENTIONED GOODS, THAT THEY ARE FREE FROM ALL ENCUMBRANCES, AND THAT WE HAVE THE RIGHT TO SELL THESE GOODS. SELLER BINDS ITSELF, ITS SUCCESSORS AND ASSIGNS, TO WARRANT AND DEFEND SPS TITLE TO THESE GOODS AGAINST CLAIMS AND DEMANDS OF ALL PERSONS.</strong></p></div>
               <div><p><strong><br /> </strong><strong></strong>By checking the box to the left, you agree that: (1) you are a licensed facility with legitimate title ownership of the merchandise being sold; (2) you have quality system procedures to ensure the maintenance of safety, storage and distribution is properly being enforced; and (3) you are willing to demonstrate this to SPS upon request.</p></div>
-              <div><p>PRINT NAME :<strong><span t-field="o.partner_id.name"/> </strong></p></div>
+              <div><p>PRINT NAME : </p></div>
             <div><p>SELLER SIGNATURE:  __________________________________<span style="float:right;position:relative;right:119px;">DATE:</span></p></div>
-              <div><p>PRINT NAME:<strong><span t-field="o.name"/> </strong></p></div>
+            <div><p>PRINT NAME :  <span style="font-weight:600;font-size:16px !important;"> Justin Tennant</span> </p></div>
             <div><p>BUYER SIGNATURE: <u>________________________________</u> </p></div>
                 <div><span style="">DATE : </span> <span style="font-weight:600;font-size:16px !important;" t-field="o.create_date" t-options='{"widget": "date"}'/>  </div>
-              <h2><p>SURGICAL SURPLUS PURCHASE OFFER <span t-field="o.name"/></p></h2>
+
+        </div>
+        <div class="page " style="margin-top:200px">
+          <div class="oe_structure"/>
+             <h2><p>SURGICAL SURPLUS PURCHASE OFFER <span t-field="o.name"/></p></h2>
               <table class="table table-condensed">
                 <thead>
                     <tr>
@@ -53,8 +58,8 @@
                         <th class="text-center"><strong>Catalog Number</strong></th>
                         <th class="text-right"><strong>Qty. (Each counts)</strong></th>
                         <th class="text-right"><strong>Offer</strong></th>
-                         <th class="text-right"><strong>Untaxed Offer</strong></th>
-                         <th class="text-right"><strong>Taxes</strong></th>
+                      <!--    <th class="text-right"><strong>Untaxed Offer</strong></th>
+                         <th class="text-right"><strong>Taxes</strong></th>-->
                          <th class="text-right"><strong>Total Offer</strong></th>
 
                     </tr>
@@ -74,18 +79,18 @@
                         <td class="text-right">
                             <span t-field="order_line.product_offer_price"/>
                         </td>
-                        <td class="text-right">
+                    <!--    <td class="text-right">
                             <span t-field="order_line.price_subtotal" />
                         </td>
                            <td class="text-right">
                             <span t-field="order_line.price_tax" />
-                        </td>
+                        </td>-->
                            <td class="text-right">
                             <span t-field="order_line.price_subtotal" />
                         </td>
                     </tr>
                     <tr>
-                        <td></td> <td></td> <td></td> <td></td> <td></td> <td></td>
+                        <td></td> <td></td> <td></td> <td></td>  <!--<td></td>    <td></td>-->
                          <td class="text-right">
                               <span t-field="o.amount_total" />
 
