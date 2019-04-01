@@ -1,5 +1,5 @@
 {
-    'name': 'Report Product Catalog',
+    'name': 'Product Catalog',
     'summary':"Report",
     'category': 'sale',
     'version': '11.0.0.1',
