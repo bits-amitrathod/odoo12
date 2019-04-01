@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import api, fields, models, _, tools
+import odoo.addons.decimal_precision as dp
 import logging
 import datetime
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, pycompat, misc
@@ -47,8 +48,8 @@ class ReceivingListPoReport(models.Model):
     location_dest_id = fields.Many2one('stock.location', string='Destionation', )
     picking_name = fields.Char('Picking #')
     product_tmpl_id = fields.Many2one('product.template', "Product")
-    product_uom_qty = fields.Float('Quantity')
-    qty_done = fields.Float('Qty Received')
+    product_uom_qty = fields.Float('Quantity',digits=dp.get_precision('Product Unit of Measure'))
+    qty_done = fields.Float('Qty Received',digits=dp.get_precision('Product Unit of Measure'))
     product_uom_id = fields.Many2one('product.uom', 'UOM')
     state = fields.Selection([
         ('draft', 'New'), ('cancel', 'Cancelled'),
@@ -152,8 +153,8 @@ class ReceivingListReport(models.Model):
     location_dest_id = fields.Many2one('stock.location', string='Destionation', )
     picking_name = fields.Char('Picking #')
     product_tmpl_id = fields.Many2one('product.template', "Product")
-    product_uom_qty = fields.Float('Quantity')
-    qty_done = fields.Float('Qty Received')
+    product_uom_qty = fields.Float('Quantity',digits=dp.get_precision('Product Unit of Measure'))
+    qty_done = fields.Float('Qty Received',digits=dp.get_precision('Product Unit of Measure'))
     product_uom_id = fields.Many2one('product.uom', 'UOM')
     state = fields.Selection([
         ('draft', 'New'), ('cancel', 'Cancelled'),

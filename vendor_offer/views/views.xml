@@ -350,7 +350,7 @@
                                         <!--<field name="list_price" invisible="1"/>-->
                                         <field name="expired_inventory"/>
                                         <field name="product_unit_price"/>
-                                        <field name="product_offer_price"/>
+                                        <field name="product_offer_price" attrs="{'readonly': False}"/>
                                         <field name="product_retail"/>
                                         <field name="price_subtotal" string="Total Offer Price"/>
                                         <field name="taxes_id" widget="many2many_tags"

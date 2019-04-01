@@ -56,8 +56,7 @@ class VendorOffer(models.Model):
 
     possible_competition = fields.Many2one('competition.competition', string="Possible Competition")
     max = fields.Char(string='Max', compute='_amount_all', default=0, readonly=True)
-    potential_profit_margin = fields.Char(string='Potential Profit Margin', compute='_amount_all', default=0,
-                                          readonly=True)
+    potential_profit_margin = fields.Char(string='Potential Profit Margin', compute='_amount_all', default=0)
     rt_price_subtotal_amt = fields.Monetary(string='Subtotal', compute='_amount_all', readonly=True)
     rt_price_total_amt = fields.Monetary(string='Total', compute='_amount_all', readonly=True)
     rt_price_tax_amt = fields.Monetary(string='Tax', compute='_amount_all', readonly=True)
@@ -445,9 +444,9 @@ class VendorOfferProduct(models.Model):
     vendor_offer_data = fields.Boolean(related='order_id.vendor_offer_data')
     product_note = fields.Text(string="Notes")
 
-    margin = fields.Char(string="Margin", readonly=True, compute='cal_offer_price')
-    product_unit_price = fields.Monetary(string="Retail Price", readonly=True, compute='cal_offer_price', store=True)
-    product_offer_price = fields.Monetary(string="Offer Price", readonly=True, compute='cal_offer_price')
+    margin = fields.Char(string="Margin", readonly=True, compute='_cal_offer_price')
+    product_unit_price = fields.Monetary(string="Retail Price", readonly=True, compute='_cal_offer_price', store=True)
+    # product_offer_price = fields.Monetary(string="Offer Price", readonly=True, compute='cal_offer_price')
 
     product_retail = fields.Monetary(string="Total Retail Price", compute='_compute_amount')
     rt_price_total = fields.Monetary(compute='_compute_amount', string='Total')
@@ -562,7 +561,7 @@ class VendorOfferProduct(models.Model):
 
     @api.onchange('multiplier', 'order_id.possible_competition')
     @api.depends('multiplier', 'order_id.possible_competition')
-    def cal_offer_price(self):
+    def _cal_offer_price(self):
         for line in self:
             multiplier_list = line.multiplier
             # Added to fix inhirit issue
@@ -581,8 +580,26 @@ class VendorOfferProduct(models.Model):
             line.update({
                 'margin': margin,
                 'product_unit_price': product_unit_price,
+                # 'product_offer_price': product_offer_price
+            })
+
+    @api.onchange('multiplier', 'order_id.possible_competition')
+    @api.depends('multiplier', 'order_id.possible_competition')
+    def _set_offer_price(self):
+        for line in self:
+            multiplier_list = line.multiplier
+            # Added to fix inhirit issue
+
+            product_unit_price = math.ceil(
+                round(float(line.product_id.list_price) * (float(multiplier_list.retail) / 100), 2))
+            product_offer_price = round(float(product_unit_price) * (
+                    float(multiplier_list.margin) / 100 + float(line.possible_competition.margin) / 100))
+
+            line.update({
                 'product_offer_price': product_offer_price
             })
+
+    product_offer_price = fields.Monetary(string="Offer Price", default=_set_offer_price, store=True)
 
     def update_product_expiration_date(self):
         for order in self:

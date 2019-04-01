@@ -39,18 +39,23 @@ class PickingReportPopUp(models.TransientModel):
         moves = self.env['stock.move.line'].search([('picking_id', '=', self.picking_id.id)])
 
         for stock_move in moves:
+            sku = stock_move.product_id.product_tmpl_id.sku_code
             products_list.append([stock_move.state, stock_move.ordered_qty,
-                                  [str(
-                                      stock_move.product_id.product_tmpl_id.sku_code) + " - " + stock_move.product_id.product_tmpl_id.name,
+                                  [sku and (str(sku) + " - ") or "" + stock_move.product_id.product_tmpl_id.name,
                                    stock_move.lot_id.name, str(stock_move.lot_id.use_date)],
                                   stock_move.location_id.complete_name,
                                   stock_move.reference,
-                                  stock_move.location_dest_id.complete_name
+                                  stock_move.location_dest_id.complete_name,
+                                  stock_move.product_id.product_tmpl_id.name
                                  ])
 
+        products_list.sort(key=self.sortSecond)
         data_dict.update(dict(moves=products_list))
 
         action = self.env.ref('pick_report.action_pick_report').report_action([], data=data_dict)
         action.update({'target': 'main'})
 
         return action
+
+    def sortSecond(self,val):
+        return val[6]

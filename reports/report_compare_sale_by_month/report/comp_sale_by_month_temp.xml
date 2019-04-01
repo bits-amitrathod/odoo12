@@ -48,7 +48,7 @@
                                         <span t-esc="order['product_name']"/>
                                     </td>
                                     <td align="right" style="border: 1px solid black;">
-                                        <span t-esc="order['last_month_total_qty']"/>
+                                        <span t-esc="'%.0f'% order['last_month_total_qty']"/>
                                     </td>
                                     <td align="right" style="border: 1px solid black;white-space: nowrap;">
                                          <span t-esc="order['currency_symbol']"
@@ -58,7 +58,7 @@
                                     </td>
 
                                     <td align="right" style="border: 1px solid black;">
-                                        <span t-esc="order['current_month_total_qty']"/>
+                                        <span t-esc="'%.0f'% order['current_month_total_qty']"/>
                                     </td>
                                     <td align="right" style="border: 1px solid black;white-space: nowrap;">
 
