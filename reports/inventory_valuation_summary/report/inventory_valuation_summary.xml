@@ -74,7 +74,7 @@
                                                         <span t-esc="product['name']"/>
                                                     </td>
                                                     <td class="text-right">
-                                                        <span t-esc="product['quantity_cal']"/>
+                                                        <span t-esc="'%.0f'% product['quantity_cal']"/>
                                                     </td>
                                                     <td class="text-right">
                                                         $
