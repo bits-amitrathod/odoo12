@@ -15,7 +15,7 @@
     'category': 'Report',
     'version': '1.0',
 
-    'depends': ['base','stock','stock_barcode', 'delivery'],
+    'depends': ['base','stock','stock_barcode', 'delivery','product_expiry_extension'],
 
     'data': [
         'views/views.xml',

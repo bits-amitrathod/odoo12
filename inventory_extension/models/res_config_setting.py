@@ -8,6 +8,7 @@ import logging
 _logger = logging.getLogger(__name__)
 
 class ResConfigSettings(models.TransientModel):
+    _name="sps.conf.settings"
     _inherit = 'res.config.settings'
     group_stock_production_lot = fields.Boolean(string ="Lots & Serial Numbers", default=True,implied_group='stock.group_production_lot')
     module_product_expiry = fields.Boolean(string ="Expiration Dates",

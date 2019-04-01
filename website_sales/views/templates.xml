@@ -4,7 +4,6 @@
     <!--
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Product Expiration Lot~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     -->
-
     <template id="products_item" name="Products item" inherit_id="website_sale.products_item">
         <xpath expr="//div[@class='product_price']" position="before">
             <t t-call="website_sales.productExpirationDate"/>

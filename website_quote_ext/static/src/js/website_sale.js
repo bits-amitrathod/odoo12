@@ -1,4 +1,4 @@
-odoo.define('website_quote_ext.portal_order_page_ex', function (require) {
+odoo.define('website_quote_ext._ex', function (require) {
     "use strict";
 
     require('web.dom_ready');

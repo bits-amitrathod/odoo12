@@ -11,7 +11,7 @@
     'category': 'Report',
     'version': '0.1',
 
-    'depends': ['stock_account','prioritization_engine'],
+    'depends': ['stock_account','prioritization_engine','product_expiry_extension'],
 
     'data': [
         'views/views.xml',
