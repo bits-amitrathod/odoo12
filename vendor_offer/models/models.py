@@ -601,7 +601,7 @@ class VendorOfferProduct(models.Model):
                     'price_tax': sum(t.get('amount', 0.0) for t in taxes.get('taxes', [])),
                     'price_subtotal': taxes['total_excluded'],
                     'price_total': taxes['total_included'],
-                    # 'price_unit': line.product_offer_price,
+                    'price_unit': line.product_offer_price,
 
                     'rt_price_tax': sum(t.get('amount', 0.0) for t in taxes1.get('taxes', [])),
                     'product_retail': taxes1['total_excluded'],
