@@ -50,7 +50,7 @@
                                         <span t-esc="product.product_id.name"/>
                                     </td>
                                     <td align="center" style="border: 1px solid black;">
-                                        <span t-esc="product.qty_available"/>
+                                        <span t-field="product.qty_available"/>
                                         <span t-esc="product.uom_id.name"/>
                                     </td>
 
