@@ -16,7 +16,7 @@ class ReportSalesSalespersonWise(models.AbstractModel):
             context = {'production_lot_ids': product_list[0][1]}
         return {'data': self.env['product.product'].with_context(context).browse(docids)}
 
-    def fetchData(ctx):
+    def fetchData(self,ctx):
         sql_query = """select array_agg(product_id), json_object_agg(product_id, id) from stock_production_lot 
         where """
         if ctx.end_date and ctx.start_date:

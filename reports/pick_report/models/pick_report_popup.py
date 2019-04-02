@@ -40,9 +40,10 @@ class PickingReportPopUp(models.TransientModel):
 
         for stock_move in moves:
             sku = stock_move.product_id.product_tmpl_id.sku_code
+            ext = sku and (str(sku) + " - ") or ""
             products_list.append([stock_move.state, stock_move.ordered_qty,
-                                  [sku and (str(sku) + " - ") or "" + stock_move.product_id.product_tmpl_id.name,
-                                   stock_move.lot_id.name, str(stock_move.lot_id.use_date)],
+                                  [ext + stock_move.product_id.product_tmpl_id.name,
+                                   (stock_move.lot_id.name or "N/A"), str(stock_move.lot_id.use_date or "N/A")],
                                   stock_move.location_id.complete_name,
                                   stock_move.reference,
                                   stock_move.location_dest_id.complete_name,
