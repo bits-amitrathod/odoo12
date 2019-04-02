@@ -29,7 +29,7 @@ class SaleOrder(models.Model):
     is_share = fields.Boolean(string='Is Shared', related='partner_id.is_share', readonly=True,store=True)
     sale_margine = fields.Selection([
         ('gifted', 'Gifted'),
-        ('legacy', 'Legacy')], string='Sales Level', related='partner_id.sale_margine', readonly=True)
+        ('legacy', 'Legacy')], string='Sales Level', related='partner_id.sale_margine', readonly=True, store=True)
     carrier_acc_no = fields.Char("Carrier Account No", related='partner_id.carrier_acc_no', readonly=True)
 
     @api.multi

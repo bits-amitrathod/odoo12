@@ -149,6 +149,19 @@
             </field>
         </record>
 
+        <!-- Adding Sales Level & Is_shared field into group by-->
+        <record id="view_sales_order_filter_inherit" model="ir.ui.view">
+            <field name="name">sale.order.common.search.inherit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+            <field name="arch" type="xml">
+		    <xpath expr="/search/group" position="after">
+		        <filter string="Sales Level" domain="[]" context="{'group_by':'sale_margine'}"/>
+                <filter string="Is Shared" domain="[]" context="{'group_by':'is_share'}"/>
+		    </xpath>
+            </field>
+        </record>
+
     </data>
 
     <template id="inherit_report_saleorder_document" inherit_id="sale.report_saleorder_document">
