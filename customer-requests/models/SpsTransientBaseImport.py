@@ -41,6 +41,7 @@ EXTENSIONS = {
 from odoo import models, fields, api
 
 _logger = logging.getLogger(__name__)
+ATTACHMENT_DIR = "/home/odoo/Documents/templates/customer/"
 
 
 class SpsTransientBaseImport(models.TransientModel):
@@ -71,7 +72,7 @@ class SpsTransientBaseImport(models.TransientModel):
         return cell_values, import_fields, cols
 
     @api.multi
-    def do(self, fields, options, parent_model, customer_id, template_type, dryrun=False):
+    def do(self, fields, options, parent_model, customer_id, template_type, upload_document, dryrun=False):
         self.ensure_one()
         import_result = {'messages': []}
         try:
@@ -107,7 +108,14 @@ class SpsTransientBaseImport(models.TransientModel):
                     if dryrun:
                         self._cr.execute('ROLLBACK TO SAVEPOINT import')
                     else:
-                        self._cr.execute('RELEASE SAVEPOINT import')
+                        if upload_document == 'True':
+                            self._cr.execute('RELEASE SAVEPOINT import')
+                            users_model = self.env['res.partner'].search([("id", "=", customer_id)])
+                            directory_path = ATTACHMENT_DIR + str(customer_id) + "/" + template_type + "/"
+                            myfile_path = directory_path + str(self.file_name)
+                            self.env['sps.document.process'].sudo().process_document(users_model,myfile_path,template_type,self.file_name)
+                        else:
+                            self._cr.execute('RELEASE SAVEPOINT import')
                 except psycopg2.InternalError:
                     pass
         except ValueError as error:
