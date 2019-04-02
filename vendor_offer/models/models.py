@@ -444,7 +444,7 @@ class VendorOfferProduct(models.Model):
     vendor_offer_data = fields.Boolean(related='order_id.vendor_offer_data')
     product_note = fields.Text(string="Notes")
 
-    margin = fields.Char(string="Margin", readonly=True, compute='_cal_offer_price')
+    margin = fields.Char(string="Cost %", readonly=True, compute='_cal_offer_price')
     product_unit_price = fields.Monetary(string="Retail Price", readonly=True, compute='_cal_offer_price', store=True)
     # product_offer_price = fields.Monetary(string="Offer Price", readonly=True, compute='cal_offer_price')
 

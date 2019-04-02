@@ -212,7 +212,7 @@
                 <form string="Vendor Offer" class="o_sale_order" duplicate="false">
                     <header>
                         <button name="action_send_offer_email" string="Send" type="object" context="{'send_rfq':True}"
-                                class="btn-primary" attrs="{'invisible':[('state', 'in', ('purchase'))]}"/>
+                                class="btn-primary" attrs="{'invisible':[('state', 'in', ('purchase','cancel'))]}"/>
                         <button name="action_print_vendor_offer" string="Print" type="object" class="btn-primary"
                                 attrs="{'invisible':[('state', 'in', ('purchase'))]}"/>
                         <button name="action_button_confirm" states="ven_draft,ven_sent"
