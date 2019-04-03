@@ -6,8 +6,9 @@
             <field name="priority" eval="30"/>
             <field name="inherit_id" ref="base.res_config_settings_view_form" />
             <field name="arch" type="xml">
-               <xpath expr="//div[@data-key='stock']" position="inside" >
+               <xpath expr="//form" position="inside" >
                         <h2>Inventory Monitor</h2>
+
                          <div class="row mt16 o_settings_container" id="production_lot_info">
                             <div class="col-xs-12 col-md-6 o_setting_box">
                                <div class="o_setting_left_pane">
@@ -31,14 +32,14 @@
                 </xpath>
             </field>
     </record>
-    <record model="res.config.settings" id="inventory_monitor.product_max_inventory_settings">
+    <!--<record model="product.template" id="inventory_monitor.product_max_inventory_settings">
             <field name="max_inventory_level" eval="1"/>
             <field name="max_inventory_level_duration" eval="0"/>
-    </record>
-    <function model="res.config.settings" name="execute">
-        <!-- ids = -->      <value eval="[ref('inventory_monitor.product_max_inventory_settings')]"/>
-        <!-- context = -->  <value eval="{}"/>
-    </function>
+    </record>-->
+    <!--<function model="res.config.settings" name="execute">
+         ids =       <value eval="[ref('inventory_monitor.product_max_inventory_settings')]"/>
+         context =   <value eval="{}"/>
+    </function>-->
     <record id="product_form_monitor_ex" model="ir.ui.view">
         <field name="name">product.product.form_monitor_ex</field>
         <field name="model">product.template</field>
@@ -47,6 +48,7 @@
              <xpath expr="//field[@name='purchase_ok']/parent::div/parent::div" position="after"  >
                  <field name="inventory_monitor"/>
                  <label for="inventory_monitor"/>
+
              </xpath>
         </field>
     </record>

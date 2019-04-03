@@ -9,8 +9,9 @@
             <field name="priority" eval="30"/>
             <field name="inherit_id" ref="base.res_config_settings_view_form" />
             <field name="arch" type="xml">
-
                 <xpath expr="//form" position="inside"  >
+                    <field name="group_stock_production_lot" invisible="1"/>
+                    <field name="module_product_expiry" invisible="1"/>
                     <div class="col-xs-12 col-md-6 o_setting_box" attrs="{'invisible': ['|',('module_product_expiry', '=', False),('group_stock_production_lot', '=', False)]}" title="Set alert days on lots &amp; serial numbers: best before, removal, end of life, alert. Such dates are set automatically at lot/serial number creation based on values set on the product (in days).">
                                 <div class="o_setting_left_pane">
                                     <field name="production_lot_alert_settings"/>

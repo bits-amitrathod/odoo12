@@ -5,7 +5,7 @@ from odoo import models, fields, api
 class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
 
-    default_website_expiration_date = fields.Boolean(string='Lot expiration dates')
+    default_website_expiration_date = fields.Boolean(string='Lot expiration dates', default_model = 'res.config.settings')
 
     @api.model
     def get_values(self):
