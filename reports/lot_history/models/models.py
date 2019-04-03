@@ -7,7 +7,7 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
-class LotHistory(models.TransientModel):
+class LotHistory(models.Model):
     _name = "lot.history.report"
     _description = "report product activity report"
 
