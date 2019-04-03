@@ -147,6 +147,8 @@
                                         <field name="name" invisible="1"/>
                                         <field name="product_tier" readonly="1"/>
                                         <field name="product_qty"/>
+                                        <field name="qty_received" />
+                                        <field name="qty_invoiced" />
                                         <field name="expiration_date" widget="date"/>
                                         <field name="qty_in_stock"/>
                                         <field name="product_sales_count"/>

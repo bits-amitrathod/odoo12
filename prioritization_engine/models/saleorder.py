@@ -29,7 +29,7 @@ class SaleOrder(models.Model):
     is_share = fields.Boolean(string='Is Shared', related='partner_id.is_share', readonly=True,store=True)
     sale_margine = fields.Selection([
         ('gifted', 'Gifted'),
-        ('legacy', 'Legacy')], string='Sales Level', related='partner_id.sale_margine', readonly=True)
+        ('legacy', 'Legacy')], string='Sales Level', related='partner_id.sale_margine', readonly=True, store=True)
     carrier_acc_no = fields.Char("Carrier Account No", related='partner_id.carrier_acc_no', readonly=True)
 
     @api.multi
@@ -100,7 +100,11 @@ class SaleOrderLine(models.Model):
     customer_request_id = fields.Many2one('sps.customer.requests', string='Request')
     req_no = fields.Char(string='Requisition Number')
     default_code = fields.Char("SKU", store=False, readonly=True, related='product_id.product_tmpl_id.default_code')
-    manufacturer_uom = fields.Char('Manufacturer Unit of Measure',related='product_id.product_tmpl_id.manufacturer_uom.name')
+    #manufacturer_uom = fields.Char('Manufacturer Unit of Measure',related='product_id.product_tmpl_id.manufacturer_uom.name')
+    manufacturer_uom=fields.Many2one('product.uom',
+        'Manuf. UOM', related='product_id.product_tmpl_id.manufacturer_uom',
+        readonly=True)
+    product_uom = fields.Many2one('product.uom', string='Unit of Measure', required=True)
 
     '''@api.multi
     def _get_customer_request_count(self):
@@ -123,7 +127,7 @@ class SaleOrderLine(models.Model):
             return {'domain': {'product_uom': []}}
 
         vals = {}
-
+        #domain=[]
         if self.product_id.uom_id.id == self.product_id.manufacturer_uom.id:
             domain = {'product_uom': [('id', '=', self.product_id.uom_id.id)]}
         else:

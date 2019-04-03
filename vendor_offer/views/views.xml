@@ -212,7 +212,7 @@
                 <form string="Vendor Offer" class="o_sale_order" duplicate="false">
                     <header>
                         <button name="action_send_offer_email" string="Send" type="object" context="{'send_rfq':True}"
-                                class="btn-primary" attrs="{'invisible':[('state', 'in', ('purchase'))]}"/>
+                                class="btn-primary" attrs="{'invisible':[('state', 'in', ('purchase','cancel'))]}"/>
                         <button name="action_print_vendor_offer" string="Print" type="object" class="btn-primary"
                                 attrs="{'invisible':[('state', 'in', ('purchase'))]}"/>
                         <button name="action_button_confirm" states="ven_draft,ven_sent"
@@ -350,7 +350,7 @@
                                         <!--<field name="list_price" invisible="1"/>-->
                                         <field name="expired_inventory"/>
                                         <field name="product_unit_price"/>
-                                        <field name="product_offer_price"/>
+                                        <field name="product_offer_price" attrs="{'readonly': False}"/>
                                         <field name="product_retail"/>
                                         <field name="price_subtotal" string="Total Offer Price"/>
                                         <field name="taxes_id" widget="many2many_tags"
@@ -502,8 +502,9 @@
                                    attrs="{'readonly': [('state', 'in', ('purchase', 'done', 'cancel'))]}"
                                    force_save="1"/>
                             <field name="price_unit" attrs="{'readonly': [('vendor_offer_data', '=', True)]}"/>
-                            <field name="product_offer_price"
-                                   attrs="{'readonly': [('vendor_offer_data', '=', True)],'invisible': [('vendor_offer_data', '=', False)]}"/>
+                            <field name="product_offer_price" invisible="1" />
+                        <!--     <field name="product_offer_price"
+                                   attrs="{'readonly': [('vendor_offer_data', '=', True)],'invisible': [('vendor_offer_data', '=', False)]}"/>-->
                             <field name="vendor_offer_data" invisible="1"/>
                             <field name="taxes_id" widget="many2many_tags" domain="[('type_tax_use','=','purchase')]"
                                    context="{'default_type_tax_use': 'purchase'}" options="{'no_create': True}"/>

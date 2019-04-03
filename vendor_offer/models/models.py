@@ -56,13 +56,14 @@ class VendorOffer(models.Model):
 
     possible_competition = fields.Many2one('competition.competition', string="Possible Competition")
     max = fields.Char(string='Max', compute='_amount_all', default=0, readonly=True)
-    potential_profit_margin = fields.Char(string='Potential Profit Margin', compute='_amount_all', default=0,
-                                          readonly=True)
+    potential_profit_margin = fields.Char(string='Potential Profit Margin', compute='_amount_all', default=0)
     rt_price_subtotal_amt = fields.Monetary(string='Subtotal', compute='_amount_all', readonly=True)
     rt_price_total_amt = fields.Monetary(string='Total', compute='_amount_all', readonly=True)
     rt_price_tax_amt = fields.Monetary(string='Tax', compute='_amount_all', readonly=True)
     # val_temp = fields.Char(string='Temp', default=0)
     temp_payment_term = fields.Char(string='Temp')
+    offer_type_pdf_text = fields.Char(string='offer type Temp')
+    credit_offer_type_pdf_text = fields.Char(string='credit offer type Temp')
 
     '''show_validate = fields.Boolean(
         compute='_compute_show_validate',
@@ -273,6 +274,12 @@ class VendorOffer(models.Model):
         self.temp_payment_term = self.payment_term_id.name
         if (self.payment_term_id.name == False):
             self.temp_payment_term = '0 Days '
+        if (self.offer_type is False) or (self.offer_type == 'cash'):
+            self.offer_type_pdf_text = 'Cash Back'
+            self.credit_offer_type_pdf_text = ''
+        elif self.offer_type == 'credit':
+            self.offer_type_pdf_text = 'Credit to Purchase'
+            self.credit_offer_type_pdf_text = 'Credit Offer is valid for 12 months from the date of issue'
         self.write({'status': 'ven_sent', 'state': 'ven_sent'})
         return self.env.ref('vendor_offer.action_report_vendor_offer').report_action(self)
 
@@ -437,9 +444,9 @@ class VendorOfferProduct(models.Model):
     vendor_offer_data = fields.Boolean(related='order_id.vendor_offer_data')
     product_note = fields.Text(string="Notes")
 
-    margin = fields.Char(string="Margin", readonly=True, compute='cal_offer_price')
-    product_unit_price = fields.Monetary(string="Retail Price", readonly=True, compute='cal_offer_price', store=True)
-    product_offer_price = fields.Monetary(string="Offer Price", readonly=True, compute='cal_offer_price')
+    margin = fields.Char(string="Cost %", readonly=True, compute='_cal_offer_price')
+    product_unit_price = fields.Monetary(string="Retail Price", readonly=True, compute='_cal_offer_price', store=True)
+    # product_offer_price = fields.Monetary(string="Offer Price", readonly=True, compute='cal_offer_price')
 
     product_retail = fields.Monetary(string="Total Retail Price", compute='_compute_amount')
     rt_price_total = fields.Monetary(compute='_compute_amount', string='Total')
@@ -554,7 +561,7 @@ class VendorOfferProduct(models.Model):
 
     @api.onchange('multiplier', 'order_id.possible_competition')
     @api.depends('multiplier', 'order_id.possible_competition')
-    def cal_offer_price(self):
+    def _cal_offer_price(self):
         for line in self:
             multiplier_list = line.multiplier
             # Added to fix inhirit issue
@@ -573,8 +580,26 @@ class VendorOfferProduct(models.Model):
             line.update({
                 'margin': margin,
                 'product_unit_price': product_unit_price,
+                # 'product_offer_price': product_offer_price
+            })
+
+    @api.onchange('multiplier', 'order_id.possible_competition')
+    @api.depends('multiplier', 'order_id.possible_competition')
+    def _set_offer_price(self):
+        for line in self:
+            multiplier_list = line.multiplier
+            # Added to fix inhirit issue
+
+            product_unit_price = math.ceil(
+                round(float(line.product_id.list_price) * (float(multiplier_list.retail) / 100), 2))
+            product_offer_price = round(float(product_unit_price) * (
+                    float(multiplier_list.margin) / 100 + float(line.possible_competition.margin) / 100))
+
+            line.update({
                 'product_offer_price': product_offer_price
             })
+
+    product_offer_price = fields.Monetary(string="Offer Price", default=_set_offer_price, store=True)
 
     def update_product_expiration_date(self):
         for order in self:
@@ -601,7 +626,7 @@ class VendorOfferProduct(models.Model):
                     'price_tax': sum(t.get('amount', 0.0) for t in taxes.get('taxes', [])),
                     'price_subtotal': taxes['total_excluded'],
                     'price_total': taxes['total_included'],
-                    # 'price_unit': line.product_offer_price,
+                    'price_unit': line.product_offer_price,
 
                     'rt_price_tax': sum(t.get('amount', 0.0) for t in taxes1.get('taxes', [])),
                     'product_retail': taxes1['total_excluded'],

@@ -11,7 +11,7 @@
                     <field name="type"/>
                     <field name="sku_code"  string="Product SKU"/>
                     <field name="product_brand_id"/>
-                    <field name="product_templ_id" string="Product Name"/>
+                    <field name="name" string="Product Name"/>
                     <field name="product_qty"/>
                     <field name="list_price" string="Price" widget="monetary"/>
                     <field name="currency_id" invisible="1"/>
@@ -28,7 +28,7 @@
             <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false">
                     <field name="sku_code"  string="Product SKU"/>
-                    <field name="product_templ_id" string="Product Name"/>
+                    <field name="name" string="Product Name"/>
                     <field name="list_price" widget="monetary"/>
                     <field name="currency_id" invisible="1"/>
                 </tree>

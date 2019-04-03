@@ -30,30 +30,30 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr t-foreach="data" t-as="order">
+                                <tr t-foreach="data" t-as="product">
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.type"/>
+                                        <span t-esc="product.type"/>
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.product_tmpl_id.product_brand_id.name"/>
+                                        <span t-esc="product.product_tmpl_id.product_brand_id.name"/>
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.sku_code"/>
+                                        <span t-esc="product.sku_code"/>
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.product_templ_id.name"/>
+                                        <span t-esc="product.name"/>
                                     </td>
                                     <td align="right" style="border: 1px solid black;">
-                                        <span t-field="order.product_qty"/>
+                                        <span t-field="product.product_qty"/>
                                     </td>
                                     <td  align="right" style="border: 1px solid black;white-space: nowrap;">
-                                        <span  t-esc="float(order.list_price)" t-options='{"widget": "monetary","display_currency": order.responsible_id.company_id.currency_id}'/>
+                                        <span  t-esc="float(product.list_price)" t-options='{"widget": "monetary","display_currency": product.responsible_id.company_id.currency_id}'/>
                                     </td>
                                     <td align="center" style="border: 1px solid black;">
-                                        <span t-esc="order.exp_min_date" t-options='{"widget": "date"}'/>
+                                        <span t-esc="product.exp_min_date" t-options='{"widget": "date"}'/>
                                     </td>
                                     <td align="center" style="border: 1px solid black;">
-                                        <span t-esc="order.exp_max_date" t-options='{"widget": "date"}'/>
+                                        <span t-esc="product.exp_max_date" t-options='{"widget": "date"}'/>
                                     </td>
                                 </tr>
                             </tbody>
@@ -89,15 +89,15 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr t-foreach="data" t-as="order">
+                                <tr t-foreach="data" t-as="product">
                                     <td style="border: 1px solid black;text-align:center;">
-                                        <span t-esc="order.sku_code"/>
+                                        <span t-esc="product.sku_code"/>
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.name"/>
+                                        <span t-esc="product.name"/>
                                     </td>
                                     <td style="border: 1px solid black;text-align: right;white-space: nowrap;">
-                                         <span t-esc="float(order.list_price)" t-options='{"widget": "monetary","display_currency": order.responsible_id.company_id.currency_id}'/>
+                                         <span t-esc="float(product.list_price)" t-options='{"widget": "monetary","display_currency": product.responsible_id.company_id.currency_id}'/>
                                     </td>
                                 </tr>
                             </tbody>
