@@ -188,7 +188,17 @@
             <field name="type">ir.actions.client</field>
             <field name="tag">importtemplate</field>
             <field name="params">[{'model': 'sps.customer.template', 'user_type': 'customer', 'request_model':
-                'sps.customer.requests'}]
+                'sps.customer.requests', 'upload_document' : 'False'}]
+            </field>
+        </record>
+
+
+        <record id="customer-document-client-action" model="ir.actions.client">
+            <field name="name">Customer Upload Document</field>
+            <field name="type">ir.actions.client</field>
+            <field name="tag">importtemplate</field>
+            <field name="params">[{'model': 'sps.customer.template', 'user_type': 'customer', 'request_model':
+                'sps.customer.requests', 'upload_document' : 'True'}]
             </field>
         </record>
 
@@ -281,12 +291,19 @@
         <menuitem name="Import" id="prioritization_engine.prioritization_imenu"
                   parent="prioritization_engine.menu_root"/>
 
-        <menuitem name="Imported Documents" id="prioritization_engine.prioritization_documents_imenu"
-                  parent="prioritization_engine.menu_root" action="customer_documents_form_action"/>
+        <menuitem name="Documents" id="prioritization_engine.prioritization_documents_imenu"
+                  parent="prioritization_engine.menu_root"/>
+
+        <menuitem name="Imported Documents" id="prioritization_engine.prioritization_imported_documents_menu"
+                  parent="prioritization_engine.prioritization_documents_imenu" action="customer_documents_form_action"/>
 
         <menuitem name="Customer Template" id="prioritization_engine.prioritization_customer_template_menu"
                   parent="prioritization_engine.prioritization_imenu"
                   action="customer-template-client-action"/>
+
+        <menuitem name="Upload Document" id="prioritization_engine.prioritization_customer_document_menu"
+                  parent="prioritization_engine.prioritization_documents_imenu"
+                  action="customer-document-client-action"/>
 
     </data>
 </odoo>
