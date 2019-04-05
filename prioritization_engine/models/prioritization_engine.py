@@ -432,28 +432,13 @@ class PrioritizationEngine(models.TransientModel):
 
     def get_available_product_count(self, customer_id, product_id):
         _logger.info("inside get_available_product_count")
-        available_production_lot_dict =self.env['available.product.dict'].get_available_production_lot()
-        _logger.info(available_production_lot_dict)
-        prioritization_engine_request=self.env['sps.customer.requests'].get_settings_object(int(customer_id),int(product_id),None,None)
-        _logger.info(prioritization_engine_request)
+        available_production_lot_dict =self.env['available.product.dict'].get_available_production_lot(customer_id, product_id)
+        _logger.debug(available_production_lot_dict)
         count = 0
-        if available_production_lot_dict.get(int(product_id)) !=None and prioritization_engine_request:
-            _logger.info("Inside IF block")
+        if not available_production_lot_dict.get(int(product_id)) is None:
             for available_production_lot in available_production_lot_dict.get(int(product_id)):
-                _logger.info(available_production_lot)
-                _logger.info(prioritization_engine_request['expiration_tolerance'])
-                temp=(datetime.today() + relativedelta(months=+int(prioritization_engine_request['expiration_tolerance'])))
-                _logger.info(temp)
-                if datetime.strptime(
-                        available_production_lot.get(list(available_production_lot.keys()).pop(0), {}).get('use_date'),
-                        '%Y-%m-%d %H:%M:%S') >= temp:
-                    _logger.info("Inside IF2 block  len: %r ",len(available_production_lot))
-
-                    for available in available_production_lot:
-                        _logger.info('*** %r',available_production_lot.get(available))
-                        _logger.info('available_quantity : %r', available_production_lot.get(available).get('available_quantity'))
-                        _logger.info('reserved_quantity : %r',available_production_lot.get(available).get('reserved_quantity'))
-                        count = count + available_production_lot.get(available).get('available_quantity')
+                for available in available_production_lot:
+                    count = count + available_production_lot.get(available).get('available_quantity')
         return count
 
     def check_product_threshold(self,prioritization_engine_request):
