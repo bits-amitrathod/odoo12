@@ -86,7 +86,8 @@ class DocumentProcessTransientModel(models.TransientModel):
             document_id = file_uploaded_record.id
             if not document_id is None or document_id:
                 ref = str(document_id) + "_" + file_uploaded_record.token
-                response = dict(errorCode=0, message='File Uploaded Successfully', ref=ref)
+                response = dict(message='File Uploaded Successfully', ref=ref)
+
                 high_priority_requests = []
                 for req in requests:
                     high_priority_product = False

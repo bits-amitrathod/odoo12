@@ -116,9 +116,8 @@ class TrendingReportListView(models.Model):
     @api.onchange('average_sale')
     def _get_average_value(self):
         for customer in self:
-            count=0
-            if(customer.month_count>=6 and not count is 0):
-                customer.average_sale = (customer.total_sale / count)
+            if(customer.month_count>=6):
+                customer.average_sale = (customer.total_sale / 6)
             elif(self.get_day_from_purchase(customer.id)):
                 #if (self.get_day_from_purchase(customer.id)/30 > 1):
                 customer.average_sale=(customer.total_sale *30 / self.get_day_from_purchase(customer.id))

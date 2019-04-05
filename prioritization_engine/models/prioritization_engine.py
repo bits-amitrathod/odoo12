@@ -160,7 +160,7 @@ class PrioritizationEngine(models.TransientModel):
             _logger.debug('**** %r',product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity'))
 
             if int(remaining_product_allocation_quantity) > 0 and int(product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity')) > 0:
-                if int(remaining_product_allocation_quantity) >= int(product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity')):
+                if int(remaining_product_allocation_quantity) > int(product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity')):
                     if prioritization_engine_request['partial_order']:
                         if prioritization_engine_request['uom_flag']:
                             _logger.debug('product allocated from lot %r %r %r', product_lot.get(list(product_lot.keys()).pop(0), {}))
@@ -183,7 +183,7 @@ class PrioritizationEngine(models.TransientModel):
 
                                 remaining_product_allocation_quantity = remaining_product_allocation_quantity - allocate_qty_by_partial_uom
 
-                elif int(remaining_product_allocation_quantity) < int(product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity')):
+                elif int(remaining_product_allocation_quantity) <= int(product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity')):
                         _logger.debug('product allocated from lot %r', list(product_lot.keys()).pop(0))
 
                         if prioritization_engine_request['uom_flag']:
