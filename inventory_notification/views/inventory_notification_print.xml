@@ -9,14 +9,13 @@
             <field name="body_html">
                 <![CDATA[
                 % set products = ctx.get('products', [])
-                %set headers =  ctx.get('headers', [])
-                %set columnProps =  ctx.get('columnProps', [])
+                % set headers =  ctx.get('headers', [])
+                % set columnProps =  ctx.get('columnProps', [])
 
                  <div style="margin:auto;width:100%;background-color:  #ffffff;  padding-left: 60px;"/>
                     <div>
                         <div >
-                            <p>Hello</p>
-                            <p> ${ctx['descrption']} </p>
+                            <p> ${ctx['descrption'] | safe} </p>
                         </div>
                         <center>
                         </center>
@@ -29,7 +28,7 @@
                                 <tr style="border: 1px solid black;">
                                  %for header in  headers
                                              <th style="text-align: center;">${header} </th>
-                                  % endfor
+                                 % endfor
                                 </tr>
                             </thead>
                             <tbody>
@@ -43,15 +42,14 @@
                                                     % endif
                                                  </span>
                                             </td>
-                                          % endfor
+                                         % endfor
                                      </tr>
-                                   % endfor
+                               % endfor
                             </tbody>
                     </table>
                   </div>
                   <div  style="margin-top:20px">
-                        <p>Thanks & Regards,</p>
-                        <p> Admin Team </p>
+                         <p> ${ctx['closing_content'] | safe} </p>
                   </div>
                  </div>
                 ]]>
@@ -74,9 +72,8 @@
 
                  <div style="margin:auto;width:100%;background-color:  #ffffff;  padding-left: 60px;"/>
                     <div>
-                        <div >
-                            <p>Hello</p>
-                            <p> ${ctx['descrption']} </p>
+                        <div>
+                            <p> ${ctx['descrption'] | safe} </p>
                         </div>
                         <center>
                         </center>
@@ -110,14 +107,12 @@
                     </table>
                   </div>
                   <div  style="margin-top:20px">
-                        <p>Thanks & Regards,</p>
-                        <p> Admin Team </p>
+                        <p> ${ctx['closing_content'] | safe} </p>
                   </div>
                  </div>
                 ]]>
             </field>
             <field name="user_signature" eval="False"/>
         </record>
-
 
 </odoo>
