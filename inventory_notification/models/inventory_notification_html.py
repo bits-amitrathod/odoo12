@@ -91,7 +91,7 @@ class InventoryNotificationHTML(models.TransientModel):
                                                     <div  style="margin-top:10px">
                                                         <p style="font-weight: lighter">
                                                             <span>""" + str(move_line.ordered_qty) +"""</span>
-                                                            <span>""" +  self.check_isAvailable_product_code(move_line.product_uom.name)+  """</span>
+                                                            <span>""" + self.check_isAvailable_product_code(move_line.product_uom.name)+  """</span>
                                                         </p>
                                                     </div>
                                                 </th>

@@ -13,38 +13,34 @@
                 % set datetime = ctx.get('datetime', [])
 
                  <div style="margin:auto;width:100%;background-color:  #ffffff;  padding-left: 60px;"/>
-                    <div>
-                        <div >
-                            <p>Hi Team,</p>
+                        <div>
+                            <p>Hi Shipping Team,</p>
                             <p>Please find below Packing list:  </p>
                         </div>
-
-                        <center>
-                        </center>
-                    </div>
                     % for packing in picking_list:
-                    <div style="border: 1px solid #aaa; margin-top: 50px;">
+                    <div>
                         <div style="margin-left:10px;">
-                            <p><span style="font-weight: bold;">Order Number:</span><span>${packing.sale_id.name}</span></p>
-                             <p><span style="font-weight: bold;">Dated On:</span>${packing.sale_id.write_date}</p>
-                            <p><span style="font-weight: bold;">Customer Name:</span>${packing.sale_id.partner_id.display_name}</p>
+                            <p><span style="font-weight: bold;">Order Number: </span><span>${packing.sale_id.name}</span></p>
+                            % set date_on = datetime.strptime(packing.sale_id.write_date, "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
+                             <p><span style="font-weight: bold;">Dated On: </span>${date_on}</p>
+                            <p><span style="font-weight: bold;">Customer Name: </span>${packing.sale_id.partner_id.display_name}</p>
                             <p>
-                                <span style="font-weight: bold;">Shipping Address:</span>
-                                <span>${packing.sale_id.partner_shipping_id.street}</span>
-                                <span>${packing.sale_id.partner_shipping_id.street2}</span>
-                                <span>${packing.sale_id.partner_shipping_id.city}</span>
-                                <span>${packing.sale_id.partner_shipping_id.state_id.name}</span>
-                                <span>${packing.sale_id.partner_shipping_id.zip}</span>
-                                <span>${packing.sale_id.partner_shipping_id.country_id.name}</span>
+                                <span style="font-weight: bold;">Shipping Address: </span>
+                                <span>${packing.sale_id.partner_shipping_id.street or ""}</span>
+                                <span>${packing.sale_id.partner_shipping_id.street2 or ""}</span>
+                                <span>${packing.sale_id.partner_shipping_id.city or ""}</span>
+                                <span>${packing.sale_id.partner_shipping_id.state_id.name or ""}</span>
+                                <span>${packing.sale_id.partner_shipping_id.zip or ""}</span>
+                                <span>${packing.sale_id.partner_shipping_id.country_id.name or ""}</span>
                             </p>
                             %if packing.sale_id.client_order_ref != False:
-                            <p><span style="font-weight: bold;">Customer PO Number:</span>${packing.sale_id.client_order_ref}</p>
+                            <p><span style="font-weight: bold;">Customer PO Number: </span>${packing.sale_id.client_order_ref}</p>
                             %endif
                             %if packing.sale_id.carrier_info !=False:
-                                <p><span style="font-weight: bold;">Carrier Name:</span>${packing.sale_id.carrier_info}</p>
+                                <p><span style="font-weight: bold;">Carrier Name: </span>${packing.sale_id.carrier_info}</p>
                             %endif
                             %if packing.sale_id.carrier_acc_no !=False:
-                             <p><span style="font-weight: bold;">Carrier Account Number:</span>${packing.sale_id.carrier_acc_no}</p>
+                             <p><span style="font-weight: bold;">Carrier Account #: </span>${packing.sale_id.carrier_acc_no}</p>
                             %endif
                         </div>
                         <br/>
@@ -52,11 +48,11 @@
 
                                 <thead style='border: 1px solid black;background-color:#D6DBDF;line-height: 30px'>
                                     <tr style="border: 1px solid black;">
-                                         <th style="text-align: center;">SKU Code</th>
-                                         <th style="text-align: center;">Product Name</th>
+                                         <th style="text-align: center;">Catalog #</th>
+                                         <th style="text-align: center;">Description</th>
                                          <th style="text-align: center;">Unit of Measure</th>
                                          <th style="text-align: center;">Lot#</th>
-                                         <th style="text-align: center;">Ordered Qty</th>
+                                         <th style="text-align: center;">Ordered Quantity</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -75,10 +71,9 @@
                                                     <div style="margin-top:10px">
                                                         %for move_line_id in move_line.move_line_ids
                                                              <p style="font-weight: lighter">
-                                                                <span> ${move_line_id.qty_done}</span>
                                                                 <span>${move_line.product_uom.name}</span>-
                                                                 Lot#:<span>${ move_line_id.lot_id.name} </span>
-                                                                 % set use_date = move_line_id.lot_id.use_date.strftime('%m/%d/%Y')
+                                                                 % set use_date = datetime.strptime(move_line_id.lot_id.use_date, "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
                                                                 Exp Date:<span> ${use_date}</span>
                                                             </p>
                                                         %endfor
@@ -100,7 +95,7 @@
                   % endfor
                       <div  style="margin-top:20px">
                             <p>Thanks & Regards,</p>
-                            <p> Admin Team </p>
+                            <p> Sales Team </p>
                       </div>
                  </div>
                 ]]>

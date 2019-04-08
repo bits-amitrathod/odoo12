@@ -230,7 +230,7 @@
                         <button string="Shipping Label"
                                 type="action" class="btn-primary"
                                 name="%(action_view_tracking_text)d"
-                                attrs="{'invisible': [('status', 'not in', 'ven_draft')]}"
+                                attrs="{'invisible': [('status', 'not in', ('ven_draft','ven_sent'))]}"
                                 groups="stock.group_stock_user"/>
 
                     </header>
