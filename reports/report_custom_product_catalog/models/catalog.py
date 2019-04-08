@@ -92,16 +92,15 @@ class ProductCatalogReport(models.Model):
     @api.multi
     def _compare_qty(self):
         for product in self:
-
             product.env.cr.execute(
                 "SELECT sum(quantity) as qut FROM public.stock_quant where company_id != 0.0 and  product_id = " + str(
                     product.id))
             query_result = product.env.cr.dictfetchone()
             if query_result['qut']:
                 product.product_qty = query_result['qut']
-                id = str(product.id)
+
             product.env.cr.execute(
-                "SELECT min(use_date), max (use_date) FROM public.stock_production_lot where id = " + str(('production_lot_ids' in self._context and self._context['production_lot_ids'][id]) or product.id))
+                "SELECT min(use_date), max (use_date) FROM public.stock_production_lot where id = " + str(('production_lot_ids' in self._context and self._context['production_lot_ids'][str(product.id)]) or product.id))
             query_result = product.env.cr.dictfetchone()
             if query_result['min']:
                 product.exp_min_date = fields.Datetime.from_string(str(query_result['min'])).date()
