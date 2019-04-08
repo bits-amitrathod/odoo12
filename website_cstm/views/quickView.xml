@@ -53,21 +53,29 @@
                                                 <a t-att-href="keep('/shop/brands', brand=product.product_brand_id.id)"
                                                    t-field="product.product_brand_id.name" class="linkCstm"></a>
                                             </p>
-                                             <h4>
+                                            <h4>
                                                 <span t-esc="product.default_code"></span>
                                             </h4>
 
 
-                                            <t t-call="website_sale.product_price"/>
+                                            <t t-if="product.website_price &gt; 0">
+                                                <t t-call="website_sale.product_price"/>
+                                            </t>
+                                            <t t-else="">
+                                                <h3 id="add_to_cart">Call for Pricing 412-564-1280</h3>
+                                            </t>
                                             <p t-if="len(product.product_variant_ids) &gt; 1"
                                                class="css_not_available_msg bg-danger" style="padding: 15px;">Product
                                                 not available
                                             </p>
                                             <a id="add_to_cart"
                                                class="btn mt8 js_check_product a-submit btn-link linkCstm"
-                                               t-att-href="'/shop/product/%s' % (slug(product))" style="padding: 0px">View full product details
-                                                <span class="glyphicon glyphicon-menu-right" style="font-size: 10px;">  </span>
-                                                <span class="glyphicon glyphicon-menu-right" style="font-size: 10px;right: 10px;">  </span>
+                                               t-att-href="'/shop/product/%s' % (slug(product))" style="padding: 0px">
+                                                View full product details
+                                                <span class="glyphicon glyphicon-menu-right"
+                                                      style="font-size: 10px;"></span>
+                                                <span class="glyphicon glyphicon-menu-right"
+                                                      style="font-size: 10px;right: 10px;"></span>
                                             </a>
                                             <hr/>
                                             <!--<t t-call="website_sales.category_vender"/>-->
