@@ -30,7 +30,7 @@ class WebsiteCstm(http.Controller):
         return http.request.render('website_cstm.search_page')
 
     @http.route('/terms', type='http', auth="public", website=True)
-    def search(self):
+    def terms(self):
         return http.request.render('website_cstm.terms')
 
     @http.route('/product_types', type='http', auth="public", website=True)
