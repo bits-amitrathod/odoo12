@@ -126,13 +126,19 @@ var DataImport = Widget.extend(ControlPanelMixin, {
         // import object id
         this.id = null;
         this.session = session;
-        action.display_name = _t('Import Template'); // Displayed in the breadcrumbs
         this.do_not_change_match = false;
         console.log(action.params[0].customer_id);
         this.customer = action.params[0].customer_id;
         this.user_type = action.params[0].user_type;
         this.parent_model = action.params[0].model;
         this.template_type = 'Inventory';
+        this.upload_document = action.params[0].upload_document;
+        // Displayed in the breadcrumbs
+        if(this.upload_document == 'True'){
+            action.display_name = _t('Upload Document');
+        }else{
+            action.display_name = _t('Import Template');
+        }
     },
     start: function () {
         var self = this;
@@ -520,7 +526,7 @@ var DataImport = Widget.extend(ControlPanelMixin, {
         return this._rpc({
                 model: 'sps.template.transient',
                 method: 'do',
-                args: [this.id, fields, this.import_options(), this.parent_model, this.customer, this.template_type],
+                args: [this.id, fields, this.import_options(), this.parent_model, this.customer, this.template_type, this.upload_document],
                 kwargs : kwargs,
             }).fail(function (error, event) {
                 if (event) { event.preventDefault(); }

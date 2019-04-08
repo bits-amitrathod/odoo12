@@ -587,6 +587,38 @@
             </field>
         </record>
 
+        <record model="ir.ui.view" id="vendor_offer.vendor_pricing_list">
+            <field name="name">product.product.list8</field>
+            <field name="model">product.product</field>
+            <field name="priority">20</field>
+            <field name="arch" type="xml">
+                <tree create="false" import="false" >
+                    <field name="sku_code"  string="ProductNumber"/>
+                    <field name="name" string="ProductDescription" />
+                    <field name="list_price" string="Price"/>
+                    <field name="product_brand_id" string="CFP-Manufacturer"/>
+                    <field name="tier" string="TIER"/>
+                    <field name="product_sales_count"/>
+                    <field name="product_sales_count_yrs"/>
+                    <field name="qty_in_stock"/>
+                    <field name="amount_total_ven_pri"/>
+                    <field name="premium" string="PREMIUM"/>
+                    <field name="expired_inventory"/>
+                    <!--<field name="product_sales_count_month"/>-->
+                    <field name="product_sales_count_90"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="vendor_offer.action_vendor_pricing" model="ir.actions.act_window">
+            <field name="name">Vendor Pricing</field>
+              <field name="key">action</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.product</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="vendor_offer.vendor_pricing_list"/>
+        </record>
+
         <record model="ir.actions.act_window" id="vendor_offer.action_window_multiplier">
             <field name="name">Multiplier</field>
             <field name="res_model">multiplier.multiplier</field>
@@ -626,6 +658,9 @@
 
         <menuitem id="menu_procurement_management_supplier_offer" name="Vendor Offers"
                   parent="purchase.menu_procurement_management" action="vendor_offer.action_window" sequence="14"/>
+
+        <menuitem id="menu_procurement_management_supplier_offer_vendor_pricing" name="Vendor Pricing"
+                  parent="purchase.menu_procurement_management" action="vendor_offer.action_vendor_pricing" sequence="15"/>
 
     </data>
 </odoo>

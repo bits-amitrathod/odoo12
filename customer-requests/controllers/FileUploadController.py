@@ -63,12 +63,32 @@ class FileUploadController(Controller):
                                                                                        template_type_from_user,
                                                                                        str(request.params['file'].filename))
                 _logger.info("response :%r", response)
+            elif len(user_api_settings) > 1:
+                response = dict(errorCode=3, message='We have found Same Email Id against multiple users.')
             else:
                 response = dict(errorCode=3, message='UnAuthorized Access')
 
                 
         if "errorCode" in response:
-            self.send_mail("API Response. " + str(response['message']) + " for user " + username)
+            # username means email Id
+            if not username is None:
+                print(username)
+                res_partners = request.env['res.partner'].sudo().search([('email', '=', username.strip())])
+                print(res_partners)
+                if len(res_partners) > 1:
+                    customerName = ""
+                    for res_partner in res_partners:
+                        if customerName == "":
+                            customerName = res_partner['name']
+                        else:
+                            customerName = customerName + "  ,  " + res_partner['name']
+
+            if len(res_partners) == 1:
+                self.send_mail(res_partners['name'], username, str(response['message']))
+            elif len(res_partners) > 1:
+                self.send_mail(customerName, username, str(response['message']))
+            else:
+                self.send_mail('', username, str(response['message']))
 
         return json.JSONEncoder().encode(response)
 
@@ -113,9 +133,10 @@ class FileUploadController(Controller):
     def random_string_generator(size=10, chars=string.ascii_lowercase + string.digits):
         return ''.join(random.choice(chars) for _ in range(size))
 
-    def send_mail(self, body):
+    def send_mail(self, customerName, email, reason):
+        today_date = datetime.today().strftime('%m/%d/%Y')
         template = request.env.ref('customer-requests.set_log_email').sudo()
-        local_context = {'body': body}
+        local_context = {'customerName': customerName, 'email': email, 'date': today_date, 'reason': reason}
         try:
             template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True, )
         except:
