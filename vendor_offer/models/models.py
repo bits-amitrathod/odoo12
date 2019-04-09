@@ -566,10 +566,8 @@ class VendorOfferProduct(models.Model):
             multiplier_list = line.multiplier
             # Added to fix inhirit issue
 
-            product_unit_price = math.ceil(
+            product_unit_price = math.floor(
                 round(float(line.product_id.list_price) * (float(multiplier_list.retail) / 100), 2))
-            product_offer_price = round(float(product_unit_price) * (
-                    float(multiplier_list.margin) / 100 + float(line.possible_competition.margin) / 100))
             margin = 0
             if line.multiplier.id:
                 margin += line.multiplier.margin
@@ -580,7 +578,6 @@ class VendorOfferProduct(models.Model):
             line.update({
                 'margin': margin,
                 'product_unit_price': product_unit_price,
-                # 'product_offer_price': product_offer_price
             })
 
     @api.onchange('multiplier', 'order_id.possible_competition')
@@ -588,11 +585,10 @@ class VendorOfferProduct(models.Model):
     def _set_offer_price(self):
         for line in self:
             multiplier_list = line.multiplier
-            # Added to fix inhirit issue
 
-            product_unit_price = math.ceil(
+            product_unit_price = math.floor(
                 round(float(line.product_id.list_price) * (float(multiplier_list.retail) / 100), 2))
-            product_offer_price = round(float(product_unit_price) * (
+            product_offer_price =  math.floor(float(product_unit_price) * (
                     float(multiplier_list.margin) / 100 + float(line.possible_competition.margin) / 100))
 
             line.update({
