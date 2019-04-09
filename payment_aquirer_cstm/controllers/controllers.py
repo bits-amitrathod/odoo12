@@ -44,9 +44,9 @@ class PaymentAquirerCstm(http.Controller):
 class WebsiteSales(WebsiteSale):
     @http.route(['/shop/payment'], type='http', auth="public", website=True)
     def payment(self, **post):
-        deliveryResponce = WebsiteSaleDelivery().payment(**post)
+        # deliveryResponce = WebsiteSaleDelivery().payment(**post)
         responce = super(WebsiteSales, self).payment(**post)
-        responce.qcontext.update(deliveryResponce.qcontext)
+        # responce.qcontext.update(deliveryResponce.qcontext)
 
         ctx = responce.qcontext
         if not ctx['order'].partner_id.allow_purchase:
