@@ -53,8 +53,17 @@ class InventoryCustomProductPopUp(models.TransientModel):
 
         if self.start_date or self.end_date:
             product_ids = self.fetchData()
+
             product_list = list(product_ids[0])
-            action["domain"].append(('id', 'in', product_list[0]))
+
+            filtered_product_list = []
+
+            for p_id in product_list[0]:
+                flag = self.get_quantity(p_id)
+                if flag:
+                    filtered_product_list.append(p_id)
+
+            action["domain"].append(('id', 'in', filtered_product_list))
             action["context"] = {'production_lot_ids': product_list[1]}
 
         if self.sku_code:
@@ -80,6 +89,17 @@ class InventoryCustomProductPopUp(models.TransientModel):
 
         return ctx._cr.fetchall()
 
+    def get_quantity(self, product_id):
+        self.env.cr.execute(
+            "SELECT sum(quantity) as qut FROM public.stock_quant where company_id != 0.0 and  product_id = " + str(
+                product_id))
+        query_result = self.env.cr.dictfetchone()
+
+        if not query_result['qut'] is None and int(query_result['qut']) > 0:
+            return True
+        else:
+            return False
+
 
 class ProductCatalogReport(models.Model):
     _inherit = 'product.product'
@@ -96,13 +116,14 @@ class ProductCatalogReport(models.Model):
                 "SELECT sum(quantity) as qut FROM public.stock_quant where company_id != 0.0 and  product_id = " + str(
                     product.id))
             query_result = product.env.cr.dictfetchone()
-            if query_result['qut']:
+
+            if not query_result['qut'] is None and int(query_result['qut']) > 0:
                 product.product_qty = query_result['qut']
 
-            product.env.cr.execute(
-                "SELECT min(use_date), max (use_date) FROM public.stock_production_lot where id = " + str(('production_lot_ids' in self._context and self._context['production_lot_ids'][str(product.id)]) or product.id))
-            query_result = product.env.cr.dictfetchone()
-            if query_result['min']:
-                product.exp_min_date = fields.Datetime.from_string(str(query_result['min'])).date()
-            if query_result['max']:
-                product.exp_max_date = fields.Datetime.from_string(str(query_result['max'])).date()
+                product.env.cr.execute(
+                    "SELECT min(use_date), max (use_date) FROM public.stock_production_lot where id = " + str(('production_lot_ids' in self._context and self._context['production_lot_ids'][str(product.id)]) or product.id))
+                query_result = product.env.cr.dictfetchone()
+                if query_result['min']:
+                    product.exp_min_date = fields.Datetime.from_string(str(query_result['min'])).date()
+                if query_result['max']:
+                    product.exp_max_date = fields.Datetime.from_string(str(query_result['max'])).date()

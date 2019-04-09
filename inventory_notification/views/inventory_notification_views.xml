@@ -1,40 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-      <record id="ir_cron_scheduler_notification_action" forcecreate="True" model="ir.cron">
-            <field name="name">Notification Scheduler</field>
-            <field name="user_id" ref="base.user_root"/>
-            <field name="interval_number">1</field>
-            <field name="interval_type">days</field>
-            <field name="model_id" ref="model_inventory_notification_scheduler"/>
-            <field name="state">code</field>
-            <field name="code">model.process_notification_scheduler()</field>
-            <field name="numbercall">-1</field>
-            <field name="active" eval="True"/>
-            <field name="doall" eval="False"/>
-      </record>
-       <record id="product_form_monitor_ex" model="ir.ui.view">
+    <record id="ir_cron_scheduler_notification_action" forcecreate="True" model="ir.cron">
+        <field name="name">Notification Scheduler</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="model_id" ref="model_inventory_notification_scheduler"/>
+        <field name="state">code</field>
+        <field name="code">model.process_notification_scheduler()</field>
+        <field name="numbercall">-1</field>
+        <field name="active" eval="True"/>
+        <field name="doall" eval="False"/>
+        <field name="active" eval="False"/>
+    </record>
+
+    <record id="product_form_monitor_ex" model="ir.ui.view">
         <field name="name">product.product.form_monitor_ex</field>
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_form_view"/>
         <field name="arch" type="xml">
-             <xpath expr="//field[@name='purchase_ok']/parent::div/parent::div" position="inside"  >
-                 <field name="notify"/>
-                 <label for="notify"/>
-             </xpath>
+            <xpath expr="//field[@name='purchase_ok']/parent::div/parent::div" position="inside">
+                <field name="notify"/>
+                <label for="notify"/>
+            </xpath>
         </field>
     </record>
 
-      <record id="run_purchase_notification_views" model="ir.ui.view">
+    <record id="run_purchase_notification_views" model="ir.ui.view">
         <field name="name">Run Schedulers Manually</field>
         <field name="model">inventory.notification.scheduler</field>
         <field name="arch" type="xml">
             <form string="Parameters">
                 <p>
-                Running this scheduler will send noitification to purchase team for the product which are in red.
+                    Running this scheduler will send noitification to purchase team for the product which are in red.
                 </p>
                 <footer>
-                    <button name="process_manual_notification_scheduler" string="Run Schedulers" type="object" class="btn-primary"/>
-                    <button string="Cancel" class="btn-default" special="cancel" />
+                    <button name="process_manual_notification_scheduler" string="Run Schedulers" type="object"
+                            class="btn-primary"/>
+                    <button string="Cancel" class="btn-default" special="cancel"/>
                 </footer>
             </form>
         </field>
@@ -45,8 +48,9 @@
         <field name="res_model">inventory.notification.scheduler</field>
         <field name="view_type">form</field>
         <field name="view_mode">form</field>
-          <field name="target">new</field>
+        <field name="target">new</field>
     </record>
-       <menuitem name="Notification Scheduler" id="menu_stock_config_form_ext" action="run_purchase_notification"
-          parent="product_expiry_extension.menu_scheduler_config" sequence="2"/>
+
+    <menuitem name="Notification Scheduler" id="menu_stock_config_form_ext" action="run_purchase_notification"
+              parent="product_expiry_extension.menu_scheduler_config" sequence="2"/>
 </odoo>
