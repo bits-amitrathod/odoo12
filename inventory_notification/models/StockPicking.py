@@ -15,7 +15,7 @@ class StockPicking(models.Model):
         for picking in self:
             if picking.sale_id:
                 if self.picking_type_id.name=='Pick':
-                    inv_notification.pick_notification_for_customer(self)
+                    # inv_notification.pick_notification_for_customer(self)
                     inv_notification.pick_notification_for_user(self)
 
                 elif self.picking_type_id.name=='Pack' or self.picking_type_id.name=='Pull':

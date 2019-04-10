@@ -4,17 +4,21 @@ from odoo import models, fields, api, SUPERUSER_ID
 import logging
 from datetime import datetime
 from datetime import date, timedelta
-from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, pycompat, misc
-import base64
-import calendar
-from odoo.exceptions import UserError
-from odoo.tools import float_compare
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
 
 _logger = logging.getLogger(__name__)
 
 
 class InventoryNotificationScheduler(models.TransientModel):
     _name = 'inventory.notification.scheduler'
+
+    # warehouse_email = "vasimkhan@benchmarkitsolutions.com"
+    # sales_email = "rohitkabadi@benchmarkitsolutions.com"
+    # acquisitions_email = "ajinkyanimbalkar@benchmarkitsolutions.com"
+
+    warehouse_email = "warehouse@surgicalproductsolutions.com"
+    sales_email = "salesteam@surgicalproductsolutions.com"
+    acquisitions_email = "acquisitions@surgicalproductsolutions.com"
 
     def process_manual_notification_scheduler(self):
         _logger.info("process_manual_notification_scheduler called..")
@@ -47,7 +51,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         vals = {
             'sale_order_lines': sales_order,
             'subject': "Picking Done For Sale Order # " + picking.sale_id.name,
-            'description': "Hi " + picking.sale_id.partner_id.display_name + ",<br/> Please find detail Of Sale Order: "
+            'description': "Hi " + picking.sale_id.partner_id.display_name + ",<br/> <br/>Please find detail Of Sale Order: "
                            + picking.sale_id.name,
             'header': ['Catalog number', 'Description', 'Quantity'],
             'columnProps': ['sku', 'Product', 'qty'],
@@ -80,8 +84,8 @@ class InventoryNotificationScheduler(models.TransientModel):
         for user in users:
             has_group = user.has_group('stock.group_stock_manager')
             if has_group:
-                vals[
-                    'description'] = "Hi " + user.display_name + ", <br/><br/> Please find detail Of Sale Order: " + picking.sale_id.name
+                vals['description'] = "Hi " + user.display_name + \
+                                      ", <br/><br/> Please find detail Of Sale Order: " + picking.sale_id.name
                 self.process_common_email_notification_template(super_user, user, vals['subject'], vals['description'],
                                                                 vals['sale_order_lines'], vals['header'],
                                                                 vals['columnProps'], vals['closing_content'])
@@ -113,7 +117,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                            + "<br/>" + "<strong> Date: </strong>" + \
                            (str(datetime.strptime(picking.scheduled_date, "%Y-%m-%d %H:%M:%S").strftime(
                                '%m/%d/%Y')) if picking.scheduled_date else "N/A") + \
-                           "<br/><strong> Customer Name:  </strong>" + sale_order_ref.partner_id.name + "<br/>" + \
+                           "<br/><strong> Customer Name:  </strong>" + (
+                                   sale_order_ref.partner_id.name or "") + "<br/>" + \
                            "<strong> Shipping Address: </strong> " + (address_ref.street or "") + \
                            (address_ref.city or "") + (address_ref.state_id.name or "") + (address_ref.zip or "") + \
                            (address_ref.country_id.name or ""),
@@ -126,7 +131,8 @@ class InventoryNotificationScheduler(models.TransientModel):
             if has_group:
                 self.process_common_email_notification_template(super_user, user, vals['subject'], vals['description'],
                                                                 vals['sale_order_lines'], vals['header'],
-                                                                vals['columnProps'], vals['closing_content'])
+                                                                vals['columnProps'], vals['closing_content'],
+                                                                self.warehouse_email)
 
     def out_notification_for_sale(self, picking):
         Stock_Moves = self.env['stock.move'].search([('picking_id', '=', picking.id)])
@@ -181,6 +187,10 @@ class InventoryNotificationScheduler(models.TransientModel):
                     or (InventoryNotificationScheduler.string_to_date(
                 customr.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
                 customr.end_date) >= today_start):
+
+                # if (customr.start_date and customr.end_date and InventoryNotificationScheduler.string_to_date(
+                #         customr.start_date) <= today_start <= InventoryNotificationScheduler.string_to_date(
+                #     customr.end_date)):
                 _logger.info("customer :%r", customr)
                 custmrs = []
                 cust_ids = []
@@ -254,6 +264,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                         self.process_email_in_stock_scheduler_template(super_user, cust, subject, descrption,
                                                                        product_list,
                                                                        header, columnProps, closing_content,
+                                                                       self.sales_email,
                                                                        email_list_cc, is_employee=False)
             else:
                 pass
@@ -272,7 +283,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                        'maxExpDate', 'qty_on_hand', 'forecasted_qty', 'unit_of_measure']
         closing_content = "Thanks & Regards,<br/>Warehouse Team"
 
-        self.process_common_product_scheduler(subject, descrption, products, header, columnProps, closing_content)
+        self.process_common_product_scheduler(subject, descrption, products, header, columnProps, closing_content,
+                                              self.sales_email)
 
     def process_packing_list(self):
         today_date = date.today()
@@ -325,7 +337,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                     description = 'Hi Shipping Team, <br/><br/>Please find below the list of customers whose "On-hold status" has been released from Accounting Department.'
                     closing_content = "Thanks & Regards, <br/> Accounting Team"
                     self.process_common_email_notification_template(email_form, email_to, subject, description,
-                                                                    customers, header, columnProps, closing_content)
+                                                                    customers, header, columnProps, closing_content,
+                                                                    self.warehouse_email)
 
     def process_hold_off_customer(self, partner_id):
         sales = self.env['sale.order'].search([('state', '=', 'sale'), ('partner_id', '=', partner_id.id)])
@@ -366,7 +379,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                     self.process_common_email_notification_template(super_user, user, vals['subject'],
                                                                     vals['description'], vals['sale_order_lines'],
                                                                     vals['header'],
-                                                                    vals['columnProps'], vals['closing_content'])
+                                                                    vals['columnProps'], vals['closing_content'],
+                                                                    self.warehouse_email)
 
     def process_notification_for_product_red_status(self, products):
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
@@ -477,7 +491,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                        'qty_on_hand', 'forecasted_qty', 'unit_of_measure']
         closing_content = "Thanks & Regards,<br/> Admin Team"
         self.process_common_email_notification_template(from_user, to_user, subject,
-                                                        description, products, header, columnProps, closing_content)
+                                                        description, products, header, columnProps, closing_content,
+                                                        self.acquisitions_email)
 
     def process_notify_yellow_product(self, products, to_user, from_user):
         subject = "products which are in yellow status"
@@ -488,7 +503,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                        'qty_on_hand', 'forecasted_qty', 'unit_of_measure']
         closing_content = "Thanks & Regards,<br/> Admin Team"
         self.process_common_email_notification_template(from_user, to_user, subject,
-                                                        description, products, header, columnProps, closing_content)
+                                                        description, products, header, columnProps, closing_content,
+                                                        self.acquisitions_email)
 
     def process_notify_red_product(self, products, to_user, from_user):
         subject = "Products which are in red status"
@@ -499,7 +515,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                        'qty_on_hand', 'forecasted_qty', 'unit_of_measure']
         closing_content = "Thanks & Regards,<br/> Admin Team"
         self.process_common_email_notification_template(from_user, to_user, subject,
-                                                        description, products, header, columnProps, closing_content)
+                                                        description, products, header, columnProps, closing_content,
+                                                        self.acquisitions_email)
 
     def process_notify_available(self):
         today_date = date.today()
@@ -517,7 +534,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                        'maxExpDate',
                        'qty_on_hand', 'forecasted_qty', 'unit_of_measure']
         closing_content = "Thanks & Regards,<br/> Warehouse Team"
-        self.process_common_product_scheduler(subject, descrption, products, header, columnProps, closing_content)
+        self.process_common_product_scheduler(subject, descrption, products, header, columnProps, closing_content,
+                                              self.sales_email)
         quant = self.env['stock.quant'].search(
             [('write_date', '>=', last_day), ('quantity', '>', 0), ])
         products = quant.mapped('product_id')
@@ -532,22 +550,26 @@ class InventoryNotificationScheduler(models.TransientModel):
             if has_group:
                 local_context = {'picking_list': vals['picking_list'],
                                  'subject': 'New Sales Order',
-                                 'email_from': super_user.email, 'email_to': user.email, 'datetime': datetime,
+                                 'email_from': super_user.email, 'email_to': self.warehouse_email, 'datetime': datetime,
                                  }
                 html_file = self.env['inventory.notification.html'].search([])
                 finalHTML = html_file.process_packing_list_html(vals['picking_list'])
-                template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True, )
-                mail = self.env["mail.thread"]
-                mail.message_post(
-                    body=finalHTML,
-                    subject='New Sales Order',
-                    message_type='notification',
-                    partner_ids=[user.partner_id.id],
-                    content_subtype='html'
-                )
+                msg = "\n Email sent --->  " + local_context['subject'] + "\n --From--" + local_context[
+                    'email_from'] + " \n --To-- " + local_context['email_to']
+                _logger.info(msg)
+                template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True)
+
+                # mail = self.env["mail.thread"]
+                # mail.message_post(
+                #     body=finalHTML,
+                #     subject='New Sales Order',
+                #     message_type='notification',
+                #     partner_ids=[user.partner_id.id],
+                #     content_subtype='html'
+                # )
 
     def process_common_email_notification_template(self, email_from_user, email_to_user, subject, descrption, products,
-                                                   header, columnProps, closing_content,
+                                                   header, columnProps, closing_content, email_to_team=None,
                                                    custom_template="inventory_notification.common_mail_template",
                                                    is_employee=True):
         template = self.env.ref(custom_template)
@@ -622,6 +644,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                 'coln_name': coln_name,
                 'email_from_user': email_from_user,
                 'email_to_user': email_to_user,
+                'email_to_team': email_to_team,
                 'subject': subject,
                 'description': descrption,
                 'template': template,
@@ -631,68 +654,60 @@ class InventoryNotificationScheduler(models.TransientModel):
             self.send_email_and_notification(vals)
 
     def send_email_and_notification(self, vals):
+
+        if vals['email_to_team']:
+            email = vals['email_to_team']
+        else:
+            email = vals['email_to_user'].sudo().email
+
         local_context = {'products': vals['product_list'], 'headers': vals['headers'], 'columnProps': vals['coln_name'],
                          'email_from': vals['email_from_user'].sudo().email,
-                         'email_to': vals['email_to_user'].sudo().email, 'subject': vals['subject'],
+                         'email_to': email, 'subject': vals['subject'],
                          'descrption': vals['description'], 'closing_content': vals['closing_content']}
         html_file = self.env['inventory.notification.html'].search([])
         finalHTML = html_file.process_common_html(vals['subject'], vals['description'], vals['product_list'],
                                                   vals['headers'], vals['coln_name'])
-        # print(finalHTML)
+
         if hasattr(vals['email_to_user'], 'partner_ids'):
             partner_ids = [vals['email_to_user'].partner_ids.id]
         else:
             partner_ids = [vals['email_to_user'].id]
         try:
             if vals['email_to_user'].sudo().email:
+                msg = "\n Email sent --->  " + local_context['subject'] + "\n --From--" + local_context[
+                    'email_from'] + " \n --To-- " + local_context['email_to']
+                _logger.info(msg)
                 template_id = vals['template'].with_context(local_context).sudo().send_mail(SUPERUSER_ID,
                                                                                             raise_exception=True,
                                                                                             force_send=True, )
         except:
-            erro_msg = "mail sending fail for email id: %r" + vals[
+            error_msg = "mail sending fail for email id: %r" + vals[
                 'email_to_user'].sudo().email + " sending error report to admin"
-            _logger.info(erro_msg)
-            print("mail sending fail for email id: " + vals[
-                'email_to_user'].sudo().email + " sending error report to admin")
-            # subject= "mail send fail for user "+ vals['email_to_user'].email + " (Subject: "+vals['subject']
-            # cache_context = {'products': vals['product_list'], 'headers': vals['headers'],
-            #                  'columnProps': vals['coln_name'],
-            #                  'email_from': vals['email_from_user'].email, 'email_to': vals['email_from_user'].email,
-            #                  'subject': subject,
-            #                  'descrption': vals['description']}
+            _logger.info(error_msg)
+            print(error_msg)
+
             try:
-                # vals['template'].with_context(cache_context).send_mail(SUPERUSER_ID, raise_exception=True,force_send=True)
+                msg = "\n Email sent --->  " + local_context['subject'] + "\n --From--" + local_context[
+                    'email_from'] + " \n --To-- " + local_context['email_to']
+                _logger.info(msg)
                 vals['template'].with_context(local_context).sudo().send_mail(SUPERUSER_ID, raise_exception=True)
             except:
-                _logger.info("mail sending fail for email id: %r", vals['email_to_user'].sudo().email)
-                print("mail sending fail for email id: " + vals['email_to_user'].sudo().email)
+                log = "mail sending fail for email id: %r", vals['email_to_user'].sudo().email
+                _logger.info(log)
+                print(log)
 
-        if vals['is_employee']:
-            mail = self.env["mail.thread"]
-            mail.sudo().message_post(
-                body=finalHTML,
-                subject=vals['subject'],
-                message_type='notification',
-                partner_ids=partner_ids,
-                content_subtype='html'
-            )
-
-        # mail = self.env['mail.mail'].browse(template_id)
-        # attachment_value = {
-        #     'name': 'product status',
-        #     'res_name': "red product status",
-        #     'res_model': 'product.product',
-        #     'type': 'binary',
-        #     'res_id': self.ids[0],
-        #     'datas': base64.b64encode(mail.body_html.encode("utf-8")),
-        #     'datas_fname': 'product_status' + '.pdf',
-        # }
-        # new_attachment = self.env['ir.attachment'].create(attachment_value)
-        # mail.attachment_ids |= new_attachment
-        # mail.send()
+        # if vals['is_employee']:
+        # mail = self.env["mail.thread"]
+        # mail.sudo().message_post(
+        #     body=finalHTML,
+        #     subject=vals['subject'],
+        #     message_type='notification',
+        #     partner_ids=partner_ids,
+        #     content_subtype='html'
+        # )
 
     def process_email_in_stock_scheduler_template(self, email_from_user, email_to_user, subject, descrption, products,
-                                                  header, columnProps, closing_content, email_list_cc,
+                                                  header, columnProps, closing_content, email_to_team, email_list_cc,
                                                   custom_template="inventory_notification.in_stock_scheduler_template",
                                                   is_employee=True):
         template = self.env.ref(custom_template)
@@ -764,6 +779,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                 'coln_name': coln_name,
                 'email_from_user': email_from_user,
                 'email_to_user': email_to_user,
+                'email_to_team': email_to_team,
                 'subject': subject,
                 'description': descrption,
                 'template': template,
@@ -774,14 +790,20 @@ class InventoryNotificationScheduler(models.TransientModel):
             self.send_email_in_stock_scheduler_template(vals)
 
     def send_email_in_stock_scheduler_template(self, vals):
-        local_context = {'products': vals['product_list'], 'headers': vals['headers'], 'columnProps': vals['coln_name'],
-                         'email_from': vals['email_from_user'].sudo().email,
-                         'email_to': vals['email_to_user'].sudo().email,
-                         'subject': vals['subject'],
-                         'descrption': vals['description'],
-                         'email_cc': ",".join(vals['email_list_cc']),
-                         'closing_content': vals['closing_content']
-                         }
+        if vals['email_to_team']:
+            email = vals['email_to_team']
+        else:
+            email = vals['email_to_user'].sudo().email
+
+        local_context = {
+            'products': vals['product_list'], 'headers': vals['headers'], 'columnProps': vals['coln_name'],
+            'email_from': vals['email_from_user'].sudo().email,
+            'email_to': email,
+            'subject': vals['subject'],
+            'descrption': vals['description'],
+            'email_cc': ",".join(vals['email_list_cc']),
+            'closing_content': vals['closing_content']
+        }
         html_file = self.env['inventory.notification.html'].search([])
         finalHTML = html_file.process_common_html(vals['subject'], vals['description'], vals['product_list'],
                                                   vals['headers'], vals['coln_name'])
@@ -792,51 +814,38 @@ class InventoryNotificationScheduler(models.TransientModel):
             partner_ids = [vals['email_to_user'].id]
         try:
             if vals['email_to_user'].sudo().email:
+                msg = "\n Email sent --->  " + local_context['subject'] + "\n --From--" + local_context[
+                    'email_from'] + " \n --To-- " + local_context['email_to']
+                _logger.info(msg)
                 template_id = vals['template'].with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True,
                                                                                      force_send=True, )
         except:
             erro_msg = "mail sending fail for email id: %r" + vals[
                 'email_to_user'].sudo().email + " sending error report to admin"
             _logger.info(erro_msg)
-            print("mail sending fail for email id: " + vals['email_to_user'].email + " sending error report to admin")
-            # subject= "mail send fail for user "+ vals['email_to_user'].email + " (Subject: "+vals['subject']
-            # cache_context = {'products': vals['product_list'], 'headers': vals['headers'],
-            #                  'columnProps': vals['coln_name'],
-            #                  'email_from': vals['email_from_user'].email, 'email_to': vals['email_from_user'].email,
-            #                  'subject': subject,
-            #                  'descrption': vals['description']}
+            print(erro_msg)
             try:
-                # vals['template'].with_context(cache_context).send_mail(SUPERUSER_ID, raise_exception=True,force_send=True)
+                msg = "\n Email sent --->  " + local_context['subject'] + "\n --From--" + local_context[
+                    'email_from'] + " \n --To-- " + local_context['email_to']
+                _logger.info(msg)
                 vals['template'].with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True)
             except:
-                _logger.info("mail sending fail for email id: %r", vals['email_to_user'].email)
-                print("mail sending fail for email id: " + vals['email_to_user'].email)
+                erro_msg = "mail sending fail for email id: %r", vals['email_to_user'].email
+                _logger.info(erro_msg)
+                print(erro_msg)
 
-        if vals['is_employee']:
-            mail = self.env["mail.thread"]
-            mail.message_post(
-                body=finalHTML,
-                subject=vals['subject'],
-                message_type='notification',
-                partner_ids=partner_ids,
-                content_subtype='html'
-            )
+        # if vals['is_employee']:
+        #     mail = self.env["mail.thread"]
+        #     mail.message_post(
+        #         body=finalHTML,
+        #         subject=vals['subject'],
+        #         message_type='notification',
+        #         partner_ids=partner_ids,
+        #         content_subtype='html'
+        #     )
 
-        # mail = self.env['mail.mail'].browse(template_id)
-        # attachment_value = {
-        #     'name': 'product status',
-        #     'res_name': "red product status",
-        #     'res_model': 'product.product',
-        #     'type': 'binary',
-        #     'res_id': self.ids[0],
-        #     'datas': base64.b64encode(mail.body_html.encode("utf-8")),
-        #     'datas_fname': 'product_status' + '.pdf',
-        # }
-        # new_attachment = self.env['ir.attachment'].create(attachment_value)
-        # mail.attachment_ids |= new_attachment
-        # mail.send()
-
-    def process_common_product_scheduler(self, subject, descrption, products, header, columnProps, closing_content):
+    def process_common_product_scheduler(self, subject, descrption, products, header, columnProps, closing_content,
+                                         email_to_team):
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
         users = self.env['res.users'].search([('active', '=', True)])
         today_date = date.today()
@@ -894,7 +903,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                         product.write({'notification_date': today_start})
                     self.process_common_email_notification_template(super_user, user, subject,
                                                                     descrption, product_list, header, columnProps,
-                                                                    closing_content)
+                                                                    closing_content, email_to_team)
 
     def check_isAvailable(self, value):
         if value:
@@ -908,6 +917,6 @@ class InventoryNotificationScheduler(models.TransientModel):
 
     @staticmethod
     def string_to_date(date_string):
-        # if date_string == True or date_string == False:
+        # if date_string == False:
         #     return None
         return datetime.strptime(date_string, DEFAULT_SERVER_DATE_FORMAT).date()
