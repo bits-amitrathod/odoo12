@@ -3,15 +3,15 @@
     <data>
         <template id="report_invoice_document_ext" inherit_id="sale.report_invoice_document_inherit_sale">
             <xpath expr="//t/div[1]/div[2]/div[1]" position="replace">
-                 <div class="col-xs-2" t-if="o.name">
+                 <div class="col-xs-2" t-if="o.purchase_order">
                     <strong>Purchase Order#:</strong>
-                    <p t-field="o.name"/>
+                    <p t-field="o.purchase_order"/>
                 </div>
             </xpath>
             <xpath expr="//t/div[1]/div[2]/div[4]" position="replace">
-                 <div class="col-xs-2" t-if="o.name">
+                 <div class="col-xs-2" t-if="o.origin">
                     <strong>Sale Order#:</strong>
-                    <p t-field="o.name"/>
+                    <p t-field="o.origin"/>
                  </div>
             </xpath>
              <xpath expr="//div[@class='row']" position="attributes">
