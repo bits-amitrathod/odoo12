@@ -44,6 +44,7 @@
                                             Ship To:
                                             <div class="col-md-12" style="margin-top:10px;border: 1px solid #ddd;width:100%">
                                                 <p style="font-weight: lighter">
+                                                    <span t-esc="packing_list.sale_id.partner_id.name"/><br/>
                                                    <span t-esc="packing_list.sale_id.partner_shipping_id.street"/>
                                                     <br/>
                                                     <t t-if="packing_list.sale_id.partner_shipping_id.street2">
@@ -70,6 +71,7 @@
                                             Bill To:
                                             <div class="col-md-12" style="margin-top:10px;border: 1px solid #ddd;width:100%">
                                                 <p style="font-weight: lighter">
+                                                    <span t-esc="packing_list.sale_id.partner_id.name"/><br/>
                                                    <span t-esc="packing_list.sale_id.partner_invoice_id.street"/>
                                                     <br/>
                                                     <t t-if="packing_list.sale_id.partner_invoice_id.street2">
