@@ -113,7 +113,9 @@ class InventoryNotificationScheduler(models.TransientModel):
                            "<strong> Please proceed with the pulling and shipping of Sales Order: </strong>" + sale_order_ref.name + "<br/>" + \
                            "<strong> Customer PO #:  </strong>" + (sale_order_ref.client_order_ref or "N/A") + "<br/>" + \
                            "<strong> Carrier Info:  </strong>" + (sale_order_ref.carrier_info or "N/A") + "<br/>" + \
-                           "<strong> Carrier Account #:  </strong>" + (sale_order_ref.carrier_acc_no or "N/A")
+                           "<strong> Carrier Account #:  </strong>" + (
+                                       sale_order_ref.carrier_acc_no or "N/A") + "<br/>" + \
+                           "<strong> Delivery Method #:  </strong>" + (sale_order_ref.carrier_id.name or "N/A")
                            + "<br/>" + "<strong> Date: </strong>" + \
                            (str(datetime.strptime(picking.scheduled_date, "%Y-%m-%d %H:%M:%S").strftime(
                                '%m/%d/%Y')) if picking.scheduled_date else "N/A") + \

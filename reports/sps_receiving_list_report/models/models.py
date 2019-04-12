@@ -18,4 +18,4 @@ class SpsReceivingList(models.Model):
         for move_line in self:
             if move_line.product_id:
                 move_line.sku_code = move_line.product_id.sku_code
-                move_line.qty_rece=move_line.move_id.purchase_line_id.qty_received
+                move_line.qty_rece=move_line.qty_done
