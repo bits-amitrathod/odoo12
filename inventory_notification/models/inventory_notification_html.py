@@ -50,6 +50,9 @@ class InventoryNotificationHTML(models.TransientModel):
                     if packing.sale_id.carrier_acc_no !=False:
                              body=body + """<p><span style="font-weight: bold;">Carrier Account Number:</span>""" + packing.sale_id.carrier_acc_no + """</p>"""
 
+                    if packing.sale_id.carrier_id.name !=False:
+                             body=body + """<p><span style="font-weight: bold;">Delivery Method:</span>""" + packing.sale_id.carrier_id.name + """</p>"""
+
                     body=body + """</div>
                         <br/>
                         <table style='border: 1px solid black;width:100%;margin-top:20px'>

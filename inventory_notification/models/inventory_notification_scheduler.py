@@ -28,7 +28,7 @@ class InventoryNotificationScheduler(models.TransientModel):
     @api.multi
     def process_notification_scheduler(self):
         _logger.info("process_notification_scheduler called")
-        self.process_in_stock_scheduler()
+        # self.process_in_stock_scheduler()
         self.process_new_product_scheduler()
         self.process_notify_available()
         self.process_packing_list()
@@ -113,7 +113,9 @@ class InventoryNotificationScheduler(models.TransientModel):
                            "<strong> Please proceed with the pulling and shipping of Sales Order: </strong>" + sale_order_ref.name + "<br/>" + \
                            "<strong> Customer PO #:  </strong>" + (sale_order_ref.client_order_ref or "N/A") + "<br/>" + \
                            "<strong> Carrier Info:  </strong>" + (sale_order_ref.carrier_info or "N/A") + "<br/>" + \
-                           "<strong> Carrier Account #:  </strong>" + (sale_order_ref.carrier_acc_no or "N/A")
+                           "<strong> Carrier Account #:  </strong>" + (
+                                   sale_order_ref.carrier_acc_no or "N/A") + "<br/>" + \
+                           "<strong> Delivery Method #:  </strong>" + (sale_order_ref.carrier_id.name or "N/A")
                            + "<br/>" + "<strong> Date: </strong>" + \
                            (str(datetime.strptime(picking.scheduled_date, "%Y-%m-%d %H:%M:%S").strftime(
                                '%m/%d/%Y')) if picking.scheduled_date else "N/A") + \
@@ -557,7 +559,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                 msg = "\n Email sent --->  " + local_context['subject'] + "\n --From--" + local_context[
                     'email_from'] + " \n --To-- " + local_context['email_to']
                 _logger.info(msg)
-                template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True)
+                template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True)
 
                 # mail = self.env["mail.thread"]
                 # mail.message_post(
@@ -678,23 +680,22 @@ class InventoryNotificationScheduler(models.TransientModel):
                     'email_from'] + " \n --To-- " + local_context['email_to']
                 _logger.info(msg)
                 template_id = vals['template'].with_context(local_context).sudo().send_mail(SUPERUSER_ID,
-                                                                                            raise_exception=True,
-                                                                                            force_send=True, )
+                                                                                            raise_exception=True )
         except:
             error_msg = "mail sending fail for email id: %r" + vals[
                 'email_to_user'].sudo().email + " sending error report to admin"
             _logger.info(error_msg)
             print(error_msg)
 
-            try:
-                msg = "\n Email sent --->  " + local_context['subject'] + "\n --From--" + local_context[
-                    'email_from'] + " \n --To-- " + local_context['email_to']
-                _logger.info(msg)
-                vals['template'].with_context(local_context).sudo().send_mail(SUPERUSER_ID, raise_exception=True)
-            except:
-                log = "mail sending fail for email id: %r", vals['email_to_user'].sudo().email
-                _logger.info(log)
-                print(log)
+            # try:
+            #     msg = "\n Email sent --->  " + local_context['subject'] + "\n --From--" + local_context[
+            #         'email_from'] + " \n --To-- " + local_context['email_to']
+            #     _logger.info(msg)
+            #     vals['template'].with_context(local_context).sudo().send_mail(SUPERUSER_ID, raise_exception=True)
+            # except:
+            #     log = "mail sending fail for email id: %r", vals['email_to_user'].sudo().email
+            #     _logger.info(log)
+            #     print(log)
 
         # if vals['is_employee']:
         # mail = self.env["mail.thread"]
@@ -817,8 +818,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                 msg = "\n Email sent --->  " + local_context['subject'] + "\n --From--" + local_context[
                     'email_from'] + " \n --To-- " + local_context['email_to']
                 _logger.info(msg)
-                template_id = vals['template'].with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True,
-                                                                                     force_send=True, )
+                template_id = vals['template'].with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True)
         except:
             erro_msg = "mail sending fail for email id: %r" + vals[
                 'email_to_user'].sudo().email + " sending error report to admin"

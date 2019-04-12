@@ -73,27 +73,33 @@
                                                t-att-href="'/shop/product/%s' % (slug(product))" style="padding: 0px">
                                                 View full product details
                                                 <span class="glyphicon glyphicon-menu-right"
-                                                      style="font-size: 10px;"></span>
+                                                      style="font-size: 10px;"/>
                                                 <span class="glyphicon glyphicon-menu-right"
-                                                      style="font-size: 10px;right: 10px;"></span>
+                                                      style="font-size: 10px;right: 10px;"/>
                                             </a>
                                             <hr/>
                                             <!--<t t-call="website_sales.category_vender"/>-->
                                             <!--<t t-call="website_sales.productExpirationDate"/>-->
                                             <div>
-                                                <div t-if="product.qty_available >= 1">
-                                                    <!--<span class="fa fa-check"/>-->
-                                                    <span>
-                                                        <span t-esc="int(product.qty_available)"
-                                                              style="font-style: italic;"/>
-                                                        item(s) left
-                                                    </span>
-                                                </div>
-                                                <div t-if="product.qty_available == 0" class="linkCstm">
-                                                    <span class="fa fa-warning"/>
-                                                    <span>Temporarily out of stock</span>
-                                                    <!--<span t-field="product.availability_warning" />-->
-                                                </div>
+                                                <t t-set="total_qty"
+                                                   t-value="product.qty_available-product.outgoing_qty"/>
+                                                <t t-if="total_qty &gt; 0">
+                                                    <div>
+                                                        <!--<span class="fa fa-check"/>-->
+                                                        <span>
+                                                            <span t-esc="total_qty"
+                                                                  style="font-style: italic;"/>
+                                                            item(s) left
+                                                        </span>
+                                                    </div>
+                                                </t>
+                                                <t t-else="">
+                                                    <div class="linkCstm">
+                                                        <span class="fa fa-warning"/>
+                                                        <span>Temporarily out of stock</span>
+                                                        <!--<span t-field="product.availability_warning" />-->
+                                                    </div>
+                                                </t>
                                             </div>
                                             <!--<hr t-if="product.description_sale"/>-->
                                             <!--<div>-->

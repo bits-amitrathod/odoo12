@@ -37,8 +37,8 @@ class SalePurchaseHistory(models.Model):
                             for move_line in picking.move_lines:
                                 if move_line.product_id.id == sale_order_line.product_id.id:
                                     sale_order_line.qty_delivered_converted += move_line.product_uom_qty
-                                    sale_order_line.unit_price_converted = sale_order_line.product_id.list_price
-                                    sale_order_line.total_price_converted += (sale_order_line.product_id.list_price * move_line.product_uom_qty)
+                                    sale_order_line.unit_price_converted = sale_order_line.price_unit
+                                    sale_order_line.total_price_converted += (sale_order_line.price_unit * move_line.product_uom_qty)
                                     sale_order_line.product_uom_converted = move_line.product_uom
                             if picking.date_done:
                                sale_order_line.delivered_date = picking.date_done
