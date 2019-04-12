@@ -282,23 +282,22 @@
             <field name="arch" type="xml">
                 <form string="Notification Setting" create="false">
                     <sheet>
-                        <field name="is_parent" invisible="1"/>
                         <group>
-                            <field name="historic_months" attrs="{'readonly': [('is_parent', '=', False)]}"/>
+                            <field name="historic_months"/>
                         </group>
                         <group>
                             <group>
-                                <field name="start_date" attrs="{'readonly': [('is_parent', '=', False)]}"/>
-                                <field name="monday" attrs="{'readonly': [('is_parent', '=', False)]}"/>
-                                <field name="tuesday" attrs="{'readonly': [('is_parent', '=', False)]}"/>
-                                <field name="wednesday" attrs="{'readonly': [('is_parent', '=', False)]}"/>
-                                <field name="thursday" attrs="{'readonly': [('is_parent', '=', False)]}"/>
+                                <field name="start_date"/>
+                                <field name="monday"/>
+                                <field name="tuesday"/>
+                                <field name="wednesday"/>
+                                <field name="thursday"/>
                             </group>
                             <group>
-                                <field name="end_date" attrs="{'readonly': [('is_parent', '=', False)]}"/>
-                                <field name="friday" attrs="{'readonly': [('is_parent', '=', False)]}"/>
-                                <field name="saturday" attrs="{'readonly': [('is_parent', '=', False)]}"/>
-                                <field name="sunday" attrs="{'readonly': [('is_parent', '=', False)]}"/>
+                                <field name="end_date"/>
+                                <field name="friday"/>
+                                <field name="saturday"/>
+                                <field name="sunday"/>
                             </group>
                         </group>
                     </sheet>
