@@ -31,41 +31,41 @@ class ReportSaleOrderLineGroupByProduct(models.AbstractModel):
         sale_order_lines =self.env['sale.order.line'].browse(docids)
         _logger.info("sale line: %r",sale_order_lines)
         self.env.cr.execute("""
-                   SELECT 
-                      distinct sale_order_line.product_id,
-                      product_template.name,
-                      array_agg(ARRAY[
-                             sale_order.name,
-                            to_char(sale_order.date_order,'MM/DD/YYYY'),
-                            product_template.sku_code,
-                            CAST (concat(cast(round(stock_move.product_uom_qty) as text),'  ',product_uom.name) as text),
-                            CAST (sale_order_line.price_subtotal as text),
-                            CAST (sale_order_line.currency_id as text)
-                        ]) as table
-                    FROM 
-                      public.sale_order_line 
-                      left join public.stock_move on public.stock_move.sale_line_id=sale_order_line.id,
-                      public.sale_order, 
-                      public.product_product, 
-                      public.product_template left join  public.product_uom on  public.product_uom.id= product_template.uom_id 
-                    WHERE 
-                      sale_order_line.product_id = product_product.id AND
-                      sale_order.id = sale_order_line.order_id AND
-                      product_product.product_tmpl_id = product_template.id and sale_order_line.id in (""" + ",".join(
-            map(str, docids)) + """)
-                    Group BY
-                      product_template.name,sale_order_line.product_id
-                    Order BY
-                      product_template.name desc
-                  """)
+                     SELECT
+                           distinct sale_order_line.product_id,
+                           product_template.name,
+                           array_agg(ARRAY[
+                                   sale_order.name,
+                                   to_char(sale_order.date_order,'MM/DD/YYYY'),
+                                   product_template.sku_code,
+                                   CAST (concat(cast(round(stock_move.product_uom_qty) as text),'  ',product_uom.name) as text),
+                                   CAST (sale_order_line.price_subtotal as text),
+                                   CAST (sale_order_line.currency_id as text)
+                            ]) as table
+            FROM
+               public.stock_move
+            LEFT OUTER JOIN public.sale_order_line
+            ON ( public.stock_move.sale_line_id = public.sale_order_line.id)
+            INNER JOIN public.product_product
+            ON ( public.sale_order_line.product_id = public.product_product.id)
+            INNER JOIN public.sale_order
+            ON ( public.sale_order_line.order_id = public.sale_order.id)
+            INNER JOIN public.product_template
+            ON ( public.product_product.product_tmpl_id = public.product_template.id)
+            RIGHT OUTER JOIN public.product_uom
+            ON ( public.product_template.uom_id = public.product_uom.id)
+            WHERE public.sale_order_line.product_id = public.product_product.id
+            AND public.sale_order.id = public.sale_order_line.order_id
+            AND public.product_product.product_tmpl_id = public.product_template.id
+            AND  public.stock_move.location_id = 16
+            AND public.sale_order_line.id IN (""" + ",".join(
+                        map(str, docids)) + """)
+             Group BY product_template.name,sale_order_line.product_id
+             Order BY product_template.name desc   """)
 
         result = self.env.cr.dictfetchall()
-
-
         popup = self.env['popup.sale.orders.groupby.product.report'].search([('create_uid', '=', self._uid)], limit=1,
                                                                             order="id desc")
-
-
         return {
             'data': result,
             'popup': popup
