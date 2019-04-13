@@ -91,18 +91,26 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                                 vals['columnProps'], vals['closing_content'])
 
     def pick_notification_for_user(self, picking):
-        Stock_Moves = self.env['stock.move'].search([('picking_id', '=', picking.id)])
+        Stock_Moves_list = self.env['stock.move'].search([('picking_id', '=', picking.id)])
+        Stock_Moves_line = []
+        for stock_move in Stock_Moves_list:
+            temp = self.env['stock.move.line'].search([('move_id', '=', stock_move.id)])
+            Stock_Moves_line.append(temp)
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
         users = self.env['res.users'].search([('active', '=', True), ('id', '=', picking.sale_id.user_id.id)])
         sales_order = []
-        for stock_move in Stock_Moves:
-            sale_order = {
-                'sales_order': picking.sale_id.name,
-                'sku': stock_move.product_id.product_tmpl_id.sku_code,
-                'Product': stock_move.product_id.name,
-                'qty': stock_move.product_qty
-            }
-            sales_order.append(sale_order)
+        for stock_move_line in Stock_Moves_line:
+            for stock_move_line_single in stock_move_line:
+                sale_order = {
+                    'sales_order': picking.sale_id.name,
+                    'sku': stock_move_line_single.product_id.product_tmpl_id.sku_code,
+                    'Product': stock_move_line_single.product_id.name,
+                    'qty': stock_move_line_single.move_id.product_qty,
+                    'lot_name': stock_move_line_single.lot_id.name,
+                    'lot_expired_date': stock_move_line_single.lot_id.use_date,
+                    'qty_done': stock_move_line_single.qty_done,
+                }
+                sales_order.append(sale_order)
         sale_order_ref = picking.sale_id
         address_ref = sale_order_ref.partner_shipping_id
         vals = {
@@ -124,8 +132,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                            "<strong> Shipping Address: </strong> " + (address_ref.street or "") + \
                            (address_ref.city or "") + (address_ref.state_id.name or "") + (address_ref.zip or "") + \
                            (address_ref.country_id.name or ""),
-            'header': ['Catalog number', 'Description', 'Quantity'],
-            'columnProps': ['sku', 'Product', 'qty'],
+            'header': ['Catalog number', 'Description','Initial Quantity','Lot','Expiration Date','Quantity Done'],
+            'columnProps': ['sku', 'Product', 'qty','lot_name','lot_expired_date','qty_done'],
             'closing_content': 'Thanks & Regards, <br/> Sales Team'
         }
         for user in users:
