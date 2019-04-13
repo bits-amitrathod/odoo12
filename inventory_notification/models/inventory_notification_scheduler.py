@@ -29,7 +29,7 @@ class InventoryNotificationScheduler(models.TransientModel):
     @api.multi
     def process_notification_scheduler(self):
         _logger.info("process_notification_scheduler called")
-        # self.process_in_stock_scheduler()
+        self.process_in_stock_scheduler()
         self.process_new_product_scheduler()
         self.process_notify_available()
         self.process_packing_list()
@@ -58,9 +58,9 @@ class InventoryNotificationScheduler(models.TransientModel):
             'columnProps': ['sku', 'Product', 'qty'],
             'closing_content': "Thanks & Regards,  <br/> Warehouse Team	"
         }
-        self.process_common_email_notification_template(super_user, picking.sale_id.partner_id, vals['subject'],
+        self.process_common_email_notification_template(super_user,users, vals['subject'],
                                                         vals['description'], vals['sale_order_lines'], vals['header'],
-                                                        vals['columnProps'], vals['closing_content'])
+                                                        vals['columnProps'], vals['closing_content'],None)
 
     def pull_notification_for_user(self, picking):
         Stock_Moves = self.env['stock.move'].search([('picking_id', '=', picking.id)])
@@ -82,14 +82,21 @@ class InventoryNotificationScheduler(models.TransientModel):
             'columnProps': ['sku', 'Product', 'qty'],
             'closing_content': 'Thanks & Regards,<br/> Warehouse Team'
         }
-        for user in users:
+        vals['description'] = "Hi " + picking.sale_id.user_id.display_name+ \
+                              ", <br/><br/> Please find detail Of Sale Order: " +picking.sale_id.name
+        print("Inside Pull")
+        print(users.sudo().email)
+        self.process_common_email_notification_template(super_user, users, vals['subject'], vals['description'],
+                                                        vals['sale_order_lines'], vals['header'],
+                                                        vals['columnProps'], vals['closing_content'])
+        '''for user in users:
             has_group = user.has_group('stock.group_stock_manager')
             if has_group:
                 vals['description'] = "Hi " + user.display_name + \
                                       ", <br/><br/> Please find detail Of Sale Order: " + picking.sale_id.name
                 self.process_common_email_notification_template(super_user, user, vals['subject'], vals['description'],
                                                                 vals['sale_order_lines'], vals['header'],
-                                                                vals['columnProps'], vals['closing_content'])
+                                                                vals['columnProps'], vals['closing_content'])'''
 
     def pick_notification_for_user(self, picking):
         Stock_Moves_list = self.env['stock.move'].search([('picking_id', '=', picking.id)])
@@ -137,13 +144,17 @@ class InventoryNotificationScheduler(models.TransientModel):
             'columnProps': ['sku', 'Product', 'qty','lot_name','lot_expired_date','qty_done'],
             'closing_content': 'Thanks & Regards, <br/> Sales Team'
         }
-        for user in users:
+        self.process_common_email_notification_template(super_user, None, vals['subject'], vals['description'],
+                                                        vals['sale_order_lines'], vals['header'],
+                                                        vals['columnProps'], vals['closing_content'],
+                                                        self.warehouse_email)
+        '''for user in users:
             has_group = user.has_group('stock.group_stock_manager')
             if has_group:
                 self.process_common_email_notification_template(super_user, user, vals['subject'], vals['description'],
                                                                 vals['sale_order_lines'], vals['header'],
                                                                 vals['columnProps'], vals['closing_content'],
-                                                                self.warehouse_email)
+                                                                self.warehouse_email)'''
 
     def out_notification_for_sale(self, picking):
         Stock_Moves = self.env['stock.move'].search([('picking_id', '=', picking.id)])
@@ -174,9 +185,11 @@ class InventoryNotificationScheduler(models.TransientModel):
             'columnProps': ['sku', 'Product', 'qty'],
             'closing_content': 'Thanks & Regards, <br/> Warehouse Team'
         }
-        self.process_common_email_notification_template(super_user, picking.sale_id.user_id, vals['subject'],
+        print("Inside Out")
+        print(users.email)
+        self.process_common_email_notification_template(super_user, users, vals['subject'],
                                                         vals['description'], vals['sale_order_lines'], vals['header'],
-                                                        vals['columnProps'], vals['closing_content'])
+                                                        vals['columnProps'], vals['closing_content'],None)
 
     def process_in_stock_scheduler(self):
         _logger.info("process_in_stock_scheduler called")
@@ -353,7 +366,17 @@ class InventoryNotificationScheduler(models.TransientModel):
         for customer in customers:
             _logger.info("customer :%r", customer)
         if customers:
-            for user in users:
+            columnProps = ['name', 'user_id.display_name']
+            header = ['Serial Number', 'Customer Name', 'Sales Person']
+            email_form = super_user
+            # email_to = user
+            subject = 'Customer On Hold'
+            description = 'Hi Shipping Team, <br/><br/>Please find below the list of customers whose "On-hold status" has been released from Accounting Department.'
+            closing_content = "Thanks & Regards, <br/> Accounting Team"
+            self.process_common_email_notification_template(email_form, None, subject, description,
+                                                            customers, header, columnProps, closing_content,
+                                                            self.warehouse_email)
+            '''for user in users:
                 has_group = user.has_group('stock.group_stock_manager') or user.has_group(
                     'sales_team.group_sale_manager')
                 if has_group:
@@ -361,13 +384,13 @@ class InventoryNotificationScheduler(models.TransientModel):
                     columnProps = ['name', 'user_id.display_name']
                     header = ['Serial Number', 'Customer Name', 'Sales Person']
                     email_form = super_user
-                    email_to = user
+                    #email_to = user
                     subject = 'Customer On Hold'
                     description = 'Hi Shipping Team, <br/><br/>Please find below the list of customers whose "On-hold status" has been released from Accounting Department.'
                     closing_content = "Thanks & Regards, <br/> Accounting Team"
-                    self.process_common_email_notification_template(email_form, email_to, subject, description,
+                    self.process_common_email_notification_template(email_form, None, subject, description,
                                                                     customers, header, columnProps, closing_content,
-                                                                    self.warehouse_email)
+                                                                    self.warehouse_email)'''
 
     def process_hold_off_customer(self, partner_id):
         sales = self.env['sale.order'].search([('state', '=', 'sale'), ('partner_id', '=', partner_id.id)])
@@ -402,14 +425,14 @@ class InventoryNotificationScheduler(models.TransientModel):
                 'columnProps': ['customer_name', 'sales_order', 'shipping_address'],
                 'closing_content': "Thanks & Regards, <br/>Accounting Team"
             }
-            for user in users:
+            '''for user in users:
                 has_group = user.has_group('stock.group_stock_manager')
-                if has_group:
-                    self.process_common_email_notification_template(super_user, user, vals['subject'],
-                                                                    vals['description'], vals['sale_order_lines'],
-                                                                    vals['header'],
-                                                                    vals['columnProps'], vals['closing_content'],
-                                                                    self.warehouse_email)
+                if has_group:'''
+            self.process_common_email_notification_template(super_user, None, vals['subject'],
+                                                            vals['description'], vals['sale_order_lines'],
+                                                            vals['header'],
+                                                            vals['columnProps'], vals['closing_content'],
+                                                            self.warehouse_email)
 
     def process_notification_for_product_red_status(self, products):
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
@@ -439,15 +462,19 @@ class InventoryNotificationScheduler(models.TransientModel):
                 yellow_products.append(vals)
             elif product.inventory_percent_color <= 75:
                 red_product.append(vals)
+        if yellow_products:
+            self.process_notify_yellow_product(yellow_products, None, super_user)
+        if red_product:
+            self.process_notify_red_product(red_product, None, super_user)
 
-        for user in users:
+        '''for user in users:
             has_group = user.has_group('purchase.group_purchase_manager') or user.has_group(
                 'sales_team.group_sale_manager')
             if has_group:
                 if yellow_products:
                     self.process_notify_yellow_product(yellow_products, user, super_user)
                 if red_product:
-                    self.process_notify_red_product(red_product, user, super_user)
+                    self.process_notify_red_product(red_product, user, super_user)'''
 
     def process_notification_for_product_green_status(self, products):
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
@@ -474,15 +501,19 @@ class InventoryNotificationScheduler(models.TransientModel):
             }
             if product.inventory_percent_color > 125:
                 green_products.append(vals)
+        if green_products:
+            self.process_notify_green_product(green_products, None, super_user)
+        if yellow_products:
+            self.process_notify_yellow_product(yellow_products, None, super_user)
 
-        for user in users:
+        '''for user in users:
             has_group = user.has_group('purchase.group_purchase_manager') or user.has_group(
                 'sales_team.group_sale_manager')
             if has_group:
                 if green_products:
                     self.process_notify_green_product(green_products, user, super_user)
                 if yellow_products:
-                    self.process_notify_yellow_product(yellow_products, user, super_user)
+                    self.process_notify_yellow_product(yellow_products, user, super_user)'''
 
     def process_notification_for_in_stock_report(self, products):
         _logger.info("process_notification_for_in_stock_report called....")
@@ -572,30 +603,26 @@ class InventoryNotificationScheduler(models.TransientModel):
 
     def process_packing_email_notification(self, vals):
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
-        users = self.env['res.users'].search([('active', '=', True)])
+        #users = self.env['res.users'].search([('active', '=', True)])
         template = self.env.ref(vals['custom_template'])
-        for user in users:
+        '''for user in users:
             has_group = user.has_group('stock.group_stock_manager')
-            if has_group:
-                local_context = {'picking_list': vals['picking_list'],
-                                 'subject': 'New Sales Order',
-                                 'email_from': super_user.email, 'email_to': self.warehouse_email, 'datetime': datetime,
-                                 }
-                html_file = self.env['inventory.notification.html'].search([])
-                finalHTML = html_file.process_packing_list_html(vals['picking_list'])
-                msg = "\n Email sent --->  " + local_context['subject'] + "\n --From--" + local_context[
-                    'email_from'] + " \n --To-- " + local_context['email_to']
-                _logger.info(msg)
-                template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True)
+            if has_group:'''
+        local_context = {'picking_list': vals['picking_list'],
+                         'subject': 'New Sales Order',
+                         'email_from': super_user.email, 'email_to': self.warehouse_email, 'datetime': datetime,
+                         }
+        try:
+            msg = "\n Email sent --->  " + local_context['subject'] + "\n --From--" + local_context[
+                'email_from'] + " \n --To-- " + local_context['email_to']
+            _logger.info(msg)
+            template.with_context(local_context).sudo().send_mail(SUPERUSER_ID, raise_exception=True)
+        except:
+            error_msg = "mail sending fail for email id: %r" + local_context[
+                'email_to']+ " sending error report to admin"
+            _logger.info(error_msg)
+            print(error_msg)
 
-                # mail = self.env["mail.thread"]
-                # mail.message_post(
-                #     body=finalHTML,
-                #     subject='New Sales Order',
-                #     message_type='notification',
-                #     partner_ids=[user.partner_id.id],
-                #     content_subtype='html'
-                # )
 
     def process_common_email_notification_template(self, email_from_user, email_to_user, subject, descrption, products,
                                                    header, columnProps, closing_content, email_to_team=None,
@@ -665,7 +692,8 @@ class InventoryNotificationScheduler(models.TransientModel):
             product_dict['background_color'] = background_color
             product_list.append(product_dict)
             product_dict = {}
-        # print(products)
+        print("email_to_team")
+        print(email_to_team)
         if products:
             vals = {
                 'product_list': product_list,
@@ -683,11 +711,19 @@ class InventoryNotificationScheduler(models.TransientModel):
             self.send_email_and_notification(vals)
 
     def send_email_and_notification(self, vals):
-
+        print (vals)
+        email=""
         if vals['email_to_team']:
+            print("inside 1 st")
             email = vals['email_to_team']
-        else:
+            print (email)
+        if vals['email_to_user']:
+            print("inside 2 nd")
             email = vals['email_to_user'].sudo().email
+            print (email)
+
+        print ("email=")
+        print (email)
 
         local_context = {'products': vals['product_list'], 'headers': vals['headers'], 'columnProps': vals['coln_name'],
                          'email_from': vals['email_from_user'].sudo().email,
@@ -697,12 +733,12 @@ class InventoryNotificationScheduler(models.TransientModel):
         finalHTML = html_file.process_common_html(vals['subject'], vals['description'], vals['product_list'],
                                                   vals['headers'], vals['coln_name'])
 
-        if hasattr(vals['email_to_user'], 'partner_ids'):
+        '''if hasattr(vals['email_to_user'], 'partner_ids'):
             partner_ids = [vals['email_to_user'].partner_ids.id]
         else:
-            partner_ids = [vals['email_to_user'].id]
+            partner_ids = [vals['email_to_user'].id]'''
         try:
-            if vals['email_to_user'].sudo().email:
+            if email:
                 msg = "\n Email sent --->  " + local_context['subject'] + "\n --From--" + local_context[
                     'email_from'] + " \n --To-- " + local_context['email_to']
                 _logger.info(msg)
@@ -770,14 +806,15 @@ class InventoryNotificationScheduler(models.TransientModel):
                     else:
                         if column_name.find(".") == -1:
                             if(column_name=='qty_available'):
+                                print ("qty_available")
                                 column =int(product[column_name])
+                                print (column)
                             if (column_name == 'list_price'):
                                 column = '$'+str(product[column_name])
                                 print (column)
                             else:
                                 column =str(product[column_name])
                         else:
-                            print("inside else")
                             lst = column_name.split('.')
                             column = product[lst[0]]
                             if isinstance(lst, list):
@@ -831,7 +868,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         html_file = self.env['inventory.notification.html'].search([])
         finalHTML = html_file.process_common_html(vals['subject'], vals['description'], vals['product_list'],
                                                   vals['headers'], vals['coln_name'])
-        print(finalHTML)
+        #print(finalHTML)
         if hasattr(vals['email_to_user'], 'partner_ids'):
             partner_ids = [vals['email_to_user'].partner_ids.id]
         else:
@@ -881,52 +918,52 @@ class InventoryNotificationScheduler(models.TransientModel):
         if len(products) > 0:
             stock_warehouse_id = self.env['stock.warehouse'].search([('id', '=', 1), ])
             stock_location_id = self.env['stock.location'].search([('id', '=', stock_warehouse_id.lot_stock_id.id), ])
-            for user in users:
+            '''for user in users:
                 has_group = user.has_group('sales_team.group_sale_manager')
-                if has_group:
-                    product_list = []
+                if has_group:'''
+            product_list = []
+            row = "even"
+            for product in products:
+                query_result = False
+                if row == 'even':
+                    background_color = "#ffffff"
+                    row = "odd"
+                else:
+                    background_color = "#f0f8ff"
                     row = "even"
-                    for product in products:
-                        query_result = False
-                        if row == 'even':
-                            background_color = "#ffffff"
-                            row = "odd"
-                        else:
-                            background_color = "#f0f8ff"
-                            row = "even"
-                        qty_on_hand = product.qty_available
-                        forecasted_qty = product.virtual_available
-                        if stock_location_id:
-                            self.env.cr.execute(
-                                "SELECT  min(use_date), max (use_date) FROM stock_production_lot spl LEFT JOIN   stock_quant sq ON sq.lot_id=spl.id LEFT JOIN  stock_location sl ON sl.id=sq.location_id   where sl.id = %s and  sq.product_id = %s",
-                                (stock_location_id.id, product.id,))
-                            query_result = self.env.cr.dictfetchone()
-                        if query_result and query_result['min']:
-                            minExDate = datetime.strptime(query_result['min'], "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
-                        else:
-                            minExDate = ""
-                        if query_result and query_result['max']:
-                            maxExDate = datetime.strptime(query_result['max'], "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
-                        else:
-                            maxExDate = ""
-                        vals = {
-                            'minExpDate': minExDate,
-                            'maxExpDate': maxExDate,
-                            'sale_price': product.lst_price,
-                            'standard_price': product.product_tmpl_id.standard_price,
-                            'product_type': switcher.get(product.type, " "),
-                            'qty_on_hand': qty_on_hand,
-                            'forecasted_qty': forecasted_qty,
-                            'background_color': background_color,
-                            'product_name': product.product_tmpl_id.name,
-                            'sku_code': product.product_tmpl_id.sku_code,
-                            'unit_of_measure': product.product_tmpl_id.uom_id.name
-                        }
-                        product_list.append(vals)
-                        product.write({'notification_date': today_start})
-                    self.process_common_email_notification_template(super_user, user, subject,
-                                                                    descrption, product_list, header, columnProps,
-                                                                    closing_content, email_to_team)
+                qty_on_hand = product.qty_available
+                forecasted_qty = product.virtual_available
+                if stock_location_id:
+                    self.env.cr.execute(
+                        "SELECT  min(use_date), max (use_date) FROM stock_production_lot spl LEFT JOIN   stock_quant sq ON sq.lot_id=spl.id LEFT JOIN  stock_location sl ON sl.id=sq.location_id   where sl.id = %s and  sq.product_id = %s",
+                        (stock_location_id.id, product.id,))
+                    query_result = self.env.cr.dictfetchone()
+                if query_result and query_result['min']:
+                    minExDate = datetime.strptime(query_result['min'], "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
+                else:
+                    minExDate = ""
+                if query_result and query_result['max']:
+                    maxExDate = datetime.strptime(query_result['max'], "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
+                else:
+                    maxExDate = ""
+                vals = {
+                    'minExpDate': minExDate,
+                    'maxExpDate': maxExDate,
+                    'sale_price': product.lst_price,
+                    'standard_price': product.product_tmpl_id.standard_price,
+                    'product_type': switcher.get(product.type, " "),
+                    'qty_on_hand': qty_on_hand,
+                    'forecasted_qty': forecasted_qty,
+                    'background_color': background_color,
+                    'product_name': product.product_tmpl_id.name,
+                    'sku_code': product.product_tmpl_id.sku_code,
+                    'unit_of_measure': product.product_tmpl_id.uom_id.name
+                }
+                product_list.append(vals)
+                product.write({'notification_date': today_start})
+            self.process_common_email_notification_template(super_user, None, subject,
+                                                            descrption, product_list, header, columnProps,
+                                                            closing_content, email_to_team)
 
     def check_isAvailable(self, value):
         if value:
