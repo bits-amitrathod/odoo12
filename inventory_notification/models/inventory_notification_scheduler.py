@@ -13,13 +13,13 @@ _logger = logging.getLogger(__name__)
 class InventoryNotificationScheduler(models.TransientModel):
     _name = 'inventory.notification.scheduler'
 
-    #warehouse_email = "vasimkhan@benchmarkitsolutions.com"
-    #sales_email = "rohitkabadi@benchmarkitsolutions.com"
-    #acquisitions_email = "ajinkyanimbalkar@benchmarkitsolutions.com"
+    warehouse_email = "vasimkhan@benchmarkitsolutions.com"
+    sales_email = "rohitkabadi@benchmarkitsolutions.com"
+    acquisitions_email = "ajinkyanimbalkar@benchmarkitsolutions.com"
 
-    warehouse_email = "warehouse@surgicalproductsolutions.com"
-    sales_email = "salesteam@surgicalproductsolutions.com"
-    acquisitions_email = "acquisitions@surgicalproductsolutions.com"
+    #warehouse_email = "warehouse@surgicalproductsolutions.com"
+    #sales_email = "salesteam@surgicalproductsolutions.com"
+    #acquisitions_email = "acquisitions@surgicalproductsolutions.com"
 
     def process_manual_notification_scheduler(self):
         _logger.info("process_manual_notification_scheduler called..")
@@ -231,8 +231,6 @@ class InventoryNotificationScheduler(models.TransientModel):
                         sales = self.env['sale.order'].search(
                             [('partner_id', 'in', cust_ids), ('date_order', '>', last_day)])
                     _logger.info("sales  :%r", sales)
-                    print("**********len(sales)****************")
-                    print(len(sales))
                     products = {}
                     for sale in sales:
                         sale_order_lines = self.env['sale.order.line'].search([('order_id.id', '=', sale.id)])
@@ -241,7 +239,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                             if line.product_id.qty_available and line.product_id.qty_available is not None and line.product_id.qty_available > 0:
                                 products[line.product_id.id] = line.product_id
                     subject = "SPS Updated In-Stock Product Report"
-                    descrption = "<strong>Good morning!</strong>" \
+                    descrption = "<strong>Good morning " + customr.name + "</strong>"\
                                  "<br/> <br/> Below are items you have previously requested that are currently in stock. " \
                                  "In addition, below is the link to download full product catalog. Please let us know what" \
                                  " ordering needs we can help provide savings on this week!" \
@@ -277,8 +275,6 @@ class InventoryNotificationScheduler(models.TransientModel):
                                       "<br/>412-745-0328			"
                     if products:
                         product_list.extend(list(products.values()))
-                        print("**************len(product_list)*******************")
-                        print(len(product_list))
                         self.process_email_in_stock_scheduler_template(super_user, customr, subject, descrption,
                                                                            product_list,
                                                                            header, columnProps, closing_content,
@@ -286,8 +282,6 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                                            email_list_cc, is_employee=False)
                 else:
                     pass
-        print("Len of email queue")
-        print(len(email_queue))
         end = time.time()
         print("Time for Execution")
         print(end - start)
@@ -776,8 +770,15 @@ class InventoryNotificationScheduler(models.TransientModel):
                         column = str(product.get(column_name))
                     else:
                         if column_name.find(".") == -1:
-                            column = str(product[column_name])
+                            if(column_name=='qty_available'):
+                                column =int(product[column_name])
+                            if (column_name == 'list_price'):
+                                column = '$'+str(product[column_name])
+                                print (column)
+                            else:
+                                column =str(product[column_name])
                         else:
+                            print("inside else")
                             lst = column_name.split('.')
                             column = product[lst[0]]
                             if isinstance(lst, list):
@@ -831,7 +832,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         html_file = self.env['inventory.notification.html'].search([])
         finalHTML = html_file.process_common_html(vals['subject'], vals['description'], vals['product_list'],
                                                   vals['headers'], vals['coln_name'])
-        # print(finalHTML)
+        print(finalHTML)
         if hasattr(vals['email_to_user'], 'partner_ids'):
             partner_ids = [vals['email_to_user'].partner_ids.id]
         else:
