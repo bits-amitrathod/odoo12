@@ -121,7 +121,7 @@ class ProductCatalogReport(models.Model):
                 product.product_qty = query_result['qut']
 
                 product.env.cr.execute(
-                    "SELECT min(use_date), max (use_date) FROM public.stock_production_lot where id = " + str(('production_lot_ids' in self._context and self._context['production_lot_ids'][str(product.id)]) or product.id))
+                    "SELECT min(use_date), max (use_date) FROM public.stock_production_lot where product_id = " + str(('production_lot_ids' in self._context and self._context['production_lot_ids'][str(product.id)]) or product.id))
                 query_result = product.env.cr.dictfetchone()
                 if query_result['min']:
                     product.exp_min_date = fields.Datetime.from_string(str(query_result['min'])).date()
