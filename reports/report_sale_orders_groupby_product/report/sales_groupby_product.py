@@ -58,6 +58,7 @@ class ReportSaleOrderLineGroupByProduct(models.AbstractModel):
             AND public.sale_order.id = public.sale_order_line.order_id
             AND public.product_product.product_tmpl_id = public.product_template.id
             AND  public.stock_move.location_id = 16
+            AND public.stock_move.state like 'done'
             AND public.sale_order_line.id IN (""" + ",".join(
                         map(str, docids)) + """)
              Group BY product_template.name,sale_order_line.product_id
