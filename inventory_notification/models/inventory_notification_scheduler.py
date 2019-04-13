@@ -344,8 +344,8 @@ class InventoryNotificationScheduler(models.TransientModel):
             'picking_list': picking,
             'custom_template': "inventory_notification.inventory_packing_list_notification"
         }
-        if len(picking) > 0:
-            self.process_packing_email_notification(vals)
+        #if len(picking) > 0:
+            #self.process_packing_email_notification(vals)
 
             # final_date = fields.Datetime.from_string(today_start)
         products = self.env['product.product'].search([('stock_move_ids.sale_line_id', '!=', False),
@@ -610,7 +610,7 @@ class InventoryNotificationScheduler(models.TransientModel):
             if has_group:'''
         local_context = {'picking_list': vals['picking_list'],
                          'subject': 'New Sales Order',
-                         'email_from': super_user.email, 'email_to': self.warehouse_email, 'datetime': datetime,
+                         'email_from': super_user.email, 'email_to': self.warehouse_email, 'datetime':datetime,
                          }
         try:
             msg = "\n Email sent --->  " + local_context['subject'] + "\n --From--" + local_context[
@@ -805,13 +805,10 @@ class InventoryNotificationScheduler(models.TransientModel):
                         column = str(product.get(column_name))
                     else:
                         if column_name.find(".") == -1:
-                            if(column_name=='qty_available'):
-                                print ("qty_available")
-                                column =int(product[column_name])
-                                print (column)
-                            if (column_name == 'list_price'):
+                            if column_name == 'qty_available':
+                                column = int(product[column_name])
+                            elif column_name == 'list_price':
                                 column = '$'+str(product[column_name])
-                                print (column)
                             else:
                                 column =str(product[column_name])
                         else:
