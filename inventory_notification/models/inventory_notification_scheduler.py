@@ -298,6 +298,9 @@ class InventoryNotificationScheduler(models.TransientModel):
                                       "<br/>412-745-0328			"
                     if products:
                         product_list.extend(list(products.values()))
+                        print("customr.user_id.email")
+                        print(customr.user_id.email)
+                        email_list_cc.append(customr.user_id.email)
                         self.process_email_in_stock_scheduler_template(super_user, customr, subject, descrption,
                                                                            product_list,
                                                                            header, columnProps, closing_content,
