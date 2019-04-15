@@ -352,7 +352,8 @@
                     <a t-attf-href="#" class="mb8 input-group-addon js_add_cart_json">
                         <i class="fa fa-minus"></i>
                     </a>
-                    <input type="text" class="form-control quantity" data-min="1" name="add_qty" value="1"/>
+                    <input type="text" class="form-control quantity" data-min="1" name="add_qty" value="1"
+                    t-att-data-max="product.qty_available - product.outgoing_qty" />
                     <a t-attf-href="#" class="mb8 input-group-addon float_left js_add_cart_json">
                         <i class="fa fa-plus"></i>
                     </a>
