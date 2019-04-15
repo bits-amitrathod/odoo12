@@ -13,13 +13,13 @@ _logger = logging.getLogger(__name__)
 class InventoryNotificationScheduler(models.TransientModel):
     _name = 'inventory.notification.scheduler'
 
-    #warehouse_email = "vasimkhan@benchmarkitsolutions.com"
-    #sales_email = "rohitkabadi@benchmarkitsolutions.com"
-    #acquisitions_email = "ajinkyanimbalkar@benchmarkitsolutions.com"
+    warehouse_email = "vasimkhan@benchmarkitsolutions.com"
+    sales_email = "rohitkabadi@benchmarkitsolutions.com"
+    acquisitions_email = "ajinkyanimbalkar@benchmarkitsolutions.com"
 
-    warehouse_email = "warehouse@surgicalproductsolutions.com"
-    sales_email = "salesteam@surgicalproductsolutions.com"
-    acquisitions_email = "acquisitions@surgicalproductsolutions.com"
+    #warehouse_email = "warehouse@surgicalproductsolutions.com"
+    #sales_email = "salesteam@surgicalproductsolutions.com"
+    #acquisitions_email = "acquisitions@surgicalproductsolutions.com"
 
     def process_manual_notification_scheduler(self):
         _logger.info("process_manual_notification_scheduler called..")
@@ -344,8 +344,8 @@ class InventoryNotificationScheduler(models.TransientModel):
             'picking_list': picking,
             'custom_template': "inventory_notification.inventory_packing_list_notification"
         }
-        #if len(picking) > 0:
-            #self.process_packing_email_notification(vals)
+        if len(picking) > 0:
+            self.process_packing_email_notification(vals)
 
             # final_date = fields.Datetime.from_string(today_start)
         products = self.env['product.product'].search([('stock_move_ids.sale_line_id', '!=', False),
@@ -605,6 +605,9 @@ class InventoryNotificationScheduler(models.TransientModel):
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
         #users = self.env['res.users'].search([('active', '=', True)])
         template = self.env.ref(vals['custom_template'])
+        '''for packing in vals['picking_list']:
+            print("packing.sale_id.write_date")
+            print(packing.sale_id.write_date)'''
         '''for user in users:
             has_group = user.has_group('stock.group_stock_manager')
             if has_group:'''
