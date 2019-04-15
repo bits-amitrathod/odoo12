@@ -51,6 +51,5 @@ class ReportSaleOrderLine(models.Model):
     @api.multi
     def _get_sku(self):
         for order in self:
-            for sale_order in order.order_line:
-                order.sku_code = sale_order.product_id.product_tmpl_id.sku_code
+                order.sku_code = order.product_id.product_tmpl_id.sku_code
 

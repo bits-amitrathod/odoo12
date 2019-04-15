@@ -69,7 +69,7 @@ class StockPickingMarkAllButton(models.Model):
 
     def _compute_visibility(self):
         for pick in self:
-            pick.is_mark_all_button_visible =  pick.sale_id.id and not pick.state in ['done','cancle']
+            pick.is_mark_all_button_visible =  pick.sale_id.id and not pick.state in ['done','cancel']
 
     def action_button_mark_all_done(self):
         self.ensure_one()
