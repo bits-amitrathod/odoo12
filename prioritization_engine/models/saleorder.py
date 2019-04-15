@@ -298,6 +298,10 @@ class AccountInvoice(models.Model):
                 query_result = order.env.cr.dictfetchone()
                 if not query_result['carrier_tracking_ref'] is None :
                     order.tracking_reference = query_result['carrier_tracking_ref']
+                else:
+                    order.tracking_reference = ""
+            else:
+                    order.tracking_reference = ""
 
 
 class SaleOrderReport(models.Model):
