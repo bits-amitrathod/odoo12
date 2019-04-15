@@ -43,8 +43,8 @@
                              <p><span style="font-weight: bold;">Carrier Account #: </span>${packing.sale_id.carrier_acc_no}</p>
                             %endif
 
-                            %if picking.sale_id.carrier_id and picking.sale_id.carrier_id.name !=False:
-                             <p><span style="font-weight: bold;">Delivery Method #:  </span>${picking.sale_id.carrier_id.name}</p>
+                            %if packing.sale_id.carrier_id and packing.sale_id.carrier_id.name !=False:
+                             <p><span style="font-weight: bold;">Delivery Method #:  </span>${packing.sale_id.carrier_id.name}</p>
                             %endif
                         </div>
                         <br/>
@@ -77,8 +77,14 @@
                                                              <p style="font-weight: lighter">
                                                                 <span>${move_line.product_uom.name}</span>-
                                                                 Lot#:<span>${ move_line_id.lot_id.name} </span>
-                                                                 % set use_date = datetime.strptime(move_line_id.lot_id.use_date, "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
-                                                                Exp Date:<span> ${use_date}</span>
+
+                                                                % if (move_line_id.lot_id.use_date):
+                                                                    % set use_date = datetime.strptime(move_line_id.lot_id.use_date, "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
+                                                                    Exp Date:<span> ${use_date}</span>
+                                                                % else:
+                                                                    Exp Date:<span> N/A</span>
+                                                                % endif
+
                                                             </p>
                                                         %endfor
                                                     </div>
