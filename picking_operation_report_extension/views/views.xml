@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    <template id="pick_operation_report_extension" inherit_id="stock.report_picking">
+        <xpath expr="//table[@t-if='o.move_line_ids']" position="replace">
+            <table class="table table-condensed" t-if="o.move_line_ids">
+                              <t t-set="has_barcode" t-value="any([move_lines.product_id and move_lines.product_id.sudo().barcode or move_lines.package_id for move_lines in o.move_line_ids])"/>
+                              <t t-set="has_serial_number" t-value="o.move_line_ids.filtered(lambda ml: ml.lot_id or ml.lot_name)" groups="stock.group_production_lot"/>
+                              <thead>
+                                <tr>
+                                    <th width="40%">Product</th>
+                                    <th width="20%">Quantity</th>
+                                    <th width="20%">Lot/Serial Number</th>
+                                    <th width="20%" class="text-right">Destination</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                    <tr t-foreach="o.move_lines.sorted(key=lambda m: m.product_id.id)" t-as="move">
+                                        <td>
+                                            <span t-field="move.product_id.display_name"/><br/>
+                                            <span t-field="move.product_id.description_picking"/>
+                                        </td>
+                                        <td>
+                                            <span t-if="move.product_qty" t-field="move.product_qty"/>
+                                            <span t-if="not move.product_qty" t-esc="move.product_uom._compute_quantity(move.quantity_done, move.product_id.uom_id, rounding_method='HALF-UP')"/>
+                                            <span t-field="move.product_id.uom_id" groups="product.group_uom"/>
+                                        </td>
+                                        <td colspan="3">
+                                            <t t-if="move.move_line_ids">
+                                                <table width="100%">
+                                                    <tr t-foreach="move.move_line_ids.sorted(key=lambda ml: ml.location_id.id)" t-as="ml">
+
+                                                        <td width="60%">
+                                                            <t t-if="has_serial_number and ml.product_id.tracking != 'none'">
+                                                                <div class="col-xs-6">
+                                                                    <span t-field="ml.lot_id"/>
+                                                                    <span t-if="not ml.lot_id" t-field="ml.lot_name"/>
+                                                                </div>
+                                                            </t>
+                                                            <div class="col-xs-6">
+                                                                <span t-field="ml.qty_done"/>
+                                                                <t t-if="o.state!='done'">
+                                                                    / <span t-field="ml.product_uom_qty"/>
+                                                                </t>
+                                                            </div>
+                                                        </td>
+                                                        <td width="40%" align="right">
+                                                            <div>
+                                                                <span t-field="ml.location_dest_id"/>
+                                                                <t t-if="ml.result_package_id">
+                                                                    - <span t-field="ml.result_package_id"/>
+                                                                </t>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </t>
+                                            <t t-else="">
+                                                <span>No reservation or quantity done yet.</span>
+                                            </t>
+                                        </td>
+                                    </tr>
+                              </tbody>
+                            </table>
+        </xpath>
+        </template>
+
+    </data>
+</odoo>
