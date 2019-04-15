@@ -280,6 +280,7 @@ class AccountInvoice(models.Model):
                          readonly=True, states={'draft': [('readonly', False)]})'''
 
     purchase_order = fields.Char(string='Purchase Order#', store=False, compute="_setInvoicePurchaseOrder", readonly=True)
+    tracking_reference = fields.Char(string=' TrackingReference' ,store=False, compute="_getSalesOerderPickingOutTrackingReference", readonly=True)
 
     @api.multi
     def _setInvoicePurchaseOrder(self):
@@ -288,6 +289,16 @@ class AccountInvoice(models.Model):
                 order.purchase_order = ""
             else:
                 order.purchase_order = order.name
+
+    @api.multi
+    def _getSalesOerderPickingOutTrackingReference(self):
+        for order in self:
+            if order.origin:
+                order.env.cr.execute( "select carrier_tracking_ref from stock_picking WHERE origin like '"+order.origin+"' and state like 'done' and location_id =16 and  location_dest_id = 9 limit 1")
+                query_result = order.env.cr.dictfetchone()
+                if not query_result['carrier_tracking_ref'] is None :
+                    order.tracking_reference = query_result['carrier_tracking_ref']
+
 
 class SaleOrderReport(models.Model):
     _inherit = "sale.report"
