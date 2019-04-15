@@ -7,8 +7,8 @@ from datetime import date, timedelta
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
 import time
 
-
 _logger = logging.getLogger(__name__)
+
 
 class InventoryNotificationScheduler(models.TransientModel):
     _name = 'inventory.notification.scheduler'
@@ -58,9 +58,9 @@ class InventoryNotificationScheduler(models.TransientModel):
             'columnProps': ['sku', 'Product', 'qty'],
             'closing_content': "Thanks & Regards,  <br/> Warehouse Team	"
         }
-        self.process_common_email_notification_template(super_user,users, vals['subject'],
+        self.process_common_email_notification_template(super_user, users, vals['subject'],
                                                         vals['description'], vals['sale_order_lines'], vals['header'],
-                                                        vals['columnProps'], vals['closing_content'],None)
+                                                        vals['columnProps'], vals['closing_content'], None)
 
     def pull_notification_for_user(self, picking):
         Stock_Moves = self.env['stock.move'].search([('picking_id', '=', picking.id)])
@@ -72,7 +72,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                 'sales_order': picking.sale_id.name,
                 'sku': stock_move.product_id.product_tmpl_id.sku_code,
                 'Product': stock_move.product_id.name,
-                'qty': stock_move.product_qty
+                'qty': int(stock_move.product_qty)
             }
             sales_order.append(sale_order)
         vals = {
@@ -82,8 +82,8 @@ class InventoryNotificationScheduler(models.TransientModel):
             'columnProps': ['sku', 'Product', 'qty'],
             'closing_content': 'Thanks & Regards,<br/> Warehouse Team'
         }
-        vals['description'] = "Hi " + picking.sale_id.user_id.display_name+ \
-                              ", <br/><br/> Please find detail Of Sale Order: " +picking.sale_id.name
+        vals['description'] = "Hi " + picking.sale_id.user_id.display_name + \
+                              ", <br/><br/> Please find detail Of Sale Order: " + picking.sale_id.name
         print("Inside Pull")
         print(users.sudo().email)
         self.process_common_email_notification_template(super_user, users, vals['subject'], vals['description'],
@@ -113,10 +113,10 @@ class InventoryNotificationScheduler(models.TransientModel):
                     'sales_order': picking.sale_id.name,
                     'sku': stock_move_line_single.product_id.product_tmpl_id.sku_code,
                     'Product': stock_move_line_single.product_id.name,
-                    'qty': stock_move_line_single.move_id.product_qty,
+                    'qty': int(stock_move_line_single.move_id.product_qty),
                     'lot_name': stock_move_line_single.lot_id.name,
                     'lot_expired_date': stock_move_line_single.lot_id.use_date,
-                    'qty_done': stock_move_line_single.qty_done,
+                    'qty_done': int(stock_move_line_single.qty_done),
                 }
                 sales_order.append(sale_order)
         sale_order_ref = picking.sale_id
@@ -140,8 +140,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                            "<strong> Shipping Address: </strong> " + (address_ref.street or "") + \
                            (address_ref.city or "") + (address_ref.state_id.name or "") + (address_ref.zip or "") + \
                            (address_ref.country_id.name or ""),
-            'header': ['Catalog number', 'Description','Initial Quantity','Lot','Expiration Date','Quantity Done'],
-            'columnProps': ['sku', 'Product', 'qty','lot_name','lot_expired_date','qty_done'],
+            'header': ['Catalog number', 'Description', 'Initial Quantity', 'Lot', 'Expiration Date', 'Quantity Done'],
+            'columnProps': ['sku', 'Product', 'qty', 'lot_name', 'lot_expired_date', 'qty_done'],
             'closing_content': 'Thanks & Regards, <br/> Sales Team'
         }
         self.process_common_email_notification_template(super_user, None, vals['subject'], vals['description'],
@@ -166,7 +166,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                 'sales_order': picking.sale_id.name,
                 'sku': stock_move.product_id.product_tmpl_id.sku_code,
                 'Product': stock_move.product_id.name,
-                'qty': stock_move.product_qty
+                'qty': int(stock_move.product_qty)
             }
             sales_order.append(sale_order)
         if picking.carrier_tracking_ref:
@@ -189,18 +189,19 @@ class InventoryNotificationScheduler(models.TransientModel):
         print(users.email)
         self.process_common_email_notification_template(super_user, users, vals['subject'],
                                                         vals['description'], vals['sale_order_lines'], vals['header'],
-                                                        vals['columnProps'], vals['closing_content'],None)
+                                                        vals['columnProps'], vals['closing_content'], None)
 
     def process_in_stock_scheduler(self):
         _logger.info("process_in_stock_scheduler called")
-        email_queue=[]
+        email_queue = []
         today_date = date.today()
         today_start = today_date
         days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
         dayName = today_date.weekday()
         weekday = days[dayName]
         customers = self.env['res.partner'].search(
-            [('customer', '=', True), ('is_parent', '=', True), ('email', '!=', ''),('active', '=', True), (weekday, '=', True)])
+            [('customer', '=', True), ('is_parent', '=', True), ('email', '!=', ''), ('active', '=', True),
+             (weekday, '=', True)])
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
         start = time.time()
         for customr in customers:
@@ -217,9 +218,9 @@ class InventoryNotificationScheduler(models.TransientModel):
                     print(customr.email)
                     email_queue.append(customr.email)
                     _logger.info("customer :%r", customr)
-                    to_customer=customr
+                    to_customer = customr
                     contacts = self.env['res.partner'].search(
-                        [('parent_id', '=', customr.id ),('email', '!=', ''), ('active', '=', True),
+                        [('parent_id', '=', customr.id), ('email', '!=', ''), ('active', '=', True),
                          (weekday, '=', True)])
                     product_list = []
                     cust_ids = []
@@ -262,11 +263,11 @@ class InventoryNotificationScheduler(models.TransientModel):
                             if line.product_id.qty_available and line.product_id.qty_available is not None and line.product_id.qty_available > 0:
                                 products[line.product_id.id] = line.product_id
                     subject = "SPS Updated In-Stock Product Report"
-                    descrption = "<strong>Good morning " + customr.name + "</strong>"\
-                                 "<br/> <br/> Below are items you have previously requested that are currently in stock. " \
-                                 "In addition, below is the link to download full product catalog. Please let us know what" \
-                                 " ordering needs we can help provide savings on this week!" \
-                                 "<br> <a href=\"/downloadCatalog\"Click Here to Download SPS Product Catalog</a>"
+                    descrption = "<strong>Good morning " + customr.name + "</strong>" \
+                                                                          "<br/> <br/> Below are items you have previously requested that are currently in stock. " \
+                                                                          "In addition, below is the link to download full product catalog. Please let us know what" \
+                                                                          " ordering needs we can help provide savings on this week!" \
+                                                                          "<br> <a href=\"/downloadCatalog\"Click Here to Download SPS Product Catalog</a>"
                     header = ['Catalog number', 'Description', 'Sales Price', 'Quantity On Hand',
                               'Min Exp. Date',
                               'Max Exp. Date', 'Unit Of Measure']
@@ -298,18 +299,20 @@ class InventoryNotificationScheduler(models.TransientModel):
                                       "<br/>412-745-0328			"
                     if products:
                         product_list.extend(list(products.values()))
+                        if customr.user_id.email:
+                            #print("customr.user_id.email")
+                            #print(customr.user_id.email)
+                            email_list_cc.append(customr.user_id.email)
                         self.process_email_in_stock_scheduler_template(super_user, customr, subject, descrption,
-                                                                           product_list,
-                                                                           header, columnProps, closing_content,
-                                                                           customr.email,
-                                                                           email_list_cc, is_employee=False)
+                                                                       product_list,
+                                                                       header, columnProps, closing_content,
+                                                                       customr.email,
+                                                                       email_list_cc, is_employee=False)
                 else:
                     pass
         end = time.time()
         print("Time for Execution")
         print(end - start)
-
-
 
     def process_new_product_scheduler(self):
         today_date = datetime.now() - timedelta(days=1)
@@ -344,8 +347,8 @@ class InventoryNotificationScheduler(models.TransientModel):
             'picking_list': picking,
             'custom_template': "inventory_notification.inventory_packing_list_notification"
         }
-        #if len(picking) > 0:
-            #self.process_packing_email_notification(vals)
+        if len(picking) > 0:
+            self.process_packing_email_notification(vals)
 
             # final_date = fields.Datetime.from_string(today_start)
         products = self.env['product.product'].search([('stock_move_ids.sale_line_id', '!=', False),
@@ -448,11 +451,11 @@ class InventoryNotificationScheduler(models.TransientModel):
         for product in products:
             vals = {
                 'sku_code': self.check_isAvailable(product.product_tmpl_id.sku_code),
-                'sale_price': "$ " + str(product.lst_price) if product.lst_price else "",
-                'standard_price': product.product_tmpl_id.standard_price,
+                'sale_price': product.currency_id.symbol + " " + str(product.lst_price) if product.lst_price else "",
+                'standard_price': product.currency_id.symbol + " " + str(product.product_tmpl_id.standard_price) if product.product_tmpl_id.standard_price else "",
                 'product_type': switcher.get(product.type, " "),
-                'qty_on_hand': product.qty_available,
-                'forecasted_qty': product.virtual_available,
+                'qty_on_hand': int(product.qty_available),
+                'forecasted_qty': int(product.virtual_available),
                 'product_name': self.check_isAvailable_product_code(
                     product.default_code) + " " + product.product_tmpl_id.name,
                 'unit_of_measure': product.product_tmpl_id.uom_id.name
@@ -491,10 +494,10 @@ class InventoryNotificationScheduler(models.TransientModel):
             vals = {
                 'sku_code': self.check_isAvailable(product.product_tmpl_id.sku_code),
                 'sale_price': "$ " + str(product.lst_price) if product.lst_price else "",
-                'standard_price': product.product_tmpl_id.standard_price,
+                'standard_price': product.currency_id.symbol + " " + str(product.product_tmpl_id.standard_price) if product.product_tmpl_id.standard_price else "",
                 'product_type': switcher.get(product.type, " "),
-                'qty_on_hand': product.qty_available,
-                'forecasted_qty': product.virtual_available,
+                'qty_on_hand': int(product.qty_available),
+                'forecasted_qty': int(product.virtual_available),
                 'product_name': self.check_isAvailable_product_code(
                     product.default_code) + " " + product.product_tmpl_id.name,
                 'unit_of_measure': product.product_tmpl_id.uom_id.name
@@ -555,7 +558,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                         self.acquisitions_email)
 
     def process_notify_yellow_product(self, products, to_user, from_user):
-        subject = "products which are in yellow status"
+        subject = "Products which are in yellow status"
         description = "Hi Team, <br><br/>Please find a listing below of products whose inventory level status is now Color(Yellow):"
         header = ['Catalog #', 'Product Description', 'Sales Price', 'Cost', 'Product Type',
                   'Qty On Hand', 'Forecasted Quantity', 'Unit Of Measure']
@@ -603,14 +606,18 @@ class InventoryNotificationScheduler(models.TransientModel):
 
     def process_packing_email_notification(self, vals):
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
-        #users = self.env['res.users'].search([('active', '=', True)])
+        # users = self.env['res.users'].search([('active', '=', True)])
         template = self.env.ref(vals['custom_template'])
+        '''for packing in vals['picking_list']:
+            print("packing.sale_id.write_date")
+            print(packing.sale_id.write_date)'''
         '''for user in users:
             has_group = user.has_group('stock.group_stock_manager')
             if has_group:'''
         local_context = {'picking_list': vals['picking_list'],
                          'subject': 'New Sales Order',
-                         'email_from': super_user.email, 'email_to': self.warehouse_email, 'datetime':datetime,
+                         'email_from': super_user.email, 'email_to': self.warehouse_email, 'datetime': datetime,
+                         'int':int
                          }
         try:
             msg = "\n Email sent --->  " + local_context['subject'] + "\n --From--" + local_context[
@@ -619,10 +626,9 @@ class InventoryNotificationScheduler(models.TransientModel):
             template.with_context(local_context).sudo().send_mail(SUPERUSER_ID, raise_exception=True)
         except:
             error_msg = "mail sending fail for email id: %r" + local_context[
-                'email_to']+ " sending error report to admin"
+                'email_to'] + " sending error report to admin"
             _logger.info(error_msg)
             print(error_msg)
-
 
     def process_common_email_notification_template(self, email_from_user, email_to_user, subject, descrption, products,
                                                    header, columnProps, closing_content, email_to_team=None,
@@ -711,19 +717,19 @@ class InventoryNotificationScheduler(models.TransientModel):
             self.send_email_and_notification(vals)
 
     def send_email_and_notification(self, vals):
-        print (vals)
-        email=""
+        print(vals)
+        email = ""
         if vals['email_to_team']:
             print("inside 1 st")
             email = vals['email_to_team']
-            print (email)
+            print(email)
         if vals['email_to_user']:
             print("inside 2 nd")
             email = vals['email_to_user'].sudo().email
-            print (email)
+            print(email)
 
-        print ("email=")
-        print (email)
+        print("email=")
+        print(email)
 
         local_context = {'products': vals['product_list'], 'headers': vals['headers'], 'columnProps': vals['coln_name'],
                          'email_from': vals['email_from_user'].sudo().email,
@@ -742,7 +748,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                 msg = "\n Email sent --->  " + local_context['subject'] + "\n --From--" + local_context[
                     'email_from'] + " \n --To-- " + local_context['email_to']
                 _logger.info(msg)
-                template_id = vals['template'].with_context(local_context).sudo().send_mail(SUPERUSER_ID,raise_exception=True)
+                template_id = vals['template'].with_context(local_context).sudo().send_mail(SUPERUSER_ID,
+                                                                                            raise_exception=True)
         except:
             error_msg = "mail sending fail for email id: %r" + vals[
                 'email_to_user'].sudo().email + " sending error report to admin"
@@ -808,9 +815,9 @@ class InventoryNotificationScheduler(models.TransientModel):
                             if column_name == 'qty_available':
                                 column = int(product[column_name])
                             elif column_name == 'list_price':
-                                column = '$'+str(product[column_name])
+                                column = '$' + str(product[column_name])
                             else:
-                                column =str(product[column_name])
+                                column = str(product[column_name])
                         else:
                             lst = column_name.split('.')
                             column = product[lst[0]]
@@ -865,7 +872,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         html_file = self.env['inventory.notification.html'].search([])
         finalHTML = html_file.process_common_html(vals['subject'], vals['description'], vals['product_list'],
                                                   vals['headers'], vals['coln_name'])
-        #print(finalHTML)
+        # print(finalHTML)
         if hasattr(vals['email_to_user'], 'partner_ids'):
             partner_ids = [vals['email_to_user'].partner_ids.id]
         else:
@@ -946,11 +953,11 @@ class InventoryNotificationScheduler(models.TransientModel):
                 vals = {
                     'minExpDate': minExDate,
                     'maxExpDate': maxExDate,
-                    'sale_price': product.lst_price,
-                    'standard_price': product.product_tmpl_id.standard_price,
+                    'sale_price': product.currency_id.symbol + " " + str(product.lst_price) if product.lst_price else "",
+                    'standard_price': product.currency_id.symbol + " " + str(product.product_tmpl_id.standard_price) if product.product_tmpl_id.standard_price else "",
                     'product_type': switcher.get(product.type, " "),
-                    'qty_on_hand': qty_on_hand,
-                    'forecasted_qty': forecasted_qty,
+                    'qty_on_hand': int(qty_on_hand or 0),
+                    'forecasted_qty': int(forecasted_qty or 0),
                     'background_color': background_color,
                     'product_name': product.product_tmpl_id.name,
                     'sku_code': product.product_tmpl_id.sku_code,

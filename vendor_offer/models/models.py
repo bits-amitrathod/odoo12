@@ -470,50 +470,46 @@ class VendorOfferProduct(models.Model):
                 if not line.product_id:
                     return result1
 
-                groupby_dict = groupby_dict_month = groupby_dict_90 = groupby_dict_yr = {}
-                sale_orders_line = line.env['sale.order.line'].search(
-                    [('product_id', '=', line.product_id.id), ('state', '=', 'sale')])
-                groupby_dict['data'] = sale_orders_line
+                ''' sale count will show only done qty '''
+
                 total = total_m = total_90 = total_yr = 0
+                today_date = datetime.datetime.now()
+                last_3_months = fields.Date.to_string(today_date - datetime.timedelta(days=90))
+                last_month = fields.Date.to_string(today_date - datetime.timedelta(days=30))
+                last_yr = fields.Date.to_string(today_date - datetime.timedelta(days=365))
+                cust_location_id = self.env['stock.location'].search([('name', '=', 'Customers')]).id
+                str_query_cm = "SELECT sum(sml.qty_done) FROM sale_order_line AS sol LEFT JOIN stock_picking AS sp ON " \
+                             "sp.sale_id=sol.id " \
+                             " LEFT JOIN stock_move_line AS sml ON sml.picking_id=sp.id WHERE sml.state='done' AND " \
+                             "sml.location_dest_id =%s AND" \
+                             " sml.product_id =%s"
 
-                for sale_order in groupby_dict['data']:
-                    total = total + sale_order.product_uom_qty
-
-                line.product_sales_count = total
-                sale_orders = line.env['sale.order'].search(
-                    [('product_id', '=', line.product_id.id), ('state', '=', 'sale')])
-
-                filtered_by_date = list(
-                    filter(lambda x: fields.Datetime.from_string(x.confirmation_date).date() >= (
-                            fields.date.today() - datetime.timedelta(days=30)), sale_orders))
-                groupby_dict_month['data'] = filtered_by_date
-                for sale_order_list in groupby_dict_month['data']:
-                    for sale_order in sale_order_list.order_line:
-                        if sale_order.product_id.id == line.product_id.id:
-                            total_m = total_m + sale_order.product_uom_qty
-
-                line.product_sales_count_month = total_m
-
-                filtered_by_90 = list(filter(lambda x: fields.Datetime.from_string(x.confirmation_date).date() >= (
-                        fields.date.today() - datetime.timedelta(days=90)), sale_orders))
-                groupby_dict_90['data'] = filtered_by_90
-
-                for sale_order_list_90 in groupby_dict_90['data']:
-                    for sale_order in sale_order_list_90.order_line:
-                        if sale_order.product_id.id == line.product_id.id:
-                            total_90 = total_90 + sale_order.product_uom_qty
-
+                self.env.cr.execute(str_query_cm+" AND sp.date_done>=%s",(cust_location_id,
+                                                                          line.product_id.id, last_3_months))
+                quant_90 = self.env.cr.fetchone()
+                if quant_90[0] is not None:
+                    total_90 = total_90 + int(quant_90[0])
                 line.product_sales_count_90 = total_90
 
-                filtered_by_yr = list(filter(lambda x: fields.Datetime.from_string(x.confirmation_date).date() >= (
-                        fields.date.today() - datetime.timedelta(days=365)), sale_orders))
-                groupby_dict_yr['data'] = filtered_by_yr
-                for sale_order_list_yr in groupby_dict_yr['data']:
-                    for sale_order in sale_order_list_yr.order_line:
-                        if sale_order.product_id.id == line.product_id.id:
-                            total_yr = total_yr + sale_order.product_uom_qty
+                self.env.cr.execute(str_query_cm + " AND sp.date_done>=%s", (cust_location_id,
+                                                                             line.product_id.id, last_month))
+                quant_m = self.env.cr.fetchone()
+                if quant_m[0] is not None:
+                    total_m = total_m + int(quant_m[0])
+                line.product_sales_count_month = total_m
 
+                self.env.cr.execute(str_query_cm + " AND sp.date_done>=%s", (cust_location_id,
+                                                                             line.product_id.id, last_yr))
+                quant_yr = self.env.cr.fetchone()
+                if quant_yr[0] is not None:
+                    total_yr = total_yr + int(quant_yr[0])
                 line.product_sales_count_yrs = total_yr
+
+                self.env.cr.execute(str_query_cm, (cust_location_id,line.product_id.id))
+                quant_all = self.env.cr.fetchone()
+                if quant_all[0] is not None:
+                    total = total + int(quant_all[0])
+                line.product_sales_count = total
 
                 line.qty_in_stock = line.product_id.qty_available
                 if line.multiplier.id == False:
@@ -955,54 +951,60 @@ class VendorPricingList(models.Model):
             if not line.id:
                 return result1
 
-            groupby_dict = groupby_dict_month = groupby_dict_90 = groupby_dict_yr = {}
-            sale_orders_line = line.env['sale.order.line'].search(
-                [('product_id', '=', line.id), ('state', '=', 'sale')])
-            groupby_dict['data'] = sale_orders_line
-            total = total_m = total_90 = total_yr = 0
-            amount_total_sale = 0
+            ''' sale count will show only done qty '''
 
-            for sale_order in groupby_dict['data']:
-                total = total + sale_order.product_uom_qty
-                amount_total_sale = amount_total_sale+sale_order.price_total
+            total = total_m = total_90 = total_yr = sale_total = 0
+            today_date = datetime.datetime.now()
+            last_3_months = fields.Date.to_string(today_date - datetime.timedelta(days=90))
+            last_month = fields.Date.to_string(today_date - datetime.timedelta(days=30))
+            last_yr = fields.Date.to_string(today_date - datetime.timedelta(days=365))
+            cust_location_id = self.env['stock.location'].search([('name', '=', 'Customers')]).id
+            str_query_cm = "SELECT sum(sml.qty_done) FROM sale_order_line AS sol LEFT JOIN stock_picking AS sp ON " \
+                           "sp.sale_id=sol.id " \
+                           " LEFT JOIN stock_move_line AS sml ON sml.picking_id=sp.id WHERE sml.state='done' AND " \
+                           "sml.location_dest_id =%s AND" \
+                           " sml.product_id =%s"
 
-            amount_total_ven_pri = amount_total_sale
+            str_query_total_sale = "SELECT sum(sol.price_total) FROM sale_order_line AS sol LEFT JOIN stock_picking AS sp ON " \
+                           "sp.sale_id=sol.id " \
+                           " LEFT JOIN stock_move_line AS sml ON sml.picking_id=sp.id WHERE sml.state='done' AND " \
+                           "sml.location_dest_id =%s AND" \
+                           " sml.product_id =%s"
 
-            line.product_sales_count = total
-            sale_orders = line.env['sale.order'].search(
-                [('product_id', '=', line.id), ('state', '=', 'sale')])
+            self.env.cr.execute(str_query_total_sale + " AND sp.date_done>=%s", (cust_location_id,
+                                                                         line.id, last_3_months))
+            quant_sale_total = self.env.cr.fetchone()
+            if quant_sale_total[0] is not None:
+                sale_total = sale_total + int(quant_sale_total[0])
+            line.amount_total_ven_pri = sale_total
 
-            filtered_by_date = list(
-                filter(lambda x: fields.Datetime.from_string(x.confirmation_date).date() >= (
-                        fields.date.today() - datetime.timedelta(days=30)), sale_orders))
-            groupby_dict_month['data'] = filtered_by_date
-            for sale_order_list in groupby_dict_month['data']:
-                for sale_order in sale_order_list.order_line:
-                    if sale_order.product_id.id == line.id:
-                        total_m = total_m + sale_order.product_uom_qty
-
-            line.product_sales_count_month = total_m
-
-            filtered_by_90 = list(filter(lambda x: fields.Datetime.from_string(x.confirmation_date).date() >= (
-                    fields.date.today() - datetime.timedelta(days=90)), sale_orders))
-            groupby_dict_90['data'] = filtered_by_90
-
-            for sale_order_list_90 in groupby_dict_90['data']:
-                for sale_order in sale_order_list_90.order_line:
-                    if sale_order.product_id.id == line.id:
-                        total_90 = total_90 + sale_order.product_uom_qty
-
+            self.env.cr.execute(str_query_cm + " AND sp.date_done>=%s", (cust_location_id,
+                                                                         line.id, last_3_months))
+            quant_90 = self.env.cr.fetchone()
+            if quant_90[0] is not None:
+                total_90 = total_90 + int(quant_90[0])
             line.product_sales_count_90 = total_90
 
-            filtered_by_yr = list(filter(lambda x: fields.Datetime.from_string(x.confirmation_date).date() >= (
-                    fields.date.today() - datetime.timedelta(days=365)), sale_orders))
-            groupby_dict_yr['data'] = filtered_by_yr
-            for sale_order_list_yr in groupby_dict_yr['data']:
-                for sale_order in sale_order_list_yr.order_line:
-                    if sale_order.product_id.id == line.id:
-                        total_yr = total_yr + sale_order.product_uom_qty
+            self.env.cr.execute(str_query_cm + " AND sp.date_done>=%s", (cust_location_id,
+                                                                         line.id, last_month))
+            quant_m = self.env.cr.fetchone()
+            if quant_m[0] is not None:
+                total_m = total_m + int(quant_m[0])
+            line.product_sales_count_month = total_m
 
+            self.env.cr.execute(str_query_cm + " AND sp.date_done>=%s", (cust_location_id,
+                                                                         line.id, last_yr))
+            quant_yr = self.env.cr.fetchone()
+            if quant_yr[0] is not None:
+                total_yr = total_yr + int(quant_yr[0])
             line.product_sales_count_yrs = total_yr
+
+            self.env.cr.execute(str_query_cm, (cust_location_id, line.id))
+            quant_all = self.env.cr.fetchone()
+            if quant_all[0] is not None:
+                total = total + int(quant_all[0])
+            line.product_sales_count = total
+
             self.expired_inventory_cal(line)
             line.qty_in_stock = line.qty_available
             line.tier_name = line.tier.name
