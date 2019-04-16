@@ -85,7 +85,7 @@
         <menuitem id="receive_list_report"
                   action="action_sps_receive_list"
                   name="SPS Receiving List"
-                  parent="purchase.purchase_report"
+                  parent="stock.menu_warehouse_report"
                   sequence="4"/>
     </data>
 </odoo>
