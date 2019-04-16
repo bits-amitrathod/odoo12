@@ -44,7 +44,8 @@ class ProductionLot(models.Model):
     @api.model
     def create(self, vals):
         if 'use_date' not in vals:
-            raise UserError(_('Lot expiration date is required.'))
+            vals = self._set_required_vals_to_create_lot(vals)
+            # raise UserError(_('Lot expiration date is required.'))
         elif fields.Datetime.from_string(vals['alert_date']) >= fields.Datetime.from_string(vals['use_date']):
             raise UserError(_('Alert date should be less than expiration date.'))
         dates = self._get_dates(vals.get('product_id') or self.env.context.get('default_product_id'))
@@ -52,6 +53,11 @@ class ProductionLot(models.Model):
             if not vals.get(d):
                 vals[d] = dates[d]
         return super(ProductionLot, self).create(vals)
+
+    def _set_required_vals_to_create_lot(self, vals):
+        vals.update({'use_date': False, 'alert_date': False, 'life_date': False, 'removal_date': False})
+        return vals
+
 
     @api.multi
     def write(self, vals):
