@@ -220,8 +220,9 @@ class InventoryNotificationScheduler(models.TransientModel):
                     _logger.info("customer :%r", customr)
                     to_customer = customr
                     contacts = self.env['res.partner'].search(
-                        [('parent_id', '=', customr.id), ('email', '!=', ''), ('active', '=', True),
-                         (weekday, '=', True)])
+                        [('parent_id', '=', customr.id), ('email', '!=', ''), ('active', '=', True)])
+                    print("contacts")
+                    print(contacts)
                     product_list = []
                     cust_ids = []
                     cust_ids.append(customr.id)
@@ -249,11 +250,10 @@ class InventoryNotificationScheduler(models.TransientModel):
                         sales = self.env['sale.order'].search(
                             [('partner_id', 'in', cust_ids), ('date_order', '>', last_day)])
                     else:
-                        historic_day = 36 * 30
-                        _logger.info("historic_day :%r", historic_day)
-                        last_day = fields.Date.to_string(datetime.now() - timedelta(days=historic_day))
-                        sales = self.env['sale.order'].search(
-                            [('partner_id', 'in', cust_ids), ('date_order', '>', last_day)])
+                        #historic_day = 36 * 30
+                        #_logger.info("historic_day :%r", historic_day)
+                        #last_day = fields.Date.to_string(datetime.now() - timedelta(days=historic_day))
+                        sales = self.env['sale.order'].search([('partner_id', 'in', cust_ids)])
                     _logger.info("sales  :%r", sales)
                     products = {}
                     for sale in sales:
