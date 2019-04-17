@@ -29,7 +29,7 @@ class InventoryNotificationScheduler(models.TransientModel):
     @api.multi
     def process_notification_scheduler(self):
         _logger.info("process_notification_scheduler called")
-        self.process_in_stock_scheduler()
+        #self.process_in_stock_scheduler()
         self.process_new_product_scheduler()
         self.process_notify_available()
         self.process_packing_list()
@@ -451,8 +451,8 @@ class InventoryNotificationScheduler(models.TransientModel):
         for product in products:
             vals = {
                 'sku_code': self.check_isAvailable(product.product_tmpl_id.sku_code),
-                'sale_price': product.currency_id.symbol + " " + str(product.lst_price) if product.lst_price else "",
-                'standard_price': product.currency_id.symbol + " " + str(product.product_tmpl_id.standard_price) if product.product_tmpl_id.standard_price else "",
+                'sale_price':"$ " + str(product.lst_price) if product.lst_price else "",
+                'standard_price': "$ " + str(product.product_tmpl_id.standard_price) if product.product_tmpl_id.standard_price else "",
                 'product_type': switcher.get(product.type, " "),
                 'qty_on_hand': int(product.qty_available),
                 'forecasted_qty': int(product.virtual_available),
@@ -494,7 +494,7 @@ class InventoryNotificationScheduler(models.TransientModel):
             vals = {
                 'sku_code': self.check_isAvailable(product.product_tmpl_id.sku_code),
                 'sale_price': "$ " + str(product.lst_price) if product.lst_price else "",
-                'standard_price': product.currency_id.symbol + " " + str(product.product_tmpl_id.standard_price) if product.product_tmpl_id.standard_price else "",
+                'standard_price': "$ " + str(product.product_tmpl_id.standard_price) if product.product_tmpl_id.standard_price else "",
                 'product_type': switcher.get(product.type, " "),
                 'qty_on_hand': int(product.qty_available),
                 'forecasted_qty': int(product.virtual_available),
@@ -953,8 +953,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                 vals = {
                     'minExpDate': minExDate,
                     'maxExpDate': maxExDate,
-                    'sale_price': product.currency_id.symbol + " " + str(product.lst_price) if product.lst_price else "",
-                    'standard_price': product.currency_id.symbol + " " + str(product.product_tmpl_id.standard_price) if product.product_tmpl_id.standard_price else "",
+                    'sale_price': "$ " + str(product.lst_price) if product.lst_price else "",
+                    'standard_price': "$ " + str(product.product_tmpl_id.standard_price) if product.product_tmpl_id.standard_price else "",
                     'product_type': switcher.get(product.type, " "),
                     'qty_on_hand': int(qty_on_hand or 0),
                     'forecasted_qty': int(forecasted_qty or 0),
