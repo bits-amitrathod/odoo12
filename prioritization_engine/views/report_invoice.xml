@@ -14,12 +14,12 @@
                     <p t-field="o.origin"/>
                  </div>
             </xpath>
-            <!--<xpath expr="//t/div[1]/div[2]/div[5]" position="replace">
+            <xpath expr="//t/div[1]/div[2]/div[5]" position="replace">
                  <div class="col-xs-2" t-if="o.tracking_reference">
                     <strong>Tracking Reference#:</strong>
                     <p t-field="o.tracking_reference"/>
                  </div>
-            </xpath>-->
+            </xpath>
              <xpath expr="//div[@class='row']" position="attributes">
                   <attribute name="style">margin:0px;margin-top: 30%;padding-top:40px;margin-bottom: 5%</attribute>
             </xpath>
