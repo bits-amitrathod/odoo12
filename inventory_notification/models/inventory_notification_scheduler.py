@@ -13,9 +13,9 @@ _logger = logging.getLogger(__name__)
 class InventoryNotificationScheduler(models.TransientModel):
     _name = 'inventory.notification.scheduler'
 
-    # warehouse_email = "vasimkhan@benchmarkitsolutions.com"
-    # sales_email = "rohitkabadi@benchmarkitsolutions.com"
-    # acquisitions_email = "ajinkyanimbalkar@benchmarkitsolutions.com"
+    #warehouse_email = "vasimkhan@benchmarkitsolutions.com"
+    #sales_email = "rohitkabadi@benchmarkitsolutions.com"
+    #acquisitions_email = "ajinkyanimbalkar@benchmarkitsolutions.com"
 
     warehouse_email = "warehouse@surgicalproductsolutions.com"
     sales_email = "salesteam@surgicalproductsolutions.com"
@@ -220,8 +220,9 @@ class InventoryNotificationScheduler(models.TransientModel):
                     _logger.info("customer :%r", customr)
                     to_customer = customr
                     contacts = self.env['res.partner'].search(
-                        [('parent_id', '=', customr.id), ('email', '!=', ''), ('active', '=', True),
-                         (weekday, '=', True)])
+                        [('parent_id', '=', customr.id), ('email', '!=', ''), ('active', '=', True)])
+                    print("contacts")
+                    print(contacts)
                     product_list = []
                     cust_ids = []
                     cust_ids.append(customr.id)
@@ -249,11 +250,10 @@ class InventoryNotificationScheduler(models.TransientModel):
                         sales = self.env['sale.order'].search(
                             [('partner_id', 'in', cust_ids), ('date_order', '>', last_day)])
                     else:
-                        historic_day = 36 * 30
-                        _logger.info("historic_day :%r", historic_day)
-                        last_day = fields.Date.to_string(datetime.now() - timedelta(days=historic_day))
-                        sales = self.env['sale.order'].search(
-                            [('partner_id', 'in', cust_ids), ('date_order', '>', last_day)])
+                        #historic_day = 36 * 30
+                        #_logger.info("historic_day :%r", historic_day)
+                        #last_day = fields.Date.to_string(datetime.now() - timedelta(days=historic_day))
+                        sales = self.env['sale.order'].search([('partner_id', 'in', cust_ids)])
                     _logger.info("sales  :%r", sales)
                     products = {}
                     for sale in sales:
@@ -299,6 +299,10 @@ class InventoryNotificationScheduler(models.TransientModel):
                                       "<br/>412-745-0328			"
                     if products:
                         product_list.extend(list(products.values()))
+                        if customr.user_id.email:
+                            #print("customr.user_id.email")
+                            #print(customr.user_id.email)
+                            email_list_cc.append(customr.user_id.email)
                         self.process_email_in_stock_scheduler_template(super_user, customr, subject, descrption,
                                                                        product_list,
                                                                        header, columnProps, closing_content,
@@ -447,8 +451,8 @@ class InventoryNotificationScheduler(models.TransientModel):
         for product in products:
             vals = {
                 'sku_code': self.check_isAvailable(product.product_tmpl_id.sku_code),
-                'sale_price': product.currency_id.symbol + " " + str(product.lst_price) if product.lst_price else "",
-                'standard_price': product.currency_id.symbol + " " + str(product.product_tmpl_id.standard_price) if product.product_tmpl_id.standard_price else "",
+                'sale_price':"$ " + str(product.lst_price) if product.lst_price else "",
+                'standard_price': "$ " + str(product.product_tmpl_id.standard_price) if product.product_tmpl_id.standard_price else "",
                 'product_type': switcher.get(product.type, " "),
                 'qty_on_hand': int(product.qty_available),
                 'forecasted_qty': int(product.virtual_available),
@@ -490,7 +494,7 @@ class InventoryNotificationScheduler(models.TransientModel):
             vals = {
                 'sku_code': self.check_isAvailable(product.product_tmpl_id.sku_code),
                 'sale_price': "$ " + str(product.lst_price) if product.lst_price else "",
-                'standard_price': product.currency_id.symbol + " " + str(product.product_tmpl_id.standard_price) if product.product_tmpl_id.standard_price else "",
+                'standard_price': "$ " + str(product.product_tmpl_id.standard_price) if product.product_tmpl_id.standard_price else "",
                 'product_type': switcher.get(product.type, " "),
                 'qty_on_hand': int(product.qty_available),
                 'forecasted_qty': int(product.virtual_available),
@@ -542,7 +546,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                                 closing_content)
 
     def process_notify_green_product(self, products, to_user, from_user):
-        subject = "products which are in green status"
+        subject = "Products which are in green status"
         description = "Hi Team, <br><br/>Please find a listing below of products whose inventory level status is now Color(Green):"
         header = ['Catalog #', 'Product Description', 'Sales Price', 'Cost', 'Product Type',
                   'Quantity On Hand', 'Forecasted Quantity', 'Unit Of Measure']
@@ -949,8 +953,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                 vals = {
                     'minExpDate': minExDate,
                     'maxExpDate': maxExDate,
-                    'sale_price': product.currency_id.symbol + " " + str(product.lst_price) if product.lst_price else "",
-                    'standard_price': product.currency_id.symbol + " " + str(product.product_tmpl_id.standard_price) if product.product_tmpl_id.standard_price else "",
+                    'sale_price': "$ " + str(product.lst_price) if product.lst_price else "",
+                    'standard_price': "$ " + str(product.product_tmpl_id.standard_price) if product.product_tmpl_id.standard_price else "",
                     'product_type': switcher.get(product.type, " "),
                     'qty_on_hand': int(qty_on_hand or 0),
                     'forecasted_qty': int(forecasted_qty or 0),

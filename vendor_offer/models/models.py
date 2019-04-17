@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-"Hello - needed salary slip for last 3 month for Loan purpose."
 
 from odoo import models, fields, api, SUPERUSER_ID, _
 from odoo.addons import decimal_precision as dp
