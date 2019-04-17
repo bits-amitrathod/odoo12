@@ -1,11 +1,11 @@
-import json
+# import json
 from difflib import SequenceMatcher
 
 from odoo import http, tools, _
 from odoo.http import request
 
 
-class WebsiteSale(http.Controller):
+class WebsiteSaleSearch(http.Controller):
     @http.route(['/shop/get_suggest'], type='http', auth="public", methods=['GET'], website=True)
     def get_suggest_json(self, **kw):
         query = kw.get('query')
