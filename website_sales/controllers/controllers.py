@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
+import odoo
 from odoo import fields, http
 from odoo.http import request
-from addons.website_sale.controllers.main import WebsiteSale
 
 
-class WebsiteSales(WebsiteSale):
+class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
     @http.route([
         '/shop',
         '/shop/featured',
@@ -31,7 +31,6 @@ class WebsiteSales(WebsiteSale):
 
         payload = responce.qcontext
         irConfig = request.env['ir.config_parameter'].sudo()
-        # and irConfig.get_param('stock.module_product_expiry')
         payload['isVisibleWebsiteExpirationDate'] = irConfig.get_param('website_sales.default_website_expiration_date')
         if payload['products'] and payload['isVisibleWebsiteExpirationDate']:
             productProduct = request.env['product.product'].search([('product_tmpl_id', 'in', payload['products'].ids)])
@@ -39,7 +38,7 @@ class WebsiteSales(WebsiteSale):
             productMaxMinDates = {}
             for val in productProduct:
                 val.env.cr.execute(
-                    "SELECT min(use_date), max (use_date) FROM public.stock_production_lot where product_id = %s",
+                    "SELECT min(use_date), max(use_date) FROM public.stock_production_lot where product_id = %s",
                     (val.id,))
                 query_result = val.env.cr.dictfetchone()
                 productMaxMinDates[val.id] = {"min": fields.Datetime.from_string(query_result['min']),
@@ -88,7 +87,7 @@ class WebsiteSales(WebsiteSale):
         return responce
 
 
-class WebsiteSaleOptionsCstm(WebsiteSale):
+class WebsiteSaleOptionsCstm(odoo.addons.website_sale.controllers.main.WebsiteSale):
     @http.route(['/shop/modal'], type='json', auth="public", methods=['POST'], website=True)
     def modal(self, product_id, **kw):
         pricelist = request.website.get_current_pricelist()
@@ -111,7 +110,7 @@ class WebsiteSaleOptionsCstm(WebsiteSale):
                 main_product_attr_ids = [variant]
                 break
 
-        return request.env['ir.ui.view'].render_template("website_sales.modal", {
+        return request.env['ir.ui.view'].render_template("website_sales.modalCSTM", {
             'product': product,
             'quantity': quantity,
             'compute_currency': compute_currency,
