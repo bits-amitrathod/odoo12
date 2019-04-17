@@ -18,7 +18,12 @@
               <field name="lot_expired_date" widget="inventory_purchase"  attrs="{'readonly': [('in_entire_package', '=', True)]}"  invisible="not context.get('show_lots_text')" groups="stock.group_production_lot"/>
               <field name="qty_done" attrs="{'readonly': ['|','|', ('is_initial_demand_editable', '=', True), '&amp;', ('state', '=', 'done'), ('is_locked', '=', True), ('in_entire_package', '=', True)]}"/>
          </field>
-
+        <field name="location_id" position="replace">
+            <field name="location_id" attrs="{'readonly': [('in_entire_package', '=', True)]}" domain="[('id', 'child_of', parent.location_id)]" groups="stock.group_stock_multi_locations" invisible="1"/>
+        </field>
+        <field name="result_package_id" position="replace">
+            <field name="result_package_id" attrs="{'readonly': [('in_entire_package', '=', True)]}" groups="stock.group_tracking_lot" domain="['|', '|', ('location_id', '=', False), ('location_id', '=', location_dest_id), ('id', '=', package_id)]" invisible="1"/>
+        </field>
     </field>
 </record>
 </odoo>

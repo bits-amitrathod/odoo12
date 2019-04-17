@@ -29,7 +29,7 @@ class InventoryNotificationScheduler(models.TransientModel):
     @api.multi
     def process_notification_scheduler(self):
         _logger.info("process_notification_scheduler called")
-        #self.process_in_stock_scheduler()
+        self.process_in_stock_scheduler()
         self.process_new_product_scheduler()
         self.process_notify_available()
         self.process_packing_list()
@@ -546,7 +546,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                                 closing_content)
 
     def process_notify_green_product(self, products, to_user, from_user):
-        subject = "products which are in green status"
+        subject = "Products which are in green status"
         description = "Hi Team, <br><br/>Please find a listing below of products whose inventory level status is now Color(Green):"
         header = ['Catalog #', 'Product Description', 'Sales Price', 'Cost', 'Product Type',
                   'Quantity On Hand', 'Forecasted Quantity', 'Unit Of Measure']
