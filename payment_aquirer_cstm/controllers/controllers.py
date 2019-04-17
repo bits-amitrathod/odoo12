@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-from addons.website_sale_delivery.controllers.main import WebsiteSaleDelivery
+import odoo
 from odoo import http
 from odoo.http import request
-from addons.website_sale.controllers.main import WebsiteSale
 
 
 class PaymentAquirerCstm(http.Controller):
@@ -41,7 +40,7 @@ class PaymentAquirerCstm(http.Controller):
         return value
 
 
-class WebsiteSales(WebsiteSale):
+class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
     @http.route(['/shop/payment'], type='http', auth="public", website=True)
     def payment(self, **post):
         # deliveryResponce = WebsiteSaleDelivery().payment(**post)
