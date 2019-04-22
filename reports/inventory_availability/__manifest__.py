@@ -12,7 +12,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','product','stock','prioritization_engine'],
+    'depends': ['base','product','stock','vendor_offer'],
 
     # always loaded
     'data': [
@@ -20,8 +20,6 @@
         'views/inventory_availability.xml',
         'views/inventory_availability_print.xml',
         'views/inventory_availability_pdf.xml',
-        'views/views.xml',
-        'views/templates.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
