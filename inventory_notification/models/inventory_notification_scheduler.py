@@ -13,13 +13,13 @@ _logger = logging.getLogger(__name__)
 class InventoryNotificationScheduler(models.TransientModel):
     _name = 'inventory.notification.scheduler'
 
-    #warehouse_email = "vasimkhan@benchmarkitsolutions.com"
-    #sales_email = "rohitkabadi@benchmarkitsolutions.com"
-    #acquisitions_email = "ajinkyanimbalkar@benchmarkitsolutions.com"
+    warehouse_email = "vasimkhan@benchmarkitsolutions.com"
+    sales_email = "rohitkabadi@benchmarkitsolutions.com"
+    acquisitions_email = "ajinkyanimbalkar@benchmarkitsolutions.com"
 
-    warehouse_email = "warehouse@surgicalproductsolutions.com"
-    sales_email = "salesteam@surgicalproductsolutions.com"
-    acquisitions_email = "acquisitions@surgicalproductsolutions.com"
+    #warehouse_email = "warehouse@surgicalproductsolutions.com"
+    #sales_email = "salesteam@surgicalproductsolutions.com"
+    #acquisitions_email = "acquisitions@surgicalproductsolutions.com"
 
     def process_manual_notification_scheduler(self):
         _logger.info("process_manual_notification_scheduler called..")
@@ -266,8 +266,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                     descrption = "<strong>Good morning " + customr.name + "</strong>" \
                                                                           "<br/> <br/> Below are items you have previously requested that are currently in stock. " \
                                                                           "In addition, below is the link to download full product catalog. Please let us know what" \
-                                                                          " ordering needs we can help provide savings on this week!" \
-                                                                          "<br> <a href=\"/downloadCatalog\"Click Here to Download SPS Product Catalog</a>"
+                                                                          " ordering needs we can help provide savings on this week! <br/> <a href='/downloadCatalog'>Click Here to Download SPS Product Catalog </a>"
                     header = ['Catalog number', 'Description', 'Sales Price', 'Quantity On Hand',
                               'Min Exp. Date',
                               'Max Exp. Date', 'Unit Of Measure']
@@ -866,7 +865,7 @@ class InventoryNotificationScheduler(models.TransientModel):
             'email_to': email,
             'subject': vals['subject'],
             'descrption': vals['description'],
-            'email_cc': ",".join(vals['email_list_cc']),
+            'email_': ",".join(vals['email_list_cc']),
             'closing_content': vals['closing_content']
         }
         html_file = self.env['inventory.notification.html'].search([])
