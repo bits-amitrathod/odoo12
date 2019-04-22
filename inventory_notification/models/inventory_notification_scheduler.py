@@ -13,13 +13,13 @@ _logger = logging.getLogger(__name__)
 class InventoryNotificationScheduler(models.TransientModel):
     _name = 'inventory.notification.scheduler'
 
-    warehouse_email = "vasimkhan@benchmarkitsolutions.com"
-    sales_email = "rohitkabadi@benchmarkitsolutions.com"
-    acquisitions_email = "ajinkyanimbalkar@benchmarkitsolutions.com"
+    #warehouse_email = "vasimkhan@benchmarkitsolutions.com"
+    #sales_email = "rohitkabadi@benchmarkitsolutions.com"
+    #acquisitions_email = "ajinkyanimbalkar@benchmarkitsolutions.com"
 
-    #warehouse_email = "warehouse@surgicalproductsolutions.com"
-    #sales_email = "salesteam@surgicalproductsolutions.com"
-    #acquisitions_email = "acquisitions@surgicalproductsolutions.com"
+    warehouse_email = "warehouse@surgicalproductsolutions.com"
+    sales_email = "salesteam@surgicalproductsolutions.com"
+    acquisitions_email = "acquisitions@surgicalproductsolutions.com"
 
     def process_manual_notification_scheduler(self):
         _logger.info("process_manual_notification_scheduler called..")
@@ -865,7 +865,7 @@ class InventoryNotificationScheduler(models.TransientModel):
             'email_to': email,
             'subject': vals['subject'],
             'descrption': vals['description'],
-            'email_': ",".join(vals['email_list_cc']),
+            'email_cc': ",".join(vals['email_list_cc']),
             'closing_content': vals['closing_content']
         }
         html_file = self.env['inventory.notification.html'].search([])
