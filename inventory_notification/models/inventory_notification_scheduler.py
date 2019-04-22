@@ -259,19 +259,18 @@ class InventoryNotificationScheduler(models.TransientModel):
                     for sale in sales:
                         sale_order_lines = self.env['sale.order.line'].search([('order_id.id', '=', sale.id)])
                         for line in sale_order_lines:
-                            _logger.info(" product_id qty_available %r", line.product_id.qty_available)
-                            if line.product_id.qty_available and line.product_id.qty_available is not None and line.product_id.qty_available > 0:
+                            _logger.info(" product_id qty_available %r", line.product_id.actual_quantity)
+                            if line.product_id.actual_quantity and line.product_id.actual_quantity is not None and line.product_id.actual_quantity > 0:
                                 products[line.product_id.id] = line.product_id
                     subject = "SPS Updated In-Stock Product Report"
                     descrption = "<strong>Good morning " + customr.name + "</strong>" \
                                                                           "<br/> <br/> Below are items you have previously requested that are currently in stock. " \
                                                                           "In addition, below is the link to download full product catalog. Please let us know what" \
-                                                                          " ordering needs we can help provide savings on this week!" \
-                                                                          "<br> <a href=\"/downloadCatalog\"Click Here to Download SPS Product Catalog</a>"
-                    header = ['Catalog number', 'Description', 'Sales Price', 'Quantity On Hand',
+                                                                          " ordering needs we can help provide savings on this week! <br/> <a href='/downloadCatalog'>Click Here to Download SPS Product Catalog </a>"
+                    header = ['Manufacturer','Catalog number', 'Description', 'Sales Price', 'Quantity On Hand',
                               'Min Exp. Date',
                               'Max Exp. Date', 'Unit Of Measure']
-                    columnProps = ['sku_code', 'name', 'list_price', 'qty_available', 'minExDate',
+                    columnProps = ['product_brand_id.name','sku_code', 'name', 'list_price', 'actual_quantity', 'minExDate',
                                    'maxExDate', 'uom_id.name']
                     closing_content = "Please reply to this email or contact your Acount Manager to hold product or place an order. " \
                                       "<br/>Many Thanks,		" \
@@ -307,7 +306,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                                        product_list,
                                                                        header, columnProps, closing_content,
                                                                        customr.email,
-                                                                       email_list_cc, is_employee=False)
+                                                                       email_list_cc,is_employee=False)
                 else:
                     pass
         end = time.time()
@@ -454,7 +453,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                 'sale_price':"$ " + str(product.lst_price) if product.lst_price else "",
                 'standard_price': "$ " + str(product.product_tmpl_id.standard_price) if product.product_tmpl_id.standard_price else "",
                 'product_type': switcher.get(product.type, " "),
-                'qty_on_hand': int(product.qty_available),
+                'qty_on_hand': int(product.actual_quantity),
                 'forecasted_qty': int(product.virtual_available),
                 'product_name': self.check_isAvailable_product_code(
                     product.default_code) + " " + product.product_tmpl_id.name,
@@ -496,7 +495,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                 'sale_price': "$ " + str(product.lst_price) if product.lst_price else "",
                 'standard_price': "$ " + str(product.product_tmpl_id.standard_price) if product.product_tmpl_id.standard_price else "",
                 'product_type': switcher.get(product.type, " "),
-                'qty_on_hand': int(product.qty_available),
+                'qty_on_hand': int(product.actual_quantity),
                 'forecasted_qty': int(product.virtual_available),
                 'product_name': self.check_isAvailable_product_code(
                     product.default_code) + " " + product.product_tmpl_id.name,
@@ -538,7 +537,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                 description = "Please find below list of all the product whose are in stock in SPS Inventory."
                 header = ['Manufacturer', 'Sku Reference', 'Product Code', 'Product Name', 'Qty In Stock',
                           'Product Price', 'Min Expiration Date', 'Max Expiration Date']
-                columnProps = ['manufacturer', 'sku_reference', 'product_code', 'product_name', 'qty_available',
+                columnProps = ['manufacturer', 'sku_reference', 'product_code', 'product_name', 'actual_quantity',
                                'product_price_symbol', 'minExDate', 'maxExDate']
                 closing_content = "Thanks & Regards, <br/> Warehouse Team"
                 self.process_common_email_notification_template(super_user, user, subject,
@@ -812,7 +811,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                         column = str(product.get(column_name))
                     else:
                         if column_name.find(".") == -1:
-                            if column_name == 'qty_available':
+                            if column_name == 'actual_quantity':
                                 column = int(product[column_name])
                             elif column_name == 'list_price':
                                 column = '$' + str(product[column_name])
@@ -935,7 +934,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                 else:
                     background_color = "#f0f8ff"
                     row = "even"
-                qty_on_hand = product.qty_available
+                qty_on_hand = product.actual_quantity
                 forecasted_qty = product.virtual_available
                 if stock_location_id:
                     self.env.cr.execute(
