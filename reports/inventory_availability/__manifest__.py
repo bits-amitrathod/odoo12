@@ -21,10 +21,7 @@
         'views/inventory_availability_print.xml',
         'views/inventory_availability_pdf.xml',
     ],
-    # only loaded in demonstration mode
-    'demo': [
-        'demo/demo.xml',
-    ],
+
     'installable': True,
     'application': True,
     'auto_install': False,
