@@ -6,7 +6,7 @@ from datetime import datetime
 from datetime import date, timedelta
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
 import time
-
+import operator
 _logger = logging.getLogger(__name__)
 
 
@@ -299,14 +299,13 @@ class InventoryNotificationScheduler(models.TransientModel):
                     if products:
                         product_list.extend(list(products.values()))
                         if customr.user_id.email:
-                            #print("customr.user_id.email")
-                            #print(customr.user_id.email)
                             email_list_cc.append(customr.user_id.email)
+                        sort_col=True
                         self.process_email_in_stock_scheduler_template(super_user, customr, subject, descrption,
                                                                        product_list,
                                                                        header, columnProps, closing_content,
                                                                        customr.email,
-                                                                       email_list_cc,is_employee=False)
+                                                                       email_list_cc,sort_col,is_employee=False)
                 else:
                     pass
         end = time.time()
@@ -766,7 +765,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         # )
 
     def process_email_in_stock_scheduler_template(self, email_from_user, email_to_user, subject, descrption, products,
-                                                  header, columnProps, closing_content, email_to_team, email_list_cc,
+                                                  header, columnProps, closing_content, email_to_team, email_list_cc,sort_col=False,
                                                   custom_template="inventory_notification.in_stock_scheduler_template",
                                                   is_employee=True):
         template = self.env.ref(custom_template)
@@ -837,6 +836,8 @@ class InventoryNotificationScheduler(models.TransientModel):
             product_dict = {}
         # print(products)
         if products:
+            if sort_col:
+                product_list = sorted(product_list,key=operator.itemgetter('product_brand_id.name','sku_code'))
             vals = {
                 'product_list': product_list,
                 'headers': header,
