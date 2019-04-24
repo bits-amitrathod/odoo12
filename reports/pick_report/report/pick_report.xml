@@ -9,5 +9,16 @@
                 file="pick_report.pick_tmpl"
                 name="pick_report.pick_tmpl"
                 />
+
+        <!-- QWeb Reports -->
+        <!--<report-->
+            <!--id="action_pick_report_pdf"-->
+            <!--model="pick_report.popup"-->
+            <!--string="Pick Report"-->
+            <!--report_type="qweb-pdf"-->
+            <!--name="pick_report.pick_tmpl"-->
+            <!--file="pick_report.pick_tmpl"-->
+            <!--attachment="pick_report12345.pdf"-->
+        <!--/>-->
     </data>
 </odoo>
