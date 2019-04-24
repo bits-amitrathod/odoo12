@@ -248,7 +248,7 @@
                                                     <th>
                                                         <div class="col-md-12" style="margin-top:10px">
                                                             <p style="font-weight: lighter">
-                                                                <span t-field="move_line.remaining_qty"/>
+                                                                <span t-field="'%.0f'% move_line.remaining_qty"/>
                                                                 <span t-esc="move_line.product_uom.name"/>
                                                             </p>
 
