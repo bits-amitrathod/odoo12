@@ -62,7 +62,7 @@
                         </table>
                         <br/>
 
-                        <table class="table table-condensed">
+                        <table class="table table-condensed" style="border: 1px solid black;">
                             <thead>
                                 <tr>
                                     <th style="border: 1px solid black;border-bottom: 1px solid #555555 !important;">Product Name</th>
@@ -77,24 +77,24 @@
                             </thead>
                             <tbody>
                                 <tr t-foreach="data" t-as="product">
-                                    <td>
+                                    <td style="border: 1px solid black;">
                                         <span t-esc="product.product_tmpl_id.name"/>
                                     </td>
-                                    <td>
+                                    <td style="border: 1px solid black;">
                                         <span t-esc="product.product_tmpl_id.sku_code"/>
                                     </td>
-                                    <td>
+                                    <td style="border: 1px solid black;">
                                         <span t-esc="product.picking_name"/>
                                     </td>
-                                    <td>
+                                    <td style="border: 1px solid black;">
                                         <span t-esc="product.location_dest_id.name"/>
                                     </td>
-                                    <td>
+                                    <td style="border: 1px solid black;">
                                         <span t-field="product.product_uom_qty"/>
                                         <span t-esc="product.product_uom_id.name"/>
                                     </td>
                                     <t t-if="order_type">
-                                        <td>
+                                        <td style="border: 1px solid black;">
                                             <span t-field="product.qty_done"/>
                                          </td>
                                     </t>
