@@ -1,9 +1,9 @@
-from odoo import models, fields, api, _
-from odoo.exceptions import UserError, AccessError, ValidationError
-from odoo.tools.float_utils import float_compare, float_is_zero, float_round
-from datetime import datetime
-
 import logging
+
+import odoo
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+from odoo.tools.float_utils import float_compare, float_is_zero
 
 _logger = logging.getLogger(__name__)
 
@@ -16,7 +16,7 @@ class SaleOrder(models.Model):
         ('draft', 'Quotation'),
         ('engine', 'Prioritization'),
         ('sent', 'Quotation Sent'),
-        ('return','Return'),
+        ('return', 'Return'),
         ('sale', 'Sales Order'),
         ('done', 'Locked'),
         ('cancel', 'Cancelled'),
@@ -26,7 +26,7 @@ class SaleOrder(models.Model):
     preferred_method = fields.Selection(string='Preferred Invoice Delivery Method',
                                         related='partner_id.preferred_method', readonly=True)
     carrier_info = fields.Char("Carrier Info", related='partner_id.carrier_info', readonly=True)
-    is_share = fields.Boolean(string='Is Shared', related='partner_id.is_share', readonly=True,store=True)
+    is_share = fields.Boolean(string='Is Shared', related='partner_id.is_share', readonly=True, store=True)
     sale_margine = fields.Selection([
         ('gifted', 'Gifted'),
         ('legacy', 'Legacy')], string='Sales Level', related='partner_id.sale_margine', readonly=True, store=True)
@@ -94,16 +94,16 @@ class SaleOrder(models.Model):
         }
 
 
-class SaleOrderLine(models.Model):
+class SaleOrderLinePrioritization(models.Model):
     _inherit = "sale.order.line"
-    #customer_request_count = fields.Boolean(string='Request count', compute="_get_customer_request_count")
+    # customer_request_count = fields.Boolean(string='Request count', compute="_get_customer_request_count")
     customer_request_id = fields.Many2one('sps.customer.requests', string='Request')
     req_no = fields.Char(string='Requisition Number')
     default_code = fields.Char("SKU", store=False, readonly=True, related='product_id.product_tmpl_id.default_code')
-    #manufacturer_uom = fields.Char('Manufacturer Unit of Measure',related='product_id.product_tmpl_id.manufacturer_uom.name')
-    manufacturer_uom=fields.Many2one('product.uom',
-        'Manuf. UOM', related='product_id.product_tmpl_id.manufacturer_uom',
-        readonly=True)
+    # manufacturer_uom = fields.Char('Manufacturer Unit of Measure',related='product_id.product_tmpl_id.manufacturer_uom.name')
+    manufacturer_uom = fields.Many2one('product.uom',
+                                       'Manuf. UOM', related='product_id.product_tmpl_id.manufacturer_uom',
+                                       readonly=True)
     product_uom = fields.Many2one('product.uom', string='Unit of Measure', required=True)
 
     '''@api.multi
@@ -127,7 +127,7 @@ class SaleOrderLine(models.Model):
             return {'domain': {'product_uom': []}}
 
         vals = {}
-        #domain=[]
+        # domain=[]
         if self.product_id.uom_id.id == self.product_id.manufacturer_uom.id:
             domain = {'product_uom': [('id', '=', self.product_id.uom_id.id)]}
         else:
@@ -252,7 +252,7 @@ class StockPicking(models.Model):
                 self.carrier_tracking_ref = res['tracking_number']
             order_currency = self.sale_id.currency_id or self.company_id.currency_id
             msg = _("Shipment sent to carrier %s for shipping with tracking number %s<br/>Cost: %.2f %s") % (
-            self.carrier_id.name, self.carrier_tracking_ref, self.carrier_price, order_currency.name)
+                self.carrier_id.name, self.carrier_tracking_ref, self.carrier_price, order_currency.name)
             self.message_post(body=msg)
         else:
             self.message_post(body="Already tracking created")
@@ -279,8 +279,10 @@ class AccountInvoice(models.Model):
                          help="Reference of the document that produced this invoice.",
                          readonly=True, states={'draft': [('readonly', False)]})'''
 
-    purchase_order = fields.Char(string='Purchase Order#', store=False, compute="_setInvoicePurchaseOrder", readonly=True)
-    tracking_reference = fields.Char(string=' TrackingReference' ,store=False, compute='_getSalesOerderPickingOutTrackingReference', readonly=True)
+    purchase_order = fields.Char(string='Purchase Order#', store=False, compute="_setInvoicePurchaseOrder",
+                                 readonly=True)
+    tracking_reference = fields.Char(string=' TrackingReference', store=False,
+                                     compute='_getSalesOerderPickingOutTrackingReference', readonly=True)
 
     @api.multi
     def _setInvoicePurchaseOrder(self):
@@ -294,9 +296,10 @@ class AccountInvoice(models.Model):
     def _getSalesOerderPickingOutTrackingReference(self):
         for order in self:
             if order.origin:
-                order.env.cr.execute( "select carrier_tracking_ref from stock_picking WHERE origin like '"+order.origin+"' and state like 'done' and name like 'WH/OUT/%' limit 1")
+                order.env.cr.execute(
+                    "select carrier_tracking_ref from stock_picking WHERE origin like '" + order.origin + "' and state like 'done' and name like 'WH/OUT/%' limit 1")
                 query_result = order.env.cr.dictfetchone()
-                if query_result and query_result['carrier_tracking_ref'] :
+                if query_result and query_result['carrier_tracking_ref']:
                     order.tracking_reference = query_result['carrier_tracking_ref']
 
 

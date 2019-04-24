@@ -1,5 +1,5 @@
 <odoo>
-    <template id="modal" name="Optional Products cstm">
+    <template id="modalCSTM" name="Optional Products cstm">
         <div id="modal_optional_products" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">

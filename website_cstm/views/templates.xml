@@ -45,19 +45,6 @@
                     <li class="active">
                         <a href="#" style="color:#353b4d!important;">(412) 564-1280</a>
                     </li>
-                    <!--<li>-->
-                    <!--<a href="#">Sign in</a>-->
-                    <!--</li>-->
-                    <!--<li class="dropdown currency">-->
-
-                    <!--<select class="form-control">-->
-                    <!--<option>USD</option>-->
-                    <!--<option>CAD</option>-->
-                    <!--<option>INR</option>-->
-                    <!--<option>GBP</option>-->
-                    <!--<option>AUD</option>-->
-                    <!--</select>-->
-                    <!--</li>-->
                 </ul>
             </div>
         </xpath>
@@ -74,22 +61,7 @@
                 <div class="row">
                     <div class="col-md-5 col-sm-12 newsletter">
                         <h6>Sign Up for our Newsletter</h6>
-                        <!--<div class="newsletter ">-->
-                        <!--<p class="message"/>-->
-                        <!--<form action="#" method="post" name="mc-embedded-subscribe-form" class="contact-form"-->
-                        <!--target="_blank">-->
-                        <!--<div class="row">-->
-                        <!--<div class="col-md-8 col-sm-8">-->
-                        <!--<input type="email" value="" name="EMAIL" class="contact_email"-->
-                        <!--placeholder="Enter your email address..."/>-->
-                        <!--</div>-->
-                        <!--<div class="col-md-4 col-sm-4">-->
-                        <!--<input type="" value="Sign Up" class="action_button sign_up"-->
-                        <!--name="subscribe"/>-->
-                        <!--</div>-->
-                        <!--</div>-->
-                        <!--</form>-->
-                        <!--</div>-->
+
                         <div class="oe_snippet_body input-group js_subscribe" data-list-id="1">
                             <input type="email" name="email" class="js_subscribe_email form-control contact_email"
                                    placeholder="Enter your email address..."/>
