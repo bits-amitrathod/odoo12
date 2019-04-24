@@ -87,7 +87,7 @@
                             </strong>
                         </t>
                         <t t-else="">
-                            <span id="add_to_cart">Call for Pricing 412-564-1280</span>
+                            <span>Call for Pricing 412-564-1280</span>
                         </t>
 
                         <button type="button" class="btn btn-xs"
@@ -259,7 +259,7 @@
                                         <t t-call="website_sale.product_price"/>
                                     </t>
                                     <t t-else="">
-                                        <h3 id="add_to_cart">Call for Pricing 412-564-1280</h3>
+                                        <h3 >Call for Pricing 412-564-1280</h3>
                                     </t>
                                     <hr class="mb8 mt12"/>
                                     <p t-if="len(product.product_variant_ids) &gt; 1"
