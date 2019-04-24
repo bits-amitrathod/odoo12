@@ -59,7 +59,8 @@ class ProductTemplate(models.Model):
                 max_inventory_percent = (quantity/int(max_inventory))*100
                 ml.max_inventory_level = str(int(max_inventory))
                 ml.max_inventory_percent= "" +str(int(max_inventory_percent))+"%"
-                inventory_future_percent =(purchase_qty/int(max_inventory))*100
+
+                inventory_future_percent =((purchase_qty + ml.actual_quantity)/int(max_inventory))*100
                 ml.inventory_percent_color =int(max_inventory_percent)
                 ml.future_percent_color=int(inventory_future_percent)
                 ml.max_inventory_future_percent="" +str(int(inventory_future_percent))+"%"
