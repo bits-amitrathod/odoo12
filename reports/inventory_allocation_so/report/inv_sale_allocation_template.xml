@@ -57,7 +57,7 @@
                                         </td>
                                         <td class="text-right" style="border: 1px solid black">
                                              <t t-set="total_qty" t-value="total_qty + order.product_quantity"/>
-                                            <span t-esc="order.product_uom_qty"/>
+                                            <span t-esc="'%.0f'% order.product_uom_qty"/>
                                         </td>
                                         <td class="text-right" style="border: 1px solid black">
                                              <t t-set="total_cost" t-value="total_cost + order.cost"/>
