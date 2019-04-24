@@ -32,7 +32,7 @@ class inventory_allocation_so(models.Model):
             this.so_allocation = True
             for sale_order in this.sale_order_line:
                 this.product_quantity = int(sale_order.product_qty)
-                this.product_uom_qty = str(sale_order.product_qty )+ " "+this.product_uom
+                this.product_uom_qty = str(int(float(sale_order.product_qty )))+ " "+this.product_uom
                 this.cost=(sale_order.purchase_price)
     @api.model_cr
     def init(self):
