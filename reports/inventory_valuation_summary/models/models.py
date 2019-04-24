@@ -65,7 +65,7 @@ class ReportInventoryValuationSummary(models.Model):
     product_id = fields.Many2one('product.product', string='Product', )
     name = fields.Char(string="Name")
     sku_code = fields.Char('Product SKU')
-    quantity = fields.Float(string="Quantity")
+    quantity = fields.Float(string="Quantity",digits=dp.get_precision('Product Unit of Measure'))
     quantity_cal = fields.Float(string="Quantity",compute='_compute_unit_cost',digits=dp.get_precision('Product Unit of Measure'))
     unit_cost = fields.Float(string="Unit Cost",compute='_compute_unit_cost')
     asset_value = fields.Float(string="Asset Value",store = False)
