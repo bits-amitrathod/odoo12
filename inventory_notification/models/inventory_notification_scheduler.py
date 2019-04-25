@@ -99,6 +99,13 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                                 vals['columnProps'], vals['closing_content'])'''
 
     def pick_notification_for_user(self, picking):
+
+        # pdf = self.env['pick_report.action_pick_report_pdf'].sudo().render_qweb_pdf([picking.id])[0]
+        # pdfhttpheaders = [
+        #     ('Content-Type', 'application/pdf'),
+        #     ('Content-Length', len(pdf)),
+        # ]
+
         Stock_Moves_list = self.env['stock.move'].search([('picking_id', '=', picking.id)])
         Stock_Moves_line = []
         for stock_move in Stock_Moves_list:
