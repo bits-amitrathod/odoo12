@@ -4,6 +4,7 @@ from odoo import api, fields, models
 import datetime
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, pycompat, misc
 import logging
+import odoo.addons.decimal_precision as dp
 
 _logger = logging.getLogger(__name__)
 
@@ -15,7 +16,7 @@ class SalePurchaseHistory(models.Model):
     product_sku_ref = fields.Char("Product SKU", compute='_compare_data', store=False)
     customer_name = fields.Char("Customer Name",compute='_compare_data', store=False)
     delivered_date = fields.Date("Delivered Date",compute='_compare_data', store=False)
-    qty_delivered_converted = fields.Float("Delivered Qty",compute='_compare_data', store=False)
+    qty_delivered_converted = fields.Float("Delivered Qty",compute='_compare_data', store=False,digits=dp.get_precision('Product Unit of Measure'))
     unit_price_converted = fields.Monetary("Unit Price", currency_field='currency_id', store=False)
     total_price_converted = fields.Monetary("Total", currency_field='currency_id', store=False)
     product_uom_converted = fields.Many2one('product.uom', 'Unit of Measure', currency_field='currency_id', store=False)

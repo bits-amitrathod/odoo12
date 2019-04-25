@@ -62,7 +62,7 @@
                                                 <t t-call="website_sale.product_price"/>
                                             </t>
                                             <t t-else="">
-                                                <h3 id="add_to_cart">Call for Pricing 412-564-1280</h3>
+                                                <h3 >Call for Pricing 412-564-1280</h3>
                                             </t>
                                             <p t-if="len(product.product_variant_ids) &gt; 1"
                                                class="css_not_available_msg bg-danger" style="padding: 15px;">Product
@@ -81,13 +81,12 @@
                                             <!--<t t-call="website_sales.category_vender"/>-->
                                             <!--<t t-call="website_sales.productExpirationDate"/>-->
                                             <div>
-                                                <t t-set="total_qty"
-                                                   t-value="product.qty_available-product.outgoing_qty"/>
-                                                <t t-if="total_qty &gt; 0">
+
+                                                <t t-if="product.actual_quantity &gt; 0">
                                                     <div>
                                                         <!--<span class="fa fa-check"/>-->
                                                         <span>
-                                                            <span t-esc="total_qty"
+                                                            <span t-esc="product.actual_quantity"
                                                                   style="font-style: italic;"/>
                                                             item(s) left
                                                         </span>

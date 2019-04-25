@@ -592,7 +592,7 @@
             <field name="model">product.product</field>
             <field name="priority">20</field>
             <field name="arch" type="xml">
-                <tree create="false" import="false">
+                <tree  create="false" import="false" >
                     <field name="sku_code" string="ProductNumber"/>
                     <field name="name" string="ProductDescription"/>
                     <field name="list_price" string="Price"/>
@@ -614,10 +614,56 @@
             <field name="name">Vendor Pricing</field>
             <field name="key">action</field>
             <field name="type">ir.actions.act_window</field>
+             <field name="limit" eval="10"/>
             <field name="res_model">product.product</field>
             <field name="view_mode">tree</field>
             <field name="view_id" ref="vendor_offer.vendor_pricing_list"/>
         </record>
+
+        <record id="view_purchase_order_edit_note_form11" model="ir.ui.view">
+            <field name="name">product.product.export.vendor</field>
+            <field name="model">vendor.pricing</field>
+            <field name="arch" type="xml">
+                <form string="Export PPVendorPricing">
+                    <group>
+                        <div> Click On ' Export To File ' button to export PPVendorPricing file </div>
+                    </group>
+                    <footer >
+                        <button name="download_excel_ven_price" string="Export To File" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <act_window name="Export PPVendorPricing"
+            res_model="vendor.pricing"
+            src_model="product.product"
+            view_mode="form"
+            target="new"
+            key2="client_action_multi"
+            id="vendor_pricing_act_window"/>
+
+        <!--do not remove this commented code -->
+
+         <!--<record id="vendor_offer.action_vendor_pricing" model="ir.actions.server">-->
+            <!--<field name="name">Vendor Pricing</field>-->
+            <!--<field name="type">ir.actions.server</field>-->
+            <!--<field name="model_id" ref="model_vendor_pricing"/>-->
+            <!--<field name="binding_model_id" ref="model_vendor_pricing"/>-->
+            <!--<field name="state">code</field>-->
+            <!--<field name="code">model.download_excel_ven_price()</field>-->
+        <!--</record>-->
+
+         <!--do not remove this commented code -->
+
+          <!--<record id="vendor_offer.vendor_pricing_client_action" model="ir.actions.client">-->
+            <!--<field name="name">Vendor Pricing</field>-->
+            <!--<field name="type">ir.actions.client</field>-->
+            <!--<field name="tag">tree_view_button_ven_pri</field>-->
+            <!--<field name="params">[{'showPPVendor':true}]-->
+            <!--</field>-->
+        <!--</record>-->
 
         <record model="ir.actions.act_window" id="vendor_offer.action_window_multiplier">
             <field name="name">Multiplier</field>

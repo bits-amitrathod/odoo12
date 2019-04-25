@@ -30,6 +30,7 @@ class inventory_adjustment_report(models.Model):
         }
 
         for order in self:
+            order.currency_id = order.product_id.product_tmpl_id.company_id.currency_id
             order.p_sku = order.product_id.product_tmpl_id.sku_code
             keys=order.product_id.product_tmpl_id.type
             if keys==False:
