@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+      <template id="template" xml:space="preserve">
+
+          <!--<t t-extend="ListView.buttons">-->
+
+            <!--<t t-jquery="div.o_list_buttons" t-operation="append">-->
+                    <!--<button t-if="widget and widget.modelName == 'product.product' "  class="btn btn-primary btn-sm o_list_ppvendor_button_download" type="button">Download PPVendorPricing</button>-->
+            <!--</t>-->
+
+          <!--</t>-->
+
+      </template>

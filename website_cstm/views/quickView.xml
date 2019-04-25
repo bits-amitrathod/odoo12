@@ -62,7 +62,7 @@
                                                 <t t-call="website_sale.product_price"/>
                                             </t>
                                             <t t-else="">
-                                                <h3 id="add_to_cart">Call for Pricing 412-564-1280</h3>
+                                                <h3 >Call for Pricing 412-564-1280</h3>
                                             </t>
                                             <p t-if="len(product.product_variant_ids) &gt; 1"
                                                class="css_not_available_msg bg-danger" style="padding: 15px;">Product

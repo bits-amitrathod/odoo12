@@ -37,12 +37,16 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
 
             productMaxMinDates = {}
             for val in productProduct:
-                val.env.cr.execute(
-                    "SELECT min(use_date), max(use_date) FROM public.stock_production_lot where product_id = %s",
-                    (val.id,))
-                query_result = val.env.cr.dictfetchone()
-                productMaxMinDates[val.id] = {"min": fields.Datetime.from_string(query_result['min']),
-                                              "max": fields.Datetime.from_string(query_result['max'])}
+
+                if (val.qty_available - val.outgoing_qty) > 0:
+                    query_result = self.fetch_lot_expirydates(val.id)
+                    productMaxMinDates[val.id] = {"min": fields.Datetime.from_string(query_result['min']),
+                                                  "max": fields.Datetime.from_string(query_result['max'])}
+                else:
+                    productMaxMinDates[val.id] = {
+                        "min": None,
+                        "max": None
+                    }
 
             payload['productExpiration'] = productMaxMinDates
 
@@ -64,19 +68,43 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         payload = responce.qcontext
 
         productMaxMinDates = {}
-        request.env.cr.execute(
-            "SELECT min(use_date), max (use_date) FROM public.stock_production_lot where product_id = %s",
-            (payload['product'].product_variant_id.id,))
-        query_result = request.env.cr.dictfetchone()
-        productMaxMinDates[payload['product'].product_variant_id.id] = {
-            "min": fields.Datetime.from_string(query_result['min']),
-            "max": fields.Datetime.from_string(query_result['max'])}
+        if (payload['product'].qty_available - payload['product'].outgoing_qty) > 0 :
+            query_result = self.fetch_lot_expirydates(payload['product'].product_variant_id.id)
+            productMaxMinDates[payload['product'].product_variant_id.id] = {
+                "min": fields.Datetime.from_string(query_result['min']),
+                "max": fields.Datetime.from_string(query_result['max'])
+            }
+        else :
+            productMaxMinDates[payload['product'].product_variant_id.id] = {
+                "min": None,
+                "max": None
+            }
 
         payload['productExpiration'] = productMaxMinDates
         payload['userEmail'] = request.env.user.email
         payload['isVisibleWebsiteExpirationDate'] = request.env['ir.config_parameter'].sudo().get_param(
             'website_sales.default_website_expiration_date')
         return request.render("website_sale.product", payload)
+
+    def fetch_lot_expirydates(self, product_id):
+        request.env.cr.execute(
+            """SELECT
+                sum(quantity), min(use_date), max(use_date)
+            FROM
+                stock_quant
+            INNER JOIN
+                stock_production_lot
+            ON
+                (
+                    stock_quant.lot_id = stock_production_lot.id)
+            INNER JOIN
+                stock_location
+            ON
+                (
+                    stock_quant.location_id = stock_location.id)
+            WHERE
+                stock_location.usage in('internal', 'transit') and stock_production_lot.product_id = %s """,(product_id,))
+        return request.env.cr.dictfetchone()
 
     @http.route(['/shop/confirmation'], type='http', auth="public", website=True)
     def payment_confirmation(self, **post):

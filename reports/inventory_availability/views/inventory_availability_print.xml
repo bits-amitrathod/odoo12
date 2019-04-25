@@ -24,7 +24,8 @@
                                     <th style="border: 1px solid black;text-align: center;">UOM</th>
                                     <th style="border: 1px solid black;text-align: center;">On Hand Oty</th>
                                     <th style="border: 1px solid black;text-align: center;">Allocated Qty</th>
-                                    <th style="border: 1px solid black;text-align: center;">Available Qty</th>
+                                    <th style="border: 1px solid black;text-align: center;">Qty Available For Sale</th>
+                                    <th style="border: 1px solid black;text-align: center;">Forecasted Qty</th>
                                     <th style="border: 1px solid black;text-align: center;">On Order Qty</th>
                                 </tr>
                                 </thead>
@@ -44,7 +45,9 @@
                                         <td align="center" style="border: 1px solid black;">
                                             <span t-field="order.outgoing_qty"/>
                                         </td>
-
+                                         <td align="center" style="border: 1px solid black;white-space:nowrap;">
+                                              <span t-field="order.actual_quantity" />
+                                        </td>
                                         <td align="center" style="border: 1px solid black;white-space:nowrap;">
                                               <span t-field="order.virtual_available" />
                                         </td>

@@ -25,11 +25,11 @@
                     <t t-foreach="receiving_list" t-as="receiving_list_int">
                         <t t-set="receiving_item" t-value="receiving_list[receiving_list_int]"/>
                         <div class="col-sm-6">
-                            <strong>Purchase Order</strong>
+                            <strong>Purchase Order :</strong>
                             <span t-esc="receiving_item['purchase_order_id']"/>
                         </div>
                         <div class="col-sm-6">
-                            <strong>Vendor</strong>
+                            <strong>Vendor :</strong>
                             <span t-esc="receiving_item['purchase_partner_id']"/>
                         </div>
                         <table class="table table-condensed" style="border: 1px solid black;">
