@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="assets_common" name="cheque_print pdf assets" inherit_id="web.report_assets_common">
+		<xpath expr="." position="inside">
+			 <link href="/cheque_print/static/src/less/report_check_top.less" rel="stylesheet"/>
+		</xpath>
+	</template>
+
+    <template id="print_change" inherit_id="l10n_us_check_printing.ckus_check">
+        <xpath expr="//div[hasclass('ckus_check')]/div[hasclass('ckus_memo')]" position="replace">
+                  <div class="ckus_memo_upgrade" t-esc="page['memo']"/>
+        </xpath>
+
+    </template>
+</odoo>
