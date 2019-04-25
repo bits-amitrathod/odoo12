@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-"Hello - needed salary slip for last 3 month for Loan purpose."
 
-from odoo import models, fields, api, SUPERUSER_ID, _
+import datetime
+import logging
+from random import randint
+
+import math
+from odoo import models, fields, api, _
 from odoo.addons import decimal_precision as dp
+from odoo.exceptions import UserError, ValidationError
+from odoo.tools import pdf
 from werkzeug.urls import url_encode
 
 from .fedex_request import FedexRequest
-from odoo.exceptions import UserError, AccessError, ValidationError
-import datetime
-import math
-from random import randint
-from odoo.tools import pdf
-import logging
 
 _logger = logging.getLogger(__name__)
 # Why using standardized ISO codes? It's way more fun to use made up codes...
@@ -669,8 +670,13 @@ class ProductTemplateTire(models.Model):
     actual_quantity = fields.Float(string='Qty Available For Sale', compute='_compute_actual_quantity', digits=dp.get_precision('Product Unit of Measure'))
 
     def _compute_actual_quantity(self):
-        for product in self:
-            product.actual_quantity = product.qty_available-product.outgoing_qty
+        for product_tmpl in self:
+            stock_quant = self.env['stock.quant'].search([('product_tmpl_id', '=', product_tmpl.id)])
+            reserved_quantity = 0
+            if len(stock_quant)>0:
+                for lot in stock_quant:
+                    reserved_quantity +=lot.reserved_quantity
+            product_tmpl.actual_quantity = product_tmpl.qty_available - reserved_quantity
 
 
     @api.model

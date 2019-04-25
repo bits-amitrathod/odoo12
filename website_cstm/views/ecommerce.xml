@@ -103,8 +103,7 @@
                     <!--~~~~~~~~~~~~~~~~~~ Expration~~~~~~~~~~~~~~~~ -->
                     <t t-call="website_sales.productExpirationDate"/>
 
-                    <t t-set="total_qty" t-value="product.qty_available-product.outgoing_qty"/>
-                    <div t-if="total_qty &lt;= 0"
+                    <div t-if="product.actual_quantity &lt;= 0"
                          t-attf-class="availability_message_#{product_template} linkCstm mt16">
                         <i class="fa fa-exclamation-triangle"/>
                         Temporarily out of stock
@@ -259,7 +258,7 @@
                                         <t t-call="website_sale.product_price"/>
                                     </t>
                                     <t t-else="">
-                                        <h3 >Call for Pricing 412-564-1280</h3>
+                                        <h3>Call for Pricing 412-564-1280</h3>
                                     </t>
                                     <hr class="mb8 mt12"/>
                                     <p t-if="len(product.product_variant_ids) &gt; 1"
@@ -267,16 +266,19 @@
                                         does not exist.
                                     </p>
 
-                                    <t t-set="total_qty" t-value="product.qty_available-product.outgoing_qty"/>
-                                    <t t-if="total_qty &gt; 0">
+
+                                    <t t-if="product.actual_quantity &gt; 0">
                                         <div t-attf-class="availability_message_#{product_template}"
                                              style="padding-bottom: 10px;font-style: italic;">
-                                            <t t-esc="total_qty"/>
+                                            <t t-esc="product.actual_quantity"/>
                                             item(s) left
                                         </div>
-                                        <a id="add_to_cart" class="btn btn-primary btn-lg mt8 js_check_product a-submit"
-                                           href="#">Add to Cart
-                                        </a>
+                                        <t t-if="product.website_price &gt; 0">
+                                            <a id="add_to_cart"
+                                               class="btn btn-primary btn-lg mt8 js_check_product a-submit"
+                                               href="#">Add to Cart
+                                            </a>
+                                        </t>
                                     </t>
                                     <t t-else="">
                                         <div t-attf-class="availability_message_#{product_template} linkCstm mt16">
@@ -344,8 +346,7 @@
     <template id="product_quantity" inherit_id="website_sale.product_quantity" customize_show="True"
               name="Select Quantity">
         <xpath expr="//div[hasclass('css_quantity')]" position="replace">
-            <t t-set="total_qty" t-value="product.qty_available-product.outgoing_qty"/>
-            <t t-if="total_qty &gt; 0">
+            <t t-if="product.actual_quantity &gt; 0">
                 <div style="font-weight: bold;margin-bottom: -10px;">Quantity</div>
                 <div class="css_quantity input-group oe_website_spinner pull-left"
                      contenteditable="false" style="margin-top: 15px;margin-right: 18px;">
@@ -353,7 +354,7 @@
                         <i class="fa fa-minus"></i>
                     </a>
                     <input type="text" class="form-control quantity" data-min="1" name="add_qty" value="1"
-                           t-att-data-max="product.qty_available - product.outgoing_qty"/>
+                           t-att-data-max="product.actual_quantity"/>
                     <a t-attf-href="#" class="mb8 input-group-addon float_left js_add_cart_json">
                         <i class="fa fa-plus"></i>
                     </a>

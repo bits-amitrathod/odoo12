@@ -37,8 +37,7 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
 
             productMaxMinDates = {}
             for val in productProduct:
-
-                if (val.qty_available - val.outgoing_qty) > 0:
+                if (val.actual_quantity) > 0:
                     query_result = self.fetch_lot_expirydates(val.id)
                     productMaxMinDates[val.id] = {"min": fields.Datetime.from_string(query_result['min']),
                                                   "max": fields.Datetime.from_string(query_result['max'])}
@@ -68,13 +67,13 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         payload = responce.qcontext
 
         productMaxMinDates = {}
-        if (payload['product'].qty_available - payload['product'].outgoing_qty) > 0 :
+        if (payload['product'].actual_quantity) > 0:
             query_result = self.fetch_lot_expirydates(payload['product'].product_variant_id.id)
             productMaxMinDates[payload['product'].product_variant_id.id] = {
                 "min": fields.Datetime.from_string(query_result['min']),
                 "max": fields.Datetime.from_string(query_result['max'])
             }
-        else :
+        else:
             productMaxMinDates[payload['product'].product_variant_id.id] = {
                 "min": None,
                 "max": None
@@ -103,7 +102,8 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
                 (
                     stock_quant.location_id = stock_location.id)
             WHERE
-                stock_location.usage in('internal', 'transit') and stock_production_lot.product_id = %s """,(product_id,))
+                stock_location.usage in('internal', 'transit') and stock_production_lot.product_id = %s """,
+            (product_id,))
         return request.env.cr.dictfetchone()
 
     @http.route(['/shop/confirmation'], type='http', auth="public", website=True)
