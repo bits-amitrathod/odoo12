@@ -81,13 +81,12 @@
                                             <!--<t t-call="website_sales.category_vender"/>-->
                                             <!--<t t-call="website_sales.productExpirationDate"/>-->
                                             <div>
-                                                <t t-set="total_qty"
-                                                   t-value="product.qty_available-product.outgoing_qty"/>
-                                                <t t-if="total_qty &gt; 0">
+
+                                                <t t-if="product.actual_quantity &gt; 0">
                                                     <div>
                                                         <!--<span class="fa fa-check"/>-->
                                                         <span>
-                                                            <span t-esc="total_qty"
+                                                            <span t-esc="product.actual_quantity"
                                                                   style="font-style: italic;"/>
                                                             item(s) left
                                                         </span>
