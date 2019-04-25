@@ -373,7 +373,7 @@ class PrioritizationEngine(models.TransientModel):
                 _logger.info('customer_request_id  :  %r  ', allocated_product['customer_request_id'])
 
                 sale_order_line_dict = {'customer_request_id': allocated_product['customer_request_id'],'req_no': allocated_product['req_no'], 'order_id': sale_order['id'], 'product_id': allocated_product['product_id'],
-                                        'order_partner_id' : partner_id_key, 'product_uom_qty' : allocated_product['allocated_product_quantity']}
+                                        'order_partner_id' : partner_id_key, 'product_uom_qty' : allocated_product['customer_required_quantity']}
 
                 self.env['sale.order.line'].create(dict(sale_order_line_dict))
 
@@ -409,7 +409,7 @@ class PrioritizationEngine(models.TransientModel):
                 sale_order_line_dict = {
                     'customer_request_id': allocated_product['customer_request_id'],'req_no': allocated_product['req_no'], 'order_id': sale_order['id'],
                     'product_id': allocated_product['product_id'],'order_partner_id': partner_id_key,
-                    'product_uom_qty': allocated_product['allocated_product_quantity']}
+                    'product_uom_qty': allocated_product['customer_required_quantity']}
 
                 self.env['sale.order.line'].create(dict(sale_order_line_dict))
 
