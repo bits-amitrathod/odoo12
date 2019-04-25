@@ -12,7 +12,9 @@ _logger = logging.getLogger(__name__)
 class SpsCustomerRequest(models.Model):
     _name = 'sps.customer.requests'
 
+
     customer_id = fields.Many2one('res.partner', string='Customer', required=True)
+    # cust_id=fields.Integer(related='customer_id.id')
     document_id = fields.Many2one('sps.cust.uploaded.documents', string='Document', required=True)
     product_id = fields.Many2one('product.product', string='Product', required=False, default=0)
     sale_order_line_id = fields.One2many('sale.order.line', 'customer_request_id', string="Request")
@@ -42,45 +44,75 @@ class SpsCustomerRequest(models.Model):
 
     document_id_set = set()
 
+
+
     # Get Customer Requests
     def get_customer_requests(self):
         _logger.info('In get_customer_requests')
 
-        params = self.env['ir.config_parameter'].sudo()
-        document_processing_count_setting = params.get_param('prioritization_engine.document_processing_count_setting')
-        document_processing_count = 0
-        if document_processing_count_setting:
-            document_processing_count = int(params.get_param('prioritization_engine.document_processing_count'))
 
-        if document_processing_count > 0:
-            sps_customer_requests = self.env['sps.customer.requests'].search(
-                [('document_id.document_processed_count', '<', document_processing_count), ('document_id.status', 'in', ('In Process', 'draft')), ('status', 'in', ('Inprocess', 'Incomplete', 'Unprocessed', 'InCoolingPeriod', 'New', 'Partial'))])
-            if len(sps_customer_requests)>0:
+
+        # params = self.env['ir.config_parameter'].sudo()
+        # document_processing_count_setting = params.get_param('prioritization_engine.document_processing_count_setting')
+        # document_processing_count = 0
+        # if document_processing_count_setting:
+        #     document_processing_count = int(params.get_param('prioritization_engine.document_processing_count'))
+        #
+        # if document_processing_count > 0:
+            # sps_customer_requests = self.env['sps.customer.requests'].search(
+            #     [('document_id.document_processed_count', '<', document_processing_count), ('document_id.status', 'in', ('In Process', 'draft')), ('status', 'in', ('Inprocess', 'Incomplete', 'Unprocessed', 'InCoolingPeriod', 'New', 'Partial'))])
+        sps_customer_requests = self.env['sps.customer.requests'].search(
+                [
+                 ('document_id.status', 'in', ('In Process', 'draft')),
+                 ('status', 'in', ('Inprocess', 'Incomplete', 'Unprocessed', 'InCoolingPeriod', 'New', 'Partial'))])
+        if len(sps_customer_requests)>0:
                 try:
                     self.process_customer_requests(sps_customer_requests)
                 except Exception as exc:
-                    _logger.error("Error procesing requests %r", exc)
-            else:
-                _logger.info('customer request count is 0.')
+                    _logger.error("Error processing requests %r", exc)
         else:
-            _logger.error("Document Processing Count is 0 or less than 0")
+                _logger.info('customer request count is 0.')
+        # else:
+        #         _logger.error("Document Processing Count is 0 or less than 0")
 
     def process_customer_requests(self, sps_customer_requests):
         _logger.info('In process_customer_requests')
 
+
         pr_models = []
         self.document_id_set.clear()
 
+
+
         for sps_customer_request in sps_customer_requests:
             # get latest customer uploaded document id
-            self.env.cr.execute("SELECT max(id) document_id FROM public.sps_cust_uploaded_documents WHERE customer_id="+
-                                    str(sps_customer_request['customer_id'].id))
-            query_result = self.env.cr.dictfetchone()
+            # self.env.cr.execute("SELECT max(id) document_id FROM public.sps_cust_uploaded_documents WHERE customer_id="+
+            #                         str(sps_customer_request['customer_id'].id))
+            # query_result = self.env.cr.dictfetchone()
+
+
+            #My code starts------
+
+            current_cust_id=sps_customer_request.customer_id.id
+            print("Current Customer ID : ", current_cust_id)
+
+            current_cust_doc_fixed_count=sps_customer_request.customer_id['doc_process_count']
+            print("Current Customer Final Doc Count : ",current_cust_doc_fixed_count)
+
+
+            current_processed_docs=sps_customer_request.document_id.document_processed_count
+            print("Current customer processed documents : ",current_processed_docs)
+
+
+            #My code ends------
+
 
             # For Inventory Template
             if sps_customer_request.document_id.template_type.lower().strip() == 'inventory':
                 # following condition use for process only latest uploaded document.
-                if int(query_result['document_id']) == int(sps_customer_request.document_id.id):
+                # if int(query_result['document_id']) == int(sps_customer_request.document_id.id):
+                if current_processed_docs <= current_cust_doc_fixed_count:
+                    print("Inventory++++++++++++++++++++++++++")
                     if sps_customer_request.quantity > 0:
                         pr_model = self.add_customer_request_data(sps_customer_request)
                         if pr_model:
@@ -90,9 +122,11 @@ class SpsCustomerRequest(models.Model):
 
             elif sps_customer_request.document_id.template_type.lower().strip() == 'requirement':
                 if sps_customer_request.updated_quantity > 0:
-                    pr_model = self.add_customer_request_data(sps_customer_request)
-                    if pr_model:
-                        pr_models.append(pr_model)
+                    if current_processed_docs <= current_cust_doc_fixed_count:
+                        print("Required=================")
+                        pr_model = self.add_customer_request_data(sps_customer_request)
+                        if pr_model:
+                            pr_models.append(pr_model)
 
         #_logger.debug('Length **** %r', str(len(pr_models)))
         if len(pr_models) > 0:

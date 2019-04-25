@@ -21,7 +21,7 @@ import os
 import errno
 
 _logger = logging.getLogger(__name__)
-ATTACHMENT_DIR = "/home/odoo/Documents/templates/customer/"
+ATTACHMENT_DIR = "/home/asim/odoo/Documents/templates/customer/"
 
 
 class CustomerTemplate(models.Model):

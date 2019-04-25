@@ -41,7 +41,7 @@ EXTENSIONS = {
 from odoo import models, fields, api
 
 _logger = logging.getLogger(__name__)
-ATTACHMENT_DIR = "/home/odoo/Documents/templates/customer/"
+ATTACHMENT_DIR = "/home/asim/odoo/Documents/templates/customer/"
 
 
 class SpsTransientBaseImport(models.TransientModel):
