@@ -63,23 +63,23 @@
                                         <span t-esc="o.p_qty"/>
                                     </td>
                                      <td align="right"   style="border: 1px solid #000;white-space: nowrap;">
-                                      $  <span t-esc="'%.2f'% float(o.amount)" />
+                                         <span t-esc="o.amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                     </td>
                                     <td align="right"   style="border: 1px solid #000;white-space: nowrap;">
-                                      $   <span t-esc="'%.2f'% float(o.total_amt)" />
-                                        <t t-set="total_amount" t-value="total_amount + o.total_amt" />
+                                        <span t-esc="o.total_amt" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                        <t t-set="total_amount" t-value="total_amount + o.total_amt"/>
                                     </td>
                                     <td align="left"  style="border: 1px solid #000;">
                                         <span t-esc="o.adj_status"/>
                                     </td>
                                 </tr>
                             </t>
-                            <tr>
+                            <tr t-if="len(data) &gt; 0">
                                 <td colspan="7" style="border: 1px solid #000;white-space: nowrap;text-align: right;">
                                     <b>Total</b>
                                 </td>
                                 <td style="border: 1px solid #000;white-space: nowrap;text-align: right;">
-                                    $ <span t-esc="total_amount"/>
+                                    <span t-esc="total_amount" t-options='{"widget": "monetary", "display_currency": data[0].currency_id}'/>
                                 </td>
                             </tr>
                     </table>

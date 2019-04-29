@@ -279,7 +279,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                               'Max Exp. Date', 'Unit Of Measure']
                     columnProps = ['product_brand_id.name','sku_code', 'name', 'list_price', 'actual_quantity', 'minExDate',
                                    'maxExDate', 'uom_id.name']
-                    closing_content = "Please reply to this email or contact your Acount Manager to hold product or place an order. " \
+                    closing_content = "Please reply to this email or contact your Account Manager to hold product or place an order. " \
                                       "<br/>Many Thanks,		" \
                                       "<br/>SPS Customer Care" \
                                       "<br/>" \
