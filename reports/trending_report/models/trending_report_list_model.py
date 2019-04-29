@@ -17,7 +17,13 @@ class TrendingReportListView(models.Model):
     month3 = fields.Monetary(currency_field='currency_id', store=False)
     month4 = fields.Monetary(currency_field='currency_id', store=False)
     month5 = fields.Monetary(currency_field='currency_id', store=False)
-    month6 = fields.Monetary(compute='_compute_sales_vals',currency_field='currency_id', store=False)
+    month6 = fields.Monetary(currency_field='currency_id', store=False)
+    month7 = fields.Monetary(currency_field='currency_id', store=False)
+    month8 = fields.Monetary(currency_field='currency_id', store=False)
+    month9 = fields.Monetary(currency_field='currency_id', store=False)
+    month10 = fields.Monetary(currency_field='currency_id', store=False)
+    month11 = fields.Monetary(currency_field='currency_id', store=False)
+    month12 = fields.Monetary(compute='_compute_sales_vals',currency_field='currency_id', store=False)
     month_count = fields.Integer('Months Ago First Order', compute='_first_purchase_date', store=False)#'Months Ago First Order'
     month_total = fields.Integer('Total Purchased Month', compute='_total_purchased_month', store=False)
     trend_val = fields.Char('Trend', store=False,compute='_get_trend_value')
@@ -33,11 +39,23 @@ class TrendingReportListView(models.Model):
             product.month3.string=(fields.date.today() - relativedelta(months=2)).strftime('%b-%Y')
             product.month4.string=(fields.date.today() - relativedelta(months=3)).strftime('%b-%Y')
             product.month5.string=(fields.date.today() - relativedelta(months=4)).strftime('%b-%Y')'''
-            groupby_dict = groupby_dict_month = groupby_dict_90 = groupby_dict_yr = {}
+            groupby_dict_month = {}
             sale_orders = self.env['sale.order'].search([('partner_id', '=', product.id), ('state', '=', 'sale')])
             groupby_dict_month['data'] = sale_orders
             for sale_order in groupby_dict_month['data']:
                 confirmation_date=datetime.date(datetime.strptime(sale_order.confirmation_date,"%Y-%m-%d %H:%M:%S"))
+                if ((confirmation_date.month == (fields.date.today() - relativedelta(months=11)).month) and (confirmation_date.year == (fields.date.today() - relativedelta(months=11)).year)):
+                    product.month12 = product.month12 + sale_order.amount_total
+                if ((confirmation_date.month == (fields.date.today() - relativedelta(months=10)).month) and (confirmation_date.year == (fields.date.today() - relativedelta(months=10)).year)):
+                    product.month11 = product.month11+ sale_order.amount_total
+                if ((confirmation_date.month == (fields.date.today() - relativedelta(months=9)).month) and (confirmation_date.year == (fields.date.today() - relativedelta(months=9)).year)):
+                    product.month10 = product.month10 + sale_order.amount_total
+                if ((confirmation_date.month == (fields.date.today() - relativedelta(months=8)).month) and (confirmation_date.year == (fields.date.today() - relativedelta(months=8)).year)):
+                    product.month9 = product.month9 + sale_order.amount_total
+                if ((confirmation_date.month == (fields.date.today() - relativedelta(months=7)).month) and (confirmation_date.year == (fields.date.today() - relativedelta(months=7)).year)):
+                    product.month8 = product.month8 + sale_order.amount_total
+                if ((confirmation_date.month == (fields.date.today() - relativedelta(months=6)).month) and (confirmation_date.year == (fields.date.today() - relativedelta(months=6)).year)):
+                    product.month7 = product.month7 + sale_order.amount_total
                 if((confirmation_date.month == (fields.date.today() - relativedelta(months=5)).month) and (confirmation_date.year ==  (fields.date.today() - relativedelta(months=5)).year)):
                     product.month6 = product.month6 + sale_order.amount_total
                 if((confirmation_date.month == (fields.date.today() - relativedelta(months=4)).month) and (confirmation_date.year ==  (fields.date.today() - relativedelta(months=4)).year)):
@@ -56,7 +74,7 @@ class TrendingReportListView(models.Model):
     @api.onchange('trend_val')
     def _get_total_value(self):
         for customer in self:
-            customer.total_sale=customer.month1+customer.month2+customer.month3+customer.month4+customer.month5+customer.month6
+            customer.total_sale=customer.month1+customer.month2+customer.month3+customer.month4+customer.month5+customer.month6+customer.month7+customer.month8+customer.month9+customer.month10+customer.month11+customer.month12
 
     @api.onchange('month_count')
     def _first_purchase_date(self):
@@ -116,8 +134,8 @@ class TrendingReportListView(models.Model):
     @api.onchange('average_sale')
     def _get_average_value(self):
         for customer in self:
-            if(customer.month_count>=6):
-                customer.average_sale = (customer.total_sale / 6)
+            if(customer.month_count>=12):
+                customer.average_sale = (customer.total_sale / 12)
             elif(self.get_day_from_purchase(customer.id)):
                 #if (self.get_day_from_purchase(customer.id)/30 > 1):
                 customer.average_sale=(customer.total_sale *30 / self.get_day_from_purchase(customer.id))
@@ -174,6 +192,19 @@ class TrendingReportListView(models.Model):
                     node.set('string', (fields.date.today() - relativedelta(months=4)).strftime('%b-%Y'))
                 for node in doc.xpath("//field[@name='month6']"):
                     node.set('string', (fields.date.today() - relativedelta(months=5)).strftime('%b-%Y'))
+                for node in doc.xpath("//field[@name='month7']"):
+                    node.set('string', (fields.date.today() - relativedelta(months=6)).strftime('%b-%Y'))
+                for node in doc.xpath("//field[@name='month8']"):
+                    node.set('string', (fields.date.today() - relativedelta(months=7)).strftime('%b-%Y'))
+                for node in doc.xpath("//field[@name='month9']"):
+                    node.set('string', (fields.date.today() - relativedelta(months=8)).strftime('%b-%Y'))
+                for node in doc.xpath("//field[@name='month10']"):
+                    node.set('string', (fields.date.today() - relativedelta(months=9)).strftime('%b-%Y'))
+                for node in doc.xpath("//field[@name='month11']"):
+                    node.set('string', (fields.date.today() - relativedelta(months=10)).strftime('%b-%Y'))
+                for node in doc.xpath("//field[@name='month12']"):
+                    node.set('string', (fields.date.today() - relativedelta(months=11)).strftime('%b-%Y'))
+
                 result['arch'] = etree.tostring(doc, encoding='unicode')
 
         return result
