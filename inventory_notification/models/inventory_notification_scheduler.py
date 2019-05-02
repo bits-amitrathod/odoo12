@@ -7,6 +7,7 @@ from datetime import date, timedelta
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
 import time
 import operator
+import base64
 _logger = logging.getLogger(__name__)
 
 
@@ -99,13 +100,6 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                                 vals['columnProps'], vals['closing_content'])'''
 
     def pick_notification_for_user(self, picking):
-
-        # pdf = self.env['pick_report.action_pick_report_pdf'].sudo().render_qweb_pdf([picking.id])[0]
-        # pdfhttpheaders = [
-        #     ('Content-Type', 'application/pdf'),
-        #     ('Content-Length', len(pdf)),
-        # ]
-
         Stock_Moves_list = self.env['stock.move'].search([('picking_id', '=', picking.id)])
         Stock_Moves_line = []
         for stock_move in Stock_Moves_list:
@@ -128,6 +122,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                 sales_order.append(sale_order)
         sale_order_ref = picking.sale_id
         address_ref = sale_order_ref.partner_shipping_id
+
         vals = {
             'sale_order_lines': sales_order,
             'subject': "Pick Done For Sale Order # " + picking.sale_id.name,
@@ -151,10 +146,11 @@ class InventoryNotificationScheduler(models.TransientModel):
             'columnProps': ['sku', 'Product', 'qty', 'lot_name', 'lot_expired_date', 'qty_done'],
             'closing_content': 'Thanks & Regards, <br/> Sales Team'
         }
+
         self.process_common_email_notification_template(super_user, None, vals['subject'], vals['description'],
                                                         vals['sale_order_lines'], vals['header'],
                                                         vals['columnProps'], vals['closing_content'],
-                                                        self.warehouse_email)
+                                                        self.warehouse_email, picking)
         '''for user in users:
             has_group = user.has_group('stock.group_stock_manager')
             if has_group:
@@ -636,10 +632,11 @@ class InventoryNotificationScheduler(models.TransientModel):
             print(error_msg)
 
     def process_common_email_notification_template(self, email_from_user, email_to_user, subject, descrption, products,
-                                                   header, columnProps, closing_content, email_to_team=None,
+                                                   header, columnProps, closing_content, email_to_team=None,picking=None,
                                                    custom_template="inventory_notification.common_mail_template",
                                                    is_employee=True):
         template = self.env.ref(custom_template)
+
         product_dict = {}
         product_list = []
         coln_name = []
@@ -703,8 +700,7 @@ class InventoryNotificationScheduler(models.TransientModel):
             product_dict['background_color'] = background_color
             product_list.append(product_dict)
             product_dict = {}
-        print("email_to_team")
-        print(email_to_team)
+
         if products:
             vals = {
                 'product_list': product_list,
@@ -719,27 +715,20 @@ class InventoryNotificationScheduler(models.TransientModel):
                 'is_employee': is_employee,
                 'closing_content': closing_content
             }
-            self.send_email_and_notification(vals)
+            self.send_email_and_notification(vals,picking)
 
-    def send_email_and_notification(self, vals):
-        print(vals)
+    def send_email_and_notification(self, vals, picking=None):
         email = ""
         if vals['email_to_team']:
-            print("inside 1 st")
             email = vals['email_to_team']
-            print(email)
         if vals['email_to_user']:
-            print("inside 2 nd")
             email = vals['email_to_user'].sudo().email
-            print(email)
-
-        print("email=")
-        print(email)
 
         local_context = {'products': vals['product_list'], 'headers': vals['headers'], 'columnProps': vals['coln_name'],
                          'email_from': vals['email_from_user'].sudo().email,
                          'email_to': email, 'subject': vals['subject'],
                          'descrption': vals['description'], 'closing_content': vals['closing_content']}
+
         html_file = self.env['inventory.notification.html'].search([])
         finalHTML = html_file.process_common_html(vals['subject'], vals['description'], vals['product_list'],
                                                   vals['headers'], vals['coln_name'])
@@ -753,23 +742,33 @@ class InventoryNotificationScheduler(models.TransientModel):
                 msg = "\n Email sent --->  " + local_context['subject'] + "\n --From--" + local_context[
                     'email_from'] + " \n --To-- " + local_context['email_to']
                 _logger.info(msg)
+
                 template_id = vals['template'].with_context(local_context).sudo().send_mail(SUPERUSER_ID,
                                                                                             raise_exception=True)
+                # File Attachment Code
+                if not picking is None:
+                    data = self.env['pick_report.popup'].get_pick_report(picking)
+                    docids = None
+                    if docids:
+                        docids = [int(i) for i in docids.split(',')]
+                    pdf = self.env.ref('pick_report.action_pick_report_pdf').render_qweb_pdf(docids,data=data)[0]
+                    values1 = {}
+                    values1['attachment_ids'] = [(0, 0, {'name': picking.origin,
+                                                      'type': 'binary',
+                                                      'mimetype': 'application/pdf',
+                                                      'datas_fname': 'pick_' + (picking.origin) + '.pdf',
+                                                      'datas': base64.b64encode(pdf)})]
+
+                    values1['model'] = None
+                    values1['res_id'] = False
+
+                    current_mail = self.env['mail.mail'].browse(template_id)
+                    current_mail.mail_message_id.write(values1)
         except:
             error_msg = "mail sending fail for email id: %r" + vals[
                 'email_to_user'].sudo().email + " sending error report to admin"
             _logger.info(error_msg)
-            print(error_msg)
 
-        # if vals['is_employee']:
-        # mail = self.env["mail.thread"]
-        # mail.sudo().message_post(
-        #     body=finalHTML,
-        #     subject=vals['subject'],
-        #     message_type='notification',
-        #     partner_ids=partner_ids,
-        #     content_subtype='html'
-        # )
 
     def process_email_in_stock_scheduler_template(self, email_from_user, email_to_user, subject, descrption, products,
                                                   header, columnProps, closing_content, email_to_team, email_list_cc,sort_col=False,
@@ -905,15 +904,6 @@ class InventoryNotificationScheduler(models.TransientModel):
                 _logger.info(erro_msg)
                 print(erro_msg)'''
 
-        # if vals['is_employee']:
-        #     mail = self.env["mail.thread"]
-        #     mail.message_post(
-        #         body=finalHTML,
-        #         subject=vals['subject'],
-        #         message_type='notification',
-        #         partner_ids=partner_ids,
-        #         content_subtype='html'
-        #     )
 
     def process_common_product_scheduler(self, subject, descrption, products, header, columnProps, closing_content,
                                          email_to_team):
