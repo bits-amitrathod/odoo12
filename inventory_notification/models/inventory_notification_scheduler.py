@@ -765,8 +765,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                     current_mail = self.env['mail.mail'].browse(template_id)
                     current_mail.mail_message_id.write(values1)
         except:
-            error_msg = "mail sending fail for email id: %r" + vals[
-                'email_to_user'].sudo().email + " sending error report to admin"
+            error_msg = "mail sending fail for email id: %r" + email + " sending error report to admin"
             _logger.info(error_msg)
 
 
