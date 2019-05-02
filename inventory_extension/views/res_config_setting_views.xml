@@ -66,6 +66,10 @@
                 <xpath expr="//field[@name='name']" position="after">
                     <field name="origin"/>
                 </xpath>
+
+                 <xpath expr="//field[@name='scheduled_date']" position="before">
+                    <field name="date_done" string="Date Done"/>
+                </xpath>
             </field>
         </record>
     </data>
