@@ -1,5 +1,5 @@
 <odoo>
-    <template id="modal" name="Optional Products cstm">
+    <template id="modalCSTM" name="Optional Products cstm">
         <div id="modal_optional_products" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -36,7 +36,7 @@
                                             </a>
                                             <input type="text" class="js_quantity form-control quantity" data-min="1"
                                                    name="add_qty" value="1"
-                                                   t-att-data-max="product.qty_available - product.outgoing_qty"/>
+                                                   t-att-data-max="product.actual_quantity"/>
                                             <a t-attf-href="#"
                                                class="mb8 input-group-addon float_left js_add_cart_json hidden-xs">
                                                 <i class="fa fa-plus"></i>
@@ -153,7 +153,7 @@
 
     <template id="website_sale_stock_cart_lines_cstm" inherit_id="website_sale.cart_lines" name="Shopping Cart Lines CSTM">
         <xpath expr="//input[@type='text'][hasclass('quantity')]" position="attributes">
-            <attribute name='t-att-data-max'>line.product_id.qty_available - line.product_id.outgoing_qty
+            <attribute name='t-att-data-max'>line.product_id.actual_quantity
             </attribute>
         </xpath>
     </template>

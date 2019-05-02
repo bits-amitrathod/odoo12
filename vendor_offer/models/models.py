@@ -1,16 +1,25 @@
-# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-"Hello - needed salary slip for last 3 month for Loan purpose."
 
-from odoo import models, fields, api, SUPERUSER_ID, _
+import datetime
+import logging
+from random import randint
+
+import math
+from odoo import models, fields, api, _
 from odoo.addons import decimal_precision as dp
+from odoo.exceptions import UserError, ValidationError
+from odoo.tools import pdf
 from werkzeug.urls import url_encode
 
 from .fedex_request import FedexRequest
-from odoo.exceptions import UserError, AccessError, ValidationError
-import datetime
-import math
-from random import randint
-from odoo.tools import pdf
-import logging
+
+from odoo import http
+from odoo.http import request
+from odoo.addons.web.controllers.main import serialize_exception,content_disposition
+from odoo.tools import pycompat
+import io
+import re
+import werkzeug
 
 _logger = logging.getLogger(__name__)
 # Why using standardized ISO codes? It's way more fun to use made up codes...
@@ -36,6 +45,24 @@ FEDEX_CURR_MATCH = {
     u'LVL': u'EURO',
 }
 
+try:
+    import xlwt
+
+    # add some sanitizations to respect the excel sheet name restrictions
+    # as the sheet name is often translatable, can not control the input
+    class PatchedWorkbook(xlwt.Workbook):
+        def add_sheet(self, name, cell_overwrite_ok=False):
+            # invalid Excel character: []:*?/\
+            name = re.sub(r'[\[\]:*?/\\]', '', name)
+
+            # maximum size is 31 characters
+            name = name[:31]
+            return super(PatchedWorkbook, self).add_sheet(name, cell_overwrite_ok=cell_overwrite_ok)
+
+    xlwt.Workbook = PatchedWorkbook
+
+except ImportError:
+    xlwt = None
 
 class VendorOffer(models.Model):
     _description = "Vendor Offer"
@@ -666,6 +693,17 @@ class ProductTemplateTire(models.Model):
 
     tier = fields.Many2one('tier.tier', string="Tier")
     class_code = fields.Many2one('classcode.classcode', string="Class Code")
+    actual_quantity = fields.Float(string='Qty Available For Sale', compute='_compute_actual_quantity', digits=dp.get_precision('Product Unit of Measure'))
+
+    def _compute_actual_quantity(self):
+        for product_tmpl in self:
+            stock_quant = self.env['stock.quant'].search([('product_tmpl_id', '=', product_tmpl.id)])
+            reserved_quantity = 0
+            if len(stock_quant)>0:
+                for lot in stock_quant:
+                    reserved_quantity +=lot.reserved_quantity
+            product_tmpl.actual_quantity = product_tmpl.qty_available - reserved_quantity
+
 
     @api.model
     def create(self, vals):
@@ -942,7 +980,8 @@ class VendorPricingList(models.Model):
     tier_name = fields.Char(string="TIER", readonly=True,
                                   compute='onchange_product_id_vendor_offer_pricing',
                                   store=False)
-    amount_total_ven_pri = fields.Monetary(string='SALES TOTAL', compute='onchange_product_id_vendor_offer_pricing', readonly=True , store=False)
+    amount_total_ven_pri = fields.Monetary(string='SALES TOTAL', compute='onchange_product_id_vendor_offer_pricing',
+                                           readonly=True , store=False)
 
     def onchange_product_id_vendor_offer_pricing(self):
         for line in self:
@@ -965,18 +1004,23 @@ class VendorPricingList(models.Model):
                            "sml.location_dest_id =%s AND" \
                            " sml.product_id =%s"
 
-            str_query_total_sale = "SELECT sum(sol.price_total) FROM sale_order_line AS sol LEFT JOIN stock_picking AS sp ON " \
-                           "sp.sale_id=sol.id " \
-                           " LEFT JOIN stock_move_line AS sml ON sml.picking_id=sp.id WHERE sml.state='done' AND " \
-                           "sml.location_dest_id =%s AND" \
-                           " sml.product_id =%s"
+            ''' state = sale condition added in all sales amount to match the value of sales amount to 
+            clients PPvendorpricing file '''
 
-            self.env.cr.execute(str_query_total_sale + " AND sp.date_done>=%s", (cust_location_id,
-                                                                         line.id, last_3_months))
-            quant_sale_total = self.env.cr.fetchone()
-            if quant_sale_total[0] is not None:
-                sale_total = sale_total + int(quant_sale_total[0])
-            line.amount_total_ven_pri = sale_total
+            sale_all_query = "SELECT  sum(sol.price_total) as total_sales " \
+                             "                   from  product_product pp   " \
+                             "                    INNER JOIN sale_order_line sol ON sol.product_id=pp.id " \
+                             "                    INNER JOIN product_template pt ON  pt.id=pp.product_tmpl_id " \
+                             "                    INNER JOIN sale_order so ON so.id=sol.order_id   " \
+                             "        where pp.id =%s and so.confirmation_date>= %s   	and so.state in ('sale')"
+
+            self.env.cr.execute(sale_all_query, (line.id, last_yr))
+
+            sales_all_value = 0
+            sales_all_val = self.env.cr.fetchone()
+            if sales_all_val[0] is not None:
+                sales_all_value = sales_all_value + float(sales_all_val[0])
+            line.amount_total_ven_pri = sales_all_value
 
             self.env.cr.execute(str_query_cm + " AND sp.date_done>=%s", (cust_location_id,
                                                                          line.id, last_3_months))
@@ -1018,3 +1062,298 @@ class VendorPricingList(models.Model):
                     expired_lot_count = expired_lot_count + 1
 
         line.expired_inventory = expired_lot_count
+
+    @api.multi
+    def return_tree_vendor_pri(self):
+        tree_view_id = self.env.ref('vendor_offer.vendor_pricing_list').id
+        action = {
+                'name': 'Vendor Pricing',
+                'view_mode': 'tree',
+                'views': [(tree_view_id, 'tree')],
+                'res_model': 'product.product',
+                'type': 'ir.actions.act_window',
+                'res_id': self.id
+                }
+        return action
+
+
+#  this global variable is required for storing and fetching values as the list cant be sent using the URL,
+#  and the method of ExportPPVendorPricing class will be called from JS file .
+product_lines_export_pp = []
+
+
+class VendorPricingExport(models.TransientModel):
+    _name = 'vendor.pricing'
+    _description = 'vendor pricing'
+
+    def get_excel_data_vendor_pricing(self):
+        today_date = datetime.datetime.now()
+        last_yr = fields.Date.to_string(today_date - datetime.timedelta(days=365))
+        last_3_months = fields.Date.to_string(today_date - datetime.timedelta(days=90))
+        count = 0
+        product_lines_export_pp.append((['ProductNumber', 'ProductDescription', 'Price', 'CFP-Manufacturer', 'TIER',
+                                         'SALES COUNT','SALES COUNT YR', 'QTY IN STOCK', 'SALES TOTAL',
+                                         'PREMIUM', 'EXP INVENTORY','SALES COUNT 90']))
+        cust_location_id = self.env['stock.location'].search([('name', '=', 'Customers')]).id
+
+        str_query = " select pt.sku_code,pt.name,pt.list_price ,pb.name as product_brand_id ,tt.name as tier," \
+                    " pt.premium ,pp.id,  " \
+                    " case when exp_evntory.name is NULL THEN '0' ELSE  exp_evntory.name END " \
+                    " as expired_lot_count, " \
+                    " case when all_sales.qty_done  is NULL THEN '0' ELSE all_sales.qty_done END  " \
+                    " as product_sales_count , " \
+                    " case when yr_sales.qty_done is NULL THEN '0' ELSE yr_sales.qty_done END  " \
+                    " as product_sales_count_yrs , " \
+                    " case when all_sales_amount.total_sales  is NULL THEN '0' ELSE all_sales_amount.total_sales END " \
+                    " as amount_total_ven_pri , " \
+                    " case when ninty_sales.qty_done  is NULL THEN '0' ELSE ninty_sales.qty_done END  " \
+                    " as product_sales_count_90 , " \
+                    " qty_available_count.qty_available " \
+                    " from product_product pp inner join product_template pt " \
+                    " on pp.product_tmpl_id=pt.id and pt.type='product' " \
+                    " left join tier_tier tt on   pt.tier=tt.id " \
+                    " left join product_brand pb on pt.product_brand_id = pb.id " \
+                    " left join " \
+                    "            ( " \
+                    "            select sum(sml.qty_done) as qty_done ,sml.product_id " \
+                    "            FROM sale_order_line AS sol " \
+                    "            LEFT JOIN stock_picking AS sp " \
+                    "            ON  sp.sale_id=sol.id " \
+                    "            LEFT JOIN stock_move_line AS sml " \
+                    "            ON sml.picking_id=sp.id " \
+                    "            WHERE sml.state='done' AND sml.location_dest_id =%s " \
+                    "            group by sml.product_id " \
+                    "            ) " \
+                    "            as all_sales " \
+                    "            on pp.id=all_sales.product_id " \
+                    " left join " \
+                    "        ( " \
+                    "          SELECT " \
+                    "        case when abs(sum(sol.price_total)) is NULL then 0 else  abs(sum(sol.price_total)) end  " \
+                    "        as total_sales,ppi.id " \
+                    "        from  product_product ppi " \
+                    "                          INNER JOIN sale_order_line sol ON sol.product_id=ppi.id " \
+                    "                          INNER JOIN product_template pt ON  pt.id=ppi.product_tmpl_id " \
+                    "                          INNER JOIN sale_order so ON so.id=sol.order_id " \
+                    "        where so.confirmation_date >= %s " \
+                    "        and so.state in ('sale')   group by ppi.id " \
+                    "         ) " \
+                    "         as all_sales_amount " \
+                    "         on all_sales_amount.id=pp.id  " \
+                    "  left join " \
+                    "         ( " \
+                    "         select sum(sml.qty_done) as qty_done,sml.product_id " \
+                    "         FROM sale_order_line AS sol " \
+                    "         LEFT JOIN stock_picking AS sp " \
+                    "         ON  sp.sale_id=sol.id " \
+                    "         LEFT JOIN stock_move_line AS sml " \
+                    "         ON sml.picking_id=sp.id " \
+                    "         WHERE sml.state='done' AND sml.location_dest_id =%s " \
+                    "        AND  sp.date_done >=  %s " \
+                    "         group by sml.product_id " \
+                    "         ) " \
+                    "         as yr_sales " \
+                    "         on pp.id=yr_sales.product_id "
+
+        str_query_join = "  left join " \
+                         "         ( " \
+                         "          select sum(sml.qty_done) as qty_done,sml.product_id " \
+                         "          FROM sale_order_line AS sol LEFT JOIN stock_picking AS sp " \
+                         "          ON  sp.sale_id=sol.id " \
+                         "          LEFT JOIN stock_move_line AS sml " \
+                         "          ON sml.picking_id=sp.id " \
+                         "          WHERE sml.state='done' AND sml.location_dest_id =%s " \
+                         "         AND  sp.date_done >= %s " \
+                         "          group by sml.product_id " \
+                         "          ) " \
+                         "         as ninty_sales " \
+                         "         on pp.id=ninty_sales.product_id " \
+                         "  left join " \
+                         "         ( " \
+                         "          select count(spl.name) as name,spl.product_id from stock_production_lot spl " \
+                         "          where spl.use_date < %s  group by spl.product_id " \
+                         "          ) " \
+                         "          as exp_evntory " \
+                         "          on pp.id=exp_evntory.product_id " \
+                         "  left join " \
+                         "          ( " \
+                         "           SELECT sum(sq.quantity) as qty_available,spl.product_id FROM stock_quant sq " \
+                         "           INNER JOIN stock_production_lot as spl    ON  sq.lot_id = spl.id " \
+                         "           INNER JOIN stock_location as sl ON  sq.location_id = sl.id " \
+                         "           WHERE sl.usage in ('internal', 'transit') " \
+                         "           group by spl.product_id " \
+                         "          ) " \
+                         "           as qty_available_count " \
+                         "           on pp.id=qty_available_count.product_id " \
+                         "                        where  pp.active=True "
+
+        self.env.cr.execute(str_query + str_query_join, (cust_location_id, last_yr, cust_location_id, last_yr,
+                                                         cust_location_id, last_3_months, today_date))
+        new_list = self.env.cr.dictfetchall()
+
+        for line in new_list:
+            count = count + 1      # for printing count if needed
+            product_lines_export_pp.append(([line['sku_code'], line['name'], line['list_price'], line['product_brand_id'],
+                                   line['tier'], line['product_sales_count'], line['product_sales_count_yrs'],
+                                   line['qty_available'], line['amount_total_ven_pri'], line['premium'],
+                                   line['expired_lot_count'], line['product_sales_count_90']]))
+
+        ''' code for writing csv file in default location in odoo 
+
+        with open(file_name, 'w', newline='') as fp:
+            a = csv.writer(fp, delimiter=',')
+            data_lines = product_lines
+            a.writerows(data_lines)
+        print('---------- time required ----------')
+        print(datetime.datetime.now() - today_date)  '''
+
+        return product_lines_export_pp
+
+    def download_excel_ven_price(self):
+        self.get_excel_data_vendor_pricing()
+        return {
+            'type': 'ir.actions.act_url',
+            'url': '/web/PPVendorPricing/download_document_xl',
+            'target': 'new'
+        }
+
+
+class ExportPPVendorPricingCSV(http.Controller):
+
+    #   Custom code for fast export , existing code uses ORM ,so it is slow
+    #   Only CSV will be exported as per requirement
+
+    @property
+    def content_type(self):
+        return 'text/csv;charset=utf8'
+
+    def filename(self):
+
+        #  code for custom date in file name if required
+        #
+        #                str_date = today_date.strftime("%m_%d_%Y_%H_%M_%S")
+        #                file_name = 'PPVendorPricing_' + str_date + '.csv'
+        #
+        #
+
+        #   Only CSV will be exported as per requirement
+        return 'PPVendorPricing' + '.csv'
+
+    def from_data(self, rows):
+        fp = io.BytesIO()
+        writer = pycompat.csv_writer(fp, quoting=1)
+        for data in rows:
+            row = []
+            for d in data:
+                if isinstance(d, pycompat.string_types) and d.startswith(('=', '-', '+')):
+                    d = "'" + d
+
+                row.append(pycompat.to_text(d))
+            writer.writerow(row)
+
+        return fp.getvalue()
+
+    @http.route('/web/PPVendorPricing/download_document', type='http', auth="public")
+    @serialize_exception
+    def download_document(self,token=1,debug=1):
+
+        #  token=1,debug=1   are added if the URL contains extra parameters , which in some case URL does contain
+        #  code will produce error if the parameters are not provided so default are added
+
+        res = request.make_response(self.from_data(product_lines_export_pp),
+                                     headers=[('Content-Disposition',
+                                               content_disposition(self.filename())),
+                                              ('Content-Type', self.content_type)],
+                                     )
+        product_lines_export_pp.clear()
+        return res
+
+
+class ExportPPVendorPricingXL(http.Controller):
+
+    #   Custom code for fast export , existing code uses ORM ,so it is slow
+    #   XL will be
+
+    @property
+    def content_type(self):
+        return 'application/vnd.ms-excel'
+
+    def filename(self):
+
+        #  code for custom date in file name if required
+        #
+        #                str_date = today_date.strftime("%m_%d_%Y_%H_%M_%S")
+        #                file_name = 'PPVendorPricing_' + str_date + '.xls'
+        #
+        #
+
+        #   XL will be exported
+        return 'PPVendorPricing' + '.xls'
+
+    def from_data(self, field,rows):
+        if len(rows) > 65535:
+            raise UserError(_(
+                'There are too many rows (%s rows, limit: 65535) to export as Excel 97-2003 (.xls) format. Consider splitting the export.') % len(
+                rows))
+
+        workbook = xlwt.Workbook()
+        worksheet = workbook.add_sheet('Sheet 1')
+
+        for i, fieldname in enumerate(field):
+            worksheet.write(0, i, fieldname)
+            if i == 1:
+                worksheet.col(i).width = 20000  #
+            else:
+                worksheet.col(i).width = 4000  # around 110 pixels
+
+        base_style = xlwt.easyxf('align: wrap yes')
+        date_style = xlwt.easyxf('align: wrap yes', num_format_str='YYYY-MM-DD')
+        datetime_style = xlwt.easyxf('align: wrap yes', num_format_str='YYYY-MM-DD HH:mm:SS')
+
+        for row_index, row in enumerate(rows):
+            for cell_index, cell_value in enumerate(row):
+                cell_style = base_style
+
+                if isinstance(cell_value, bytes) and not isinstance(cell_value, pycompat.string_types):
+                    # because xls uses raw export, we can get a bytes object
+                    # here. xlwt does not support bytes values in Python 3 ->
+                    # assume this is base64 and decode to a string, if this
+                    # fails note that you can't export
+                    try:
+                        cell_value = pycompat.to_text(cell_value)
+                    except UnicodeDecodeError:
+                        raise UserError(_(
+                            "Binary fields can not be exported to Excel unless their content is base64-encoded. That does not seem to be the case for %s.") %
+                                        fields[cell_index])
+
+                if isinstance(cell_value, pycompat.string_types):
+                    cell_value = re.sub("\r", " ", pycompat.to_text(cell_value))
+                    # Excel supports a maximum of 32767 characters in each cell:
+                    cell_value = cell_value[:32767]
+                elif isinstance(cell_value, datetime.datetime):
+                    cell_style = datetime_style
+                elif isinstance(cell_value, datetime.date):
+                    cell_style = date_style
+                worksheet.write(row_index + 1, cell_index, cell_value, cell_style)
+
+        fp = io.BytesIO()
+        workbook.save(fp)
+        fp.seek(0)
+        data = fp.read()
+        fp.close()
+        return data
+
+    @http.route('/web/PPVendorPricing/download_document_xl', type='http', auth="public")
+    @serialize_exception
+    def download_document_xl(self,token=1,debug=1):
+
+        #  token=1,debug=1   are added if the URL contains extra parameters , which in some case URL does contain
+        #  code will produce error if the parameters are not provided so default are added
+
+        res = request.make_response(self.from_data(product_lines_export_pp[0],product_lines_export_pp[1:]),
+                                     headers=[('Content-Disposition',
+                                               content_disposition(self.filename())),
+                                              ('Content-Type', self.content_type)],
+                                     )
+        product_lines_export_pp.clear()
+        return res

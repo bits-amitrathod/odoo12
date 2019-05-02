@@ -502,9 +502,9 @@
                                    attrs="{'readonly': [('state', 'in', ('purchase', 'done', 'cancel'))]}"
                                    force_save="1"/>
                             <field name="price_unit" attrs="{'readonly': [('vendor_offer_data', '=', True)]}"/>
-                            <field name="product_offer_price" invisible="1" />
-                        <!--     <field name="product_offer_price"
-                                   attrs="{'readonly': [('vendor_offer_data', '=', True)],'invisible': [('vendor_offer_data', '=', False)]}"/>-->
+                            <field name="product_offer_price" invisible="1"/>
+                            <!--     <field name="product_offer_price"
+                                       attrs="{'readonly': [('vendor_offer_data', '=', True)],'invisible': [('vendor_offer_data', '=', False)]}"/>-->
                             <field name="vendor_offer_data" invisible="1"/>
                             <field name="taxes_id" widget="many2many_tags" domain="[('type_tax_use','=','purchase')]"
                                    context="{'default_type_tax_use': 'purchase'}" options="{'no_create': True}"/>
@@ -527,19 +527,19 @@
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet[1]/notebook/page[@name='other_info']/group/group[2]/field[@name='date']"
                        position="after">
-                    <field name="is_vender_offer_invoice"  attrs="{'readonly': True}"/>
+                    <field name="is_vender_offer_invoice" attrs="{'readonly': True}"/>
                 </xpath>
             </field>
         </record>
 
         <!--<record id="action_duplicate_vendor_offer" model="ir.actions.server">-->
-            <!--<field name="name">Duplicate Offer</field>-->
-            <!--<field name="type">ir.actions.server</field>-->
-            <!--<field name="model_id" ref="model_purchase_order"/>-->
-            <!--<field name="binding_model_id" ref="vendor_offer.model_purchase_order"/>-->
-            <!--<field name="state">code</field>-->
-            <!--<field attrs="{'invisible':[('vendor_offer_data', '=',  False)]}"/>-->
-            <!--<field name="code">model.action_duplicate_vendor_offer()</field>-->
+        <!--<field name="name">Duplicate Offer</field>-->
+        <!--<field name="type">ir.actions.server</field>-->
+        <!--<field name="model_id" ref="model_purchase_order"/>-->
+        <!--<field name="binding_model_id" ref="vendor_offer.model_purchase_order"/>-->
+        <!--<field name="state">code</field>-->
+        <!--<field attrs="{'invisible':[('vendor_offer_data', '=',  False)]}"/>-->
+        <!--<field name="code">model.action_duplicate_vendor_offer()</field>-->
         <!--</record>-->
 
         <record id="product_template_form_view" model="ir.ui.view">
@@ -592,9 +592,9 @@
             <field name="model">product.product</field>
             <field name="priority">20</field>
             <field name="arch" type="xml">
-                <tree create="false" import="false" >
-                    <field name="sku_code"  string="ProductNumber"/>
-                    <field name="name" string="ProductDescription" />
+                <tree  create="false" import="false" >
+                    <field name="sku_code" string="ProductNumber"/>
+                    <field name="name" string="ProductDescription"/>
                     <field name="list_price" string="Price"/>
                     <field name="product_brand_id" string="CFP-Manufacturer"/>
                     <field name="tier" string="TIER"/>
@@ -612,12 +612,58 @@
 
         <record id="vendor_offer.action_vendor_pricing" model="ir.actions.act_window">
             <field name="name">Vendor Pricing</field>
-              <field name="key">action</field>
+            <field name="key">action</field>
             <field name="type">ir.actions.act_window</field>
+             <field name="limit" eval="10"/>
             <field name="res_model">product.product</field>
             <field name="view_mode">tree</field>
             <field name="view_id" ref="vendor_offer.vendor_pricing_list"/>
         </record>
+
+        <record id="view_purchase_order_edit_note_form11" model="ir.ui.view">
+            <field name="name">product.product.export.vendor</field>
+            <field name="model">vendor.pricing</field>
+            <field name="arch" type="xml">
+                <form string="Export PPVendorPricing">
+                    <group>
+                        <div> Click On ' Export To File ' button to export PPVendorPricing file </div>
+                    </group>
+                    <footer >
+                        <button name="download_excel_ven_price" string="Export To File" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <act_window name="Export PPVendorPricing"
+            res_model="vendor.pricing"
+            src_model="product.product"
+            view_mode="form"
+            target="new"
+            key2="client_action_multi"
+            id="vendor_pricing_act_window"/>
+
+        <!--do not remove this commented code -->
+
+         <!--<record id="vendor_offer.action_vendor_pricing" model="ir.actions.server">-->
+            <!--<field name="name">Vendor Pricing</field>-->
+            <!--<field name="type">ir.actions.server</field>-->
+            <!--<field name="model_id" ref="model_vendor_pricing"/>-->
+            <!--<field name="binding_model_id" ref="model_vendor_pricing"/>-->
+            <!--<field name="state">code</field>-->
+            <!--<field name="code">model.download_excel_ven_price()</field>-->
+        <!--</record>-->
+
+         <!--do not remove this commented code -->
+
+          <!--<record id="vendor_offer.vendor_pricing_client_action" model="ir.actions.client">-->
+            <!--<field name="name">Vendor Pricing</field>-->
+            <!--<field name="type">ir.actions.client</field>-->
+            <!--<field name="tag">tree_view_button_ven_pri</field>-->
+            <!--<field name="params">[{'showPPVendor':true}]-->
+            <!--</field>-->
+        <!--</record>-->
 
         <record model="ir.actions.act_window" id="vendor_offer.action_window_multiplier">
             <field name="name">Multiplier</field>
@@ -641,6 +687,35 @@
 
         </record>
 
+<!--        <record model="ir.ui.view" id="product_template_form_view_procurement_button">-->
+<!--            <field name="name">product.template_procurement</field>-->
+<!--            <field name="model">product.template</field>-->
+<!--            <field name="inherit_id" ref="product.product_template_only_form_view"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <data>-->
+<!--                    <xpath expr="//button[@name='toggle_active']" position="before">-->
+<!--                        <button class="oe_stat_button" icon="fa-cube" type="action" name="actual_quantity_tab">-->
+<!--                            <field name="actual_quantity" string="Qty Available For Sale"-->
+<!--                                   widget="statinfo"/>-->
+<!--                        </button>-->
+<!--                    </xpath>-->
+<!--                </data>-->
+<!--            </field>-->
+<!--        </record>-->
+
+        <record id="product_template_form_sku_code_add" model="ir.ui.view">
+            <field name="name">product.template.product.form</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <field name="sale_ok" position="before">
+                    <label for="actual_quantity" style="font-size: 18px;color: #F44336;"/>
+                    <span style="font-size: 18px;color: #F44336;font-weight: bold; margin-left: -4px;">: <field name="actual_quantity"/></span>
+                    <div/>
+                </field>
+            </field>
+        </record>
+
 
         <menuitem
                 id="menu_product_in_config_purchase_setting" name="Setting" sequence="99"
@@ -660,7 +735,8 @@
                   parent="purchase.menu_procurement_management" action="vendor_offer.action_window" sequence="14"/>
 
         <menuitem id="menu_procurement_management_supplier_offer_vendor_pricing" name="Vendor Pricing"
-                  parent="purchase.menu_procurement_management" action="vendor_offer.action_vendor_pricing" sequence="15"/>
+                  parent="purchase.menu_procurement_management" action="vendor_offer.action_vendor_pricing"
+                  sequence="15"/>
 
     </data>
 </odoo>

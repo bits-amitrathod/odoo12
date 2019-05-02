@@ -91,10 +91,10 @@
                 <field name="name" string="Product Name"/>
                 <field name="max_inventory_level" />
                 <field name="inventory_percent_color" invisible="1" />
-                <field name="max_inventory_percent" options='{"bg_color": "#f3b8b4:inventory_percent_color&lt;"+"75;"+"#f5e5b8:inventory_percent_color&gt;"+"=75;"+"#c9f3c9:inventory_percent_color&gt;"+"125"}'/>
+                <field name="max_inventory_percent" options='{"bg_color": "#c9f3c9:inventory_percent_color&lt;=75;#f3b8b4:inventory_percent_color&lt;45;#f5e5b8:inventory_percent_color&gt;=125"}'/>
                 <field name="qty_in_stock"/>
                 <field name="future_percent_color" invisible="1"/>
-                <field name="max_inventory_future_percent"  options='{"bg_color": "#f3b8b4:future_percent_color&lt;"+"75;"+"#f5e5b8:future_percent_color&gt;"+"=75;"+"#c9f3c9:future_percent_color&gt;"+"125"}'/>
+                <field name="max_inventory_future_percent"  options='{"bg_color": "#c9f3c9:future_percent_color&lt;=75;#f3b8b4:future_percent_color&lt;45;#f5e5b8:future_percent_color&gt;=125"}'/>
                 <field name="qty_on_order"/>
                 <field name="inventory_monitor" invisible="1" eval="True"/>
                 <field name="type"/>

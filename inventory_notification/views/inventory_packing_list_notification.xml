@@ -11,6 +11,7 @@
                 % set picking_list = ctx.get('picking_list', [])
                 % set row_color = "#f0f8ff"
                 % set datetime = ctx.get('datetime', [])
+                % set int = ctx.get('int', [])
 
                  <div style="margin:auto;width:100%;background-color:  #ffffff;  padding-left: 60px;"/>
                         <div>
@@ -75,6 +76,7 @@
                                                     <div style="margin-top:10px">
                                                         %for move_line_id in move_line.move_line_ids
                                                              <p style="font-weight: lighter">
+                                                                <span> ${int(move_line_id.qty_done or 0)}</span>
                                                                 <span>${move_line.product_uom.name}</span>-
                                                                 Lot#:<span>${ move_line_id.lot_id.name} </span>
 
@@ -92,7 +94,7 @@
                                                <th>
                                                     <div  style="margin-top:10px">
                                                         <p style="font-weight: lighter">
-                                                            <span> ${move_line.ordered_qty}</span>
+                                                            <span> ${int(move_line.ordered_qty or 0)}</span>
                                                             <span> ${move_line.product_uom.name} </span>
                                                         </p>
                                                     </div>
