@@ -11,14 +11,15 @@
                 />
 
         <!-- QWeb Reports -->
-        <!--<report-->
-            <!--id="action_pick_report_pdf"-->
-            <!--model="pick_report.popup"-->
-            <!--string="Pick Report"-->
-            <!--report_type="qweb-pdf"-->
-            <!--name="pick_report.pick_tmpl"-->
-            <!--file="pick_report.pick_tmpl"-->
-            <!--attachment="pick_report12345.pdf"-->
-        <!--/>-->
+        <report
+            id="action_pick_report_pdf"
+            string="Pick Report"
+            model="pick_report.popup"
+            report_type="qweb-pdf"
+            file="pick_report.pick_tmpl"
+            name="pick_report.pick_tmpl"
+            attachment_use="True"
+            menu="False"
+        />
     </data>
 </odoo>
