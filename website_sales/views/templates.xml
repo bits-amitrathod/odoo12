@@ -12,7 +12,7 @@
     </template>
 
     <template id="productExpirationDate" name="Product Expiration Date">
-        <t t-if="isVisibleWebsiteExpirationDate and product.qty_available-product.outgoing_qty &gt; 0">
+        <t t-if="isVisibleWebsiteExpirationDate and product.actual_quantity &gt; 0">
             <div style="padding-bottom: 5px;">
                 <strong>Expiration :</strong>
                 <br/>

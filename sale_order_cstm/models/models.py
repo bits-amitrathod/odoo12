@@ -19,10 +19,9 @@ class SaleOrderAvailability(models.Model):
                 lang=self.order_id.partner_id.lang or self.env.user.lang or 'en_US'
             )
             product_qty = self.product_uom._compute_quantity(self.product_uom_qty, self.product_id.uom_id)
-            total_available = product.qty_available - product.outgoing_qty
-            if float_compare(total_available, product_qty, precision_digits=precision) == -1:
+            if float_compare(product.actual_quantity, product_qty, precision_digits=precision) == -1:
                 message = _('You plan to sell %s %s but you only have %s %s available ') % \
-                          (self.product_uom_qty, self.product_uom.name, total_available, product.uom_id.name)
+                          (self.product_uom_qty, self.product_uom.name, product.actual_quantity, product.uom_id.name)
 
                 warning_mess = {
                     'title': _('Not enough inventory!'),

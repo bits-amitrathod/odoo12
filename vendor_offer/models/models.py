@@ -1,22 +1,25 @@
 # -*- coding: utf-8 -*-"Hello - needed salary slip for last 3 month for Loan purpose."
 
-from odoo import models, fields, api, SUPERUSER_ID, _
+import datetime
+import logging
+from random import randint
+
+import math
+from odoo import models, fields, api, _
 from odoo.addons import decimal_precision as dp
+from odoo.exceptions import UserError, ValidationError
+from odoo.tools import pdf
 from werkzeug.urls import url_encode
 
 from .fedex_request import FedexRequest
-from odoo.exceptions import UserError, AccessError, ValidationError
-import datetime
-import math
-from random import randint
-from odoo.tools import pdf
-import logging
 
 from odoo import http
 from odoo.http import request
 from odoo.addons.web.controllers.main import serialize_exception,content_disposition
 from odoo.tools import pycompat
 import io
+import re
+import werkzeug
 
 _logger = logging.getLogger(__name__)
 # Why using standardized ISO codes? It's way more fun to use made up codes...
@@ -42,6 +45,24 @@ FEDEX_CURR_MATCH = {
     u'LVL': u'EURO',
 }
 
+try:
+    import xlwt
+
+    # add some sanitizations to respect the excel sheet name restrictions
+    # as the sheet name is often translatable, can not control the input
+    class PatchedWorkbook(xlwt.Workbook):
+        def add_sheet(self, name, cell_overwrite_ok=False):
+            # invalid Excel character: []:*?/\
+            name = re.sub(r'[\[\]:*?/\\]', '', name)
+
+            # maximum size is 31 characters
+            name = name[:31]
+            return super(PatchedWorkbook, self).add_sheet(name, cell_overwrite_ok=cell_overwrite_ok)
+
+    xlwt.Workbook = PatchedWorkbook
+
+except ImportError:
+    xlwt = None
 
 class VendorOffer(models.Model):
     _description = "Vendor Offer"
@@ -675,8 +696,13 @@ class ProductTemplateTire(models.Model):
     actual_quantity = fields.Float(string='Qty Available For Sale', compute='_compute_actual_quantity', digits=dp.get_precision('Product Unit of Measure'))
 
     def _compute_actual_quantity(self):
-        for product in self:
-            product.actual_quantity = product.qty_available-product.outgoing_qty
+        for product_tmpl in self:
+            stock_quant = self.env['stock.quant'].search([('product_tmpl_id', '=', product_tmpl.id)])
+            reserved_quantity = 0
+            if len(stock_quant)>0:
+                for lot in stock_quant:
+                    reserved_quantity +=lot.reserved_quantity
+            product_tmpl.actual_quantity = product_tmpl.qty_available - reserved_quantity
 
 
     @api.model
@@ -1185,15 +1211,14 @@ class VendorPricingExport(models.TransientModel):
 
     def download_excel_ven_price(self):
         self.get_excel_data_vendor_pricing()
-        # 'target': 'self'  for downloading in same tab
         return {
             'type': 'ir.actions.act_url',
-            'url': '/web/PPVendorPricing/download_document',
+            'url': '/web/PPVendorPricing/download_document_xl',
             'target': 'new'
         }
 
 
-class ExportPPVendorPricing(http.Controller):
+class ExportPPVendorPricingCSV(http.Controller):
 
     #   Custom code for fast export , existing code uses ORM ,so it is slow
     #   Only CSV will be exported as per requirement
@@ -1236,6 +1261,96 @@ class ExportPPVendorPricing(http.Controller):
         #  code will produce error if the parameters are not provided so default are added
 
         res = request.make_response(self.from_data(product_lines_export_pp),
+                                     headers=[('Content-Disposition',
+                                               content_disposition(self.filename())),
+                                              ('Content-Type', self.content_type)],
+                                     )
+        product_lines_export_pp.clear()
+        return res
+
+
+class ExportPPVendorPricingXL(http.Controller):
+
+    #   Custom code for fast export , existing code uses ORM ,so it is slow
+    #   XL will be
+
+    @property
+    def content_type(self):
+        return 'application/vnd.ms-excel'
+
+    def filename(self):
+
+        #  code for custom date in file name if required
+        #
+        #                str_date = today_date.strftime("%m_%d_%Y_%H_%M_%S")
+        #                file_name = 'PPVendorPricing_' + str_date + '.xls'
+        #
+        #
+
+        #   XL will be exported
+        return 'PPVendorPricing' + '.xls'
+
+    def from_data(self, field,rows):
+        if len(rows) > 65535:
+            raise UserError(_(
+                'There are too many rows (%s rows, limit: 65535) to export as Excel 97-2003 (.xls) format. Consider splitting the export.') % len(
+                rows))
+
+        workbook = xlwt.Workbook()
+        worksheet = workbook.add_sheet('Sheet 1')
+
+        for i, fieldname in enumerate(field):
+            worksheet.write(0, i, fieldname)
+            if i == 1:
+                worksheet.col(i).width = 20000  #
+            else:
+                worksheet.col(i).width = 4000  # around 110 pixels
+
+        base_style = xlwt.easyxf('align: wrap yes')
+        date_style = xlwt.easyxf('align: wrap yes', num_format_str='YYYY-MM-DD')
+        datetime_style = xlwt.easyxf('align: wrap yes', num_format_str='YYYY-MM-DD HH:mm:SS')
+
+        for row_index, row in enumerate(rows):
+            for cell_index, cell_value in enumerate(row):
+                cell_style = base_style
+
+                if isinstance(cell_value, bytes) and not isinstance(cell_value, pycompat.string_types):
+                    # because xls uses raw export, we can get a bytes object
+                    # here. xlwt does not support bytes values in Python 3 ->
+                    # assume this is base64 and decode to a string, if this
+                    # fails note that you can't export
+                    try:
+                        cell_value = pycompat.to_text(cell_value)
+                    except UnicodeDecodeError:
+                        raise UserError(_(
+                            "Binary fields can not be exported to Excel unless their content is base64-encoded. That does not seem to be the case for %s.") %
+                                        fields[cell_index])
+
+                if isinstance(cell_value, pycompat.string_types):
+                    cell_value = re.sub("\r", " ", pycompat.to_text(cell_value))
+                    # Excel supports a maximum of 32767 characters in each cell:
+                    cell_value = cell_value[:32767]
+                elif isinstance(cell_value, datetime.datetime):
+                    cell_style = datetime_style
+                elif isinstance(cell_value, datetime.date):
+                    cell_style = date_style
+                worksheet.write(row_index + 1, cell_index, cell_value, cell_style)
+
+        fp = io.BytesIO()
+        workbook.save(fp)
+        fp.seek(0)
+        data = fp.read()
+        fp.close()
+        return data
+
+    @http.route('/web/PPVendorPricing/download_document_xl', type='http', auth="public")
+    @serialize_exception
+    def download_document_xl(self,token=1,debug=1):
+
+        #  token=1,debug=1   are added if the URL contains extra parameters , which in some case URL does contain
+        #  code will produce error if the parameters are not provided so default are added
+
+        res = request.make_response(self.from_data(product_lines_export_pp[0],product_lines_export_pp[1:]),
                                      headers=[('Content-Disposition',
                                                content_disposition(self.filename())),
                                               ('Content-Type', self.content_type)],
