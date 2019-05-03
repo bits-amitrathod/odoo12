@@ -500,16 +500,16 @@ class PrioritizationEngine(models.TransientModel):
             # for sps_customer_request in sps_customer_requests:
 
             current_cust_id = sps_cust_uploaded_document.customer_id.id
-            print("Current Customer ID : ", current_cust_id)
+            # print("Current Customer ID : ", current_cust_id)
 
             current_cust_doc_fixed_count = sps_cust_uploaded_document.customer_id['doc_process_count']
-            print("Current Customer Final Doc Count : ", current_cust_doc_fixed_count)
+            # print("Current Customer Final Doc Count : ", current_cust_doc_fixed_count)
 
             current_processing_doc_id = sps_cust_uploaded_document.id
-            print("Current Processing Doc ID : ",current_processing_doc_id)
+            # print("Current Processing Doc ID : ",current_processing_doc_id)
 
             current_processed_docs = sps_cust_uploaded_document.document_processed_count
-            print("Current customer processed documents : ", current_processed_docs)
+            # print("Current customer processed documents : ", current_processed_docs)
 
 
 
@@ -520,7 +520,7 @@ class PrioritizationEngine(models.TransientModel):
             if sps_cust_uploaded_document.template_type.lower().strip() == 'requirement':
                 # if int(sps_cust_uploaded_document.document_processed_count) >= int(document_processing_count):
                 if current_processed_docs >= current_cust_doc_fixed_count:
-                    print("Required================= in prior 1")
+                    # print("Required================= in prior 1")
                     self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
                 else:
                     sps_customer_requirements = self.env['sps.customer.requests'].search([('document_id', '=', sps_cust_uploaded_document.id),
@@ -534,7 +534,7 @@ class PrioritizationEngine(models.TransientModel):
             elif sps_cust_uploaded_document.template_type.lower().strip() == 'inventory':
                 # if int(sps_cust_uploaded_document.document_processed_count) >= int(document_processing_count):
                  if current_processed_docs >= current_cust_doc_fixed_count:
-                     print("Required=================in prior 2")
+                     # print("Required=================in prior 2")
                      self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
                  else:
                     if current_processing_doc_id == int(sps_cust_uploaded_document.id):

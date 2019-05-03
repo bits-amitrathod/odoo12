@@ -50,20 +50,8 @@ class SpsCustomerRequest(models.Model):
     def get_customer_requests(self):
         _logger.info('In get_customer_requests')
 
-
-
-        # params = self.env['ir.config_parameter'].sudo()
-        # document_processing_count_setting = params.get_param('prioritization_engine.document_processing_count_setting')
-        # document_processing_count = 0
-        # if document_processing_count_setting:
-        #     document_processing_count = int(params.get_param('prioritization_engine.document_processing_count'))
-        #
-        # if document_processing_count > 0:
-            # sps_customer_requests = self.env['sps.customer.requests'].search(
-            #     [('document_id.document_processed_count', '<', document_processing_count), ('document_id.status', 'in', ('In Process', 'draft')), ('status', 'in', ('Inprocess', 'Incomplete', 'Unprocessed', 'InCoolingPeriod', 'New', 'Partial'))])
         sps_customer_requests = self.env['sps.customer.requests'].search(
-                [
-                 ('document_id.status', 'in', ('In Process', 'draft')),
+                [('document_id.status', 'in', ('In Process', 'draft')),
                  ('status', 'in', ('Inprocess', 'Incomplete', 'Unprocessed', 'InCoolingPeriod', 'New', 'Partial'))])
         if len(sps_customer_requests)>0:
                 try:
@@ -72,16 +60,12 @@ class SpsCustomerRequest(models.Model):
                     _logger.error("Error processing requests %r", exc)
         else:
                 _logger.info('customer request count is 0.')
-        # else:
-        #         _logger.error("Document Processing Count is 0 or less than 0")
 
     def process_customer_requests(self, sps_customer_requests):
         _logger.info('In process_customer_requests')
 
-
         pr_models = []
         self.document_id_set.clear()
-
 
 
         for sps_customer_request in sps_customer_requests:
@@ -94,36 +78,54 @@ class SpsCustomerRequest(models.Model):
             #My code starts------
 
             current_cust_id=sps_customer_request.customer_id.id
-            print("Current Customer ID : ", current_cust_id)
+            # print("Current Customer ID : ", current_cust_id)
 
             current_cust_doc_fixed_count=sps_customer_request.customer_id['doc_process_count']
-            print("Current Customer Final Doc Count : ",current_cust_doc_fixed_count)
+            # print("Current Customer Final Doc Count : ",current_cust_doc_fixed_count)
 
 
             current_processed_docs=sps_customer_request.document_id.document_processed_count
-            print("Current customer processed documents : ",current_processed_docs)
+            # print("Current customer processed documents : ",current_processed_docs)
+
+            # current_processing_doc_id = sps_customer_request.document_id.id
+            # print("Current Processing Doc ID : ", current_processing_doc_id)
+
+            # doc_status=sps_customer_request.document_id.status
+            #
+            # print("Doc ID Status : ",doc_status)
 
 
             #My code ends------
+
+            self.env.cr.execute(
+                "SELECT max(id) document_id FROM public.sps_cust_uploaded_documents WHERE customer_id=" +
+                                                str(sps_customer_request['customer_id'].id))
+            query_result = self.env.cr.dictfetchone()
+            max_doc_id=int(query_result['document_id'])
+
+            # print("Max DOC ID : ",max_doc_id)
+            #
+            # print("Current DOC ID : ",sps_customer_request.document_id.id)
 
 
             # For Inventory Template
             if sps_customer_request.document_id.template_type.lower().strip() == 'inventory':
                 # following condition use for process only latest uploaded document.
                 # if int(query_result['document_id']) == int(sps_customer_request.document_id.id):
-                if current_processed_docs <= current_cust_doc_fixed_count:
-                    print("Inventory++++++++++++++++++++++++++")
+                if max_doc_id == sps_customer_request.document_id.id:
+                    # print("Inventory++++++++++++++++++++++++++")
                     if sps_customer_request.quantity > 0:
                         pr_model = self.add_customer_request_data(sps_customer_request)
                         if pr_model:
                             pr_models.append(pr_model)
                 else:
-                    self.env['sps.cust.uploaded.documents'].search([('id', '=', sps_customer_request.document_id.id)]).write({'status': 'Completed'})
+                    if sps_customer_request.document_id.status != 'Completed':
+                       self.env['sps.cust.uploaded.documents'].search([('id', '=', sps_customer_request.document_id.id)]).write({'status': 'Completed'})
 
             elif sps_customer_request.document_id.template_type.lower().strip() == 'requirement':
                 if sps_customer_request.updated_quantity > 0:
-                    if current_processed_docs <= current_cust_doc_fixed_count:
-                        print("Required=================")
+                    if current_processed_docs < current_cust_doc_fixed_count:
+                        # print("Required=================")
                         pr_model = self.add_customer_request_data(sps_customer_request)
                         if pr_model:
                             pr_models.append(pr_model)
