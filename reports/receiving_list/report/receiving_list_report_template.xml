@@ -55,8 +55,10 @@
                                      </t>
                                 </td>
                                  <td style="border: 1px solid #ffffff;">
-
-
+                                   <strong>Date Of Receipt:</strong>
+                                     <t t-if="data">
+                                         <span   t-esc="data[0].date_done"  t-options="{'widget': 'date'}"/>
+                                     </t>
                                 </td>
                             </tr>
                         </table>
