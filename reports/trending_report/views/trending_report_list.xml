@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record model="ir.ui.view" id="trending_report_list">
+        <record model="ir.ui.view" id="trending_report_list6">
               <field name="name">purchase.vendor.view.list</field>
               <field name="model">res.partner</field>
-               <field name="priority">21</field>
+                <field name="priority">20</field>
               <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false" >
                     <field name="name" string="Customer Name"/>
@@ -25,25 +25,90 @@
               </field>
         </record>
 
+         <record model="ir.ui.view" id="trending_report_list12">
+              <field name="name">purchase.vendor.view.list</field>
+              <field name="model">res.partner</field>
+               <field name="priority">21</field>
+              <field name="arch" type="xml">
+                <tree create="false" edit="false" delete="false" >
+                    <field name="name" string="Customer Name"/>
+                    <field name="user_id" string="Sale Person"/>
+                    <field name="month_count"/>
+                    <field name="month12" widget="monetary" />
+                    <field name="month11" widget="monetary"/>
+                    <field name="month10" widget="monetary"/>
+                    <field name="month9" widget="monetary"/>
+                    <field name="month8" widget="monetary"/>
+                    <field name="month7" widget="monetary"/>
+                    <field name="month6" widget="monetary" />
+                    <field name="month5" widget="monetary"/>
+                    <field name="month4" widget="monetary"/>
+                    <field name="month3" widget="monetary"/>
+                    <field name="month2" widget="monetary"/>
+                    <field name="month1" widget="monetary"/>
+                    <field name="month_total"/>
+                    <field name="average_sale" widget="monetary"/>
+                    <field name="trend_val"/>
+                    <field name="total_sale" widget="monetary" sum="Total"/>
+                    <field name="currency_id"  invisible="1" />
+                </tree>
+              </field>
+        </record>
 
-       <record id="trending_report_list_id" model="ir.actions.act_window">
+        <record id="trending_report_popup_view" model="ir.ui.view">
             <field name="name">Trending Report</field>
-            <field name="res_model">res.partner</field>
+            <field name="model">popup.trending.report</field>
+            <field name="arch" type="xml">
+                <form string="Choose your date">
+                    <group>
+                        <group>
+                            <field name="start_date"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+       <record id="trending_report_list6_id" model="ir.actions.act_window">
+            <field name="name">Trending Report</field>
+            <field name="res_model">popup.trending.report</field>
             <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-            <field name="context">{"search_default_customer":1}</field>
-            <field name="search_view_id" ref="base.view_res_partner_filter"/>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{"code":6}</field>
+            <!--<field name="search_view_id" ref="base.view_res_partner_filter"/>-->
             <field name="priority">51</field>
-            <field name="view_id" ref="trending_report_list"/>
+            <field name="view_id" ref="trending_report_popup_view"/>
+       </record>
+
+        <record id="trending_report_list12_id" model="ir.actions.act_window">
+            <field name="name">Trending Report</field>
+            <field name="res_model">popup.trending.report</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{"code":12}</field>
+            <!--<field name="search_view_id" ref="base.view_res_partner_filter"/>-->
+            <field name="priority">51</field>
+            <field name="view_id" ref="trending_report_popup_view"/>
        </record>
 
 
-
-        <menuitem id="menu_trending_report_list_report"
-                  name="Trending Report"
-                  action="trending_report_list_id"
+        <menuitem id="menu_trending_report_list_report6"
+                  name="Trending Report for 6 month"
+                  action="trending_report_list6_id"
                   parent="sale.menu_sale_report"
                   sequence="5"/>
+
+        <menuitem id="menu_trending_report_list_report12"
+                  name="Trending Report for 12 month"
+                  action="trending_report_list12_id"
+                  parent="sale.menu_sale_report"
+                  sequence="6"/>
 
     </data>
 
