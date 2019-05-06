@@ -18,7 +18,7 @@ class LotHistory(models.Model):
     event_date = fields.Date(string="Event Date")
     change = fields.Integer('Change')
     lot_no = fields.Char(string="Lot #")
-    vendor = fields.Char(string="Vendor Name")
+    vendor = fields.Char(string="Vendor / Customer Name")
     phone = fields.Char(string="Phone")
     email = fields.Char(string="Email")
     product_id = fields.Many2one('product.product', string='Product Name')
@@ -53,10 +53,12 @@ class LotHistory(models.Model):
                 SELECT
                     product_template.sku_code,
                     product_template.name            AS description,
-                    'Receive'                               AS type,
+                    CASE  WHEN stock_picking.name LIKE 'WH/OUT%' THEN 'Purchase Return' 
+                    WHEN stock_picking.name LIKE 'WH/IN%' THEN 'Receive' END AS type,
                     purchase_order.name              AS event,
                     purchase_order.date_order        AS event_date,
-                    stock_move_line.qty_done         AS change,
+                    CASE  WHEN stock_picking.name LIKE 'WH/OUT%' THEN (stock_move_line.qty_done * -1) 
+                    WHEN stock_picking.name LIKE 'WH/IN%' THEN (stock_move_line.qty_done )  END AS change,
                     stock_production_lot.name        AS lot_no,
                     stock_move_line.product_id       AS product_id,
                     res_partner.name                 AS vendor,
@@ -99,7 +101,7 @@ class LotHistory(models.Model):
                     res_partner
                 ON
                     (
-                        purchase_order_line.partner_id = res_partner.id)
+                        purchase_order.partner_id = res_partner.id)
                 LEFT JOIN
                     stock_picking
                 ON
@@ -114,58 +116,42 @@ class LotHistory(models.Model):
                 SELECT
                     product_template.sku_code,
                     product_template.name         AS description,
-                    'Ship'                               AS type,
+                    CASE  WHEN stock_picking.name LIKE 'WH/OUT%' THEN 'Delivery-OUT' 
+                    WHEN stock_picking.name LIKE 'WH/PULL%' THEN 'Delivery-PULL' 
+                    WHEN stock_picking.name LIKE 'WH/PICK%' THEN 'Delivery-PICK'
+                    WHEN stock_picking.name LIKE 'WH/IN%' THEN 'Sale Return'
+                    END AS type,
                     sale_order.name               AS event,
+                    
                     sale_order.confirmation_date  AS event_date,
-                    stock_move_line.qty_done      AS change,
+                    CASE  WHEN stock_picking.name LIKE 'WH/OUT%' THEN (stock_move_line.qty_done * -1) 
+                    WHEN stock_picking.name LIKE 'WH/PULL%' THEN (stock_move_line.qty_done * -1) 
+                    WHEN stock_picking.name LIKE 'WH/PICK%' THEN (stock_move_line.qty_done * -1)
+                    WHEN stock_picking.name LIKE 'WH/IN%' THEN (stock_move_line.qty_done )
+                    END AS change,
                     stock_production_lot.name     AS lot_no,
                     stock_move_line.product_id    AS product_id,
                     res_partner.name              AS vendor,
                     res_partner.phone,
                     res_partner.email                    
-                FROM
-                    sale_order
-                INNER JOIN
-                    sale_order_line
-                ON
-                    (
-                        sale_order.id = sale_order_line.order_id)
-                INNER JOIN
-                    product_product
-                ON
-                    (
-                        sale_order_line.product_id = product_product.id)
-                INNER JOIN
-                    product_template
-                ON
-                    (
-                        product_product.product_tmpl_id = product_template.id)
-                INNER JOIN
-                    stock_move
-                ON
-                    (
-                        sale_order_line.id = stock_move.sale_line_id)
-                INNER JOIN
-                    stock_move_line
-                ON
-                    (
-                        stock_move.id = stock_move_line.move_id)
-                INNER JOIN
-                    stock_production_lot
-                ON
-                    (
-                        stock_move_line.lot_id = stock_production_lot.id)
-                INNER JOIN
-                    res_partner
-                ON
-                    (
-                        sale_order_line.order_partner_id = res_partner.id)
-                INNER JOIN
-                    stock_picking
-                ON
-                    (
-                        stock_move_line.picking_id = stock_picking.id)
-                    WHERE 1 = 1        """ + where_clause
+                FROM sale_order
+                INNER JOIN sale_order_line
+                ON ( sale_order.id = sale_order_line.order_id )
+                INNER JOIN  product_product
+                ON (  sale_order_line.product_id = product_product.id )
+                INNER JOIN product_template
+                ON ( product_product.product_tmpl_id = product_template.id)
+                INNER JOIN stock_picking
+                ON ( sale_order.id = stock_picking.sale_id)        
+                INNER JOIN stock_move
+                ON ( stock_picking.id = stock_move.picking_id)
+               INNER JOIN stock_move_line
+                ON ( stock_move.id = stock_move_line.move_id)
+               INNER JOIN stock_production_lot
+                ON ( stock_move_line.lot_id = stock_production_lot.id)
+                INNER JOIN res_partner
+                ON (  sale_order.partner_id = res_partner.id)
+                WHERE 1 = 1""" + where_clause
 
         self._cr.execute(sql_query)
 
