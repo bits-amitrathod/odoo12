@@ -57,7 +57,8 @@ class LotHistory(models.Model):
                     WHEN stock_picking.name LIKE 'WH/IN%' THEN 'Receive' END AS type,
                     purchase_order.name              AS event,
                     purchase_order.date_order        AS event_date,
-                    stock_move_line.qty_done         AS change,
+                    CASE  WHEN stock_picking.name LIKE 'WH/OUT%' THEN (stock_move_line.qty_done * -1) 
+                    WHEN stock_picking.name LIKE 'WH/IN%' THEN (stock_move_line.qty_done )  END AS change,
                     stock_production_lot.name        AS lot_no,
                     stock_move_line.product_id       AS product_id,
                     res_partner.name                 AS vendor,
@@ -121,8 +122,13 @@ class LotHistory(models.Model):
                     WHEN stock_picking.name LIKE 'WH/IN%' THEN 'Sale Return'
                     END AS type,
                     sale_order.name               AS event,
+                    
                     sale_order.confirmation_date  AS event_date,
-                    stock_move_line.qty_done      AS change,
+                    CASE  WHEN stock_picking.name LIKE 'WH/OUT%' THEN (stock_move_line.qty_done * -1) 
+                    WHEN stock_picking.name LIKE 'WH/PULL%' THEN (stock_move_line.qty_done * -1) 
+                    WHEN stock_picking.name LIKE 'WH/PICK%' THEN (stock_move_line.qty_done * -1)
+                    WHEN stock_picking.name LIKE 'WH/IN%' THEN (stock_move_line.qty_done )
+                    END AS change,
                     stock_production_lot.name     AS lot_no,
                     stock_move_line.product_id    AS product_id,
                     res_partner.name              AS vendor,
