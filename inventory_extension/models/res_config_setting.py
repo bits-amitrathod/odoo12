@@ -4,21 +4,17 @@ import warnings
 from odoo.exceptions import UserError, ValidationError
 import logging
 
-
 _logger = logging.getLogger(__name__)
 
+
 class ResConfigSettings(models.TransientModel):
-    _name="sps.conf.settings"
     _inherit = 'res.config.settings'
-    group_stock_production_lot = fields.Boolean(string ="Lots & Serial Numbers", default=True,implied_group='stock.group_production_lot')
-    module_product_expiry = fields.Boolean(string ="Expiration Dates",
-        help="Track following dates on lots & serial numbers: best before, removal, end of life, alert. \n Such dates are set automatically at lot/serial number creation based on values set on the product (in days).")
-    production_lot_alert_days = fields.Integer(string="Alert Days",default_model = 'sps.conf.settings',default=0)
-    production_lot_alert_settings = fields.Boolean(string="Alert Setting",default_model = 'sps.conf.settings',default=True)
-
-
-
-
+    group_stock_production_lot = fields.Boolean(string="Lots & Serial Numbers", default=True,
+                                                implied_group='stock.group_production_lot')
+    module_product_expiry = fields.Boolean(string="Expiration Dates",
+                                           help="Track following dates on lots & serial numbers: best before, removal, end of life, alert. \n Such dates are set automatically at lot/serial number creation based on values set on the product (in days).")
+    production_lot_alert_days = fields.Integer(string="Alert Days")
+    production_lot_alert_settings = fields.Boolean(string="Alert Setting", default=True)
 
     @api.onchange('module_product_expiry')
     def _onchange_module_product_expiry(self):
@@ -29,8 +25,6 @@ class ResConfigSettings(models.TransientModel):
             self.production_lot_alert_settings = False
             self.production_lot_alert_days = 0
 
-
-
     @api.onchange('production_lot_alert_settings')
     def _onchange_production_lot_alert_settings(self):
         if self.production_lot_alert_settings is False:
@@ -38,7 +32,7 @@ class ResConfigSettings(models.TransientModel):
 
     @api.onchange('production_lot_alert_days')
     def _onchange_production_lot_alert_days(self):
-        if self.production_lot_alert_days >366:
+        if self.production_lot_alert_days > 366:
             self.production_lot_alert_days = 0
 
     @api.model
@@ -48,10 +42,11 @@ class ResConfigSettings(models.TransientModel):
         production_lot_alert_days = int(params.get_param('inventory_extension.production_lot_alert_days'))
         production_lot_alert_settings = params.get_param('inventory_extension.production_lot_alert_settings',
                                                          default=True)
-        group_stock_production_lot= params.get_param('inventory_extension.group_stock_production_lot')
-        module_product_expiry=params.get_param('inventory_extension.module_product_expiry')
+        group_stock_production_lot = params.get_param('inventory_extension.group_stock_production_lot')
+        module_product_expiry = params.get_param('inventory_extension.module_product_expiry')
         res.update(production_lot_alert_settings=production_lot_alert_settings,
-                   production_lot_alert_days=production_lot_alert_days,group_stock_production_lot=group_stock_production_lot,module_product_expiry=module_product_expiry )
+                   production_lot_alert_days=production_lot_alert_days,
+                   group_stock_production_lot=group_stock_production_lot, module_product_expiry=module_product_expiry)
         return res
 
     @api.multi
@@ -65,3 +60,20 @@ class ResConfigSettings(models.TransientModel):
                                                          self.group_stock_production_lot)
         self.env['ir.config_parameter'].sudo().set_param("inventory_extension.module_product_expiry",
                                                          self.module_product_expiry)
+
+
+class StockPickingMarkAllButton(models.Model):
+    _inherit = "stock.picking"
+
+    is_mark_all_button_visible = fields.Boolean(string="Mark all visibility", compute='_compute_visibility', store=False)
+
+    def _compute_visibility(self):
+        for pick in self:
+            pick.is_mark_all_button_visible =  pick.sale_id.id and not pick.state in ['done','cancel']
+
+    def action_button_mark_all_done(self):
+        self.ensure_one()
+        if self.sale_id.id:
+            for lines in self.move_lines:
+                for line_items in lines.move_line_ids:
+                    line_items.qty_done = line_items.product_uom_qty

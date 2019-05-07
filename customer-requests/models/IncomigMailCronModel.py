@@ -11,6 +11,18 @@ import html2text
 import errno
 from collections import namedtuple
 
+import werkzeug.local
+import werkzeug.wsgi
+from odoo import SUPERUSER_ID
+
+#----------------------------------------------------------
+# RequestHandler
+#----------------------------------------------------------
+# Thread local global request object
+_request_stack = werkzeug.local.LocalStack()
+
+request = _request_stack()
+
 try:
     import xlrd
 
@@ -68,6 +80,8 @@ class IncomingMailCronModel(models.Model):
                             (header, messages, octets) = pop_server.retr(num)
                             message = (b'\n').join(messages)
                             res_id = None
+                            response = {'message':'File Uploaded Successfully'}
+
                             try:
                                 if isinstance(message, xmlrpclib.Binary):
                                     message = bytes(message.data)
@@ -96,6 +110,7 @@ class IncomingMailCronModel(models.Model):
                                     tmpl_type = "Inventory"
                                 elif 'Requirement' in subject:
                                     tmpl_type = "Requirement"
+
                                 if message.get_content_maintype() != 'text':
                                     alternative = False
                                     for part in message.walk():
@@ -160,48 +175,69 @@ class IncomingMailCronModel(models.Model):
                                                     _logger.info('email_to_domain email_from: %r', email_from)
                                         #_logger.info('message payload: %r %r', message_payload, email_from)
                                         if not email_from is None:
-                                            users_model = self.env['res.partner'].search(
-                                                [("email", "=", email_from)])
+                                            users_model = self.env['res.partner'].search([("email", "=", email_from)])
                                             if users_model:
-                                                user_attachment_dir = ATTACHMENT_DIR + str(
-                                                    datetime.now().strftime("%d%m%Y")) + "/" + str(
-                                                    users_model.id) + "/"
-                                                if not os.path.exists(os.path.dirname(user_attachment_dir)):
-                                                    try:
-                                                        os.makedirs(os.path.dirname(user_attachment_dir))
-                                                    except OSError as exc:
-                                                        if exc.errno != errno.EEXIST:
-                                                            raise
-                                                for attachment in attachments:
-                                                    filename = getattr(attachment, 'fname')
-                                                    if not filename is None:
+                                                if len(users_model) == 1:
+                                                    user_attachment_dir = ATTACHMENT_DIR + str(
+                                                        datetime.now().strftime("%d%m%Y")) + "/" + str(
+                                                        users_model.id) + "/"
+                                                    if not os.path.exists(os.path.dirname(user_attachment_dir)):
                                                         try:
-                                                            file_contents_bytes = getattr(attachment, 'content')
-                                                            file_path = user_attachment_dir + str(filename)
-                                                            file_ref = open(str(file_path), "wb+")
-                                                            file_ref.write(file_contents_bytes)
-                                                            file_ref.close()
-                                                            self.env[
-                                                                'sps.document.process'].process_document(
-                                                                users_model, file_path, tmpl_type,filename, 'Email')
-                                                        except Exception as e:
-                                                            _logger.info(str(e))
+                                                            os.makedirs(os.path.dirname(user_attachment_dir))
+                                                        except OSError as exc:
+                                                            if exc.errno != errno.EEXIST:
+                                                                raise
+                                                    for attachment in attachments:
+                                                        filename = getattr(attachment, 'fname')
+                                                        if not filename is None:
+                                                            try:
+                                                                file_contents_bytes = getattr(attachment, 'content')
+                                                                file_path = user_attachment_dir + str(filename)
+                                                                file_ref = open(str(file_path), "wb+")
+                                                                file_ref.write(file_contents_bytes)
+                                                                file_ref.close()
+                                                                response = self.env['sps.document.process'].process_document(
+                                                                    users_model, file_path, tmpl_type,filename, 'Email')
+                                                            except Exception as e:
+                                                                _logger.info(str(e))
+                                                else:
+                                                    _logger.error('We have found Same Email Id against multiple users %r', email_from)
+                                                    response = dict(errorCode=101, message='We have found Same Email Id against multiple users.')
                                             else:
-                                                _logger.info('user not found for %r',
-                                                             email_from)
+                                                _logger.info('We have not found user in our contact list : %r', email_from)
+                                                response = dict(errorCode=102, message='User not found in our contact list.')
                                         else:
-                                            _logger.info('domain not matched for forwarded email')
+                                            _logger.info('Domain not matched for forwarded email')
+                                            response = dict(errorCode=103, message='Domain not matched for forwarded email.')
                                     else:
-                                        _logger.info("No attachements found")
-
+                                        _logger.info("User has not attached requirement or inventory documnet.")
+                                        response = dict(errorCode=104, message='User has not attached requirement or inventory documnet.')
                                 else:
-                                    _logger.info('Not a Multipart email')
+                                    _logger.info('This is not a multipart email')
+                                    response = dict(errorCode=105, message='This is not a multipart email.')
 
                                 pop_server.dele(num)
 
+                                if "errorCode" in response:
+                                    if not email_from is None:
+                                        res_partners = self.env['res.partner'].search([("email", "=", email_from)])
+                                        if len(res_partners) > 1:
+                                            customerName = ""
+                                            for res_partner in res_partners:
+                                                if customerName == "":
+                                                    customerName = res_partner['name']
+                                                else:
+                                                    customerName = customerName + "  ,  " + res_partner['name']
+
+                                    if len(res_partners) == 1:
+                                        self.send_mail(str(res_partners['name']), str(email_from),str(response['message']))
+                                    elif len(res_partners) > 1:
+                                        self.send_mail(customerName, str(email_from),str(response['message']))
+                                    else:
+                                        self.send_mail('', str(email_from),str(response['message']))
+
                             except Exception:
-                                _logger.info('Failed to process mail from %s server %s.', server.type, server.name,
-                                             exc_info=True)
+                                _logger.info('Failed to process mail from %s server %s.', server.type, server.name, exc_info=True)
                                 failed += 1
 
                             if res_id and server.action_id:
@@ -225,8 +261,18 @@ class IncomingMailCronModel(models.Model):
                     if pop_server:
                         pop_server.quit()
             server.write({'date': fields.Datetime.now()})
+
         return super(IncomingMailCronModel, self).fetch_mail()
 
     @staticmethod
     def random_string_generator(size=10, chars=string.ascii_lowercase + string.digits):
         return ''.join(random.choice(chars) for _ in range(size))
+
+    def send_mail(self, customerName, email, reason):
+        today_date = datetime.today().strftime('%m/%d/%Y')
+        template = self.env.ref('customer-requests.set_log_email_response').sudo()
+        local_context = {'customerName': customerName, 'email': email, 'date': today_date, 'reason': reason}
+        try:
+            template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True, )
+        except:
+            response = {'message': 'Unable to connect to SMTP Server'}

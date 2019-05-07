@@ -39,7 +39,7 @@
                                 <th class="text-center">Sales Order#</th>
                                 <th class="text-center">Date Order</th>
                                 <th class="text-center">Product SKU </th>
-                                <th class="text-center">Ordered Qty</th>
+                                <th class="text-center">Delivered Qty</th>
                                 <th class="text-center">Subtotal</th>
                             </tr>
                             <t t-set="index" t-value="1"/>

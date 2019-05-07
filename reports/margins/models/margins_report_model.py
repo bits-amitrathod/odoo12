@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
+import datetime
 
 from odoo import api, fields, models, tools
 import logging
+import odoo.addons.decimal_precision as dp
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
 
 _logger = logging.getLogger(__name__)
 
@@ -11,7 +14,7 @@ class MarginsReport(models.Model):
     _auto = False
 
     name = fields.Char(string="Name")
-    qty = fields.Float(string="Qty")
+    qty = fields.Float(string="Qty",digits=dp.get_precision('Product Unit of Measure'))
     product_id = fields.Many2one('product.product', string='Product',)
     partner_id = fields.Many2one('res.partner', string='Customer',)
     order_id = fields.Many2one('sale.order', string='Order #', )
@@ -25,8 +28,8 @@ class MarginsReport(models.Model):
     date_from = fields.Date(string='Date From')
     date_to = fields.Date(string='Date To')
     group_by = fields.Char()
-    # currency_id = fields.Many2one("res.currency", related='user_id.company_id.currency_id', string="Currency",
-    #                               readonly=True)
+    currency_id = fields.Many2one("res.currency", string="Currency",
+                                   readonly=True)
 
     @api.model_cr
     def init(self):
@@ -52,14 +55,16 @@ class MarginsReport(models.Model):
         o.partner_id as partner_id,
         ol.price_unit as unit_price,
         ol.purchase_price as unit_cost,
+        ol.currency_id as currency_id,
         ol.price_subtotal as total_unit_price,
         (ol.product_uom_qty * ol.purchase_price) as total_unit_cost,
         CASE 
-                WHEN ol.purchase_price IS NULL OR TRUNC(ol.purchase_price, 2) = 0.00 THEN ol.price_subtotal
-                ELSE (ol.price_subtotal - (ol.product_uom_qty * ol.purchase_price))
+                WHEN ol.purchase_price IS NULL OR TRUNC(ol.purchase_price, 2) = 0.00 
+                  THEN  CASE WHEN ol.price_subtotal >= 0 THEN ol.price_subtotal ELSE 0 END
+                ELSE CASE  WHEN 0 <=(ol.price_subtotal - (ol.product_uom_qty * ol.purchase_price)) THEN (ol.price_subtotal - (ol.product_uom_qty * ol.purchase_price)) ELSE 0 END
         END as margin, 
         CASE 
-                WHEN ol.purchase_price IS NULL OR TRUNC(ol.purchase_price, 2) = 0.00 THEN 100
+                WHEN ol.purchase_price IS NULL OR TRUNC(ol.purchase_price, 2) = 0.00 or TRUNC(ol.product_uom_qty, 2) = 0.00 THEN CASE WHEN ol.price_subtotal <= 0 THEN 0 ELSE 100 END
                 ELSE TRUNC(( ol.price_subtotal /(ol.price_subtotal - (ol.product_uom_qty * ol.purchase_price))), 2)
         END as margin_percentage """\
 
@@ -82,7 +87,7 @@ class MarginsReport(models.Model):
 
         if not e_date is None:
             select_query = select_query + ", '" + str(e_date) + "' as date_to "
-            where_clause = where_clause + AND + " o.confirmation_date <= '" + str(e_date) + "'"
+            where_clause = where_clause + AND + " o.confirmation_date <= '" + str(e_date+ datetime.timedelta(days=1)) + "'"
 
         if not partner_id is None:
             where_clause = where_clause + AND + " o.partner_id = " + str(partner_id)

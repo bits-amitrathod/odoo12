@@ -31,18 +31,69 @@ class PickingReportPopUp(models.TransientModel):
         moves = self.env['stock.move.line'].search([('picking_id', '=', self.picking_id.id)])
 
         for stock_move in moves:
+            sku = stock_move.product_id.product_tmpl_id.sku_code
+            ext = sku and (str(sku) + " - ") or ""
             products_list.append([stock_move.state, stock_move.ordered_qty,
-                                  [str(
-                                      stock_move.product_id.product_tmpl_id.sku_code) + " - " + stock_move.product_id.product_tmpl_id.name,
-                                   stock_move.lot_id.name, str(stock_move.lot_id.use_date)],
+                                  [ext + stock_move.product_id.product_tmpl_id.name,
+                                   (stock_move.lot_id.name or "N/A"), str(stock_move.lot_id.use_date or "N/A")],
                                   stock_move.location_id.complete_name,
                                   stock_move.reference,
-                                  stock_move.location_dest_id.complete_name
+                                  stock_move.location_dest_id.complete_name,
+                                  stock_move.product_id.product_tmpl_id.name
                                  ])
 
+        products_list.sort(key=self.sortSecond)
         data_dict.update(dict(moves=products_list))
 
         action = self.env.ref('pick_report.action_pick_report').report_action([], data=data_dict)
         action.update({'target': 'main'})
 
         return action
+
+    def sortSecond(self,val):
+        return val[6]
+
+    def get_pick_report(self, picking_id):
+        location_group = ""
+        carrier_id = ""
+        if picking_id.picking_type_id.warehouse_id:
+            location_group = picking_id.picking_type_id.warehouse_id.code
+        if picking_id.carrier_id:
+            carrier_id = picking_id.carrier_id.name
+        data_dict = {'scheduled_date': picking_id.scheduled_date,
+                     'priority': picking_id.priority,
+                     'state': picking_id.state.capitalize(),
+                     'type': picking_id.picking_type_id.name,
+                     'location_group': location_group,
+                     'carrier_id': carrier_id
+                     }
+
+        if picking_id.sale_id.id:
+            data_dict.update({'order_id': picking_id.sale_id.name})
+            data_dict.update({'partner_name': picking_id.sale_id.partner_id.name})
+        else:
+            data_dict.update({'order_id': '', 'partner_name': ''})
+
+        products_list = []
+
+        moves = self.env['stock.move.line'].search([('picking_id', '=', picking_id.id)])
+
+        for stock_move in moves:
+            sku = stock_move.product_id.product_tmpl_id.sku_code
+            ext = sku and (str(sku) + " - ") or ""
+            products_list.append([stock_move.state, stock_move.ordered_qty,
+                                  [ext + stock_move.product_id.product_tmpl_id.name,
+                                   (stock_move.lot_id.name or "N/A"), str(stock_move.lot_id.use_date or "N/A")],
+                                  stock_move.location_id.complete_name,
+                                  stock_move.reference,
+                                  stock_move.location_dest_id.complete_name,
+                                  stock_move.product_id.product_tmpl_id.name
+                                  ])
+
+        products_list.sort(key=self.sortSecond)
+        data_dict.update(dict(moves=products_list))
+
+        action = self.env.ref('pick_report.action_pick_report').report_action([], data=data_dict)
+        action.update({'target': 'main'})
+
+        return data_dict

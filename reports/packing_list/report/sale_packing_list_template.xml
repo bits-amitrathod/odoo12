@@ -28,16 +28,23 @@
                     </div>
                     <br/>
                     <div class="row"  t-foreach="packing_list_result" t-as="packing_list">
-
+                        <t t-set="i" t-value="0"/>
+                         <t t-set='trackin_info' t-value="False"/>
+                        <t t-if="packing_list.carrier_tracking_ref"> <!-- This means, if there are some value at this call -->
+                            <t t-if="',' in packing_list.carrier_tracking_ref" >
+                                <t t-set='trackin_info' t-value="packing_list.carrier_tracking_ref.split(',')"/>
+                            </t>
+                        </t>
                         <div class="col-md-12" >
 
-                            <table class="table " >
+                            <table class="table  table-condensed table-bordered " >
                                 <tbody class="invoice_tbody" >
-                                    <tr >
+                                    <tr  style="border: 1px solid #ddd;">
                                        <th>
                                             Ship To:
                                             <div class="col-md-12" style="margin-top:10px;border: 1px solid #ddd;width:100%">
                                                 <p style="font-weight: lighter">
+                                                    <span t-esc="packing_list.partner_id.display_name"/><br/>
                                                    <span t-esc="packing_list.sale_id.partner_shipping_id.street"/>
                                                     <br/>
                                                     <t t-if="packing_list.sale_id.partner_shipping_id.street2">
@@ -64,6 +71,7 @@
                                             Bill To:
                                             <div class="col-md-12" style="margin-top:10px;border: 1px solid #ddd;width:100%">
                                                 <p style="font-weight: lighter">
+                                                    <span t-esc="packing_list.partner_id.display_name"/><br/>
                                                    <span t-esc="packing_list.sale_id.partner_invoice_id.street"/>
                                                     <br/>
                                                     <t t-if="packing_list.sale_id.partner_invoice_id.street2">
@@ -80,14 +88,16 @@
 
                                                 </p>
                                             </div>
-
                                         </th>
+
                                     </tr>
                                     <tr>
                                          <table class="table  table-condensed table-bordered " >
                                             <thead>
                                                 <tr>
-
+                                                    <th>
+                                                        <div class="col-md-12">Package Count</div>
+                                                    </th>
                                                     <th>
                                                         <div class="col-md-12">Req. Ship Date</div>
                                                     </th>
@@ -104,7 +114,13 @@
                                             </thead>
                                             <tbody class="invoice_tbody"  >
                                                 <tr >
-
+                                                   <th>
+                                                        <div class="col-md-12" style="margin-top:10px">
+                                                            <p style="font-weight: lighter">
+                                                                <span t-esc="len(packing_list.package_ids)"/>
+                                                            </p>
+                                                        </div>
+                                                   </th>
                                                    <th>
                                                         <div class="col-md-12" style="margin-top:10px">
                                                             <p style="font-weight: lighter">
@@ -142,13 +158,24 @@
                                         <th>
                                             <div class="col-md-12" style="margin-top:10px;width:50%">
 
-                                                <p style="height:10px">
+                                                <p style="height:10px;font-size: larger;font-weight: bold;">
 
-                                                  Tracking Information:
+                                                    Package Information:
                                                 </p>
                                                 <p>
+
                                                  <hr style="margin:0px;padding:0px"/>
-                                                     Tracking (# <span t-esc="packing_list.carrier_tracking_ref"/>)
+                                                     <t t-if="packing_list.package_ids">
+                                                         <t t-foreach="packing_list.package_ids" t-as="packing">
+                                                              <br/>
+                                                              <span t-esc="packing.name"/>
+                                                                (#
+                                                                 <t t-if="trackin_info">
+                                                                   <span t-esc="trackin_info[packing_index]"/>
+                                                                 </t>
+                                                                 )
+                                                         </t>
+                                                    </t>
                                                     <a style="float:right" t-att-href="packing_list.carrier_tracking_url" target="_blank">
                                                         <t t-if="packing_list.carrier_id.name !='Normal Delivery Charges' ">
                                                          <span t-esc="packing_list.carrier_id.name"/>
@@ -197,6 +224,7 @@
                                                                 <span t-esc="move_line_id.qty_done"/>
                                                                 <span t-esc="move_line.product_uom.name"/>-
                                                                 Lot#:<span t-esc="move_line_id.lot_id.name"/>
+                                                                <br/>
                                                                 Exp Date:<span t-esc="move_line_id.lot_id.use_date"/>
                                                             </p>
                                                         </div>
@@ -204,7 +232,7 @@
                                                    <th>
                                                         <div class="col-md-12" style="margin-top:10px">
                                                             <p style="font-weight: lighter">
-                                                                <span t-esc="move_line.ordered_qty"/>
+                                                                <span t-field="move_line.ordered_qty"/>
                                                                 <span t-esc="move_line.product_uom.name"/>
                                                             </p>
                                                         </div>
@@ -212,7 +240,7 @@
                                                     <th>
                                                         <div class="col-md-12" style="margin-top:10px">
                                                             <p style="font-weight: lighter">
-                                                                <span t-esc="move_line.quantity_done"/>
+                                                                <span t-field="move_line.quantity_done"/>
                                                                 <span t-esc="move_line.product_uom.name"/>
                                                             </p>
                                                         </div>
@@ -220,7 +248,7 @@
                                                     <th>
                                                         <div class="col-md-12" style="margin-top:10px">
                                                             <p style="font-weight: lighter">
-                                                                <span t-esc="move_line.remaining_qty"/>
+                                                                <span t-esc="round(move_line.remaining_qty)"/>
                                                                 <span t-esc="move_line.product_uom.name"/>
                                                             </p>
 

@@ -2,7 +2,7 @@
 
 from odoo import api, fields, models, tools
 import logging
-
+import odoo.addons.decimal_precision as dp
 _logger = logging.getLogger(__name__)
 
 
@@ -11,7 +11,7 @@ class MarginsReport(models.Model):
     _auto = False
 
     name = fields.Char(string="Name")
-    qty = fields.Float(string="Qty")
+    qty = fields.Float(string="Qty",digits=dp.get_precision('Product Unit of Measure'))
     product_id = fields.Many2one('product.product', string='Product', )
     partner_id = fields.Many2one('res.partner', string='Customer', )
     order_id = fields.Many2one('sale.order', string='Order #', )
@@ -25,11 +25,12 @@ class MarginsReport(models.Model):
     date_from = fields.Date(string='Date From')
     date_to = fields.Date(string='Date To')
     group_by = fields.Char()
+    currency_id = fields.Many2one("res.currency", string="Currency",
+                                   readonly=True,store=False)
 
     @api.model_cr
     def init(self):
-        # self.init_table()
-        pass
+        self.init_table()
 
     def init_table(self):
 
@@ -52,26 +53,28 @@ class MarginsReport(models.Model):
         ol.price_unit as unit_price,
         ol.purchase_price as unit_cost,
         ol.price_subtotal as total_unit_price,
+        ol.currency_id as currency_id,
         (ol.product_uom_qty * ol.purchase_price) as total_unit_cost,
         CASE 
-                WHEN ol.purchase_price IS NULL OR TRUNC(ol.purchase_price, 2) = 0.00 THEN ol.price_subtotal
-                ELSE (ol.price_subtotal - (ol.product_uom_qty * ol.purchase_price))
+                WHEN ol.purchase_price IS NULL OR TRUNC(ol.purchase_price, 2) = 0.00 
+                THEN  CASE WHEN ol.price_subtotal >= 0 THEN ol.price_subtotal ELSE 0 END
+                ELSE CASE  WHEN 0 <=(ol.price_subtotal - (ol.product_uom_qty * ol.purchase_price)) THEN (ol.price_subtotal - (ol.product_uom_qty * ol.purchase_price)) ELSE 0 END
         END as margin, 
         CASE 
-                WHEN ol.purchase_price IS NULL OR TRUNC(ol.purchase_price, 2) = 0.00 THEN 100
+                WHEN ol.purchase_price IS NULL OR TRUNC(ol.purchase_price, 2) = 0.00 or TRUNC(ol.product_uom_qty, 2) = 0.00  THEN CASE WHEN ol.price_subtotal <= 0 THEN 0 ELSE 100 END
                 ELSE TRUNC(( ol.price_subtotal /(ol.price_subtotal - (ol.product_uom_qty * ol.purchase_price))), 2)
-        END as margin_percentage """\
+        END as margin_percentage """
 
         if not group_by is None:
             select_query = select_query + ", '" + str(group_by) + "' as group_by "
 
-        from_clause = """ FROM 
+        from_clause = """  FROM 
             sale_order_line ol INNER JOIN  product_product p ON ol.product_id = p.id
             INNER JOIN sale_order o ON ol.order_id = o.id
             INNER JOIN product_template t ON p.product_tmpl_id = t.id
             LEFT JOIN res_partner r ON o.partner_id = r.id """
 
-        where_clause = " WHERE o.confirmation_date IS NOT NULL "
+        where_clause = """ WHERE o.confirmation_date IS NOT NULL  """
 
         AND = " AND "
         date_range = ""

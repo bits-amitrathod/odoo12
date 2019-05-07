@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="compsalebymonth_template">
-        <t t-call="web.html_container"/>
-            <t t-call="web.external_layout"/>
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
                 <page>
                     <div class="oe_structure"/>
                     <div class="row">
@@ -12,23 +12,29 @@
                                 <h4>Compare Sales By Month</h4>
                             </b>
                         </center>
+                        <center>
+                            <h4 t-if="date">
+                                <span t-esc="date"/>
+                            </h4>
+                    </center>
                     </div>
                     <br/>
+                    <div>
                         <table class="table table-condensed" style="border: 1px solid black;">
                             <thead>
                                 <tr align="center" style="border: 1px solid black;">
-                                    <th style="border: 1px solid black;text-align: center;">Product SKU</th>
-                                    <th style="border: 1px solid black;text-align: center;">Product Name</th>
-                                    <th style="border: 1px solid black;text-align: center;white-space: nowrap;">
+                                    <th style="border: 1px solid black;text-align: left;">Product SKU</th>
+                                    <th style="border: 1px solid black;text-align: left;">Product Name</th>
+                                    <th style="border: 1px solid black;text-align: right;white-space: nowrap;">
                                         Last Month Qty
                                     </th>
-                                    <th style="border: 1px solid black;text-align: center;white-space: nowrap;">
+                                    <th style="border: 1px solid black;text-align: right;white-space: nowrap;">
                                         Last Month Price
                                     </th>
-                                    <th style="border: 1px solid black;text-align: center;white-space: nowrap;">
+                                    <th style="border: 1px solid black;text-align: right;white-space: nowrap;">
                                         Current Month Qty
                                     </th>
-                                    <th style="border: 1px solid black;text-align: center;white-space: nowrap;">
+                                    <th style="border: 1px solid black;text-align: right;white-space: nowrap;">
                                         Current Month Price
                                     </th>
                                 </tr>
@@ -36,29 +42,37 @@
                             <tbody>
                                 <tr t-foreach="data" t-as="order">
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.sku_code"/>
+                                        <span t-esc="order['sku_code']"/>
                                     </td>
                                     <td style="border: 1px solid black;width: 250px;">
-                                        <span t-esc="order.name"/>
+                                        <span t-esc="order['product_name']"/>
                                     </td>
                                     <td align="right" style="border: 1px solid black;">
-                                        <span t-esc="order.last_month_total_qty"/>
+                                        <span t-esc="'%.0f'% order['last_month_total_qty']"/>
                                     </td>
                                     <td align="right" style="border: 1px solid black;white-space: nowrap;">
-                                        <span t-esc="order.last_month_total_amount"
-                                              t-options='{"widget": "monetary","display_currency": order.currency_id}'/>
+                                         <span t-esc="order['currency_symbol']"
+                                             />
+                                        <span t-esc="order['last_month_total_amount']"
+                                             />
                                     </td>
 
                                     <td align="right" style="border: 1px solid black;">
-                                        <span t-esc="order.current_month_total_qty"/>
+                                        <span t-esc="'%.0f'% order['current_month_total_qty']"/>
                                     </td>
                                     <td align="right" style="border: 1px solid black;white-space: nowrap;">
-                                        <span t-esc="order.current_month_total_amount"
-                                              t-options='{"widget": "monetary","display_currency": order.currency_id}'/>
+
+                                         <span t-esc="order['currency_symbol']"
+                                             />
+                                        <span t-esc="order['current_month_total_amount']"
+                                             />
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
                 </page>
+            </t>
+        </t>
     </template>
 </odoo>

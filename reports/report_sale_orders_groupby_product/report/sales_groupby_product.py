@@ -19,52 +19,55 @@
 #
 ##############################################################################
 from odoo import api, models
+import logging
 
-
+_logger = logging.getLogger(__name__)
 class ReportSaleOrderLineGroupByProduct(models.AbstractModel):
     _name = 'report.report_sale_orders_groupby_product.group_by_product'
 
     @api.model
     def get_report_values(self, docids, data=None):
 
+        sale_order_lines =self.env['sale.order.line'].browse(docids)
+        _logger.info("sale line: %r",sale_order_lines)
         self.env.cr.execute("""
-                   SELECT 
-                      distinct sale_order_line.product_id,
-                      product_template.name,
-                      array_agg(ARRAY[
-                             sale_order.name,
-                            to_char(sale_order.date_order,'MM/DD/YYYY'),
-                            product_template.sku_code,
-                            CAST (sale_order_line.product_uom_qty as text),
-                            CAST (sale_order.amount_total as text),
-                            CAST (sale_order_line.currency_id as text)
-                        ]) as table
-                    FROM 
-                      public.sale_order_line, 
-                      public.sale_order, 
-                      public.product_product, 
-                      public.product_template
-                    WHERE 
-                      sale_order_line.product_id = product_product.id AND
-                      sale_order.id = sale_order_line.order_id AND
-                      product_product.product_tmpl_id = product_template.id and sale_order_line.id in (""" + ",".join(
-            map(str, docids)) + """)
-                    Group BY
-                      product_template.name,sale_order_line.product_id
-                    Order BY
-                      product_template.name desc
-                  """)
+                     SELECT
+                           distinct sale_order_line.product_id,
+                           product_template.name,
+                           array_agg(ARRAY[
+                                   sale_order.name,
+                                   to_char(sale_order.date_order,'MM/DD/YYYY'),
+                                   product_template.sku_code,
+                                   CAST (concat(cast(round(stock_move.product_uom_qty) as text),'  ',product_uom.name) as text),
+                                   CAST (sale_order_line.price_subtotal as text),
+                                   CAST (sale_order_line.currency_id as text)
+                            ]) as table
+            FROM
+               public.stock_move
+            LEFT OUTER JOIN public.sale_order_line
+            ON ( public.stock_move.sale_line_id = public.sale_order_line.id)
+            INNER JOIN public.product_product
+            ON ( public.sale_order_line.product_id = public.product_product.id)
+            INNER JOIN public.sale_order
+            ON ( public.sale_order_line.order_id = public.sale_order.id)
+            INNER JOIN public.product_template
+            ON ( public.product_product.product_tmpl_id = public.product_template.id)
+            RIGHT OUTER JOIN public.product_uom
+            ON ( public.product_template.uom_id = public.product_uom.id)
+            WHERE public.sale_order_line.product_id = public.product_product.id
+            AND public.sale_order.id = public.sale_order_line.order_id
+            AND public.product_product.product_tmpl_id = public.product_template.id
+            AND  public.stock_move.location_id = 16
+            AND public.stock_move.state like 'done'
+            AND public.sale_order_line.id IN (""" + ",".join(
+                        map(str, docids)) + """)
+             Group BY product_template.name,sale_order_line.product_id
+             Order BY product_template.name desc   """)
 
         result = self.env.cr.dictfetchall()
-
         popup = self.env['popup.sale.orders.groupby.product.report'].search([('create_uid', '=', self._uid)], limit=1,
                                                                             order="id desc")
-        if popup.compute_at_date:
-            date = popup.start_date + " to " + popup.end_date
-        else:
-            date = False
-
         return {
             'data': result,
-            'date': date
+            'popup': popup
         }

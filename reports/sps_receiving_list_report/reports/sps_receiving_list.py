@@ -26,6 +26,8 @@ class ReportSpsReceivingList(models.AbstractModel):
                 old = move_lines.product_id.id
                 receiving_list[old] = {
                     'product': product_name + move_lines.product_id.name,
+                    'purchase_order_id': move_lines.purchase_order_id,
+                    'purchase_partner_id': move_lines.purchase_partner_id,
                     'lots': [lot]}
 
         return {'receiving_list': receiving_list}

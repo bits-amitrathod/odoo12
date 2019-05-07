@@ -38,7 +38,7 @@
                                         </td>
 
                                         <td style="border: 1px solid black;">
-                                            <span t-esc="scrap.create_date"/>
+                                            <span t-esc="scrap.create_date" t-options='{"widget": "date"}'/>
                                         </td>
                                         <td style="border: 1px solid black;">
                                             <span t-esc="scrap.product_id.name"/>
@@ -47,7 +47,7 @@
                                             <span t-esc="scrap.lot_id.name"/>
                                         </td>
                                         <td align="center" style="border: 1px solid black;">
-                                            <span t-esc="scrap.scrap_qty"/>
+                                            <span t-esc="'%.0f'% scrap.scrap_qty"/>
                                         </td>
 
                                         <td align="right" style="border: 1px solid black;white-space:nowrap;">

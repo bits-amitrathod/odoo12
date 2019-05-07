@@ -10,6 +10,8 @@
                             <b>
                                 <h2>Surgical Product Solutions</h2>
                                 <h4>In Stock Report</h4>
+                                <h4 t-if="dateRange.start_date and dateRange.end_date"> Date Range: <span t-esc="dateRange.start_date" t-options='{"widget": "date"}'/>
+                                 -  <span t-esc="dateRange.end_date" t-options='{"widget": "date"}'/></h4>
                             </b>
                         </center>
                         <center>
@@ -18,8 +20,8 @@
                     <br/>
                     <div>
                         <table class="table  table-condensed" style="border: 1px solid black">
-                            <thead>
-                                <tr style="border: 1px solid black;">
+                            <thead style="display: table-header-group;">
+                                <tr>
                                     <th style="border: 1px solid black;text-align: center;">Customer</th>
                                     <th style="border: 1px solid black;text-align: center;">Manufacturer</th>
                                     <th style="border: 1px solid black;text-align: center;">Product SKU</th>
@@ -48,11 +50,12 @@
                                         <span t-esc="product.product_id.name"/>
                                     </td>
                                     <td align="center" style="border: 1px solid black;">
-                                        <span t-esc="product.qty_available"/>
+                                        <span t-field="product.qty_available"/>
+                                        <span t-esc="product.uom_id.name"/>
                                     </td>
 
                                     <td align="right" style="border: 1px solid black;white-space:nowrap;">
-                                        <span t-esc="product.list_price"/>
+                                        <span t-esc="product.price_list" t-options='{"widget": "monetary","display_currency": product.currency_id}'/>
                                     </td>
                                     <td align="right" style="border: 1px solid black;white-space:nowrap;">
                                         <span t-esc="product.min_expiration_date" t-options='{"widget": "date"}'/>

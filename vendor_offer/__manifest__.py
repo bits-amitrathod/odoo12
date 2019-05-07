@@ -15,6 +15,9 @@
     'depends': ['base', 'purchase','sale','product_brand','prioritization_engine','product_expiry_extension'],
 
     # always loaded
+    # 'qweb': [
+    #         'static/src/xml/tree_view_button.xml'
+    #     ],
     'data': [
         'security/res_vendor_offer.xml',
         'security/ir.model.access.csv',
@@ -23,7 +26,8 @@
         'demo/data.xml',
         'report/vendor_offer_reports.xml',
         'data/mail_template_data.xml',
-        'report/vendor_offer_quotation_templates.xml',
+        'report/vendor_offer_quotation_templates.xml'
+        # 'views/tree_view_asset.xml'
 
     ],
 

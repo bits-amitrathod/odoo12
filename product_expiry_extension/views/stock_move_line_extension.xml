@@ -7,13 +7,26 @@
     <field name="arch" type="xml">
         <field name="picking_id" invisible="1"/>
         <field name="product_id" invisible="1"/>
-<!--        <field name="in_entire_package" invisible="1"/>-->
+        <field name="in_entire_package" invisible="1"/>
+        <field name="qty_done" position="replace">
+              <field name="qty_done" invisible="1" />
+        </field>
+        <field name="lot_id" position="replace">
+            <field class="min_width" name="lot_id" attrs="{'readonly': [('in_entire_package', '=', True)]}" invisible="not context.get('show_lots_m2o')" domain="[('product_id', '=', parent.product_id)]" groups="stock.group_production_lot" context="{'default_product_id': parent.product_id, 'active_picking_id': picking_id}"/>
+        </field>
         <field name="lot_id" position="after">
-            <field name="lot_use_date" attrs="{'readonly': [(True, '=', False)]}" invisible="not context.get('show_lots_m2o')" domain="[('product_id', '=', parent.product_id)]" groups="stock.group_production_lot" context="{'default_product_id': parent.product_id, 'active_picking_id': picking_id}" />
+            <field name="lot_use_date" attrs="{'readonly': [('lot_use_date', '!=', False)]}" invisible="not context.get('show_lots_m2o')" domain="[('product_id', '=', parent.product_id)]" groups="stock.group_production_lot" context="{'default_product_id': parent.product_id, 'active_picking_id': picking_id}" />
         </field>
          <field name="lot_name"  position="after" >
-              <field name="lot_expired_date" widget="inventory_purchase"  attrs="{'readonly': [(True, '=', True)]}"  invisible="not context.get('show_lots_text')" groups="stock.group_production_lot"/>
+              <field name="lot_expired_date" widget="inventory_purchase"  attrs="{'readonly': [('in_entire_package', '=', True)]}"  invisible="not context.get('show_lots_text')" groups="stock.group_production_lot"/>
+              <field name="qty_done" attrs="{'readonly': ['|','|', ('is_initial_demand_editable', '=', True), '&amp;', ('state', '=', 'done'), ('is_locked', '=', True), ('in_entire_package', '=', True)]}"/>
          </field>
+        <field name="location_id" position="replace">
+            <field name="location_id" attrs="{'readonly': [('in_entire_package', '=', True)]}" domain="[('id', 'child_of', parent.location_id)]" groups="stock.group_stock_multi_locations" invisible="1"/>
+        </field>
+        <field name="result_package_id" position="replace">
+            <field name="result_package_id" attrs="{'readonly': [('in_entire_package', '=', True)]}" groups="stock.group_tracking_lot" domain="['|', '|', ('location_id', '=', False), ('location_id', '=', location_dest_id), ('id', '=', package_id)]" invisible="1"/>
+        </field>
     </field>
 </record>
 </odoo>

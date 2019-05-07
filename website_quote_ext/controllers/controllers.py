@@ -97,6 +97,7 @@ class CustomerPortal(CustomerPortal):
 
     def _prepare_portal_layout_values(self):
         # get customer sales rep
+        values = super(CustomerPortal, self)._prepare_portal_layout_values()
         PuchaseOrder = request.env['purchase.order']
         sales_user = False
         partner = request.env.user.partner_id
@@ -107,12 +108,13 @@ class CustomerPortal(CustomerPortal):
         if partner.user_id and not partner.user_id._is_public():
             sales_user = partner.user_id
 
-        return {
+        values.update({
             'sales_user': sales_user,
             'page_name': 'home',
             'archive_groups': [],
             'vendor_count':vendor_count,
-        }
+        })
+        return values
 
     def _get_archive_groups(self, model, domain=None, fields=None, groupby="create_date", order="create_date desc"):
         if not model:

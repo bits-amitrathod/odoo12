@@ -9,10 +9,7 @@
                 <form string="Choose Customer">
                     <group>
                         <group>
-                            <field name="partner_id" widget="many2many_tags"/>
-                        </group>
-                        <group>
-                            <field name="product_id" widget="many2many_tags"/>
+                            <field name="price_list" />
                         </group>
                     </group>
                     <footer>
@@ -35,21 +32,38 @@
           <field name="model">res.pricing_rule</field>
           <field name="priority">20</field>
           <field name="arch" type="xml">
-            <tree create="false" edit="false" >
+            <tree create="false" edit="false" delete="false" >
                 <field name="currency_id" invisible="1"/>
+                <field name="product_id" invisible="1"/>
                 <field name="customer_name" invisible="1"/>
                 <field name="product_code"/>
                 <field name="product_name"/>
                 <field name="cost" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-
             </tree>
           </field>
     </record>
 
+        <record model="ir.ui.view" id="res_pricing_rule_form_view">
+            <field name="name">res.pricing_rule.view.form</field>
+            <field name="model">res.pricing_rule</field>
+            <field name="arch" type="xml">
+                <form create="false" edit="false" delete="false">
+                    <sheet>
+                        <group>
+                            <field name="product_name"/>
+                            <field name="product_code"/>
+                            <field name="cost" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
 
 
     <menuitem id="menu_inv_allow_pricing_list_report"
-              name="Inventory Pricing Rules"
+              name="Pricing Rules"
               parent="sale.menu_sale_report"
               action="action_price_rule_customer"
              />

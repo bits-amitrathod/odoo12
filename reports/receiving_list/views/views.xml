@@ -43,5 +43,10 @@
 
         <menuitem name="Receiving List" id="receiving_list_menu" parent="purchase.purchase_report"
                   action="receiving_list.action_receiving_list"/>
+
+
+
+        <menuitem name="Receiving List" id="receiving_list_inventory_menu" parent="stock.menu_warehouse_report"
+                  action="receiving_list.action_receiving_list"/>
     </data>
 </odoo>

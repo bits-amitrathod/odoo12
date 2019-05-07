@@ -67,7 +67,10 @@
     </record>
 
     <!-- Product menu-->
-    <menuitem name="In Stock Report" id="menu_procurement_partner_contact_in_stock_report"
+    <menuitem name="In Stock Report" id="menu_procurement_partner_contact_in_stock_report_for_inv"
               action="action_popup_in_stock_report"
               parent="stock.menu_warehouse_report" sequence="5"/>
+     <menuitem name="In Stock Report" id="menu_procurement_partner_contact_in_stock_report_for_sale"
+              action="action_popup_in_stock_report"
+              parent="sale.menu_sale_report" sequence="5"/>
 </odoo>

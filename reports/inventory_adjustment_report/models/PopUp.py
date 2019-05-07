@@ -26,32 +26,25 @@ class PopUp(models.TransientModel):
 
     def open_table(self):
         tree_view_id = self.env.ref('inventory_adjustment_report.form_list_adjustment').id
-        form_view_id = self.env.ref('stock.view_inventory_form').id
+        form_view_id = self.env.ref('stock.view_move_line_form').id
+        domain = ['&', ('location_id.name', 'in', ['Inventory adjustment','Input','Stock']), ('location_dest_id.name', 'in', ['Scrapped','Input','Stock'])]
+        action = {
+            'type': 'ir.actions.act_window',
+            'views': [(tree_view_id, 'tree'),(form_view_id, 'form')],
+            'view_mode': 'tree,form',
+            'name': _('Inventory Adjustment'),
+            'res_model': 'stock.move.line',
+            'domain': domain,
+        }
+
         if self.compute_at_date:
-
-
-
-            action = {
-                'type': 'ir.actions.act_window',
-                'views': [(tree_view_id, 'tree'),(form_view_id, 'form')],
-                'view_mode': 'tree,form',
-                'name': _('Inventory Adjustment'),
-                'res_model': 'stock.inventory',
-                'domain': [('date', '>=', self.start_date),('date', '<=', self.end_date)],
-            }
+            action['domain'].append(('date', '>=', self.start_date))
+            action['domain'].append(('date', '<=', self.end_date))
             if self.product_sku_code:
                 action['domain'].append(('product_id.product_tmpl_id.sku_code', 'ilike', self.product_sku_code))
             action.update({'target': 'main'})
             return action
         else:
-            action = {
-                'type': 'ir.actions.act_window',
-                'views': [(tree_view_id, 'tree'),(form_view_id, 'form')],
-                'view_mode': 'tree,form',
-                'name': _('Inventory Adjustment'),
-                'res_model': 'stock.inventory',
-                'domain': [],
-            }
             if self.product_sku_code:
                 action['domain'].append(('product_id.product_tmpl_id.sku_code', 'ilike', self.product_sku_code))
             action.update({'target': 'main'})

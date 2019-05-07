@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Portal_access_management",
+    'name': "Portal Access Management",
     'author': "Benchmark IT Solutions",
     'category': 'Portal Access',
     'version': '11.0.0.1',

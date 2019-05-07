@@ -15,8 +15,31 @@ from odoo.tools.float_utils import float_round, float_compare, float_is_zero
 
 class inventory_exe(models.Model):
     _inherit = 'stock.move.line'
-    lot_expired_date = fields.Date('Expiration Date')
-    lot_use_date = fields.Date('Expiration Date', compute='_compute_show_lot_user_date',readOnly=True)
+    lot_expired_date = fields.Datetime('Expiration Date')
+    lot_use_date = fields.Datetime('Expiration Date', compute='_compute_show_lot_user_date',readOnly=True, required=True)
+
+
+    @api.onchange('lot_use_date')
+    def _onchange_lot_use_date(self):
+        if self.lot_id.id and self.lot_use_date:
+            values = {}
+            values = self._get_updated_date(self.lot_use_date, values)
+            self.env['stock.production.lot'].search([('id', '=', self.lot_id.id)]).write(values)
+
+
+    def _get_updated_date(self,lot_use_date,vals):
+        params = self.env['ir.config_parameter'].sudo()
+        production_lot_alert_days = int(params.get_param('inventory_extension.production_lot_alert_days'))
+
+        if production_lot_alert_days > 0:
+            alert_date = datetime.datetime.strptime(lot_use_date, '%Y-%m-%d %H:%M:%S') - datetime.timedelta(days=production_lot_alert_days)
+        else:
+            alert_date = datetime.datetime.strptime(lot_use_date, '%Y-%m-%d %H:%M:%S') - datetime.timedelta(days=3)
+
+        vals.update({'use_date': str(lot_use_date), 'alert_date': str(alert_date), 'life_date': str(lot_use_date),'removal_date': str(lot_use_date)})
+
+        return vals
+
     @api.onchange('lot_name', 'lot_id','lot_expired_date')
     def onchange_serial_number(self):
         """ When the user is encoding a move line for a tracked product, we apply some logic to
