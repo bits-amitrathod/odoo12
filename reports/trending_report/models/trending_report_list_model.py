@@ -147,7 +147,7 @@ class TrendingReportListView(models.Model):
                     customer.average_sale=customer.total_sale'''
     @api.model
     def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
-        start_date = self.string_to_date(self.env.context['s_date'])
+
         View = self.env['ir.ui.view']
 
         # Get the view arch and all other attributes describing the composition of the view
@@ -185,6 +185,7 @@ class TrendingReportListView(models.Model):
             }
             if(result['name']=="purchase.vendor.view.list"):
                 doc = etree.XML(result['arch'])
+                start_date = self.string_to_date(self.env.context['s_date'])
                 for node in doc.xpath("//field[@name='month1']"):
                     node.set('string', (start_date).strftime('%b-%y'))
                 for node in doc.xpath("//field[@name='month2']"):

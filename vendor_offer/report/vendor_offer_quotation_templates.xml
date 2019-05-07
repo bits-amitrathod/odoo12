@@ -69,6 +69,7 @@
         <div class="page " style="">
           <div class="oe_structure"/>
              <h2><p>SURGICAL SURPLUS PURCHASE OFFER <span t-field="o.name"/></p></h2>
+             <h4><p>Note: Expiration dates are assumed to be one year or greater unless otherwise noted.</p></h4>
               <table class="table table-condensed">
                 <thead>
                     <tr>
