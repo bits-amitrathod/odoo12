@@ -12,12 +12,13 @@
     # any module necessary for this one to work correctly
     'depends': ['base','product','stock','prioritization_engine'],
 
-    # always loaded
+    'qweb': ['static/src/xml/*.xml'],
     'data': [
         'security/ir.model.access.csv',
         'views/in_stock_report.xml',
         'views/in_stock_report_print.xml',
         'views/in_stock_report_pdf.xml',
+        'views/tree_view_asset.xml'
     ],
 
     'installable': True,
