@@ -86,7 +86,8 @@ class SpsCustomerRequest(models.Model):
                         if pr_model:
                             pr_models.append(pr_model)
                 else:
-                    self.env['sps.cust.uploaded.documents'].search([('id', '=', sps_customer_request.document_id.id)]).write({'status': 'Completed'})
+                    if sps_customer_request.document_id.status != 'Completed':
+                        self.env['sps.cust.uploaded.documents'].search([('id', '=', sps_customer_request.document_id.id)]).write({'status': 'Completed'})
 
             elif sps_customer_request.document_id.template_type.lower().strip() == 'requirement':
                 if sps_customer_request.updated_quantity > 0:
