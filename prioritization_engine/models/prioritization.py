@@ -226,7 +226,7 @@ class ProductTemplateSku(models.Model):
     _inherit = 'product.template'
 
     def _get_default_uom_id(self):
-        return self.env["product.uom"].search([('name', 'ilike', 'each')], limit=1, order='id').id
+        return self.env["product.uom"].search([('name', 'ilike', 'each'),('category_id.id', '=', 1)], limit=1, order='id').id
 
     location = fields.Char("Location")
     premium = fields.Boolean("Premium")
