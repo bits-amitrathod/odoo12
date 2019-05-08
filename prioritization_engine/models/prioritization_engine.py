@@ -269,9 +269,9 @@ class PrioritizationEngine(models.TransientModel):
     #get quantitty by partial uom flag
     def _get_quantity_by_partial_uom(self, quantity, prioritization_engine_request):
         product = self.env['product.template'].search([('id', '=', prioritization_engine_request['product_id'])])
-        uom = self.env['product.uom'].search([('name', 'ilike', 'Unit')])
+        uom = self.env['product.uom'].search([('name', 'ilike', 'Unit'),('category_id.id', '=', 1)])
         if len(uom) == 0:
-            uom = self.env['product.uom'].search([('name', 'ilike', 'Each')])
+            uom = self.env['product.uom'].search([('name', 'ilike', 'Each'),('category_id.id', '=', 1)])
         if product.manufacturer_uom.uom_type == 'bigger':
             uom_factor = product.manufacturer_uom.factor_inv
         elif product.manufacturer_uom.uom_type == 'smaller':
@@ -448,9 +448,9 @@ class PrioritizationEngine(models.TransientModel):
             inventory_quantity = prioritization_engine_request['quantity']
         else:
             product = self.env['product.template'].search([('id', '=', prioritization_engine_request['product_id'])])
-            uom = self.env['product.uom'].search([('name', 'ilike', 'Unit')])
+            uom = self.env['product.uom'].search([('name', 'ilike', 'Unit'),('category_id.id', '=', 1)])
             if len(uom) == 0:
-                uom = self.env['product.uom'].search([('name', 'ilike', 'Each')])
+                uom = self.env['product.uom'].search([('name', 'ilike', 'Each'),('category_id.id', '=', 1)])
             min_threshold = product.manufacturer_uom._compute_quantity(float(prioritization_engine_request['min_threshold']), uom)
             max_threshold = product.manufacturer_uom._compute_quantity(float(prioritization_engine_request['max_threshold']), uom)
             inventory_quantity = product.manufacturer_uom._compute_quantity(float(prioritization_engine_request['quantity']), uom)
@@ -490,7 +490,8 @@ class PrioritizationEngine(models.TransientModel):
 
             if sps_cust_uploaded_document.template_type.lower().strip() == 'requirement':
                 if int(sps_cust_uploaded_document.document_processed_count) >= int(document_processing_count):
-                    self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
+                    if sps_cust_uploaded_document.status != 'Completed':
+                        self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
                 else:
                     sps_customer_requirements = self.env['sps.customer.requests'].search([('document_id', '=', sps_cust_uploaded_document.id),
                                                         ('status', 'in', ('Partial', 'InCoolingPeriod', 'New', 'Inprocess', 'Incomplete', 'Unprocessed'))])
@@ -498,7 +499,8 @@ class PrioritizationEngine(models.TransientModel):
                         if sps_cust_uploaded_document.status != 'In Process':
                             self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'In Process')
                     else:
-                        self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
+                        if sps_cust_uploaded_document.status != 'Completed':
+                            self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
 
             elif sps_cust_uploaded_document.template_type.lower().strip() == 'inventory':
                 if int(sps_cust_uploaded_document.document_processed_count) >= int(document_processing_count):
@@ -511,9 +513,11 @@ class PrioritizationEngine(models.TransientModel):
                             if sps_cust_uploaded_document.status != 'In Process':
                                 self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'In Process')
                         else:
-                            self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
+                            if sps_cust_uploaded_document.status != 'Completed':
+                                self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
                     else:
-                        self._update_uploaded_document_status(sps_cust_uploaded_document.id,'Completed')
+                        if sps_cust_uploaded_document.status != 'Completed':
+                            self._update_uploaded_document_status(sps_cust_uploaded_document.id,'Completed')
 
     def _update_uploaded_document_status(self,document_id,status):
         try:
