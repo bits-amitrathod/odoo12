@@ -76,7 +76,7 @@
                     <field name="purchase_order" string="Purchase Order#"/>
                     <field name="origin" string="Sale Order#" groups="base.group_user" attrs="{'invisible': [('origin', '=', False)]}"/>
                 </xpath>
-                <xpath expr="/form/sheet/notebook/page[@name='other_info']/group/group[2]/field[@name='name']"
+                <xpath expr="/form/sheet/notebook/page[@name='other_info']/group/group/field[@name='name']"
                        position="replace">
                     <field name="memo"/>
                 </xpath>
@@ -92,9 +92,9 @@
                     <field name="name" string="Sale Order#"/>
                 </field>
                 <!--remove field-->
-                <xpath expr="/form/sheet[1]/notebook/page[@name='other_info']/group/group[1]/field[@name='name']"
+                <xpath expr="/form/sheet/notebook/page[@name='other_info']/group/group/field[@name='name']"
                        position="replace"/>
-                <xpath expr="/form/sheet[1]/notebook/page[@name='other_info']/group/group[2]/field[@name='date']"
+                <xpath expr="/form/sheet/notebook/page[@name='other_info']/group/group/field[@name='date']"
                        position="after">
                     <field name="memo"/>
                 </xpath>
@@ -150,17 +150,17 @@
         </record>
 
         <!-- Adding Sales Level & Is_shared field into group by-->
-        <record id="view_sales_order_filter_inherit" model="ir.ui.view">
+        <!--<record id="view_sales_order_filter_inherit" model="ir.ui.view">
             <field name="name">sale.order.common.search.inherit</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_sales_order_filter"/>
             <field name="arch" type="xml">
-		    <xpath expr="/search/group" position="after">
+		    <xpath expr="/search/group" position="inside">
 		        <filter string="Sales Level" domain="[]" context="{'group_by':'sale_margine'}"/>
                 <filter string="Is Shared" domain="[]" context="{'group_by':'is_share'}"/>
 		    </xpath>
             </field>
-        </record>
+        </record>-->
 
     </data>
 

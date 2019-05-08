@@ -101,7 +101,7 @@ class SaleOrderLinePrioritization(models.Model):
     req_no = fields.Char(string='Requisition Number')
     default_code = fields.Char("SKU", store=False, readonly=True, related='product_id.product_tmpl_id.default_code')
     # manufacturer_uom = fields.Char('Manufacturer Unit of Measure',related='product_id.product_tmpl_id.manufacturer_uom.name')
-    manufacturer_uom = fields.Many2one('product.uom',
+    manufacturer_uom = fields.Many2one('uom.uom',
                                        'Manuf. UOM', related='product_id.product_tmpl_id.manufacturer_uom',
                                        readonly=True)
     product_uom = fields.Many2one('product.uom', string='Unit of Measure', required=True)
