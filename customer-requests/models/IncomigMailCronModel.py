@@ -229,12 +229,12 @@ class IncomingMailCronModel(models.Model):
                                                 else:
                                                     customerName = customerName + "  ,  " + res_partner['name']
 
-                                    if len(res_partners) == 1:
-                                        self.send_mail(str(res_partners['name']), str(email_from),str(response['message']))
-                                    elif len(res_partners) > 1:
-                                        self.send_mail(customerName, str(email_from),str(response['message']))
-                                    else:
-                                        self.send_mail('', str(email_from),str(response['message']))
+                                        if len(res_partners) == 1:
+                                            self.send_mail(str(res_partners['name']), str(email_from),str(response['message']))
+                                        elif len(res_partners) > 1:
+                                            self.send_mail(customerName, str(email_from),str(response['message']))
+                                        else:
+                                            self.send_mail('', str(email_from),str(response['message']))
 
                             except Exception:
                                 _logger.info('Failed to process mail from %s server %s.', server.type, server.name, exc_info=True)
