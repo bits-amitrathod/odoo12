@@ -23,7 +23,7 @@ class TrendingReport(models.TransientModel):
             'type': 'ir.actions.act_window',
             'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
             'view_mode': 'tree,form',
-            'name': 'Trenging Report',
+            'name': 'Trending Report',
             'res_model': res_model,
             'context': {'search_default_customer': 1,'s_date': self.start_date},
             'domain': [],

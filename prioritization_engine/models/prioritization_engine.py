@@ -221,7 +221,7 @@ class PrioritizationEngine(models.TransientModel):
                                                prioritization_engine_request['req_no'],
                                                prioritization_engine_request['gl_account'],
                                                prioritization_engine_request['customer_request_id'],
-                                               prioritization_engine_request['required_quantity'],
+                                               required_quantity,
                                                prioritization_engine_request['product_id'],
                                                required_quantity)
 
@@ -234,11 +234,13 @@ class PrioritizationEngine(models.TransientModel):
 
         elif remaining_product_allocation_quantity > 0 and remaining_product_allocation_quantity != required_quantity:
             _logger.debug(str(" Allocated Partial order product."))
+
+
             self.allocated_product_to_customer(prioritization_engine_request['customer_id'],
                                                prioritization_engine_request['req_no'],
                                                prioritization_engine_request['gl_account'],
                                                prioritization_engine_request['customer_request_id'],
-                                               prioritization_engine_request['required_quantity'],
+                                               required_quantity,
                                                prioritization_engine_request['product_id'],
                                                required_quantity - remaining_product_allocation_quantity)
 
