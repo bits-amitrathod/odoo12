@@ -226,13 +226,13 @@ class ProductTemplateSku(models.Model):
     _inherit = 'product.template'
 
     def _get_default_uom_id(self):
-        return self.env["product.uom"].search([('name', 'ilike', 'each')], limit=1, order='id').id
+        return self.env["uom.uom"].search([('name', 'ilike', 'each')], limit=1, order='id').id
 
     location = fields.Char("Location")
     premium = fields.Boolean("Premium")
     sku_code = fields.Char('SKU / Catalog No')
     manufacturer_pref = fields.Char(string='Manuf. Catalog No')
-    manufacturer_uom = fields.Many2one('product.uom', 'Manuf. UOM', default=_get_default_uom_id,
+    manufacturer_uom = fields.Many2one('uom.uom', 'Manuf. UOM', default=_get_default_uom_id,
                                        required=True)
 
     @api.model

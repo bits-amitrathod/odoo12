@@ -269,9 +269,9 @@ class PrioritizationEngine(models.TransientModel):
     #get quantitty by partial uom flag
     def _get_quantity_by_partial_uom(self, quantity, prioritization_engine_request):
         product = self.env['product.template'].search([('id', '=', prioritization_engine_request['product_id'])])
-        uom = self.env['product.uom'].search([('name', 'ilike', 'Unit'),('category_id.id', '=', 1)])
+        uom = self.env['uom.uom'].search([('name', 'ilike', 'Unit'),('category_id.id', '=', 1)])
         if len(uom) == 0:
-            uom = self.env['product.uom'].search([('name', 'ilike', 'Each'),('category_id.id', '=', 1)])
+            uom = self.env['uom.uom'].search([('name', 'ilike', 'Each'),('category_id.id', '=', 1)])
         if product.manufacturer_uom.uom_type == 'bigger':
             uom_factor = product.manufacturer_uom.factor_inv
         elif product.manufacturer_uom.uom_type == 'smaller':
