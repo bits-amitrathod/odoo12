@@ -104,7 +104,7 @@ class SaleOrderLinePrioritization(models.Model):
     manufacturer_uom = fields.Many2one('uom.uom',
                                        'Manuf. UOM', related='product_id.product_tmpl_id.manufacturer_uom',
                                        readonly=True)
-    product_uom = fields.Many2one('product.uom', string='Unit of Measure', required=True)
+    product_uom = fields.Many2one('uom.uom', string='Unit of Measure', required=True)
 
     '''@api.multi
     def _get_customer_request_count(self):
