@@ -5,7 +5,7 @@
             <field name="name">res.config.settings.view.form.inherit.prioritization.engine</field>
             <field name="model">res.config.settings</field>
             <field name="priority" eval="10"/>
-            <field name="inherit_id" ref="base.res_config_settings_view_form" />
+            <field name="inherit_id" ref="base.res_config_settings_view_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//div[@data-key='sale_management']" position="inside" >
                     <h2>Prioritization Setting</h2>
@@ -23,8 +23,27 @@
                                     <div class="mt16" attrs="{'invisible': [('document_processing_count_setting', '=', False)]}">
                                         <field name="document_processing_count" class="oe_inline"/>
                                         <div>
-                                            <p style="color: #025325;" >Document Processing Count at least 1</p>
+                                            <p style="color: #025325;">Document Processing Count at least 1</p>
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="remove_voided_product_setting" class="oe_inline"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="remove_voided_product_setting"/>
+                                <div class="text-muted">
+                                    Remove Voided Product Count
+                                </div>
+                                <div class="content-group">
+                                    <div class="mt16"
+                                         attrs="{'invisible': [('remove_voided_product_setting', '=', False)]}"
+                                          >
+                                        <field name="remove_voided_product_count" class="oe_inline" placeholder="Enter No of days"/>
+                                        days
                                     </div>
                                 </div>
                             </div>
@@ -33,13 +52,38 @@
                 </xpath>
             </field>
         </record>
+        <record id="remove_voided_product" forcecreate="True" model="ir.cron">
+            <field name="name">Remove Voided Product Scheduler</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">minutes</field>
+            <field name="model_id" ref="model_res_config_settings"/>
+            <field name="state">code</field>
+            <field name="code">model.remove_voided_product_scheduler()</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+            <field name="doall" eval="False"/>
+      </record>
+
          <record model="res.config.settings" id="prioritization_engine.document_processing_count_setting">
             <field name="document_processing_count_setting" eval="1"/>
             <field name="document_processing_count" eval="3"/>
       </record>
-      <function model="res.config.settings" name="execute">
+        <record model="res.config.settings" id="prioritization_engine.remove_voided_product_setting">
+            <field name="remove_voided_product_setting" eval="1"/>
+            <field name="remove_voided_product_count" eval="12"/>
+      </record>
+        <function model="res.config.settings" name="execute">
         <!-- ids = -->      <value eval="[ref('prioritization_engine.document_processing_count_setting')]"/>
+
         <!-- context = -->  <value eval="{}"/>
+                             <value eval="[ref('prioritization_engine.remove_voided_product_setting')]"/>
+                            <value eval="{}"/>
+
+
       </function>
+
+
+
     </data>
 </odoo>
