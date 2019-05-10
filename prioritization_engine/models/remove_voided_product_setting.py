@@ -27,11 +27,6 @@ class ResConfigSettingsForVoidedProducts(models.TransientModel):
         if self.remove_voided_product_count == 0:
             raise ValidationError(_('Remove Product Count at least 1'))
 
-    @api.constrains('remove_voided_product_count')
-    @api.one
-    def _check_remove_voided_product_count(self):
-        if self.remove_voided_product_count == 0:
-            raise ValidationError(_('Remove Product Count at least 1'))
 
     @api.model
     def get_values(self):
