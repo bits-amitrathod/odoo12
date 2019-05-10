@@ -25,6 +25,7 @@ class Customer(models.Model):
     cooling_period = fields.Integer("Cooling Period in days", readonly=False)
     auto_allocate = fields.Boolean("Allow Auto Allocation?", readonly=False)
     length_of_hold = fields.Integer("Length Of Hold in hours", readonly=False, default=1)
+    doc_process_count = fields.Integer("Document Processing Count", readonly=False, default=1)
     expiration_tolerance = fields.Integer("Expiration Tolerance in Months", readonly=False)
     partial_ordering = fields.Boolean("Allow Partial Ordering?", readonly=False)
     partial_UOM = fields.Boolean("Allow Partial UOM?", readonly=False)

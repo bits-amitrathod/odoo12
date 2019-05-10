@@ -63,7 +63,6 @@
                                         <field name="max_threshold"/>
                                         <field name="cooling_period"/>
                                         <field name="partial_ordering"/>
-
                                     </group>
                                 </group>
                             </form>
@@ -106,6 +105,8 @@
                                 <field name="priority"/>
                                 <field name="expiration_tolerance"/>
                                 <field name="length_of_hold"/>
+                                <field name="doc_process_count"/>
+
                                 <!--<field name="gl_account"/>-->
                             </group>
                             <group>
@@ -145,6 +146,7 @@
                             <field name="priority"/>
                             <field name="expiration_tolerance"/>
                             <field name="length_of_hold"/>
+
                         </group>
                         <group>
                             <field name="min_threshold"/>
