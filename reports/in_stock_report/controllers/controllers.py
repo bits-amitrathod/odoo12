@@ -129,9 +129,9 @@ class ReportPrintInStockExport(http.Controller):
         order_lines = request.env.cr.dictfetchall()
 
         data = {}
-        print("-------------1------------")
-        print(len(order_lines))
-        count = 0
+        # print("-------------1------------")
+        # print(len(order_lines))
+        # count = 0
         for line in order_lines:
             if not line['id'] in data:
                 product = request.env['product.product'].browse(line['product_id'])
@@ -180,10 +180,10 @@ class ReportPrintInStockExport(http.Controller):
                     line['max_expiration_date'] = "N/A"
 
                 data[line['id']] = line
-            count = count + 1
-            print("-------------" + str(count) + "------------")
+            # count = count + 1
+            # print("-------------" + str(count) + "------------")
 
-        print("-------------2------------")
+        # print("-------------2------------")
         records = []
 
         for line in data.values():
