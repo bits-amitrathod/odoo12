@@ -755,7 +755,7 @@ class FedexDelivery(models.Model):
         srm.shipment_request(self.fedex_droppoff_type, self.fedex_service_type, package_type, self.fedex_weight_unit,
                              self.fedex_saturday_delivery)
         srm.set_currency(_convert_curr_iso_fdx(order.currency_id.name))
-        srm.set_shipper(order.partner_id, order.company_id.partner_id)
+        srm.set_shipper(order.partner_id, order.partner_id)
         srm.set_recipient(order.company_id.partner_id)
         srm.shipping_charges_payment(superself.fedex_account_number)
         srm.shipment_label('COMMON2D', self.fedex_label_file_type, self.fedex_label_stock_type,
