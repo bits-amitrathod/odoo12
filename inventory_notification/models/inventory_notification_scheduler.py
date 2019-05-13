@@ -743,16 +743,14 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                                                             raise_exception=True)
                 # File Attachment Code
                 if not picking is None:
-                    data = self.env['pick_report.popup'].get_pick_report(picking)
-                    docids = None
-                    if docids:
-                        docids = [int(i) for i in docids.split(',')]
-                    pdf = self.env.ref('pick_report.action_pick_report_pdf').render_qweb_pdf(docids,data=data)[0]
+                    docids = self.env['sale.packing_list_popup'].get_packing_report(picking.sale_id)
+                    data = None
+                    pdf = self.env.ref('packing_list.action_report_inventory_packing_list_pdf').render_qweb_pdf(docids,data=data)[0]
                     values1 = {}
                     values1['attachment_ids'] = [(0, 0, {'name': picking.origin,
                                                       'type': 'binary',
                                                       'mimetype': 'application/pdf',
-                                                      'datas_fname': 'pick_' + (picking.origin) + '.pdf',
+                                                      'datas_fname': 'Packing_List_' + (picking.origin) + '.pdf',
                                                       'datas': base64.b64encode(pdf)})]
 
                     values1['model'] = None

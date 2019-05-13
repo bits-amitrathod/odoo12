@@ -9,5 +9,15 @@
                 file="packing_list.sale_packing_list_template"
                 name="packing_list.sale_packing_list_template"
         />
+        <report
+                id="action_report_inventory_packing_list_pdf"
+                string="Packing List"
+                model="stock.picking"
+                report_type="qweb-pdf"
+                file="packing_list.sale_packing_list_template"
+                name="packing_list.sale_packing_list_template"
+                attachment_use="True"
+                menu="False"
+        />
     </data>
 </odoo>
