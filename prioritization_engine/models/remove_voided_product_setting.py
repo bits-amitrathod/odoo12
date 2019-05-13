@@ -21,11 +21,12 @@ class ResConfigSettingsForVoidedProducts(models.TransientModel):
     def _onchange_remove_voided_product_count_setting(self):
         if self.remove_voided_product_setting is False:
             self.remove_voided_product_count = 0
+            raise ValidationError(_('Remove Product Count at least 1 day'))
 
     @api.onchange('remove_voided_product_count')
     def _onchange_remove_voided_product_count(self):
         if self.remove_voided_product_count == 0:
-            raise ValidationError(_('Remove Product Count at least 1'))
+            raise ValidationError(_('Remove Product Count at least 1 day'))
 
 
     @api.model

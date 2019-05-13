@@ -69,33 +69,10 @@ class SpsCustomerRequest(models.Model):
 
 
         for sps_customer_request in sps_customer_requests:
-            # get latest customer uploaded document id
-            # self.env.cr.execute("SELECT max(id) document_id FROM public.sps_cust_uploaded_documents WHERE customer_id="+
-            #                         str(sps_customer_request['customer_id'].id))
-            # query_result = self.env.cr.dictfetchone()
-
-
-            #My code starts------
 
             current_cust_id=sps_customer_request.customer_id.id
-            # print("Current Customer ID : ", current_cust_id)
-
             current_cust_doc_fixed_count=sps_customer_request.customer_id['doc_process_count']
-            # print("Current Customer Final Doc Count : ",current_cust_doc_fixed_count)
-
-
             current_processed_docs=sps_customer_request.document_id.document_processed_count
-            # print("Current customer processed documents : ",current_processed_docs)
-
-            # current_processing_doc_id = sps_customer_request.document_id.id
-            # print("Current Processing Doc ID : ", current_processing_doc_id)
-
-            # doc_status=sps_customer_request.document_id.status
-            #
-            # print("Doc ID Status : ",doc_status)
-
-
-            #My code ends------
 
             self.env.cr.execute(
                 "SELECT max(id) document_id FROM public.sps_cust_uploaded_documents WHERE customer_id=" +
@@ -103,17 +80,10 @@ class SpsCustomerRequest(models.Model):
             query_result = self.env.cr.dictfetchone()
             max_doc_id=int(query_result['document_id'])
 
-            # print("Max DOC ID : ",max_doc_id)
-            #
-            # print("Current DOC ID : ",sps_customer_request.document_id.id)
-
-
             # For Inventory Template
             if sps_customer_request.document_id.template_type.lower().strip() == 'inventory':
                 # following condition use for process only latest uploaded document.
-                # if int(query_result['document_id']) == int(sps_customer_request.document_id.id):
                 if max_doc_id == sps_customer_request.document_id.id:
-                    # print("Inventory++++++++++++++++++++++++++")
                     if sps_customer_request.quantity > 0:
                         pr_model = self.add_customer_request_data(sps_customer_request)
                         if pr_model:
@@ -125,7 +95,6 @@ class SpsCustomerRequest(models.Model):
             elif sps_customer_request.document_id.template_type.lower().strip() == 'requirement':
                 if sps_customer_request.updated_quantity > 0:
                     if current_processed_docs < current_cust_doc_fixed_count:
-                        # print("Required=================")
                         pr_model = self.add_customer_request_data(sps_customer_request)
                         if pr_model:
                             pr_models.append(pr_model)

@@ -107,6 +107,12 @@
                                 <field name="length_of_hold"/>
                                 <field name="doc_process_count"/>
 
+                                <div class="content-group">
+                                        <div>
+                                          <p style="color: #025325;">Document Processing Count at least 1</p>
+                                        </div>
+                                </div>
+
                                 <!--<field name="gl_account"/>-->
                             </group>
                             <group>
