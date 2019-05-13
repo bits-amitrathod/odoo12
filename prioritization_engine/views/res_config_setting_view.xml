@@ -39,8 +39,8 @@
         <record id="remove_voided_product" forcecreate="True" model="ir.cron">
             <field name="name">Remove Voided Product Scheduler</field>
             <field name="user_id" ref="base.user_root"/>
-            <field name="interval_number">1</field>
-            <field name="interval_type">minutes</field>
+            <field name="interval_number">30</field>
+            <field name="interval_type">days</field>
             <field name="model_id" ref="model_res_config_settings"/>
             <field name="state">code</field>
             <field name="code">model.remove_voided_product_scheduler()</field>

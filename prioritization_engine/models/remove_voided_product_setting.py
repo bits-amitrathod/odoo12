@@ -25,7 +25,7 @@ class ResConfigSettingsForVoidedProducts(models.TransientModel):
 
     @api.onchange('remove_voided_product_count')
     def _onchange_remove_voided_product_count(self):
-        if self.remove_voided_product_count == 0:
+        if self.remove_voided_product_count <= 0:
             raise ValidationError(_('Remove Product Count at least 1 day'))
 
 
@@ -55,17 +55,11 @@ class ResConfigSettingsForVoidedProducts(models.TransientModel):
 
         params = self.env['ir.config_parameter'].sudo()
 
-        remove_voided_product_count = int(params.get_param('prioritization_engine.remove_voided_product_count'))
+        remove_voided_product_count_in_days = int(params.get_param('prioritization_engine.remove_voided_product_count'))
 
-        sps_customer_request = self.env['sps.customer.requests'].search([('create_date', '<=', str(date.today()))])
+        days = remove_voided_product_count_in_days
+        old_create_date = date.today() - timedelta(days=days)
+        query = "Delete from sps_customer_requests WHERE date(create_date) <= " "'" + str(
+            old_create_date) + "'" "and status = 'Voided'"
 
-        for customer_request in sps_customer_request:
-            create_date = fields.Date.from_string(customer_request.create_date)
-            days = remove_voided_product_count
-            old_create_date = date.today() - timedelta(days=days)
-
-            if create_date == old_create_date:
-                query = "Delete from sps_customer_requests WHERE date(create_date) = " "'" + str(
-                    old_create_date) + "'" "and status = 'Voided'"
-
-                self.env.cr.execute(query)
+        self.env.cr.execute(query)
