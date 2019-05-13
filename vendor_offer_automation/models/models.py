@@ -288,12 +288,12 @@ class vendor_offer_automation(models.Model):
 class VendorOfferProductAuto(models.Model):
     _inherit = "purchase.order.line"
 
-    def update_product_expiration_date(self):
-        if self.order_id.document is None:
-            for order in self:
-                order.env.cr.execute(
-                    "SELECT min(use_date), max(use_date) FROM public.stock_production_lot where product_id =" + str(
-                        order.product_id.id))
-                query_result = order.env.cr.dictfetchone()
-                if query_result['max'] != None:
-                    self.expiration_date = fields.Datetime.from_string(str(query_result['max'])).date()
+    # def update_product_expiration_date(self):
+    #     if self.order_id.document is None:
+    #         for order in self:
+    #             order.env.cr.execute(
+    #                 "SELECT min(use_date), max(use_date) FROM public.stock_production_lot where product_id =" + str(
+    #                     order.product_id.id))
+    #             query_result = order.env.cr.dictfetchone()
+    #             if query_result['max'] != None:
+    #                 self.expiration_date = fields.Datetime.from_string(str(query_result['max'])).date()
