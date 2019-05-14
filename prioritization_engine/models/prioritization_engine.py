@@ -484,7 +484,6 @@ class PrioritizationEngine(models.TransientModel):
         for sps_cust_uploaded_document in sps_cust_uploaded_documents:
             _logger.info('Document Id :%r',sps_cust_uploaded_document.id)
 
-            current_cust_id = sps_cust_uploaded_document.customer_id.id
             current_cust_doc_fixed_count = sps_cust_uploaded_document.customer_id['doc_process_count']
             current_processing_doc_id = sps_cust_uploaded_document.id
             current_processed_docs = sps_cust_uploaded_document.document_processed_count
@@ -503,10 +502,10 @@ class PrioritizationEngine(models.TransientModel):
                             self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
 
             elif sps_cust_uploaded_document.template_type.lower().strip() == 'inventory':
-                 if current_processed_docs >= current_cust_doc_fixed_count:
+                 if int(current_processed_docs) >= int(current_cust_doc_fixed_count):
                      self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
                  else:
-                    if current_processing_doc_id == int(sps_cust_uploaded_document.id):
+                    if int(current_processing_doc_id) == int(sps_cust_uploaded_document.id):
                         sps_customer_requirements = self.env['sps.customer.requests'].search([('document_id', '=', sps_cust_uploaded_document.id),
                                                             ('status', 'in', ('Partial', 'InCoolingPeriod', 'New', 'Inprocess', 'Incomplete', 'Unprocessed'))])
                         if len(sps_customer_requirements) > 0:
