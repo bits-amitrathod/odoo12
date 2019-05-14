@@ -560,7 +560,7 @@ class VendorOfferProduct(models.Model):
                         multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 't2 good 35')])
                         line.multiplier = multiplier_list.id
 
-                line.update_product_expiration_date()
+                # line.update_product_expiration_date()
 
                 if (line.product_qty == False):
                     line.product_qty = '1'
@@ -620,14 +620,14 @@ class VendorOfferProduct(models.Model):
 
     product_offer_price = fields.Monetary(string="Offer Price", default=_set_offer_price, store=True)
 
-    def update_product_expiration_date(self):
-        for order in self:
-            order.env.cr.execute(
-                "SELECT min(use_date), max(use_date) FROM public.stock_production_lot where product_id =" + str(
-                    order.product_id.id))
-            query_result = order.env.cr.dictfetchone()
-            if query_result['max'] != None:
-                self.expiration_date = fields.Datetime.from_string(str(query_result['max'])).date()
+    # def update_product_expiration_date(self):
+    #     for order in self:
+    #         order.env.cr.execute(
+    #             "SELECT min(use_date), max(use_date) FROM public.stock_production_lot where product_id =" + str(
+    #                 order.product_id.id))
+    #         query_result = order.env.cr.dictfetchone()
+    #         if query_result['max'] != None:
+    #             self.expiration_date = fields.Datetime.from_string(str(query_result['max'])).date()
 
     @api.onchange('product_qty', 'product_offer_price', 'taxes_id')
     @api.depends('product_qty', 'product_offer_price', 'taxes_id')
@@ -751,11 +751,11 @@ class FedexDelivery(models.Model):
         srm.web_authentication_detail(superself.fedex_developer_key, superself.fedex_developer_password)
         srm.client_detail(superself.fedex_account_number, superself.fedex_meter_number)
         srm.transaction_detail(order.id)
-        package_type = popup.product_packaging.name
+        package_type = popup.product_packaging.shipper_package_code or self.fedex_default_packaging_id.shipper_package_code
         srm.shipment_request(self.fedex_droppoff_type, self.fedex_service_type, package_type, self.fedex_weight_unit,
                              self.fedex_saturday_delivery)
         srm.set_currency(_convert_curr_iso_fdx(order.currency_id.name))
-        srm.set_shipper(order.partner_id, order.company_id.partner_id)
+        srm.set_shipper(order.partner_id, order.partner_id)
         srm.set_recipient(order.company_id.partner_id)
         srm.shipping_charges_payment(superself.fedex_account_number)
         srm.shipment_label('COMMON2D', self.fedex_label_file_type, self.fedex_label_stock_type,
