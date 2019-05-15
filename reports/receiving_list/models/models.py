@@ -18,9 +18,12 @@ class ReceivingListPopUp(models.TransientModel):
     ], string="Order Type", default=1, help="Choose to analyze the Show Summary or from a specific date in the past.",
         required=True)
 
-    sale_order_id = fields.Many2one('sale.order', string='Order Number',domain="[('picking_ids.state','in',('assigned','done')),('picking_ids.picking_type_id','=',2)]" , )
+    sale_order_id = fields.Many2one('sale.order', string='Order Number',
+                                    domain="[('picking_ids.state','in',('assigned','done')),('picking_ids.picking_type_id','=',2)]", )
 
-    purchase_order_id = fields.Many2one('purchase.order', string='Order Number', domain="[('picking_ids.state','in',('assigned','done')),('picking_type_id.code','=','incoming')]" , order='picking_name')
+    purchase_order_id = fields.Many2one('purchase.order', string='Order Number',
+                                        domain="[('picking_ids.state','in',('assigned','done')),('picking_type_id.code','=','incoming')]",
+                                        order='picking_name')
 
     def open_table(self):
         data = {'order_type': self.order_type}
@@ -29,9 +32,9 @@ class ReceivingListPopUp(models.TransientModel):
             data['order_id'] = self.purchase_order_id.id
         else:
             self.env['report.receiving.list.so'].delete_and_create()
-            data['order_id'] =  self.sale_order_id.id
+            data['order_id'] = self.sale_order_id.id
 
-        action = self.env.ref('receiving_list.action_report_receiving_list').report_action([], data= data)
+        action = self.env.ref('receiving_list.action_report_receiving_list').report_action([], data=data)
         action.update({'target': 'main'})
 
         return action
@@ -48,10 +51,10 @@ class ReceivingListPoReport(models.Model):
     location_dest_id = fields.Many2one('stock.location', string='Destionation', )
     picking_name = fields.Char('Picking #')
     product_tmpl_id = fields.Many2one('product.template', "Product")
-    product_uom_qty = fields.Float('Quantity',digits=dp.get_precision('Product Unit of Measure'))
-    qty_done = fields.Float('Qty Received',digits=dp.get_precision('Product Unit of Measure'))
+    product_uom_qty = fields.Float('Quantity', digits=dp.get_precision('Product Unit of Measure'))
+    qty_done = fields.Float('Qty Received', digits=dp.get_precision('Product Unit of Measure'))
     date_done = fields.Datetime('Date Done')
-    product_uom_id = fields.Many2one('product.uom', 'UOM')
+    product_uom_id = fields.Many2one('uom.uom', 'UOM')
     state = fields.Selection([
         ('draft', 'New'), ('cancel', 'Cancelled'),
         ('waiting', 'Waiting Another Move'),
@@ -68,7 +71,7 @@ class ReceivingListPoReport(models.Model):
         tools.drop_view_if_exists(self._cr, self._name.replace(".", "_"))
         purchase = self.env['purchase.order'].search(
             [('id', '=', 7499)])
-        _logger.info("id :%r",purchase)
+        _logger.info("id :%r", purchase)
         select_query = """
                 SELECT
                     ROW_NUMBER () OVER (ORDER BY stock_move_line.id) as id, 
@@ -155,10 +158,10 @@ class ReceivingListReport(models.Model):
     location_dest_id = fields.Many2one('stock.location', string='Destionation', )
     picking_name = fields.Char('Picking #')
     product_tmpl_id = fields.Many2one('product.template', "Product")
-    product_uom_qty = fields.Float('Quantity',digits=dp.get_precision('Product Unit of Measure'))
-    qty_done = fields.Float('Qty Received',digits=dp.get_precision('Product Unit of Measure'))
+    product_uom_qty = fields.Float('Quantity', digits=dp.get_precision('Product Unit of Measure'))
+    qty_done = fields.Float('Qty Received', digits=dp.get_precision('Product Unit of Measure'))
     date_done = fields.Datetime('Date Done')
-    product_uom_id = fields.Many2one('product.uom', 'UOM')
+    product_uom_id = fields.Many2one('uom.uom', 'UOM')
     state = fields.Selection([
         ('draft', 'New'), ('cancel', 'Cancelled'),
         ('waiting', 'Waiting Another Move'),
@@ -196,13 +199,13 @@ class ReceivingListReport(models.Model):
                 ON
                     (
                         stock_move_line.picking_id = stock_picking.id)
-             
+
                 INNER JOIN
                     stock_picking_type
                 ON
                     (
                         stock_picking.picking_type_id = stock_picking_type.id)
-               
+
                 INNER JOIN
                     product_product
                 ON
