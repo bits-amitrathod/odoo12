@@ -33,7 +33,7 @@ class ReportInStockReportPopup(models.TransientModel):
             'name': 'In Stock Report',
             'res_model': res_model,
             'context':margins_context,
-            'domain': [('qty_available','>',0)]
+            'domain': [('actual_quantity','>',0)]
         }
 
         if self.partner_id.id:
@@ -74,13 +74,13 @@ class ReportInStockReport(models.Model):
     min_expiration_date = fields.Date("Min Expiration Date", compute='_calculate_max_min_lot_expiration')
     max_expiration_date = fields.Date("Max Expiration Date", store=False)
     price_list=fields.Float("Sales Price",compute='_calculate_max_min_lot_expiration')
-    actual_quantity = fields.Float(string='Qty Available For Sale', compute='_calculate_max_min_lot_expiration', digits=dp.get_precision('Product Unit of Measure'))
+    # actual_quantity = fields.Float(string='Qty Available For Sale', compute='_calculate_max_min_lot_expiration', digits=dp.get_precision('Product Unit of Measure'))
     partn_name=fields.Char()
 
     @api.multi
     def _calculate_max_min_lot_expiration(self):
         for record in self:
-            record.actual_quantity = record.product_tmpl_id.actual_quantity
+            # record.actual_quantity = record.product_tmpl_id.actual_quantity
             if record.partner_id.property_product_pricelist.id:
                 record.price_list = record.partner_id.property_product_pricelist.get_product_price(record.product_id, 1.0, record.partner_id)
             else:
@@ -124,10 +124,10 @@ class ReportInStockReport(models.Model):
              ROW_NUMBER () OVER (ORDER BY sale_order.partner_id) as id,
             sale_order.partner_id,
             sale_order.user_id,
-            null as actual_quantity,
             product_template.product_brand_id,
             product_product.id AS product_id,
             product_template.id AS product_tmpl_id,
+            product_template.actual_quantity,
             sale_order.warehouse_id,
             null as min_expiration_date,
             null as max_expiration_date

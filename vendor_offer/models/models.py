@@ -693,7 +693,7 @@ class ProductTemplateTire(models.Model):
 
     tier = fields.Many2one('tier.tier', string="Tier")
     class_code = fields.Many2one('classcode.classcode', string="Class Code")
-    actual_quantity = fields.Float(string='Qty Available For Sale', compute='_compute_actual_quantity', digits=dp.get_precision('Product Unit of Measure'))
+    actual_quantity = fields.Float(string='Qty Available For Sale', compute='_compute_actual_quantity',store=True, digits=dp.get_precision('Product Unit of Measure'))
 
     def _compute_actual_quantity(self):
         for product_tmpl in self:

@@ -10,7 +10,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','product','stock','prioritization_engine'],
+    'depends': ['base','product','stock','prioritization_engine','vendor_offer'],
 
     'qweb': ['static/src/xml/*.xml'],
     'data': [
