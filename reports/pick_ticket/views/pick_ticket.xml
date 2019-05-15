@@ -2,12 +2,12 @@
     <data>
 
         <record id="pick_report_list_view" model="ir.ui.view">
-            <field name="name">report.order.pick.ticket.list</field>
-            <field name="model">report.order.pick.ticket</field>
+            <field name="name">report.pick.ticket.list</field>
+            <field name="model">report.pick.ticket</field>
             <field name="priority">20</field>
             <field name="arch" type="xml">
-                <tree>
-                    <field name="sale_id" string="Sale Order"/>
+                <tree create="false" edit="false" delete="false">
+                    <field name="sale_id" string="Sale Order#"/>
                     <field name="priority"/>
                     <field name="product_id" string="Product Name"/>
                     <field name="partner_id" string="Customer Name"/>
@@ -16,7 +16,7 @@
                     <field name="warehouse_id"/>
                     <field name="location_id" string="Location"/>
                     <field name="location_dest_id" string="Destination"/>
-                    <field name="scheduled_date"/>
+                    <field name="scheduled_date" widget="date"/>
                     <field name="picking_type_id"/>
                     <field name="carrier_info" string="Carrier"/>
                     <field name="state" string="Status"/>
@@ -24,9 +24,43 @@
             </field>
         </record>
 
+        <record model="ir.ui.view" id="pick_ticket_form_view">
+            <field name="name">pick.ticket.form.view</field>
+            <field name="model">report.pick.ticket</field>
+            <field name="arch" type="xml">
+                <form create="false" edit="false" delete="false">
+                    <sheet>
+                        <div class="oe_title">
+                            <h3>
+                                <field name="product_id" string="Product Name"/>
+                            </h3>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="sale_id" string="Sale Order"/>
+                                <field name="priority"/>
+                                <field name="partner_id" string="Customer Name"/>
+                                <field name="qty_done" string="Quantity"/>
+                                <field name="product_uom_id"/>
+                                <field name="warehouse_id"/>
+                            </group>
+                            <group>
+                                <field name="location_id" string="Location"/>
+                                <field name="location_dest_id" string="Destination"/>
+                                <field name="scheduled_date" widget="date"/>
+                                <field name="picking_type_id"/>
+                                <field name="carrier_info" string="Carrier"/>
+                                <field name="state" string="Status"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
         <record id="pick_ticket_groupby_order_popup_view" model="ir.ui.view">
             <field name="name">Pick Ticket Report</field>
-            <field name="model">report.pick.ticket.groupby.order</field>
+            <field name="model">popup.pick.ticket</field>
             <field name="arch" type="xml">
                 <form string="Choose your date">
                     <group>
@@ -34,9 +68,9 @@
                             <field name="compute_at_date" widget="radio"/>
                         </group>
                         <group>
-                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
-                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
-                            <field name="picking_id" attrs="{'invisible': [('compute_at_date', '=', 1)]}"
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <field name="picking_id" attrs="{'invisible': [('compute_at_date', '=', 1)], 'required' : [('compute_at_date', '=', 0)]}"
                                    widget="many2many_tags"/>
                         </group>
                     </group>
@@ -50,11 +84,19 @@
 
         <record id="action_pick_ticket_groupby_order" model="ir.actions.act_window">
             <field name="name">Pick Ticket Report</field>
-            <field name="res_model">report.pick.ticket.groupby.order</field>
+            <field name="res_model">popup.pick.ticket</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
+            <field name="view_id" ref="pick_ticket_groupby_order_popup_view"/>
             <field name="context">{'default_compute_at_date': 0}</field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_pick_ticket">
+            <field name="name">Pick Ticket</field>
+            <field name="res_model">report.pick.ticket</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="pick_report_list_view"/>
         </record>
 
         <menuitem id="pick_ticket_by_date"
