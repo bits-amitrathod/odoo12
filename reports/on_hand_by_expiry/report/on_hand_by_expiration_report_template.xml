@@ -21,8 +21,10 @@
                                         <tr style="">
                                             <th style="text-align: left; border: 1px solid black;">Product SKU</th>
                                             <th style="text-align: left; border: 1px solid black;">Product Name</th>
+                                            <th style="text-align: left; border: 1px solid black;">Manufacture</th>
                                             <th style="text-align: center; border: 1px solid black;">Product Qty</th>
                                             <th style="text-align: left; border: 1px solid black;">Location</th>
+                                            <th style="text-align: left; border: 1px solid black;">Lot #</th>
                                             <th style="text-align: center; border: 1px solid black;">Expiration Date</th>
                                             <th style="text-align: center; border: 1px solid black;">Status</th>
                                         </tr>
@@ -37,10 +39,16 @@
                                                 <span t-esc="product.product_id.product_tmpl_id.name"/>
                                             </td>
                                             <td align="center" style="border: 1px solid black;width: 10%;">
+                                                <span t-field="product.manufactures"/>
+                                            </td>
+                                            <td align="center" style="border: 1px solid black;width: 10%;">
                                                 <span t-field="product.qty"/>
                                             </td>
                                             <td align="left" style="border: 1px solid black;width: 15%;">
                                                 <span t-esc="product.location_id.complete_name"/>
+                                            </td>
+                                            <td align="left" style="border: 1px solid black;width: 15%;">
+                                                <span t-esc="product.lot_name"/>
                                             </td>
                                             <td align="center" style="border: 1px solid black;width: 15%;">
                                                 <t t-if="color_value==1"><font color="red"><span t-esc="product.expiration_date" t-options="{'widget':'date'}"/></font></t>
