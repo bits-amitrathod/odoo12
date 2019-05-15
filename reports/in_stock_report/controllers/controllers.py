@@ -76,53 +76,68 @@ class ReportPrintInStockExport(http.Controller):
 
     @http.route('/web/export/in_stock_report', type='http', auth="public")
     @serialize_exception
-    def download_document_xl(self,token, **kwargs):
+    def download_document_xl(self, token, **kwargs):
 
         str_query = """
-        
+        create or replace TEMPORARY VIEW data AS 
         SELECT
-            CONCAT(sale_order.partner_id, product_product.id) as id,
-            public.res_partner.name as res_partner,
-            sale_order.partner_id,
-            public.product_brand.name as product_brand,
-            public.product_template.sku_code,
-            public.product_template.name as product_template,
-            public.product_uom.name as product_uom,
-            public.sale_order_line.product_id,
-            sale_order.partner_id
+          CONCAT(sale_order.partner_id, product_product.id) as id,
+          public.res_partner.name as res_partner,
+          public.product_brand.name as product_brand,
+          public.product_template.sku_code,
+          public.product_template.name as product_template,
+          public.product_uom.name as product_uom,
+          public.sale_order_line.product_id,
+          sale_order.partner_id,
+          public.product_template.actual_quantity,
+          public.product_template.list_price 
         FROM
-            public.sale_order
-        INNER JOIN
-            public.sale_order_line
-        ON
-            (
-                public.sale_order.id = public.sale_order_line.order_id)
-        INNER JOIN
-            public.product_product
-        ON
-            (
-                public.sale_order_line.product_id = public.product_product.id)
-        INNER JOIN
-            public.product_template
-        ON
-            (
-                public.product_product.product_tmpl_id = public.product_template.id)
-        INNER JOIN
-            public.res_partner
-        ON
-            (
-                public.sale_order.partner_id = public.res_partner.id)
-        INNER JOIN
-            public.product_brand
-        ON
-            (
-                public.product_template.product_brand_id = public.product_brand.id)
-        INNER JOIN
-            public.product_uom
-        ON
-            (
-                public.product_template.uom_id = public.product_uom.id)
-        
+          public.sale_order 
+          INNER JOIN
+            public.sale_order_line 
+            ON ( public.sale_order.id = public.sale_order_line.order_id) 
+          INNER JOIN
+            public.product_product 
+            ON ( public.sale_order_line.product_id = public.product_product.id) 
+          INNER JOIN
+            public.product_template 
+            ON ( public.product_product.product_tmpl_id = public.product_template.id) 
+          INNER JOIN
+            public.res_partner 
+            ON ( public.sale_order.partner_id = public.res_partner.id) 
+          INNER JOIN
+            public.product_brand 
+            ON ( public.product_template.product_brand_id = public.product_brand.id) 
+          INNER JOIN
+            public.product_uom 
+            ON ( public.product_template.uom_id = public.product_uom.id) 
+        WHERE
+          product_template.actual_quantity > 0;
+
+        create  or replace TEMPORARY VIEW data2 AS 
+        SELECT
+          min(use_date) as min_expiration_date,
+          max(use_date) as max_expiration_date,
+          stock_production_lot.product_id 
+        FROM
+          stock_quant 
+          INNER JOIN
+            stock_production_lot 
+            ON ( stock_quant.lot_id = stock_production_lot.id) 
+          INNER JOIN
+            stock_location 
+            ON ( stock_quant.location_id = stock_location.id) 
+        WHERE stock_location.usage in ( 'internal', 'transit')
+        group by
+          stock_production_lot.product_id;
+
+        select
+          * 
+        from
+          data 
+          left JOIN
+            data2 
+            ON ( data.product_id = data2.product_id )
         """
 
         request.env.cr.execute(str_query)
@@ -131,54 +146,8 @@ class ReportPrintInStockExport(http.Controller):
         data = {}
         # print("-------------1------------")
         # print(len(order_lines))
-        # count = 0
         for line in order_lines:
             if not line['id'] in data:
-                product = request.env['product.product'].browse(line['product_id'])
-                qty = product.product_tmpl_id.actual_quantity
-                if not qty:
-                    continue
-
-                partner = request.env['res.partner'].browse(line['partner_id'])
-                if partner.property_product_pricelist.id:
-                    price_list = partner.property_product_pricelist.get_product_price(product, 1.0, partner)
-                else:
-                    price_list = product.product_tmpl_id.list_price
-
-                line['price_list'] = price_list
-                line['actual_quantity'] = qty
-
-                request.env.cr.execute(
-                    """
-                    SELECT 
-                        min(use_date), max(use_date)
-                    FROM
-                        stock_quant
-                    INNER JOIN
-                        stock_production_lot
-                    ON
-                        (
-                            stock_quant.lot_id = stock_production_lot.id)
-                    INNER JOIN
-                        stock_location
-                    ON
-                        (
-                            stock_quant.location_id = stock_location.id)
-                    WHERE
-                        stock_location.usage in('internal', 'transit') and stock_production_lot.product_id  = %s
-                        """,
-
-                    (line['product_id'],))
-                query_result = request.env.cr.dictfetchone()
-                if query_result['min']:
-                    line['min_expiration_date'] = fields.Date.from_string(query_result['min']).strftime('%m/%d/%Y')
-                else:
-                    line['min_expiration_date'] = "N/A"
-                if query_result['max']:
-                    line['max_expiration_date'] = fields.Date.from_string(query_result['max']).strftime('%m/%d/%Y')
-                else:
-                    line['max_expiration_date'] = "N/A"
-
                 data[line['id']] = line
             # count = count + 1
             # print("-------------" + str(count) + "------------")
@@ -188,16 +157,16 @@ class ReportPrintInStockExport(http.Controller):
 
         for line in data.values():
             records.append([line['res_partner'], line['product_brand'], line['sku_code'], line['product_template'],
-                            "$" + str(line['price_list']), line['actual_quantity'], line['product_uom'],
+                            "$" + str(line['list_price']), line['actual_quantity'], line['product_uom'],
                             line['min_expiration_date'], line['max_expiration_date']])
 
         res = request.make_response(
             self.from_data(["partner_name", "brand_name", "sku_code", "product_name", "price_list"
-                               , "actual_quantity", "product_uom","min_expiration_date", "max_expiration_date"], records),
+                               , "actual_quantity", "product_uom", "min_expiration_date", "max_expiration_date"],
+                           records),
             headers=[('Content-Disposition', content_disposition('in_stock_report' + '.xls')),
                      ('Content-Type', 'application/vnd.ms-excel')],
         )
         res.set_cookie('fileToken', token)
-
 
         return res
