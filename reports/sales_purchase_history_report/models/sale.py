@@ -7,7 +7,7 @@ class SaleSalespersonReport(models.TransientModel):
 
     start_date = fields.Date('Start Date', required=True)
     end_date = fields.Date(string="End Date", required=True)
-    product_id = fields.Many2many('product.product', string="Products")
+    product_id = fields.Many2one('product.product', string="Products")
     order_partner_id = fields.Many2one('res.partner', string='Customer')
 
     @api.multi
