@@ -560,7 +560,7 @@ class VendorOfferProduct(models.Model):
                         multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 't2 good 35')])
                         line.multiplier = multiplier_list.id
 
-                line.update_product_expiration_date()
+                # line.update_product_expiration_date()
 
                 if (line.product_qty == False):
                     line.product_qty = '1'
@@ -620,14 +620,14 @@ class VendorOfferProduct(models.Model):
 
     product_offer_price = fields.Monetary(string="Offer Price", default=_set_offer_price, store=True)
 
-    def update_product_expiration_date(self):
-        for order in self:
-            order.env.cr.execute(
-                "SELECT min(use_date), max(use_date) FROM public.stock_production_lot where product_id =" + str(
-                    order.product_id.id))
-            query_result = order.env.cr.dictfetchone()
-            if query_result['max'] != None:
-                self.expiration_date = fields.Datetime.from_string(str(query_result['max'])).date()
+    # def update_product_expiration_date(self):
+    #     for order in self:
+    #         order.env.cr.execute(
+    #             "SELECT min(use_date), max(use_date) FROM public.stock_production_lot where product_id =" + str(
+    #                 order.product_id.id))
+    #         query_result = order.env.cr.dictfetchone()
+    #         if query_result['max'] != None:
+    #             self.expiration_date = fields.Datetime.from_string(str(query_result['max'])).date()
 
     @api.onchange('product_qty', 'product_offer_price', 'taxes_id')
     @api.depends('product_qty', 'product_offer_price', 'taxes_id')
@@ -693,16 +693,27 @@ class ProductTemplateTire(models.Model):
 
     tier = fields.Many2one('tier.tier', string="Tier")
     class_code = fields.Many2one('classcode.classcode', string="Class Code")
-    actual_quantity = fields.Float(string='Qty Available For Sale', compute='_compute_actual_quantity', digits=dp.get_precision('Product Unit of Measure'))
+    actual_quantity = fields.Float(string='Qty Available For Sale', digits=dp.get_precision('Product Unit of Measure'))
 
-    def _compute_actual_quantity(self):
-        for product_tmpl in self:
-            stock_quant = self.env['stock.quant'].search([('product_tmpl_id', '=', product_tmpl.id)])
+
+    def _compute_quantities(self):
+        res = self._compute_quantities_dict()
+        for template in self:
+            template.qty_available = res[template.id]['qty_available']
+            template.virtual_available = res[template.id]['virtual_available']
+            template.incoming_qty = res[template.id]['incoming_qty']
+            template.outgoing_qty = res[template.id]['outgoing_qty']
+
+            stock_quant = self.env['stock.quant'].search([('product_tmpl_id', '=', template.id)])
             reserved_quantity = 0
             if len(stock_quant)>0:
                 for lot in stock_quant:
                     reserved_quantity +=lot.reserved_quantity
-            product_tmpl.actual_quantity = product_tmpl.qty_available - reserved_quantity
+
+            template.write({'actual_quantity': template.qty_available - reserved_quantity})
+            # print("---------------template -------------------------")
+            # print(template)
+            # print(template.actual_quantity)
 
 
     @api.model
@@ -755,7 +766,7 @@ class FedexDelivery(models.Model):
         srm.shipment_request(self.fedex_droppoff_type, self.fedex_service_type, package_type, self.fedex_weight_unit,
                              self.fedex_saturday_delivery)
         srm.set_currency(_convert_curr_iso_fdx(order.currency_id.name))
-        srm.set_shipper(order.partner_id, order.company_id.partner_id)
+        srm.set_shipper(order.partner_id, order.partner_id)
         srm.set_recipient(order.company_id.partner_id)
         srm.shipping_charges_payment(superself.fedex_account_number)
         srm.shipment_label('COMMON2D', self.fedex_label_file_type, self.fedex_label_stock_type,
