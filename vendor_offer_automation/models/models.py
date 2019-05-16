@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 import re
 
+from .VendorOfferAutomationTemplate import *
 from odoo import models, fields, api, _
 import datetime
 
 import logging
 import base64
 import math
+from odoo.http import request
 
 try:
     import xlrd
@@ -33,7 +35,8 @@ class vendor_offer_automation(models.Model):
     document = fields.Binary()
     # filename = fields.Char(string='File')
     # template_exists = fields.Boolean(default=False)
-    template_id = fields.Many2one('sps.vendor_offer_automation.template', string='Template', )
+    template_id = fields.Many2one('sps.vendor_offer_automation.template', string='Template')
+
 
 
     @api.model
@@ -41,7 +44,14 @@ class vendor_offer_automation(models.Model):
         record = super(vendor_offer_automation, self).create(vals)
 
         if self.env.context.get('disable_export') == None :
-            record.map_customer_sku_with_catelog_number()
+            if 'import_type_ven' in vals:
+                str_val = vals['import_type_ven']
+                if str_val == all_field_import:
+                    record.map_customer_sku_with_catelog_number_all_column()
+                else:
+                    record.map_customer_sku_with_catelog_number()
+            else:
+                record.map_customer_sku_with_catelog_number()
 
         return record
 
@@ -153,6 +163,225 @@ class vendor_offer_automation(models.Model):
             except UnicodeDecodeError as ue:
                 _logger.info(ue)
 
+    @api.model
+    def map_customer_sku_with_catelog_number_all_column(self):
+        if not self.document is None:
+            try:
+                book = xlrd.open_workbook(file_contents=self.document)
+                try:
+                    pricing_index = book.sheet_names().index('PPVendorPricing')
+                except:
+                    pricing_index = 0
+                excel_columns = vendor_offer_automation._read_xls_book(book, pricing_index, read_data=False)
+                if len(excel_columns) == 1:
+                    excel_columns = excel_columns[0]
+                    vendor_offer_automation_template_all_column = self.env[
+                        'sps.vendor_offer_automation.template'].search(
+                        [('id', '=', self.template_id.id)])
+                    model_fields = self.env['sps.vendor_offer_automation.template'].fields_get()
+                    mapping_fields = dict()
+                    for name, field in model_fields.items():
+                        if name.startswith('mf_'):
+                            value = getattr(vendor_offer_automation_template_all_column, name, False)
+                            if value:
+                                mapping_fields.update({name: value})
+                    sku_index = None
+                    order_list_list = []
+                    expiration_date_index = -1
+                    quantity_index = False
+                    price_index = False
+                    sales_count_index = False
+                    sales_count_yr_index = False
+                    sales_total_index = False
+                    premium_index = False
+                    exp_inventory_index = False
+                    sales_count_90_index = False
+                    quantity_in_stock_index = False
+                    possible_competition_index = False
+                    multiplier_index = False
+                    potential_profit_margin_index = False
+                    max_index = False
+                    accelerator_index = False
+                    credit_index = False
+                    margin_cost_index= False
+
+                    if 'mf_customer_sku' in mapping_fields:
+                        sku_index = excel_columns.index(mapping_fields['mf_customer_sku'])
+                    if 'mf_expiration_date' in mapping_fields:
+                        expiration_date_index = excel_columns.index(mapping_fields['mf_expiration_date'])
+                    if 'mf_quantity' in mapping_fields:
+                        quantity_index = excel_columns.index(mapping_fields['mf_quantity'])
+
+                    if 'mf_price' in mapping_fields:
+                        price_index = excel_columns.index(mapping_fields['mf_price'])
+                    if 'mf_sales_count' in mapping_fields:
+                        sales_count_index = excel_columns.index(mapping_fields['mf_sales_count'])
+                    if 'mf_sales_count_yr' in mapping_fields:
+                        sales_count_yr_index = excel_columns.index(mapping_fields['mf_sales_count_yr'])
+                    if 'mf_sales_total' in mapping_fields:
+                        sales_total_index = excel_columns.index(mapping_fields['mf_sales_total'])
+                    if 'mf_premium' in mapping_fields:
+                        premium_index = excel_columns.index(mapping_fields['mf_premium'])
+                    if 'mf_exp_inventory' in mapping_fields:
+                        exp_inventory_index = excel_columns.index(mapping_fields['mf_exp_inventory'])
+                    if 'mf_sales_count_90' in mapping_fields:
+                        sales_count_90_index = excel_columns.index(mapping_fields['mf_sales_count_90'])
+                    if 'mf_quantity_in_stock' in mapping_fields:
+                        quantity_in_stock_index = excel_columns.index(mapping_fields['mf_quantity_in_stock'])
+
+                    if 'mf_offer_price' in mapping_fields:
+                        offer_price_index = excel_columns.index(mapping_fields['mf_offer_price'])
+                    if 'mf_offer_price_total' in mapping_fields:
+                        offer_price_total_index = excel_columns.index(mapping_fields['mf_offer_price_total'])
+                    if 'mf_retail_price' in mapping_fields:
+                        retail_price_index = excel_columns.index(mapping_fields['mf_retail_price'])
+                    if 'mf_retail_price_total' in mapping_fields:
+                        retail_price_total_index = excel_columns.index(mapping_fields['mf_retail_price_total'])
+
+                    if 'mf_possible_competition' in mapping_fields:
+                        possible_competition_index = excel_columns.index(mapping_fields['mf_possible_competition'])
+                    if 'mf_multiplier' in mapping_fields:
+                        multiplier_index = excel_columns.index(mapping_fields['mf_multiplier'])
+                    if 'mf_potential_profit_margin' in mapping_fields:
+                        potential_profit_margin_index = excel_columns.index(mapping_fields['mf_potential_profit_margin'])
+                    if 'mf_max' in mapping_fields:
+                        max_index = excel_columns.index(mapping_fields['mf_max'])
+
+                    if 'mf_accelerator' in mapping_fields:
+                        accelerator_index = excel_columns.index(mapping_fields['mf_accelerator'])
+                    if 'mf_credit' in mapping_fields:
+                        credit_index = excel_columns.index(mapping_fields['mf_credit'])
+                    if 'mf_margin_cost' in mapping_fields:
+                        margin_cost_index = excel_columns.index(mapping_fields['mf_margin_cost'])
+
+                    if not sku_index is None:
+                        today_date = datetime.datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+                        excel_data_rows = vendor_offer_automation._read_xls_book(book, pricing_index, read_data=True,
+                                                                                 expiration_date_index=
+                                                                                 expiration_date_index)
+                        count_obj = 0
+                        potential_profit_margin = max_val = 0
+                        accelerator = 'NO'
+                        credit = 'NO'
+                        for excel_data_row in excel_data_rows:
+                            sku_code = excel_data_row[sku_index]
+                            price = sales_count = sales_count_yr = sales_total = exp_inventory = sales_count_90 = 0
+                            quantity = 1
+                            quantity_in_stock = offer_price = offer_price_total = retail_price = retail_price_total = 0
+                            possible_competition_name = multiplier_name = margin_cost = 0
+                            expiration_date = False
+
+                            if price_index:
+                                price = excel_data_row[price_index]
+                            if sales_count_index:
+                                sales_count = excel_data_row[sales_count_index]
+                            if sales_count_yr_index:
+                                sales_count_yr = excel_data_row[sales_count_yr_index]
+                            if sales_total_index:
+                                sales_total = excel_data_row[sales_total_index]
+
+                            #premium = excel_data_row[premium_index]
+
+                            if exp_inventory_index:
+                                exp_inventory = excel_data_row[exp_inventory_index]
+                            if sales_count_90_index:
+                                sales_count_90 = excel_data_row[sales_count_90_index]
+                            if quantity_index:
+                                quantity = excel_data_row[quantity_index]
+                            if quantity_in_stock_index:
+                                quantity_in_stock = excel_data_row[quantity_in_stock_index]
+
+                            if offer_price_index:
+                                offer_price = excel_data_row[offer_price_index]
+                            if offer_price_total_index:
+                                offer_price_total = excel_data_row[offer_price_total_index]
+                            if retail_price_index:
+                                retail_price = excel_data_row[retail_price_index]
+                            if retail_price_total_index:
+                                retail_price_total = excel_data_row[retail_price_total_index]
+
+                            if possible_competition_index:
+                                possible_competition_name = excel_data_row[possible_competition_index]
+                            if multiplier_index:
+                                multiplier_name = excel_data_row[multiplier_index]
+                            if count_obj == 0:
+                                if potential_profit_margin_index:
+                                    potential_profit_margin = excel_data_row[potential_profit_margin_index]
+                                if max_index:
+                                    max_val = excel_data_row[max_index]
+                                if accelerator_index:
+                                    accelerator = excel_data_row[accelerator_index]
+                                if credit_index:
+                                    credit = excel_data_row[credit_index]
+
+                            if expiration_date_index:
+                                expiration_date = excel_data_row[expiration_date_index]
+                            if margin_cost_index:
+                                margin_cost = excel_data_row[margin_cost_index]
+
+
+
+                            product_sku = sku_code
+                            if self.partner_id.sku_preconfig and product_sku.startswith(
+                                    self.partner_id.sku_preconfig):
+                                product_sku = product_sku[len(self.partner_id.sku_preconfig):]
+                            if self.partner_id.sku_postconfig and product_sku.endswith(
+                                    self.partner_id.sku_postconfig):
+                                product_sku = product_sku[:-len(self.partner_id.sku_postconfig)]
+
+                            self.env.cr.execute("""
+                                                    select * from 
+                                                        (SELECT id,list_price,uom_id, name, premium, tier,
+                                                         regexp_replace(manufacturer_pref , '[^A-Za-z0-9.]', '','g') 
+                                                         as manufacturer_pref, 
+                                                          regexp_replace(sku_code , '[^A-Za-z0-9.]', '','g')
+                                                           as sku_code_cleaned 
+                                                          FROM product_template) 
+                                                    as temp_data where sku_code_cleaned ='""" + re.sub(
+                                r'[^A-Za-z0-9.]', '', product_sku) + """' or manufacturer_pref = '""" + re.sub(
+                                r'[^A-Za-z0-9.]', '', sku_code) + """' """)
+                            query_result = self.env.cr.dictfetchone()
+                            if query_result:
+                                products = self.env['product.product'].search(
+                                    [('product_tmpl_id', '=', query_result['id'])])
+                                if count_obj == 0:
+                                    possible_competition = self.env['competition.competition'].search(
+                                        [('name', '=',possible_competition_name)]).id
+                                multiplier = self.env['multiplier.multiplier'].search(
+                                    [('name', '=', multiplier_name)]).id
+                                order_line_obj = dict(name=product_sku, product_qty=quantity,date_planned=today_date,
+                                                      state='ven_draft',
+                                                      product_uom=query_result['uom_id'],
+                                                      order_id=self.id,
+                                                      product_id=products[0].id,qty_in_stock=quantity_in_stock,
+                                                      price_unit= offer_price,
+                                                      product_retail = 0,
+                                                      product_unit_price= 0 ,product_offer_price =0,
+                                                      product_sales_count_90=sales_count_90,
+                                                      product_sales_count_yrs=sales_count_yr,
+                                                      product_sales_count=sales_count,
+                                                      amount_total_ven_pri=sales_total,
+                                                      expired_inventory=exp_inventory,
+                                                      offer_price=offer_price,offer_price_total=offer_price_total,
+                                                      retail_price=retail_price,retail_price_total=retail_price_total,
+                                                      possible_competition=possible_competition,
+                                                      multiplier=multiplier,expiration_date=expiration_date,
+                                                      potential_profit_margin=potential_profit_margin,
+                                                      max_val=max_val,accelerator=accelerator,credit=credit,
+                                                      margin=margin_cost,
+                                                      import_type_ven_line=all_field_import
+                                                     )
+                                order_list_list.append(order_line_obj)
+                                count_obj = count_obj + 1
+                        request.session['order_list_list'] = order_list_list
+                        if len(order_list_list) > 0:
+                            for order_line_object in order_list_list:
+                                order_line_model = self.env['purchase.order.line'].with_context(order_line_object)
+                                order_line_model.create(order_line_object)
+
+            except UnicodeDecodeError as ue:
+                _logger.info(ue)
+
     def action_import_order_lines(self):
         tree_view_id = self.env.ref('vendor_offer_automation.vendor_template_client_action').id
         return {
@@ -162,7 +391,20 @@ class vendor_offer_automation(models.Model):
             'tag': 'import_offer_template',
             'params': [
                 {'model': 'sps.vendor_offer_automation.template', 'offer_id': self.id, 'vendor_id': self.partner_id.id,
-                 'user_type': 'supplier'}],
+                 'user_type': 'supplier','import_type_ven': few_field_import}],
+        }
+
+    def action_import_order_lines_all_column(self):
+        tree_view_id = self.env.ref('vendor_offer_automation.vendor_template_client_action').id
+        return {
+            'type': 'ir.actions.client',
+            'views': [(tree_view_id, 'form')],
+            'view_mode': 'form',
+            'tag': 'import_offer_template',
+            'params': [
+                {'model': 'sps.vendor_offer_automation.template', 'offer_id': self.id,
+                 'vendor_id': self.partner_id.id,
+                 'user_type': 'supplier', 'import_type_ven': all_field_import}],
         }
 
     def get_order_line_multiplier(self, order_line_obj, premium):
@@ -276,9 +518,14 @@ class vendor_offer_automation(models.Model):
     def write(self, vals):
         res = super(vendor_offer_automation, self).write(vals)
         if 'document' in vals:
-            self.unlink_lines()
-            self.map_customer_sku_with_catelog_number()
-        return res
+            str_val = vals['import_type_ven']
+            if str_val == all_field_import:
+                self.unlink_lines()
+                self.map_customer_sku_with_catelog_number_all_column()
+            else:
+                self.unlink_lines()
+                self.map_customer_sku_with_catelog_number()
+                return res
 
     @api.model
     def unlink_lines(self):

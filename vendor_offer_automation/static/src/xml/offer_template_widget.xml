@@ -128,6 +128,14 @@
 
     </t>
 
+     <t t-name="ImportOfferTemplateViewAll">
+
+        <t t-extend="ImportView">
+            <t t-call="ImportOfferTemplateViewInner"/>
+        </t>
+
+    </t>
+
 
 </templates>
 

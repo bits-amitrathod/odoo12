@@ -12,7 +12,13 @@ from odoo.tools import pdf
 from werkzeug.urls import url_encode
 
 from .fedex_request import FedexRequest
-
+from odoo.exceptions import UserError, AccessError, ValidationError
+import datetime
+import math
+from random import randint
+from odoo.tools import pdf
+import logging
+from sps.vendor_offer_automation.models.VendorOfferAutomationTemplate import *
 from odoo import http
 from odoo.http import request
 from odoo.addons.web.controllers.main import serialize_exception,content_disposition
@@ -142,6 +148,8 @@ class VendorOffer(models.Model):
         ('cancel', 'Cancelled')
     ], string='Status', readonly=True, index=True, copy=False, default='draft', track_visibility='onchange')
 
+    import_type_ven = fields.Char(string='Import Type')
+
     @api.multi
     def _compute_show_validate(self):
         multi = self.env['stock.picking'].search([('purchase_id', '=', self.id)])
@@ -202,8 +210,8 @@ class VendorOffer(models.Model):
             if (order.appraisal_no == False):
                 order.appraisal_no = 'AP' + str(randint(11111, 99999))
 
-    @api.onchange('accelerator', 'order_line.taxes_id')
-    @api.depends('order_line.price_total', 'accelerator', 'order_line.price_total', 'order_line.taxes_id',
+    @api.onchange('order_line.taxes_id')
+    @api.depends('order_line.price_total', 'order_line.price_total', 'order_line.taxes_id',
                  'order_line.rt_price_tax', 'order_line.product_retail', 'order_line.rt_price_total')
     def _amount_all(self):
         for order in self:
@@ -479,6 +487,8 @@ class VendorOfferProduct(models.Model):
     rt_price_total = fields.Monetary(compute='_compute_amount', string='Total')
     rt_price_tax = fields.Monetary(compute='_compute_amount', string='Tax')
 
+    import_type_ven_line = fields.Char(string='Import Type of Product for calculation')
+
     def action_show_details(self):
         multi = self.env['stock.move'].search([('purchase_line_id', '=', self.id)])
         if len(multi) >= 1 and self.order_id.picking_count == 1:
@@ -486,37 +496,122 @@ class VendorOfferProduct(models.Model):
         elif self.order_id.picking_count > 1:
             raise ValidationError(_('Picking is not possible for multiple shipping please do picking inside Shipping'))
 
+    def set_values_from_import(self):
+        order_list_list = request.session['order_list_list']
+        for idx, line in enumerate(order_list_list):
+            if self.product_id.id == line['product_id']:
+                self.order_id.multiplier = line['multiplier']
+                self.order_id.possible_competition = line['possible_competition']
+                if 'potential_profit_margin' in line:
+                    self.order_id.potential_profit_margin = line['potential_profit_margin']
+                if 'max' in line:
+                    self.order_id.max = line['max']
+                if 'credit' in line:
+                    if (line['credit']).upper() == 'YES':
+                        self.order_id.offer_type = 'credit'
+                    if (line['credit']).upper() == 'NO':
+                        self.order_id.offer_type = 'cash'
+                    self.order_id.update({
+                        'offer_type': self.order_id.offer_type
+                    })
+                    try:
+                        self.order_id.write({
+                            'offer_type': self.order_id.offer_type
+                        })
+                    except:
+                        pass
+
+                temp_acc = False
+                if 'accelerator' in line:
+                    if (line['accelerator']).upper() == 'YES':
+                        self.order_id.update({
+                            'accelerator': True
+                        })
+                        temp_acc = True
+                    if (line['accelerator']).upper() == 'NO':
+                        self.order_id.update({
+                            'accelerator': False
+                        })
+                    try:
+                        self.order_id.write({
+                            'accelerator': temp_acc
+                        })
+                    except:
+                        pass
+
+                if 'expiration_date' in line:
+                    self.update({
+                        'expiration_date': line['expiration_date'],
+                    })
+                if 'margin' in line:
+                    self.update({
+                        'margin': line['margin'],
+                    })
+                self.update({
+
+                    'product_unit_price': line['retail_price'],
+                    'product_offer_price': line['offer_price'],
+                    'product_sales_count_90': line['product_sales_count_90'],
+                    'product_sales_count_yrs': line['product_sales_count_yrs'],
+                    'product_sales_count': line['product_sales_count'],
+                    'expired_inventory': line['expired_inventory'],
+                    'qty_in_stock': line['qty_in_stock']
+                })
+
+                # self.price_tax =sum(t.get('amount', 0.0) for t in taxes.get('taxes', []))
+                self.price_subtotal = line['offer_price_total']
+                self.price_total = line['offer_price_total']
+                self.price_unit = line['offer_price']
+                # self.rt_price_tax = sum(t.get('amount', 0.0) for t in taxes1.get('taxes', []))
+                self.product_retail = line['retail_price_total']
+                self.rt_price_total = line['retail_price_total']
+
+        amount_untaxed = amount_tax = price_total = 0.0
+        rt_price_tax = product_retail = rt_price_total = potential_profit_margin_v = max_v = 0.0
+        for idx, line in enumerate(order_list_list):
+            amount_tax += 0
+            amount_untaxed += float(line['offer_price_total'])
+            price_total += float(line['offer_price_total'])
+
+            product_retail += float(line['retail_price_total'])
+            rt_price_tax += 0
+            rt_price_total += float(line['retail_price_total'])
+
+        self.order_id.update({
+            # 'max': round(max_v, 2),
+            # 'potential_profit_margin': abs(round(potential_profit_margin, 2)),
+
+            'amount_untaxed': amount_untaxed,
+            'amount_tax': amount_tax,
+            'amount_total': price_total,
+
+            'rt_price_subtotal_amt': product_retail,
+            'rt_price_tax_amt': rt_price_tax,
+            'rt_price_total_amt': rt_price_total,
+        })
+
     @api.onchange('product_id')
     @api.depends('product_id')
     def onchange_product_id_vendor_offer(self):
         for line in self:
             line.product_tier = line.product_id.product_tmpl_id.tier
 
+            line.sku_code = line.product_id.product_tmpl_id.sku_code
+            line.product_brand_id = line.product_id.product_tmpl_id.product_brand_id
+            total = total_m = total_90 = total_yr = 0
+            str_query_cm = "SELECT sum(sml.qty_done) FROM sale_order_line AS sol LEFT JOIN stock_picking AS sp ON " \
+                           "sp.sale_id=sol.id " \
+                           " LEFT JOIN stock_move_line AS sml ON sml.picking_id=sp.id WHERE sml.state='done' AND " \
+                           "sml.location_dest_id =%s AND" \
+                           " sml.product_id =%s"
+            cust_location_id = self.env['stock.location'].search([('name', '=', 'Customers')]).id
+            today_date = datetime.datetime.now()
+            last_month = fields.Date.to_string(today_date - datetime.timedelta(days=30))
+
             if line.env.context.get('vendor_offer_data') or line.state == 'ven_draft' or line.state == 'ven_sent':
                 result1 = {}
                 if not line.product_id:
                     return result1
-
-                ''' sale count will show only done qty '''
-
-                total = total_m = total_90 = total_yr = 0
-                today_date = datetime.datetime.now()
-                last_3_months = fields.Date.to_string(today_date - datetime.timedelta(days=90))
-                last_month = fields.Date.to_string(today_date - datetime.timedelta(days=30))
-                last_yr = fields.Date.to_string(today_date - datetime.timedelta(days=365))
-                cust_location_id = self.env['stock.location'].search([('name', '=', 'Customers')]).id
-                str_query_cm = "SELECT sum(sml.qty_done) FROM sale_order_line AS sol LEFT JOIN stock_picking AS sp ON " \
-                             "sp.sale_id=sol.id " \
-                             " LEFT JOIN stock_move_line AS sml ON sml.picking_id=sp.id WHERE sml.state='done' AND " \
-                             "sml.location_dest_id =%s AND" \
-                             " sml.product_id =%s"
-
-                self.env.cr.execute(str_query_cm+" AND sp.date_done>=%s",(cust_location_id,
-                                                                          line.product_id.id, last_3_months))
-                quant_90 = self.env.cr.fetchone()
-                if quant_90[0] is not None:
-                    total_90 = total_90 + int(quant_90[0])
-                line.product_sales_count_90 = total_90
 
                 self.env.cr.execute(str_query_cm + " AND sp.date_done>=%s", (cust_location_id,
                                                                              line.product_id.id, last_month))
@@ -525,52 +620,66 @@ class VendorOfferProduct(models.Model):
                     total_m = total_m + int(quant_m[0])
                 line.product_sales_count_month = total_m
 
-                self.env.cr.execute(str_query_cm + " AND sp.date_done>=%s", (cust_location_id,
-                                                                             line.product_id.id, last_yr))
-                quant_yr = self.env.cr.fetchone()
-                if quant_yr[0] is not None:
-                    total_yr = total_yr + int(quant_yr[0])
-                line.product_sales_count_yrs = total_yr
+                if line.import_type_ven_line == all_field_import:
+                    if 'order_list_list' in request.session:
+                        VendorOfferProduct.set_values_from_import(line)
 
-                self.env.cr.execute(str_query_cm, (cust_location_id,line.product_id.id))
-                quant_all = self.env.cr.fetchone()
-                if quant_all[0] is not None:
-                    total = total + int(quant_all[0])
-                line.product_sales_count = total
+                else:
+                    ''' sale count will show only done qty '''
 
-                line.qty_in_stock = line.product_id.qty_available
-                if line.multiplier.id == False:
-                    if line.product_tier.code == False:
-                        multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'out of scope')])
-                        line.multiplier = multiplier_list.id
-                    elif line.product_sales_count == 0:
-                        multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'no history')])
-                        line.multiplier = multiplier_list.id
-                    elif float(line.qty_in_stock) > (
-                            line.product_sales_count * 2) and line.product_sales_count != 0:
-                        multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'overstocked')])
-                        line.multiplier = multiplier_list.id
-                    elif line.product_id.product_tmpl_id.premium == True:
-                        multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'premium')])
-                        line.multiplier = multiplier_list.id
-                    elif line.product_tier.code == '1':
-                        multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 't1 good 45')])
-                        line.multiplier = multiplier_list.id
-                    elif line.product_tier.code == '2':
-                        multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 't2 good 35')])
-                        line.multiplier = multiplier_list.id
+                    last_3_months = fields.Date.to_string(today_date - datetime.timedelta(days=90))
+                    last_yr = fields.Date.to_string(today_date - datetime.timedelta(days=365))
 
-                # line.update_product_expiration_date()
+                    self.env.cr.execute(str_query_cm + " AND sp.date_done>=%s", (cust_location_id,
+                                                                                 line.product_id.id, last_3_months))
+                    quant_90 = self.env.cr.fetchone()
+                    if quant_90[0] is not None:
+                        total_90 = total_90 + int(quant_90[0])
+                    line.product_sales_count_90 = total_90
 
-                if (line.product_qty == False):
-                    line.product_qty = '1'
-                    # line.price_subtotal = line.list_price ???
-                    # line.product_unit_price = line.list_price
+                    self.env.cr.execute(str_query_cm + " AND sp.date_done>=%s", (cust_location_id,
+                                                                                 line.product_id.id, last_yr))
+                    quant_yr = self.env.cr.fetchone()
+                    if quant_yr[0] is not None:
+                        total_yr = total_yr + int(quant_yr[0])
+                    line.product_sales_count_yrs = total_yr
 
-                self.expired_inventory_cal(line)
+                    self.env.cr.execute(str_query_cm, (cust_location_id, line.product_id.id))
+                    quant_all = self.env.cr.fetchone()
+                    if quant_all[0] is not None:
+                        total = total + int(quant_all[0])
+                    line.product_sales_count = total
 
-            line.sku_code = line.product_id.product_tmpl_id.sku_code
-            line.product_brand_id = line.product_id.product_tmpl_id.product_brand_id
+                    line.qty_in_stock = line.product_id.qty_available
+                    if line.multiplier.id == False:
+                        if line.product_tier.code == False:
+                            multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'out of scope')])
+                            line.multiplier = multiplier_list.id
+                        elif line.product_sales_count == 0:
+                            multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'no history')])
+                            line.multiplier = multiplier_list.id
+                        elif float(line.qty_in_stock) > (
+                                line.product_sales_count * 2) and line.product_sales_count != 0:
+                            multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'overstocked')])
+                            line.multiplier = multiplier_list.id
+                        elif line.product_id.product_tmpl_id.premium == True:
+                            multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'premium')])
+                            line.multiplier = multiplier_list.id
+                        elif line.product_tier.code == '1':
+                            multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 't1 good 45')])
+                            line.multiplier = multiplier_list.id
+                        elif line.product_tier.code == '2':
+                            multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 't2 good 35')])
+                            line.multiplier = multiplier_list.id
+
+                    # line.update_product_expiration_date()
+
+                    if (line.product_qty == False):
+                        line.product_qty = '1'
+                        # line.price_subtotal = line.list_price ???
+                        # line.product_unit_price = line.list_price
+
+                    self.expired_inventory_cal(line)
 
     def expired_inventory_cal(self, line):
         expired_lot_count = 0
@@ -586,39 +695,47 @@ class VendorOfferProduct(models.Model):
     @api.depends('multiplier', 'order_id.possible_competition')
     def _cal_offer_price(self):
         for line in self:
-            multiplier_list = line.multiplier
-            # Added to fix inhirit issue
+            if line.import_type_ven_line == all_field_import:
+                if 'order_list_list' in request.session:
+                    VendorOfferProduct.set_values_from_import(line)
+            else:
+                multiplier_list = line.multiplier
+                # Added to fix inhirit issue
 
-            product_unit_price = math.floor(
-                round(float(line.product_id.list_price) * (float(multiplier_list.retail) / 100), 2))
-            margin = 0
-            if line.multiplier.id:
-                margin += line.multiplier.margin
+                product_unit_price = math.floor(
+                    round(float(line.product_id.list_price) * (float(multiplier_list.retail) / 100), 2))
+                margin = 0
+                if line.multiplier.id:
+                    margin += line.multiplier.margin
 
-            if line.possible_competition.id:
-                margin += line.possible_competition.margin
+                if line.possible_competition.id:
+                    margin += line.possible_competition.margin
 
-            line.update({
-                'margin': margin,
-                'product_unit_price': product_unit_price,
-            })
+                line.update({
+                    'margin': margin,
+                    'product_unit_price': product_unit_price,
+                })
 
     @api.onchange('multiplier', 'order_id.possible_competition')
     @api.depends('multiplier', 'order_id.possible_competition')
     def _set_offer_price(self):
         for line in self:
-            multiplier_list = line.multiplier
+            if line.import_type_ven_line == all_field_import:
+                if 'order_list_list' in request.session:
+                    VendorOfferProduct.set_values_from_import(line)
+            else:
+                multiplier_list = line.multiplier
 
-            product_unit_price = math.floor(
-                round(float(line.product_id.list_price) * (float(multiplier_list.retail) / 100), 2))
-            product_offer_price =  math.floor(float(product_unit_price) * (
-                    float(multiplier_list.margin) / 100 + float(line.possible_competition.margin) / 100))
+                product_unit_price = math.floor(
+                    round(float(line.product_id.list_price) * (float(multiplier_list.retail) / 100), 2))
+                product_offer_price = math.floor(float(product_unit_price) * (
+                        float(multiplier_list.margin) / 100 + float(line.possible_competition.margin) / 100))
 
-            line.update({
-                'product_offer_price': product_offer_price
-            })
+                line.update({
+                    'product_offer_price': product_offer_price
+                })
 
-    product_offer_price = fields.Monetary(string="Offer Price", default=_set_offer_price, store=True)
+    product_offer_price = fields.Monetary(string="Offer Price", compute=_set_offer_price, store=True)
 
     # def update_product_expiration_date(self):
     #     for order in self:
@@ -634,23 +751,29 @@ class VendorOfferProduct(models.Model):
     def _compute_amount(self):
         for line in self:
             if line.env.context.get('vendor_offer_data') or line.state == 'ven_draft' or line.state == 'ven_sent':
-                taxes1 = line.taxes_id.compute_all(float(line.product_unit_price), line.order_id.currency_id,
-                                                   line.product_qty, product=line.product_id,
-                                                   partner=line.order_id.partner_id)
+                if line.import_type_ven_line == all_field_import:
+                    if 'order_list_list' in request.session:
+                        VendorOfferProduct.set_values_from_import(line)
+                else:
 
-                taxes = line.taxes_id.compute_all(float(line.product_offer_price), line.order_id.currency_id,
-                                                  line.product_qty, product=line.product_id,
-                                                  partner=line.order_id.partner_id)
-                line.update({
-                    'price_tax': sum(t.get('amount', 0.0) for t in taxes.get('taxes', [])),
-                    'price_subtotal': taxes['total_excluded'],
-                    'price_total': taxes['total_included'],
-                    'price_unit': line.product_offer_price,
+                    taxes1 = line.taxes_id.compute_all(float(line.product_unit_price), line.order_id.currency_id,
+                                                       line.product_qty, product=line.product_id,
+                                                       partner=line.order_id.partner_id)
 
-                    'rt_price_tax': sum(t.get('amount', 0.0) for t in taxes1.get('taxes', [])),
-                    'product_retail': taxes1['total_excluded'],
-                    'rt_price_total': taxes1['total_included'],
-                })
+                    taxes = line.taxes_id.compute_all(float(line.product_offer_price), line.order_id.currency_id,
+                                                      line.product_qty, product=line.product_id,
+                                                      partner=line.order_id.partner_id)
+                    line.update({
+                        'price_tax': sum(t.get('amount', 0.0) for t in taxes.get('taxes', [])),
+                        'price_subtotal': taxes['total_excluded'],
+                        'price_total': taxes['total_included'],
+                        'price_unit': line.product_offer_price,
+
+                        'rt_price_tax': sum(t.get('amount', 0.0) for t in taxes1.get('taxes', [])),
+                        'product_retail': taxes1['total_excluded'],
+                        'rt_price_total': taxes1['total_included'],
+                    })
+
             else:
                 super(VendorOfferProduct, self)._compute_amount()
 
