@@ -18,8 +18,8 @@ class SaleSalespersonReport(models.TransientModel):
             e_date = SaleSalespersonReport.string_to_date(str(self.end_date))
             e_date = e_date + datetime.timedelta(days=1)
             s_date=SaleSalespersonReport.string_to_date(str(self.start_date))
-
-            stock_picking = self.env['stock.picking'].search([('date_done', '>=', str(s_date)), ('date_done', '<=', str(e_date)),('state', '=', ('done')), ('name', 'ilike', 'WH/OUT/'),('origin', 'ilike', 'SO')])
+            stock_location = self.env['stock.location'].search([('name', '=', 'Customers')]).ids
+            stock_picking = self.env['stock.picking'].search([('date_done', '>=', str(s_date)), ('date_done', '<=', str(e_date)), ('state', '=', ('done')),('location_dest_id', '=', stock_location[0])])
             sale_id_list =[]
             for sp in stock_picking :
                 sale_id_list.append(sp.origin)
