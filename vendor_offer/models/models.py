@@ -18,7 +18,6 @@ import math
 from random import randint
 from odoo.tools import pdf
 import logging
-from sps.vendor_offer_automation.models.VendorOfferAutomationTemplate import *
 from odoo import http
 from odoo.http import request
 from odoo.addons.web.controllers.main import serialize_exception,content_disposition
@@ -69,6 +68,8 @@ try:
 
 except ImportError:
     xlwt = None
+
+all_field_import = 'all_field_import'
 
 class VendorOffer(models.Model):
     _description = "Vendor Offer"
