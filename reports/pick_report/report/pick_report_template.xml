@@ -5,7 +5,7 @@
             <t t-call="web.external_layout">
                 <page>
                     <div class="oe_structure"/>
-                    <div class="row">
+                    <div class="row justify-content-md-center">
                         <center>
                             <b>
                                 <h2>Surgical Product Solutions</h2>
@@ -20,10 +20,22 @@
                             </tr>
                             <tr>
                                 <td style="width:50%">
-                                     <b>Scheduled: </b><span t-esc="data['scheduled_date']"/>
+                                     <b>Scheduled Date: </b><span t-esc="data['scheduled_date']" t-options='{"widget": "date"}'/>
                                 </td>
                                 <td style="width:50%">
                                     <b>Type: </b><span t-esc="data['type']"/>
+                                </td>
+
+                            </tr>
+                             <tr>
+                                  <td style="width:50%">
+                                     <b>Location Group: </b><span t-esc="data['location_group']"/>
+                                 </td>
+
+                             </tr>
+                            <tr>
+                                 <td style="width:50%">
+                                     <b>Carrier: </b><span t-esc="data['carrier_id']"/>
                                 </td>
                             </tr>
                         </table>
@@ -50,7 +62,7 @@
                                         <tr style="">
                                             <th style="text-align: center; border: 1px solid black;"></th>
                                             <th style="text-align: center; border: 1px solid black;">Quantity</th>
-                                            <th style="text-align: center; border: 1px solid black;">Product</th>
+                                            <th style="text-align: center; border: 1px solid black;">Product Name</th>
                                             <th style="text-align: center; border: 1px solid black;">Location</th>
                                             <th style="text-align: center; border: 1px solid black;">Tag</th>
                                             <th style="text-align: center; border: 1px solid black;">Destination</th>
