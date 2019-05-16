@@ -693,16 +693,27 @@ class ProductTemplateTire(models.Model):
 
     tier = fields.Many2one('tier.tier', string="Tier")
     class_code = fields.Many2one('classcode.classcode', string="Class Code")
-    actual_quantity = fields.Float(string='Qty Available For Sale', compute='_compute_actual_quantity',store=True, digits=dp.get_precision('Product Unit of Measure'))
+    actual_quantity = fields.Float(string='Qty Available For Sale', digits=dp.get_precision('Product Unit of Measure'))
 
-    def _compute_actual_quantity(self):
-        for product_tmpl in self:
-            stock_quant = self.env['stock.quant'].search([('product_tmpl_id', '=', product_tmpl.id)])
+
+    def _compute_quantities(self):
+        res = self._compute_quantities_dict()
+        for template in self:
+            template.qty_available = res[template.id]['qty_available']
+            template.virtual_available = res[template.id]['virtual_available']
+            template.incoming_qty = res[template.id]['incoming_qty']
+            template.outgoing_qty = res[template.id]['outgoing_qty']
+
+            stock_quant = self.env['stock.quant'].search([('product_tmpl_id', '=', template.id)])
             reserved_quantity = 0
             if len(stock_quant)>0:
                 for lot in stock_quant:
                     reserved_quantity +=lot.reserved_quantity
-            product_tmpl.actual_quantity = product_tmpl.qty_available - reserved_quantity
+
+            template.write({'actual_quantity': template.qty_available - reserved_quantity})
+            # print("---------------template -------------------------")
+            # print(template)
+            # print(template.actual_quantity)
 
 
     @api.model
