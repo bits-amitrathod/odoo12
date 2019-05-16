@@ -1,0 +1,16 @@
+<odoo>
+  <data>
+    <record id="view_order_form_inherit" model="ir.ui.view">
+            <field name="name">sale.order.form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+              <xpath expr="/form/sheet/notebook" position="inside">
+                  <page string="Note">
+                      <field name="sale_note" string="Note" placeholder="Add an internal note that will be printed on the Stock Operations sheet"/>
+                  </page>
+                </xpath>
+            </field>
+    </record>
+  </data>
+</odoo>
