@@ -55,7 +55,7 @@ class inventory_allocation_so(models.Model):
           LEFT JOIN sale_order_line sol ON sol.order_id=so.id 
           LEFT JOIN product_product po ON po.id=sol.product_id 
           LEFT JOIN product_template pt ON pt.id=po.product_tmpl_id
-          LEFT JOIN product_uom puom ON  puom.id=pt.uom_id
+          LEFT JOIN uom_uom puom ON  puom.id=pt.uom_id
           LEFT JOIN res_company cmpy ON cmpy.id=pt.company_id 
           LEFT JOIN res_currency curr ON curr.id=cmpy.currency_id
           LEFT JOIN stock_picking sp ON sp.sale_id=so.id

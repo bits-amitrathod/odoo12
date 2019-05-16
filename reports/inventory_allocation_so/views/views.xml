@@ -31,11 +31,11 @@
           <field name="model">inventory.allocation_so</field>
           <field name="priority">20</field>
           <field name="arch" type="xml">
-            <tree create="false" edit="false" >
+            <tree create="false" edit="false" delete="false" >
                 <field name="currency_id" invisible="1"/>
                 <field name="sale_order_name" invisible="1"/>
-                <field name="product_code"/>
-                <field name="product_name"/>
+                <field name="product_code" string="Product SKU"/>
+                <field name="product_id" string="Product Name"/>
                 <field name="product_quantity"/>
                 <field name="cost" widget="monetary" options="{'currency_field': 'currency_id'}"/>
 
@@ -43,17 +43,23 @@
           </field>
     </record>
 
-    <record model="ir.ui.view" id="inv_sale_order_form_view">
-        <field name="name">product.template.stock.property.form.inherit</field>
-        <field name="model">product.template</field>
-        <field name="inherit_id" ref="purchase.view_product_account_purchase_ok_form"/>
-        <field name="mode">primary</field>
-       <field name="arch" type="xml">
-              <xpath expr='//form' position='attributes'>
-                <attribute name="create"  >false</attribute>
-                <attribute name="edit">false</attribute>
-             </xpath>
-        </field>
+    <record model="ir.ui.view" id="inv_sale_order_form">
+        <field name="name">inventory.allocation.so.form</field>
+            <field name="model">inventory.allocation_so</field>
+            <field name="arch" type="xml">
+                <form create="false" edit="false" delete="false">
+                    <sheet>
+                        <group>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="order_id" />
+                            <field name="product_code" string="Product SKU"/>
+                            <field name="product_id" string="Product Name"/>
+                            <field name="product_quantity"/>
+                            <field name="cost" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
     </record>
 
     <record id="Inv_allow_so_report_list_id" model="ir.actions.act_window">

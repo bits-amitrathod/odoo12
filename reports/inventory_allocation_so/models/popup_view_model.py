@@ -13,23 +13,23 @@ class TrendingReportListPopUp(models.TransientModel):
         (0, 'Show All '),
         (1, 'Date Range ')
     ], string="Compute", help="Choose to analyze the Show Summary or from a specific date in the past.",default=0)
-    order_id = fields.Many2one('sale.order', string='Sale', )
+    order_id = fields.Many2one('sale.order', string='Sale', domain=[('state','=', 'sale')])
     partner_id = fields.Many2many('res.partner',string='Users', required=True)
     customer_by = fields.Selection([
         ('partner_id', 'Customer'),
     ], string="Customer", default='partner_id', required=True, _defaluts={'field_name': 'name', })
-    start_date = fields.Date('Start Date', help="Choose a date to get the Discount Summary at that  Start date",)
-    end_date = fields.Date('End Date', help="Choose a date to get the Discount Summary at that  End date",)
+    start_date = fields.Date('Start Date', help="Choose a date to get the Discount Summary at that  Start date", default=fields.date.today())
+    end_date = fields.Date('End Date', help="Choose a date to get the Discount Summary at that  End date", default=fields.date.today())
 
     def open_table(self):
         #print(self.env.ref('inventory__allocation_so.view_inv_all_so_tree').id)
         tree_view_id = self.env.ref('inventory_allocation_so.view_inv_all_so_tree').id
-        form_view_id = self.env.ref('inventory_allocation_so.inv_sale_order_form_view')
+        form_view_id = self.env.ref('inventory_allocation_so.inv_sale_order_form')
 
 
         if self.compute_at_date:
-            s_date = TrendingReportListPopUp.string_to_date(str(self.start_date))
-            e_date = TrendingReportListPopUp.string_to_date(str(self.end_date))
+            s_date = self.string_to_date(str(self.start_date))
+            e_date = self.string_to_date(str(self.end_date)) + datetime.timedelta(days=1)
         else:
             s_date=None
             e_date=None

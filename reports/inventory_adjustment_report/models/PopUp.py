@@ -52,4 +52,3 @@ class PopUp(models.TransientModel):
 
 
 
-
