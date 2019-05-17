@@ -271,52 +271,52 @@ class vendor_offer_automation(models.Model):
                             possible_competition_name = multiplier_name = margin_cost = 0
                             expiration_date = False
 
-                            if price_index:
+                            if price_index >= 0:
                                 price = excel_data_row[price_index]
-                            if sales_count_index:
+                            if sales_count_index >= 0:
                                 sales_count = excel_data_row[sales_count_index]
-                            if sales_count_yr_index:
+                            if sales_count_yr_index >= 0:
                                 sales_count_yr = excel_data_row[sales_count_yr_index]
-                            if sales_total_index:
+                            if sales_total_index >= 0:
                                 sales_total = excel_data_row[sales_total_index]
 
                             #premium = excel_data_row[premium_index]
 
-                            if exp_inventory_index:
+                            if exp_inventory_index >= 0:
                                 exp_inventory = excel_data_row[exp_inventory_index]
-                            if sales_count_90_index:
+                            if sales_count_90_index >= 0:
                                 sales_count_90 = excel_data_row[sales_count_90_index]
-                            if quantity_index:
+                            if quantity_index >= 0:
                                 quantity = excel_data_row[quantity_index]
-                            if quantity_in_stock_index:
+                            if quantity_in_stock_index >= 0:
                                 quantity_in_stock = excel_data_row[quantity_in_stock_index]
 
-                            if offer_price_index:
+                            if offer_price_index >= 0:
                                 offer_price = excel_data_row[offer_price_index]
-                            if offer_price_total_index:
+                            if offer_price_total_index >= 0:
                                 offer_price_total = excel_data_row[offer_price_total_index]
-                            if retail_price_index:
+                            if retail_price_index >= 0:
                                 retail_price = excel_data_row[retail_price_index]
-                            if retail_price_total_index:
+                            if retail_price_total_index >= 0:
                                 retail_price_total = excel_data_row[retail_price_total_index]
 
-                            if possible_competition_index:
+                            if possible_competition_index >= 0:
                                 possible_competition_name = excel_data_row[possible_competition_index]
-                            if multiplier_index:
+                            if multiplier_index >= 0:
                                 multiplier_name = excel_data_row[multiplier_index]
                             if count_obj == 0:
-                                if potential_profit_margin_index:
+                                if potential_profit_margin_index >= 0:
                                     potential_profit_margin = excel_data_row[potential_profit_margin_index]
-                                if max_index:
+                                if max_index >= 0:
                                     max_val = excel_data_row[max_index]
-                                if accelerator_index:
+                                if accelerator_index >= 0:
                                     accelerator = excel_data_row[accelerator_index]
-                                if credit_index:
+                                if credit_index >= 0:
                                     credit = excel_data_row[credit_index]
 
-                            if expiration_date_index:
+                            if expiration_date_index >= 0:
                                 expiration_date = excel_data_row[expiration_date_index]
-                            if margin_cost_index:
+                            if margin_cost_index >= 0:
                                 margin_cost = excel_data_row[margin_cost_index]
 
 
@@ -349,35 +349,87 @@ class vendor_offer_automation(models.Model):
                                         [('name', '=',possible_competition_name)]).id
                                 multiplier = self.env['multiplier.multiplier'].search(
                                     [('name', '=', multiplier_name)]).id
-                                order_line_obj = dict(name=product_sku, product_qty=quantity,date_planned=today_date,
-                                                      state='ven_draft',
-                                                      product_uom=query_result['uom_id'],
-                                                      order_id=self.id,
-                                                      product_id=products[0].id,qty_in_stock=quantity_in_stock,
-                                                      price_unit= offer_price,
-                                                      product_retail = 0,
-                                                      product_unit_price= 0 ,product_offer_price =0,
-                                                      product_sales_count_90=sales_count_90,
-                                                      product_sales_count_yrs=sales_count_yr,
-                                                      product_sales_count=sales_count,
-                                                      amount_total_ven_pri=sales_total,
-                                                      expired_inventory=exp_inventory,
-                                                      offer_price=offer_price,offer_price_total=offer_price_total,
-                                                      retail_price=retail_price,retail_price_total=retail_price_total,
-                                                      possible_competition=possible_competition,
-                                                      multiplier=multiplier,expiration_date=expiration_date,
-                                                      potential_profit_margin=potential_profit_margin,
-                                                      max_val=max_val,accelerator=accelerator,credit=credit,
-                                                      margin=margin_cost,
-                                                      import_type_ven_line=all_field_import
-                                                     )
+                                prod_id = 0
+                                prod_name = ''
+                                if products:
+                                    prod_id = products[0].id
+                                    prod_name = products[0].name
+                                if prod_id != 0:
+                                    order_line_obj = dict(name=product_sku, product_qty=quantity,date_planned=today_date,
+                                                          state='ven_draft',
+                                                          prod_name=prod_name,
+                                                          product_uom=query_result['uom_id'],
+                                                          order_id=self.id,
+                                                          product_id=prod_id,qty_in_stock=quantity_in_stock,
+                                                          price_unit= offer_price,
+                                                          product_retail = 0,
+                                                          product_unit_price= 0 ,product_offer_price =0,
+                                                          product_sales_count_90=sales_count_90,
+                                                          product_sales_count_yrs=sales_count_yr,
+                                                          product_sales_count=sales_count,
+                                                          amount_total_ven_pri=sales_total,
+                                                          expired_inventory=exp_inventory,
+                                                          offer_price=offer_price,offer_price_total=offer_price_total,
+                                                          retail_price=retail_price,retail_price_total=retail_price_total,
+                                                          possible_competition=possible_competition,
+                                                          multiplier=multiplier,
+                                                          potential_profit_margin=potential_profit_margin,
+                                                          max_val=max_val,accelerator=accelerator,credit=credit,
+                                                          margin=margin_cost,
+                                                          import_type_ven_line=all_field_import
+                                                         )
+                                    if expiration_date:
+                                        order_line_obj.update({'expiration_date': expiration_date })
+                                    else:
+                                        order_line_obj.update({'expiration_date': None})
                                 order_list_list.append(order_line_obj)
                                 count_obj = count_obj + 1
                         request.session['order_list_list'] = order_list_list
+                        count_order = 0
                         if len(order_list_list) > 0:
                             for order_line_object in order_list_list:
                                 order_line_model = self.env['purchase.order.line'].with_context(order_line_object)
                                 order_line_model.create(order_line_object)
+                                # if count_order == 0 :
+                                #     order_model = self.env['purchase.order'].search([('id', '=',  order_line_object['order_id'])])
+                                #     temp_acc = False
+                                #     if (order_line_object['accelerator']).upper() == 'YES':
+                                #         temp_acc = True
+                                #     temp_offer_type = 'cash'
+                                #     if (order_line_object['credit']).upper() == 'YES':
+                                #         temp_offer_type = 'credit'
+                                #     order_model.write({'accelerator': temp_acc})
+                                #     order_model.write({'offer_type': temp_offer_type})
+                                #     count_order =count_order+1
+                                # insert = "INSERT INTO purchase_order_line" \
+                                #          "(name,product_uom,price_unit,product_qty,date_planned,order_id,product_id,qty_in_stock," \
+                                #          "product_unit_price,product_offer_price,product_sales_count_90" \
+                                #          " , product_sales_count_yrs,product_sales_count,expired_inventory," \
+                                #          " price_total," \
+                                #          " " \
+                                #          " multiplier," \
+                                #          "expiration_date," \
+                                #          " import_type_ven_line )" \
+                                #          " VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s)"
+                                #
+                                # sql_query = insert
+                                # val = ( order_line_object['prod_name'],order_line_object['product_uom'],
+                                #         order_line_object['product_offer_price'],
+                                #         order_line_object['product_qty'],order_line_object['date_planned'],
+                                #         order_line_object['order_id'],order_line_object['product_id'],
+                                #         order_line_object['qty_in_stock'] ,
+                                #         order_line_object['product_unit_price'],
+                                #         order_line_object['product_offer_price'],
+                                #         order_line_object['product_sales_count_90']
+                                #         , order_line_object['product_sales_count_yrs'],
+                                #         order_line_object['product_sales_count'],
+                                #         order_line_object['expired_inventory'],
+                                #         order_line_object['offer_price_total']
+                                #         ,order_line_object['multiplier'],
+                                #         order_line_object['expiration_date'],
+                                #         order_line_object['import_type_ven_line'])
+                                #
+                                # self._cr.execute(sql_query,val)
 
             except UnicodeDecodeError as ue:
                 _logger.info(ue)

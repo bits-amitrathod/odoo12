@@ -541,9 +541,14 @@ class VendorOfferProduct(models.Model):
                         pass
 
                 if 'expiration_date' in line:
-                    self.update({
-                        'expiration_date': line['expiration_date'],
-                    })
+                    try:
+                        datetime.datetime.strptime(line['expiration_date'], '%Y-%m-%d')
+                        self.update({
+                            'expiration_date': line['expiration_date'],
+                        })
+                    except :
+                        pass
+
                 if 'margin' in line:
                     self.update({
                         'margin': line['margin'],
