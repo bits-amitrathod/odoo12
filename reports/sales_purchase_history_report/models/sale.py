@@ -7,7 +7,7 @@ class SaleSalespersonReport(models.TransientModel):
 
     start_date = fields.Date('Start Date', required=True)
     end_date = fields.Date(string="End Date", required=True)
-    product_id = fields.Many2one('product.product', string="Products")
+    product_id = fields.Many2many('product.product', string="Products")
     order_partner_id = fields.Many2one('res.partner', string='Customer')
 
     @api.multi
@@ -38,10 +38,10 @@ class SaleSalespersonReport(models.TransientModel):
         }
 
         if self.product_id and self.order_partner_id:
-            action['domain'].append(('product_id', '=', self.product_id.id))
+            action['domain'].append(('product_id', 'in', self.product_id.ids))
             action['domain'].append(('order_partner_id', '=', self.order_partner_id.id))
         elif self.product_id:
-            action['domain'].append(('product_id', '=', self.product_id.id))
+            action['domain'].append(('product_id', 'in', self.product_id.ids))
         elif self.order_partner_id:
             action['domain'].append(('order_partner_id', '=', self.order_partner_id.id))
         return action
