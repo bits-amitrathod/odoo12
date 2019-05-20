@@ -14,6 +14,7 @@ class SaleOrderAvailability(models.Model):
             return {}
         if self.product_id.type == 'product':
             precision = self.env['decimal.precision'].precision_get('Product Unit of Measure')
+            self.product_id.product_tmpl_id._compute_quantities()
             product = self.product_id.with_context(
                 warehouse=self.order_id.warehouse_id.id,
                 lang=self.order_id.partner_id.lang or self.env.user.lang or 'en_US'

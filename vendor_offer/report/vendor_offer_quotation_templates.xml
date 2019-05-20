@@ -61,7 +61,7 @@
                    <tr>
                        <td style="vertical-align: bottom;border: none;"><span style="position: relative;top: 5px;">BUYER SIGNATURE:</span></td>
                     <td style="border-bottom: 1px solid #000;" align="center"><img src='/vendor_offer/static/img/signature.png' style="height: 45px;width:100px;margin-top:0px;position: relative;top: 3px; "/></td>
-                       <td style="border-bottom: 1px solid #fff;padding-left:30px; vertical-align: bottom;" ><span style="position: relative;top: 5px;">DATE:</span><span style="font-weight:600;font-size:16px !important; margin-left:10px; position: relative;top: 5px;" t-field="o.create_date" t-options='{"widget": "date"}'/>  </td>
+                       <td style="border-bottom: 1px solid #fff;padding-left:30px; vertical-align: bottom;" ><span style="position: relative;top: 5px;">DATE:</span><span style="font-weight:600;font-size:16px !important; margin-left:10px; position: relative;top: 5px;" t-esc="context_timestamp(datetime.datetime.now())" t-options='{"widget": "date"}'/>  </td>
                 </tr>
             </tbody>
         </table>
@@ -113,7 +113,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td></td> <td></td> <td></td> <td></td>  <!--<td></td>    <td></td>-->
+                        <td></td> <td></td> <td></td> <td></td>  <td></td> <!--<td></td>    <td></td>-->
                          <td class="text-right">
                               <span t-field="o.amount_total" />
 
