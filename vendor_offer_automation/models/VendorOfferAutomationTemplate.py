@@ -22,18 +22,18 @@ class VendorOfferAutomationTemplateClass(models.Model):
 
     #mf_product_description = fields.Char(string='Product Name')
     mf_customer_sku = fields.Char(string='ProductNumber', required=True)
-    mf_quantity_in_stock = fields.Char(string='Qty In Stock')
+    #mf_quantity_in_stock = fields.Char(string='Qty In Stock')
     mf_quantity = fields.Char(string='Quantity')
     mf_expiration_date = fields.Char(string='Expiration Date')
-    mf_uom = fields.Char(string='Unit Of Measurement')
+    #mf_uom = fields.Char(string='Unit Of Measurement')
 
     mf_price = fields.Char(string='Price')
-    mf_sales_count = fields.Char(string='Sales Count')
-    mf_sales_count_yr = fields.Char(string='Sales Count YR')
-    mf_sales_total = fields.Char(string='Sales Total')
-    mf_premium = fields.Char(string='Premium')
-    mf_exp_inventory = fields.Char(string='Exp Inventory')
-    mf_sales_count_90 = fields.Char(string='Sales Count 90')
+    # mf_sales_count = fields.Char(string='Sales Count')
+    # mf_sales_count_yr = fields.Char(string='Sales Count YR')
+    # mf_sales_total = fields.Char(string='Sales Total')
+    # mf_premium = fields.Char(string='Premium')
+    # mf_exp_inventory = fields.Char(string='Exp Inventory')
+    # mf_sales_count_90 = fields.Char(string='Sales Count 90')
 
     mf_offer_price = fields.Char(string='Offer Price')
     mf_offer_price_total = fields.Char(string='Total Offer Price')
@@ -47,6 +47,6 @@ class VendorOfferAutomationTemplateClass(models.Model):
 
     mf_accelerator = fields.Char(string='Accelerator')
     mf_credit = fields.Char(string='Credit')
-    mf_margin_cost = fields.Char(string='Cost %')
+    #mf_margin_cost = fields.Char(string='Cost %')
 
 
