@@ -237,7 +237,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                                 contact.start_date) <= today_start) \
                                     or (InventoryNotificationScheduler.string_to_date(
                                 contact.start_date) and InventoryNotificationScheduler.string_to_date(
-                                contact.start_date) <= today_start InventoryNotificationScheduler.string_to_date(
+                                contact.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
                                 contact.end_date) and InventoryNotificationScheduler.string_to_date(
                                 contact.end_date) >= today_start):
                                 cust_ids.extend(contact.ids)
