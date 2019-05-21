@@ -33,64 +33,68 @@ class CustomerCreditNote(models.Model):
 
         account_journal = self.env['account.journal'].search([('id', '=', self.journal_id.id)])
         if account_journal.code == 'CRN':
-            print('is CRN')
-            res_partner = self.env['res.partner'].search([('id', '=',self.partner_id.id)])
-            if res_partner.customer is True:
-                super(CustomerCreditNote, self).action_validate_invoice_payment()
-                print('is CUSTOMER')
-                invoice_ids = self.invoice_ids.ids
-                for invoice_id in invoice_ids:
-                    invoice_obj_fetch = self.env['account.invoice'].browse(invoice_id)
-                    tax_string = []
-                    line_string_all = []
-                    invoice_line_obj_list = self.env['account.invoice.line'].search(
-                        [('invoice_id', 'in', invoice_obj_fetch.ids)])
+            if self.env.context.get('journal_type') == 'purchase':
+                print('is CRN')
+                res_partner = self.env['res.partner'].search([('id', '=',self.partner_id.id)])
+                if res_partner.customer is True:
+                    super(CustomerCreditNote, self).action_validate_invoice_payment()
+                    print('is CUSTOMER')
+                    invoice_ids = self.invoice_ids.ids
+                    for invoice_id in invoice_ids:
+                        invoice_obj_fetch = self.env['account.invoice'].browse(invoice_id)
+                        tax_string = []
+                        line_string_all = []
+                        invoice_line_obj_list = self.env['account.invoice.line'].search(
+                            [('invoice_id', 'in', invoice_obj_fetch.ids)])
 
-                    account_obj = self.env['account.account'].search([('code', '=', '121212')])
-                    for line in invoice_line_obj_list:
-                        line_string_all.append((0, 0, {
-                            'name': 'Credit Transfer', 'price_subtotal': line.price_subtotal,
-                            'price_unit': line.price_unit,
-                            'price_total': line.price_total, 'price_subtotal_signed': line.price_subtotal_signed
-                            , 'account_id': account_obj.id, 'quantity': line.quantity,
-                            'currency_id': line.currency_id.id,
-                            'uom_id': line.uom_id.id
-                        }))
+                        account_obj = self.env['account.account'].search([('code', '=', '121212')])
+                        for line in invoice_line_obj_list:
+                            line_string_all.append((0, 0, {
+                                'name': 'Credit Transfer', 'price_subtotal': line.price_subtotal,
+                                'price_unit': line.price_unit,
+                                'price_total': line.price_total, 'price_subtotal_signed': line.price_subtotal_signed
+                                , 'account_id': account_obj.id, 'quantity': line.quantity,
+                                'currency_id': line.currency_id.id,
+                                'uom_id': line.uom_id.id
+                            }))
 
-                    # account_tax_lines = self.env['account.invoice.tax'].search(
-                    #     [('invoice_id', 'in', invoice_obj_fetch.ids)])
-                    # for tax in account_tax_lines:
-                    #     tax_string.append((0, 0, {
-                    #         'account_id': tax.account_id.id, 'amount': tax.amount,
-                    #         'amount_rounding': tax.amount_rounding,
-                    #         'amount_total': tax.amount_total, 'currency_id': tax.currency_id.id,
-                    #         'tax_id': tax.tax_id.id,
-                    #         'name': tax.name
-                    #     }))
+                        # account_tax_lines = self.env['account.invoice.tax'].search(
+                        #     [('invoice_id', 'in', invoice_obj_fetch.ids)])
+                        # for tax in account_tax_lines:
+                        #     tax_string.append((0, 0, {
+                        #         'account_id': tax.account_id.id, 'amount': tax.amount,
+                        #         'amount_rounding': tax.amount_rounding,
+                        #         'amount_total': tax.amount_total, 'currency_id': tax.currency_id.id,
+                        #         'tax_id': tax.tax_id.id,
+                        #         'name': tax.name
+                        #     }))
 
-                    invoice_obj = {
-                        'id': False,
-                        'date_due': fields.Date.today(),
-                        'partner_id': self.partner_id.id, 'reference_type': 'none', 'type': 'out_refund', 'state': 'draft',
-                        'amount_untaxed': invoice_obj_fetch.amount_untaxed,
-                        'amount_untaxed_signed': invoice_obj_fetch.amount_untaxed_signed,
-                        'amount_tax': invoice_obj_fetch.amount_tax,
-                        'amount_total': invoice_obj_fetch.amount_total,
-                        'amount_total_signed': invoice_obj_fetch.amount_total_signed,
-                        'amount_total_company_signed': invoice_obj_fetch.amount_total_company_signed,
-                        'residual': invoice_obj_fetch.residual, 'residual_signed': invoice_obj_fetch.residual_signed,
-                        'residual_company_signed': invoice_obj_fetch.residual_company_signed,
-                        'reconciled': False,
-                        'sent': 'false', 'vendor_credit_flag': True
-                    }
-                    invoice_obj['invoice_line_ids'] = line_string_all
-                    #'tax_line_ids': [(0, 0, tax_string)]
-                    invoice_created = self.env['account.invoice'].create(invoice_obj)
-                    invoice_created.action_invoice_open()
+                        invoice_obj = {
+                            'id': False,
+                            'date_due': fields.Date.today(),
+                            'partner_id': self.partner_id.id, 'reference_type': 'none', 'type': 'out_refund', 'state': 'draft',
+                            'amount_untaxed': invoice_obj_fetch.amount_untaxed,
+                            'amount_untaxed_signed': invoice_obj_fetch.amount_untaxed_signed,
+                            'amount_tax': invoice_obj_fetch.amount_tax,
+                            'amount_total': invoice_obj_fetch.amount_total,
+                            'amount_total_signed': invoice_obj_fetch.amount_total_signed,
+                            'amount_total_company_signed': invoice_obj_fetch.amount_total_company_signed,
+                            'residual': invoice_obj_fetch.residual, 'residual_signed': invoice_obj_fetch.residual_signed,
+                            'residual_company_signed': invoice_obj_fetch.residual_company_signed,
+                            'reconciled': False,
+                            'sent': 'false', 'vendor_credit_flag': True
+                        }
+                        invoice_obj['invoice_line_ids'] = line_string_all
+                        #'tax_line_ids': [(0, 0, tax_string)]
+                        invoice_created = self.env['account.invoice'].create(invoice_obj)
+                        invoice_created.action_invoice_open()
+                else:
+                    raise Warning(_(
+                        'Payment Warning!\nCannot proceed with Payment Journal =" Credit Note " '
+                        'as the selected vendor is not a customer'))
             else:
                 raise Warning(_(
-                    'Payment Warning!\nCannot proceed with Payment Journal =" Credit Note " '
-                    'as the selected vendor is not a customer'))
+                    'Payment Warning!\n This Payment Journal option is available for Vendor Bill only'))
         else:
             print('not CRN')
             super(CustomerCreditNote, self).action_validate_invoice_payment()
