@@ -33,7 +33,7 @@ class CustomerCreditNote(models.Model):
 
         account_journal = self.env['account.journal'].search([('id', '=', self.journal_id.id)])
         if account_journal.code == 'CRN':
-            if self.env.context.get('journal_type') == 'purchase':
+            if self.env.context.get('journal_type') != 'sale':
                 print('is CRN')
                 res_partner = self.env['res.partner'].search([('id', '=',self.partner_id.id)])
                 if res_partner.customer is True:
