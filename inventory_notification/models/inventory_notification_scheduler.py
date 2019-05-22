@@ -230,11 +230,15 @@ class InventoryNotificationScheduler(models.TransientModel):
                         if (contact.email not in email_queue):
                             if (contact.start_date == False and contact.end_date == False) \
                                     or (contact.start_date == False and InventoryNotificationScheduler.string_to_date(
+                                contact.end_date) and InventoryNotificationScheduler.string_to_date(
                                 contact.end_date) >= today_start) \
                                     or (contact.end_date == False and InventoryNotificationScheduler.string_to_date(
+                                contact.start_date) and InventoryNotificationScheduler.string_to_date(
                                 contact.start_date) <= today_start) \
                                     or (InventoryNotificationScheduler.string_to_date(
+                                contact.start_date) and InventoryNotificationScheduler.string_to_date(
                                 contact.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
+                                contact.end_date) and InventoryNotificationScheduler.string_to_date(
                                 contact.end_date) >= today_start):
                                 cust_ids.extend(contact.ids)
                                 print("cc Customer =")
@@ -962,6 +966,6 @@ class InventoryNotificationScheduler(models.TransientModel):
 
     @staticmethod
     def string_to_date(date_string):
-        # if date_string == False:
-        #     return None
+        if date_string == False:
+            return None
         return datetime.strptime(date_string, DEFAULT_SERVER_DATE_FORMAT).date()
