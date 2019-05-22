@@ -15,11 +15,12 @@ from .fedex_request import FedexRequest
 
 from odoo import http
 from odoo.http import request
-from odoo.addons.web.controllers.main import serialize_exception,content_disposition
+from odoo.addons.web.controllers.main import serialize_exception, content_disposition
 from odoo.tools import pycompat
 import io
 import re
 import werkzeug
+from pprint import pprint
 
 _logger = logging.getLogger(__name__)
 # Why using standardized ISO codes? It's way more fun to use made up codes...
@@ -48,6 +49,7 @@ FEDEX_CURR_MATCH = {
 try:
     import xlwt
 
+
     # add some sanitizations to respect the excel sheet name restrictions
     # as the sheet name is often translatable, can not control the input
     class PatchedWorkbook(xlwt.Workbook):
@@ -59,10 +61,12 @@ try:
             name = name[:31]
             return super(PatchedWorkbook, self).add_sheet(name, cell_overwrite_ok=cell_overwrite_ok)
 
+
     xlwt.Workbook = PatchedWorkbook
 
 except ImportError:
     xlwt = None
+
 
 class VendorOffer(models.Model):
     _description = "Vendor Offer"
@@ -506,13 +510,13 @@ class VendorOfferProduct(models.Model):
                 last_yr = fields.Date.to_string(today_date - datetime.timedelta(days=365))
                 cust_location_id = self.env['stock.location'].search([('name', '=', 'Customers')]).id
                 str_query_cm = "SELECT sum(sml.qty_done) FROM sale_order_line AS sol LEFT JOIN stock_picking AS sp ON " \
-                             "sp.sale_id=sol.id " \
-                             " LEFT JOIN stock_move_line AS sml ON sml.picking_id=sp.id WHERE sml.state='done' AND " \
-                             "sml.location_dest_id =%s AND" \
-                             " sml.product_id =%s"
+                               "sp.sale_id=sol.id " \
+                               " LEFT JOIN stock_move_line AS sml ON sml.picking_id=sp.id WHERE sml.state='done' AND " \
+                               "sml.location_dest_id =%s AND" \
+                               " sml.product_id =%s"
 
-                self.env.cr.execute(str_query_cm+" AND sp.date_done>=%s",(cust_location_id,
-                                                                          line.product_id.id, last_3_months))
+                self.env.cr.execute(str_query_cm + " AND sp.date_done>=%s", (cust_location_id,
+                                                                             line.product_id.id, last_3_months))
                 quant_90 = self.env.cr.fetchone()
                 if quant_90[0] is not None:
                     total_90 = total_90 + int(quant_90[0])
@@ -532,7 +536,7 @@ class VendorOfferProduct(models.Model):
                     total_yr = total_yr + int(quant_yr[0])
                 line.product_sales_count_yrs = total_yr
 
-                self.env.cr.execute(str_query_cm, (cust_location_id,line.product_id.id))
+                self.env.cr.execute(str_query_cm, (cust_location_id, line.product_id.id))
                 quant_all = self.env.cr.fetchone()
                 if quant_all[0] is not None:
                     total = total + int(quant_all[0])
@@ -611,7 +615,7 @@ class VendorOfferProduct(models.Model):
 
             product_unit_price = math.floor(
                 round(float(line.product_id.list_price) * (float(multiplier_list.retail) / 100), 2))
-            product_offer_price =  math.floor(float(product_unit_price) * (
+            product_offer_price = math.floor(float(product_unit_price) * (
                     float(multiplier_list.margin) / 100 + float(line.possible_competition.margin) / 100))
 
             line.update({
@@ -693,24 +697,19 @@ class ProductTemplateTire(models.Model):
 
     tier = fields.Many2one('tier.tier', string="Tier")
     class_code = fields.Many2one('classcode.classcode', string="Class Code")
-    actual_quantity = fields.Float(string='Qty Available For Sale', digits=dp.get_precision('Product Unit of Measure'))
+    actual_quantity = fields.Float(string='Qty Available For Sale', digits=dp.get_precision('Product Unit of Measure'),compute="_compute_qty_available", store=True)
 
-
-    def _compute_quantities(self):
-        res = self._compute_quantities_dict()
+    @api.depends('product_variant_ids.stock_quant_ids.reserved_quantity','product_variant_ids.stock_move_ids.remaining_qty')
+    def _compute_qty_available(self):
         for template in self:
-            template.qty_available = res[template.id]['qty_available']
-            template.virtual_available = res[template.id]['virtual_available']
-            template.incoming_qty = res[template.id]['incoming_qty']
-            template.outgoing_qty = res[template.id]['outgoing_qty']
 
             stock_quant = self.env['stock.quant'].search([('product_tmpl_id', '=', template.id)])
             reserved_quantity = 0
-            if len(stock_quant)>0:
+            if len(stock_quant) > 0:
                 for lot in stock_quant:
                     reserved_quantity +=lot.reserved_quantity
 
-            template.write({'actual_quantity': template.qty_available - reserved_quantity})
+            template.update({'actual_quantity': template.qty_available - reserved_quantity})
             # print("---------------template -------------------------")
             # print(template)
             # print(template.actual_quantity)
@@ -723,6 +722,25 @@ class ProductTemplateTire(models.Model):
             vals['tier']= 2
 
         return super(ProductTemplateTire, self).create(vals)
+
+class StockInventoryActionDone(models.Model):
+    _inherit = 'stock.inventory'
+
+    def action_done(self):
+        super(StockInventoryActionDone, self).action_done()
+        for item in self:
+            product = item.product_id.product_tmpl_id
+            product._compute_quantities()
+            product._compute_qty_available()
+
+
+# class SaleOrderConfirm(models.Model):
+#     _inherit = 'sale.order'
+#
+#     def action_confirm(self):
+#         super(SaleOrderConfirm, self).action_confirm()
+#         for order in self.order_line:
+#             order.product_id.product_tmpl_id._compute_quantities()
 
 
 # ------------------ NOTE ACTIVITY -----------------
@@ -983,16 +1001,17 @@ class VendorPricingList(models.Model):
                                             compute='onchange_product_id_vendor_offer_pricing', store=False)
     product_sales_count_yrs = fields.Integer(string="SALES COUNT YR", readonly=True,
                                              compute='onchange_product_id_vendor_offer_pricing', store=False)
-    qty_in_stock = fields.Integer(string="QTY IN STOCK", readonly=True, compute='onchange_product_id_vendor_offer_pricing',
+    qty_in_stock = fields.Integer(string="QTY IN STOCK", readonly=True,
+                                  compute='onchange_product_id_vendor_offer_pricing',
                                   store=False)
     expired_inventory = fields.Char(string="EXP INVENTORY", compute='onchange_product_id_vendor_offer_pricing',
                                     readonly=True,
                                     store=False)
     tier_name = fields.Char(string="TIER", readonly=True,
-                                  compute='onchange_product_id_vendor_offer_pricing',
-                                  store=False)
+                            compute='onchange_product_id_vendor_offer_pricing',
+                            store=False)
     amount_total_ven_pri = fields.Monetary(string='SALES TOTAL', compute='onchange_product_id_vendor_offer_pricing',
-                                           readonly=True , store=False)
+                                           readonly=True, store=False)
 
     def onchange_product_id_vendor_offer_pricing(self):
         for line in self:
@@ -1078,13 +1097,13 @@ class VendorPricingList(models.Model):
     def return_tree_vendor_pri(self):
         tree_view_id = self.env.ref('vendor_offer.vendor_pricing_list').id
         action = {
-                'name': 'Vendor Pricing',
-                'view_mode': 'tree',
-                'views': [(tree_view_id, 'tree')],
-                'res_model': 'product.product',
-                'type': 'ir.actions.act_window',
-                'res_id': self.id
-                }
+            'name': 'Vendor Pricing',
+            'view_mode': 'tree',
+            'views': [(tree_view_id, 'tree')],
+            'res_model': 'product.product',
+            'type': 'ir.actions.act_window',
+            'res_id': self.id
+        }
         return action
 
 
@@ -1103,8 +1122,8 @@ class VendorPricingExport(models.TransientModel):
         last_3_months = fields.Date.to_string(today_date - datetime.timedelta(days=90))
         count = 0
         product_lines_export_pp.append((['ProductNumber', 'ProductDescription', 'Price', 'CFP-Manufacturer', 'TIER',
-                                         'SALES COUNT','SALES COUNT YR', 'QTY IN STOCK', 'SALES TOTAL',
-                                         'PREMIUM', 'EXP INVENTORY','SALES COUNT 90']))
+                                         'SALES COUNT', 'SALES COUNT YR', 'QTY IN STOCK', 'SALES TOTAL',
+                                         'PREMIUM', 'EXP INVENTORY', 'SALES COUNT 90']))
         cust_location_id = self.env['stock.location'].search([('name', '=', 'Customers')]).id
 
         str_query = " select pt.sku_code,pt.name,pt.list_price ,pb.name as product_brand_id ,tt.name as tier," \
@@ -1203,11 +1222,12 @@ class VendorPricingExport(models.TransientModel):
         new_list = self.env.cr.dictfetchall()
 
         for line in new_list:
-            count = count + 1      # for printing count if needed
-            product_lines_export_pp.append(([line['sku_code'], line['name'], line['list_price'], line['product_brand_id'],
-                                   line['tier'], line['product_sales_count'], line['product_sales_count_yrs'],
-                                   line['qty_available'], line['amount_total_ven_pri'], line['premium'],
-                                   line['expired_lot_count'], line['product_sales_count_90']]))
+            count = count + 1  # for printing count if needed
+            product_lines_export_pp.append(
+                ([line['sku_code'], line['name'], line['list_price'], line['product_brand_id'],
+                  line['tier'], line['product_sales_count'], line['product_sales_count_yrs'],
+                  line['qty_available'], line['amount_total_ven_pri'], line['premium'],
+                  line['expired_lot_count'], line['product_sales_count_90']]))
 
         ''' code for writing csv file in default location in odoo 
 
@@ -1266,16 +1286,16 @@ class ExportPPVendorPricingCSV(http.Controller):
 
     @http.route('/web/PPVendorPricing/download_document', type='http', auth="public")
     @serialize_exception
-    def download_document(self,token=1,debug=1):
+    def download_document(self, token=1, debug=1):
 
         #  token=1,debug=1   are added if the URL contains extra parameters , which in some case URL does contain
         #  code will produce error if the parameters are not provided so default are added
 
         res = request.make_response(self.from_data(product_lines_export_pp),
-                                     headers=[('Content-Disposition',
-                                               content_disposition(self.filename())),
-                                              ('Content-Type', self.content_type)],
-                                     )
+                                    headers=[('Content-Disposition',
+                                              content_disposition(self.filename())),
+                                             ('Content-Type', self.content_type)],
+                                    )
         product_lines_export_pp.clear()
         return res
 
@@ -1301,7 +1321,7 @@ class ExportPPVendorPricingXL(http.Controller):
         #   XL will be exported
         return 'PPVendorPricing' + '.xls'
 
-    def from_data(self, field,rows):
+    def from_data(self, field, rows):
         if len(rows) > 65535:
             raise UserError(_(
                 'There are too many rows (%s rows, limit: 65535) to export as Excel 97-2003 (.xls) format. Consider splitting the export.') % len(
@@ -1356,15 +1376,15 @@ class ExportPPVendorPricingXL(http.Controller):
 
     @http.route('/web/PPVendorPricing/download_document_xl', type='http', auth="public")
     @serialize_exception
-    def download_document_xl(self,token=1,debug=1):
+    def download_document_xl(self, token=1, debug=1):
 
         #  token=1,debug=1   are added if the URL contains extra parameters , which in some case URL does contain
         #  code will produce error if the parameters are not provided so default are added
 
-        res = request.make_response(self.from_data(product_lines_export_pp[0],product_lines_export_pp[1:]),
-                                     headers=[('Content-Disposition',
-                                               content_disposition(self.filename())),
-                                              ('Content-Type', self.content_type)],
-                                     )
+        res = request.make_response(self.from_data(product_lines_export_pp[0], product_lines_export_pp[1:]),
+                                    headers=[('Content-Disposition',
+                                              content_disposition(self.filename())),
+                                             ('Content-Type', self.content_type)],
+                                    )
         product_lines_export_pp.clear()
         return res
