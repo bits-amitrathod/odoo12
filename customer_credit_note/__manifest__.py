@@ -4,7 +4,7 @@
     'name': "Customer Credit Note",
 
     'author': "Benchmark IT Solutions",
-    'website': "http://www.benchmarkitsolutions.com",
+    'website': "http://www.benchmarkit.solutions",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/master/odoo/addons/base/module/module_data.xml
