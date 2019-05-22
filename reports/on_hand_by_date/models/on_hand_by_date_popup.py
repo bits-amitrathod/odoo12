@@ -12,7 +12,7 @@ class ProductsOnHandByDatePopUp(models.TransientModel):
     _name = 'popup.on_hand_by_date'
     _description = 'On Hand By Date Popup'
 
-    report_date = fields.Datetime('Report On Date', default=fields.Datetime.now, required=True)
+    report_date = fields.Date('Report On Date', default=fields.date.today(), required=True)
 
     costing_method = fields.Selection([
         (1, 'Standard Costing '),
@@ -22,8 +22,9 @@ class ProductsOnHandByDatePopUp(models.TransientModel):
         help="Choose to analyze the Show Summary or from a specific date in the past.")
 
     vendor_id = fields.Many2one('res.partner', string='Vendor', required=False, )
-    product_id = fields.Many2one('product.product', string='Product', required=False)
-    show_inactive_products = fields.Boolean('Show Inactive Products', default=True, required=False)
+    sku_code = fields.Char('Product SKU')
+    warehouse_id = fields.Many2one('stock.warehouse', 'Warehouse')
+    show_inactive_products = fields.Boolean('Show Active Products', default=True, required=False)
     show_cost = fields.Boolean('Show Cost', default=False, required=False)
 
     quantities = fields.Selection([
@@ -36,34 +37,45 @@ class ProductsOnHandByDatePopUp(models.TransientModel):
 
         if self.show_cost:
             tree_view_id = self.env.ref('on_hand_by_date.on_hand_by_date_list_view').id
+            res_model = 'report.on.hand.by.date.cost'
         else:
             tree_view_id = self.env.ref('on_hand_by_date.on_hand_by_datelist_view').id
+            res_model = 'report.on.hand.by.date'
 
         form_view_id = self.env.ref('on_hand_by_date.on_hand_by_dateform_view').id
 
-        on_hand_by_date_context = {'report_date': self.report_date}
-
-        if self.vendor_id.id:
-            on_hand_by_date_context.update({'partner_id': self.vendor_id.id})
-
-        if self.product_id.id:
-            on_hand_by_date_context.update({'product_id': self.product_id.id})
-
-        on_hand_by_date_context.update({'show_cost': self.show_cost})
-        on_hand_by_date_context.update({'quantities': self.quantities})
-        on_hand_by_date_context.update({'product_inactive': self.show_inactive_products})
-        on_hand_by_date_context.update({'costing_method': self.costing_method})
-
-        self.env["report.on.hand.by.date"].with_context(on_hand_by_date_context).delete_and_create()
-
-        return {
+        action = {
             'type': 'ir.actions.act_window',
             'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
             'view_mode': 'tree,form',
             'name': _('On Hand By Date'),
-            'res_model': 'report.on.hand.by.date',
+            'res_model': res_model,
             'target': 'main',
+            'domain': [('date_order','>=',self.report_date)]
         }
+
+        if self.vendor_id.id:
+            action["domain"].append(('partner_id', '=', self.vendor_id.id))
+
+        if self.sku_code:
+            action["domain"].append(('sku_code', 'ilike', self.sku_code))
+
+        if self.quantities is 0:
+            action["domain"].append(('qty_done', '>', '0'))
+        elif self.quantities is 2:
+            action["domain"].append(('qty_done', '=', '0'))
+
+        if self.show_inactive_products:
+            action["domain"].append(('is_active', '=', self.show_inactive_products))
+
+        if self.warehouse_id.id:
+            action["domain"].append(('warehouse_id', '=', self.warehouse_id.id))
+
+        return action
+
+
+
+
 
     @staticmethod
     def string_to_date(date_string):

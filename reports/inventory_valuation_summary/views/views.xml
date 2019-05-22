@@ -5,8 +5,12 @@
         <field name="model">report.inventory.valuation.summary</field>
         <field name="arch" type="xml">
             <search string="Product">
-                <filter string="Valuation Summary" name="valuation_summary" domain="[]"
-                        context="{'group_by' : ['warehouse', 'location', 'type']}"/>
+                <filter string="Warehouse" name="valuation_summary" domain="[]"
+                        context="{'group_by' : 'warehouse'}"/>
+                <filter string="Location" name="valuation_summary" domain="[]"
+                        context="{'group_by' : 'location'}"/>
+                <filter string="Type" name="valuation_summary" domain="[]"
+                        context="{'group_by' : 'type'}"/>
                 <separator/>
             </search>
         </field>
@@ -17,10 +21,10 @@
         <field name="name">inventory_valuation_summary_list</field>
         <field name="model">report.inventory.valuation.summary</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree create="false" edit="false" delete="false">
                 <field name="sku_code"/>
-                <field name="name"/>
-                <field name="quantity"/>
+                <field name="name" string="Product Name"/>
+                <field name="quantity_cal"/>
                 <field name="currency_id" invisible="1"/>
                 <field name="unit_cost" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                 <field name="asset_value" widget="monetary" options="{'currency_field': 'currency_id'}"/>
@@ -31,8 +35,34 @@
         </field>
     </record>
 
+    <record model="ir.ui.view" id="inventory_valuation_summary_form">
+        <field name="name">inventory_valuation_summary_form</field>
+        <field name="model">report.inventory.valuation.summary</field>
+        <field name="arch" type="xml">
+            <form create="false" edit="false" delete="false">
+                <sheet>
+                    <div class="oe_title">
+                        <h3>
+                            <field name="product_id"/>
+                        </h3>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="sku_code"/>
+                            <field name="name" string="Product Name"/>
+                            <field name="quantity_cal"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="unit_cost" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            <field name="asset_value" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
     <record id="inventory_valuation_summary_popup_view" model="ir.ui.view">
-        <field name="name">Pick Ticket Report</field>
+        <field name="name">Inventory Valuation Summary </field>
         <field name="model">popup.inventory.valuation.summary</field>
         <field name="arch" type="xml">
             <form string="Choose your date">
@@ -57,7 +87,7 @@
     </record>
 
     <record id="action_stock_inventory_valuation_summary" model="ir.actions.act_window">
-        <field name="name">Pick Ticket Report</field>
+        <field name="name">Inventory Valuation Summary</field>
         <field name="res_model">popup.inventory.valuation.summary</field>
         <field name="view_type">form</field>
         <field name="view_mode">form</field>

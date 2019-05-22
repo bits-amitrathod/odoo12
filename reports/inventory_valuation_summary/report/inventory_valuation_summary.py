@@ -5,14 +5,59 @@ class ReportInventoryProductValuationSummary(models.AbstractModel):
     _name = 'report.inventory_valuation_summary.inventory_valuation_template'
 
     @api.model
-    def get_report_values(self, docids, data=None):
-        self.env.cr.execute("""
-            SELECT warehouse|| '/'|| location as warehouse, array_agg(ARRAY[ type, products]) as type
-            from(SELECT  warehouse, type,location, string_agg(concat_ws('**|**',sku_code, name, quantity,unit_cost,asset_value,currency_id),'||**||') as products
-                FROM public.report_inventory_valuation_summary where id in ("""+",".join(map(str, docids))+""") Group by warehouse,type,location) as tbl Group by warehouse,location
-                          """)
+    def _get_report_values(self, docids, data=None):
 
-        warehouses = self.env.cr.dictfetchall()
+        print("--------------Start--------------------")
+        data = []
+        warehouses = self.env['report.inventory.valuation.summary'].read_group(domain=[], fields=[],
+                                                                               groupby=['warehouse', 'location',
+                                                                                        'type'])
+        for warehouse_rec in warehouses:
+            warehouse = {
+                'warehouse': warehouse_rec['warehouse'],
+                'warehouse_count': warehouse_rec['warehouse_count'],
+                'quantity': warehouse_rec['quantity'],
+                'locations': [],
+                'hasRecord': False
+            }
+            data.append(warehouse)
+
+            locations = self.env['report.inventory.valuation.summary'].read_group(domain=warehouse_rec['__domain'],
+                                                                                  fields=[],
+                                                                                  groupby=warehouse_rec['__context'][
+                                                                                      'group_by'])
+            warehouse_rec['locations'] = locations
+            for location_rec in locations:
+                location = {
+                    'location': location_rec['location'],
+                    'location_count': location_rec['location_count'],
+                    'quantity': location_rec['quantity'],
+                    'types': [],
+                    'hasRecord': False
+                }
+                warehouse['locations'].append(location)
+
+                types = self.env['report.inventory.valuation.summary'].read_group(domain=location_rec['__domain'],
+                                                                                  fields=[],
+                                                                                  groupby=location_rec['__context'][
+                                                                                      'group_by'])
+                location_rec['types'] = types
+                for type_rec in types:
+                    type_rec['__domain'].append(('id', 'in', docids))
+                    type = {
+                        'type': type_rec['type'],
+                        'type_count': type_rec['type_count'],
+                        'quantity': type_rec['quantity'],
+                        'record': self.env['report.inventory.valuation.summary'].search_read(
+                            domain=type_rec['__domain'])
+                    }
+
+                    if location['hasRecord'] == False and warehouse['hasRecord']== False and len(type['record']) > 0:
+                        location['hasRecord'] = True
+                        warehouse['hasRecord'] = True
+
+                    location['types'].append(type)
+        print("--------------end--------------------")
         return {
-            'warehouses': warehouses
+            'warehouses': data
         }

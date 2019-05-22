@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 {
     'name': "On Hand By Expiration",
-
-    'author': "Benchmark IT Solutions (I) Pvt. Ltd",
+    'summary':"Report",
+    'author': "Benchmark IT Solutions",
     'website': "http://www.benchmarkitsolutions.com",
 
     'category': 'Uncategorized',
@@ -13,6 +13,7 @@
 
     # always loaded
     'data': [
+        'security/ir.model.access.csv',
         'views/views.xml',
         'report/on_hand_by_expiration_report.xml',
         'report/on_hand_by_expiration_report_template.xml'

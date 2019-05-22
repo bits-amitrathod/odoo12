@@ -5,53 +5,66 @@
             <t t-call="web.external_layout">
                 <page>
                     <div class="oe_structure"/>
-                    <div class="row">
+                    <div class="row justify-content-md-center">
                         <center>
                             <b>
                                 <h2>Surgical Product Solutions</h2>
                                 <h4>On Hand By Expiration Date</h4>
-                                <h4>Reporting Date: <span t-esc="data['report_date']"/></h4>
+                                <h4>Reporting Date: <span t-esc="report_date" t-options="{'widget':'date'}"/></h4>
                             </b>
                         </center>
                         <br/>
                             <t>
+                                <t t-set="color_value" t-value="0"/>
                                 <table class="table table-condensed" style="border: 1px solid black;">
                                     <thead>
                                         <tr style="">
-                                            <th style="text-align: center; border: 1px solid black;">Product SKU</th>
-                                            <th style="text-align: center; border: 1px solid black;">Product</th>
-                                            <th style="text-align: center; border: 1px solid black;">Qty</th>
-                                            <th style="text-align: center; border: 1px solid black;">Location</th>
+                                            <th style="text-align: left; border: 1px solid black;">Product SKU</th>
+                                            <th style="text-align: left; border: 1px solid black;">Product Name</th>
+                                            <th style="text-align: left; border: 1px solid black;">Manufacture</th>
+                                            <th style="text-align: center; border: 1px solid black;">Product Qty</th>
+                                            <th style="text-align: left; border: 1px solid black;">Location</th>
+                                            <th style="text-align: left; border: 1px solid black;">Lot #</th>
                                             <th style="text-align: center; border: 1px solid black;">Expiration Date</th>
                                             <th style="text-align: center; border: 1px solid black;">Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr t-foreach="data['items']" t-as="product">
+                                        <tr t-foreach="items" t-as="product">
                                             <td style="border: 1px solid black; width: 15%;">
-                                                <span t-esc="product.name"/>
+                                                <span t-esc="product.sku_code"/>
+                                                <t t-set="color_value" t-value="product.color_value"/>
                                             </td>
                                             <td align="left" style="border: 1px solid black;width: 35%;">
                                                 <span t-esc="product.product_id.product_tmpl_id.name"/>
                                             </td>
-                                            <td align="right" style="border: 1px solid black;width: 10%;">
-                                                <span t-esc="product.qty"/>
+                                            <td align="center" style="border: 1px solid black;width: 10%;">
+                                                <span t-field="product.manufactures"/>
+                                            </td>
+                                            <td align="center" style="border: 1px solid black;width: 10%;">
+                                                <span t-field="product.qty"/>
                                             </td>
                                             <td align="left" style="border: 1px solid black;width: 15%;">
                                                 <span t-esc="product.location_id.complete_name"/>
                                             </td>
-                                            <td align="right" style="border: 1px solid black;width: 15%;">
-                                                <span t-esc="product.expiration_date"/>
+                                            <td align="left" style="border: 1px solid black;width: 15%;">
+                                                <span t-esc="product.lot_name"/>
                                             </td>
-                                            <td align="left" style="border: 1px solid black;width: 10%;">
-                                                <span t-esc="product.status"/>
+                                            <td align="center" style="border: 1px solid black;width: 15%;">
+                                                <t t-if="color_value==1"><font color="red"><span t-esc="product.expiration_date" t-options="{'widget':'date'}"/></font></t>
+                                                <t t-if="color_value==2"><font color="orange"><span t-esc="product.expiration_date" t-options="{'widget':'date'}"/></font></t>
+                                                <t t-if="color_value==3"><font color="green"><span t-esc="product.expiration_date" t-options="{'widget':'date'}"/></font></t>
+                                            </td>
+                                            <td align="center" style="border: 1px solid black;width: 10%;">
+                                                <t t-if="color_value==1"><font color="red"><span t-esc="product.status"/></font></t>
+                                                <t t-if="color_value==2"><font color="orange"><span t-esc="product.status"/></font></t>
+                                                <t t-if="color_value==3"><font color="green"><span t-esc="product.status"/></font></t>
                                             </td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </t>
                     </div>
-                    <!--<br/>-->
                 </page>
             </t>
         </t>

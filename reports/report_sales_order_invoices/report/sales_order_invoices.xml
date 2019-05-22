@@ -4,7 +4,7 @@
         <t t-call="web.html_container">
             <t t-call="web.external_layout">
                 <t t-foreach="invoices" t-as="invoice">
-                    <page>
+                    <div class="page">
                         <style>
                             .noborders {
                             border: 0;
@@ -15,13 +15,13 @@
                             }
                         </style>
                         <div class="oe_structure"/>
-                        <div class="row">
-                            <center>
+                        <div class="row justify-content-md-center">
+
                                 <b>
                                     <h2>Surgical Product Solutions</h2>
-                                    <h4>Sales Order Invoice</h4>
+                                    <h4 align ="center">Sales Order Invoice</h4>
                                 </b>
-                            </center>
+
 
                         </div>
                         <br/>
@@ -30,6 +30,10 @@
                                 <h3>Bill To:</h3>
                                 <address t-field="invoice.partner_id"
                                          t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
+                                <h3>Customer :</h3>
+                                <span
+                                            t-field="invoice.partner_id"
+                                            t-options='{"widget": "contact", "fields": [ "name"], "no_marker": True}'/>
                             </div>
                             <div class="col-md-5 col-xs-5">
                                 <!--t-if="invoice.partner_shipping_id != invoice.partner_invoice_id" -->
@@ -38,6 +42,10 @@
                                     <span
                                             t-field="invoice.partner_shipping_id"
                                             t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True, "phone_icons": True}'/>
+                                    <h3>Contact :</h3>
+                                     <span
+                                            t-field="invoice.partner_id"
+                                            t-options='{"widget": "contact", "fields": ["email"], "no_marker": True }'/>
                                 </div>
                             </div>
                         </div>
@@ -51,11 +59,11 @@
                                 <strong>Payment Terms:</strong>
                                 <p t-field="invoice.payment_term_id"/>
                             </div>
-                            <div class="col-xs-2" t-if="hasattr(orders,'carrier_id') and order.carrier_id">
+                            <div class="col-xs-2" t-if="hasattr(order,'carrier_id') and order.carrier_id">
                                 <strong>Carrier :</strong>
                                 <p t-field="order.carrier_id"/>
                             </div>
-                            <div class="col-xs-2" t-if="hasattr(orders,'commitment_date') and order.commitment_date">
+                            <div class="col-xs-2" t-if="hasattr(order,'commitment_date') and order.commitment_date">
                                 <strong>Requested Ship Date :</strong>
                                 <p t-field="order.commitment_date" t-options="{'widget': 'date'}"/>
                             </div>
@@ -124,7 +132,7 @@
                                                       t-options='{"widget": "monetary", "display_currency": invoice.currency_id}'/>
                                             </td>
                                         </tr>
-                                        <t t-foreach="invoice._get_tax_amount_by_group()" t-as="amount_by_group">
+                                        <t t-foreach="invoice._amount_by_group()" t-as="amount_by_group">
                                             <tr style="border-bottom:1px solid #dddddd;">
                                                 <t t-if="len(invoice.tax_line_ids) == 1 and invoice.amount_untaxed == amount_by_group[2]">
                                                     <td>
@@ -163,7 +171,7 @@
                         </div>
                         <p>Approval:_______________________________ Date:_____________</p>
                         <p style="page-break-after:always;"/>
-                    </page>
+                    </div>
                 </t>
             </t>
         </t>

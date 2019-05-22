@@ -54,7 +54,6 @@ class InventoryValuationPopUp(models.TransientModel):
         return action
 
 
-
 class ReportInventoryValuationSummary(models.Model):
     _name = "report.inventory.valuation.summary"
     _description = "report inventory valuation summary"
@@ -65,13 +64,14 @@ class ReportInventoryValuationSummary(models.Model):
     product_id = fields.Many2one('product.product', string='Product', )
     name = fields.Char(string="Name")
     sku_code = fields.Char('Product SKU')
-    quantity = fields.Float(string="Quantity",digits=dp.get_precision('Product Unit of Measure'))
-    quantity_cal = fields.Float(string="Quantity",compute='_compute_unit_cost',digits=dp.get_precision('Product Unit of Measure'))
-    unit_cost = fields.Float(string="Unit Cost",compute='_compute_unit_cost')
-    asset_value = fields.Float(string="Asset Value",store = False)
+    quantity = fields.Float(string="Quantity", digits=dp.get_precision('Product Unit of Measure'))
+    quantity_cal = fields.Float(string="Quantity", compute='_compute_unit_cost',
+                                digits=dp.get_precision('Product Unit of Measure'))
+    unit_cost = fields.Float(string="Unit Cost", compute='_compute_unit_cost')
+    asset_value = fields.Float(string="Asset Value", store=False)
     type = fields.Char(string="Type")
-    currency_id = fields.Many2one('res.currency', string='Currency',store = False)
-    cost_method = fields.Char(string="Cost Method",store = False)
+    currency_id = fields.Many2one('res.currency', string='Currency', store=False)
+    cost_method = fields.Char(string="Cost Method", store=False)
 
     @api.model_cr
     def init(self):
@@ -83,7 +83,7 @@ class ReportInventoryValuationSummary(models.Model):
 
         select_query = """  SELECT  ROW_NUMBER () OVER (ORDER BY warehouse) as id, * From ( """
         # -------------------- purchase ------------------------
-        select_query = select_query +  """     
+        select_query = select_query + """     
             SELECT
                 public.stock_warehouse.name                 AS warehouse,
                 public.stock_location.name                  AS location,
@@ -149,7 +149,7 @@ class ReportInventoryValuationSummary(models.Model):
                 COALESCE(product_template.sku_code,'') AS sku_code,
                 SUM(sale_order_line.product_uom_qty) as quantity,
                 'Sales' as type
-               
+
             FROM
                 sale_order
             INNER JOIN
@@ -242,10 +242,8 @@ class ReportInventoryValuationSummary(models.Model):
         sql_query = "CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + select_query + " )"
         self._cr.execute(sql_query)
 
-
     def delete_and_create(self):
         self.init_table()
-
 
     def action_valuation_at_date_details(self):
         action = self.product_id.action_valuation_at_date_details()
@@ -254,10 +252,10 @@ class ReportInventoryValuationSummary(models.Model):
 
     def _compute_unit_cost(self):
         for record in self:
-            record.currency_id  = record.product_id.currency_id.id
+            record.currency_id = record.product_id.currency_id.id
 
             product_tmpl_id = record.product_id.product_tmpl_id
-            record.cost_method  = product_tmpl_id.cost_method
+            record.cost_method = product_tmpl_id.cost_method
             record.unit_cost = product_tmpl_id.standard_price
 
             if record.type == 'Stock':
@@ -266,5 +264,4 @@ class ReportInventoryValuationSummary(models.Model):
                 record.quantity_cal = record.quantity
 
             record.asset_value = record.unit_cost * record.quantity_cal
-
 

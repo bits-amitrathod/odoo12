@@ -26,19 +26,17 @@ class ProductsOnHandByExpiryPopUp(models.TransientModel):
         (3, 'Valid'),
     ], string="Status", default=0,)
 
-    location_id = fields.Many2one('stock.location', string='Location', required=False,)
-
-    product_id = fields.Many2one('product.product', string='Product', required=False)
-
-    start_date = fields.Date('Start Date', default=fields.Datetime.now)
-
-    end_date = fields.Date('End Date', default=fields.Datetime.now)
+    warehouse_id = fields.Many2one('stock.warehouse', 'Group Location', required=True, default=1)
+    location_id = fields.Selection(selection=[('lot_stock_id', 'Pick'), ('wh_pack_stock_loc_id', 'Pack'), ('wh_output_stock_loc_id', 'Ship')],String='Location')
+    start_date = fields.Date('Start Date', default=fields.date.today())
+    end_date = fields.Date('End Date', default=fields.date.today())
+    sku_code = fields.Char(string="Product SKU")
 
     def open_table(self):
-
         tree_view_id = self.env.ref('on_hand_by_expiry.on_hand_by_expiry_list_view').id
         form_view_id = self.env.ref('on_hand_by_expiry.on_hand_by_expiryform_view').id
 
+        on_hand_by_expiry_context = {}
         domain = []
 
         if self.date_range:
@@ -47,19 +45,27 @@ class ProductsOnHandByExpiryPopUp(models.TransientModel):
             if s_date > e_date:
                 raise ValidationError("Start date should eariler then end date")
         else:
-            e_date = datetime.date.today()
-            s_date = datetime.date.today().replace(day=1)
+            e_date = False
+            s_date = False
 
-        on_hand_by_expiry_context = {
-            's_date' : s_date,
-            'e_date' : e_date
-        }
+        on_hand_by_expiry_context.update({'s_date' : s_date,'e_date' : e_date})
 
-        if self.location_id.id:
-            on_hand_by_expiry_context.update({'location_id' : self.location_id.id})
-
-        if self.product_id.id:
-            on_hand_by_expiry_context.update({'product_id' : self.product_id.id})
+        locations = []
+        if self.warehouse_id and not self.warehouse_id is None:
+            if self.location_id:
+                location_id = self.warehouse_id[self.location_id]
+                if location_id:
+                    locations.append(location_id.id)
+            else:
+                lot_stock_id = self.warehouse_id['lot_stock_id']
+                locations.append(lot_stock_id.id)
+                if self.warehouse_id['wh_pack_stock_loc_id']:
+                    wh_pack_stock_loc_id = self.warehouse_id['wh_pack_stock_loc_id']
+                    locations.append(wh_pack_stock_loc_id.id)
+                if self.warehouse_id['wh_output_stock_loc_id']:
+                    wh_output_stock_loc_id = self.warehouse_id['wh_output_stock_loc_id']
+                    locations.append(wh_output_stock_loc_id.id)
+        on_hand_by_expiry_context.update({'locations': locations})
 
         self.env['on_hand_by_expiry'].with_context(on_hand_by_expiry_context).delete_and_create()
 
@@ -72,18 +78,27 @@ class ProductsOnHandByExpiryPopUp(models.TransientModel):
             }
             filter_state = switcher.get(self.state, False)
             if filter_state:
+                print('filter_state value : ',str(filter_state))
                 domain.append(('status', '=', str(filter_state)))
 
-
-        return {
+        action= {
             'type': 'ir.actions.act_window',
             'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
             'view_mode': 'tree,form',
-            'name': _('On Hand By Expiry'),
+            'name': _('On Hand By Expiration'),
             'res_model': 'on_hand_by_expiry',
             'target': 'main',
             'domain' : domain
+
         }
+
+        if self.sku_code:
+            action["domain"].append(('sku_code', 'ilike', self.sku_code))
+
+        if self.warehouse_id:
+           action["domain"].append(('warehouse_id', '=', self.warehouse_id.id))
+
+        return action
 
     @staticmethod
     def string_to_date(date_string):
