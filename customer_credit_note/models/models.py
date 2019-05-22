@@ -49,8 +49,14 @@ class CustomerCreditNote(models.Model):
 
                         account_obj = self.env['account.account'].search([('code', '=', '121212')])
                         for line in invoice_line_obj_list:
+                            name = 'Credit Transfer'
+                            if invoice_obj_fetch.origin:
+                                name = name + ' PO# :' + invoice_obj_fetch.origin
+                            if invoice_obj_fetch.number:
+                                name = name + ' Bill# :' + invoice_obj_fetch.number
+
                             line_string_all.append((0, 0, {
-                                'name': 'Credit Transfer', 'price_subtotal': line.price_subtotal,
+                                'name': name, 'price_subtotal': line.price_subtotal,
                                 'price_unit': line.price_unit,
                                 'price_total': line.price_total, 'price_subtotal_signed': line.price_subtotal_signed
                                 , 'account_id': account_obj.id, 'quantity': line.quantity,
