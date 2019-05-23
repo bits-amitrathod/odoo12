@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "customize_sales_order",
+    'name': "Customize Sales Order",
 
     'author': "Benchmark IT Solutions",
     'website': "http://www.benchmarkitsolutions.com",
