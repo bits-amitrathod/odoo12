@@ -132,10 +132,10 @@
             <field name="inherit_id" ref="product.product_template_only_form_view"/>
             <field name="arch" type="xml">
                 <data>
-                    <xpath expr="//group[@name='group_lots_and_weight']" position="inside">
-                        <label for="max_inventory_product_level_duration"/>
-                        <div>
-                            <field name="max_inventory_product_level_duration" class="oe_inline" />
+                    <xpath expr="//group[@name='operations']" position="inside">
+                        <label for="max_inventory_product_level_duration" attrs="{'invisible': [('inventory_monitor', '=', False)]}"/>
+                        <div attrs="{'invisible': [('inventory_monitor', '=', False)]}">
+                            <field name="max_inventory_product_level_duration" class="oe_inline"   />
                             <span> days</span>
                         </div>
                     </xpath>

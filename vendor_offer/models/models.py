@@ -978,6 +978,7 @@ class FedexDelivery(models.Model):
             for sequence in range(1, package_count + 1):
                 package_weight = _convert_weight(popup.weight, self.fedex_weight_unit)
                 srm.add_package(package_weight, sequence_number=sequence)
+                _add_customer_references(srm,order)
                 srm.set_master_package(net_weight, package_count, master_tracking_id=master_tracking_id)
                 request = srm.process_shipment()
                 package_name = sequence
@@ -1053,6 +1054,7 @@ class FedexDelivery(models.Model):
 
             srm.add_package(net_weight)
             srm.set_master_package(net_weight, 1)
+            _add_customer_references(srm, order)
 
             # Ask the shipping to fedex
             request = srm.process_shipment()
@@ -1105,6 +1107,11 @@ def _convert_weight(weight, unit='KG'):
         return weight / 0.45359237
     else:
         raise ValueError
+
+def _add_customer_references(srm,order):
+    srm.customer_references('P_O_NUMBER', order.name)
+    if order.acq_user_id.id:
+        srm.customer_references('CUSTOMER_REFERENCE', order.acq_user_id.name)
 
 
 def _convert_curr_iso_fdx(code):
