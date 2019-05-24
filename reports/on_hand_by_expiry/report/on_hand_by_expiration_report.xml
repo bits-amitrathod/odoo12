@@ -8,6 +8,7 @@
                 report_type="qweb-html"
                 file="on_hand_by_expiry.templ"
                 name="on_hand_by_expiry.templ"
+                menu = "False"
                 />
     </data>
 </odoo>
