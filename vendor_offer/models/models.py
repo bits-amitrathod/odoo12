@@ -98,7 +98,7 @@ class VendorOffer(models.Model):
     rt_price_subtotal_amt = fields.Monetary(string='Subtotal', compute='_amount_all', readonly=True)
     rt_price_total_amt = fields.Monetary(string='Total', compute='_amount_all', readonly=True)
     rt_price_tax_amt = fields.Monetary(string='Tax', compute='_amount_all', readonly=True)
-    # val_temp = fields.Char(string='Temp', default=0)
+    #val_temp = fields.Char(string='Temp', default=0)
     temp_payment_term = fields.Char(string='Temp')
     offer_type_pdf_text = fields.Char(string='offer type Temp')
     credit_offer_type_pdf_text = fields.Char(string='credit offer type Temp')
@@ -321,6 +321,10 @@ class VendorOffer(models.Model):
             self.offer_type_pdf_text = 'Credit to Purchase'
             self.credit_offer_type_pdf_text = 'Credit Offer is valid for 12 months from the date of issue'
         self.write({'status': 'ven_sent', 'state': 'ven_sent'})
+        for order in self:
+            for line in order.order_line:
+                line.for_print_product_offer_price=str(line.product_offer_price)
+                line.for_print_price_subtotal = str(line.price_subtotal)
         return self.env.ref('vendor_offer.action_report_vendor_offer').report_action(self)
 
     @api.multi
@@ -472,6 +476,7 @@ class VendorOfferProduct(models.Model):
     qty_in_stock = fields.Integer(string="Quantity In Stock", readonly=True, compute='onchange_product_id_vendor_offer',
                                   store=True)
     expiration_date = fields.Datetime(string="Expiration Date", readonly=True, )
+    expiration_date_str = fields.Char(string="Expiration Date")
     expired_inventory = fields.Char(string="Expired Inventory Items", compute='onchange_product_id_vendor_offer',
                                     readonly=True,
                                     store=True)
@@ -487,11 +492,11 @@ class VendorOfferProduct(models.Model):
     margin = fields.Char(string="Cost %", readonly=True, compute='_cal_offer_price')
     product_unit_price = fields.Monetary(string="Retail Price", readonly=True, compute='_cal_offer_price', store=True)
     # product_offer_price = fields.Monetary(string="Offer Price", readonly=True, compute='cal_offer_price')
-
+    for_print_product_offer_price = fields.Char(string="Offer Price")
+    for_print_price_subtotal = fields.Char(string="Offer Price")
     product_retail = fields.Monetary(string="Total Retail Price", compute='_compute_amount')
     rt_price_total = fields.Monetary(compute='_compute_amount', string='Total')
     rt_price_tax = fields.Monetary(compute='_compute_amount', string='Tax')
-
     import_type_ven_line = fields.Char(string='Import Type of Product for calculation')
 
     def action_show_details(self):

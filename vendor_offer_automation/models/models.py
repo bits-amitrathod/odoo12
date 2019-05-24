@@ -64,7 +64,7 @@ class vendor_offer_automation(models.Model):
                     pricing_index = book.sheet_names().index('PPVendorPricing')
                 except:
                     pricing_index = 0
-                excel_columns = vendor_offer_automation._read_xls_book(book, pricing_index, read_data=False)
+                excel_columns = vendor_offer_automation._read_xls_book(book, pricing_index,0, read_data=False)
                 if len(excel_columns) == 1:
                     excel_columns = excel_columns[0]
                     vendor_offer_automation_template = self.env['sps.vendor_offer_automation.template'].search(
@@ -78,6 +78,7 @@ class vendor_offer_automation(models.Model):
                                 mapping_fields.update({name: value})
                     sku_index = None
                     order_list_list = []
+                    sku_not_found_list = []
                     expiration_date_index = -1
                     quantity_index = False
                     if 'mf_customer_sku' in mapping_fields:
@@ -90,7 +91,7 @@ class vendor_offer_automation(models.Model):
                     if not sku_index is None:
                         todays_date = datetime.datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
                         # product_skus = []
-                        excel_data_rows = vendor_offer_automation._read_xls_book(book, pricing_index, read_data=True,
+                        excel_data_rows = vendor_offer_automation._read_xls_book(book, pricing_index,0, read_data=True,
                                                                                  expiration_date_index=expiration_date_index)
                         for excel_data_row in excel_data_rows:
                             sku_code = excel_data_row[sku_index]
@@ -126,7 +127,7 @@ class vendor_offer_automation(models.Model):
                                                           )
                                     if expiration_date_index >= 0:
                                         order_line_obj.update(
-                                            dict(expiration_date=excel_data_row[expiration_date_index]))
+                                            dict(expiration_date_str=excel_data_row[expiration_date_index]))
                                     order_line_obj.update(self.get_product_sales_count(products[0].id))
                                     multiplier_id = self.get_order_line_multiplier(
                                         order_line_obj, query_result['premium'])
@@ -154,10 +155,17 @@ class vendor_offer_automation(models.Model):
                                          # 'offer_price': product_offer_price_comp
                                          })
                                     order_list_list.append(order_line_obj)
+                            else:
+                                sku_not_found_list.append(sku_code)
                                 # product_skus.append(sku_code)
+                        if len(sku_not_found_list) > 0:
+                            raise ValueError(_("Following SKU does not match \\\n\n\n %s") % sku_not_found_list)
                         if len(order_list_list) > 0:
                             for order_line_object in order_list_list:
                                 order_line_model = self.env['purchase.order.line'].with_context(order_line_object)
+                                try: float(order_line_object['product_qty'])
+                                except: raise ValueError(_("Quantity contains incorrect values '%s'")
+                                                         % order_line_object['product_qty'])
                                 order_line_model.create(order_line_object)
 
             except UnicodeDecodeError as ue:
@@ -172,7 +180,7 @@ class vendor_offer_automation(models.Model):
                     pricing_index = book.sheet_names().index('PPVendorPricing')
                 except:
                     pricing_index = 0
-                excel_columns = vendor_offer_automation._read_xls_book(book, pricing_index, read_data=False)
+                excel_columns = vendor_offer_automation._read_xls_book(book, pricing_index, 1,read_data=False)
                 if len(excel_columns) == 1:
                     excel_columns = excel_columns[0]
                     vendor_offer_automation_template_all_column = self.env[
@@ -187,6 +195,7 @@ class vendor_offer_automation(models.Model):
                                 mapping_fields.update({name: value})
                     sku_index = None
                     order_list_list = []
+                    sku_not_found_list = []
                     expiration_date_index = -1
                     quantity_index = False
                     price_index = False
@@ -256,7 +265,7 @@ class vendor_offer_automation(models.Model):
 
                     if not sku_index is None:
                         today_date = datetime.datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
-                        excel_data_rows = vendor_offer_automation._read_xls_book(book, pricing_index, read_data=True,
+                        excel_data_rows = vendor_offer_automation._read_xls_book(book, pricing_index,1,read_data=True,
                                                                                  expiration_date_index=
                                                                                  expiration_date_index)
                         count_obj = 0
@@ -384,12 +393,37 @@ class vendor_offer_automation(models.Model):
                                         order_line_obj.update({'expiration_date': None})
                                 order_list_list.append(order_line_obj)
                                 count_obj = count_obj + 1
+                            else:
+                                sku_not_found_list.append(sku_code)
+
+                        if len(sku_not_found_list) > 0:
+                            raise ValueError(_("Following SKU does not match \n\n\n %s") % sku_not_found_list)
                         #request.session['order_list_list'] = order_list_list
                         count_order = 0
                         if len(order_list_list) > 0:
                             amount_untaxed = 0
                             amount_total = 0
                             for order_line_object_add in order_list_list:
+                                if order_line_object_add['multiplier'] == False:
+                                    order_line_object_add['multiplier'] = None
+                                try: float(order_line_object_add['offer_price'])
+                                except: raise ValueError(_("Offer Price  contains incorrect values %s")
+                                                         % order_line_object_add['offer_price'])
+                                try: float(order_line_object_add['retail_price'])
+                                except: raise ValueError(_("Retail Price  contains incorrect values %s")
+                                                         % order_line_object_add['retail_price'])
+                                try: float(order_line_object_add['offer_price_total'])
+                                except: raise ValueError(_("Offer Price Total  contains incorrect values %s")
+                                                         % order_line_object_add['offer_price_total'])
+                                try: float(order_line_object_add['retail_price_total'])
+                                except: raise ValueError(_("Retail Price Total  contains incorrect values %s")
+                                                         % order_line_object_add['retail_price_total'])
+                                try:
+                                    float(order_line_object_add['product_qty'])
+                                except:
+                                    raise ValueError(_("Quantity contains incorrect values '%s' ")
+                                                     % order_line_object_add['product_qty'])
+
                                 amount_untaxed = amount_untaxed + float(order_line_object_add['offer_price_total'])
                                 amount_total = amount_total + float(order_line_object_add['offer_price_total'])
 
@@ -421,7 +455,7 @@ class vendor_offer_automation(models.Model):
                                          " price_total," \
                                          " " \
                                          " multiplier," \
-                                         "expiration_date," \
+                                         "expiration_date_str," \
                                          " import_type_ven_line )" \
                                          " VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s) " \
                                          " RETURNING id"
@@ -448,7 +482,7 @@ class vendor_offer_automation(models.Model):
                                 line_order_model = self.env['purchase.order.line'].search(
                                     [('id', 'in', line_obj)])
                                 line_order_model.price_subtotal = order_line_object['offer_price_total']
-                                st=''
+
 
             except UnicodeDecodeError as ue:
                 _logger.info(ue)
@@ -548,7 +582,7 @@ class vendor_offer_automation(models.Model):
                     product_sales_count_90=product_sales_count_90, product_sales_count_yrs=product_sales_count_yrs)
 
     @staticmethod
-    def _read_xls_book(book, pricing_index, read_data=False, expiration_date_index=-1):
+    def _read_xls_book(book, pricing_index,flag, read_data=False,expiration_date_index=-1):
         sheet = book.sheet_by_index(pricing_index)
         data = []
         row_index = 0
@@ -559,16 +593,29 @@ class vendor_offer_automation(models.Model):
             values = []
             cell_index = 0
             for cell in row:
-                if expiration_date_index == cell_index and not cell.value is None and str(cell.value) != '':
-                    is_datetime = cell.value % 1 != 0.0
-                    # emulate xldate_as_datetime for pre-0.9.3
-                    dt = datetime.datetime(*xlrd.xldate.xldate_as_tuple(cell.value, book.datemode))
-                    values.append(
-                        dt.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
-                        if is_datetime
-                        else dt.strftime(DEFAULT_SERVER_DATE_FORMAT)
-                    )
-                else:
+                try:
+                    # if flag == 0:
+                    #     if expiration_date_index == cell_index and not cell.value is None and str(cell.value) != '':
+                    #         is_datetime = cell.value % 1 != 0.0
+                    #         # emulate xldate_as_datetime for pre-0.9.3
+                    #         dt = datetime.datetime(*xlrd.xldate.xldate_as_tuple(cell.value, book.datemode))
+                    #         values.append(
+                    #             dt.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+                    #             if is_datetime
+                    #             else dt.strftime(DEFAULT_SERVER_DATE_FORMAT)
+                    #         )
+                    #     else:
+                    #         if cell.ctype is xlrd.XL_CELL_NUMBER:
+                    #             is_float = cell.value % 1 != 0.0
+                    #             values.append(
+                    #                 pycompat.text_type(cell.value)
+                    #                 if is_float
+                    #                 else pycompat.text_type(int(cell.value))
+                    #             )
+                    #         else:
+                    #             values.append(cell.value)
+                    #     cell_index = cell_index + 1
+                    #else:
                     if cell.ctype is xlrd.XL_CELL_NUMBER:
                         is_float = cell.value % 1 != 0.0
                         values.append(
@@ -578,12 +625,15 @@ class vendor_offer_automation(models.Model):
                         )
                     else:
                         values.append(cell.value)
-                cell_index = cell_index + 1
+                    cell_index = cell_index + 1
+                except:
+                    raise ValueError(_("Invalid value '%s'") % cell.value)
             data.append(values)
             if not read_data:
                 break
             row_index = row_index + 1
         return data
+
 
     @api.multi
     def write(self, vals):
