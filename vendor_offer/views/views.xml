@@ -298,7 +298,7 @@
                                                 <field name="name" invisible="1"/>
                                                 <field name="product_tier" readonly="1"/>
                                                 <field name="product_qty"/>
-                                                <field name="expiration_date" widget="date">
+                                                <field name="expiration_date_str" >
 
                                                 </field>
                                                 <field name="qty_in_stock"/>
@@ -342,7 +342,7 @@
                                         <field name="name" invisible="1"/>
                                         <field name="product_tier" readonly="1"/>
                                         <field name="product_qty" attrs="{'readonly': [('import_type_ven_line', '==', 'all_field_import')]}"/>
-                                        <field name="expiration_date" widget="date"/>
+                                        <field name="expiration_date_str" />
                                         <field name="qty_in_stock"/>
                                         <field name="product_sales_count"/>
                                         <field name="product_sales_count_month"/>
@@ -353,7 +353,7 @@
                                         <field name="expired_inventory"/>
                                         <field name="product_unit_price"/>
                                         <!--<field name="product_offer_price" attrs="{'readonly': False}" />-->
-                                        <field name="product_offer_price" attrs="{'readonly': [('import_type_ven_line', '==', 'all_field_import')]}"/>
+                                        <field name="product_offer_price" />
                                         <field name="import_type_ven_line" invisible="1"/>
                                         <field name="product_retail"/>
                                         <field name="price_subtotal" string="Total Offer Price"/>
