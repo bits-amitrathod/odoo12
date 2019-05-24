@@ -8,7 +8,7 @@
                 report_type="qweb-html"
                 file="sales_by_month.sales_by_month_template"
                 name="sales_by_month.sales_by_month_template"
-                manu = "False"
+                menu = "False"
                 />
     </data>
 </odoo>
