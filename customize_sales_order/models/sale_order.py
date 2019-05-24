@@ -14,8 +14,9 @@ class stock_picking(models.Model):
     note = fields.Text('Notes', compute='_get_note')
 
     def _get_note(self):
-        sale_order = self.env['sale.order'].search([('name', '=', self.origin)])
-        self.note = sale_order.sale_note
+        for stock_picking in self:
+            sale_order = self.env['sale.order'].search([('name', '=', stock_picking.origin)])
+            stock_picking.note = sale_order.sale_note
 
 
 
