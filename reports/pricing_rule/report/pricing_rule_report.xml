@@ -8,6 +8,7 @@
                 report_type="qweb-html"
                 file="pricing_rule.inv_pricing_rule_template"
                 name="pricing_rule.inv_pricing_rule_template"
+                menu="False"
         />
     </data>
 </odoo>
