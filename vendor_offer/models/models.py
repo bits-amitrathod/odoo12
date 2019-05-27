@@ -235,6 +235,12 @@ class VendorOffer(models.Model):
                     rt_price_tax += line.rt_price_tax
                     rt_price_total += line.rt_price_total
 
+                    # line.for_print_product_offer_price = str(line.product_offer_price)
+                    # line.for_print_price_subtotal = str(line.price_subtotal)
+                    # if ((line.expiration_date_str is False) or (line.expiration_date_str == '')) and line.expiration_date :
+                    #     line.expiration_date_str = line.expiration_date
+                    #     line.update({ 'expiration_date_str': line.expiration_date_str })
+
                 if order.accelerator:
                     # amount_untaxed = product_retail * 0.50
                     max = rt_price_total * 0.65
@@ -321,10 +327,6 @@ class VendorOffer(models.Model):
             self.offer_type_pdf_text = 'Credit to Purchase'
             self.credit_offer_type_pdf_text = 'Credit Offer is valid for 12 months from the date of issue'
         self.write({'status': 'ven_sent', 'state': 'ven_sent'})
-        for order in self:
-            for line in order.order_line:
-                line.for_print_product_offer_price=str(line.product_offer_price)
-                line.for_print_price_subtotal = str(line.price_subtotal)
         return self.env.ref('vendor_offer.action_report_vendor_offer').report_action(self)
 
     @api.multi
