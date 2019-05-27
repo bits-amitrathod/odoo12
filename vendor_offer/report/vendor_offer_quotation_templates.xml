@@ -101,7 +101,7 @@
                           <!--  <span t-field="order_line.product_uom" groups="product.group_uom"/>-->
                         </td>
                         <td class="text-right">
-                            <span t-field="order_line.for_print_product_offer_price"/>
+                            <span t-field="order_line.product_offer_price" widget="monetary"/>
                         </td>
                     <!--    <td class="text-right">
                             <span t-field="order_line.price_subtotal" />
@@ -110,7 +110,7 @@
                             <span t-field="order_line.price_tax" />
                         </td>-->
                            <td class="text-right">
-                            <span t-field="order_line.for_print_price_subtotal" />
+                            <span t-field="order_line.price_subtotal" widget="monetary" />
                         </td>
                     </tr>
                     <tr>

@@ -427,6 +427,7 @@ class vendor_offer_automation(models.Model):
                                 amount_untaxed = amount_untaxed + float(order_line_object_add['offer_price_total'])
                                 amount_total = amount_total + float(order_line_object_add['offer_price_total'])
 
+                            currency_id_insert = 0
                             for order_line_object in order_list_list:
                                 # order_line_model = self.env['purchase.order.line'].with_context(order_line_object)
                                 # order_line_model.create(order_line_object)
@@ -445,7 +446,7 @@ class vendor_offer_automation(models.Model):
                                     order_model.write({'amount_total': amount_total})
                                     order_model.write({'possible_competition': possible_competition})
                                     order_model.write({'date_planned': order_line_object['date_planned']})
-
+                                    currency_id_insert = order_model.currency_id.id
                                     count_order = count_order+1
 
                                 insert = "INSERT INTO purchase_order_line" \
@@ -456,8 +457,9 @@ class vendor_offer_automation(models.Model):
                                          " " \
                                          " multiplier," \
                                          "expiration_date_str," \
-                                         " import_type_ven_line )" \
-                                         " VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s) " \
+                                         " import_type_ven_line,currency_id )" \
+                                         " VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s," \
+                                         " %s, %s , %s) " \
                                          " RETURNING id"
 
                                 sql_query = insert
@@ -475,7 +477,8 @@ class vendor_offer_automation(models.Model):
                                         order_line_object['offer_price_total']
                                         ,order_line_object['multiplier'],
                                         order_line_object['expiration_date'],
-                                        order_line_object['import_type_ven_line'])
+                                        order_line_object['import_type_ven_line'],
+                                        currency_id_insert)
 
                                 self._cr.execute(sql_query,val)
                                 line_obj = self._cr.fetchone()
