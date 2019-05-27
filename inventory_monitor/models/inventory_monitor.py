@@ -36,8 +36,8 @@ class ProductTemplate(models.Model):
             if ml.max_inventory_product_level_duration is not None and ml.max_inventory_product_level_duration > 0 :
                 max_inventory_level_duration = int(ml.max_inventory_product_level_duration)
             quantity = 0
-            sale_quant =0
-            purchase_qty=0
+            sale_quant = 0
+            purchase_qty = 0
             max_inventory = 0
             products = self.env['product.product'].search([('product_tmpl_id', '=', ml.id),('qty_available','>=',0)])
             for product_id in products:

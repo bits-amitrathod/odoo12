@@ -256,6 +256,12 @@ class FedexRequest():
 
         self.RequestedShipment.CustomsClearanceDetail.DocumentContent = document_content
 
+    def customer_references(self,type,value):
+        customerReferences = self.client.factory.create('CustomerReference')
+        customerReferences.CustomerReferenceType=type
+        customerReferences.Value = value
+        self.RequestedShipment.RequestedPackageLineItems.CustomerReferences.append(customerReferences)
+
     def commodities(self, commodity_currency, commodity_amount, commodity_number_of_piece, commodity_weight_units,
                     commodity_weight_value, commodity_description, commodity_country_of_manufacture, commodity_quantity,
                     commodity_quantity_units):
@@ -287,6 +293,7 @@ class FedexRequest():
         try:
             #print("self.RequestedShipment")
             #print(self.RequestedShipment)
+            # self.RequestedShipment.RequestedPackageLineItems.CustomerReferences.append(self.CustomerReferences)
             self.response = self.client.service.processShipment(WebAuthenticationDetail=self.WebAuthenticationDetail,
                                                                 ClientDetail=self.ClientDetail,
                                                                 TransactionDetail=self.TransactionDetail,
