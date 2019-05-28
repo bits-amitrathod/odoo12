@@ -236,6 +236,11 @@ class StockPicking(models.Model):
         if self._check_backorder():
             return self.action_generate_backorder_wizard()
         self.action_done()
+
+        if picking_type.code == "outgoing":
+            if self.state == 'done' and self.carrier_tracking_ref:
+                self.env['sale.order'].search([('name', '=', self.origin)]).write({'carrier_track_ref': self.carrier_tracking_ref})
+
         return
 
     @api.multi
