@@ -342,7 +342,7 @@
                                         <field name="name" invisible="1"/>
                                         <field name="product_tier" readonly="1"/>
                                         <field name="product_qty" attrs="{'readonly': [('import_type_ven_line', '==', 'all_field_import')]}"/>
-                                        <field name="expiration_date_str" />
+                                        <field name="expiration_date_str" attrs="{'readonly': [('import_type_ven_line', '==', 'all_field_import')]}" />
                                         <field name="qty_in_stock"/>
                                         <field name="product_sales_count"/>
                                         <field name="product_sales_count_month"/>
