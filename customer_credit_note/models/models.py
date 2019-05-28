@@ -47,7 +47,7 @@ class CustomerCreditNote(models.Model):
                         invoice_line_obj_list = self.env['account.invoice.line'].search(
                             [('invoice_id', 'in', invoice_obj_fetch.ids)])
 
-                        account_obj = self.env['account.account'].search([('code', '=', '121212')])
+                        account_obj = self.env['account.account'].search([('code', '=', '1310')])
                         for line in invoice_line_obj_list:
                             name = 'Credit Transfer'
                             if invoice_obj_fetch.origin:
