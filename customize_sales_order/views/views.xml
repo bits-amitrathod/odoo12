@@ -12,5 +12,29 @@
                 </xpath>
             </field>
     </record>
+
+      <record id="view_order_form_with_carrier_tracking_ref" model="ir.ui.view">
+            <field name="name">sale.order.form.view.with_carrier_tracking_ref</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                  <xpath expr="//field[@name='payment_term_id']" position="after">
+                      <field name="carrier_track_ref"/>
+                  </xpath>
+            </field>
+       </record>
+
+      <!-- Adding Carrier Tracking Ref field into filter-->
+        <record id="view_sales_order_filter_carrier_tracking_ref" model="ir.ui.view">
+            <field name="name">sale.order.common.search.inherit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+            <field name="arch" type="xml">
+		    <xpath expr="/search" position="inside">
+                <field name="carrier_track_ref"/>
+		        <filter string="Carrier Tracking Ref" domain="[]"/>
+		    </xpath>
+            </field>
+        </record>
   </data>
 </odoo>

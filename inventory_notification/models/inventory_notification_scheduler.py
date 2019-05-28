@@ -760,8 +760,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                     values1['model'] = None
                     values1['res_id'] = False
 
-                    current_mail = self.env['mail.mail'].browse(template_id)
-                    current_mail.mail_message_id.write(values1)
+                    self.env['mail.mail'].browse(template_id).write(values1)
+                    # current_mail.mail_message_id.write(values1)
         except:
             error_msg = "mail sending fail for email id: %r" + email + " sending error report to admin"
             _logger.info(error_msg)
