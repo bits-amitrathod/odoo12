@@ -17,27 +17,48 @@
                     </div>
                     <br/>
                     <table class="table table-condensed" style="border: 1px solid black;">
+                        <t t-set="code_value" t-value="code"/>
                         <thead>
                             <tr style="border: 1px solid black;">
                                 <th style="border: 1px solid black;text-align: center;">Customer Name</th>
                                 <th style="border: 1px solid black;text-align: center;">Months Ago First Order</th>
+                                <t t-if="int(code_value) == 12">
+                                    <th style="border: 1px solid black;text-align: center;">
+                                        <span t-esc="(datetime.datetime.strptime(start_date, '%Y-%m-%d').date()- relativedelta(months=11)).strftime('%b-%Y')"/>
+                                    </th>
+                                    <th style="border: 1px solid black;text-align: center;">
+                                        <span t-esc="(datetime.datetime.strptime(start_date, '%Y-%m-%d').date()- relativedelta(months=10)).strftime('%b-%Y')"/>
+                                    </th>
+                                    <th style="border: 1px solid black;text-align: center;">
+                                        <span t-esc="(datetime.datetime.strptime(start_date, '%Y-%m-%d').date()- relativedelta(months=9)).strftime('%b-%Y')"/>
+                                    </th>
+                                    <th style="border: 1px solid black;text-align: center;">
+                                        <span t-esc="(datetime.datetime.strptime(start_date, '%Y-%m-%d').date()- relativedelta(months=8)).strftime('%b-%Y')"/>
+                                    </th>
+                                    <th style="border: 1px solid black;text-align: center;">
+                                        <span t-esc="(datetime.datetime.strptime(start_date, '%Y-%m-%d').date()- relativedelta(months=7)).strftime('%b-%Y')"/>
+                                    </th>
+                                    <th style="border: 1px solid black;text-align: center;">
+                                        <span t-esc="(datetime.datetime.strptime(start_date, '%Y-%m-%d').date()- relativedelta(months=6)).strftime('%b-%Y')"/>
+                                    </th>
+                                </t>
                                 <th style="border: 1px solid black;text-align: center;">
-                                    <span t-esc="(datetime.datetime.now()- relativedelta(months=5)).strftime('%b-%Y')"/>
+                                    <span t-esc="(datetime.datetime.strptime(start_date, '%Y-%m-%d').date()- relativedelta(months=5)).strftime('%b-%Y')"/>
                                 </th>
                                 <th style="border: 1px solid black;text-align: center;">
-                                    <span t-esc="(datetime.datetime.now()- relativedelta(months=4)).strftime('%b-%Y')"/>
+                                    <span t-esc="(datetime.datetime.strptime(start_date, '%Y-%m-%d').date()- relativedelta(months=4)).strftime('%b-%Y')"/>
                                 </th>
                                 <th style="border: 1px solid black;text-align: center;">
-                                    <span t-esc="(datetime.datetime.now()- relativedelta(months=3)).strftime('%b-%Y')"/>
+                                    <span t-esc="(datetime.datetime.strptime(start_date, '%Y-%m-%d').date()- relativedelta(months=3)).strftime('%b-%Y')"/>
                                 </th>
                                 <th style="border: 1px solid black;text-align: center;">
-                                    <span t-esc="(datetime.datetime.now()- relativedelta(months=2)).strftime('%b-%Y')"/>
+                                    <span t-esc="(datetime.datetime.strptime(start_date, '%Y-%m-%d').date()- relativedelta(months=2)).strftime('%b-%Y')"/>
                                 </th>
                                 <th style="border: 1px solid black;text-align: center;">
-                                    <span t-esc="(datetime.datetime.now()- relativedelta(months=1)).strftime('%b-%Y')"/>
+                                    <span t-esc="(datetime.datetime.strptime(start_date, '%Y-%m-%d').date()- relativedelta(months=1)).strftime('%b-%Y')"/>
                                 </th>
                                 <th style="border: 1px solid black;text-align: center;">
-                                    <span t-esc="datetime.datetime.now().strftime('%b-%Y')"/>
+                                    <span t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').date().strftime('%b-%Y')"/>
                                 </th>
                                 <th style="border: 1px solid black;text-align: center;">Total Purchased Month</th>
                                 <th style="border: 1px solid black;text-align: center;">Average</th>
@@ -54,6 +75,26 @@
                                 <td style="border: 1px solid black;">
                                     <span t-esc="order.month_count"/>
                                 </td>
+                                <t t-if="int(code_value) == 12">
+                                    <td align="center" style="border: 1px solid black;">
+                                        <span t-esc="order.month12" t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                    </td>
+                                    <td align="center" style="border: 1px solid black;">
+                                        <span t-esc="order.month11" t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                    </td>
+                                    <td align="center" style="border: 1px solid black;">
+                                        <span t-esc="order.month10" t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                    </td>
+                                    <td align="center" style="border: 1px solid black;">
+                                        <span t-esc="order.month9" t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                    </td>
+                                    <td align="center" style="border: 1px solid black;">
+                                        <span t-esc="order.month8" t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                    </td>
+                                    <td align="center" style="border: 1px solid black;">
+                                        <span t-esc="order.month7" t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                    </td>
+                                </t>
                                 <td style="border: 1px solid black;">
                                     <span t-esc="order.month6"
                                           t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
@@ -94,7 +135,12 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="11" style="text-align: right;">Total</td>
+                                <t t-if="int(code_value) == 12">
+                                    <td colspan="17" style="text-align: right;">Total</td>
+                                </t>
+                                <t t-else="">
+                                    <td colspan="11" style="text-align: right;">Total</td>
+                                </t>
                                 <td style="text-align: right;  border: 1px solid black;">
                                     <span t-esc="total_value" t-options='{"widget": "monetary", "display_currency": data[0].currency_id}'/>
                                 </td>

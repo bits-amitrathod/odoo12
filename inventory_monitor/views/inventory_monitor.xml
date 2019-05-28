@@ -50,7 +50,7 @@
              </xpath>
         </field>
     </record>
-     <record id="product_template_monitor_search_view" model="ir.ui.view">
+    <record id="product_template_monitor_search_view" model="ir.ui.view">
         <field name="name">product.template.search</field>
         <field name="model">product.template</field>
         <field name="arch" type="xml">
@@ -125,6 +125,23 @@
           </p>
         </field>
     </record>
+
+    <record model="ir.ui.view" id="product_template_form_view_procurement_button1">
+            <field name="name">product.template_max_inventory_level_duration</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//group[@name='operations']" position="inside">
+                        <label for="max_inventory_product_level_duration" attrs="{'invisible': [('inventory_monitor', '=', False)]}"/>
+                        <div attrs="{'invisible': [('inventory_monitor', '=', False)]}">
+                            <field name="max_inventory_product_level_duration" class="oe_inline"   />
+                            <span> days</span>
+                        </div>
+                    </xpath>
+                </data>
+            </field>
+        </record>
 
       <!-- Product menu-->
       <menuitem name="Inventory Monitor" id="menu_procurement_partner_contact_form_ext" action="product_normal_action_puchased_ext"

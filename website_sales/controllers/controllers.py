@@ -110,6 +110,10 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
     def payment_confirmation(self, **post):
         responce = super(WebsiteSales, self).payment_confirmation(**post)
         responce.qcontext['order'].workflow_process_id = 1
+
+        if request.env.user.user_id.id:
+            responce.qcontext['order'].user_id = request.env.user.user_id
+
         template = request.env.ref('website_sales.common_mail_template').sudo()
         template.send_mail(responce.qcontext['order'].id, force_send=True)
         return responce
