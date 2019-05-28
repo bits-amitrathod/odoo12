@@ -21,7 +21,7 @@ class sale_order(models.Model):
                     break
             break
 
-class stock_picking(models.Model):
+class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
     note = fields.Text('Notes', compute='_get_note')
@@ -30,3 +30,26 @@ class stock_picking(models.Model):
         for stock_picking in self:
             sale_order = self.env['sale.order'].search([('name', '=', stock_picking.origin)])
             stock_picking.note = sale_order.sale_note
+
+    @api.multi
+    def button_validate(self):
+
+        action = super(StockPicking, self).button_validate()
+
+        if self.picking_type_id.code == "outgoing":
+            if self.state == 'done' and self.carrier_id and self.carrier_tracking_ref:
+                sale_order = self.env['sale.order'].search([('name', '=', self.origin)])
+                sale_order.carrier_track_ref = self.carrier_tracking_ref
+                if sale_order.carrier_id.id is False:
+                    sale_order.carrier_id = self.carrier_id.id
+                    sale_order.delivery_price = self.carrier_price
+        return action
+
+    @api.one
+    def cancel_shipment(self):
+        self.carrier_id.cancel_shipment(self)
+        msg = "Shipment %s cancelled" % self.carrier_tracking_ref
+        self.message_post(body=msg)
+        self.carrier_tracking_ref = False
+        sale_order = self.env['sale.order'].search([('name', '=', self.origin)])
+        sale_order.carrier_track_ref = False
