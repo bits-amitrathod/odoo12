@@ -757,7 +757,7 @@ class VendorOfferProduct(models.Model):
                 'product_offer_price': product_offer_price
             })
 
-    product_offer_price = fields.Monetary(string="Offer Price", compute=_set_offer_price, store=True)
+    product_offer_price = fields.Monetary(string="Offer Price", default=_set_offer_price, store=True)
 
     # def update_product_expiration_date(self):
     #     for order in self:
