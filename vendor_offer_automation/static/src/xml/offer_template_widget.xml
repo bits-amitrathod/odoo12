@@ -83,8 +83,8 @@
                             will set up subscriptions and send notifications
                             during the import, but lead to a slower import."
                          class="oe_import_tracking">
-                        <input type="checkbox" id="oe_import_tracking"/>
-                        <label for="oe_import_tracking">
+                        <input type="checkbox" id="oe_import_tracking"  style="display:none"/>
+                        <label for="oe_import_tracking"  style="display:none">
                             Track history during import
                         </label>
                     </div>
@@ -92,19 +92,19 @@
                     parent / child relation occurs on every line, and lead to a slower import.
                     Defering it can speed up import."
                          class="oe_import_deferparentstore">
-                        <input type="checkbox" id="oe_import_deferparentstore" checked="checked"/>
-                        <label for="oe_import_deferparentstore">
+                        <input type="checkbox" id="oe_import_deferparentstore" checked="checked"  style="display:none"/>
+                        <label for="oe_import_deferparentstore"  style="display:none">
                             Defer parent/child computation
                         </label>
                     </div>
                     <input type="checkbox" class="oe_import_has_header"
-                           id="oe_import_has_header" checked="checked"/>
-                    <label for="oe_import_has_header">The first row
+                           id="oe_import_has_header" checked="checked"  style="display:none"/>
+                    <label for="oe_import_has_header"  style="display:none">The first row
                         contains the label of the column
                     </label>
                     <input type="checkbox" class="oe_import_advanced_mode" checked="checked"
-                           id="oe_import_advanced_mode"/>
-                    <label for="oe_import_advanced_mode">Show fields of relation fields (advanced)</label>
+                           id="oe_import_advanced_mode"   style="display:none"/>
+                    <label for="oe_import_advanced_mode"  style="display:none">Show fields of relation fields (advanced)</label>
                     <p class="oe_import_noheaders">If the file contains
                         the column names, Odoo can try auto-detecting the
                         field corresponding to the column. This makes imports
@@ -112,7 +112,9 @@
                     </p>
 
                     <div class="oe_import_error_report"></div>
+                    <div class="table-responsive" style="overflow-y: auto;">
                     <table class="table-striped table-bordered oe_import_grid"/>
+                       </div>
                 </div>
 
             </div>
@@ -121,6 +123,14 @@
     </t>
 
     <t t-name="ImportOfferTemplateView">
+
+        <t t-extend="ImportView">
+            <t t-call="ImportOfferTemplateViewInner"/>
+        </t>
+
+    </t>
+
+     <t t-name="ImportOfferTemplateViewAll">
 
         <t t-extend="ImportView">
             <t t-call="ImportOfferTemplateViewInner"/>

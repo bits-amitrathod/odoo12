@@ -25,6 +25,7 @@ class Customer(models.Model):
     cooling_period = fields.Integer("Cooling Period in days", readonly=False)
     auto_allocate = fields.Boolean("Allow Auto Allocation?", readonly=False)
     length_of_hold = fields.Integer("Length Of Hold in hours", readonly=False, default=1)
+    doc_process_count = fields.Integer("Document Processing Count", readonly=False, default='1')
     expiration_tolerance = fields.Integer("Expiration Tolerance in Months", readonly=False)
     partial_ordering = fields.Boolean("Allow Partial Ordering?", readonly=False)
     partial_UOM = fields.Boolean("Allow Partial UOM?", readonly=False)
@@ -52,6 +53,17 @@ class Customer(models.Model):
         ('3', 'Freight Collect')], string='Shipping Terms')
     allow_purchase = fields.Boolean("Purchase Order Method")
     is_parent = fields.Boolean("Purchase Order Method", default=True)
+
+    @api.onchange('doc_process_count')
+    def _onchange_doc_process_count(self):
+        if self.doc_process_count < 1:
+            raise ValidationError(_('Document Processing Count at least 1'))
+
+    @api.constrains('doc_process_count')
+    @api.one
+    def _check_doc_process_count(self):
+        if self.doc_process_count < 1:
+            raise ValidationError(_('Document Processing Count at least 1'))
 
     @api.model
     def create(self, vals):

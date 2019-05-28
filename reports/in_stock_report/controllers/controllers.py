@@ -157,7 +157,7 @@ class ReportPrintInStockExport(http.Controller):
 
         for line in data.values():
             records.append([line['res_partner'], line['product_brand'], line['sku_code'], line['product_template'],
-                            "$" + str(line['list_price']), line['actual_quantity'], line['product_uom'],
+                            "$" + " {0:.2f}".format(line['list_price']), line['actual_quantity'], line['product_uom'],
                             line['min_expiration_date'], line['max_expiration_date']])
 
         res = request.make_response(
