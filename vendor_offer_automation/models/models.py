@@ -403,19 +403,24 @@ class vendor_offer_automation(models.Model):
                         if len(order_list_list) > 0:
                             amount_untaxed = 0
                             amount_total = 0
+
                             for order_line_object_add in order_list_list:
                                 if order_line_object_add['multiplier'] == False:
                                     order_line_object_add['multiplier'] = None
-                                try: float(order_line_object_add['offer_price'])
+                                try:
+                                    offer_price = float(order_line_object_add['offer_price'])
                                 except: raise ValueError(_("Offer Price  contains incorrect values %s")
                                                          % order_line_object_add['offer_price'])
-                                try: float(order_line_object_add['retail_price'])
+                                try:
+                                    retail_price = float(order_line_object_add['retail_price'])
                                 except: raise ValueError(_("Retail Price  contains incorrect values %s")
                                                          % order_line_object_add['retail_price'])
-                                try: float(order_line_object_add['offer_price_total'])
+                                try:
+                                    offer_price_total = float(order_line_object_add['offer_price_total'])
                                 except: raise ValueError(_("Offer Price Total  contains incorrect values %s")
                                                          % order_line_object_add['offer_price_total'])
-                                try: float(order_line_object_add['retail_price_total'])
+                                try:
+                                    retail_price_total = float(order_line_object_add['retail_price_total'])
                                 except: raise ValueError(_("Retail Price Total  contains incorrect values %s")
                                                          % order_line_object_add['retail_price_total'])
                                 try:
@@ -428,9 +433,13 @@ class vendor_offer_automation(models.Model):
                                 amount_total = amount_total + float(order_line_object_add['offer_price_total'])
 
                             currency_id_insert = 0
+                            create_uid = 0
+                            company_id = 0
+                            create_date = 0
                             for order_line_object in order_list_list:
                                 # order_line_model = self.env['purchase.order.line'].with_context(order_line_object)
                                 # order_line_model.create(order_line_object)
+                                offer_price = retail_price = offer_price_total = retail_price_total = 0
                                 if count_order == 0:
                                     order_model = self.env['purchase.order'].search([('id', '=',
                                                                                       order_line_object['order_id'])])
@@ -447,44 +456,54 @@ class vendor_offer_automation(models.Model):
                                     order_model.write({'possible_competition': possible_competition})
                                     order_model.write({'date_planned': order_line_object['date_planned']})
                                     currency_id_insert = order_model.currency_id.id
+                                    create_uid = order_model.create_uid.id
+                                    company_id = order_model.company_id.id
+                                    create_date = order_model.create_date
                                     count_order = count_order+1
 
+                                # offer_price = float(order_line_object_add['offer_price'])
+                                # retail_price = float(order_line_object_add['retail_price'])
+                                # offer_price_total = float(order_line_object_add['offer_price_total'])
+                                # retail_price_total = float(order_line_object_add['retail_price_total'])
+
                                 insert = "INSERT INTO purchase_order_line" \
-                                         "(name,product_uom,price_unit,product_qty,date_planned,order_id,product_id,qty_in_stock," \
+                                         "(name,product_uom,price_unit,product_qty,date_planned,order_id,product_id," \
+                                         " qty_in_stock," \
                                          "product_unit_price,product_offer_price,product_sales_count_90" \
                                          " , product_sales_count_yrs,product_sales_count,expired_inventory," \
                                          " price_total," \
                                          " " \
                                          " multiplier," \
                                          "expiration_date_str," \
-                                         " import_type_ven_line,currency_id )" \
+                                         " import_type_ven_line,currency_id,product_sales_count_month" \
+                                         " ,create_uid,company_id,create_date,price_tax,qty_invoiced)" \
                                          " VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s," \
-                                         " %s, %s , %s) " \
+                                         " %s, %s , %s ,%s ,%s,%s ,%s ,%s,%s) " \
                                          " RETURNING id"
 
                                 sql_query = insert
                                 val = ( order_line_object['prod_name'],order_line_object['product_uom'],
-                                        order_line_object['offer_price'],
+                                        float("{0:.2f}".format(float(order_line_object['offer_price']))),
                                         order_line_object['product_qty'],order_line_object['date_planned'],
                                         order_line_object['order_id'],order_line_object['product_id'],
                                         order_line_object['qty_in_stock'] ,
-                                        order_line_object['retail_price'],
-                                        order_line_object['offer_price'],
+                                        float("{0:.2f}".format(float(order_line_object['retail_price']))),
+                                        float("{0:.2f}".format(float(order_line_object['offer_price']))),
                                         order_line_object['product_sales_count_90']
                                         , order_line_object['product_sales_count_yrs'],
                                         order_line_object['product_sales_count'],
                                         order_line_object['expired_inventory'],
-                                        order_line_object['offer_price_total']
-                                        ,order_line_object['multiplier'],
+                                        float("{0:.2f}".format(float(order_line_object['offer_price_total']))),
+                                        order_line_object['multiplier'],
                                         order_line_object['expiration_date'],
                                         order_line_object['import_type_ven_line'],
-                                        currency_id_insert)
+                                        currency_id_insert, 0,create_uid,company_id,create_date,0,0)
 
                                 self._cr.execute(sql_query,val)
                                 line_obj = self._cr.fetchone()
                                 line_order_model = self.env['purchase.order.line'].search(
                                     [('id', 'in', line_obj)])
-                                line_order_model.price_subtotal = order_line_object['offer_price_total']
+                                line_order_model.price_subtotal = float(order_line_object['offer_price_total'])
 
 
             except UnicodeDecodeError as ue:
