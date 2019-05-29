@@ -816,7 +816,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                             if column_name == 'actual_quantity':
                                 column = int(product[column_name])
                             elif column_name == 'list_price':
-                                column = '$' + str(product[column_name])
+                                column = '$' + " {0:.2f}".format(product[column_name])
                             else:
                                 column = str(product[column_name])
                         else:
