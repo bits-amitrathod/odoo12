@@ -105,14 +105,15 @@
                             <span t-field="order_line.sku_code"/>
                         </td>
                           <td class="text-center">
-                            <span t-field="order_line.expiration_date" t-options='{"widget": "date"}'/>
+                            <span t-field="order_line.expiration_date_str" />
+                              <!--<span t-field="order_line.expiration_date" t-options='{"widget": "date"}'/>-->
                         </td>
                         <td class="text-right">
                             <span t-field="order_line.product_qty"/>
                           <!--  <span t-field="order_line.product_uom" groups="product.group_uom"/>-->
                         </td>
                         <td class="text-right">
-                            <span t-field="order_line.product_offer_price"/>
+                            <span t-field="order_line.product_offer_price" widget="monetary"/>
                         </td>
                     <!--    <td class="text-right">
                             <span t-field="order_line.price_subtotal" />
@@ -121,7 +122,7 @@
                             <span t-field="order_line.price_tax" />
                         </td>-->
                            <td class="text-right">
-                            <span t-field="order_line.price_subtotal" />
+                            <span t-field="order_line.price_subtotal" widget="monetary" />
                         </td>
                     </tr>
                     <tr>

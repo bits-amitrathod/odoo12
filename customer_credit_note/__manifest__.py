@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Customize Sales Order",
+
+    'name': "Customer Credit Note",
 
     'author': "Benchmark IT Solutions",
-    'website': "http://www.benchmarkitsolutions.com",
+    'website': "http://www.benchmarkit.solutions",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/master/odoo/addons/base/module/module_data.xml
@@ -12,7 +13,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'delivery', 'prioritization_engine', 'purchase'],
+    'depends': ['base','account','account_invoicing'],
 
     # always loaded
     'data': [
@@ -20,8 +21,9 @@
         'views/views.xml',
         'views/templates.xml',
     ],
+    # only loaded in demonstration mode
 
     'application': True,
+    'auto-install': True,
     'installable': True,
-    'auto_install': True
 }
