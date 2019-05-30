@@ -3,7 +3,7 @@
     <data>
 
         <record id="view_popup_view" model="ir.ui.view">
-            <field name="name">Acquisition Report</field>
+            <field name="name">Payments Scheduled Report</field>
             <field name="model">payments_scheduler.report.summary</field>
             <field name="arch" type="xml">
                 <form string="Choose your date">
@@ -21,7 +21,7 @@
         </record>
 
         <record id="form_list" model="ir.ui.view">
-            <field name="name">Payments Scheduler Report</field>
+            <field name="name">Payments Scheduled Report</field>
             <field name="model">account.invoice</field>
             <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false">
@@ -41,7 +41,7 @@
         </record>
 
         <record id="form_view" model="ir.ui.view">
-            <field name="name">Payments Scheduler Report</field>
+            <field name="name">Payments Scheduled Report</field>
             <field name="model">account.invoice</field>
             <field name="arch" type="xml">
                 <form create="false" edit="false" delete="false">
@@ -68,7 +68,7 @@
         </record>
 
         <record id="payments_scheduler_action" model="ir.actions.act_window">
-            <field name="name">Payments Scheduler Report</field>
+            <field name="name">Payments Scheduled Report</field>
             <field name="res_model">payments_scheduler.report.summary</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
@@ -78,7 +78,7 @@
         </record>
 
         <menuitem id="menu_acquisition_report"
-                  name="Payments Scheduler Report"
+                  name="Payments Scheduled Report"
                   action="payments_scheduler_action"
                   parent="account.menu_finance_reports"
                   sequence="1"/>
