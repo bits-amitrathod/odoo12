@@ -14,13 +14,13 @@ _logger = logging.getLogger(__name__)
 class InventoryNotificationScheduler(models.TransientModel):
     _name = 'inventory.notification.scheduler'
 
-    #warehouse_email = "vasimkhan@benchmarkitsolutions.com"
-    #sales_email = "rohitkabadi@benchmarkitsolutions.com"
-    #acquisitions_email = "ajinkyanimbalkar@benchmarkitsolutions.com"
+    warehouse_email = "vasimkhan@benchmarkit.solutions"
+    sales_email = "rohitkabadi@benchmarkit.solutions"
+    acquisitions_email = "ajinkyanimbalkar@benchmarkit.solutions"
 
-    warehouse_email = "warehouse@surgicalproductsolutions.com"
-    sales_email = "salesteam@surgicalproductsolutions.com"
-    acquisitions_email = "acquisitions@surgicalproductsolutions.com"
+    #warehouse_email = "warehouse@surgicalproductsolutions.com"
+    #sales_email = "salesteam@surgicalproductsolutions.com"
+    #acquisitions_email = "acquisitions@surgicalproductsolutions.com"
 
     def process_manual_notification_scheduler(self):
         _logger.info("process_manual_notification_scheduler called..")
@@ -81,10 +81,15 @@ class InventoryNotificationScheduler(models.TransientModel):
             'subject': "Pull Done For Sale Order # " + picking.sale_id.name,
             'header': ['Catalog number', 'Description', 'Quantity'],
             'columnProps': ['sku', 'Product', 'qty'],
-            'closing_content': 'Thanks & Regards,<br/> Warehouse Team'
+            'closing_content': 'Thanks & Regards,<br/> Warehouse Team',
+            'description':"Hi " + picking.sale_id.user_id.display_name + \
+                              ", <br/><br/> Please find detail Of Sale Order: " + picking.sale_id.name+ "<br/>"+\
+                             "<strong> Notes :  </strong>" + (picking.sale_id.sale_note or "N/A"),
         }
-        vals['description'] = "Hi " + picking.sale_id.user_id.display_name + \
-                              ", <br/><br/> Please find detail Of Sale Order: " + picking.sale_id.name
+        '''vals['description'] = "Hi " + picking.sale_id.user_id.display_name + \
+                              ", <br/><br/> Please find detail Of Sale Order: " + picking.sale_id.name+ "<br/>"+\
+                             "<strong> Notes :  </strong>"'''
+
         print("Inside Pull")
         print(users.sudo().email)
         self.process_common_email_notification_template(super_user, users, vals['subject'], vals['description'],
@@ -133,7 +138,9 @@ class InventoryNotificationScheduler(models.TransientModel):
                                    sale_order_ref.partner_id.name or "") + "<br/>" + \
                            "<strong> Shipping Address: </strong> " + (address_ref.street or "") + \
                            (address_ref.city or "") + (address_ref.state_id.name or "") + (address_ref.zip or "") + \
-                           (address_ref.country_id.name or ""),
+                           (address_ref.country_id.name or "") + "<br/>"+ \
+                           "<strong> Notes :  </strong>" + (sale_order_ref.sale_note or "N/A"),
+
             'header': ['Catalog number', 'Description', 'Initial Quantity', 'Lot', 'Expiration Date', 'Quantity Done'],
             'columnProps': ['sku', 'Product', 'qty', 'lot_name', 'lot_expired_date', 'qty_done'],
             'closing_content': 'Thanks & Regards, <br/> Sales Team'
