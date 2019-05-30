@@ -1,20 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <record model="ir.ui.view" id="form_list_tps">
-        <field name="name">tps.report.view.list</field>
+    <record model="ir.ui.view" id="tree_list_tps">
+        <field name="name">tps.report.list.view</field>
         <field name="model">total_product_sale</field>
-         <field name="search_view_id" eval="False"/>
+        <field name="search_view_id" eval="False"/>
         <field name="priority">20</field>
         <field name="arch" type="xml">
-            <tree create="false" edit="false" >
-
-                <field name="sku_code" />
-                <field name="product_name" />
-                <field name="total_sales" widget="monetary" />
+            <tree create="false" edit="false" delete="false">
+                <field name="sku_code"/>
+                <field name="product_name"/>
+                <field name="total_sales" widget="monetary"/>
                 <field name="currency_id" invisible="1"/>
-
             </tree>
+        </field>
+    </record>
+
+
+    <record model="ir.ui.view" id="form_list_tps">
+        <field name="name">tps.report.form.view</field>
+        <field name="model">total_product_sale</field>
+        <field name="search_view_id" eval="False"/>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <form create="false" edit="false" delete="false">
+                 <sheet>
+                    <div class="oe_title">
+                        <h3>
+                            <field name="product_tmpl_id"/>
+                        </h3>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="sku_code"/>
+                            <field name="product_name"/>
+                            <field name="total_sales" widget="monetary"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                 </sheet>
+            </form>
         </field>
     </record>
 

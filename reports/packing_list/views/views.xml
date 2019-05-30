@@ -34,14 +34,17 @@
           <field name="target">new</field>
       </record>
     <record id="view_inv_all_packing_list_tree" model="ir.ui.view" >
-          <field name="name">Inventory Packing List</field>
-          <field name="model">res.stock_packing_list</field>
+          <field name="name">Packing List</field>
+          <field name="model">stock.picking</field>
           <field name="priority">20</field>
           <field name="arch" type="xml">
-            <tree create="false" edit="false" >
-                <field name="origin"/>
-                 <field name="partner_id"/>
-                <field name="carrier_id"/>
+            <tree create="false" edit="false" delete="false" >
+                 <field name="origin"/>
+                 <field name="partner_id" string="Customer"/>
+                 <field name="commitment_date" string="Req. Ship Date"/>
+                 <field name="shipping_terms" string="Shipping Terms"/>
+                 <field name="carrier_id" string="Ship Via"/>
+                 <field name="carrier_tracking_ref" />
                  <field name="state"/>
 
             </tree>
@@ -51,8 +54,8 @@
 
 
     <menuitem id="menu_inv_allow_pricing_list_report"
-              name="Sale Packing List"
-              parent="sale.menu_sale_report"
+              name="Packing List"
+              parent="stock.menu_warehouse_report"
               action="action_packing_list_customer"
              />
 

@@ -3,19 +3,20 @@
     'name': "SPS Receiving List",
 
     'summary': """
+      Report
        """,
 
     'description': """
         
     """,
 
-    'author': "Benchmark It Solutions",
+    'author': "Benchmark IT Solutions",
     'website': "http://www.benchmarkitsolutions.com",
 
     'category': 'Report',
     'version': '1.0',
 
-    'depends': ['base','stock','stock_barcode', 'delivery','product_expiry_extension'],
+    'depends': ['base','stock','stock_barcode', 'delivery'],
 
     'data': [
         'views/views.xml',

@@ -14,7 +14,7 @@ class ReportSaleOrdersGroupbyProduct(models.TransientModel):
     ], string="Compute", help="Choose to analyze the Show Summary or from a specific date in the past.")
     start_date = fields.Date('Start Date', help="Choose report Start date", default = (fields.date.today() - datetime.timedelta(days = 31)))
     end_date = fields.Date('End Date', help="Choose report End date",
-                           default = fields.Datetime.now)
+                           default = fields.date.today())
 
     def open_table(self):
 

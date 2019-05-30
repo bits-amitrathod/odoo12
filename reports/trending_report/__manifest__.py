@@ -2,9 +2,10 @@
 
 {
     'name': 'Trending Report',
+    'summary':"Report",
     'category': 'Report',
     'version': '11.0.0.1',
-     'author': "Benchmark IT Solutions (I) Pvt Ltd.",
+     'author': "Benchmark IT Solutions",
     'website': "http://www.benchmarkitsolutions.com",
     'depends': ['base', 'sale_management'],
     'data': [
@@ -14,5 +15,5 @@
     ],
     'auto_install': False,
     'installable': True,
-    'application': False,
+    'application': True,
 }

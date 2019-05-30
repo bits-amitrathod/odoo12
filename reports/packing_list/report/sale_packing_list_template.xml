@@ -17,7 +17,7 @@
                         <!--}-->
                     </style>
                     <div class="oe_structure"/>
-                    <div class="row">
+                    <div class="row justify-content-md-center">
                         <center>
                             <b>
                                 <h2>Surgical Product Solutions</h2>
@@ -124,7 +124,7 @@
                                                    <th>
                                                         <div class="col-md-12" style="margin-top:10px">
                                                             <p style="font-weight: lighter">
-                                                                <span t-esc="packing_list.sale_id.requested_date"/>
+                                                                <span t-esc="packing_list.sale_id.commitment_date"/>
                                                             </p>
                                                         </div>
                                                     </th>
@@ -232,7 +232,7 @@
                                                    <th>
                                                         <div class="col-md-12" style="margin-top:10px">
                                                             <p style="font-weight: lighter">
-                                                                <span t-field="move_line.ordered_qty"/>
+                                                                <span t-field="move_line.product_uom_qty"/>
                                                                 <span t-esc="move_line.product_uom.name"/>
                                                             </p>
                                                         </div>

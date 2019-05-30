@@ -9,7 +9,7 @@ class OnHandByDateReportModel(models.AbstractModel):
     _name = 'report.margins.margins_temp'
 
     @api.model
-    def get_report_values(self, docids, data=None):
+    def _get_report_values(self, docids, data=None):
         margins_list = self.env['margins'].browse(docids)
 
         group_by_list = {}

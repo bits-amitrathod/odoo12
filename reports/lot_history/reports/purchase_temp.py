@@ -6,7 +6,7 @@ class ReportPurchaseSalespersonWise(models.AbstractModel):
     _name = 'report.lot_history.purchase_report'
 
     @api.model
-    def get_report_values(self, docids, data=None):
+    def _get_report_values(self, docids, data=None):
         lot_history = self.env['lot.history.report'].browse(docids)
 
         action= {

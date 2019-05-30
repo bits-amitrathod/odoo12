@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 {
     'name': "Margins",
-
-    'author': "Benchmark IT Solutions (I) Pvt. Ltd",
+    'summary':"Report",
+    'author': "Benchmark IT Solutions",
     'website': "http://www.benchmarkitsolutions.com",
 
     'category': 'Uncategorized',
@@ -11,6 +11,7 @@
     'depends': ['base','sale', 'sale_margin', 'product_margin', 'prioritization_engine'],
 
     'data': [
+        'security/ir.model.access.csv',
         'views/views.xml',
         'report/margins_report.xml',
         'report/margins_report_template.xml',

@@ -40,7 +40,7 @@ class TrendingReportListView(models.Model):
             sale_orders = self.env['sale.order'].search([('partner_id', '=', product.id), ('state', '=', 'sale')])
             groupby_dict_month['data'] = sale_orders
             for sale_order in groupby_dict_month['data']:
-                confirmation_date=datetime.date(datetime.strptime(sale_order.confirmation_date,"%Y-%m-%d %H:%M:%S"))
+                confirmation_date=datetime.date(datetime.strptime(str(sale_order.confirmation_date).split(".")[0],"%Y-%m-%d %H:%M:%S"))
                 if((confirmation_date.month == (start_date - relativedelta(months=5)).month) and (confirmation_date.year ==  (start_date - relativedelta(months=5)).year)):
                     product.month6 = product.month6 + sale_order.amount_total
                 if((confirmation_date.month == (start_date - relativedelta(months=4)).month) and (confirmation_date.year ==  (start_date - relativedelta(months=4)).year)):
@@ -98,7 +98,7 @@ class TrendingReportListView(models.Model):
             elif (min > sale_order.confirmation_date):
                 min = sale_order.confirmation_date
         if (min):
-            in_days = (start_date - datetime.date(datetime.strptime(min, "%Y-%m-%d %H:%M:%S"))).days
+            in_days = (start_date - datetime.date(datetime.strptime(str(min).split(".")[0],"%Y-%m-%d %H:%M:%S"))).days
             return in_days
         else:
             return None
@@ -113,7 +113,7 @@ class TrendingReportListView(models.Model):
             sale_orders = self.env['sale.order'].search([('partner_id', '=', customer.id), ('state', '=', 'sale'), ('confirmation_date','<=', start_date)])
             sale_order_dict['data'] = sale_orders
             for sale_order in sale_order_dict['data']:
-                confirmation_date = datetime.date(datetime.strptime(sale_order.confirmation_date, "%Y-%m-%d %H:%M:%S"))
+                confirmation_date = datetime.date(datetime.strptime(str(sale_order.confirmation_date).split(".")[0], "%Y-%m-%d %H:%M:%S"))
                 count=0
                 if (groupby_dict_month.get(confirmation_date.strftime('%b-%Y'))):
                     count=groupby_dict_month[confirmation_date.strftime('%b-%Y')]

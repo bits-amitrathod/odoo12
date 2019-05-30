@@ -2,7 +2,7 @@
 {
     'name': "Vendor Offer",
 
-    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
+    'author': "Benchmark IT Solutions",
     'website': "http://www.benchmarkitsolutions.com",
 
     # Categories can be used to filter modules in modules listing
@@ -12,7 +12,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'purchase','sale','product_brand','prioritization_engine','product_expiry_extension'],
+    'depends': ['base', 'purchase','sale','product_brand','prioritization_engine','product_expiry_extension','delivery_fedex'],
 
     # always loaded
     # 'qweb': [

@@ -20,7 +20,7 @@ class InventoryAvailabilityReport(models.AbstractModel):
     _name = 'report.scrap_report.inventory_scrap_print'
 
     @api.model
-    def get_report_values(self, docids, data=None):
+    def _get_report_values(self, docids, data=None):
         scrap_products=self.env['stock.scrap'].browse(docids)
         return {'data': scrap_products}
 

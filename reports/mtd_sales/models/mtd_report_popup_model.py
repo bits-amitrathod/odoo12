@@ -13,7 +13,7 @@ class MTDReportPopup(models.TransientModel):
     _name = 'mtd_sales.popup'
     _description = 'MTD Popup'
 
-    selected_date = fields.Date('Start Date', default=fields.Datetime.now, required=True)
+    selected_date = fields.Date('Start Date', default=fields.date.today(), required=True)
 
     def open_table(self):
 

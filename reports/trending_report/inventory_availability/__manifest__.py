@@ -1,16 +1,8 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "SPS Recieving List",
-
-    'summary': """
-        Short (1 phrase/line) summary of the module's purpose, used as
-        subtitle on modules listing or apps.openerp.com""",
-
-    'description': """
-        Long description of module's purpose
-    """,
-
-    'author': "Benchmark It Solutions",
+    'name': "Inventory Availability",
+    'summary':"Report",
+    'author': "Benchmark IT Solutions",
     'website': "http://www.benchmarkitsolutions.com",
 
     # Categories can be used to filter modules in modules listing
@@ -20,16 +12,16 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','stock','stock_barcode', 'delivery'],
+    'depends': ['base','product','stock','vendor_offer'],
 
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
-        'views/views.xml',
-        'reports/todo_task_report.xml'
-
-
+        'views/inventory_availability.xml',
+        'views/inventory_availability_print.xml',
+        'views/inventory_availability_pdf.xml',
     ],
+
     'installable': True,
     'application': True,
     'auto_install': False,

@@ -5,11 +5,14 @@
             <t t-call="web.external_layout">
                 <page>
                     <div class="oe_structure"/>
-                    <div class="row">
+                    <div class="row justify-content-md-center">
                     <center>
                         <b>
                             <h2> Surgical Product Solutions </h2>
                             <h4> Broker Report</h4>
+                            <t t-if="e_date != False and s_date !=False">
+                                 <h4> Date Range: <span t-esc="s_date" t-options='{"widget": "date"}'/>-<span t-esc="e_date" t-options='{"widget": "date"}'/></h4>
+                            </t>
                         </b>
                     </center>
                     <center>
@@ -30,9 +33,9 @@
                                 </tr>
                                 <t t-if="data"  >
                                     <tr t-foreach="data[0]" t-as="order">
-                                         <td  align="left" style="border: 1px solid black;">
+                                         <th  align="left" style="border: 1px solid black;">
                                             <span t-esc="order.broker_desc" />
-                                        </td>
+                                        </th>
                                         <td  align="right" style="border: 1px solid black;">
                                             <span t-esc="order.total_retail_broker" t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
                                         </td>
@@ -54,9 +57,9 @@
                                         </td>
                                     </tr>
                                   <tr t-foreach="data[1]" t-as="order">
-                                         <td  align="left" style="border: 1px solid black;">
+                                         <th  align="left" style="border: 1px solid black;">
                                             <span t-esc="order.broker_desc_tot" />
-                                        </td>
+                                        </th>
                                         <td  align="right" style="border: 1px solid black;">
                                             <span t-esc="order.total_retail_broker_tot" /> %
                                         </td>
@@ -78,9 +81,9 @@
                                         </td>
                                     </tr>
                                 <tr t-foreach="data[2]" t-as="order">
-                                         <td  align="left" style="border: 1px solid black;">
+                                         <th  align="left" style="border: 1px solid black;">
                                             <span t-esc="order.broker_desc_mar" />
-                                        </td>
+                                        </th>
                                         <td  align="right" style="border: 1px solid black;">
                                             <span t-esc="order.total_retail_broker_mar" />
                                         </td>

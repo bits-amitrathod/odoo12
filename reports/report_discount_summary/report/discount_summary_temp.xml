@@ -5,13 +5,14 @@
             <t t-call="web.external_layout">
                 <page>
                     <div class="oe_structure"/>
-                    <div class="row">
+                    <div class="row justify-content-md-center">
                         <center>
                             <b>
                                 <h2>Surgical Product Solutions</h2>
                                 <h4>Discount Summary</h4>
-                                <h4 t-if="date">
-                                    <span t-esc="date"/>
+                                <h4 t-if="popup.compute_at_date">
+                                    <span t-esc="popup.start_date" t-options='{"widget": "date"}'/>
+                                    to <span t-esc="popup.end_date" t-options='{"widget": "date"}'/>
                                 </h4>
                             </b>
                         </center>
@@ -22,7 +23,7 @@
                             <thead style="display: table-header-group;">
                                 <tr style="border: 1px solid black;">
                                     <th style="border: 1px solid black;text-align: center;">Sales Order#</th>
-                                    <th style="border: 1px solid black;text-align: center;">Line #</th>
+                                   <!-- <th style="border: 1px solid black;text-align: center;">Line #</th>-->
                                     <th style="border: 1px solid black;text-align: center;width:350px;">Customer</th>
                                     <th style="border: 1px solid black;text-align: center;">Confirmation Date</th>
                                     <th style="border: 1px solid black;text-align: center;">Discount</th>
@@ -35,9 +36,9 @@
                                     <td style="border: 1px solid black;">
                                         <span t-esc="order.name"/>
                                     </td>
-                                    <td style="border: 1px solid black;">
+                                    <!--<td style="border: 1px solid black;">
                                         <span t-esc="order.r_line_item"/>
-                                    </td>
+                                    </td>-->
                                     <td style="border: 1px solid black;">
                                         <span t-esc="order.partner_id.name"/>
                                     </td>

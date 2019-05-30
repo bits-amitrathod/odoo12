@@ -2,7 +2,7 @@
 
 from odoo import api, fields, models, tools
 import logging
-
+import odoo.addons.decimal_precision as dp
 _logger = logging.getLogger(__name__)
 
 
@@ -10,17 +10,19 @@ class ReturnrdSales(models.Model):
     _name = "report.returned.sales.order"
     _auto = False
 
-    name = fields.Char("Order #")
+    name = fields.Char("Sales Order#")
     order_id = fields.Many2one('sale.order', string='Order', )
     cost_price = fields.Float("Qty Ordered")
-    done_qty = fields.Float("Qty Done")
-    product_uom_id = fields.Many2one('product.uom', 'UOM')
+    done_qty = fields.Float("Qty Done",digits=dp.get_precision('Product Unit of Measure'), required=True)
+    product_uom_id = fields.Many2one('uom.uom', 'UOM')
     partner_id = fields.Many2one('res.partner', string='Customer', )
-    product_id = fields.Many2one('product.product', string='Product', )
+    product_id = fields.Many2one('product.product', string='Product Name', )
     move_id = fields.Many2one('stock.move', string='Stock Move' )
     moved_date = fields.Date('Date')
     user_id = fields.Many2one('res.users', 'Salesperson', readonly=True)
     sku_code = fields.Char('Product SKU')
+    currency_id = fields.Many2one("res.currency", string="Currency", readonly=True)
+
 
     @api.model_cr
     def init(self):
@@ -34,6 +36,7 @@ class ReturnrdSales(models.Model):
                     so.id as order_id, m.id as move_id, so.user_id, t.sku_code,
                     m.partner_id as partner_id, m.product_id as product_id, ml.qty_done as done_qty, 
                     (sl.price_unit * ml.qty_done) as cost_price,
+                    sl.currency_id as currency_id,
                     DATE(m.date) as moved_date,ml.product_uom_id
                     FROM stock_move m INNER JOIN stock_move_line ml
                     ON m.id = ml.move_id

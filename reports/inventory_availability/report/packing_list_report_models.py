@@ -9,7 +9,7 @@ class OnHandByDateReportModel(models.AbstractModel):
     _name = 'report.packing_list.sale_packing_list_template'
 
     @api.model
-    def get_report_values(self, docids, data=None):
+    def _get_report_values(self, docids, data=None):
 
         # select = """ SELECT pr.customer_name,pr.product_code,pr.product_name,pr.cost
         #         FROM res_pricing_rule pr

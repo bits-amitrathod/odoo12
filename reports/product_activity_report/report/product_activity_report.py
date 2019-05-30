@@ -5,7 +5,7 @@ class ReportProductActivityReport(models.AbstractModel):
     _name = 'report.product_activity_report.product_activity_report_template'
 
     @api.model
-    def _get_report_values(self, docids, data=None):
+    def get_report_values(self, docids, data=None):
         self.env.cr.execute(""" SELECT * FROM product_activity_report where id in (""" + ",".join(map(str, docids)) + """)
         order by location,type """)
         warehouses = self.env.cr.dictfetchall()

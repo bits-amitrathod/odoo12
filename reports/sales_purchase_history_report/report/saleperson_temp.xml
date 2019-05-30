@@ -5,20 +5,17 @@
             <t t-call="web.external_layout">
                 <page>
                     <div class="oe_structure"/>
-                    <div class="row">
+                    <div class="row justify-content-md-center">
                     <center>
                         <b>
                             <h2>Surgical Product Solutions</h2>
                             <h4>Sales Purchase History</h4>
                         </b>
+
+                        <h4 t-if="date">
+                            <span t-esc="date"/>
+                        </h4>
                     </center>
-                    <!--<center>-->
-                        <!--<b>-->
-                            <!--<span t-esc="start_date"/>-->
-                            <!--To-->
-                            <!--<span t-esc="end_date"/>-->
-                        <!--</b>-->
-                    <!--</center>-->
                     </div>
                     <br/>
 
@@ -28,48 +25,52 @@
                                 <tr style="border: 1px solid black;">
                                     <th style="border: 1px solid black;">Product SKU</th>
                                     <th style="border: 1px solid black;">Customer Name</th>
-                                    <th style="border: 1px solid black;">Sales Order#</th>
+                                    <th style="border: 1px solid black;">Sales Order</th>
                                     <th style="border: 1px solid black;">Product Name</th>
                                     <th style="border: 1px solid black;">Delivered Date</th>
-                                    <th style="border: 1px solid black;">Qty Delivered</th>
-                                    <th style="border: 1px solid black;">Price</th>
+                                    <th style="border: 1px solid black;">Delivered Qty</th>
+                                    <th style="border: 1px solid black;">UOM</th>
+                                    <th style="border: 1px solid black;">Unit Price</th>
                                     <th style="border: 1px solid black;">Total</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr t-foreach="data" t-as="order">
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.product_sku"/>
+                                        <span t-esc="order.product_sku_ref"/>
                                     </td>
                                     <td style="border: 1px solid black;">
                                         <span t-esc="order.customer_name"/>
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.sale_order"/>
+                                        <span t-esc="order.order_id.name"/>
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.product_name"/>
+                                        <span t-esc="order.product_id.name"/>
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.delivered_date"/>
+                                        <span t-esc="order.delivered_date" t-options="{'widget':'date'}"/>
+                                    </td>
+                                    <td style="border: 1px solid black;" align="center">
+                                        <span t-field="order.qty_delivered_converted"/>
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.qty_delivered"/>
+                                        <span t-esc="order.product_uom_converted.name"/>
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.unit_price" t-options='{"widget": "monetary","display_currency": order.product_id.currency_id}' />
+                                        <span t-esc="order.unit_price_converted" t-options='{"widget": "monetary","display_currency": order.currency_id}' />
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.total_price" t-options='{"widget": "monetary","display_currency": order.product_id.currency_id}'/>
-                                        <t t-set="total_price" t-value="total_price + order.total_price" />
+                                        <span t-esc="order.total_price_converted" t-options='{"widget": "monetary","display_currency": order.currency_id}'/>
+                                        <t t-set="total_price" t-value="total_price + order.price_total" />
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td colspan="7" style="text-align: right;">
+                                <tr  t-if="len(data) &gt; 0">
+                                    <td colspan="8" style="border: 1px solid black; text-align: right;">
                                         <b>Total</b>
                                     </td>
-                                    <td style="text-align: right;">
-                                        $ <span t-esc="total_price"/>
+                                    <td style="border: 1px solid black; text-align: right;">
+                                         <span t-esc="total_price" t-options='{"widget": "monetary","display_currency": data[0].currency_id}'/>
                                     </td>
                                 </tr>
                             </tbody>

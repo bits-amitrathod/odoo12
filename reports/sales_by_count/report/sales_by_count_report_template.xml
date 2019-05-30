@@ -5,16 +5,18 @@
             <t t-call="web.external_layout">
                 <page>
                     <div class="oe_structure"/>
-                    <div class="row">
+                    <div class="row justify-content-md-center">
                         <center>
                             <b>
                                 <h2>Surgical Product Solutions</h2>
                                 <h4>Sales By Count</h4>
+                                <h4 t-if="date">
+                                   Date Range: <span t-esc="date"/>
+                               </h4>
                             </b>
                         </center>
                     </div>
-                    <t t-foreach="sales" t-as="location">
-                        <t t-set="sale" t-value="sales[location]"/>
+
                         <div>
                             <strong>
                             <span t-esc="location"/></strong>
@@ -31,24 +33,28 @@
                                     <th style="border: 1px solid black;text-align:  center !important;width: 8%;">
                                         Quantity
                                     </th>
+                                    <th style="border: 1px solid black;text-align:  center !important;width: 8%;">
+                                        UOM
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr t-foreach="sale['product']" t-as="product">
+                                <tr t-foreach="sales" t-as="sale">
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="product['sku_code']"/>
-                                        ea
+                                        <span t-esc="sale.sku_code"/>
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="product['product_name']"/>
+                                        <span t-field="sale.product_tmpl_id"/>
                                     </td>
                                     <td style="border: 1px solid black;text-align: center;">
-                                        <span t-esc="product['quantity']"/>
+                                        <span t-esc="sale.quantity"/>
+                                    </td>
+                                    <td style="border: 1px solid black;text-align: center;">
+                                        <span t-esc="sale.product_uom"/>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
-                    </t>
                 </page>
             </t>
         </t>

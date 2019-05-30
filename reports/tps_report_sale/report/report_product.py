@@ -7,19 +7,15 @@ class ReportProducts(models.AbstractModel):
     _name = 'report.tps_report_sale.report_products'
 
     @api.model
-    def get_report_values(self, docids, data=None):
-        if len(docids) == 1:
-            ids = "(" + str(docids[0]) + ")"
-        else:
-            ids = str(tuple(docids))
+    def _get_report_values(self, docids, data=None):
         view='total_product_sale'
-        records = "select tps.sku_code,tps.product_name,concat(tps.currency_symbol,' ',cast(tps.total_sales as varchar)) as total_sales,tps.start_date,tps.end_date  from  " + view +" as tps where id in "  + ids
-        self._cr.execute(records)
-        records = self._cr.fetchall()
-        for record in records:
-            record
+        popup = self.env['tps.popup.view'].search([('create_uid', '=', self._uid)], limit=1,
+                                                                 order="id desc")
+
+
+        records = self.env['total_product_sale'].browse(docids)
         return {
-            'data': records}
+            'data': records,'popup':popup}
 
 
 

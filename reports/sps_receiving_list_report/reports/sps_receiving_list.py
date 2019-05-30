@@ -2,7 +2,7 @@ from odoo import api, models
 
 
 class ReportSpsReceivingList(models.AbstractModel):
-    _name = 'report.sps_receiving_list_report.adjustment_report1'
+    _name = 'report.sps_receiving_list_report.adjustment_report'
 
     @api.model
     def get_report_values(self, docids, data=None):
@@ -13,7 +13,7 @@ class ReportSpsReceivingList(models.AbstractModel):
             lot = {
                 'lot_id': move_lines.lot_id.name,
                 'lot_expired_date': move_lines.lot_expired_date,
-                'qty_done': int(float(move_lines.qty_done)),
+                'qty_done': int(float(move_lines.qty_rece)),
                 'product_uom_id': move_lines.product_uom_id.name,
             }
             if old == move_lines.product_id.id:

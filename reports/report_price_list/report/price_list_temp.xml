@@ -5,13 +5,15 @@
             <t t-call="web.external_layout">
                 <page>
                     <div class="oe_structure"/>
-                    <div class="row">
+                    <div class="row justify-content-md-center">
                         <center>
                             <b>
                                 <h2>Surgical Product Solutions</h2>
                                 <h4>Product Price List</h4>
+
                             </b>
                         </center>
+                       
                     </div>
                     <br/>
                     <t t-set="total_sum" t-value="0"/>
@@ -33,14 +35,14 @@
                             <tbody>
                                 <tr t-foreach="data" t-as="order">
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.sku_code"/>
+                                        <span t-esc="order.product_tmpl_id.sku_code"/>
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.name"/>
+                                        <span t-esc="order.product_tmpl_id.name"/>
                                     </td>
                                     <td align="right" style="border: 1px solid black;white-space: nowrap;">
-                                        <span t-esc="order.standard_price"
-                                              t-options='{"widget": "monetary","display_currency": order.currency_id}'/>
+                                        <span t-esc="order.product_tmpl_id.list_price"
+                                              t-options='{"widget": "monetary","display_currency": order.responsible_id.company_id.currency_id}'/>
                                     </td>
                                 </tr>
                             </tbody>
@@ -57,11 +59,12 @@
             <t t-call="web.external_layout">
                 <page>
                     <div class="oe_structure"/>
-                    <div class="row">
+                    <div class="row justify-content-md-center">
                         <center>
                             <b>
                                 <h2>Surgical Product Solutions</h2>
                                 <h4>Customer Price List</h4>
+                                <h6> <span t-esc="customer_name"/></h6>
                             </b>
                         </center>
                     </div>
@@ -84,13 +87,13 @@
                             <tbody>
                                 <tr t-foreach="data" t-as="order">
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.sku_code"/>
+                                        <span t-esc="order.product_code"/>
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.name"/>
+                                        <span t-esc="order.product_name"/>
                                     </td>
                                     <td align="right" style="border: 1px solid black;white-space: nowrap;">
-                                        <span t-esc="order.list_price"
+                                        <span t-esc="order.cost"
                                               t-options='{"widget": "monetary","display_currency": order.currency_id}'/>
                                     </td>
                                 </tr>

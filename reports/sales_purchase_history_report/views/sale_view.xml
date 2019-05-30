@@ -5,7 +5,7 @@
             <field name="name">sale.purchase.history.report.form.view</field>
             <field name="model">sale.purchase.history.report</field>
             <field name="arch" type="xml">
-                <form string="Purchase History">
+                <form string="Sales Purchase History">
                     <group>
                         <group>
                             <field name="start_date"/>
@@ -18,7 +18,7 @@
                     </group>
 
                     <footer>
-                        <button name="open_table" string="Print Report" class="btn-primary" type="object"/>
+                        <button name="open_table" string="VIEW REPORT" class="btn-primary" type="object"/>
                         <button string="Cancel" class="btn-default" special="cancel"/>
                     </footer>
                 </form>
@@ -26,7 +26,7 @@
         </record>
 
         <record id="action_sale_report_purchase_wizard" model="ir.actions.act_window">
-            <field name="name">Purchase History</field>
+            <field name="name">Sales Purchase History</field>
             <field name="res_model">sale.purchase.history.report</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
@@ -40,16 +40,17 @@
               <field name="model">sale.order.line</field>
               <field name="priority">21</field>
               <field name="arch" type="xml">
-                <tree>
-                    <field name="user_id" invisible="1"/>
-                    <field name="product_sku" string="Product SKU"/>
+                <tree create="false" edit="false" delete="false">
+
+                    <field name="product_sku_ref" string="Product SKU"/>
                     <field name="customer_name" string="Customer Name"/>
-                    <field name="sale_order" string="Sales Order#"/>
-                    <field name="product_name" string="Product Name"/>
+                    <field name="order_id" string="Sales Order#"/>
+                    <field name="product_id" string="Product Name"/>
                     <field name="delivered_date" string="Delivered Date"/>
-                    <field name="qty_delivered" string="Qty Delivered" />
-                    <field name="unit_price" widget="monetary" string="Price" />
-                    <field name="total_price" widget="monetary" string="Total" />
+                    <field name="qty_delivered_converted" string="Delivered Qty" />
+                    <field name="product_uom_converted" string="UOM"/>
+                    <field name="unit_price_converted" widget="monetary" string="Unit Price" />
+                    <field name="total_price_converted" widget="monetary" string="Total" sum="Total"/>
                     <field name="currency_id"  invisible="1" />
                 </tree>
               </field>
@@ -58,7 +59,7 @@
             <field name="name">sale.order.line.view</field>
             <field name="model">sale.order.line</field>
             <field name="arch" type="xml">
-                <form create="false" edit="false">
+                <form create="false" edit="false" delete="false">
                     <sheet>
                         <div class="oe_title">
                             <h1>
@@ -68,17 +69,17 @@
                         <group>
                             <group>
                                 <field name="product_id"/>
-                                <field name="product_sku"/>
-                                <field name="product_uom"/>
-                                <field name="order_partner_id"/>
-                                <field name="company_id"/>
+                                <field name="product_sku_ref"/>
+                                <field name="unit_price_converted"/>
+                                <field name="customer_name"/>
                             </group>
                             <group>
-                                <field name="product_uom_qty" string="Required Quantity"/>
-                                <field name="qty_delivered" string="Delivered Quantity"/>
-                                <field name="price_unit" widget="monetary"/>
-                                <field name="total_price" string="Total Price" widget="monetary" sum="Total"/>
+                                <field name="qty_delivered_converted" string="Required Quantity"/>
+                                <field name="qty_delivered_converted" string="Delivered Quantity"/>
+                                <field name="unit_price_converted" widget="monetary"/>
+                                <field name="total_price_converted" string="Total Price" widget="monetary" sum="Total"/>
                                 <field name="delivered_date" string="Delivered Date"/>
+                                <field name="currency_id"  invisible="1" />
                             </group>
                         </group>
                     </sheet>
@@ -86,6 +87,6 @@
             </field>
         </record>
 
-        <menuitem id="menu_sale_report_purchase_wizard" name="Purchase History" action="action_sale_report_purchase_wizard" parent="sale.menu_sale_report" sequence="1"/>
+        <menuitem id="menu_sale_report_purchase_wizard" name="Sales Purchase History" action="action_sale_report_purchase_wizard" parent="sale.menu_sale_report" sequence="1"/>
     </data>
 </odoo>

@@ -17,9 +17,9 @@ class ProductSaleByCountPopUp(models.TransientModel):
         (1, 'Date Range ')
     ], string="Compute", default=0, help="Choose to analyze the Show Summary or from a specific date in the past.")
 
-    start_date = fields.Date('Start Date', default=fields.Datetime.now)
+    start_date = fields.Date('Start Date', default=fields.date.today())
 
-    end_date = fields.Date('End Date', default = fields.Datetime.now)
+    end_date = fields.Date('End Date', default = fields.date.today())
 
     sale_person_id = fields.Many2one('res.users', string='Sales Person', required=False)
 

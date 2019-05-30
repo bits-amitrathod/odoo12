@@ -3,14 +3,13 @@
     'name': "RMA Report",
 
     'summary': """
-        Short (1 phrase/line) summary of the module's purpose, used as
-        subtitle on modules listing or apps.openerp.com""",
+      Report
+       """,
 
-    'description': """
-        Long description of module's purpose
-    """,
+    # 'description': ""
+    # ,
 
-    'author': "Benchmark It Solutions",
+    'author': "Benchmark IT Solutions",
     'website': "http://www.benchmarkitsolutions.com",
 
     # Categories can be used to filter modules in modules listing
@@ -26,7 +25,8 @@
     'data': [
         # 'security/ir.model.access.csv',
         'views/views.xml',
-        'reports/todo_task_report.xml',
+        'reports/rma_report.xml',
+        'reports/rma_report_template.xml',
         'views/templates.xml',
     ],
     # only loaded in demonstration mode

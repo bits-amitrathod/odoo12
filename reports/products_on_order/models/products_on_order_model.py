@@ -2,6 +2,7 @@
 
 from odoo import api, fields, models, tools
 import logging
+import odoo.addons.decimal_precision as dp
 
 _logger = logging.getLogger(__name__)
 
@@ -10,16 +11,16 @@ class ProductsOnOrder(models.Model):
     _name = "report.products.on.order"
     _auto = False
 
-    name = fields.Char("Order #")
+    name = fields.Char("Sales Order")
     order_id = fields.Many2one('sale.order', string='Order', )
     date_ordered = fields.Datetime('Order Date')
-    date_due = fields.Date('Due Date')
-    qty_ordered = fields.Float("Qty Ordered")
-    product_uom = fields.Many2one('product.uom', 'UOM')
+    date_due = fields.Datetime('Due Date')
+    qty_ordered = fields.Float("Qty Ordered",digits=dp.get_precision('Product Unit of Measure'))
+    product_uom = fields.Many2one('uom.uom', 'UOM')
     sku_code = fields.Char('Product SKU')
-    qty_remaining = fields.Float("Qty Remaining")
-    partner_id = fields.Many2one('res.partner', string='Customer', )
-    product_id = fields.Many2one('product.product', string='Product', )
+    qty_remaining = fields.Float("Qty Remaining",digits=dp.get_precision('Product Unit of Measure'))
+    partner_id = fields.Many2one('res.partner', string='Customer Name', )
+    product_id = fields.Many2one('product.product', string='Product Name', )
 
     @api.model_cr
     def init(self):

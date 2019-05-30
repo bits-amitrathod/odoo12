@@ -1,4 +1,6 @@
 from odoo import api, fields, models,_
+import datetime
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, pycompat, misc
 
 class SaleSalespersonReport(models.TransientModel):
     _name = 'sale.purchase.history.report'
@@ -12,22 +14,38 @@ class SaleSalespersonReport(models.TransientModel):
     def open_table(self):
         tree_view_id = self.env.ref('sales_purchase_history_report.list_view').id
         form_view_id = self.env.ref('sales_purchase_history_report.view_sales_order_line_view_cstm').id
-
+        if self.start_date and self.end_date:
+            e_date = SaleSalespersonReport.string_to_date(str(self.end_date))
+            e_date = e_date + datetime.timedelta(days=1)
+            s_date=SaleSalespersonReport.string_to_date(str(self.start_date))
+            stock_location = self.env['stock.location'].search([('name', '=', 'Customers')]).ids
+            stock_picking = self.env['stock.picking'].search([('date_done', '>=', str(s_date)), ('date_done', '<=', str(e_date)), ('state', '=', ('done')),('location_dest_id', '=', stock_location[0])])
+            sale_id_list =[]
+            for sp in stock_picking :
+                sale_id_list.append(sp.origin)
+            so_id =self.env['sale.order'].search([('name', 'in', sale_id_list  ),]).ids
+            sale_order_line = self.env['sale.order.line'].search([('order_id', 'in', so_id), ('state', 'not in', ('cancel','void')),]).ids
+        else:
+            sale_order_line = self.env['sale.order.line'].search([('state', 'not in', ('cancel', 'void')), ]).ids
         action = {
             'type': 'ir.actions.act_window',
             'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
             'view_mode': 'tree,form',
             'name': _('Sales Purchase History'),
             'res_model': 'sale.order.line',
-            'domain': [('create_date', '>=', self.start_date), ('create_date', '<=', self.end_date), ('state', '!=', 'cancel')],
+            'domain': [ ('id', 'in', sale_order_line),('qty_delivered','>',0),('price_unit','>=',0)],
             'target': 'main'
         }
 
         if self.product_id and self.order_partner_id:
-            action['domain'].append(('product_id', '=', self.product_id.id))
+            action['domain'].append(('product_id', 'in', self.product_id.ids))
             action['domain'].append(('order_partner_id', '=', self.order_partner_id.id))
         elif self.product_id:
-            action['domain'].append(('product_id', '=', self.product_id.id))
+            action['domain'].append(('product_id', 'in', self.product_id.ids))
         elif self.order_partner_id:
             action['domain'].append(('order_partner_id', '=', self.order_partner_id.id))
         return action
+
+    @staticmethod
+    def string_to_date(date_string):
+        return datetime.datetime.strptime(date_string, DEFAULT_SERVER_DATE_FORMAT).date()

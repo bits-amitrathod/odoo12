@@ -20,7 +20,7 @@ class InventoryAvailabilityReport(models.AbstractModel):
     _name = 'report.inventory_availability.inventory_availability_print'
 
     @api.model
-    def get_report_values(self, docids, data=None):
+    def _get_report_values(self, docids, data=None):
         products=self.env['product.product'].browse(docids)
         return {'data': products}
 

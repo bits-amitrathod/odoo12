@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 {
     'name': "Packing List",
-
-    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
+     'summary':"Report",
+    'author': "Benchmark IT Solutions",
     'website': "http://www.benchmarkitsolutions.com",
 
     # Categories can be used to filter modules in modules listing
@@ -20,7 +20,7 @@
     'data': [
         'views/views.xml',
         'report/sale_packing_list_template.xml',
-        'report/packing_list_report.xml'
+        'report/packing_list_report.xml',
 
     ],
     # only loaded in demonstration mode

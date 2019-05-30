@@ -4,7 +4,7 @@
             <t t-call="web.external_layout">
                 <page>
                     <div class="oe_structure"/>
-                    <div class="row">
+                    <div class="row justify-content-md-center">
 
                         <center>
                             <b>
@@ -28,7 +28,7 @@
                                  <td style="width:50%"><b>Expires : </b><span t-esc="data['expire_date']" t-options="{'widget':'date'}"/></td>
                              </tr>
                         </table>
-                        <hr/>
+                        <hr style="width: 100%; color: black; height: 1px;" />
                             <t t-set="total_price" t-value="0"/>
                             <table class="table table-condensed table-bordered" style="border: 1px solid black;">
                                 <tr style="border: 1px solid black;">

@@ -29,9 +29,9 @@ class MarginsReportPopup(models.TransientModel):
         (1, 'Date Range'),
     ], string="Date Range", default=0, help="Choose to analyze the Show Summary or from a specific date in the past.")
 
-    start_date = fields.Date('Start Date', default=fields.Datetime.now)
+    start_date = fields.Date('Start Date', default=fields.date.today())
 
-    end_date = fields.Date('End Date', default=fields.Datetime.now)
+    end_date = fields.Date('End Date', default=fields.date.today())
 
     include_returns = fields.Boolean('Include Returns', default=True, required=False)
 
@@ -65,11 +65,11 @@ class MarginsReportPopup(models.TransientModel):
 
         x_res_model = 'margins'
 
+
         if self.group_by == 'partner_id':
             group_by_domain.insert(0, 'partner_id')
             x_res_model = 'margins.group_by_cust'
             tree_view_id = self.env.ref('margins.margins_grp_by_cust_list_view').id
-
         self.env[x_res_model].with_context(margins_context).delete_and_create()
 
 

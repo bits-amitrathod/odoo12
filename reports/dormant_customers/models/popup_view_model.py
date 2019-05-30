@@ -4,6 +4,7 @@ from odoo import api, fields, models ,_
 import logging
 import datetime
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, pycompat, misc
+
 from dateutil.relativedelta import relativedelta
 
 _logger = logging.getLogger(__name__
@@ -18,9 +19,9 @@ class ProductSaleByCountPopUp(models.TransientModel):
         (1, 'Date Range ')
     ], string="Compute", default=0, help="Choose to analyze the Show Summary or from a specific date in the past.")
 
-    start_date = fields.Datetime('Start Date', default=fields.Datetime.now)
+    start_date = fields.Date('Start Date', default=( fields.date.today() - datetime.timedelta(days=30) ), required=True)
 
-    end_date = fields.Datetime('End Date', default = fields.Datetime.now)
+    end_date = fields.Date('End Date', default = fields.Date.today(), required=True)
 
 
 
@@ -32,7 +33,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
             s_date = ProductSaleByCountPopUp.string_to_date(str(self.start_date))
             e_date = ProductSaleByCountPopUp.string_to_date(str(self.end_date))
         else:
-            cur_date_time_string = str(datetime.datetime.now())
+            cur_date_time_string = str(fields.Date.today())
             try:
                 cur_date_time_string = cur_date_time_string[:cur_date_time_string.index('.')]
             except ValueError:
@@ -44,17 +45,23 @@ class ProductSaleByCountPopUp(models.TransientModel):
 
         filtered_sale_orders = list(filter(
             lambda x: x.confirmation_date and \
-                      s_date <= ProductSaleByCountPopUp.string_to_date(x.confirmation_date) <= e_date, sale_orders))
+                      s_date <= ProductSaleByCountPopUp.string_to_date_time(x.confirmation_date) <= e_date, sale_orders))
 
         non_domrant_partner_ids_within_selected_date_range = [sale_order.partner_id.id for sale_order in
                                                               filtered_sale_orders]
 
         all_partners = self.env['res.partner'].search(
-            [('customer', '=', True), ('id', 'not in', non_domrant_partner_ids_within_selected_date_range)])
-
-        partner_ids = [partner.id for partner in all_partners if
-                       not partner.last_purchase_date or ProductSaleByCountPopUp.string_to_date(
-                           str(partner.last_purchase_date)) < e_date]
+            [('customer', '=', True),('active','=',True), ('id', 'not in', non_domrant_partner_ids_within_selected_date_range)])
+        partner_ids=[]
+        for partner in all_partners:
+            confirmed_sales_orders = self.env['sale.order'].search(
+                [('partner_id', '=', partner.id), ('confirmation_date', '!=', False)]).sorted(
+                key=lambda o: o.confirmation_date)
+            if len(confirmed_sales_orders) > 0:
+                partner_ids.append(partner.id)
+        # partner_ids = [partner.id for partner in all_partners if
+        #                not partner.last_purchase_date or ProductSaleByCountPopUp.string_to_date(
+        #                    str(partner.last_purchase_date)) < e_date]
 
         partner_ids = list(set(partner_ids))
 
@@ -73,6 +80,9 @@ class ProductSaleByCountPopUp(models.TransientModel):
         return action
 
     @staticmethod
-    def string_to_date(date_string):
-        return datetime.datetime.strptime(date_string, DEFAULT_SERVER_DATETIME_FORMAT).date()
+    def string_to_date_time(date_string):
+        return datetime.datetime.strptime(str(date_string).split(".")[0], DEFAULT_SERVER_DATETIME_FORMAT).date()
 
+    @staticmethod
+    def string_to_date(date_string):
+        return datetime.datetime.strptime(str(date_string), DEFAULT_SERVER_DATE_FORMAT).date()

@@ -17,17 +17,24 @@ class apprisal_tracker_vendor(models.Model):
     def _value_broker_margin(self):
         for order in self:
 
-            if(order.retail_amt!=0):
-                if(abs(float(((order.offer_amount)/float(order.retail_amt))-1)) < 0.4):
-                    order.broker_margin='Margin < 40%'
-                    order.color=1
-                elif(order.partner_id.is_broker):
-                    if(abs(float(order.offer_amount/order.retail_amt)) < 0.52):
-                        order.broker_margin = 'T1 BROKER'
-                        order.color = 2
-                    elif(abs(float(order.offer_amount/order.retail_amt)) > 0.52):
-                        order.broker_margin = 'T2 BROKER'
-                        order.color =3
+            if(order.rt_price_total_amt!=0):
+                if (abs(float(((order.amount_total) / float(order.rt_price_total_amt)) - 1)) < 0.4):
+                    order.update({
+                        'broker_margin': 'Margin < 40%',
+                        'color': 1
+                    })
+                elif order.partner_id.is_broker:
+                    if (abs(float(order.amount_total / order.rt_price_total_amt)) < 0.52):
+                        order.update({
+                            'broker_margin': 'T1 BROKER',
+                            'color': 2
+                        })
+                    elif (abs(float(order.amount_total / order.rt_price_total_amt)) > 0.52):
+                        order.update({
+                            'broker_margin': 'T2 BROKER',
+                            'color': 3
+                        })
+
 
 
 

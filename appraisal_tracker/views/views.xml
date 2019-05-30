@@ -80,7 +80,7 @@
                         </div>
                         <div class="oe_title">
 
-                            <label string="Appraisal Tracker"/>
+                            <label string="Appraisal Tracker" for="name"/>
                             <h1>
                                 <field name="name" readonly="1"/>
                             </h1>
@@ -273,7 +273,7 @@
             <field name="arch" type="xml">
                 <!--<xpath expr="//group[@name='order_line']" >-->
                 <group expand="0" string="Group By">
-                    <filter string="Status" domain="[]" context="{'group_by':'status_ven'}"/>
+                    <filter string="Status" domain="[]" name="status_ven" context="{'group_by':'status_ven'}"/>
                     <!--<filter string="Product" domain="[]" context="{'group_by':'product_id','vendor_offer_data': True}"/>-->
                 </group>
                 <!--</xpath>-->

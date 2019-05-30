@@ -1,21 +1,5 @@
 <odoo>
 
-    <record id="view_stock_inventory_valuation_summary" model="ir.ui.view">
-        <field name="name">product.activity.report.default</field>
-        <field name="model">product.activity.report</field>
-        <field name="arch" type="xml">
-            <search string="Product">
-                <filter string="Warehouse" name="product_activity" domain="[]"
-                        context="{'group_by' : 'warehouse'}"/>
-                <filter string="Location" name="product_activity" domain="[]"
-                        context="{'group_by' : 'location'}"/>
-                <filter string="Type" name="product_activity" domain="[]"
-                        context="{'group_by' : 'type'}"/>
-                <separator/>
-            </search>
-        </field>
-    </record>
-
     <record id="action_popup_product_activity_report" model="ir.actions.act_window">
         <field name="name">Product Activity Report</field>
         <field name="res_model">product.activity.report.popup</field>
@@ -47,7 +31,17 @@
         </field>
     </record>
 
-
+    <record id="view_stock_product_activity_report" model="ir.ui.view">
+        <field name="name">product.activity.report.default</field>
+        <field name="model">product.activity.report</field>
+        <field name="arch" type="xml">
+            <search string="Product">
+                <filter string="Product Activity" name="product_activity" domain="[]"
+                        context="{'group_by' : ['warehouse', 'location', 'type']}"/>
+                <separator/>
+            </search>
+        </field>
+    </record>
 
     <!-- LIST VIEW -->
     <record model="ir.ui.view" id="product_activity_report_list">
