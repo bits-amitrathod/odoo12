@@ -12,7 +12,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','base_setup','product', 'stock','vendor_offer','prioritization_engine','inventory_monitor'],
+    'depends': ['base','base_setup','product', 'stock','vendor_offer','prioritization_engine','inventory_monitor','customize_sales_order'],
 
     # always loaded
     'data': [# 'security/ir.model.access.csv',
