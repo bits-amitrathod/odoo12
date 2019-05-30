@@ -43,6 +43,9 @@ class StockPicking(models.Model):
                 if sale_order.carrier_id.id is False:
                     sale_order.carrier_id = self.carrier_id.id
                     sale_order.delivery_price = self.carrier_price
+                if sale_order.carrier_id.id != self.carrier_id.id:
+                    sale_order.carrier_id = self.carrier_id.id
+                    sale_order.delivery_price = self.carrier_price
         return action
 
     @api.one
