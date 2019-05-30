@@ -280,7 +280,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                     header = ['Manufacturer','Catalog number', 'Description', 'Sales Price', 'Quantity On Hand',
                               'Min Exp. Date',
                               'Max Exp. Date', 'Unit Of Measure']
-                    columnProps = ['product_brand_id.name','sku_code', 'name', 'list_price', 'actual_quantity', 'minExDate',
+                    columnProps = ['product_brand_id.name','sku_code', 'name', 'customer_price_list', 'actual_quantity', 'minExDate',
                                    'maxExDate', 'uom_id.name']
                     closing_content = "Please reply to this email or contact your Account Manager to hold product or place an order. " \
                                       "<br/>Many Thanks,		" \
@@ -815,9 +815,9 @@ class InventoryNotificationScheduler(models.TransientModel):
                         column = datetime.strptime(query_result['max'], "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
                     else:
                         column = ""
-                elif column_name == 'list_price':
-                    print("Inside list price ")
-                    column='$' + " {0:.2f}".format(partner_id.property_product_pricelist.get_product_price(product, 1.0, partner_id))
+                elif column_name == 'customer_price_list':
+                    print("Inside customer_price_list ")
+                    column='$' + " {0:.2f}".format(partner_id.property_product_pricelist.get_product_price(product,product.actual_quantity , partner_id))
                     print(column)
                 else:
                     if isinstance(product, dict):
@@ -826,6 +826,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                         if column_name.find(".") == -1:
                             if column_name == 'actual_quantity':
                                 column = int(product[column_name])
+                            elif column_name == 'list_price':
+                                column = '$' + " {0:.2f}".format(product[column_name])
                             else:
                                 column = str(product[column_name])
                         else:
