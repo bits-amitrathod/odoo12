@@ -3,4 +3,3 @@ access_custom_product_group_by_popup_product_catalog_manager,popup.product.catal
 access_custom_product_group_by_popup_product_catalog_user,popup.product.catalog stock user,model_popup_product_catalog,stock.group_stock_user,0,0,0,0
 access_custom_product_group_by_popup_custom_product_catalog_manager,popup.custom.product.catalog stock manager,model_popup_custom_product_catalog,stock.group_stock_manager,1,1,1,1
 access_custom_product_group_by_popup_product_catalog_user,popup.custom.product.catalog stock user,model_popup_custom_product_catalog,stock.group_stock_user,0,0,0,0
-

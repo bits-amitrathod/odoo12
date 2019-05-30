@@ -23,7 +23,7 @@
                     <br/>
                     <!--<t t-set="grandAmount" t-value="0"/>-->
                     <div t-foreach="warehouses" t-as="warehouse" class="row">
-                        <t t-if="warehouse['hasRecord']">
+
                         <div class="col-md-12">
                             <strong>
                                 <span t-esc="warehouse['warehouse']"/>
@@ -124,7 +124,7 @@
 
                         <!--Location Total-->
 
-                           </t>
+
                     </div>
                     <!--Grand Total-->
                     <!--<div id="total" class="row">-->

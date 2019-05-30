@@ -2,18 +2,19 @@
     'name': "Product Activity Report",
 
     'summary': """
-      Product Activity Report
+      Report
       """,
 
-    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
+    'author': "Benchmark IT Solutions",
     'website': "http://www.benchmarkitsolutions.com",
 
     'category': 'Report',
     'version': '0.1',
 
-    'depends': ['stock_account','prioritization_engine','product_expiry_extension'],
+    'depends': ['stock_account','prioritization_engine'],
 
     'data': [
+        'security/ir.model.access.csv',
         'views/views.xml',
         'report/report_product_activity_report.xml',
         'report/product_activity_report.xml'

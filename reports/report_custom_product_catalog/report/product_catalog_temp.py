@@ -8,7 +8,7 @@ class ReportSalesSalespersonWise(models.AbstractModel):
     _name = 'report.report_custom_product_catalog.catalog_temp'
 
     @api.model
-    def get_report_values(self, docids, data=None):
+    def _get_report_values(self, docids, data=None):
         popup = self.env['popup.custom.product.catalog'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
         context = {}
         if popup.start_date or popup.end_date:
@@ -38,5 +38,5 @@ class ReportProductWise(models.AbstractModel):
     _name = 'report.report_custom_product_catalog.product_catalog_temp'
 
     @api.model
-    def get_report_values(self, docids, data=None):
+    def _get_report_values(self, docids, data=None):
         return {'data': self.env['product.product'].browse(docids)}
