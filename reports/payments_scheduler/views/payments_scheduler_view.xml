@@ -9,7 +9,6 @@
                 <form string="Choose your date">
                     <group>
                         <group>
-                            <field name="start_date" />
                             <field name="end_date"  />
                         </group>
                     </group>
