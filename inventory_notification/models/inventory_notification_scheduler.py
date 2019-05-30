@@ -315,7 +315,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                                        product_list,
                                                                        header, columnProps, closing_content,
                                                                        customr.email,
-                                                                       email_list_cc,sort_col,is_employee=False)
+                                                                       email_list_cc,sort_col,is_employee=False,partner_id=customr)
                 else:
                     pass
         end = time.time()
@@ -777,7 +777,7 @@ class InventoryNotificationScheduler(models.TransientModel):
     def process_email_in_stock_scheduler_template(self, email_from_user, email_to_user, subject, descrption, products,
                                                   header, columnProps, closing_content, email_to_team, email_list_cc,sort_col=False,
                                                   custom_template="inventory_notification.in_stock_scheduler_template",
-                                                  is_employee=True):
+                                                  is_employee=True,partner_id=None):
         template = self.env.ref(custom_template)
         product_dict = {}
         product_list = []
@@ -815,6 +815,10 @@ class InventoryNotificationScheduler(models.TransientModel):
                         column = datetime.strptime(query_result['max'], "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
                     else:
                         column = ""
+                elif column_name == 'list_price':
+                    print("Inside list price ")
+                    column='$' + " {0:.2f}".format(partner_id.property_product_pricelist.get_product_price(product, 1.0, partner_id))
+                    print(column)
                 else:
                     if isinstance(product, dict):
                         column = str(product.get(column_name))
@@ -822,8 +826,6 @@ class InventoryNotificationScheduler(models.TransientModel):
                         if column_name.find(".") == -1:
                             if column_name == 'actual_quantity':
                                 column = int(product[column_name])
-                            elif column_name == 'list_price':
-                                column = '$' + " {0:.2f}".format(product[column_name])
                             else:
                                 column = str(product[column_name])
                         else:
