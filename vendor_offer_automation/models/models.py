@@ -105,15 +105,24 @@ class vendor_offer_automation(models.Model):
                                 product_sku = product_sku[:-len(self.partner_id.sku_postconfig)]
                             # if not sku_code in product_skus:
                             self.env.cr.execute("""
-                                select * from 
-                                    (SELECT id,list_price,uom_id, name, premium, tier, regexp_replace(manufacturer_pref , '[^A-Za-z0-9.]', '','g') as manufacturer_pref, 
-                                      regexp_replace(sku_code , '[^A-Za-z0-9.]', '','g') as sku_code_cleaned 
-                                      FROM product_template) 
-                                as temp_data where sku_code_cleaned ='""" + re.sub(r'[^A-Za-z0-9.]', '', product_sku) + """' or manufacturer_pref = '""" + re.sub(r'[^A-Za-z0-9.]', '', sku_code) + """' """)
+                                                    select * from 
+                                                        (SELECT pp.id as product_id,pt.id as id,pt.list_price as 
+                                                        list_price,pt.uom_id as uom_id, pt.name as name, pt.premium as
+                                                        premium, pt.tier as tier, 
+                                                         regexp_replace(manufacturer_pref , '[^A-Za-z0-9.]', '','g') 
+                                                         as manufacturer_pref, 
+                                                          regexp_replace(sku_code , '[^A-Za-z0-9.]', '','g')
+                                                           as sku_code_cleaned 
+                                                          FROM product_template as pt join product_product as pp on 
+                                                           pt.id=pp.product_tmpl_id ) 
+                                                    as temp_data where sku_code_cleaned ='""" + re.sub(
+                                r'[^A-Za-z0-9.]', '', product_sku) + """' or manufacturer_pref = '""" + re.sub(
+                                r'[^A-Za-z0-9.]', '', sku_code) + """' """)
                             query_result = self.env.cr.dictfetchone()
                             if query_result:
-                                products = self.env['product.product'].search(
-                                    [('product_tmpl_id', '=', query_result['id'])])
+                                # products = self.env['product.product'].search(
+                                #     [('product_tmpl_id', '=', query_result['id'])])
+                                products = self.env['product.product'].browse(query_result['product_id'])
                                 product_unit_price = query_result['list_price']
                                 if len(products) > 0:
                                     order_line_obj = dict(name=query_result['name'], product_qty=1,
@@ -126,8 +135,28 @@ class vendor_offer_automation(models.Model):
                                                           qty_in_stock=products[0].qty_available,
                                                           )
                                     if expiration_date_index >= 0:
+                                        exp_date_str = None
+                                        try:
+                                            temp_date = int(excel_data_row[expiration_date_index])
+
+                                            def floatHourToTime(fh):
+                                                h, r = divmod(fh, 1)
+                                                m, r = divmod(r * 60, 1)
+                                                return (
+                                                    int(h),
+                                                    int(m),
+                                                    int(r * 60),
+                                                )
+
+                                            dt = datetime.datetime.fromordinal(
+                                                datetime.datetime(1900, 1, 1).toordinal() + int(temp_date) - 2)
+                                            hour, minute, second = floatHourToTime(temp_date % 1)
+                                            dt = dt.replace(hour=hour, minute=minute, second=second)
+                                            exp_date_str = datetime.datetime.strftime(dt, '%m/%d/%Y')
+                                        except:
+                                            exp_date_str = excel_data_row[expiration_date_index]
                                         order_line_obj.update(
-                                            dict(expiration_date_str=excel_data_row[expiration_date_index]))
+                                            dict(expiration_date_str=exp_date_str))
                                     order_line_obj.update(self.get_product_sales_count(products[0].id))
                                     multiplier_id = self.get_order_line_multiplier(
                                         order_line_obj, query_result['premium'])
@@ -137,16 +166,41 @@ class vendor_offer_automation(models.Model):
                                     possible_competition_list = self.env['competition.competition'].search(
                                         [('id', '=', self.possible_competition.id)])
                                     order_line_obj.update({'margin': multiplier_list.margin})
-                                    product_unit_price_wtih_multiplier = math.ceil(
-                                        round(float(product_unit_price) * (float(multiplier_list.retail) / 100), 2))
+                                    # product_unit_price_wtih_multiplier =math.ceil(
+                                    #     round(float(product_unit_price) * (float(multiplier_list.retail) / 100), 2))
+
+                                    val_t = float(product_unit_price) * (float(multiplier_list.retail) / 100)
+                                    if (float(val_t) % 1) >= 0.5:
+                                        product_unit_price_wtih_multiplier = math.ceil(
+                                            float(product_unit_price) * (float(multiplier_list.retail) / 100))
+
+                                    else:
+                                        product_unit_price_wtih_multiplier =\
+                                            math.floor(float(product_unit_price) * (float(multiplier_list.retail) / 100))
+
                                     order_line_obj.update({
                                         'price_unit': product_unit_price_wtih_multiplier,
                                         'product_retail': product_unit_price_wtih_multiplier,
                                         'product_unit_price': product_unit_price_wtih_multiplier})
-                                    product_offer_price_comp = math.ceil(
-                                        round(float(product_unit_price_wtih_multiplier) * (
+                                    # product_offer_price_comp = round(float(product_unit_price_wtih_multiplier) *
+                                    #                                  (float(multiplier_list.margin) / 100 +
+                                    #                                   float( possible_competition_list.margin) / 100),
+                                    #                                  2)
+
+                                    val_off = float(product_unit_price_wtih_multiplier) *  (float(
+                                        multiplier_list.margin) / 100 +  float( possible_competition_list.margin) / 100)
+                                    if (float(val_off) % 1) >= 0.5:
+                                        product_offer_price_comp = math.ceil(
+                                            float(product_unit_price_wtih_multiplier) * (
+                                                    float(multiplier_list.margin) / 100 + float(
+                                                possible_competition_list.margin) / 100))
+
+                                    else:
+                                        product_offer_price_comp = math.floor(float(product_unit_price_wtih_multiplier) * (
                                                 float(multiplier_list.margin) / 100 + float(
-                                            possible_competition_list.margin) / 100), 2))
+                                            possible_competition_list.margin) / 100))
+
+
                                     if quantity_index:
                                         order_line_obj.update({'product_qty': excel_data_row[quantity_index]})
 
@@ -155,11 +209,13 @@ class vendor_offer_automation(models.Model):
                                          # 'offer_price': product_offer_price_comp
                                          })
                                     order_list_list.append(order_line_obj)
+                                else:
+                                    sku_not_found_list.append(sku_code)
                             else:
                                 sku_not_found_list.append(sku_code)
                                 # product_skus.append(sku_code)
                         if len(sku_not_found_list) > 0:
-                            raise ValueError(_("Following SKU does not match \\\n\n\n %s") % sku_not_found_list)
+                            raise ValueError(_("Following SKU does not match  \n\n\n %s") % sku_not_found_list)
                         if len(order_list_list) > 0:
                             for order_line_object in order_list_list:
                                 order_line_model = self.env['purchase.order.line'].with_context(order_line_object)
@@ -340,19 +396,23 @@ class vendor_offer_automation(models.Model):
 
                             self.env.cr.execute("""
                                                     select * from 
-                                                        (SELECT id,list_price,uom_id, name, premium, tier,
+                                                        (SELECT pp.id as product_id,pt.id as id,pt.list_price as 
+                                                        list_price,pt.uom_id as uom_id, pt.name as name, pt.premium as
+                                                        premium, pt.tier as tier, 
                                                          regexp_replace(manufacturer_pref , '[^A-Za-z0-9.]', '','g') 
                                                          as manufacturer_pref, 
                                                           regexp_replace(sku_code , '[^A-Za-z0-9.]', '','g')
                                                            as sku_code_cleaned 
-                                                          FROM product_template) 
+                                                          FROM product_template as pt join product_product as pp on 
+                                                           pt.id=pp.product_tmpl_id ) 
                                                     as temp_data where sku_code_cleaned ='""" + re.sub(
                                 r'[^A-Za-z0-9.]', '', product_sku) + """' or manufacturer_pref = '""" + re.sub(
                                 r'[^A-Za-z0-9.]', '', sku_code) + """' """)
                             query_result = self.env.cr.dictfetchone()
                             if query_result:
-                                products = self.env['product.product'].search(
-                                    [('product_tmpl_id', '=', query_result['id'])])
+                                # products = self.env['product.product'].search(
+                                #     [('product_tmpl_id', '=', query_result['id'])])
+                                products = self.env['product.product'].browse(query_result['product_id'])
                                 if count_obj == 0:
                                     possible_competition = self.env['competition.competition'].search(
                                         [('name', '=',possible_competition_name)]).id
@@ -391,14 +451,16 @@ class vendor_offer_automation(models.Model):
                                         order_line_obj.update({'expiration_date': expiration_date })
                                     else:
                                         order_line_obj.update({'expiration_date': None})
-                                order_list_list.append(order_line_obj)
-                                count_obj = count_obj + 1
+                                    order_list_list.append(order_line_obj)
+                                    count_obj = count_obj + 1
+                                else:
+                                    sku_not_found_list.append(sku_code)
                             else:
                                 sku_not_found_list.append(sku_code)
 
                         if len(sku_not_found_list) > 0:
                             raise ValueError(_("Following SKU does not match \n\n\n %s") % sku_not_found_list)
-                        #request.session['order_list_list'] = order_list_list
+
                         count_order = 0
                         if len(order_list_list) > 0:
                             amount_untaxed = 0
@@ -439,7 +501,27 @@ class vendor_offer_automation(models.Model):
                             for order_line_object in order_list_list:
                                 # order_line_model = self.env['purchase.order.line'].with_context(order_line_object)
                                 # order_line_model.create(order_line_object)
-                                offer_price = retail_price = offer_price_total = retail_price_total = 0
+
+                                exp_date = None
+                                exp_date_str = None
+                                try:
+                                    temp_date = float(order_line_object['expiration_date'])
+
+                                    def floatHourToTime(fh):
+                                        h, r = divmod(fh, 1)
+                                        m, r = divmod(r * 60, 1)
+                                        return (
+                                            int(h),
+                                            int(m),
+                                            int(r * 60),
+                                        )
+
+                                    dt = datetime.datetime.fromordinal(datetime.datetime(1900, 1, 1).toordinal() + int(temp_date) - 2)
+                                    hour, minute, second = floatHourToTime(temp_date % 1)
+                                    dt = dt.replace(hour=hour, minute=minute, second=second)
+                                    exp_date_str = datetime.datetime.strftime(dt, '%m/%d/%Y')
+                                except:
+                                    exp_date_str = order_line_object['expiration_date']
                                 if count_order == 0:
                                     order_model = self.env['purchase.order'].search([('id', '=',
                                                                                       order_line_object['order_id'])])
@@ -461,11 +543,6 @@ class vendor_offer_automation(models.Model):
                                     create_date = order_model.create_date
                                     count_order = count_order+1
 
-                                # offer_price = float(order_line_object_add['offer_price'])
-                                # retail_price = float(order_line_object_add['retail_price'])
-                                # offer_price_total = float(order_line_object_add['offer_price_total'])
-                                # retail_price_total = float(order_line_object_add['retail_price_total'])
-
                                 insert = "INSERT INTO purchase_order_line" \
                                          "(name,product_uom,price_unit,product_qty,date_planned,order_id,product_id," \
                                          " qty_in_stock," \
@@ -474,11 +551,11 @@ class vendor_offer_automation(models.Model):
                                          " price_total," \
                                          " " \
                                          " multiplier," \
-                                         "expiration_date_str," \
+                                         "expiration_date,expiration_date_str," \
                                          " import_type_ven_line,currency_id,product_sales_count_month" \
                                          " ,create_uid,company_id,create_date,price_tax,qty_invoiced)" \
                                          " VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s," \
-                                         " %s, %s , %s ,%s ,%s,%s ,%s ,%s,%s) " \
+                                         " %s, %s , %s ,%s ,%s,%s ,%s ,%s,%s ,%s) " \
                                          " RETURNING id"
 
                                 sql_query = insert
@@ -495,7 +572,7 @@ class vendor_offer_automation(models.Model):
                                         order_line_object['expired_inventory'],
                                         float("{0:.2f}".format(float(order_line_object['offer_price_total']))),
                                         order_line_object['multiplier'],
-                                        order_line_object['expiration_date'],
+                                        exp_date,exp_date_str,
                                         order_line_object['import_type_ven_line'],
                                         currency_id_insert, 0,create_uid,company_id,create_date,0,0)
 
@@ -504,7 +581,6 @@ class vendor_offer_automation(models.Model):
                                 line_order_model = self.env['purchase.order.line'].search(
                                     [('id', 'in', line_obj)])
                                 line_order_model.price_subtotal = float(order_line_object['offer_price_total'])
-
 
             except UnicodeDecodeError as ue:
                 _logger.info(ue)
