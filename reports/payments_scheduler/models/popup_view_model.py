@@ -5,7 +5,7 @@ import datetime
 class  AcquisitionReportPopUp(models.TransientModel):
     _name = 'payments_scheduler.report.summary'
 
-    end_date = fields.Date('End Date', help="Choose a date to get the Discount Summary at that  End date",
+    end_date = fields.Date('Due Date', help="Choose a date to get the  Invoices at that using  Due date",
                                default=fields.Datetime.now)
 
     def open_table(self):
