@@ -14,13 +14,13 @@ _logger = logging.getLogger(__name__)
 class InventoryNotificationScheduler(models.TransientModel):
     _name = 'inventory.notification.scheduler'
 
-    warehouse_email = "vasimkhan@benchmarkit.solutions"
-    sales_email = "rohitkabadi@benchmarkit.solutions"
-    acquisitions_email = "ajinkyanimbalkar@benchmarkit.solutions"
+    # warehouse_email = "vasimkhan@benchmarkit.solutions"
+    #     # sales_email = "rohitkabadi@benchmarkit.solutions"
+    #     # acquisitions_email = "ajinkyanimbalkar@benchmarkit.solutions"
 
-    #warehouse_email = "warehouse@surgicalproductsolutions.com"
-    #sales_email = "salesteam@surgicalproductsolutions.com"
-    #acquisitions_email = "acquisitions@surgicalproductsolutions.com"
+    warehouse_email = "warehouse@surgicalproductsolutions.com"
+    sales_email = "salesteam@surgicalproductsolutions.com"
+    acquisitions_email = "acquisitions@surgicalproductsolutions.com"
 
     def process_manual_notification_scheduler(self):
         _logger.info("process_manual_notification_scheduler called..")
@@ -280,7 +280,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                     header = ['Manufacturer','Catalog number', 'Description', 'Sales Price', 'Quantity On Hand',
                               'Min Exp. Date',
                               'Max Exp. Date', 'Unit Of Measure']
-                    columnProps = ['product_brand_id.name','sku_code', 'name', 'list_price', 'actual_quantity', 'minExDate',
+                    columnProps = ['product_brand_id.name','sku_code', 'name', 'customer_price_list', 'actual_quantity', 'minExDate',
                                    'maxExDate', 'uom_id.name']
                     closing_content = "Please reply to this email or contact your Account Manager to hold product or place an order. " \
                                       "<br/>Many Thanks,		" \
@@ -315,7 +315,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                                        product_list,
                                                                        header, columnProps, closing_content,
                                                                        customr.email,
-                                                                       email_list_cc,sort_col,is_employee=False)
+                                                                       email_list_cc,sort_col,is_employee=False,partner_id=customr)
                 else:
                     pass
         end = time.time()
@@ -777,7 +777,7 @@ class InventoryNotificationScheduler(models.TransientModel):
     def process_email_in_stock_scheduler_template(self, email_from_user, email_to_user, subject, descrption, products,
                                                   header, columnProps, closing_content, email_to_team, email_list_cc,sort_col=False,
                                                   custom_template="inventory_notification.in_stock_scheduler_template",
-                                                  is_employee=True):
+                                                  is_employee=True,partner_id=None):
         template = self.env.ref(custom_template)
         product_dict = {}
         product_list = []
@@ -815,6 +815,10 @@ class InventoryNotificationScheduler(models.TransientModel):
                         column = datetime.strptime(query_result['max'], "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
                     else:
                         column = ""
+                elif column_name == 'customer_price_list':
+                    print("Inside customer_price_list ")
+                    column='$' + " {0:.2f}".format(partner_id.property_product_pricelist.get_product_price(product,product.actual_quantity , partner_id))
+                    print(column)
                 else:
                     if isinstance(product, dict):
                         column = str(product.get(column_name))
