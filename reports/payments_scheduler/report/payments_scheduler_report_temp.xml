@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="payments_scheduler_temp_test">
+         <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <page>
+                    <div class="oe_structure"/>
+                    <div class="row">
+                        <center>
+                            <b>
+                                <h2>Surgical Product Solutions</h2>
+                                <h4>Payments Scheduled Report</h4>
+                            </b>
+                        </center>
+                    </div>
+                    <br/>
+                    <div>
+                        <table class="table table-condensed" style="border: 1px solid black;">
+                            <thead style="display: table-header-group;">
+                                <tr style="border: 1px solid black;">
+                                    <th style="border: 1px solid black;text-align: center;">Acquisition Rep</th>
+                                    <th style="border: 1px solid black;text-align: center;">Vendor Name</th>
+                                    <th style="border: 1px solid black;text-align: center;">Purchase Order#</th>
+                                    <th style="border: 1px solid black;text-align: center;">Check-in Date</th>
+                                    <th style="border: 1px solid black;text-align: center;">Due Date (of Bill)</th>
+                                    <th style="border: 1px solid black;text-align: center;">Payable To</th>
+                                    <th style="border: 1px solid black;text-align: center;width:350px;">Full Address of Vendor</th>
+                                    <th style="border: 1px solid black;text-align: center;">Term</th>
+                                    <th style="border: 1px solid black;text-align: center;">Bill Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="data" t-as="order">
+
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="order.acquisition_rep"/>
+                                    </td>
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="order.partner_id.name"/>
+                                    </td>
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="order.origin"/>
+                                    </td>
+                                    <td align="center" style="border: 1px solid black;">
+                                        <span t-esc="order.date_invoice" t-options='{"widget": "date"}'/>
+                                    </td>
+                                    <td align="right" style="border: 1px solid black;white-space:nowrap;">
+                                        <span t-esc="order.date_due" t-options='{"widget": "date"}'/>
+                                    </td>
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="order.pay_to"/>
+                                    </td>
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="order.address"/>
+                                    </td>
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="order.payment_term_id.name"/>
+                                    </td>
+                                    <td align="right" style="border: 1px solid black;white-space:nowrap;">
+                                        <span t-esc="order.amount_total_signed"
+                                              t-options='{"widget": "monetary","display_currency": order.currency_id}'/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </page>
+            </t>
+        </t>
+    </template>
+</odoo>

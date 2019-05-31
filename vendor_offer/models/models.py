@@ -235,6 +235,12 @@ class VendorOffer(models.Model):
                     rt_price_tax += line.rt_price_tax
                     rt_price_total += line.rt_price_total
 
+                    # line.for_print_product_offer_price = str(line.product_offer_price)
+                    # line.for_print_price_subtotal = str(line.price_subtotal)
+                    # if ((line.expiration_date_str is False) or (line.expiration_date_str == '')) and line.expiration_date :
+                    #     line.expiration_date_str = line.expiration_date
+                    #     line.update({ 'expiration_date_str': line.expiration_date_str })
+
                 if order.accelerator:
                     # amount_untaxed = product_retail * 0.50
                     max = rt_price_total * 0.65
@@ -321,10 +327,6 @@ class VendorOffer(models.Model):
             self.offer_type_pdf_text = 'Credit to Purchase'
             self.credit_offer_type_pdf_text = 'Credit Offer is valid for 12 months from the date of issue'
         self.write({'status': 'ven_sent', 'state': 'ven_sent'})
-        for order in self:
-            for line in order.order_line:
-                line.for_print_product_offer_price=str(line.product_offer_price)
-                line.for_print_price_subtotal = str(line.price_subtotal)
         return self.env.ref('vendor_offer.action_report_vendor_offer').report_action(self)
 
     @api.multi
@@ -722,8 +724,18 @@ class VendorOfferProduct(models.Model):
             multiplier_list = line.multiplier
             # Added to fix inhirit issue
 
-            product_unit_price = math.floor(
-                round(float(line.product_id.list_price) * (float(multiplier_list.retail) / 100), 2))
+            # product_unit_price = math.floor(
+            #     round(float(line.product_id.list_price) * (float(multiplier_list.retail) / 100), 2))
+
+            val_t = float(line.product_id.list_price) * (float(multiplier_list.retail) / 100)
+            if (float(val_t) % 1) >= 0.5:
+                product_unit_price = math.ceil(
+                    float(line.product_id.list_price) * (float(multiplier_list.retail) / 100))
+
+            else:
+                product_unit_price = math.floor(float(line.product_id.list_price) * (float(multiplier_list.retail) / 100))
+
+
             margin = 0
             if line.multiplier.id:
                 margin += line.multiplier.margin
@@ -736,6 +748,8 @@ class VendorOfferProduct(models.Model):
                 'product_unit_price': product_unit_price,
             })
 
+
+
     @api.onchange('multiplier', 'order_id.possible_competition')
     @api.depends('multiplier', 'order_id.possible_competition')
     def _set_offer_price(self):
@@ -746,16 +760,37 @@ class VendorOfferProduct(models.Model):
             # else:
             multiplier_list = line.multiplier
 
-            product_unit_price = math.floor(
-                round(float(line.product_id.list_price) * (float(multiplier_list.retail) / 100), 2))
-            product_offer_price = math.floor(float(product_unit_price) * (
-                    float(multiplier_list.margin) / 100 + float(line.possible_competition.margin) / 100))
+            # product_unit_price = math.floor(
+            #     round(float(line.product_id.list_price) * (float(multiplier_list.retail) / 100), 2))
+            # product_offer_price = math.floor(float(product_unit_price) * (
+            #         float(multiplier_list.margin) / 100 + float(line.possible_competition.margin) / 100))
+
+            val_t = float(line.product_id.list_price) * (float(multiplier_list.retail) / 100)
+            if (float(val_t) % 1) >= 0.5:
+                product_unit_price = math.ceil(
+                    float(line.product_id.list_price) * (float(multiplier_list.retail) / 100))
+
+            else:
+                product_unit_price = math.floor(float(line.product_id.list_price) * (float(multiplier_list.retail) / 100))
+
+            val_off = float(product_unit_price) * (float(
+                multiplier_list.margin) / 100 + float(line.possible_competition.margin) / 100)
+            if (float(val_off) % 1) >= 0.5:
+                product_offer_price = math.ceil(
+                    float(product_unit_price) * (
+                            float(multiplier_list.margin) / 100 + float(
+                        line.possible_competition.margin) / 100))
+
+            else:
+                product_offer_price = math.floor(float(product_unit_price) * (
+                        float(multiplier_list.margin) / 100 + float(
+                    line.possible_competition.margin) / 100))
 
             line.update({
                 'product_offer_price': product_offer_price
             })
 
-    product_offer_price = fields.Monetary(string="Offer Price", compute=_set_offer_price, store=True)
+    product_offer_price = fields.Monetary(string="Offer Price", default=_set_offer_price, store=True)
 
     # def update_product_expiration_date(self):
     #     for order in self:
