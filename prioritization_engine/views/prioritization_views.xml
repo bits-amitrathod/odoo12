@@ -1,5 +1,15 @@
 <odoo>
     <data>
+
+        <record id="seq_sfnumber" model="ir.sequence">
+            <field name="name">Sale Force</field>
+            <field name="code">sale.force.no</field>
+            <field name="prefix">SF</field>
+            <field name="padding">5</field>
+<!--            <field name="number_next">50000</field>-->
+            <field name="number_increment">1</field>
+        </record>
+
         <record id="view_form_prioritization_customer" model="ir.ui.view">
             <field name="name">Prioritization customer form</field>
             <field name="model">res.partner</field>
