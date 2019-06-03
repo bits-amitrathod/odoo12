@@ -12,7 +12,7 @@ class  AcquisitionReportPopUp(models.TransientModel):
         tree_view_id = self.env.ref('payments_scheduler.form_list').id
         form_view_id = self.env.ref('payments_scheduler.form_view').id
 
-        ai = self.env['account.invoice'].search([('date_invoice','<=',self.end_date)]).ids
+        ai = self.env['account.invoice'].search([('date_due','<=',self.end_date)]).ids
 
         action = {
             'type': 'ir.actions.act_window',
