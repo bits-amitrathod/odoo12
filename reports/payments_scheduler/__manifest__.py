@@ -1,6 +1,6 @@
 
 {
-    'name': ' Payments Scheduler ',
+    'name': ' Payments Scheduled ',
     'summary':"Report",
     'category': 'Report',
     'version': '11.0.0.1',
