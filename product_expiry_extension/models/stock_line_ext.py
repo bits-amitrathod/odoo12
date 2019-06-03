@@ -207,3 +207,22 @@ class inventory_exe(models.Model):
         # Reset the reserved quantity as we just moved it to the destination location.
         (self - ml_to_delete).with_context(bypass_reservation_update=True).write(
             {'product_uom_qty': 0.00, 'date': fields.Datetime.now(), })
+
+
+class ProductionLotNameAppendDate(models.Model):
+    _inherit = 'stock.production.lot'
+
+    @api.multi
+    def name_get(self):
+        result = []
+        if self.env.context is None:
+            self.env.context = {}
+        for record in self:
+            name = record.name
+            if self.env.context.get('lot_date_display_name'):
+                if record.use_date:
+                    name = record.name + ': #Exp Date :' + str(record.use_date[0:10])
+                else:
+                    name = record.name
+            result.append((record.id, name))
+        return result
