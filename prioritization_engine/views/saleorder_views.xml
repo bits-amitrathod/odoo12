@@ -218,6 +218,10 @@
                     <strong>Salesperson:</strong>
                     <p t-field="doc.user_id"/>
                 </div>
+                <div t-if="doc.partner_id.gl_account.name" class="col-xs-3">
+                    <strong>GL Account:</strong>
+                    <p t-field="doc.partner_id.gl_account.name"/>
+                </div>
                 <div name="payment_term" t-if="doc.payment_term_id" class="col-xs-3">
                     <strong>Payment Terms:</strong>
                     <p t-field="doc.payment_term_id"/>
