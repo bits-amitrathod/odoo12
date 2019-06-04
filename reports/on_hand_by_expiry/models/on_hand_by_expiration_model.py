@@ -23,6 +23,8 @@ class OnHandByExpiry(models.Model):
     color_value =  fields.Integer("Scrab Location", compute="_set_date_fg_color")
     scrap_location = fields.Boolean("Scrap Location")
     sku_code = fields.Char("Product SKU")
+    lot_name = fields.Char("Lot #")
+    manufactures = fields.Char("Manufacture")
     _rec_name = 'product_id'
 
     @api.model_cr
@@ -44,6 +46,8 @@ class OnHandByExpiry(models.Model):
                 sw.id as warehouse_id,
                 sl.scrap_location,
                 t.sku_code as sku_code,
+                l.name as lot_name,
+                pb.name as manufactures,
                 CASE 
                     WHEN l.use_date < '""" + str(current_date) + """' THEN 'Expired'
                     WHEN l.alert_date <= '""" + str(current_date) + """' THEN 'Expiring'
@@ -53,7 +57,8 @@ class OnHandByExpiry(models.Model):
                 stock_production_lot l LEFT JOIN stock_quant sq ON sq.lot_id = l.id 
                 LEFT JOIN product_product p ON p.id = sq.product_id LEFT JOIN product_template t 
                 ON t.id = p.product_tmpl_id LEFT JOIN stock_location sl On sl.id = sq.location_id 
-                LEFT JOIN stock_warehouse sw ON sl.id = sw.lot_stock_id                 
+                LEFT JOIN stock_warehouse sw ON sl.id = sw.lot_stock_id      
+                LEFT JOIN product_brand pb ON pb.id = t.product_brand_id           
             WHERE 
                 sq.quantity > 0 AND sq.lot_id IS NOT NULL AND sq.location_id IS NOT NULL """
 

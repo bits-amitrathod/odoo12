@@ -21,7 +21,7 @@
                 <field name="product_brand_id"/>
                 <field name="sku_code" string="Product SKU"/>
                 <field name="product_id" string="Product Name"/>
-                <field name="qty_available" string="Qty In Stock"/>
+<!--                <field name="qty_available" string="Qty In Stock"/>-->
                 <field name="actual_quantity"/>
                 <field name="uom_id" string="Product UOM"/>
                 <field name="price_list" widget="monetary"/>

@@ -218,6 +218,10 @@
                     <strong>Salesperson:</strong>
                     <p t-field="doc.user_id"/>
                 </div>
+                <div t-if="doc.partner_id.gl_account.name" class="col-xs-3">
+                    <strong>GL Account:</strong>
+                    <p t-field="doc.partner_id.gl_account.name"/>
+                </div>
                 <div name="payment_term" t-if="doc.payment_term_id" class="col-xs-3">
                     <strong>Payment Terms:</strong>
                     <p t-field="doc.payment_term_id"/>
@@ -225,6 +229,14 @@
                 <div t-if="doc.validity_date and doc.state in ['draft', 'sent']" class="col-xs-3">
                     <strong>Expiration Date:</strong>
                     <p t-field="doc.validity_date"/>
+                </div>
+                <div t-if="doc.carrier_track_ref" class="col-xs-3">
+                    <strong>Tracking Reference:</strong>
+                    <p t-field="doc.carrier_track_ref"/>
+                </div>
+                <div t-if="doc.carrier_id" class="col-xs-3">
+                    <strong>Delivery Method:</strong>
+                    <p t-field="doc.carrier_id.name"/>
                 </div>
             </div>
 

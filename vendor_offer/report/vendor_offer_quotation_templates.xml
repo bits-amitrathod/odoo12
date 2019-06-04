@@ -28,19 +28,31 @@
                         <p t-if="o.partner_id.vat"><t t-esc="o.company_id.country_id.vat_label or 'TIN'"/>: <span t-field="o.partner_id.vat"/></p>
                 </div>
             </div>
-            <h2 style="color:red;font-size:16px;" align="center" ><strong>***CONFIDENTIAL***</strong></h2><hr></hr>
-            <div><p><span style="font-weight:600;font-size:16px !important;">OFFER PRICE  : </span><span style="font-weight:600;font-size:18px !important;" t-field="o.amount_total"/> <span style="font-weight:600;font-size:18px!important;" t-field="o.offer_type_pdf_text"> </span></p></div>
-           <div><p><span t-field="o.credit_offer_type_pdf_text"> </span></p></div>
-            <div><p>This offer must be accepted within 3 business days of delivery date unless otherwise noted.</p></div>
-              <div><p>Once the offer is accepted, the offer price is contingent upon requirements detailed below.</p></div>
-              <div><p><strong>OFFER PRICE CONDITIONAL UPON</strong>:</p></div>
-              <div><p>Speedy Delivery to Buyer within 5 days  Please included this purchase offer inside each shipment</p></div>
-              <div><p>Quality Control Inspection within 10 days upon receipt of goods</p></div>
-            <div><p><strong>PREFERRED SETTLEMENT PERIOD:</strong> <span style="font-weight:600;font-size:16px !important;" t-field="o.temp_payment_term"/> after completion of SPS quality control inspection</p></div>
-              <div><p><strong>SPS RESERVES THE RIGHT TO ADJUST THIS PURCHASE OFFER IN THE EVENT THAT SPSS QUALITY CONTROL PROCESS INDENTIFIES ANY DAMAGES OR DISCREPENCIES WITH THE PRODUCT FURNISHED.SELLER WILL BE NOTIFIED IMMEDIATELY IF AND WHEN THIS OFFER IS ADJUSTED.</strong></p></div>
-              <div><p><strong>ALL ITEMS MUST BE IN THE ORIGINAL MANUFACTURERS PACKAGING AND NOT REPROCESSED. NO SALES SAMPLES OR CPT PRODUCTS.</strong></p></div>
-              <div><p><strong>YOU WARRANT THAT YOU ARE THE LAWFUL OWNER OF THE AFOREMENTIONED GOODS, THAT THEY ARE FREE FROM ALL ENCUMBRANCES, AND THAT WE HAVE THE RIGHT TO SELL THESE GOODS. SELLER BINDS ITSELF, ITS SUCCESSORS AND ASSIGNS, TO WARRANT AND DEFEND SPS TITLE TO THESE GOODS AGAINST CLAIMS AND DEMANDS OF ALL PERSONS.</strong></p></div>
-              <div><p><img src ='/vendor_offer/static/img/unchecked.png' style="height:10px;width:10px;margin-right:8px;"/><strong></strong>By checking the box to the left, you agree that: (1) you are a licensed facility with legitimate title ownership of the merchandise being sold; (2) you have quality system procedures to ensure the maintenance of safety, storage and distribution is properly being enforced; and (3) you are willing to demonstrate this to SPS upon request.</p></div>
+            <h2 style="color:red;font-size:15px;" align="center" ><strong>***CONFIDENTIAL***</strong></h2><hr></hr>
+            <div><p style="margin: 3px 0;"><span style="font-weight:600;font-size:15px !important;">OFFER PRICE  : </span><span style="font-weight:600;font-size:15px !important;" t-field="o.amount_total"/> <span t-if="o.offer_type_pdf_text" style="font-weight:600;font-size:15px!important;" t-field="o.offer_type_pdf_text"> </span>
+                <span t-if="o.offer_type =='credit' and not o.offer_type_pdf_text" style="font-weight:600;font-size:15px!important;">Credit to Purchase</span>
+                <span t-if="not o.offer_type == 'credit' and not o.offer_type_pdf_text" style="font-weight:600;font-size:15px!important;">Cash Back</span>
+            </p>
+
+            </div>
+           <div><p style="margin: 3px 0;"><span t-field="o.credit_offer_type_pdf_text"> </span></p></div>
+            <div t-if="o.offer_type =='credit' and not o.credit_offer_type_pdf_text"><p style="margin: 3px 0;"><span>Credit Offer is valid for 12 months from the date of issue</span></p></div>
+            <div><p style="margin: 3px 0;font-size:15px;">This offer must be accepted within 3 business days of delivery date unless otherwise noted.</p></div>
+              <div><p style="margin: 3px 0;font-size:15px;">Once the offer is accepted, the offer price is contingent upon requirements detailed below.</p></div>
+              <div><p style="margin: 3px 0;font-size:15px;"><strong>OFFER PRICE CONDITIONAL UPON</strong>:</p></div>
+              <div><p style="margin: 3px 0;font-size:15px;">Speedy Delivery to Buyer within 5 days  Please included this purchase offer inside each shipment</p></div>
+              <div><p style="margin: 3px 0;font-size:15px;">Quality Control Inspection within 10 days upon receipt of goods</p></div>
+             <div t-if="not o.offer_type =='credit'"><p style="margin: 5px 0;font-size:15px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>
+                 <span t-if="o.temp_payment_term" style="font-weight:600;font-size:15px !important;" t-field="o.temp_payment_term"/>
+                 <span t-if="not o.temp_payment_term" style="font-weight:600;font-size:15px !important;" t-field="o.payment_term_id.name"/>
+                 <span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:15px !important;" >0 Days </span>
+                 after completion of SPS quality control inspection</p></div>
+             <div t-if="o.offer_type =='credit'"><p style="margin: 5px 0;font-size:15px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>
+                 <span style="font-weight:600;font-size:15px !important;" t-field="o.offer_type"/> <strong>issued immediately </strong> after completion of SPS quality control inspection.</p></div>
+              <div><p style="margin: 3px 0;font-size:15px;"><strong>SPS RESERVES THE RIGHT TO ADJUST THIS PURCHASE OFFER IN THE EVENT THAT SPSS QUALITY CONTROL PROCESS INDENTIFIES ANY DAMAGES OR DISCREPENCIES WITH THE PRODUCT FURNISHED.SELLER WILL BE NOTIFIED IMMEDIATELY IF AND WHEN THIS OFFER IS ADJUSTED.</strong></p></div>
+              <div><p style="margin: 3px 0;font-size:15px;"><strong>ALL ITEMS MUST BE IN THE ORIGINAL MANUFACTURERS PACKAGING AND NOT REPROCESSED. NO SALES SAMPLES OR CPT PRODUCTS.</strong></p></div>
+              <div><p style="margin: 3px 0;font-size:15px;"><strong>YOU WARRANT THAT YOU ARE THE LAWFUL OWNER OF THE AFOREMENTIONED GOODS, THAT THEY ARE FREE FROM ALL ENCUMBRANCES, AND THAT WE HAVE THE RIGHT TO SELL THESE GOODS. SELLER BINDS ITSELF, ITS SUCCESSORS AND ASSIGNS, TO WARRANT AND DEFEND SPS TITLE TO THESE GOODS AGAINST CLAIMS AND DEMANDS OF ALL PERSONS.</strong></p></div>
+              <div><p style="margin: 3px 0;font-size:15px;"><img src ='/vendor_offer/static/img/unchecked.png' style="height:10px;width:10px;margin-right:8px;"/><strong></strong>By checking the box to the left, you agree that: (1) you are a licensed facility with legitimate title ownership of the merchandise being sold; (2) you have quality system procedures to ensure the maintenance of safety, storage and distribution is properly being enforced; and (3) you are willing to demonstrate this to SPS upon request.</p></div>
             <table class="table table-condensed" style="width:650px;">
             <tbody>
                 <tr>
@@ -50,22 +62,22 @@
                 </tr>
                  <tr>
                      <td  style="vertical-align: bottom;border: none;"><span style="position: relative;top: 5px;">SELLER SIGNATURE:</span></td>
-                    <td style="border-bottom: 1px solid #000;" ></td>
+                     <td style="border-bottom: 1px solid #000;" ></td>
                      <td style="border-bottom: 1px solid #fff;padding-left:30px; vertical-align: bottom;border-top: 1px solid #fff;"><span style="position: relative;top: 5px;">DATE: </span></td>
                 </tr>
                   <tr>
                       <td style="vertical-align: bottom;border: none;"><span style="position: relative;top: 5px;">PRINT NAME :</span></td>
-                     <td style="border-bottom: 1px solid #000;" align="center"><span style="font-weight:600;font-size:16px important;position: relative;top: 5px;" >Justin Tennant</span></td>
+                      <td style="border-bottom: 1px solid #000;" align="center"><span style="font-weight:600;font-size:16px important;position: relative;top: 5px;" >Justin Tennant</span></td>
                       <td style="border-bottom: 1px solid #fff;border-top: 1px solid #fff;"></td>
                 </tr>
                    <tr>
                        <td style="vertical-align: bottom;border: none;"><span style="position: relative;top: 5px;">BUYER SIGNATURE:</span></td>
                     <td style="border-bottom: 1px solid #000;" align="center"><img src='/vendor_offer/static/img/signature.png' style="height: 45px;width:100px;margin-top:0px;position: relative;top: 3px; "/></td>
-                       <td style="border-bottom: 1px solid #fff;padding-left:30px; vertical-align: bottom;" ><span style="position: relative;top: 5px;">DATE:</span><span style="font-weight:600;font-size:16px !important; margin-left:10px; position: relative;top: 5px;" t-field="o.create_date" t-options='{"widget": "date"}'/>  </td>
+                       <td style="border-bottom: 1px solid #fff;padding-left:30px; vertical-align: bottom;" ><span style="position: relative;top: 5px;">DATE:</span><span style="font-weight:600;font-size:16px !important; margin-left:10px; position: relative;top: 5px;" t-esc="context_timestamp(datetime.datetime.now())" t-options='{"widget": "date"}'/>  </td>
                 </tr>
             </tbody>
         </table>
-              </div><br></br><br></br><br></br>
+              </div><br></br><br></br><br></br><br></br>
         <div class="page " style="">
           <div class="oe_structure"/>
              <h2><p>SURGICAL SURPLUS PURCHASE OFFER <span t-field="o.name"/></p></h2>
@@ -86,21 +98,22 @@
                 </thead>
                 <tbody>
                     <tr t-foreach="o.order_line" t-as="order_line">
-                        <td class="text-center">
+                        <td class="text-left">
                             <span t-field="order_line.product_brand_id"/>
                         </td>
-                        <td class="text-center">
+                        <td class="text-left">
                             <span t-field="order_line.sku_code"/>
                         </td>
                           <td class="text-center">
-                            <span t-field="order_line.expiration_date" t-options='{"widget": "date"}'/>
+                            <span t-field="order_line.expiration_date_str" />
+                              <!--<span t-field="order_line.expiration_date" t-options='{"widget": "date"}'/>-->
                         </td>
                         <td class="text-right">
                             <span t-field="order_line.product_qty"/>
                           <!--  <span t-field="order_line.product_uom" groups="product.group_uom"/>-->
                         </td>
                         <td class="text-right">
-                            <span t-field="order_line.product_offer_price"/>
+                            <span t-field="order_line.product_offer_price" widget="monetary"/>
                         </td>
                     <!--    <td class="text-right">
                             <span t-field="order_line.price_subtotal" />
@@ -109,11 +122,11 @@
                             <span t-field="order_line.price_tax" />
                         </td>-->
                            <td class="text-right">
-                            <span t-field="order_line.price_subtotal" />
+                            <span t-field="order_line.price_subtotal" widget="monetary" />
                         </td>
                     </tr>
                     <tr>
-                        <td></td> <td></td> <td></td> <td></td>  <!--<td></td>    <td></td>-->
+                        <td></td> <td></td> <td></td> <td></td>  <td></td> <!--<td></td>    <td></td>-->
                          <td class="text-right">
                               <span t-field="o.amount_total" />
 

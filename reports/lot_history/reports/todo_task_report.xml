@@ -6,6 +6,7 @@
             report_type="qweb-html"
             file="lot_history.purchase_report"
             name="lot_history.purchase_report"
+            menu = "False"
     />
 
     <template id="purchase_report">

@@ -22,6 +22,7 @@ class ProductTemplate(models.Model):
     inventory_percent_color=fields.Integer("Inv Percent Color", compute='_compute_max_inventory_level')
     future_percent_color = fields.Integer("Inv Percent Color", compute='_compute_max_inventory_level')
     inventory_monitor=fields.Boolean("Can be Monitored")
+    max_inventory_product_level_duration = fields.Integer(string="Max Inventory Level",store=True,default=0)
 
     def _compute_max_inventory_level(self):
         params = self.env['ir.config_parameter'].sudo()
@@ -32,9 +33,11 @@ class ProductTemplate(models.Model):
         for ml in self:
             location_ids = self.env['stock.location'].search([('usage', '=', 'internal'), ('active', '=', True)])
             cust_location_id = self.env['stock.location'].search([('name', '=', 'Customers')]).id
+            if ml.max_inventory_product_level_duration is not None and ml.max_inventory_product_level_duration > 0 :
+                max_inventory_level_duration = int(ml.max_inventory_product_level_duration)
             quantity = 0
-            sale_quant =0
-            purchase_qty=0
+            sale_quant = 0
+            purchase_qty = 0
             max_inventory = 0
             products = self.env['product.product'].search([('product_tmpl_id', '=', ml.id),('qty_available','>=',0)])
             for product_id in products:

@@ -126,7 +126,7 @@ var DataImport = Widget.extend(ControlPanelMixin, {
         this.do_not_change_match = false;
         this.customer = action.params[0].vendor_id;
         this.offer_id = action.params[0].offer_id;
-
+        this.import_type_ven = action.params[0].import_type_ven;
         this.parent_model = action.params[0].model;
         this.template_type = 'Inventory';
     },
@@ -315,7 +315,7 @@ var DataImport = Widget.extend(ControlPanelMixin, {
         this._rpc({
                 model: 'sps.vendor.offer.template.transient',
                 method: 'parse_preview',
-                args: [this.id, this.import_options()],
+                args: [this.id, this.import_options(),this.import_type_ven],
                 kwargs: {context: session.user_context},
             }).done(function (result) {
                 var signal = result.error ? 'preview_failed' : 'preview_succeeded';
@@ -337,7 +337,6 @@ var DataImport = Widget.extend(ControlPanelMixin, {
                 .prop('disabled', false);
         this.$el.addClass('oe_import_preview');
         this.$('.oe_import_grid').html(QWeb.render('ImportView.preview', result));
-
         if (result.headers.length === 1) {
             this.$('.oe_import_options').show();
             this.onresults(null, null, null, [{
@@ -500,7 +499,7 @@ var DataImport = Widget.extend(ControlPanelMixin, {
         return this._rpc({
                 model: 'sps.vendor.offer.template.transient',
                 method: 'do',
-                args: [this.id, fields, this.import_options(), this.parent_model, this.customer, this.offer_id],
+                args: [this.id, fields, this.import_options(), this.parent_model, this.customer, this.offer_id,this.import_type_ven],
                 kwargs : kwargs,
             }).fail(function (error, event) {
                 if (event) { event.preventDefault(); }

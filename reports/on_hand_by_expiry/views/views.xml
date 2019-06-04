@@ -44,8 +44,10 @@
                     <field name="color_value" invisible="1"/>
                     <field name="sku_code"/>
                     <field name="product_id"/>
+                    <field name="manufactures"/>
                     <field name="qty"/>
                     <field name="location_id"/>
+                    <field name="lot_name"/>
                     <field name="expiration_date" widget="date" options='{"fg_color": "red:color_value==1;orange:color_value==2;green:color_value==3"}'/>
                     <field name="status" options='{"fg_color": "red:color_value==1;orange:color_value==2;green:color_value==3"}'/>
                 </tree>
@@ -61,12 +63,15 @@
                         <div class="oe_title">
                             <h1>
                                 <field name="product_id"/>
+
                             </h1>
                         </div>
                         <group>
                             <group>
+                                <field name="manufactures"/>
                                 <field name="sku_code"/>
                                 <field name="location_id"/>
+                                <field name="lot_name"/>
                                 <field name="status"/>
                                 <field name="qty"/>
                                 <field name="expiration_date" widget="date"/>

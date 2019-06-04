@@ -2,9 +2,7 @@
 from odoo import api, fields, models
 from lxml import etree
 from datetime import datetime
-import pprint
 import itertools
-from openerp.http import request
 
 
 from dateutil.relativedelta import relativedelta
@@ -34,7 +32,17 @@ class TrendingReportListView(models.Model):
 
     #@api.onchange('')
     def _compute_sales_vals(self):
-        start_date = self.string_to_date(self.env.context['s_date'])
+        if 's_date' in self.env.context:
+            start_date = self.string_to_date(self.env.context['s_date'])
+        else:
+            popup = self.env['popup.trending.report'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
+            start_date = self.string_to_date(popup.start_date)
+        if 'code' in self.env.context:
+            code = self.env.context['code']
+        else:
+            popup = self.env['popup.trending.report'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
+            code = int(popup.code)
+
         for product in self:
             groupby_dict_month = {}
             sale_orders = self.env['sale.order'].search([('partner_id', '=', product.id), ('state', '=', 'sale')])
@@ -53,7 +61,7 @@ class TrendingReportListView(models.Model):
                     product.month2 = product.month2 + sale_order.amount_total
                 if((confirmation_date.month == (start_date).month) and (confirmation_date.year ==  (start_date).year)):
                     product.month1 = product.month1 + sale_order.amount_total
-                if(self.env.context['code']==12):
+                if(code==12):
                     if ((confirmation_date.month == (start_date - relativedelta(months=11)).month) and (confirmation_date.year == (start_date - relativedelta(months=11)).year)):
                         product.month12 = product.month12 + sale_order.amount_total
                     if ((confirmation_date.month == (start_date - relativedelta(months=10)).month) and (confirmation_date.year == (start_date - relativedelta(months=10)).year)):
@@ -71,9 +79,14 @@ class TrendingReportListView(models.Model):
 
     @api.onchange('trend_val')
     def _get_total_value(self):
+        if 'code' in self.env.context:
+            code = self.env.context['code']
+        else:
+            popup = self.env['popup.trending.report'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
+            code = int(popup.code)
         for customer in self:
             customer.total_sale=customer.month1+customer.month2+customer.month3+customer.month4+customer.month5+customer.month6
-            if(self.env.context['code']==12):
+            if(code==12):
                 customer.total_sale=customer.total_sale+customer.month7+customer.month8+customer.month9+customer.month10+customer.month11+customer.month12
 
     @api.onchange('month_count')
@@ -87,7 +100,11 @@ class TrendingReportListView(models.Model):
 
 
     def get_day_from_purchase(self,customer_id):
-        start_date = self.string_to_date(self.env.context['s_date'])
+        if 's_date' in self.env.context:
+            start_date = self.string_to_date(self.env.context['s_date'])
+        else:
+            popup = self.env['popup.trending.report'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
+            start_date = self.string_to_date(popup.start_date)
         groupby_dict_month = {}
         min = None
         sale_orders = self.env['sale.order'].search([('partner_id', '=', customer_id), ('state', '=', 'sale')])
@@ -106,7 +123,11 @@ class TrendingReportListView(models.Model):
 
     @api.onchange('month_total')
     def _total_purchased_month(self):
-        start_date = self.env.context['s_date']
+        if 's_date' in self.env.context:
+            start_date = self.env.context['s_date']
+        else:
+            popup = self.env['popup.trending.report'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
+            start_date = popup.start_date
         for customer in self:
             groupby_dict_month = {}
             sale_order_dict= {}
@@ -136,7 +157,11 @@ class TrendingReportListView(models.Model):
 
     @api.onchange('average_sale')
     def _get_average_value(self):
-        code=self.env.context['code']
+        if 'code' in self.env.context:
+            code=self.env.context['code']
+        else:
+            popup = self.env['popup.trending.report'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
+            code = int(popup.code)
         for customer in self:
             if(customer.month_count>=code):
                 customer.average_sale = (customer.total_sale / code)
@@ -185,7 +210,12 @@ class TrendingReportListView(models.Model):
             }
             if(result['name']=="purchase.vendor.view.list"):
                 doc = etree.XML(result['arch'])
-                start_date = self.string_to_date(self.env.context['s_date'])
+                if 's_date' in self.env.context:
+                    start_date = self.string_to_date(self.env.context['s_date'])
+                else:
+                    popup = self.env['popup.trending.report'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
+                    start_date = self.string_to_date(popup.start_date)
+
                 for node in doc.xpath("//field[@name='month1']"):
                     node.set('string', (start_date).strftime('%b-%y'))
                 for node in doc.xpath("//field[@name='month2']"):
@@ -212,7 +242,6 @@ class TrendingReportListView(models.Model):
                     for node in doc.xpath("//field[@name='month12']"):
                         node.set('string', (start_date - relativedelta(months=11)).strftime('%b-%y'))
                 result['arch'] = etree.tostring(doc, encoding='unicode')
-
         return result
 
     @staticmethod
