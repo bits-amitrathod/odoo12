@@ -15,11 +15,5 @@ class VendorBillDate(models.Model):
                 max_po_id=max(stock_picking_obj)
                 self.date_invoice = max_po_id.date_done
 
-
-
-
-
-
-
-
-
+class Memo(models.Model):
+    _inherit = "account.payment"
