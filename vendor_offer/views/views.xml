@@ -232,6 +232,11 @@
                                 name="%(action_view_tracking_text)d"
                                 attrs="{'invisible': [('status', 'not in', ('ven_draft','ven_sent'))]}"
                                 groups="stock.group_stock_user"/>
+                        <button string="Shipping Update"
+                                type="object" class="btn-primary"
+                                name="action_fedex_track_request"
+                                attrs="{'invisible': [('carrier_id', '==', False)]}"
+                                groups="stock.group_stock_user"/>
 
                     </header>
                     <sheet>
@@ -283,6 +288,8 @@
                                 <field name="declined_date"/>
                                 <field name="max"/>
                                 <field name="new_customer"/>
+                                <field name="carrier_id"/>
+                                <field name="shipping_number"/>
                             </group>
                         </group>
                         <notebook>
@@ -452,6 +459,11 @@
                             name="%(action_view_tracking_text)d"
                             attrs="{'invisible': [('status_ven', 'not in', 'Accepted')]}"
                             groups="stock.group_stock_user"/>
+                    <button string="Shipping Update"
+                                type="object" class="btn-primary"
+                                name="action_fedex_track_request"
+                                attrs="{'invisible': [('carrier_id', '==', False)]}"
+                                groups="stock.group_stock_user"/>
 
 
                 </button>
@@ -462,6 +474,7 @@
                     <field name="carrier_info"/>
                     <field name="carrier_acc_no"/>
                     <field name="shipping_terms"/>
+
 
 
                 </xpath>
@@ -476,9 +489,10 @@
 
                 </xpath>
                 <xpath expr="//group/group/field[@name='invoice_status']" position="after">
-                    <field name="delivered_date"></field>
-                    <field name="expected_date"></field>
-                    <field name="appraisal_no"></field>
+                    <field name="delivered_date"/>
+                    <field name="expected_date"/>
+                    <field name="appraisal_no"/>
+                    <field name="carrier_id" invisible="1"/>
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']" position="replace">
                     <field name="order_line" attrs="{'readonly': [('vendor_offer_data', '=', True)]}">

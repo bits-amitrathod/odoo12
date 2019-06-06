@@ -15,10 +15,15 @@
                             string="Confirm Sale" class="btn-primary" type="object"
                             attrs="{'invisible': [('state', 'not in', ['engine'])]}"/>
                     <button name="action_cancel" states="engine" type="object" string="Cancel"/>
+                    <button string="Shipping Update"
+                                type="object" class="btn-primary" name="action_fedex_track_request"/>
+
                 </button>
                 <button name="action_cancel" position="after">
                     <button name="action_void" string="Voided" type="object" states="draft,sent"/>
+
                 </button>
+
                 <field name="partner_shipping_id" position="after">
                     <field name="preferred_method"/>
                     <field name="shipping_terms"/>
@@ -217,6 +222,10 @@
                 <div t-if="doc.user_id.name" class="col-xs-3">
                     <strong>Salesperson:</strong>
                     <p t-field="doc.user_id"/>
+                </div>
+                <div t-if="doc.partner_id.gl_account.name" class="col-xs-3">
+                    <strong>GL Account:</strong>
+                    <p t-field="doc.partner_id.gl_account.name"/>
                 </div>
                 <div name="payment_term" t-if="doc.payment_term_id" class="col-xs-3">
                     <strong>Payment Terms:</strong>
