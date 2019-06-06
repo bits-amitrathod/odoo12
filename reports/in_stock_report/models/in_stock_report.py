@@ -82,7 +82,7 @@ class ReportInStockReport(models.Model):
         for record in self:
             # record.actual_quantity = record.product_tmpl_id.actual_quantity
             # if record.partner_id.property_product_pricelist.id:
-            #     record.price_list = record.partner_id.property_product_pricelist.get_product_price(record.product_id, 1.0, record.partner_id)
+            #     #record.price_list = record.partner_id.property_product_pricelist.get_product_price(record.product_id, 1.0, record.partner_id)
             # else:
             #     record.price_list = 0
             self.env.cr.execute(
