@@ -240,7 +240,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                 email_list_cc = []
                 for contact in contacts:
                     #if (contact.email not in email_queue):
-                    if (contact.email!=customr.email):
+                    if (contact.email!=customr.email and contact.email not in email_list_cc):
                         if (contact.start_date == False and contact.end_date == False) \
                                 or (contact.start_date == False and InventoryNotificationScheduler.string_to_date(
                             contact.end_date) and InventoryNotificationScheduler.string_to_date(
