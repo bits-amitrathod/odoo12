@@ -232,11 +232,11 @@
                                 name="%(action_view_tracking_text)d"
                                 attrs="{'invisible': [('status', 'not in', ('ven_draft','ven_sent'))]}"
                                 groups="stock.group_stock_user"/>
-                        <button string="Shipping Update"
-                                type="object" class="btn-primary"
-                                name="action_fedex_track_request"
-                                attrs="{'invisible': [('carrier_id', '==', False)]}"
-                                groups="stock.group_stock_user"/>
+<!--                        <button string="Shipping Update"-->
+<!--                                type="object" class="btn-primary"-->
+<!--                                name="action_fedex_track_request"-->
+<!--                                attrs="{'invisible': [('carrier_id', '==', False)]}"-->
+<!--                                groups="stock.group_stock_user"/>-->
 
                     </header>
                     <sheet>
@@ -459,11 +459,11 @@
                             name="%(action_view_tracking_text)d"
                             attrs="{'invisible': [('status_ven', 'not in', 'Accepted')]}"
                             groups="stock.group_stock_user"/>
-                    <button string="Shipping Update"
-                                type="object" class="btn-primary"
-                                name="action_fedex_track_request"
-                                attrs="{'invisible': [('carrier_id', '==', False)]}"
-                                groups="stock.group_stock_user"/>
+<!--                    <button string="Shipping Update"-->
+<!--                                type="object" class="btn-primary"-->
+<!--                                name="action_fedex_track_request"-->
+<!--                                attrs="{'invisible': [('carrier_id', '==', False)]}"-->
+<!--                                groups="stock.group_stock_user"/>-->
 
 
                 </button>
