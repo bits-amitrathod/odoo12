@@ -2,7 +2,7 @@
 import os
 
 import suds
-from delivery_fedex.models.fedex_request import FedexRequest, LogPlugin
+from fedex_request import FedexRequest, LogPlugin
 from odoo import models
 from odoo.exceptions import UserError
 from odoo.http import request
