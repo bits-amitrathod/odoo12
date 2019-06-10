@@ -724,8 +724,18 @@ class VendorOfferProduct(models.Model):
             multiplier_list = line.multiplier
             # Added to fix inhirit issue
 
-            product_unit_price = math.floor(
-                round(float(line.product_id.list_price) * (float(multiplier_list.retail) / 100), 2))
+            # product_unit_price = math.floor(
+            #     round(float(line.product_id.list_price) * (float(multiplier_list.retail) / 100), 2))
+
+            val_t = float(line.product_id.list_price) * (float(multiplier_list.retail) / 100)
+            if (float(val_t) % 1) >= 0.5:
+                product_unit_price = math.ceil(
+                    float(line.product_id.list_price) * (float(multiplier_list.retail) / 100))
+
+            else:
+                product_unit_price = math.floor(float(line.product_id.list_price) * (float(multiplier_list.retail) / 100))
+
+
             margin = 0
             if line.multiplier.id:
                 margin += line.multiplier.margin
@@ -738,6 +748,8 @@ class VendorOfferProduct(models.Model):
                 'product_unit_price': product_unit_price,
             })
 
+
+
     @api.onchange('multiplier', 'order_id.possible_competition')
     @api.depends('multiplier', 'order_id.possible_competition')
     def _set_offer_price(self):
@@ -748,10 +760,31 @@ class VendorOfferProduct(models.Model):
             # else:
             multiplier_list = line.multiplier
 
-            product_unit_price = math.floor(
-                round(float(line.product_id.list_price) * (float(multiplier_list.retail) / 100), 2))
-            product_offer_price = math.floor(float(product_unit_price) * (
-                    float(multiplier_list.margin) / 100 + float(line.possible_competition.margin) / 100))
+            # product_unit_price = math.floor(
+            #     round(float(line.product_id.list_price) * (float(multiplier_list.retail) / 100), 2))
+            # product_offer_price = math.floor(float(product_unit_price) * (
+            #         float(multiplier_list.margin) / 100 + float(line.possible_competition.margin) / 100))
+
+            val_t = float(line.product_id.list_price) * (float(multiplier_list.retail) / 100)
+            if (float(val_t) % 1) >= 0.5:
+                product_unit_price = math.ceil(
+                    float(line.product_id.list_price) * (float(multiplier_list.retail) / 100))
+
+            else:
+                product_unit_price = math.floor(float(line.product_id.list_price) * (float(multiplier_list.retail) / 100))
+
+            val_off = float(product_unit_price) * (float(
+                multiplier_list.margin) / 100 + float(line.possible_competition.margin) / 100)
+            if (float(val_off) % 1) >= 0.5:
+                product_offer_price = math.ceil(
+                    float(product_unit_price) * (
+                            float(multiplier_list.margin) / 100 + float(
+                        line.possible_competition.margin) / 100))
+
+            else:
+                product_offer_price = math.floor(float(product_unit_price) * (
+                        float(multiplier_list.margin) / 100 + float(
+                    line.possible_competition.margin) / 100))
 
             line.update({
                 'product_offer_price': product_offer_price
@@ -927,7 +960,10 @@ class FedexDelivery(models.Model):
         srm.shipment_request_email()
         srm.set_currency(_convert_curr_iso_fdx(order.currency_id.name))
         srm.set_shipper(order.partner_id, order.partner_id)
-        srm.set_recipient(order.company_id.partner_id)
+        #srm.set_recipient(order.company_id.partner_id)
+        super_user = self.env['res.users'].browse(1)
+        #print(super_user.partner_id.name)
+        srm.set_recipient(super_user.partner_id)
         srm.shipping_charges_payment(superself.fedex_account_number)
         srm.shipment_label('COMMON2D', self.fedex_label_file_type, self.fedex_label_stock_type,
                            'TOP_EDGE_OF_TEXT_FIRST', 'SHIPPING_LABEL_FIRST')

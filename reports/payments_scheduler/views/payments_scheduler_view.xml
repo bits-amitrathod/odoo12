@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_popup_view" model="ir.ui.view">
+            <field name="name">Payments Scheduled Report</field>
+            <field name="model">payments_scheduler.report.summary</field>
+            <field name="arch" type="xml">
+                <form string="Choose your date">
+                    <group>
+                        <group>
+                            <field name="end_date"  />
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="form_list" model="ir.ui.view">
+            <field name="name">Payments Scheduled Report</field>
+            <field name="model">account.invoice</field>
+            <field name="arch" type="xml">
+                <tree create="false" edit="false" delete="false">
+                    <field name="acquisition_rep" />
+                    <field name="partner_id" groups="base.group_user" string="Vendor Name"/>
+                    <field name="origin"  string="Purchase Order #"/>
+                    <field name="date_invoice" string="Check-in Date"/>
+                    <field name="date_due"/>
+                    <field name="pay_to"/>
+                    <field name="address"/>
+                    <field name="payment_term_id" options="{'no_create': True}"/>
+                    <field name="amount_total_signed" string="Bill Amount" sum="Bill Amount"/>
+                    <field name="state" invisible="1" />
+                    <field name="currency_id" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="form_view" model="ir.ui.view">
+            <field name="name">Payments Scheduled Report</field>
+            <field name="model">account.invoice</field>
+            <field name="arch" type="xml">
+                <form create="false" edit="false" delete="false">
+                    <sheet>
+                          <group>
+                               <field name="acquisition_rep" />
+                               <field name="partner_id" groups="base.group_user" string="Vendor Name"/>
+                                <field name="origin"  string="Purchase Order #"/>
+                                <field name="date_invoice" string="Check-in Date"/>
+                                <field name="date_due"/>
+                          </group>
+                        <group>
+                                <field name="pay_to"/>
+                                <field name="address"/>
+                                <field name="payment_term_id" options="{'no_create': True}"/>
+                                <field name="amount_total_signed" string="Bill Amount" sum="Bill Amount"/>
+                          </group>
+                         <field name="state" invisible="1" />
+                        <field name="currency_id" invisible="1"/>
+                    </sheet>
+
+                </form>
+            </field>
+        </record>
+
+        <record id="payments_scheduler_action" model="ir.actions.act_window">
+            <field name="name">Payments Scheduled Report</field>
+            <field name="res_model">payments_scheduler.report.summary</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_popup_view"/>
+            <field name="target">new</field>
+            <field name="context">{'default_compute_at_date': 0, 'valuation': True}</field>
+        </record>
+
+        <menuitem id="menu_acquisition_report"
+                  name="Payments Scheduled Report"
+                  action="payments_scheduler_action"
+                  parent="account.menu_finance_reports"
+                  sequence="1"/>
+
+    </data>
+
+</odoo>
+
+
+
