@@ -137,6 +137,28 @@ class FedexRequest():
                 SpecialServiceTypes = self.client.factory.create('ShipmentSpecialServiceType')
                 self.RequestedShipment.SpecialServicesRequested.SpecialServiceTypes = [SpecialServiceTypes.SATURDAY_DELIVERY]
 
+    def shipment_request_email(self):
+        SpecialServiceTypes = self.client.factory.create('ShipmentSpecialServiceType')
+        self.RequestedShipment.SpecialServicesRequested.SpecialServiceTypes.append(SpecialServiceTypes.EMAIL_NOTIFICATION)
+
+        eMailNotificationRecipient = self.client.factory.create('EMailNotificationRecipient')
+        eMailNotificationRecipient.EMailNotificationRecipientType.value = self.client.factory.create('EMailNotificationRecipientType').RECIPIENT
+        eMailNotificationRecipient.EMailAddress = "ajinkyanimbalkar@benchmarkit.solutions"
+        eMailNotificationRecipient.NotificationEventsRequested.append(self.client.factory.create('EMailNotificationEventType').ON_TENDER)
+        eMailNotificationRecipient.Format.value = self.client.factory.create('EMailNotificationFormatType').HTML
+        eMailNotificationRecipient.Localization.LanguageCode = "EN"
+        self.RequestedShipment.SpecialServicesRequested.EMailNotificationDetail.Recipients.append(eMailNotificationRecipient)
+
+        eMailNotificationRecipient = self.client.factory.create('EMailNotificationRecipient')
+        eMailNotificationRecipient.EMailNotificationRecipientType.value = self.client.factory.create('EMailNotificationRecipientType').RECIPIENT
+        eMailNotificationRecipient.EMailAddress = "amitrathod@benchmarkit.solutions"
+        eMailNotificationRecipient.NotificationEventsRequested.append(self.client.factory.create('EMailNotificationEventType').ON_TENDER)
+        eMailNotificationRecipient.Format.value = self.client.factory.create('EMailNotificationFormatType').HTML
+        eMailNotificationRecipient.Localization.LanguageCode = "EN"
+        self.RequestedShipment.SpecialServicesRequested.EMailNotificationDetail.Recipients.append(eMailNotificationRecipient)
+
+        self.RequestedShipment.SpecialServicesRequested.EMailNotificationDetail.AggregationType.value = "PER_PACKAGE"
+
     def set_currency(self, currency):
         self.RequestedShipment.PreferredCurrency = currency
         # self.RequestedShipment.RateRequestTypes = 'PREFERRED'
