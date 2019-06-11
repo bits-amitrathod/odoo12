@@ -134,7 +134,7 @@ class TrendingReportListView(models.Model):
             sale_orders = self.env['sale.order'].search([('partner_id', '=', customer.id), ('state', '=', 'sale'), ('confirmation_date','<=', start_date)])
             sale_order_dict['data'] = sale_orders
             for sale_order in sale_order_dict['data']:
-                confirmation_date = datetime.date(datetime.strptime(sale_order.confirmation_date, "%Y-%m-%d %H:%M:%S"))
+                confirmation_date = datetime.date(datetime.strptime(str(sale_order.confirmation_date).split(".")[0], "%Y-%m-%d %H:%M:%S"))
                 count=0
                 if (groupby_dict_month.get(confirmation_date.strftime('%b-%Y'))):
                     count=groupby_dict_month[confirmation_date.strftime('%b-%Y')]

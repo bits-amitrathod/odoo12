@@ -11,18 +11,16 @@
                             <b>
                                 <h2>Surgical Product Solutions</h2>
                                 <h4>Margins Report</h4>
+                                <h6>Date Range:
+                                    <span t-esc="data['date_from']" t-options='{"widget": "date"}'/> - <span t-esc="data['date_to']" t-options='{"widget": "date"}'/>
+                                </h6>
+
                             </b>
                         </center>
                     </div>
                      <div class="row justify-content-md-center">
                  <t t-foreach="data['items']" t-as="product">
                         <center>
-                            <b>
-                                <h6>Date Range:
-                                    <span t-esc="data['date_from']" t-options='{"widget": "date"}'/> - <span t-esc="data['date_to']" t-options='{"widget": "date"}'/>
-                                </h6>
-                            </b>
-
                                  <b>
                                     <span>Product #:</span>
                                     <span t-esc="product['product_name']"/>
