@@ -3,12 +3,11 @@
 import binascii
 import logging
 import os
-import suds  # should work with suds or its fork suds-jurko
-
 from datetime import datetime
+
+import suds  # should work with suds or its fork suds-jurko
 from suds.client import Client
 from suds.plugin import MessagePlugin
-
 
 _logger = logging.getLogger(__name__)
 # uncomment to enable logging of SOAP requests and responses
@@ -20,6 +19,7 @@ STATECODE_REQUIRED_COUNTRIES = ['US', 'CA', 'PR ', 'IN']
 
 class LogPlugin(MessagePlugin):
     """ Small plugin for suds that catches out/ingoing XML requests and logs them"""
+
     def __init__(self, debug_logger):
         self.debug_logger = debug_logger
 
@@ -41,16 +41,20 @@ class FedexRequest():
 
         if request_type == "shipping":
             if not prod_environment:
-                wsdl_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../api/test/ShipService_v15.wsdl')
+                wsdl_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                         '../api/test/ShipService_v15.wsdl')
             else:
-                wsdl_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../api/prod/ShipService_v15.wsdl')
+                wsdl_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                         '../api/prod/ShipService_v15.wsdl')
             self.start_shipping_transaction(wsdl_path)
 
         elif request_type == "rating":
             if not prod_environment:
-                wsdl_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../api/test/RateService_v16.wsdl')
+                wsdl_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                         '../api/test/RateService_v16.wsdl')
             else:
-                wsdl_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../api/prod/RateService_v16.wsdl')
+                wsdl_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                         '../api/prod/RateService_v16.wsdl')
             self.start_rating_transaction(wsdl_path)
 
     # Authentification stuff
@@ -133,29 +137,40 @@ class FedexRequest():
         self.listCommodities = []
         if saturday_delivery:
             timestamp_day = self.RequestedShipment.ShipTimestamp.strftime("%A")
-            if (service_type == 'FEDEX_2_DAY' and timestamp_day == 'Thursday') or (service_type in ['PRIORITY_OVERNIGHT', 'FIRST_OVERNIGHT', 'INTERNATIONAL_PRIORITY'] and timestamp_day == 'Friday'):
+            if (service_type == 'FEDEX_2_DAY' and timestamp_day == 'Thursday') or (
+                    service_type in ['PRIORITY_OVERNIGHT', 'FIRST_OVERNIGHT',
+                                     'INTERNATIONAL_PRIORITY'] and timestamp_day == 'Friday'):
                 SpecialServiceTypes = self.client.factory.create('ShipmentSpecialServiceType')
-                self.RequestedShipment.SpecialServicesRequested.SpecialServiceTypes = [SpecialServiceTypes.SATURDAY_DELIVERY]
+                self.RequestedShipment.SpecialServicesRequested.SpecialServiceTypes = [
+                    SpecialServiceTypes.SATURDAY_DELIVERY]
 
-    def shipment_request_email(self):
+    def shipment_request_email(self, order):
         SpecialServiceTypes = self.client.factory.create('ShipmentSpecialServiceType')
-        self.RequestedShipment.SpecialServicesRequested.SpecialServiceTypes.append(SpecialServiceTypes.EMAIL_NOTIFICATION)
+        self.RequestedShipment.SpecialServicesRequested.SpecialServiceTypes.append(
+            SpecialServiceTypes.EMAIL_NOTIFICATION)
+
+        if order.acq_user_id.email:
+            eMailNotificationRecipient = self.client.factory.create('EMailNotificationRecipient')
+            eMailNotificationRecipient.EMailNotificationRecipientType.value = self.client.factory.create(
+                'EMailNotificationRecipientType').RECIPIENT
+            eMailNotificationRecipient.EMailAddress = order.acq_user_id.email
+            eMailNotificationRecipient.NotificationEventsRequested.append(
+                self.client.factory.create('EMailNotificationEventType').ON_TENDER)
+            eMailNotificationRecipient.Format.value = self.client.factory.create('EMailNotificationFormatType').HTML
+            eMailNotificationRecipient.Localization.LanguageCode = "EN"
+            self.RequestedShipment.SpecialServicesRequested.EMailNotificationDetail.Recipients.append(
+                eMailNotificationRecipient)
 
         eMailNotificationRecipient = self.client.factory.create('EMailNotificationRecipient')
-        eMailNotificationRecipient.EMailNotificationRecipientType.value = self.client.factory.create('EMailNotificationRecipientType').RECIPIENT
-        eMailNotificationRecipient.EMailAddress = "ajinkyanimbalkar@benchmarkit.solutions"
-        eMailNotificationRecipient.NotificationEventsRequested.append(self.client.factory.create('EMailNotificationEventType').ON_TENDER)
+        eMailNotificationRecipient.EMailNotificationRecipientType.value = self.client.factory.create(
+            'EMailNotificationRecipientType').RECIPIENT
+        eMailNotificationRecipient.EMailAddress = "acquisitions@surgicalproductsolutions.com"
+        eMailNotificationRecipient.NotificationEventsRequested.append(
+            self.client.factory.create('EMailNotificationEventType').ON_TENDER)
         eMailNotificationRecipient.Format.value = self.client.factory.create('EMailNotificationFormatType').HTML
         eMailNotificationRecipient.Localization.LanguageCode = "EN"
-        self.RequestedShipment.SpecialServicesRequested.EMailNotificationDetail.Recipients.append(eMailNotificationRecipient)
-
-        eMailNotificationRecipient = self.client.factory.create('EMailNotificationRecipient')
-        eMailNotificationRecipient.EMailNotificationRecipientType.value = self.client.factory.create('EMailNotificationRecipientType').RECIPIENT
-        eMailNotificationRecipient.EMailAddress = "amitrathod@benchmarkit.solutions"
-        eMailNotificationRecipient.NotificationEventsRequested.append(self.client.factory.create('EMailNotificationEventType').ON_TENDER)
-        eMailNotificationRecipient.Format.value = self.client.factory.create('EMailNotificationFormatType').HTML
-        eMailNotificationRecipient.Localization.LanguageCode = "EN"
-        self.RequestedShipment.SpecialServicesRequested.EMailNotificationDetail.Recipients.append(eMailNotificationRecipient)
+        self.RequestedShipment.SpecialServicesRequested.EMailNotificationDetail.Recipients.append(
+            eMailNotificationRecipient)
 
         self.RequestedShipment.SpecialServicesRequested.EMailNotificationDetail.AggregationType.value = "PER_PACKAGE"
 
@@ -213,16 +228,25 @@ class FedexRequest():
                                                          RequestedShipment=self.RequestedShipment)
             if (self.response.HighestSeverity != 'ERROR' and self.response.HighestSeverity != 'FAILURE'):
                 for rating in self.response.RateReplyDetails[0].RatedShipmentDetails:
-                    formatted_response['price'][rating.ShipmentRateDetail.TotalNetFedExCharge.Currency] = rating.ShipmentRateDetail.TotalNetFedExCharge.Amount
+                    formatted_response['price'][
+                        rating.ShipmentRateDetail.TotalNetFedExCharge.Currency] = rating.ShipmentRateDetail.TotalNetFedExCharge.Amount
                 if len(self.response.RateReplyDetails[0].RatedShipmentDetails) == 1:
-                    if 'CurrencyExchangeRate' in self.response.RateReplyDetails[0].RatedShipmentDetails[0].ShipmentRateDetail:
-                        formatted_response['price'][self.response.RateReplyDetails[0].RatedShipmentDetails[0].ShipmentRateDetail.CurrencyExchangeRate.FromCurrency] = self.response.RateReplyDetails[0].RatedShipmentDetails[0].ShipmentRateDetail.TotalNetFedExCharge.Amount / self.response.RateReplyDetails[0].RatedShipmentDetails[0].ShipmentRateDetail.CurrencyExchangeRate.Rate
+                    if 'CurrencyExchangeRate' in self.response.RateReplyDetails[0].RatedShipmentDetails[
+                        0].ShipmentRateDetail:
+                        formatted_response['price'][self.response.RateReplyDetails[0].RatedShipmentDetails[
+                            0].ShipmentRateDetail.CurrencyExchangeRate.FromCurrency] = \
+                        self.response.RateReplyDetails[0].RatedShipmentDetails[
+                            0].ShipmentRateDetail.TotalNetFedExCharge.Amount / \
+                        self.response.RateReplyDetails[0].RatedShipmentDetails[
+                            0].ShipmentRateDetail.CurrencyExchangeRate.Rate
             else:
-                errors_message = '\n'.join([("%s: %s" % (n.Code, n.Message)) for n in self.response.Notifications if (n.Severity == 'ERROR' or n.Severity == 'FAILURE')])
+                errors_message = '\n'.join([("%s: %s" % (n.Code, n.Message)) for n in self.response.Notifications if
+                                            (n.Severity == 'ERROR' or n.Severity == 'FAILURE')])
                 formatted_response['errors_message'] = errors_message
 
             if any([n.Severity == 'WARNING' for n in self.response.Notifications]):
-                warnings_message = '\n'.join([("%s: %s" % (n.Code, n.Message)) for n in self.response.Notifications if n.Severity == 'WARNING'])
+                warnings_message = '\n'.join(
+                    [("%s: %s" % (n.Code, n.Message)) for n in self.response.Notifications if n.Severity == 'WARNING'])
                 formatted_response['warnings_message'] = warnings_message
 
         except suds.WebFault as fault:
@@ -278,9 +302,9 @@ class FedexRequest():
 
         self.RequestedShipment.CustomsClearanceDetail.DocumentContent = document_content
 
-    def customer_references(self,type,value):
+    def customer_references(self, type, value):
         customerReferences = self.client.factory.create('CustomerReference')
-        customerReferences.CustomerReferenceType=type
+        customerReferences.CustomerReferenceType = type
         customerReferences.Value = value
         self.RequestedShipment.RequestedPackageLineItems.CustomerReferences.append(customerReferences)
 
@@ -313,8 +337,8 @@ class FedexRequest():
                               'master_tracking_id': None}
 
         try:
-            #print("self.RequestedShipment")
-            #print(self.RequestedShipment)
+            # print("self.RequestedShipment")
+            # print(self.RequestedShipment)
             # self.RequestedShipment.RequestedPackageLineItems.CustomerReferences.append(self.CustomerReferences)
             self.response = self.client.service.processShipment(WebAuthenticationDetail=self.WebAuthenticationDetail,
                                                                 ClientDetail=self.ClientDetail,
@@ -323,25 +347,32 @@ class FedexRequest():
                                                                 RequestedShipment=self.RequestedShipment)
 
             if (self.response.HighestSeverity != 'ERROR' and self.response.HighestSeverity != 'FAILURE'):
-                formatted_response['tracking_number'] = self.response.CompletedShipmentDetail.CompletedPackageDetails[0].TrackingIds[0].TrackingNumber
+                formatted_response['tracking_number'] = \
+                self.response.CompletedShipmentDetail.CompletedPackageDetails[0].TrackingIds[0].TrackingNumber
 
-                if (self.RequestedShipment.RequestedPackageLineItems.SequenceNumber == self.RequestedShipment.PackageCount) or self.hasOnePackage:
+                if (
+                        self.RequestedShipment.RequestedPackageLineItems.SequenceNumber == self.RequestedShipment.PackageCount) or self.hasOnePackage:
                     if 'ShipmentRating' in self.response.CompletedShipmentDetail:
                         for rating in self.response.CompletedShipmentDetail.ShipmentRating.ShipmentRateDetails:
-                            formatted_response['price'][rating.TotalNetFedExCharge.Currency] = rating.TotalNetFedExCharge.Amount
+                            formatted_response['price'][
+                                rating.TotalNetFedExCharge.Currency] = rating.TotalNetFedExCharge.Amount
                             if 'CurrencyExchangeRate' in rating:
-                                formatted_response['price'][rating.CurrencyExchangeRate.FromCurrency] = rating.TotalNetFedExCharge.Amount / rating.CurrencyExchangeRate.Rate
+                                formatted_response['price'][
+                                    rating.CurrencyExchangeRate.FromCurrency] = rating.TotalNetFedExCharge.Amount / rating.CurrencyExchangeRate.Rate
                     else:
                         formatted_response['price']['USD'] = 0.0
                 if 'MasterTrackingId' in self.response.CompletedShipmentDetail:
-                    formatted_response['master_tracking_id'] = self.response.CompletedShipmentDetail.MasterTrackingId.TrackingNumber
+                    formatted_response[
+                        'master_tracking_id'] = self.response.CompletedShipmentDetail.MasterTrackingId.TrackingNumber
 
             else:
-                errors_message = '\n'.join([("%s: %s" % (n.Code, n.Message)) for n in self.response.Notifications if (n.Severity == 'ERROR' or n.Severity == 'FAILURE')])
+                errors_message = '\n'.join([("%s: %s" % (n.Code, n.Message)) for n in self.response.Notifications if
+                                            (n.Severity == 'ERROR' or n.Severity == 'FAILURE')])
                 formatted_response['errors_message'] = errors_message
 
             if any([n.Severity == 'WARNING' for n in self.response.Notifications]):
-                warnings_message = '\n'.join([("%s: %s" % (n.Code, n.Message)) for n in self.response.Notifications if n.Severity == 'WARNING'])
+                warnings_message = '\n'.join(
+                    [("%s: %s" % (n.Code, n.Message)) for n in self.response.Notifications if n.Severity == 'WARNING'])
                 formatted_response['warnings_message'] = warnings_message
 
         except suds.WebFault as fault:
@@ -353,14 +384,16 @@ class FedexRequest():
 
     def _get_labels(self, file_type):
         labels = [self.get_label()]
-        if file_type.upper() in ['PNG'] and self.response.CompletedShipmentDetail.CompletedPackageDetails[0].PackageDocuments:
+        if file_type.upper() in ['PNG'] and self.response.CompletedShipmentDetail.CompletedPackageDetails[
+            0].PackageDocuments:
             for auxiliary in self.response.CompletedShipmentDetail.CompletedPackageDetails[0].PackageDocuments[0].Parts:
                 labels.append(binascii.a2b_base64(auxiliary.Image))
 
         return labels
 
     def get_label(self):
-        return binascii.a2b_base64(self.response.CompletedShipmentDetail.CompletedPackageDetails[0].Label.Parts[0].Image)
+        return binascii.a2b_base64(
+            self.response.CompletedShipmentDetail.CompletedPackageDetails[0].Label.Parts[0].Image)
 
     # Deletion stuff
 
@@ -386,11 +419,13 @@ class FedexRequest():
             if (self.response.HighestSeverity != 'ERROR' and self.response.HighestSeverity != 'FAILURE'):
                 formatted_response['delete_success'] = True
             else:
-                errors_message = '\n'.join([("%s: %s" % (n.Code, n.Message)) for n in self.response.Notifications if (n.Severity == 'ERROR' or n.Severity == 'FAILURE')])
+                errors_message = '\n'.join([("%s: %s" % (n.Code, n.Message)) for n in self.response.Notifications if
+                                            (n.Severity == 'ERROR' or n.Severity == 'FAILURE')])
                 formatted_response['errors_message'] = errors_message
 
             if any([n.Severity == 'WARNING' for n in self.response.Notifications]):
-                warnings_message = '\n'.join([("%s: %s" % (n.Code, n.Message)) for n in self.response.Notifications if n.Severity == 'WARNING'])
+                warnings_message = '\n'.join(
+                    [("%s: %s" % (n.Code, n.Message)) for n in self.response.Notifications if n.Severity == 'WARNING'])
                 formatted_response['warnings_message'] = warnings_message
 
         except suds.WebFault as fault:
