@@ -221,7 +221,7 @@ class PrioritizationEngine(models.TransientModel):
                                                prioritization_engine_request['req_no'],
                                                prioritization_engine_request['gl_account'],
                                                prioritization_engine_request['customer_request_id'],
-                                               prioritization_engine_request['required_quantity'],
+                                               required_quantity,
                                                prioritization_engine_request['product_id'],
                                                required_quantity)
 
@@ -234,11 +234,13 @@ class PrioritizationEngine(models.TransientModel):
 
         elif remaining_product_allocation_quantity > 0 and remaining_product_allocation_quantity != required_quantity:
             _logger.debug(str(" Allocated Partial order product."))
+
+
             self.allocated_product_to_customer(prioritization_engine_request['customer_id'],
                                                prioritization_engine_request['req_no'],
                                                prioritization_engine_request['gl_account'],
                                                prioritization_engine_request['customer_request_id'],
-                                               prioritization_engine_request['required_quantity'],
+                                               required_quantity,
                                                prioritization_engine_request['product_id'],
                                                required_quantity - remaining_product_allocation_quantity)
 
@@ -481,17 +483,14 @@ class PrioritizationEngine(models.TransientModel):
 
         for sps_cust_uploaded_document in sps_cust_uploaded_documents:
             _logger.info('Document Id :%r',sps_cust_uploaded_document.id)
-            # get latest customer uploaded document id
-            self.env.cr.execute("SELECT max(id) document_id FROM public.sps_cust_uploaded_documents WHERE customer_id=" +
-                                    str(sps_cust_uploaded_document.customer_id.id))
-            query_result = self.env.cr.dictfetchone()
-            params = self.env['ir.config_parameter'].sudo()
-            document_processing_count = int(params.get_param('prioritization_engine.document_processing_count'))
+
+            current_cust_doc_fixed_count = sps_cust_uploaded_document.customer_id['doc_process_count']
+            current_processing_doc_id = sps_cust_uploaded_document.id
+            current_processed_docs = sps_cust_uploaded_document.document_processed_count
 
             if sps_cust_uploaded_document.template_type.lower().strip() == 'requirement':
-                if int(sps_cust_uploaded_document.document_processed_count) >= int(document_processing_count):
-                    if sps_cust_uploaded_document.status != 'Completed':
-                        self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
+                if current_processed_docs >= current_cust_doc_fixed_count:
+                    self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
                 else:
                     sps_customer_requirements = self.env['sps.customer.requests'].search([('document_id', '=', sps_cust_uploaded_document.id),
                                                         ('status', 'in', ('Partial', 'InCoolingPeriod', 'New', 'Inprocess', 'Incomplete', 'Unprocessed'))])
@@ -503,10 +502,10 @@ class PrioritizationEngine(models.TransientModel):
                             self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
 
             elif sps_cust_uploaded_document.template_type.lower().strip() == 'inventory':
-                if int(sps_cust_uploaded_document.document_processed_count) >= int(document_processing_count):
-                    self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
-                else:
-                    if int(query_result['document_id']) == int(sps_cust_uploaded_document.id):
+                 if int(current_processed_docs) >= int(current_cust_doc_fixed_count):
+                     self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
+                 else:
+                    if int(current_processing_doc_id) == int(sps_cust_uploaded_document.id):
                         sps_customer_requirements = self.env['sps.customer.requests'].search([('document_id', '=', sps_cust_uploaded_document.id),
                                                             ('status', 'in', ('Partial', 'InCoolingPeriod', 'New', 'Inprocess', 'Incomplete', 'Unprocessed'))])
                         if len(sps_customer_requirements) > 0:

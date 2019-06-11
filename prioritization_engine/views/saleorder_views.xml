@@ -226,6 +226,14 @@
                     <strong>Expiration Date:</strong>
                     <p t-field="doc.validity_date"/>
                 </div>
+                <div t-if="doc.carrier_track_ref" class="col-xs-3">
+                    <strong>Tracking Reference:</strong>
+                    <p t-field="doc.carrier_track_ref"/>
+                </div>
+                <div t-if="doc.carrier_id" class="col-xs-3">
+                    <strong>Delivery Method:</strong>
+                    <p t-field="doc.carrier_id.name"/>
+                </div>
             </div>
 
             <!-- Is there a discount on at least one line? -->

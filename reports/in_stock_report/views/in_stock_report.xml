@@ -16,13 +16,16 @@
         <field name="name">report.in.stock.report.tree</field>
         <field name="model">report.in.stock.report</field>
         <field name="arch" type="xml">
-            <tree create="false" edit="false" string="In Stock Report">
+            <tree create="false" edit="false" delete="false" string="In Stock Report">
                 <field name="partner_id"/>
                 <field name="product_brand_id"/>
-                <field name="sku_code"/>
-                <field name="product_id"/>
-                <field name="qty_available"/>
-                <field name="list_price"/>
+                <field name="sku_code" string="Product SKU"/>
+                <field name="product_id" string="Product Name"/>
+<!--                <field name="qty_available" string="Qty In Stock"/>-->
+                <field name="actual_quantity"/>
+                <field name="uom_id" string="Product UOM"/>
+                <field name="price_list" widget="monetary"/>
+                <field name="currency_id"  invisible="1"/>
                 <field name="min_expiration_date"/>
                 <field name="max_expiration_date"/>
                 <!--<field name="confirmation_date"/>-->
