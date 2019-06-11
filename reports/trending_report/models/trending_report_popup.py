@@ -8,8 +8,10 @@ class TrendingReport(models.TransientModel):
     _description = 'Trending Report 6 and 12 month'
 
     start_date = fields.Date('Start Date', required=True)
+    code = fields.Char()
 
     def open_table(self):
+        self.code = self.env.context['code']
 
         if(self.env.context['code'] == 12):
             tree_view_id = self.env.ref('trending_report.trending_report_list12').id
