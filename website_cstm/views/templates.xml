@@ -1,13 +1,33 @@
 <odoo>
     <template id="assets_frontend" inherit_id="web.assets_frontend" name="Website Assets">
         <xpath expr="//link[last()]" position="after">
-
             <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,600i,700,700i,800"
                   rel="stylesheet"/>
             <link rel="stylesheet" href="/website_cstm/static/src/less/website.style.less"/>
         </xpath>
+
         <xpath expr="//script[last()]" position="after">
             <script type="text/javascript" src="/website_cstm/static/src/js/script.js"/>
+            <!-- Google Tag Manager -->
+            <script>
+                <![CDATA[
+(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-P9BX97D');]]>
+            </script>
+            <!-- End Google Tag Manager -->
+        </xpath>
+    </template>
+    <template id="googleTagBody" inherit_id="website.layout">
+        <xpath expr="//t[@t-set='html_data']" position="after">
+            <!-- Google Tag Manager (noscript) -->
+            <noscript>
+                <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P9BX97D"
+                        height="0" width="0" style="display:none;visibility:hidden"></iframe>
+            </noscript>
+            <!-- End Google Tag Manager (noscript) -->
         </xpath>
     </template>
 
