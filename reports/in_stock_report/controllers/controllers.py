@@ -187,7 +187,7 @@ class ReportPrintInStockExport(http.Controller):
                              
                                 select cal_price_rule(id,compute_price,product_id_param,pricelist_param,product_tmpl_id_param) INTO list_price_return_val  from product_pricelist_item 
                                 where pricelist_id = pricelist_param and product_id = product_id_param and min_quantity <= actual_quantity_param
-                                and (date_start is null OR date_start <= now()) and (date_end is null OR date_end >= now()) limit 1;
+                                and (date_start is null OR date_start <= now()) and (date_end is null OR date_end >= now())   order by min_quantity desc ,id limit 1;
                             
                             IF list_price_return_val is not null THEN
                                 RETURN list_price_return_val; 
@@ -204,14 +204,14 @@ class ReportPrintInStockExport(http.Controller):
                                     ELSE
                                             select cal_price_rule(id,compute_price,product_id_param,pricelist_param,product_tmpl_id_param) INTO list_price_return_val  from product_pricelist_item 
                                             where pricelist_id = pricelist_param and categ_id = categ_id_param and min_quantity <= actual_quantity_param
-                                            and (date_start is null OR date_start <= now()) and (date_end is null OR date_end >= now()) limit 1;
+                                            and (date_start is null OR date_start <= now()) and (date_end is null OR date_end >= now())  order by min_quantity desc ,id limit 1;
                                             
                                             IF list_price_return_val is not null THEN
                                                 RETURN list_price_return_val; 
                                             ELSE
                                                     select  cal_price_rule(id,compute_price,product_id_param,pricelist_param,product_tmpl_id_param) INTO list_price_return_val  from product_pricelist_item 
                                                     where pricelist_id = pricelist_param and applied_on = '3_global' and min_quantity <= actual_quantity_param
-                                                    and (date_start is null OR date_start <= now()) and (date_end is null OR date_end >= now()) limit 1;
+                                                    and (date_start is null OR date_start <= now()) and (date_end is null OR date_end >= now())  order by min_quantity desc ,id limit 1;
                                             END IF;
                                     
                                     END IF;
@@ -247,30 +247,30 @@ class ReportPrintInStockExport(http.Controller):
                         
                          select get_formula_rule(id,compute_price,product_id_param,pricelist_param,product_tmpl_id_param) INTO list_price_return_val  from product_pricelist_item 
                             where pricelist_id = pricelist_param and product_id = product_id_param and min_quantity <= actual_quantity_param
-                            and (date_start is null OR date_start <= now()) and (date_end is null OR date_end >= now()) limit 1;
+                            and (date_start is null OR date_start <= now()) and (date_end is null OR date_end >= now())   order by min_quantity desc ,id limit 1;
                 
                       
                         IF list_price_return_val is not null THEN
                             RETURN list_price_return_val; 
                         ELSE 
-                             select get_formula_rule(id,compute_price,product_id_param,pricelist_param,product_tmpl_id_param) INTO list_price_return_val  from product_pricelist_item
-                                where pricelist_id = pricelist_param and  product_tmpl_id = product_tmpl_id_param and min_quantity <= actual_quantity_param
-                                and (date_start is null OR date_start <= now()) and (date_end is null OR date_end >= now()) limit 1;
-                
-                                IF list_price_return_val is not null THEN
-                                    RETURN list_price_return_val; 
-                                ELSE
-                                       select cal_price_rule(id,compute_price,product_id_param,pricelist_param,product_tmpl_id_param) INTO list_price_return_val from product_pricelist_item
+                        
+                                      select get_formula_rule(id,compute_price,product_id_param,pricelist_param,product_tmpl_id_param) INTO list_price_return_val from product_pricelist_item
                                         where pricelist_id = pricelist_param and  product_tmpl_id = product_tmpl_id_param and min_quantity <= actual_quantity_param
                                         and (date_start is null OR date_start <= now()) and (date_end is null OR date_end >= now())
                                         order by min_quantity desc ,id limit 1	;
+                                IF list_price_return_val is not null THEN
+                                    RETURN list_price_return_val; 
+                                ELSE
+                                           select get_formula_rule(id,compute_price,product_id_param,pricelist_param,product_tmpl_id_param) INTO list_price_return_val  from product_pricelist_item 
+                                            where pricelist_id = pricelist_param and categ_id = categ_id_param and min_quantity <= actual_quantity_param
+                                            and (date_start is null OR date_start <= now()) and (date_end is null OR date_end >= now()) order by min_quantity desc ,id limit 1 ;
                 
                                         IF list_price_return_val is not null THEN
                                             RETURN list_price_return_val; 
                                         ELSE
                                                 select  get_formula_rule(id,compute_price,product_id_param,pricelist_param,product_tmpl_id_param) INTO list_price_return_val  from product_pricelist_item 
                                                 where pricelist_id = pricelist_param and applied_on = '3_global' and min_quantity <= actual_quantity_param
-                                                and (date_start is null OR date_start <= now()) and (date_end is null OR date_end >= now()) limit 1;
+                                                and (date_start is null OR date_start <= now()) and (date_end is null OR date_end >= now())  order by min_quantity desc ,id limit 1;
                                         END IF;
                 
                                 END IF;
