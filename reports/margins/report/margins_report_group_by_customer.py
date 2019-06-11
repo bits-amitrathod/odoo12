@@ -9,7 +9,7 @@ class MarginsRerpotGroupByCustomer(models.AbstractModel):
     _name = 'report.margins.margins_group_by_cust_temp'
 
     @api.model
-    def get_report_values(self, docids, data=None):
+    def _get_report_values(self, docids, data=None):
         margins_list = self.env['margins.group_by_cust'].browse(docids)
 
         final_list = []
