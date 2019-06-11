@@ -7,7 +7,7 @@
             <field name="arch" type="xml">
                 <search string="Product">
                     <filter string="Product" name="product_group" domain="[]"
-                            context="{'group_by' : ['product_id']}"/>
+                            context="{'group_by' : 'product_id'}"/>
                     <separator/>
                 </search>
             </field>

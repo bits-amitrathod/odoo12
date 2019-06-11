@@ -7,7 +7,7 @@
        """,
 
     'description': """
-        
+
     """,
 
     'author': "Benchmark IT Solutions",
@@ -16,7 +16,7 @@
     'category': 'Report',
     'version': '1.0',
 
-    'depends': ['base','stock','stock_barcode', 'delivery'],
+    'depends': ['base', 'stock', 'stock_barcode', 'delivery'],
 
     'data': [
         'views/views.xml',

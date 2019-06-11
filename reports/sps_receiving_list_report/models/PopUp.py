@@ -24,7 +24,8 @@ class PopUp(models.TransientModel):
     def open_table(self):
         tree_view_id = self.env.ref('sps_receiving_list_report.form_list_sps').id
         form_view_id = self.env.ref('sps_receiving_list_report.sps_receving_list_form').id
-        stock_location_id = self.env['stock.location'].search([('name', '=', 'Stock'), ]).id
+        stock_location_id = self.env['stock.location'].search([('name', '=', 'Stock')]).ids
+        print("Stock location id", stock_location_id)
         action = {
             'type': 'ir.actions.act_window',
             'views': [(tree_view_id, 'tree'),(form_view_id, 'form')],
