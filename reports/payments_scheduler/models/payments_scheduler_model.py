@@ -10,9 +10,9 @@ class accoun_invoicr_changes(models.Model):
 
 
     def _compute_data(self):
-        inv_cntact = None;
-        address = None;
         for sp in self:
+            inv_cntact = None;
+            address = None;
             for contact in  sp.partner_id.child_ids:
                 if contact.type == 'invoice':
                     inv_cntact = contact
