@@ -3,7 +3,7 @@
     <data>
         <report
                 id="payments_scheduler_temp"
-                string="Payments Scheduler Report"
+                string="Payments Scheduled Report"
                 model="account.invoice"
                 report_type="qweb-html"
                 file="payments_scheduler.payments_scheduler_temp_test"

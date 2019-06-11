@@ -86,6 +86,7 @@ class ReportInStockReport(models.Model):
                     record.product_id, record.actual_quantity, record.partner_id)
             else:
                 record.price_list = 0
+
             self.env.cr.execute(
                 """
                 SELECT
