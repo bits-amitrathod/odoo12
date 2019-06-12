@@ -103,6 +103,8 @@
                                 <field name="declined_date" readonly="1"/>
                                 <field name="max" readonly="1"/>
                                 <field name="new_customer" readonly="1"/>
+                                <field name="carrier_id"/>
+                                <field name="shipping_number"/>
                             </group>
                         </group>
                         <notebook>
