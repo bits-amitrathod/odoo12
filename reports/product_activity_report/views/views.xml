@@ -36,8 +36,12 @@
         <field name="model">product.activity.report</field>
         <field name="arch" type="xml">
             <search string="Product">
-                <filter string="Product Activity" name="product_activity" domain="[]"
-                        context="{'group_by' : ['warehouse', 'location', 'type']}"/>
+                <filter string="warehouse" name="product_activity" domain="[]"
+                        context="{'group_by' :'warehouse'}"/>
+                <filter string="location" name="product_activity" domain="[]"
+                        context="{'group_by' :'location'}"/>
+                <filter string="type" name="product_activity" domain="[]"
+                        context="{'group_by' :'type'}"/>
                 <separator/>
             </search>
         </field>

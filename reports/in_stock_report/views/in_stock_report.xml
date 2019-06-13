@@ -1,28 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="view_stock_inventory_valuation_summary" model="ir.ui.view">
-        <field name="name">report.in.stock.report.default</field>
-        <field name="model">report.in.stock.report</field>
-        <field name="arch" type="xml">
-            <search string="Product">
-                <filter string="Valuation Summary" name="valuation_summary" domain="[]"
-                        context="{'group_by' : ['warehouse', 'location', 'type']}"/>
-                <separator/>
-            </search>
-        </field>
-    </record>
+
+    <!-- This Filter remove because its not working -->
+
+    <!--<record id="view_stock_inventory_valuation_summary" model="ir.ui.view">-->
+        <!--<field name="name">report.in.stock.report.default</field>-->
+        <!--<field name="model">report.in.stock.report</field>-->
+        <!--<field name="arch" type="xml">-->
+            <!--<search string="Product">-->
+                <!--<filter string="Valuation Summary" name="valuation_summary" domain="[]"-->
+                        <!--context="{'group_by' : ['warehouse', 'location', 'type']}"/>-->
+                <!--<separator/>-->
+            <!--</search>-->
+        <!--</field>-->
+    <!--</record>-->
 
     <record id="view_in_stock_report_line_tree" model="ir.ui.view">
         <field name="name">report.in.stock.report.tree</field>
         <field name="model">report.in.stock.report</field>
         <field name="arch" type="xml">
-            <tree create="false" edit="false" string="In Stock Report">
+            <tree create="false" edit="false" delete="false" string="In Stock Report">
                 <field name="partner_id"/>
                 <field name="product_brand_id"/>
-                <field name="sku_code"/>
-                <field name="product_id"/>
-                <field name="qty_available"/>
-                <field name="list_price"/>
+                <field name="sku_code" string="Product SKU"/>
+                <field name="product_id" string="Product Name"/>
+<!--                <field name="qty_available" string="Qty In Stock"/>-->
+                <field name="actual_quantity"/>
+                <field name="uom_id" string="Product UOM"/>
+                <field name="price_list" widget="monetary"/>
+                <field name="currency_id"  invisible="1"/>
                 <field name="min_expiration_date"/>
                 <field name="max_expiration_date"/>
                 <!--<field name="confirmation_date"/>-->

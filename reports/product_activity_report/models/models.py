@@ -10,48 +10,46 @@ class ReportPickTicketGroupByOrderDate(models.TransientModel):
     _name = 'product.activity.report.popup'
     _description = 'Pick Ticket Group By Order'
 
-    start_date = fields.Date('Start Date', default=datetime.datetime.now() + datetime.timedelta(-30), required=True)
-    end_date = fields.Date('End Date', default=fields.Datetime.now, required=True)
+    start_date = fields.Date('Start Date', default=datetime.date.today() + datetime.timedelta(-30), required=True)
+    end_date = fields.Date('End Date', default=fields.date.today(), required=True)
     sku = fields.Many2one('product.product', string='Product SKU',
-                               domain="[('active','=',True),('product_tmpl_id.type','=','product')]")
+                          domain="[('active','=',True),('product_tmpl_id.type','=','product')]")
     location_id = fields.Selection([
         ('Purchase', 'Purchase'),
         ('Sales', 'Sales'),
         ('Receive', 'Receive'),
         ('Stock', 'Stock'),
-        ('Scrap','Scrap')
+        ('Scrap', 'Scrap')
     ], string="Location", default=0, help="Choose to analyze the Show Summary or from a specific location.")
 
-
-
     def open_table(self):
-      #  margins_context = {'start_date': self.string_to_date(str(self.start_date)),
-       #                    'end_date': self.string_to_date(str(self.end_date))}
+        #  margins_context = {'start_date': self.string_to_date(str(self.start_date)),
+        #                    'end_date': self.string_to_date(str(self.end_date))}
 
         tree_view_id = self.env.ref('product_activity_report.product_activity_report_list').id
         form_view_id = self.env.ref('product_activity_report.product_activity_report_form').id
         res_model = 'product.activity.report'
-        self.env[res_model].delete_and_create() #with_context(margins_context).
+        self.env[res_model].delete_and_create()  # with_context(margins_context).
 
         action = {
             "type": "ir.actions.act_window",
-            'views': [(tree_view_id, 'tree'),(form_view_id, 'form')],
+            'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
             "res_model": res_model,
             "name": "Product Activity Report",
             "context": {"search_default_product_activity": 1},
             'domain': []
         }
         if self.start_date:
-                action["domain"].append(('date', '>=', self.start_date))
+            action["domain"].append(('date', '>=', self.start_date))
 
         if self.end_date:
-                action["domain"].append(('date', '<=', self.end_date))
+            action["domain"].append(('date', '<=', self.end_date))
 
         if self.sku:
-                action["domain"].append(('sku', '=', self.sku.sku_code))
+            action["domain"].append(('sku', '=', self.sku.sku_code))
 
         if self.location_id:
-                action["domain"].append(('type', '=', self.location_id))
+            action["domain"].append(('type', '=', self.location_id))
 
         return action
 
@@ -178,7 +176,7 @@ class ReportProductActivity(models.Model):
 
         # -------------------- Sales ------------------------
         dist_location = self.env['stock.location'].search(
-            [('name', '=', 'Customers')]).id
+            [('name', '=', 'Customers')]).ids
         sql_query = insert + """
                     SELECT
                         stock_warehouse.name                                      AS warehouse,
@@ -250,14 +248,14 @@ class ReportProductActivity(models.Model):
                     ON
                         (
                             res_users.partner_id = res_partner.id)
-                    
-                    WHERE stock_picking.state = 'done' and stock_picking.location_dest_id=%s
+
+                    WHERE stock_picking.state = 'done' and stock_picking.location_dest_id = ANY (ARRAY[%s])
                         """
 
         # if not date_clause is False:
         #     sql_query = sql_query+ " AND stock_picking.scheduled_date" + date_clause
 
-        self._cr.execute(sql_query,(dist_location,))
+        self._cr.execute(sql_query, (dist_location,))
 
         # -------------------- Stock ------------------------
         sql_query = insert + """
@@ -381,8 +379,8 @@ class ReportProductActivity(models.Model):
         # -------------------- Receive ------------------------
 
         dist_location = self.env['stock.location'].search(
-            [('name', '=', 'Stock')]).id
-        if  dist_location:
+            [('name', '=', 'Stock')]).ids
+        if dist_location:
             sql_query = insert + """
                                SELECT            
                                    stock_warehouse.name                                      AS warehouse,
@@ -400,21 +398,21 @@ class ReportProductActivity(models.Model):
                                FROM
                                    stock_picking
                                INNER JOIN sale_order
-                               
+
                                ON  (sale_order.id= stock_picking.sale_id)  
-                               
+
                                INNER JOIN
                                    stock_warehouse
                                ON
                                    (
                                        sale_order.warehouse_id = stock_warehouse.id)
-                              
+
                                INNER JOIN
                                    stock_move_line
                                ON
                                    (
                                        stock_move_line.picking_id = stock_picking.id)
-                               
+
                                INNER JOIN
                                    product_product
                                ON
@@ -446,8 +444,8 @@ class ReportProductActivity(models.Model):
                                ON
                                    (
                                        res_users.partner_id = res_partner.id)
-    
-                               WHERE stock_picking.state = 'done' and  stock_picking.location_dest_id=%s
+
+                               WHERE stock_picking.state = 'done' and  stock_picking.location_dest_id = ANY (ARRAY[%s])
                                    """
 
             # if not date_clause is False:
