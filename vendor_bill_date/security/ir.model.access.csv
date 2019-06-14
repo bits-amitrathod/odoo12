@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sps_bill_date_sps_bill_date,sps_bill_date.sps_bill_date,model_sps_bill_date_sps_bill_date,,1,0,0,0

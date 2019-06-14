@@ -37,6 +37,7 @@
             <field name="arch" type="xml">
                 <xpath expr="/form/header/button[1]" position="before">
                     <button name="action_import_order_lines" string="Import" type="object"  class="btn-primary" attrs="{'invisible':[('state', 'in', ('purchase'))]}" />
+                    <button name="action_import_order_lines_all_column" string="Manual Import" type="object"  class="btn-primary" attrs="{'invisible':[('state', 'in', ('purchase'))]}" />
                 </xpath>
             </field>
         </record>
