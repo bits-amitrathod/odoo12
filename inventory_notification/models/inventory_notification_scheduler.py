@@ -18,9 +18,13 @@ class InventoryNotificationScheduler(models.TransientModel):
     #     # sales_email = "rohitkabadi@benchmarkit.solutions"
     #     # acquisitions_email = "ajinkyanimbalkar@benchmarkit.solutions"
 
-    warehouse_email = "warehouse@surgicalproductsolutions.com"
-    sales_email = "salesteam@surgicalproductsolutions.com"
-    acquisitions_email = "acquisitions@surgicalproductsolutions.com"
+    warehouse_email = "vasimkhan@benchmarkit.solutions"
+    sales_email = "rohitkabadi@benchmarkit.solutions"
+    acquisitions_email = "tushatgodase@benchmarkit.solutions"
+
+    # warehouse_email = "warehouse@surgicalproductsolutions.com"
+    # sales_email = "salesteam@surgicalproductsolutions.com"
+    # acquisitions_email = "acquisitions@surgicalproductsolutions.com"
 
     def process_manual_notification_scheduler(self):
         _logger.info("process_manual_notification_scheduler called..")
@@ -157,6 +161,79 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                                 vals['sale_order_lines'], vals['header'],
                                                                 vals['columnProps'], vals['closing_content'],
                                                                 self.warehouse_email)'''
+
+    def po_receive_notification_for_acquisitions_manager(self, picking):
+        Stock_Moves_list = self.env['stock.move'].search([('picking_id', '=', picking.id)])
+        Stock_Moves_line = []
+        for stock_move in Stock_Moves_list:
+            temp = self.env['stock.move.line'].search([('move_id', '=', stock_move.id)])
+            Stock_Moves_line.append(temp)
+        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
+
+        sales_order = []
+        for stock_move_line in Stock_Moves_line:
+            for stock_move_line_single in stock_move_line:
+                sale_order = {
+                    'sales_order': picking.purchase_id.name,
+                    'sku': stock_move_line_single.product_id.product_tmpl_id.sku_code,
+                    'Product': stock_move_line_single.product_id.name,
+                    'qty': int(stock_move_line_single.ordered_qty),
+                    'lot_name': stock_move_line_single.lot_id.name,
+                    'lot_expired_date': stock_move_line_single.lot_id.use_date,
+                    'qty_done': int(stock_move_line_single.qty_done),
+                    'status' : "Complete" if int(stock_move_line_single.ordered_qty) == int(stock_move_line_single.qty_done) else "Short" if int(stock_move_line_single.ordered_qty) > int(stock_move_line_single.qty_done) else "Extra"
+                }
+                sales_order.append(sale_order)
+        sale_order_ref = picking.purchase_id
+        str_note = ""
+        # if sale_order_ref.notes_activity:
+        #     for note in sale_order_ref.notes_activity:
+        #         str_note = str_note + note.note + " " +  (str(datetime.strptime(note.note_date, "%Y-%m-%d %H:%M:%S").strftime( '%m/%d/%Y')) if note.note_date else "N/A")  + " <br/>    "
+        # else:
+        #     str_note = "N/A"
+        # table_data= " <table style = \"width:100%\">" \
+        #      "<tr><td style = \"width:30%\" ><strong>Please proceed Purchase Order</strong></td><td>"+sale_order_ref.name+"</td></tr>" \
+        #      "<tr><td><strong> Date </strong> </td><td>" + (str(datetime.strptime(picking.scheduled_date, "%Y-%m-%d %H:%M:%S").strftime( '%m/%d/%Y')) if picking.scheduled_date else "N/A") + "</td></tr>" \
+        #      "<tr><td> <strong> Vendor Name </strong></td> <td> "+ ( sale_order_ref.partner_id.name or "") + "</td></tr>"\
+        #      "<tr><td> <strong> Notes </strong></td><td>" + str_note + "</td></tr></table>"
+        flag = True
+        table_data = " <table style = \"width:100%\"> <tr> <td><strong> Notes </strong></td>"
+        if sale_order_ref.notes_activity:
+            for note in sale_order_ref.notes_activity:
+                if flag == True :
+                    flag = False
+                    table_data = table_data + "<td style = \"width:30%\"> "+ note.note +" </td>" \
+                    " <td> "+ (str(datetime.strptime(note.note_date, "%Y-%m-%d %H:%M:%S").strftime( '%m/%d/%Y')) if note.note_date else "N/A")+ " </td> </tr> "
+                else:
+                    table_data = table_data + "<tr>" \
+                    "<td></td> " \
+                    "<td>"+ note.note +"</td> " \
+                    "<td> "+ (str(datetime.strptime(note.note_date, "%Y-%m-%d %H:%M:%S").strftime( '%m/%d/%Y')) if note.note_date else "N/A")+ "</td> " \
+                    "</tr> "
+        table_data = table_data + "</table>"
+        vals = {
+            'sale_order_lines': sales_order,
+            'subject': "Shipment Done For Purchase Order # " + picking.purchase_id.name,
+            # 'description': "Hi acquisitions Team, <br/><br/> ",
+            # 'description': "Hi Acquisitions Team, <br/><br/> " +
+            #                "<div style=\"text-align: center;width: 100%;\"><strong>The Shipment has been completed!</strong></div><br/>" + table_data,
+            'description': "Hi Acquisitions Team, <br/><br/> " +
+                           "<div style=\"text-align: center;width: 100%;\"><strong>The Shipment has been completed!</strong></div><br/>" +
+                           "<strong> Please proceed  Purchase Order: </strong>" + sale_order_ref.name + "<br/>" + \
+                           "<strong> Date: </strong>" + (str( datetime.strptime(picking.scheduled_date, "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')) if picking.scheduled_date else "N/A") + \
+                           "<br/><strong> Vendor Name:  </strong>" + (sale_order_ref.partner_id.name or "") + "<br/>" + table_data,
+
+            'header': ['Catalog number', 'Description', 'Initial Quantity', 'Lot', 'Expiration Date', 'Quantity Done','Status'],
+            'columnProps': ['sku', 'Product', 'qty', 'lot_name', 'lot_expired_date', 'qty_done','status'],
+            'closing_content': 'Thanks & Regards, <br/> Team'
+        }
+
+        self.process_common_email_notification_template(super_user, None, vals['subject'], vals['description'],
+                                                        vals['sale_order_lines'], vals['header'],
+                                                        vals['columnProps'], vals['closing_content'],
+                                                        self.acquisitions_email+","+self.warehouse_email, picking)
+
+
 
     def out_notification_for_sale(self, picking):
         Stock_Moves = self.env['stock.move'].search([('picking_id', '=', picking.id)])
