@@ -197,7 +197,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         #      "<tr><td> <strong> Vendor Name </strong></td> <td> "+ ( sale_order_ref.partner_id.name or "") + "</td></tr>"\
         #      "<tr><td> <strong> Notes </strong></td><td>" + str_note + "</td></tr></table>"
         flag = True
-        table_data = " <table style = \"width:100%\"> <tr> <td><strong> Notes </strong></td>"
+        table_data = " <table style = \"width:100%\"> <tr> <td><strong> Notes :</strong></td>"
         if sale_order_ref.notes_activity:
             for note in sale_order_ref.notes_activity:
                 if flag == True :
