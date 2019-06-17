@@ -6,15 +6,15 @@
             </xpath>
         </template>
 
-        <template id="so_modify_content" inherit_id="website_quote.so_quotation" name="Modify Content">
-            <xpath expr="//t/t/body/div[1]/div[1]/div[2]/div[8]/a[1]" position="after">
+        <template id="so_modify_content" inherit_id="sale.sale_order_portal_template" name="Modify Content">
+            <xpath expr="//t[@t-set='entries']/ul/li[1]/a[1]" position="after">
                 <a class="btn btn-info" t-att-href="'/my/orders/edit/%s' % (quotation.id)" data-toggle="modal"
                    t-if="order_valid">
                     <i class="fa fa-check"></i>
                     Update Quantity
                 </a>
             </xpath>
-            <xpath expr="//t/t/body/div[1]/div[1]/div[2]/div[5]" position="replace">
+            <xpath expr="//div[@id='modalaccept']" position="replace">
                 <div class="modal" id="modalaccept" role="dialog" aria-hidden="true">
                     <div class="modal-dialog">
                         <form id="accept" method="POST"
@@ -50,7 +50,7 @@
                     </div>
                 </div>
             </xpath>
-            <xpath expr="//t/t/body/div[1]/div[1]/div[2]/div[6]" position="replace">
+            <xpath expr="//div[@id='modaldecline']" position="replace">
                 <div class="modal" id="modaldecline" role="dialog" aria-hidden="true">
                     <div class="modal-dialog">
                         <form id="declines" method="POST"
@@ -723,7 +723,7 @@
 
         <template id="portal_my_home_vendor_offer" name="Portal My Home : vendor offer entry"
                   inherit_id="portal.portal_my_home" priority="25">
-            <xpath expr="//ul[hasclass('o_portal_docs')]" position="inside">
+            <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
                 <li t-if="vendor_count" class="list-group-item">
                     <span class="badge" t-esc="vendor_count"/>
                     <a href="/my/vendor">Vendor Offer</a>
@@ -946,7 +946,7 @@
 
         <template id="portal_my_home_menu_vendor" name="Portal layout : vendor menu entries"
                   inherit_id="portal.portal_layout" priority="20">
-            <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <xpath expr="//div[hasclass('o_portal_my_details')]" position="inside">
                 <li t-if="vendor_offer and vendor_offer.state in ('ven_sent', 'cancel')">
                     <a t-if="vendor_offer" t-attf-href="/my/vendor?{{ keep_query() }}">Vendor Offer</a>
                     <t t-else="">Vendor Offer</t>

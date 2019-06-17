@@ -32,7 +32,7 @@
             <field name="arch" type="xml">
 		    <xpath expr="/search" position="inside">
                 <field name="carrier_track_ref"/>
-		        <filter string="Carrier Tracking Ref" domain="[]"/>
+		        <filter name="carrier" string="Carrier Tracking Ref" domain="[]"/>
 		    </xpath>
             </field>
         </record>
