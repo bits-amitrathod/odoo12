@@ -18,13 +18,13 @@ class InventoryNotificationScheduler(models.TransientModel):
     #     # sales_email = "rohitkabadi@benchmarkit.solutions"
     #     # acquisitions_email = "ajinkyanimbalkar@benchmarkit.solutions"
 
-    warehouse_email = "vasimkhan@benchmarkit.solutions"
-    sales_email = "rohitkabadi@benchmarkit.solutions"
-    acquisitions_email = "tushatgodase@benchmarkit.solutions"
+    # warehouse_email = "vasimkhan@benchmarkit.solutions"
+    # sales_email = "rohitkabadi@benchmarkit.solutions"
+    # acquisitions_email = "tushatgodase@benchmarkit.solutions"
 
-    # warehouse_email = "warehouse@surgicalproductsolutions.com"
-    # sales_email = "salesteam@surgicalproductsolutions.com"
-    # acquisitions_email = "acquisitions@surgicalproductsolutions.com"
+    warehouse_email = "warehouse@surgicalproductsolutions.com"
+    sales_email = "salesteam@surgicalproductsolutions.com"
+    acquisitions_email = "acquisitions@surgicalproductsolutions.com"
 
     def process_manual_notification_scheduler(self):
         _logger.info("process_manual_notification_scheduler called..")
