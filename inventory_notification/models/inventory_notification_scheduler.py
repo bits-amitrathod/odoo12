@@ -231,7 +231,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         self.process_common_email_notification_template(super_user, None, vals['subject'], vals['description'],
                                                         vals['sale_order_lines'], vals['header'],
                                                         vals['columnProps'], vals['closing_content'],
-                                                        self.acquisitions_email+","+self.warehouse_email, picking)
+                                                        self.acquisitions_email+","+self.warehouse_email, None)
 
 
 
