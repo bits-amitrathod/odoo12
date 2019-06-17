@@ -6,9 +6,9 @@
             <field name="name">gross.sales.by.salesperson.tree</field>
             <field name="model">sale.order</field>
             <field name="arch" type="xml">
-                <tree>
+                <tree create="false" edit="false" delete="false">
                     <field name="name" string="Sales Order #"/>
-                    <field name="confirmation_date" string="Order Date"/>
+                    <field name="confirmation_date" string="Order Date" widget="date"/>
                     <field name="partner_id" string="Customer Name"/>
                     <field name="user_id"/>
                     <field name="amount_total" sum="Total Tax Included" widget="monetary"/>
@@ -30,8 +30,8 @@
                         </group>
                          <group>
                                 <group>
-                                    <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
-                                    <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)]}"/>
+                                    <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
+                                    <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
                                 </group>
                           </group>
                     <footer>

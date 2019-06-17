@@ -51,15 +51,12 @@ class SaleSalespersonReport(models.TransientModel):
 
         popup = self.env['popup.gross.sales.by.person'].search([('create_uid', '=', self._uid)], limit=1,
                                                                             order="id desc")
-        if popup.compute_at_date:
-            date = popup.start_date + " to " + popup.end_date
-        else:
-            date = False
+
 
         action = {
             'target': 'main',
             'data': datas,
-            'date': date
+            'popup': popup
         }
 
         return action
