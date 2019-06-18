@@ -25,7 +25,7 @@ class ScrapScheduler(models.TransientModel):
         stock_production_lot_ids = self.env['stock.production.lot'].search([('use_date', '<=', today_start)])
         last_day = int(calendar.monthrange(today_date.year, today_date.month)[1])
         for stock_product_lot in stock_production_lot_ids:
-            lot_date=datetime.datetime.strptime(stock_product_lot.use_date, '%Y-%m-%d %H:%M:%S')
+            lot_date=datetime.datetime.strptime(str(stock_product_lot.use_date), '%Y-%m-%d %H:%M:%S')
             use_day=int(lot_date.day)
             use_month=int(lot_date.month)
             use_year = int(lot_date.year)

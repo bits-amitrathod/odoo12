@@ -450,9 +450,9 @@ class PrioritizationEngine(models.TransientModel):
             inventory_quantity = prioritization_engine_request['quantity']
         else:
             product = self.env['product.template'].search([('id', '=', prioritization_engine_request['product_id'])])
-            uom = self.env['product.uom'].search([('name', 'ilike', 'Unit'),('category_id.id', '=', 1)])
+            uom = self.env['uom.uom'].search([('name', 'ilike', 'Unit'),('category_id.id', '=', 1)])
             if len(uom) == 0:
-                uom = self.env['product.uom'].search([('name', 'ilike', 'Each'),('category_id.id', '=', 1)])
+                uom = self.env['uom.uom'].search([('name', 'ilike', 'Each'),('category_id.id', '=', 1)])
             min_threshold = product.manufacturer_uom._compute_quantity(float(prioritization_engine_request['min_threshold']), uom)
             max_threshold = product.manufacturer_uom._compute_quantity(float(prioritization_engine_request['max_threshold']), uom)
             inventory_quantity = product.manufacturer_uom._compute_quantity(float(prioritization_engine_request['quantity']), uom)

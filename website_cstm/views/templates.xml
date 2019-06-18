@@ -15,7 +15,7 @@
     ~~~~~~~~~~~~~~~~~~~~~~~~~~ HEADER ~~~~~~~~~~~~~~~~~~~~~~~~~~
     -->
     <template id="headerNavbar" name="Main layout" inherit_id="portal.frontend_layout">
-        <xpath expr="//header//div[hasclass('navbar-header')]" position="replace">
+        <xpath expr="//header//div[hasclass('container')]" position="replace">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-top-collapse">
                     <span class="sr-only">Toggle navigation</span>
