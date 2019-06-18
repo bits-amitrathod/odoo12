@@ -75,11 +75,24 @@ class WebsiteSale(http.Controller):
 
     @http.route(['/quote/<int:order_id>/<token>/accept'], type='http', auth="public", methods=['POST'], website=True)
     def accept(self, order_id, token, **post):
+        flag = False
         Order = request.env['sale.order'].sudo().browse(order_id)
+        SaleOrderLines = request.env['sale.order.line'].sudo().search([('order_id', '=', Order.id)])
+        for SaleOrderLine in SaleOrderLines:
+            StockMove = request.env['stock.move'].sudo().search([('sale_line_id', '=', SaleOrderLine.id)])
+            if SaleOrderLine.product_uom_qty and StockMove.product_uom_qty:
+                if SaleOrderLine.product_uom_qty < StockMove.product_uom_qty:
+                    flag = True
+                    break
+
         if token != Order.access_token:
             return request.render('website.404')
         if Order.state != 'sent':
             return werkzeug.utils.redirect("/quote/%s/%s?message=4" % (order_id, token))
+
+        if flag:
+            Order.action_cancel()
+            Order.action_draft()
         Order.action_confirm()
         message = post.get('accept_message')
         if message:
