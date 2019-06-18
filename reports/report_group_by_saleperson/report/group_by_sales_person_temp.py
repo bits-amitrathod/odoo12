@@ -12,7 +12,7 @@ class SaleSalespersonReport(models.TransientModel):
             return " "
 
     @api.multi
-    def get_report_values(self, docids, data):
+    def _get_report_values(self, docids, data):
         sale_orders = self.env['sale.order'].search([('state', '=', 'sale'), ('id', 'in', docids)])
 
         groupby_dict = {}

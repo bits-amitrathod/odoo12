@@ -11,7 +11,7 @@ class DiscountSummaryPopUp(models.TransientModel):
     ], string="Compute", help="Choose to analyze the Show Summary or from a specific date in the past.")
 
     start_date = fields.Date('Start Date', default = (fields.date.today() - datetime.timedelta(days = 31)))
-    end_date = fields.Date('End Date', default = fields.Datetime.now)
+    end_date = fields.Date('End Date', default = fields.date.today())
 
     def open_table(self):
 
