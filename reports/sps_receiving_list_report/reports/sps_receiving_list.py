@@ -12,7 +12,7 @@ class ReportSpsReceivingList(models.AbstractModel):
         for move_lines in stock_move_lines:
             lot = {
                 'lot_id': move_lines.lot_id.name,
-                'lot_expired_date': move_lines.lot_expired_date,
+                'exp_date': move_lines.exp_date,
                 'qty_done': int(float(move_lines.qty_rece)),
                 'product_uom_id': move_lines.product_uom_id.name,
             }

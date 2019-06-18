@@ -65,7 +65,7 @@
                                         Lot# :
                                         <span t-esc="lot['lot_id']"/>
                                         Exp Date :
-                                        <span t-esc="lot['lot_expired_date']"/>
+                                        <span t-esc="lot['exp_date']"/>
                                     </td>
 
                                     <td style="border: 1px solid black; text-align:  center ">

@@ -16,7 +16,7 @@ class SpsReceivingList(models.Model):
     purchase_partner_id = fields.Char('Vendor', store=False, compute="_get_sku")
     # carrier_info = fields.Integer('Carrier Info', store=False, compute="_get_sku")
     # date_order = fields.Datetime("Order Date", store=False, compute="_get_sku")
-
+    exp_date = fields.Char('Expired Date', store=False, compute="_get_sku")
 
 
     @api.multi
@@ -28,7 +28,8 @@ class SpsReceivingList(models.Model):
                     'sku_code' :  move_line.product_id.sku_code,
                     'qty_rece' : move_line.qty_done,
                     'purchase_order_id': purchase_order_id.name ,
-                    'purchase_partner_id': purchase_order_id.partner_id.name
+                    'purchase_partner_id': purchase_order_id.partner_id.name,
+                    'exp_date' : move_line.lot_id.use_date
                     # 'carrier_info': purchase_order_id.carrier_info,
                     # 'date_order': purchase_order_id.date_order,
                 })

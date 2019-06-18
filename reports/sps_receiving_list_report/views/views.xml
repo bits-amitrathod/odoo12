@@ -24,7 +24,7 @@
                     <field name="purchase_order_id"/>
                     <field name="purchase_partner_id"/>
                     <field name="lot_id"/>
-                    <field name="lot_expired_date"/>
+                    <field name = "exp_date" string="lot_expired_date"/>
                     <field name="qty_rece" string="Qty Received"/>
                     <field name="product_uom_id" string="UOM"/>
 
