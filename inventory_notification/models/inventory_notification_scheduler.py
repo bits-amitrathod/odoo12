@@ -25,6 +25,7 @@ class InventoryNotificationScheduler(models.TransientModel):
     warehouse_email = "warehouse@surgicalproductsolutions.com"
     sales_email = "salesteam@surgicalproductsolutions.com"
     acquisitions_email = "acquisitions@surgicalproductsolutions.com"
+    all_email="sps@surgicalproductsolutions.com"
 
     def process_manual_notification_scheduler(self):
         _logger.info("process_manual_notification_scheduler called..")
@@ -252,7 +253,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         self.process_common_email_acquisitions_manager_notification_template1(super_user, None, vals['subject'], vals['description'],
                                                         vals['sale_order_lines'], vals['header'],
                                                         vals['columnProps'], vals['closing_content'],
-                                                        self.acquisitions_email+","+self.warehouse_email, picking)
+                                                        self.all_email, picking)
 
 
 
