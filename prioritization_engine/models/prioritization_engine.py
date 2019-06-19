@@ -387,6 +387,7 @@ class PrioritizationEngine(models.TransientModel):
 
             picking = self.env['stock.picking'].search([('sale_id', '=', sale_order.id),('picking_type_id', '=', 1)])
             _logger.info('picking state   : %r', picking.state)
+            picking.write({'state':'assigned'})
             # sale_order.write(dict(state='engine', confirmation_date=''))
             # sale_order.force_quotation_send()
             sale_order.write({'state':'sent', 'confirmation_date':''})
@@ -423,6 +424,7 @@ class PrioritizationEngine(models.TransientModel):
             _logger.info('picking before   : %r', picking.state)
             picking.write({'state':'assigned'})
             _logger.info('picking after   : %r', picking.state)
+            picking.write({'state': 'assigned'})
             # sale_order.write(dict(state='engine', confirmation_date=''))
             # sale_order.force_quotation_send()
             sale_order.write({'state':'sent', 'confirmation_date':''})
