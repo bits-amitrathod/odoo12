@@ -6,8 +6,8 @@
                  <div class="col-xs-2" t-if="o.purchase_order">
                    <strong t-if="o.type == 'out_invoice' and (o.state == 'open' or o.state == 'paid')">Purchase Order #</strong>
                     <strong t-if="o.type == 'in_invoice'">Sale Order #</strong>
-                     <strong t-if="o.type == 'out_invoice' and o.state == 'draft'">Order #</strong>
-                     <strong t-if="o.type == 'out_invoice' and o.state == 'cancel'">Order #</strong>
+                     <strong t-if="o.type == 'out_invoice' and o.state == 'draft'">Purchase Order #</strong>
+                     <strong t-if="o.type == 'out_invoice' and o.state == 'cancel'">Purchase Order #</strong>
                      <strong t-if="o.type == 'out_refund'">Purchase Order #</strong>
                      <strong t-if="o.type == 'in_refund'">Sale Order #</strong>
                     <p t-field="o.purchase_order"/>
@@ -28,8 +28,8 @@
                  <div class="col-xs-2" t-if="o.origin">
                     <strong t-if="o.type == 'out_invoice' and (o.state == 'open' or o.state == 'paid')">Sale Order #</strong>
                     <strong t-if="o.type == 'in_invoice'">Purchase Order #</strong>
-                     <strong t-if="o.type == 'out_invoice' and o.state == 'draft'">Order #</strong>
-                     <strong t-if="o.type == 'out_invoice' and o.state == 'cancel'">Order #</strong>
+                     <strong t-if="o.type == 'out_invoice' and o.state == 'draft'">Sale Order #</strong>
+                     <strong t-if="o.type == 'out_invoice' and o.state == 'cancel'">Sale Order #</strong>
                      <strong t-if="o.type == 'out_refund'">Sale Order #</strong>
                      <strong t-if="o.type == 'in_refund'">Purchase Order #</strong>
                     <p t-field="o.origin"/>
