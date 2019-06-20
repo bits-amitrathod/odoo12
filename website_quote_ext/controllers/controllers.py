@@ -9,6 +9,7 @@ from odoo.addons.portal.controllers.mail import _message_post_helper
 from odoo.osv import expression
 from odoo.exceptions import AccessError
 from odoo.addons.portal.controllers.portal import get_records_pager, pager as portal_pager, CustomerPortal
+from datetime import datetime
 
 class WebsiteSale(http.Controller):
 
@@ -93,7 +94,14 @@ class WebsiteSale(http.Controller):
         if flag:
             Order.action_cancel()
             Order.action_draft()
-        Order.action_confirm()
+            Order.action_confirm()
+            picking = request.env['stock.picking'].sudo().search([('sale_id', '=', Order.id), ('picking_type_id', '=', 1), ('state', 'not in', ['draft', 'cancel'])])
+            picking.write({'state': 'assigned'})
+            stock_move = request.env['stock.move'].sudo().search([('picking_id', '=', picking.id)])
+            stock_move.write({'state': 'assigned'})
+        else:
+            Order.write({'state': 'sale', 'confirmation_date': datetime.now()})
+
         message = post.get('accept_message')
         if message:
             Order.write({'sale_note': message})
