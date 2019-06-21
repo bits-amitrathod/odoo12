@@ -10,7 +10,7 @@ class VendorBillPartnerName(models.Model):
          ('invoice', 'Invoice address'),
          ('delivery', 'Shipping address'),
          ('other', 'Other address'),
-         ("private", "Private Address"),
+         ('private', 'Private Address'),
          ('bill', 'Bill Address'),
          ], string='Address Type',
         default='contact',
