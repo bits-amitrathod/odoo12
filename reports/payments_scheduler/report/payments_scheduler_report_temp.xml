@@ -20,6 +20,8 @@
                                 <tr style="border: 1px solid black;">
                                     <th style="border: 1px solid black;text-align: center;">Acquisition Rep</th>
                                     <th style="border: 1px solid black;text-align: center;">Vendor Name</th>
+                                    <th style="border: 1px solid black;text-align: center;">Reference</th>
+                                    <th style="border: 1px solid black;text-align: center;">Number</th>
                                     <th style="border: 1px solid black;text-align: center;">Purchase Order#</th>
                                     <th style="border: 1px solid black;text-align: center;">Check-in Date</th>
                                     <th style="border: 1px solid black;text-align: center;">Due Date (of Bill)</th>
@@ -37,6 +39,12 @@
                                     </td>
                                     <td style="border: 1px solid black;">
                                         <span t-esc="order.partner_id.name"/>
+                                    </td>
+                                     <td style="border: 1px solid black;">
+                                        <span t-esc="order.reference"/>
+                                    </td>
+                                     <td style="border: 1px solid black;">
+                                        <span t-esc="order.number"/>
                                     </td>
                                     <td style="border: 1px solid black;">
                                         <span t-esc="order.origin"/>

@@ -75,7 +75,7 @@
                 </field>
                 <xpath expr="/form/sheet[1]/notebook/page[@name='other_info']/group/group[2]/field[@name='origin']"
                        position="replace">
-                      <field name="origin" string="Sale Order#" groups="base.group_user" attrs="{'invisible': True}"/>
+                      <field name="origin" string="Order#" groups="base.group_user" attrs="{'invisible': True}"/>
                 </xpath>
                 <xpath expr="//field[@name='team_id']" position="after">
                     <field name="purchase_order" string="Purchase Order#"/>
