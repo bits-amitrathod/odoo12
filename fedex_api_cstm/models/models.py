@@ -2,10 +2,20 @@
 import os
 
 import suds
-from delivery_fedex.models.fedex_request import LogPlugin
 from odoo import models, api,fields
 from suds.client import Client
+from suds.plugin import MessagePlugin
 
+class LogPlugin(MessagePlugin):
+    """ Small plugin for suds that catches out/ingoing XML requests and logs them"""
+    def __init__(self, debug_logger):
+        self.debug_logger = debug_logger
+
+    def sending(self, context):
+        self.debug_logger(context.envelope, 'fedex_request')
+
+    def received(self, context):
+        self.debug_logger(context.reply, 'fedex_response')
 
 class FedexApiCstm():
 
