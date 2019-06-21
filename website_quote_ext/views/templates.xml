@@ -7,24 +7,24 @@
         </template>
 
         <template id="so_quotation_content_inherit" inherit_id="website_quote.so_quotation_content" name="Quotation Content">
-            <xpath expr="//div/h1/div/ul" position="replace">
-                <ul class="list-inline">
-                  <li groups="sales_team.group_sale_salesman">
-                    <a t-if="quotation.state not in ('manual')" class="btn btn-info" t-att-href="'/web#return_label=Website&amp;model=%s&amp;id=%s&amp;action=%s&amp;view_type=form' % (quotation                               ._name, quotation.id, action)">Edit Quote</a>
-                    <a t-if="quotation.state in ('manual')" class=" btn btn-info" t-att-href="'/web#return_label=Website&amp;model=%s&amp;id=%s&amp;action=%s&amp;view_type=form' % (quotation                                  ._name, quotation.id, action)">Back to Sales Order</a>
-                  </li>
-                  <li>
-                      <a t-if="quotation.state in ['sent']" class="btn btn-info" t-att-href="'/my/orders/edit/%s' % (quotation.id)" data-toggle="modal">
-                          <i class="fa fa-check"></i>
-                            Update Quantity
-                      </a>
-                      <a class="btn btn-info" target="_blank" t-att-href="'/quote/%s/%s' % (quotation.id,quotation.access_token)+'?pdf=True'">Print</a>
-                  </li>
-                  <li>
-                    <t t-call='portal.record_pager'/>
-                  </li>
-               </ul>
-            </xpath>
+            <!--<xpath expr="//div/h1/div/ul" position="replace">-->
+                <!--<ul class="list-inline">-->
+                  <!--<li groups="sales_team.group_sale_salesman">-->
+                    <!--<a t-if="quotation.state not in ('manual')" class="btn btn-info" t-att-href="'/web#return_label=Website&amp;model=%s&amp;id=%s&amp;action=%s&amp;view_type=form' % (quotation                               ._name, quotation.id, action)">Edit Quote</a>-->
+                    <!--<a t-if="quotation.state in ('manual')" class=" btn btn-info" t-att-href="'/web#return_label=Website&amp;model=%s&amp;id=%s&amp;action=%s&amp;view_type=form' % (quotation                                  ._name, quotation.id, action)">Back to Sales Order</a>-->
+                  <!--</li>-->
+                  <!--<li>-->
+                      <!--<a t-if="quotation.state in ['sent']" class="btn btn-info" t-att-href="'/my/orders/edit/%s' % (quotation.id)" data-toggle="modal">-->
+                          <!--<i class="fa fa-check"></i>-->
+                            <!--Update Quantity-->
+                      <!--</a>-->
+                      <!--<a class="btn btn-info" target="_blank" t-att-href="'/quote/%s/%s' % (quotation.id,quotation.access_token)+'?pdf=True'">Print</a>-->
+                  <!--</li>-->
+                  <!--<li>-->
+                    <!--<t t-call='portal.record_pager'/>-->
+                  <!--</li>-->
+               <!--</ul>-->
+            <!--</xpath>-->
             <xpath expr="//div[2]/div" position="inside">
                 <label t-if="quotation.partner_id.gl_account.name" class="col-sm-4 col-xs-4 text-right">GL Account:</label>
                 <div class="col-sm-8 col-xs-8">
@@ -213,8 +213,14 @@
 
         <template id="pricing_inherit" inherit_id="website_quote.pricing" name="prioritization price">
             <xpath expr="//section[@id='quote']" position="replace">
-                <section id="quote">
-                    <h1 class="page-header">Pricing</h1>
+                <section id="quote" style="position: relative;">
+                    <h1 class="page-header" style="padding-bottom: 20px !important;">Pricing</h1>
+                    <div style="position: absolute;top: 0;right: 0;">
+                        <h4>Please click "Update Quantity" if you need to edit this order.  <a t-if="quotation.state in ['sent']" class="btn btn-info" t-att-href="'/my/orders/edit/%s' %                                             (quotation.id)" data-toggle="modal">
+                            Update Quantity
+                    </a></h4>
+
+                    </div>
                     <t t-foreach="quotation.order_lines_layouted()" t-as="page">
                     <table class="table wq-table">
                     <thead>
@@ -696,9 +702,9 @@
                                                            t-att-data-line-id="ol.id"
                                                            t-att-data-product-id="ol.product_id.id"
                                                            t-att-value="ol.product_uom_qty"/>
-                                                    <lable
+                                                    <lable style="cursor: not-allowed;"
                                                        class="mb8 input-group-addon float_left js_add_cart_json hidden-xs">
-                                                        <i class="fa fa-plus" style="readonly:true"></i>
+                                                        <i class="fa fa-plus" style="readonly:true;color: #cacaca;"></i>
                                                     </lable>
                                                 </div>
                                             </t>
