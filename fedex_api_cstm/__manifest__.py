@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Sales Order Line Alert Message",
-
+    'name': "Fedex Api Tracking",
 
     'author': "Benchmark IT Solutions",
     'website': "http://www.benchmarkitsolutions.com",
@@ -13,12 +12,15 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['sale_stock','vendor_offer'],
+    'depends': ['customize_sales_order','vendor_offer'],
 
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
+        'views/views.xml',
+        'views/templates.xml',
     ],
+    'application': True,
     'installable': True,
-
+    'auto_install': True
 }

@@ -1,31 +1,23 @@
 # -*- coding: utf-8 -*-"Hello - needed salary slip for last 3 month for Loan purpose."
 
 import datetime
+import io
 import logging
+import re
 from random import randint
 
 import math
+from odoo import http
 from odoo import models, fields, api, _
 from odoo.addons import decimal_precision as dp
+from odoo.addons.web.controllers.main import serialize_exception, content_disposition
 from odoo.exceptions import UserError, ValidationError
+from odoo.http import request
 from odoo.tools import pdf
+from odoo.tools import pycompat
 from werkzeug.urls import url_encode
 
 from .fedex_request import FedexRequest
-from odoo.exceptions import UserError, AccessError, ValidationError
-import datetime
-import math
-from random import randint
-from odoo.tools import pdf
-import logging
-from odoo import http
-from odoo.http import request
-from odoo.addons.web.controllers.main import serialize_exception, content_disposition
-from odoo.tools import pycompat
-import io
-import re
-import werkzeug
-from pprint import pprint
 
 _logger = logging.getLogger(__name__)
 # Why using standardized ISO codes? It's way more fun to use made up codes...
@@ -80,7 +72,7 @@ class VendorOffer(models.Model):
     _inherit = "purchase.order"
 
     vendor_offer_data = fields.Boolean()
-    status_ven = fields.Char(store=True, string="Status")
+    status_ven = fields.Char(store=True, string="Status", copy=False)
     carrier_info = fields.Char("Carrier Info", related='partner_id.carrier_info', readonly=True)
     carrier_acc_no = fields.Char("Carrier Account No", related='partner_id.carrier_acc_no', readonly=True)
     shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
@@ -103,8 +95,8 @@ class VendorOffer(models.Model):
     offer_type_pdf_text = fields.Char(string='offer type Temp')
     credit_offer_type_pdf_text = fields.Char(string='credit offer type Temp')
 
-    carrier_id = fields.Many2one('delivery.carrier', 'Carrier', readonly=True)
-    shipping_number = fields.Text(string='Tracking Reference', readonly=True)
+    carrier_id = fields.Many2one('delivery.carrier', 'Carrier', readonly=True, copy=False)
+    shipping_number = fields.Text(string='Tracking Reference', readonly=True, copy=False)
 
     '''show_validate = fields.Boolean(
         compute='_compute_show_validate',
@@ -402,9 +394,6 @@ class VendorOffer(models.Model):
         self.write({'status_ven': 'Declined'})
         self.write({'declined_date': fields.date.today()})
 
-    @api.multi
-    def action_fedex_track_request(self):
-        self.carrier_id.fedex_track_request(self, self.shipping_number.split(","))
 
     @api.multi
     def action_cancel_vendor_offer_api(self, product_id):
@@ -967,9 +956,9 @@ class FedexDelivery(models.Model):
                              self.fedex_saturday_delivery)
         srm.set_currency(_convert_curr_iso_fdx(order.currency_id.name))
         srm.set_shipper(order.partner_id, order.partner_id)
-        #srm.set_recipient(order.company_id.partner_id)
+        # srm.set_recipient(order.company_id.partner_id)
         super_user = self.env['res.users'].browse(1)
-        #print(super_user.partner_id.name)
+        # print(super_user.partner_id.name)
         srm.set_recipient(super_user.partner_id)
         srm.shipping_charges_payment(superself.fedex_account_number)
         srm.shipment_label('COMMON2D', self.fedex_label_file_type, self.fedex_label_stock_type,
