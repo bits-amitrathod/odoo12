@@ -210,6 +210,39 @@ class VendorOffer(models.Model):
             if (order.appraisal_no == False):
                 order.appraisal_no = 'AP' + str(randint(11111, 99999))
 
+    @api.onchange('possible_competition')
+    @api.depends('possible_competition')
+    def _set_offer_price_temp(self):
+        for order in self:
+            for line in order.order_line:
+                multiplier_list = line.multiplier
+                val_t = float(line.product_id.list_price) * (float(multiplier_list.retail) / 100)
+                if (float(val_t) % 1) >= 0.5:
+                    product_unit_price = math.ceil(
+                        float(line.product_id.list_price) * (float(multiplier_list.retail) / 100))
+
+                else:
+                    product_unit_price = math.floor(
+                        float(line.product_id.list_price) * (float(multiplier_list.retail) / 100))
+
+                val_off = float(product_unit_price) * (float(
+                    multiplier_list.margin) / 100 + float(line.possible_competition.margin) / 100)
+                if (float(val_off) % 1) >= 0.5:
+                    product_offer_price = math.ceil(
+                        float(product_unit_price) * (
+                                float(multiplier_list.margin) / 100 + float(
+                            line.possible_competition.margin) / 100))
+
+                else:
+                    product_offer_price = math.floor(float(product_unit_price) * (
+                            float(multiplier_list.margin) / 100 + float(
+                        line.possible_competition.margin) / 100))
+
+                line.update({
+                    'product_offer_price': product_offer_price,
+                    'product_unit_price' :product_unit_price
+                })
+
     @api.onchange('order_line.taxes_id')
     @api.depends('order_line.price_total', 'order_line.price_total', 'order_line.taxes_id',
                  'order_line.rt_price_tax', 'order_line.product_retail', 'order_line.rt_price_total')
@@ -487,8 +520,8 @@ class VendorOfferProduct(models.Model):
     vendor_offer_data = fields.Boolean(related='order_id.vendor_offer_data')
     product_note = fields.Text(string="Notes")
 
-    margin = fields.Char(string="Cost %", readonly=True, compute='_cal_offer_price')
-    product_unit_price = fields.Monetary(string="Retail Price", readonly=True, compute='_cal_offer_price', store=True)
+    margin = fields.Char(string="Cost %", readonly=True, compute='_cal_margin')
+    #product_unit_price = fields.Monetary(string="Retail Price",default='_cal_offer_price' , store=True)
     # product_offer_price = fields.Monetary(string="Offer Price", readonly=True, compute='cal_offer_price')
     for_print_product_offer_price = fields.Char(string="Offer Price")
     for_print_price_subtotal = fields.Char(string="Offer Price")
@@ -723,6 +756,7 @@ class VendorOfferProduct(models.Model):
             # product_unit_price = math.floor(
             #     round(float(line.product_id.list_price) * (float(multiplier_list.retail) / 100), 2))
 
+
             val_t = float(line.product_id.list_price) * (float(multiplier_list.retail) / 100)
             if (float(val_t) % 1) >= 0.5:
                 product_unit_price = math.ceil(
@@ -742,6 +776,23 @@ class VendorOfferProduct(models.Model):
             line.update({
                 'margin': margin,
                 'product_unit_price': product_unit_price,
+            })
+
+    product_unit_price = fields.Monetary(string="Retail Price", default=_cal_offer_price, store=True)
+
+    @api.onchange('multiplier', 'order_id.possible_competition')
+    @api.depends('multiplier', 'order_id.possible_competition')
+    def _cal_margin(self):
+        for line in self:
+            margin = 0
+            if line.multiplier.id:
+                margin += line.multiplier.margin
+
+            if line.possible_competition.id:
+                margin += line.possible_competition.margin
+
+            line.update({
+                'margin': margin
             })
 
     @api.onchange('multiplier', 'order_id.possible_competition')
@@ -954,6 +1005,7 @@ class FedexDelivery(models.Model):
         package_type = popup.product_packaging.shipper_package_code or self.fedex_default_packaging_id.shipper_package_code
         srm.shipment_request(self.fedex_droppoff_type, self.fedex_service_type, package_type, self.fedex_weight_unit,
                              self.fedex_saturday_delivery)
+        srm.shipment_request_email(order)
         srm.set_currency(_convert_curr_iso_fdx(order.currency_id.name))
         srm.set_shipper(order.partner_id, order.partner_id)
         # srm.set_recipient(order.company_id.partner_id)
