@@ -18,7 +18,7 @@ class accoun_invoicr_changes(models.Model):
                     inv_cntact = contact
                     break
             if inv_cntact is not None :
-                sp.pay_to = inv_cntact.name
+                sp.pay_to = inv_cntact.name if inv_cntact.name is not None else ""
                 if inv_cntact.street: address = inv_cntact.street
                 if inv_cntact.street2: address = (address + ', ' + inv_cntact.street2 if  address is not None else inv_cntact.street2)
                 if inv_cntact.city: address = (address + ', ' + inv_cntact.city if  address is not None else inv_cntact.city )
