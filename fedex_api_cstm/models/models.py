@@ -68,14 +68,20 @@ class FedexApiCstm():
                         "%m/%d/%Y %I:%M:%S %p") + "</dd>"
 
                     isMaster = False
+                    isMasterFound = False
 
                     if 'OtherIdentifiers' in trackDetails:
                         otherIdentifiers = trackDetails.OtherIdentifiers
                         for otherIdentifier in otherIdentifiers:
-                            if otherIdentifier.PackageIdentifier.Type == 'STANDARD_MPS' and otherIdentifier.PackageIdentifier.Value == str(
+                            if otherIdentifier.PackageIdentifier.Type == 'STANDARD_MPS':
+                                isMasterFound = True
+                                if otherIdentifier.PackageIdentifier.Value == str(
                                     self.selectionDetails.PackageIdentifier.Value):
-                                isMaster = True
-                                break
+                                    isMaster = True
+                                    break
+
+                        if not isMasterFound:
+                            isMaster = True
                     else:
                         isMaster = True
 
