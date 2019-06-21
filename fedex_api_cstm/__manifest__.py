@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Fedex Api Tracking",
+    'name': "Fedex API Tracking",
 
     'author': "Benchmark IT Solutions",
     'website': "http://www.benchmarkitsolutions.com",
