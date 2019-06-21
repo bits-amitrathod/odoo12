@@ -95,8 +95,8 @@ class VendorOffer(models.Model):
     offer_type_pdf_text = fields.Char(string='offer type Temp')
     credit_offer_type_pdf_text = fields.Char(string='credit offer type Temp')
 
-    carrier_id = fields.Many2one('delivery.carrier', 'Carrier', readonly=True, copy=False)
-    shipping_number = fields.Text(string='Tracking Reference', readonly=True, copy=False)
+    carrier_id = fields.Many2one('delivery.carrier', 'Carrier', copy=False)
+    shipping_number = fields.Text(string='Tracking Reference', copy=False)
 
     '''show_validate = fields.Boolean(
         compute='_compute_show_validate',
