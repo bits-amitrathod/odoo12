@@ -240,7 +240,7 @@ class VendorOffer(models.Model):
 
                 line.update({
                     'product_offer_price': product_offer_price,
-                    'product_unit_price' :product_unit_price
+                    'product_unit_price': product_unit_price
                 })
 
     @api.onchange('order_line.taxes_id')
@@ -427,7 +427,6 @@ class VendorOffer(models.Model):
         self.write({'status_ven': 'Declined'})
         self.write({'declined_date': fields.date.today()})
 
-
     @api.multi
     def action_cancel_vendor_offer_api(self, product_id):
         purchase = self.env['purchase.order'].search([('id', '=', product_id)])
@@ -521,7 +520,7 @@ class VendorOfferProduct(models.Model):
     product_note = fields.Text(string="Notes")
 
     margin = fields.Char(string="Cost %", readonly=True, compute='_cal_margin')
-    #product_unit_price = fields.Monetary(string="Retail Price",default='_cal_offer_price' , store=True)
+    # product_unit_price = fields.Monetary(string="Retail Price",default='_cal_offer_price' , store=True)
     # product_offer_price = fields.Monetary(string="Offer Price", readonly=True, compute='cal_offer_price')
     for_print_product_offer_price = fields.Char(string="Offer Price")
     for_print_price_subtotal = fields.Char(string="Offer Price")
@@ -755,7 +754,6 @@ class VendorOfferProduct(models.Model):
 
             # product_unit_price = math.floor(
             #     round(float(line.product_id.list_price) * (float(multiplier_list.retail) / 100), 2))
-
 
             val_t = float(line.product_id.list_price) * (float(multiplier_list.retail) / 100)
             if (float(val_t) % 1) >= 0.5:
