@@ -25,8 +25,8 @@ class StockMoveExtension(models.Model):
         return False
 
     def write(self, vals):
-        global serialNumber;
-        global serialNumberExDate;
+        global serialNumber
+        global serialNumberExDate
         for this in  self:
             lotNumbers = []
             product_tmpl=self.env['product.template'].search([('id', '=', int(this.product_id.product_tmpl_id))])
