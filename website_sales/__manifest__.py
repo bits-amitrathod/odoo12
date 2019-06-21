@@ -8,7 +8,7 @@
     'sequence': 59,
     'category': 'e-commerce',
     'version': '1.0',
-    'depends': ['website_sale','payment_aquirer_cstm'],
+    'depends': ['website_sale','payment_aquirer_cstm','vendor_offer'],
     # always loaded
     'data': [
         'security/ir.model.access.csv',

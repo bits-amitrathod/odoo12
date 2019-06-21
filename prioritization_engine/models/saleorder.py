@@ -93,12 +93,6 @@ class SaleOrder(models.Model):
             'context': ctx,
         }
 
-    @api.multi
-    def action_fedex_track_request(self):
-        if self.carrier_id:
-            self.carrier_id.fedex_track_request(self,self.carrier_track_ref)
-        pass
-
 
 class SaleOrderLinePrioritization(models.Model):
     _inherit = "sale.order.line"
