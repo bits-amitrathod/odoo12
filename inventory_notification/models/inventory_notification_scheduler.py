@@ -164,8 +164,6 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                                 self.warehouse_email)'''
 
     def po_receive_notification_for_acquisitions_manager(self, picking):
-        pass
-    def po_receive_notification_for_acquisitions_manager_old(self, picking):
         Stock_Moves_list = self.env['stock.move'].search([('picking_id', '=', picking.id)])
         Stock_Moves_line = []
         for stock_move in Stock_Moves_list:

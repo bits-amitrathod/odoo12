@@ -23,7 +23,7 @@ class StockPicking(models.Model):
 
                 elif self.picking_type_id.name == 'Delivery Orders' and self.state == 'done':
                     inv_notification.out_notification_for_sale(self)
-            elif picking.purchase_id:
-                if self.picking_type_id.name == 'Receipts' and self.state == 'done':
-                    inv_notification.po_receive_notification_for_acquisitions_manager(self)
+            # elif picking.purchase_id:
+            #     if self.picking_type_id.name == 'Receipts' and self.state == 'done':
+            #         inv_notification.po_receive_notification_for_acquisitions_manager(self)
         return action
