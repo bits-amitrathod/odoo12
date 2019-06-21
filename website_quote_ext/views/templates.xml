@@ -36,7 +36,7 @@
         <template id="so_modify_content" inherit_id="website_quote.so_quotation" name="Modify Content">
             <xpath expr="//t/t/body/div[1]/div[1]/div[2]/div[8]/a[1]" position="after">
                 <a class="btn btn-info" t-att-href="'/my/orders/edit/%s' % (quotation.id)" data-toggle="modal">
-                    <i class="fa fa-check"></i>
+                    <i class="fa fa-edit"></i>
                     Update Quantity
                 </a>
             </xpath>
@@ -214,13 +214,16 @@
         <template id="pricing_inherit" inherit_id="website_quote.pricing" name="prioritization price">
             <xpath expr="//section[@id='quote']" position="replace">
                 <section id="quote" style="position: relative;">
-                    <h1 class="page-header" style="padding-bottom: 20px !important;">Pricing</h1>
-                    <div style="position: absolute;top: 0;right: 0;">
-                        <h4>Please click "Update Quantity" if you need to edit this order.  <a t-if="quotation.state in ['sent']" class="btn btn-info" t-att-href="'/my/orders/edit/%s' %                                             (quotation.id)" data-toggle="modal">
+                    <div>
+                    <h1 class="page-header" style="padding-top: 0px">Pricing</h1>
+                    <!--<div style="position: absolute;top: 0;right: 0;">  -->
+                        <h4 style="position: absolute;top: 0;right: 0;" >Please click "Update Quantity" if you need to edit this order.  <a t-if="quotation.state in ['sent']" class="btn btn-info" t-att-href="'/my/orders/edit/%s' %                                             (quotation.id)" data-toggle="modal">
+                            <i class="fa fa-edit"></i>
                             Update Quantity
                     </a></h4>
-
                     </div>
+
+                    <!--</div>-->
                     <t t-foreach="quotation.order_lines_layouted()" t-as="page">
                     <table class="table wq-table">
                     <thead>
