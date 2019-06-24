@@ -34,12 +34,27 @@
         </template>
 
         <template id="so_modify_content" inherit_id="website_quote.so_quotation" name="Modify Content">
-            <xpath expr="//t/t/body/div[1]/div[1]/div[2]/div[8]/a[1]" position="after">
-                <a class="btn btn-info" t-att-href="'/my/orders/edit/%s' % (quotation.id)" data-toggle="modal">
-                    <i class="fa fa-edit"></i>
+            <!--<xpath expr="//t/t/body/div[1]/div[1]/div[2]/div[8]" position="attributes">
+                <attribute name="class">text-right</attribute>
+            </xpath>-->
+            <xpath expr="//t/t/body/div[1]/div[1]/div[2]/div[8]" position="replace">
+                 <div class="text-right hidden-print mt16 mb16" id="quotation_toolbar" t-if="quotation.state in ('draft', 'sent', 'waiting_date')">
+                          <a class="btn btn-danger" data-toggle="modal" data-target="#modaldecline">
+                              Reject
+                          </a>
+                          <a class="btn btn-success" data-toggle="modal" data-target="#modalaccept" t-if="order_valid and not quotation.require_payment">
+                              Accept
+                          </a>
+                          <a class="text-right btn btn-info" t-att-href="'/my/orders/edit/%s' % (quotation.id)" data-toggle="modal">
+                                Update Quantity
+                          </a>
+                 </div>
+            </xpath>
+            <!--<xpath expr="//t/t/body/div[1]/div[1]/div[2]/div[8]/a[3]" position="after">
+                <a class="text-right btn btn-info" t-att-href="'/my/orders/edit/%s' % (quotation.id)" data-toggle="modal">
                     Update Quantity
                 </a>
-            </xpath>
+             </xpath>-->
             <xpath expr="//t/t/body/div[1]/div[1]/div[2]/div[5]" position="replace">
                 <div class="modal" id="modalaccept" role="dialog" aria-hidden="true">
                     <div class="modal-dialog">
@@ -217,10 +232,9 @@
                     <div>
                     <h1 class="page-header" style="padding-top: 0px">Pricing</h1>
                     <!--<div style="position: absolute;top: 0;right: 0;">  -->
-                        <h4 style="position: absolute;top: 0;right: 0;" >Please click "Update Quantity" if you need to edit this order.  <a t-if="quotation.state in ['sent']" class="btn btn-info" t-att-href="'/my/orders/edit/%s' %                                             (quotation.id)" data-toggle="modal">
-                            <i class="fa fa-edit"></i>
+                        <h5 style="position: absolute;top: 0;right: 0;" ><b>Please click "Update Quantity" if you need to edit this order  </b><a t-if="quotation.state in ['sent']" class="btn btn-info" t-att-href="'/my/orders/edit/%s' % (quotation.id)" data-toggle="modal">
                             Update Quantity
-                    </a></h4>
+                    </a></h5>
                     </div>
 
                     <!--</div>-->
@@ -560,36 +574,35 @@
                                         </t>
                                     </h4>
                                 </div>
-                                <div class="col-md-6 col-sm-3 col-xs-3 hidden-print" id="o_portal_order_actions">
-                                    <t t-if="order.state == 'sent' and portal_confirmation == 'sign'"
+                                <div class="margin-bottom: 0px !important text-right col-md-6 col-sm-3 col-xs-3 hidden-print" id="o_portal_order_actions">
+                                    <!--<t t-if="order.state == 'sent' and portal_confirmation == 'sign'"
                                        name="portal_confirmation_sign">
                                         <a class="btn btn-primary ml8 pull-right" href="#portal_sign" style="visibility: hidden">
                                             <i class="fa fa-arrow-circle-right"/>
                                             Accept
                                         </a>
-                                    </t>
-                                        <a class="btn btn-danger ml8 pull-right" data-toggle="modal" data-target="#decline">
-                                            <i class="fa fa-times"></i>
-                                            Reject
-                                        </a>
+                                    </t>-->
+
 
                                     <t t-if="order.amount_total != 0">
                                         <a class="btn btn-success ml8 pull-right" data-toggle="modal" data-target="#accept">
-                                            <i class="fa fa-check"></i>
                                             Accept
                                         </a>
                                     </t>
-                                    <t t-if="order.state == 'sale' and portal_confirmation == 'sign'">
+                                    <a class="btn btn-danger ml8 pull-right" data-toggle="modal" data-target="#decline">
+                                            Reject
+                                        </a>
+                                   <!-- <t t-if="order.state == 'sale' and portal_confirmation == 'sign'">
                                         <a class="btn btn-success ml8 pull-right" disabled="disabled"
                                            t-attf-title="Order signed on #{order.confirmation_date} by #{order.partner_id.name}">
                                             <i class="fa fa-check-circle"/>
                                             Signed
                                         </a>
-                                    </t>
+                                    </t>-->
                                      <t t-if="order.amount_total != 0">
                                     <a target="_blank" t-att-href="'/my/orders/pdf/%s?%s' % (order.id, keep_query())"
                                        class="ml8 pull-right mt4 mr8" title="Download">
-                                        <i class="fa fa-download fa-2x" aria-hidden="true"/>
+                                        <i class="fa fa-download fa-2x" aria-hidden="true"/> Download
                                     </a>
                                      </t>
                                 </div>
@@ -700,7 +713,7 @@
                                                        class="mb8 input-group-addon js_add_cart_json hidden-xs">
                                                         <i class="fa fa-minus"></i>
                                                     </a>
-                                                    <input type="text" class="js_quantity form-control quantity" readonly="true"
+                                                    <input type="text" class="js_quantity form-control quantity"
                                                            t-att-data-quote-id="ol.order_id.id"
                                                            t-att-data-line-id="ol.id"
                                                            t-att-data-product-id="ol.product_id.id"
@@ -799,17 +812,15 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="text-center hidden-print mt16 mb16" id="portal_sign">
+                        <div class="panel-heading  text-right hidden-print mt16 mb16" id="portal_sign" style="margin-bottom: 0px !important">
+                            <a class="btn btn-danger" data-toggle="modal" data-target="#decline">
+                                Reject
+                            </a>
                              <t t-if="order.amount_total != 0">
                             <a class="btn btn-success" data-toggle="modal" data-target="#accept">
-                                <i class="fa fa-check"></i>
                                 Accept
                             </a>
                              </t>
-                            <a class="btn btn-danger" data-toggle="modal" data-target="#decline">
-                                <i class="fa fa-times"></i>
-                                Reject
-                            </a>
                         </div>
                         <div class="modal" id="accept" role="dialog" aria-hidden="true">
                             <div class="modal-dialog">
