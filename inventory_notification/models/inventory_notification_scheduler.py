@@ -172,19 +172,33 @@ class InventoryNotificationScheduler(models.TransientModel):
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
 
         sales_order = []
-        for stock_move_line in Stock_Moves_line:
-            for stock_move_line_single in stock_move_line:
-                sale_order = {
-                    'sales_order': picking.purchase_id.name,
-                    'sku': stock_move_line_single.product_id.product_tmpl_id.sku_code,
-                    'Product': stock_move_line_single.product_id.name,
-                    'qty': int(stock_move_line_single.ordered_qty),
-                    'lot_name': stock_move_line_single.lot_id.name,
-                    'lot_expired_date': stock_move_line_single.lot_id.use_date,
-                    'qty_done': int(stock_move_line_single.qty_done),
-                    'status' : "Complete" if int(stock_move_line_single.ordered_qty) == int(stock_move_line_single.qty_done) else "Short" if int(stock_move_line_single.ordered_qty) > int(stock_move_line_single.qty_done) else "Extra"
+        for stock_move_line_single in Stock_Moves_list:
+            lot_name_list = None
+            lot_expired_date = None
+            qty_done_in_lot = None
+            temp = self.env['stock.move.line'].search([('move_id', '=', stock_move.id)])
+            for s_move_line in temp :
+                if s_move_line.lot_id is not None and s_move_line.lot_id.name : lot_name_list = lot_name_list + '</li> <li style = "list-style-type: none;">' + s_move_line.lot_id.name if lot_name_list is not None else '<ul style="list-style-type: none; padding: 5px;"> <li style = " white-space: nowrap;list-style-type: none;">' + s_move_line.lot_id.name
+                if s_move_line.lot_id is not None and s_move_line.lot_id.use_date : lot_expired_date =  lot_expired_date + '</li> <li style = "white-space: nowrap; list-style-type: none;">' + s_move_line.lot_id.use_date  if lot_expired_date is not None else '<ul style="list-style-type: none; padding: 5px;"><li style = "white-space: nowrap; list-style-type: none;">' +s_move_line.lot_id.use_date
+                if s_move_line is not None and s_move_line.qty_done : qty_done_in_lot = qty_done_in_lot + '</li> <li style = "list-style-type: none;">' + str(int(s_move_line.qty_done))  if qty_done_in_lot is not None and s_move_line.qty_done  else '<ul style="list-style-type: none; padding: 5px;"><li style = "list-style-type: none;">' +str(int(s_move_line.qty_done))
+            lot_name_list = lot_name_list + '</li></ul>' if lot_name_list is not None else ''
+            lot_expired_date = lot_expired_date + '</li></ul>' if lot_expired_date is not None else ''
+            qty_done_in_lot = qty_done_in_lot + '</li></ul>' if qty_done_in_lot is not None else ''
+
+            sale_order = {
+                'sales_order': picking.purchase_id.name,
+                'sku': stock_move_line_single.product_id.product_tmpl_id.sku_code,
+                'Product': stock_move_line_single.product_id.name,
+                'qty': int(stock_move_line_single.ordered_qty),
+
+                'lot_name': lot_name_list,
+                'lot_expired_date': lot_expired_date,
+                'qty_done_in_lot' : qty_done_in_lot,
+                                    
+                'qty_done': int(stock_move_line_single.product_uom_qty),
+                'status' : "Complete" if int(stock_move_line_single.ordered_qty) == int(stock_move_line_single.product_uom_qty) else "Short" if int(stock_move_line_single.ordered_qty) > int(stock_move_line_single.product_uom_qty) else "Extra"
                 }
-                sales_order.append(sale_order)
+            sales_order.append(sale_order)
         sale_order_ref = picking.purchase_id
         str_note = ""
         # if sale_order_ref.notes_activity:
@@ -224,8 +238,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                            "<strong> Date : </strong>" + (str( datetime.strptime(picking.scheduled_date, "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')) if picking.scheduled_date else "N/A") + \
                            "<br/><strong> Vendor Name :  </strong>" + (sale_order_ref.partner_id.name or "") + "<br/>" + table_data,
 
-            'header': ['Catalog number', 'Description', 'Initial Quantity', 'Lot', 'Expiration Date', 'Quantity Done','Status'],
-            'columnProps': ['sku', 'Product', 'qty', 'lot_name', 'lot_expired_date', 'qty_done','status'],
+            'header': ['Catalog number', 'Description', 'Initial Quantity', 'Lot', 'Expiration Date','Qty Put In Lot', 'Quantity Done','Status'],
+            'columnProps': ['sku', 'Product', 'qty', 'lot_name', 'lot_expired_date','qty_done_in_lot', 'qty_done','status'],
             'closing_content': 'Thanks & Regards, <br/> Team'
         }
 
@@ -1083,7 +1097,7 @@ class InventoryNotificationScheduler(models.TransientModel):
     def process_common_email_acquisitions_manager_notification_template1(self, email_from_user, email_to_user, subject, descrption, products,
                                                     header, columnProps, closing_content, email_to_team=None,
                                                     picking=None,
-                                                    custom_template="inventory_notification.common_mail_template",
+                                                    custom_template="inventory_notification.mail_template_acquisitions_manager",
                                                     is_employee=True):
         template = self.env.ref(custom_template)
 
