@@ -9,9 +9,9 @@ class VendorBillPartnerName(models.Model):
         [('contact', 'Contact'),
          ('invoice', 'Invoice address'),
          ('delivery', 'Shipping address'),
-         ('other', 'Other address'),
-         ('private', 'Private Address'),
-         ('bill', 'Bill Address'),
+         # ('other', 'Other address'),
+         # ('private', 'Private Address'),
+         ('ap', 'AP Address'),
          ], string='Address Type',
         default='contact',
         help="Used to select automatically the right address according to the context in sales and purchases documents.")
@@ -24,7 +24,7 @@ class VendorBillPartnerName(models.Model):
             name = partner.name or ''
             if (self.env.context.get('vendor_bill_partner_name_display_name') and True != ('show_address' in self._context)) or (self.env.context.get('vendor_payment_partner_name_display_name') and True != ('show_address' in self._context)):
                 if partner.company_name or partner.parent_id:
-                    if not name and partner.type in ['invoice', 'delivery', 'other','bill']:
+                    if not name and partner.type in ['invoice', 'delivery', 'other','ap']:
                         name = dict(self.fields_get(['type'])['type']['selection'])[partner.type]
                     if not partner.is_company:
                         name = "%s :- %s ,%s" % ((partner.type).upper(),
