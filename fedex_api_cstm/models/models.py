@@ -2,12 +2,14 @@
 import os
 
 import suds
-from odoo import models, api,fields
+from odoo import models, api, fields
 from suds.client import Client
 from suds.plugin import MessagePlugin
 
+
 class LogPlugin(MessagePlugin):
     """ Small plugin for suds that catches out/ingoing XML requests and logs them"""
+
     def __init__(self, debug_logger):
         self.debug_logger = debug_logger
 
@@ -16,6 +18,7 @@ class LogPlugin(MessagePlugin):
 
     def received(self, context):
         self.debug_logger(context.reply, 'fedex_response')
+
 
 class FedexApiCstm():
 
@@ -64,7 +67,7 @@ class FedexApiCstm():
                     formatted_response['data'] = '<dl class="dl-horizontal"> <dt>Tracking Number</dt><dd>' + \
                                                  trackDetails.TrackingNumber + "</dd>" \
                                                                                "<dt>Status</dt> <dd>" + event.EventDescription + "</dd>" \
-                                                                                                                                 "<dt>Date</dt> <dd>" + event.Timestamp.strftime(
+                                                                                                                                 "<dt>Event Date</dt> <dd>" + event.Timestamp.strftime(
                         "%m/%d/%Y %I:%M:%S %p") + "</dd>"
 
                     isMaster = False
@@ -76,7 +79,7 @@ class FedexApiCstm():
                             if otherIdentifier.PackageIdentifier.Type == 'STANDARD_MPS':
                                 isMasterFound = True
                                 if otherIdentifier.PackageIdentifier.Value == str(
-                                    self.selectionDetails.PackageIdentifier.Value):
+                                        self.selectionDetails.PackageIdentifier.Value):
                                     isMaster = True
                                     break
 
@@ -86,11 +89,13 @@ class FedexApiCstm():
                         isMaster = True
 
                     datesOrTimes = trackDetails.DatesOrTimes
+                    isExpectedDate = False
                     if isMaster:
                         for track in datesOrTimes:
                             if track.Type == 'ESTIMATED_DELIVERY':
-                                formatted_response['expected_date'] = track.DateOrTimestamp[
-                                                                      0:track.DateOrTimestamp.find('T')]
+                                formatted_response['expected_date'] = isExpectedDate = track.DateOrTimestamp[
+                                                                                       0:track.DateOrTimestamp.find(
+                                                                                           'T')]
 
                             if track.Type == 'ACTUAL_DELIVERY':
                                 formatted_response['delivered_date'] = track.DateOrTimestamp[
@@ -106,9 +111,17 @@ class FedexApiCstm():
                         address += event.Address.StateOrProvinceCode + "<br/>" if 'StateOrProvinceCode' in event.Address and event.Address.StateOrProvinceCode else ""
                         address += event.Address.CountryName + "<br/>" if 'CountryName' in event.Address and event.Address.CountryName else ""
                         address += event.Address.PostalCode + "<br/>" if 'PostalCode' in event.Address and event.Address.PostalCode else ""
-                    formatted_response['data'] += "<dt>Address</dt><dd>" + address + "</dd> </dl>"
+                    else:
+                        address = "N/A"
+                    formatted_response['data'] += "<dt>Current Location</dt><dd>" + address + "</dd>"
+
+                    if isExpectedDate:
+                        formatted_response['data'] += "<dt> Estimated Delivery </dt><dd>" + str(isExpectedDate) + "</dd>"
+
+                    formatted_response['data'] += "</dl>"
+
                 else:
-                    formatted_response['data'] = self.selectionDetails.PackageIdentifier.Value + ":" + " No Data"
+                    formatted_response['data'] = "Tracking data not available"
 
 
             else:
@@ -148,7 +161,7 @@ class FedexApiCstm():
 class FedexDelivery(models.Model):
     _inherit = 'delivery.carrier'
 
-    def get_tracking(self, order,tracking_numbers):
+    def get_tracking(self, order, tracking_numbers):
         view = self.env.ref('fedex_api_cstm.tracing_number_popup')
         context = dict(self._context or {})
         context['carrier'] = order.carrier_id.id
@@ -170,7 +183,6 @@ class FedexDelivery(models.Model):
             # [787779905397, 787779905765, 787779906750]
             return self.fedex_track_request(order, tracking_numbers)
 
-
     def fedex_track_request(self, order, tracking_numbers):
         # self.prod_environment
         message = ""
@@ -191,6 +203,7 @@ class FedexDelivery(models.Model):
             # str(tracking_number) + ": " +
             if 'data' in logmessage:
                 message += logmessage['data']
+                message += '<div class="well well-sm">Note: This status will be saved under "Deliveries & Invoices" section of this PO#</div>'
             else:
                 message += logmessage['errors_message'] + "<br/>"
 
@@ -244,7 +257,7 @@ class tracking_popup(models.TransientModel):
             return self.env.context.get("carrier")
         return False
 
-    tracking_number = fields.Selection(get_default, string="Tracking Number",required=True)
+    tracking_number = fields.Selection(get_default, string="Tracking Number", required=True)
     carrier_id = fields.Many2one('delivery.carrier', 'Carrier', readonly=True, default=get_default_carrier)
 
     def open_table(self):
@@ -267,5 +280,3 @@ class sale_order_track(models.Model):
     def action_fedex_track_request(self):
         if self.carrier_id:
             return self.carrier_id.get_tracking(self, [self.carrier_track_ref])
-
-
