@@ -37,6 +37,9 @@
                 <xpath expr="//form/sheet/group/group/field[@name='partner_invoice_id']" position="replace">
                     <field name="partner_invoice_id"  groups="sale.group_delivery_invoice_address" domain="[('customer','=',True)]"  context="{'default_type':'invoice','sale_order_invice_name_display_name': True}"  options='{"always_reload": True}'/>
                 </xpath>
+                <xpath expr="//form/sheet/group/group/field[@name='partner_shipping_id']" position="replace">
+                    <field name="partner_shipping_id"  groups="sale.group_delivery_invoice_address" domain="[('customer','=',True)]"  context="{'default_type':'delivery','sale_order_delivery_name_display_name': True}"  options='{"always_reload": True}'/>
+                </xpath>
             </field>
         </record>
 

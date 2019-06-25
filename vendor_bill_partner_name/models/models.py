@@ -22,7 +22,10 @@ class VendorBillPartnerName(models.Model):
         res = []
         for partner in self:
             name = partner.name or ''
-            if (self.env.context.get('vendor_bill_partner_name_display_name') and True != ('show_address' in self._context)) or (self.env.context.get('vendor_payment_partner_name_display_name') and True != ('show_address' in self._context)) or (self.env.context.get('sale_order_invice_name_display_name') and True != ('show_address' in self._context)):
+            if (self.env.context.get('vendor_bill_partner_name_display_name') and True != ('show_address' in self._context)) or\
+                    (self.env.context.get('vendor_payment_partner_name_display_name') and True != ('show_address' in self._context)) or\
+                    (self.env.context.get('sale_order_invice_name_display_name') and True != ('show_address' in self._context)) or\
+                    (self.env.context.get('sale_order_delivery_name_display_name') and True != ('show_address' in self._context))  :
                 if partner.company_name or partner.parent_id:
                     if not name and partner.type in ['invoice', 'delivery', 'other','ap']:
                         name = dict(self.fields_get(['type'])['type']['selection'])[partner.type]
@@ -34,7 +37,7 @@ class VendorBillPartnerName(models.Model):
                                           partner.commercial_company_name or partner.name)
             else:
                 if partner.company_name or partner.parent_id:
-                    if not name and partner.type in ['invoice', 'delivery', 'other']:
+                    if not name and partner.type in ['invoice', 'delivery', 'other','ap']:
                         name = dict(self.fields_get(['type'])['type']['selection'])[partner.type]
                     if not partner.is_company:
                         name = "%s ,%s" % (partner.commercial_company_name or partner.parent_id.name,name)
