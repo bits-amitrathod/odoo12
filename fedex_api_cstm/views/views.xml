@@ -23,6 +23,9 @@
                         <group>
                             <field name="tracking_number"/>
                         </group>
+                        <group>
+                            <button name="track_fedex" string="Track on Fedex" type="object" class="btn-default" invisible="not context.get('isFedEx', True)" attrs="{'invisible': [('tracking_number', '==', False)]}"/>
+                        </group>
                     </group>
                     <footer>
                         <button name="open_table" string="Track" type="object" class="btn-primary"/>
