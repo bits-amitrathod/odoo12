@@ -1113,7 +1113,7 @@ class FedexDelivery(models.Model):
                         carrier_tracking_ref = carrier_tracking_ref + "," + request['tracking_number']
                         order.update({
                             'carrier_id': self,
-                            'shipping_number': carrier_tracking_ref
+                            'shipping_number': carrier_tracking_ref.replace(request['master_tracking_id'], request['master_tracking_id']+'*')
                         })
 
                         logmessage = _("Shipment created into Fedex<br/>"

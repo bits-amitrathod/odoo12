@@ -116,7 +116,8 @@ class FedexApiCstm():
                     formatted_response['data'] += "<dt>Current Location</dt><dd>" + address + "</dd>"
 
                     if isExpectedDate:
-                        formatted_response['data'] += "<dt> Estimated Delivery </dt><dd>" + str(isExpectedDate) + "</dd>"
+                        formatted_response['data'] += "<dt> Estimated Delivery </dt><dd>" + str(
+                            isExpectedDate) + "</dd>"
 
                     formatted_response['data'] += "</dl>"
 
@@ -165,10 +166,11 @@ class FedexDelivery(models.Model):
         view = self.env.ref('fedex_api_cstm.tracing_number_popup')
         context = dict(self._context or {})
         context['carrier'] = order.carrier_id.id
+        context['isFedEx'] = order.carrier_id.delivery_type == 'fedex'
         if len(tracking_numbers) > 1:
             context['tracking_numbers'] = []
             for tracking_number in tracking_numbers:
-                context['tracking_numbers'].append((str(tracking_number), tracking_number))
+                context['tracking_numbers'].append((str(tracking_number).replace('*', ''), tracking_number))
             return {
                 "type": "ir.actions.act_window",
                 "view_mode": "form",
@@ -262,6 +264,16 @@ class tracking_popup(models.TransientModel):
 
     def open_table(self):
         return self.carrier_id.fedex_track_request(self, [int(self.tracking_number)])
+
+    @api.multi
+    def track_fedex(self):
+        client_action = {
+            'type': 'ir.actions.act_url',
+            'name': "act_url",
+            'target': 'new',
+            'url': "https://fedex.com/apps/fedextrack/?action=track&trackingnumber=%s" % str(self.tracking_number),
+        }
+        return client_action
 
 
 class VendorOfferTrack(models.Model):
