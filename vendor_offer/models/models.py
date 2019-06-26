@@ -1121,10 +1121,10 @@ class FedexDelivery(models.Model):
                                        "<b>Packages:</b> %s") % (
                                          carrier_tracking_ref, ','.join([str(pl[0]) for pl in package_labels]))
                         if self.fedex_label_file_type != 'PDF':
-                            attachments = [('Label_Fedex-%s-%s.%s' % (self.fedex_service_type,order.name, self.fedex_label_file_type), pl[1]) for pl in
+                            attachments = [('FedEx_Label-%s-%s.%s' % (self.fedex_service_type,order.name, self.fedex_label_file_type), pl[1]) for pl in
                                            package_labels]
                         if self.fedex_label_file_type == 'PDF':
-                            attachments = [('Label_Fedex-%s-%s.%s' % (self.fedex_service_type,order.name, self.fedex_label_file_type), pdf.merge_pdf([pl[1] for pl in package_labels]))]
+                            attachments = [('FedEx_Label-%s-%s.%s' % (self.fedex_service_type,order.name, self.fedex_label_file_type), pdf.merge_pdf([pl[1] for pl in package_labels]))]
                         order.message_post(body=logmessage, attachments=attachments)
                         shipping_data = {'exact_price': carrier_price,
                                          'tracking_number': carrier_tracking_ref}
@@ -1174,7 +1174,7 @@ class FedexDelivery(models.Model):
                         _("Shipment created into Fedex <br/> <b>Tracking Number : </b>%s") % (carrier_tracking_ref))
 
                 fedex_labels = [
-                    ('Label_Fedex-%s-%s-%s.%s' % (self.fedex_service_type,order.name, index, self.fedex_label_file_type), label)
+                    ('FedEx_Label-%s-%s-%s.%s' % (self.fedex_service_type,order.name, index, self.fedex_label_file_type), label)
                     for index, label in enumerate(srm._get_labels(self.fedex_label_file_type))]
                 order.message_post(body=logmessage, attachments=fedex_labels)
 
