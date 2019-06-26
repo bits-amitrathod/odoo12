@@ -16,17 +16,32 @@
             </field>
         </record>
 
-<!--        <record id="invoice_payment_form_partner_name" model="ir.ui.view">-->
-<!--            <field name="name">account.payment.form</field>-->
-<!--            <field name="model">account.payment</field>-->
-<!--            <field name="inherit_id" ref="account.view_account_payment_form"></field>-->
-<!--            <field name="arch" type="xml">-->
-<!--                <xpath expr="//group/group/field[@name='partner_id']" position="replace">-->
-<!--                    <field name="partner_id" attrs="{'required': [('state', '=', 'draft'), ('payment_type', 'in', ('inbound', 'outbound'))], 'invisible': [('payment_type', 'not in', ('inbound', 'outbound'))], 'readonly': [('state', '!=', 'draft')]}"-->
-<!--                           context="{'default_is_company': True, 'default_supplier': payment_type == 'outbound', 'default_customer': payment_type == 'inbound','vendor_payment_partner_name_display_name': True}"/>-->
-<!--                </xpath>-->
-<!--            </field>-->
-<!--        </record>-->
+        <record id="invoice_payment_form_partner_name" model="ir.ui.view">
+            <field name="name">account.payment.form</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_form"></field>
+            <field name="arch" type="xml">
+                <xpath expr="//group/group/field[@name='partner_id']" position="replace">
+                    <field name="partner_id" attrs="{'required': [('state', '=', 'draft'), ('payment_type', 'in', ('inbound', 'outbound'))], 'invisible': [('payment_type', 'not in', ('inbound', 'outbound'))], 'readonly': [('state', '!=', 'draft')]}"
+                           context="{'default_is_company': True, 'default_supplier': payment_type == 'outbound', 'default_customer': payment_type == 'inbound','vendor_payment_partner_name_display_name': True}"/>
+                </xpath>
+            </field>
+        </record>
+
+
+        <record id="sale_order_form_partner_name" model="ir.ui.view">
+            <field name="name">sale.order.form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"></field>
+            <field name="arch" type="xml">
+                <xpath expr="//form/sheet/group/group/field[@name='partner_invoice_id']" position="replace">
+                    <field name="partner_invoice_id"  groups="sale.group_delivery_invoice_address" domain="[('customer','=',True)]"  context="{'default_type':'invoice','sale_order_invice_name_display_name': True}"  options='{"always_reload": True}'/>
+                </xpath>
+                <xpath expr="//form/sheet/group/group/field[@name='partner_shipping_id']" position="replace">
+                    <field name="partner_shipping_id"  groups="sale.group_delivery_invoice_address" domain="[('customer','=',True)]"  context="{'default_type':'delivery','sale_order_delivery_name_display_name': True}"  options='{"always_reload": True}'/>
+                </xpath>
+            </field>
+        </record>
 
     </data>
 </odoo>
