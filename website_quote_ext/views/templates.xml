@@ -803,7 +803,8 @@
                                                            t-att-data-quote-id="ol.order_id.id"
                                                            t-att-data-line-id="ol.id"
                                                            t-att-data-product-id="ol.product_id.id"
-                                                           t-att-value="ol.product_uom_qty"/>
+                                                           t-att-value="ol.product_uom_qty" readonly="True" style="
+                                                             background-color: white;"/>
                                                     <lable style="cursor: not-allowed;"
                                                        class="mb8 input-group-addon float_left js_add_cart_json hidden-xs">
                                                         <i class="fa fa-plus" style="readonly:true;color: #cacaca;"></i>
