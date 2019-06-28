@@ -46,7 +46,7 @@
                               Accept
                           </a>
                           <a class="text-right btn btn-info" t-att-href="'/my/orders/edit/%s' % (quotation.id)" data-toggle="modal">
-                                Update Quantity
+                                   <b><u>Update Quantity</u></b>
                           </a>
                  </div>
             </xpath>
@@ -284,8 +284,8 @@
                     <div>
                     <h1 class="page-header" style="padding-top: 0px">Pricing</h1>
                     <!--<div style="position: absolute;top: 0;right: 0;">  -->
-                        <h5 class="update-qty"><b class="click-here">click here to update quality </b><a t-if="quotation.state in ['sent']" class="btn btn-info btn-update" t-att-href="'/my/orders/edit/%s' % (quotation.id)" data-toggle="modal">
-                            Update Quantity
+                        <h5 class="update-qty"><b class="click-here">Click here to update quality </b><a t-if="quotation.state in ['sent']" class="btn btn-info btn-update" t-att-href="'/my/orders/edit/%s' % (quotation.id)" data-toggle="modal">
+                            <b><u>Update Quantity</u></b>
                     </a></h5>
                     </div>
 
@@ -656,8 +656,8 @@
                                  <div class="action-btn">
                                   <t t-if="order.amount_total != 0">
                                     <a target="_blank" t-att-href="'/my/orders/pdf/%s?%s' % (order.id, keep_query())"
-                                       class="ml8  mt4 mr8" title="Download">
-                                        <i class="fa fa-download fa-2x" aria-hidden="true"/> Download
+                                       class="ml8  mt4 mr8 text-primary" title="Download">
+                                        <i class="fa fa-download text-primary fa-2x" aria-hidden="true"/> Download
                                     </a>
                                      </t>
 
