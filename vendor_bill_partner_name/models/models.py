@@ -9,9 +9,9 @@ class VendorBillPartnerName(models.Model):
         [('contact', 'Contact'),
          ('invoice', 'Invoice address'),
          ('delivery', 'Shipping address'),
-         ('other', 'Other address'),
-         ("private", "Private Address"),
-         ('bill', 'Bill Address'),
+         # ('other', 'Other address'),
+         # ('private', 'Private Address'),
+         ('ap', 'AP Address'),
          ], string='Address Type',
         default='contact',
         help="Used to select automatically the right address according to the context in sales and purchases documents.")
@@ -22,19 +22,27 @@ class VendorBillPartnerName(models.Model):
         res = []
         for partner in self:
             name = partner.name or ''
-            if (self.env.context.get('vendor_bill_partner_name_display_name') and True != ('show_address' in self._context)) or (self.env.context.get('vendor_payment_partner_name_display_name') and True != ('show_address' in self._context)):
+            if (self.env.context.get('vendor_bill_partner_name_display_name') and True != ('show_address' in self._context)) or\
+                    (self.env.context.get('vendor_payment_partner_name_display_name') and True != ('show_address' in self._context)) :
+
+            # or\
+            #     (self.env.context.get('sale_invoice_sipping_partner_name_display_name') and True != ('show_address_only' in self._context ))   or\
+            #         (self.env.context.get('sale_invoice_partner_name_display_name') and True != ('show_address_only' in self._context ) ) \
+
                 if partner.company_name or partner.parent_id:
-                    if not name and partner.type in ['invoice', 'delivery', 'other','bill']:
+                    if not name and partner.type in ['invoice', 'delivery', 'other','ap']:
                         name = dict(self.fields_get(['type'])['type']['selection'])[partner.type]
                     if not partner.is_company:
-                        name = "%s :- %s ,%s" % ((partner.type).upper(),
-                                                partner.commercial_company_name or partner.parent_id.name,name)
+                        if partner.type :
+                            name = "%s :- %s ,%s" % ((partner.type).upper(),
+                                                    partner.commercial_company_name or partner.parent_id.name,name)
                 else:
-                    name = "%s :- %s" % ((partner.type).upper(),
-                                          partner.commercial_company_name or partner.name)
+                    if partner.type:
+                        name = "%s :- %s" % (('main').upper(),
+                                              partner.commercial_company_name or partner.name)
             else:
                 if partner.company_name or partner.parent_id:
-                    if not name and partner.type in ['invoice', 'delivery', 'other']:
+                    if not name and partner.type in ['invoice', 'delivery', 'other','ap']:
                         name = dict(self.fields_get(['type'])['type']['selection'])[partner.type]
                     if not partner.is_company:
                         name = "%s ,%s" % (partner.commercial_company_name or partner.parent_id.name,name)
@@ -52,3 +60,16 @@ class VendorBillPartnerName(models.Model):
             res.append((partner.id, name))
         return res
 
+
+class account_invoice(models.Model):
+    _inherit = "account.invoice"
+
+    @api.model
+    def create(self, values):
+        # Override the original create function for the res.partner model
+        record = super(account_invoice, self).create(values)
+
+        # Change the values of a variable in this super function
+        # record['passed_override_write_function'] = True
+
+        return record
