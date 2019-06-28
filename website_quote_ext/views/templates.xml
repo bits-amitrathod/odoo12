@@ -46,7 +46,7 @@
                               Accept
                           </a>
                           <a class="text-right btn btn-info" t-att-href="'/my/orders/edit/%s' % (quotation.id)" data-toggle="modal">
-                                Update Quantity
+                                   <b><u>Update Quantity</u></b>
                           </a>
                  </div>
             </xpath>
@@ -256,10 +256,11 @@
 
                         @media(max-width: 767px) {
                         .click-here {
-                        position: relative;
+                        position: absolute;
                         top: 0px;
+                        right: 140px;
                         }
-                       .action-btn{margin: 10px 50px auto;}
+                        .action-btn{margin: 10px 50px auto;}
                         .txt-cen{text-align:center;}
                         h1
                         {
@@ -283,8 +284,8 @@
                     <div>
                     <h1 class="page-header" style="padding-top: 0px">Pricing</h1>
                     <!--<div style="position: absolute;top: 0;right: 0;">  -->
-                        <h5 class="update-qty"><b class="click-here">click here to update quality </b><a t-if="quotation.state in ['sent']" class="btn btn-info btn-update" t-att-href="'/my/orders/edit/%s' % (quotation.id)" data-toggle="modal">
-                            Update Quantity
+                        <h5 class="update-qty"><b class="click-here">Click here to update quality </b><a t-if="quotation.state in ['sent']" class="btn btn-info btn-update" t-att-href="'/my/orders/edit/%s' % (quotation.id)" data-toggle="modal">
+                            <b><u>Update Quantity</u></b>
                     </a></h5>
                     </div>
 
@@ -605,11 +606,16 @@
                 <div id="optional_placeholder"></div>
                 <div class="container">
                     <style type="text/css">
-
+                        input.quantity {
+                        padding: 14px 8px;
+                        width: 53px !important;
+                        display: inline;
+                        margin-bottom: 1em;
+                        }
                         @media (min-width: 768px) and (max-width: 1024px) {}
                         @media(max-width: 767px){.action-btn{    margin: 10px auto;
                         display: block;
-                        text-align: center;} .txt-cen{text-align:center;}input.quantity {
+                       }input.quantity {
                         width: 50px !important;}
                         @media(max-width: 375px){.action-btn {    margin: 10px auto;
                         display: block;
@@ -650,19 +656,20 @@
                                  <div class="action-btn">
                                   <t t-if="order.amount_total != 0">
                                     <a target="_blank" t-att-href="'/my/orders/pdf/%s?%s' % (order.id, keep_query())"
-                                       class="ml8  mt4 mr8" title="Download">
-                                        <i class="fa fa-download fa-2x" aria-hidden="true"/> Download
+                                       class="ml8  mt4 mr8 text-primary" title="Download">
+                                        <i class="fa fa-download text-primary fa-2x" aria-hidden="true"/> Download
                                     </a>
                                      </t>
 
-                                    <t t-if="order.amount_total != 0">
+
+                                    <a class="btn btn-danger ml8 " data-toggle="modal" data-target="#decline">
+                                            Reject
+                                        </a>
+                                      <t t-if="order.amount_total != 0">
                                         <a class="btn btn-success ml8 " data-toggle="modal" data-target="#accept">
                                             Accept
                                         </a>
                                     </t>
-                                    <a class="btn btn-danger ml8 " data-toggle="modal" data-target="#decline">
-                                            Reject
-                                        </a>
                                    <!-- <t t-if="order.state == 'sale' and portal_confirmation == 'sign'">
                                         <a class="btn btn-success ml8 pull-right" disabled="disabled"
                                            t-attf-title="Order signed on #{order.confirmation_date} by #{order.partner_id.name}">
@@ -740,26 +747,78 @@
                                     </div>
                                 </div>
                             </div>
-                            <hr/>
-                         <!--   <div class="row">
-                                <div class="col-md-12">
-                                    <table class="table">
-                                        <tr>
-                                            <td><strong>Product</strong> </td>
-                                             <td><strong>Unit Price</strong> </td>
-                                             <td><strong>Quantity</strong></td>
-                                             <td><strong>Subtotal</strong></td>
-                                        </tr>
-                                        <tr>
-                                            <td> </td>
-                                             <td> </td>
-                                             <td> </td>
-                                             <td> </td>
-                                        </tr>
-                                    </table>>
-                                </div>
-                            </div>>-->
-                            <div class="row">
+
+                          <div class="row">
+                                <div class="col-md-12 table-responsive">
+                                <table class="table">
+                                    <tr>
+                                                <td style="width:10%"></td>
+                                                <td style="width:50%"><strong>Product</strong> </td>
+                                                 <td style="width:15%"><strong>Unit Price</strong> </td>
+                                                 <td style="width:10%"><strong>Quantity</strong></td>
+                                                 <td style="width:15%"><strong>Subtotal</strong></td>
+
+
+                                    </tr>
+                                 <t t-foreach="order.order_line" t-as="ol">
+                                 <tr>
+
+                                        <t t-if="ol.product_uom_qty != 0">
+                                        <td>
+                                        <span t-field="ol.product_image"
+                                              t-options="{'widget': 'image', 'class': 'img-rounded', 'style':'width: 48px;height:48px'}"/>
+                                              </td><td>
+                                        <span t-esc="ol.product_id.name"/>
+                                        </td><td>
+                                        <span t-field="ol.price_unit"
+                                              t-options='{"widget": "monetary", "display_currency": order.pricelist_id.currency_id}'/>
+                                              </td>
+                                    <t t-if="ol._name == 'sale.order.line'">
+                                            <t t-if="order.state == 'sent'">
+                                            <td>
+                                                    <div class="css_quantity input-group oe_website_spinner">
+                                                    <a title="Decrease Quality" t-attf-href="#"
+                                                       class="mb8 input-group-addon js_add_cart_json ">
+                                                        <i class="fa fa-minus"></i>
+                                                    </a>
+                                                    <input type="text" class="js_quantity form-control quantity"
+                                                           t-att-data-quote-id="ol.order_id.id"
+                                                           t-att-data-line-id="ol.id"
+                                                           t-att-data-product-id="ol.product_id.id"
+                                                           t-att-value="ol.product_uom_qty" readonly="True" style="
+                                                             background-color: white;"/>
+                                                    <lable style="cursor: not-allowed;"
+                                                       class="mb8 input-group-addon float_left js_add_cart_json">
+                                                        <i class="fa fa-plus" style="readonly:true;color: #cacaca;"></i>
+                                                    </lable>
+                                                </div>
+                                                    </td>
+                                            </t>
+                                            <t t-if="order.state != 'sent'">
+                                            <td>
+                                                <span t-esc="ol.product_uom_qty"/>
+                                                </td>
+                                            </t>
+                                    </t>
+                                    <td>
+                                        <span t-field="ol.price_subtotal"
+                                              t-options='{"widget": "monetary", "display_currency": order.pricelist_id.currency_id}'/>
+                                        <input type="hidden" class="change js_quantity form-control quantity"
+                                                           t-att-data-quote-id="ol.order_id.id"
+                                                           t-att-data-line-id="ol.id"
+                                                           t-att-data-product-id="ol.product_id.id"
+                                                           t-att-value="ol.product_uom_qty"/>
+                                        <span>  </span>
+                                        <a href='#' title="Remove" class='js_delete_product no-decoration'> <large>  <i class='fa fa-trash-o' style="margin-left: 5px;font-size: 16px;"></i></large></a>
+                                    </td>
+                                </t>
+                                 </tr>
+                            </t>
+
+                      </table>
+                          </div>
+                        </div>
+                            <!--<div class="row">
                                 <div class="col-md-6">
                                     <strong>Product</strong>
                                 </div>
@@ -769,9 +828,6 @@
                                 <div class="hidden-sm hidden-xs col-md-2 text-center">
                                     <strong>Quantity</strong>
                                 </div>
-                                <!--  <div class="hidden-sm hidden-xs col-md-2 text-center">
-                                    <strong>Available Quantity</strong>
-                                  </div>-->
                                 <div class="hidden-sm hidden-xs col-md-2 text-right">
                                     <strong>Subtotal</strong>
                                 </div>
@@ -803,7 +859,8 @@
                                                            t-att-data-quote-id="ol.order_id.id"
                                                            t-att-data-line-id="ol.id"
                                                            t-att-data-product-id="ol.product_id.id"
-                                                           t-att-value="ol.product_uom_qty"/>
+                                                           t-att-value="ol.product_uom_qty" readonly="True" style="
+                                                             background-color: white;"/>
                                                     <lable style="cursor: not-allowed;"
                                                        class="mb8 input-group-addon float_left js_add_cart_json hidden-xs">
                                                         <i class="fa fa-plus" style="readonly:true;color: #cacaca;"></i>
@@ -828,7 +885,7 @@
                                     </div>
                                 </div>
                                 </t>
-                            </t>
+                            </t>-->
 
                             <hr/>
 
