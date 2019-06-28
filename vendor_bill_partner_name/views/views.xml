@@ -27,21 +27,25 @@
                 </xpath>
             </field>
         </record>
-
-
-        <record id="sale_order_form_partner_name" model="ir.ui.view">
-            <field name="name">sale.order.form</field>
-            <field name="model">sale.order</field>
-            <field name="inherit_id" ref="sale.view_order_form"></field>
+        <!--<record id="sale_invoice_payment_form_partner_name" model="ir.ui.view">
+            <field name="name">account.invoice.form_exx</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="sale.account_invoice_form"></field>
             <field name="arch" type="xml">
-                <xpath expr="//form/sheet/group/group/field[@name='partner_invoice_id']" position="replace">
-                    <field name="partner_invoice_id"  groups="sale.group_delivery_invoice_address" domain="[('customer','=',True)]"  context="{'default_type':'invoice','sale_order_invice_name_display_name': True}"  options='{"always_reload": True}'/>
-                </xpath>
-                <xpath expr="//form/sheet/group/group/field[@name='partner_shipping_id']" position="replace">
-                    <field name="partner_shipping_id"  groups="sale.group_delivery_invoice_address" domain="[('customer','=',True)]"  context="{'default_type':'delivery','sale_order_delivery_name_display_name': True}"  options='{"always_reload": True}'/>
-                </xpath>
+                <xpath expr="//field[@name='partner_id']" position="replace">
+                       <field string="Customer" name="partner_id"
+                                context="{'search_default_customer':1, 'show_address': 1, 'default_company_type': 'company','sale_invoice_partner_name_display_name': True}"
+                                options='{"always_reload": True, "no_quick_create": True}'
+                                domain="[('customer', '=', True)]"/>
+                   </xpath>
+
+                <xpath expr="//field[@name='partner_shipping_id']" position="replace">
+                       <field name="partner_shipping_id" groups="sale.group_delivery_invoice_address"
+                       context="{'sale_invoice_sipping_partner_name_display_name': True}"
+                       />
+                   </xpath>
             </field>
-        </record>
+        </record>-->
 
     </data>
 </odoo>
