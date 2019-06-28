@@ -5,6 +5,7 @@ import suds
 from odoo import models, api, fields
 from suds.client import Client
 from suds.plugin import MessagePlugin
+from datetime import datetime
 
 
 class LogPlugin(MessagePlugin):
@@ -93,9 +94,9 @@ class FedexApiCstm():
                     if isMaster:
                         for track in datesOrTimes:
                             if track.Type == 'ESTIMATED_DELIVERY':
-                                formatted_response['expected_date'] = isExpectedDate = track.DateOrTimestamp[
-                                                                                       0:track.DateOrTimestamp.find(
-                                                                                           'T')]
+                                formatted_response['expected_date'] = track.DateOrTimestamp[
+                                                                       0:track.DateOrTimestamp.find('T')]
+                                isExpectedDate = datetime.strptime(formatted_response['expected_date'],"%Y-%m-%d").strftime("%m/%d/%Y")
 
                             if track.Type == 'ACTUAL_DELIVERY':
                                 formatted_response['delivered_date'] = track.DateOrTimestamp[
@@ -103,7 +104,7 @@ class FedexApiCstm():
 
                             if track.Type == 'SHIP':
                                 formatted_response['shipping_date'] = track.DateOrTimestamp[
-                                                                      0:track.DateOrTimestamp.find('T')]
+                                                                       0:track.DateOrTimestamp.find('T')]
                     address = ""
                     if event.Address:
                         address += event.Address.Residential + "<br/>" if 'Residential' in event.Address and event.Address.Residential else ""
@@ -116,7 +117,7 @@ class FedexApiCstm():
                     formatted_response['data'] += "<dt>Current Location</dt><dd>" + address + "</dd>"
 
                     if isExpectedDate:
-                        formatted_response['data'] += "<dt> Estimated Delivery </dt><dd>" + str(
+                        formatted_response['data'] += "<dt> Expected / Estimated Delivery </dt><dd>" + str(
                             isExpectedDate) + "</dd>"
 
                     formatted_response['data'] += "</dl>"
