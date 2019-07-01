@@ -52,8 +52,10 @@ class ReportInventoryProductValuationSummary(models.AbstractModel):
                             domain=type_rec['__domain'])
                     }
 
-                    if location['hasRecord'] == False and warehouse['hasRecord']== False and len(type['record']) > 0:
+                    if location['hasRecord'] == False and len(type['record']) > 0:
                         location['hasRecord'] = True
+
+                    if warehouse['hasRecord'] == False and len(type['record']) > 0:
                         warehouse['hasRecord'] = True
 
                     location['types'].append(type)
