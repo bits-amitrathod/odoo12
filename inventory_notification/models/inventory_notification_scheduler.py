@@ -18,9 +18,14 @@ class InventoryNotificationScheduler(models.TransientModel):
     #     # sales_email = "rohitkabadi@benchmarkit.solutions"
     #     # acquisitions_email = "ajinkyanimbalkar@benchmarkit.solutions"
 
+    # warehouse_email = "vasimkhan@benchmarkit.solutions"
+    # sales_email = "rohitkabadi@benchmarkit.solutions"
+    # acquisitions_email = "tushatgodase@benchmarkit.solutions"
+
     warehouse_email = "warehouse@surgicalproductsolutions.com"
     sales_email = "salesteam@surgicalproductsolutions.com"
     acquisitions_email = "acquisitions@surgicalproductsolutions.com"
+    all_email="sps@surgicalproductsolutions.com"
 
     def process_manual_notification_scheduler(self):
         _logger.info("process_manual_notification_scheduler called..")
@@ -158,6 +163,114 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                                 vals['columnProps'], vals['closing_content'],
                                                                 self.warehouse_email)'''
 
+    def po_receive_notification_for_acquisitions_manager(self, picking):
+        Stock_Moves_list = self.env['stock.move'].search([('picking_id', '=', picking.id)])
+        Stock_Moves_line = []
+        for stock_move in Stock_Moves_list:
+            temp = self.env['stock.move.line'].search([('move_id', '=', stock_move.id)])
+            Stock_Moves_line.append(temp)
+        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
+
+        sales_order = []
+        for stock_move_line_single in Stock_Moves_list:
+            lot_name_list = None
+            lot_expired_date = None
+            qty_done_in_lot = None
+            temp = self.env['stock.move.line'].search([('move_id', '=', stock_move.id)])
+            for s_move_line in temp :
+                if s_move_line.lot_id is not None and s_move_line.lot_id.name : lot_name_list = lot_name_list + '</li> <li style = "list-style-type: none;">' + s_move_line.lot_id.name if lot_name_list is not None else '<ul style="list-style-type: none; padding: 5px;"> <li style = " white-space: nowrap;list-style-type: none;">' + s_move_line.lot_id.name
+                if s_move_line.lot_id is not None and s_move_line.lot_id.use_date : lot_expired_date =  lot_expired_date + '</li> <li style = "white-space: nowrap; list-style-type: none;">' + s_move_line.lot_id.use_date  if lot_expired_date is not None else '<ul style="list-style-type: none; padding: 5px;"><li style = "white-space: nowrap; list-style-type: none;">' +s_move_line.lot_id.use_date
+                if s_move_line is not None and s_move_line.qty_done : qty_done_in_lot = qty_done_in_lot + '</li> <li style = "list-style-type: none;">' + str(int(s_move_line.qty_done))  if qty_done_in_lot is not None and s_move_line.qty_done  else '<ul style="list-style-type: none; padding: 5px;"><li style = "list-style-type: none;">' +str(int(s_move_line.qty_done))
+            lot_name_list = lot_name_list + '</li></ul>' if lot_name_list is not None else ''
+            lot_expired_date = lot_expired_date + '</li></ul>' if lot_expired_date is not None else ''
+            qty_done_in_lot = qty_done_in_lot + '</li></ul>' if qty_done_in_lot is not None else ''
+
+            sale_order = {
+                'sales_order': picking.purchase_id.name,
+                'sku': stock_move_line_single.product_id.product_tmpl_id.sku_code,
+                'Product': stock_move_line_single.product_id.name,
+                'qty': int(stock_move_line_single.ordered_qty),
+
+                'lot_name': lot_name_list,
+                'lot_expired_date': lot_expired_date,
+                'qty_done_in_lot' : qty_done_in_lot,
+                                    
+                'qty_done': int(stock_move_line_single.product_uom_qty),
+                'status' : "Complete" if int(stock_move_line_single.ordered_qty) == int(stock_move_line_single.product_uom_qty) else "Short" if int(stock_move_line_single.ordered_qty) > int(stock_move_line_single.product_uom_qty) else "Extra"
+                }
+            sales_order.append(sale_order)
+        sale_order_ref = picking.purchase_id
+        str_note = ""
+        # if sale_order_ref.notes_activity:
+        #     for note in sale_order_ref.notes_activity:
+        #         str_note = str_note + note.note + " " +  (str(datetime.strptime(note.note_date, "%Y-%m-%d %H:%M:%S").strftime( '%m/%d/%Y')) if note.note_date else "N/A")  + " <br/>    "
+        # else:
+        #     str_note = "N/A"
+        # table_data= " <table style = \"width:100%\">" \
+        #      "<tr><td style = \"width:30%\" ><strong>Please proceed Purchase Order</strong></td><td>"+sale_order_ref.name+"</td></tr>" \
+        #      "<tr><td><strong> Date </strong> </td><td>" + (str(datetime.strptime(picking.scheduled_date, "%Y-%m-%d %H:%M:%S").strftime( '%m/%d/%Y')) if picking.scheduled_date else "N/A") + "</td></tr>" \
+        #      "<tr><td> <strong> Vendor Name </strong></td> <td> "+ ( sale_order_ref.partner_id.name or "") + "</td></tr>"\
+        #      "<tr><td> <strong> Notes </strong></td><td>" + str_note + "</td></tr></table>"
+        flag = True
+        table_data = " <table style = \"width:100%\"> <tr> <td><strong> Notes :</strong></td>"
+        if sale_order_ref.notes_activity:
+            for note in sale_order_ref.notes_activity:
+                if flag == True :
+                    flag = False
+                    table_data = table_data + "<td style = \"width:30%\"> "+ note.note +" </td>" \
+                    " <td> "+ (str(datetime.strptime(note.note_date, "%Y-%m-%d %H:%M:%S").strftime( '%m/%d/%Y')) if note.note_date else "N/A")+ " </td> </tr> "
+                else:
+                    table_data = table_data + "<tr>" \
+                    "<td></td> " \
+                    "<td>"+ note.note +"</td> " \
+                    "<td> "+ (str(datetime.strptime(note.note_date, "%Y-%m-%d %H:%M:%S").strftime( '%m/%d/%Y')) if note.note_date else "N/A")+ "</td> " \
+                    "</tr> "
+        table_data = table_data + "</table>"
+        vals = {
+            'sale_order_lines': sales_order,
+            'subject': "Shipment Done For Purchase Order # " + picking.purchase_id.name,
+            # 'description': "Hi acquisitions Team, <br/><br/> ",
+            # 'description': "Hi Acquisitions Team, <br/><br/> " +
+            #                "<div style=\"text-align: center;width: 100%;\"><strong>The Shipment has been completed!</strong></div><br/>" + table_data,
+            'description': "Hi Acquisitions Team, <br/><br/> " +
+                           "<div style=\"text-align: center;width: 100%;\"><strong>The Shipment has been completed!</strong></div><br/>" +
+                           "<strong> Please proceed  Purchase Order : </strong>" + sale_order_ref.name + "<br/>" + \
+                           "<strong> Date : </strong>" + (str( datetime.strptime(picking.scheduled_date, "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')) if picking.scheduled_date else "N/A") + \
+                           "<br/><strong> Vendor Name :  </strong>" + (sale_order_ref.partner_id.name or "") + "<br/>" + table_data,
+
+            'header': ['Catalog number', 'Description', 'Initial Quantity', 'Lot', 'Expiration Date','Qty Put In Lot', 'Quantity Done','Status'],
+            'columnProps': ['sku', 'Product', 'qty', 'lot_name', 'lot_expired_date','qty_done_in_lot', 'qty_done','status'],
+            'closing_content': 'Thanks & Regards, <br/> Team'
+        }
+
+        # Email Attachment
+        # template_id = template = self.env.ref("inventory_notification.common_mail_template").with_context(local_context).sudo().send_mail(SUPERUSER_ID,
+        #                                                                             raise_exception=True)
+        # # File Attachment Code
+        # if not picking is None:
+        #     docids = self.env['sale.packing_list_popup'].get_packing_report(picking.purchase_id)
+        #     data = None
+        #     pdf = \
+        #     self.env.ref('packing_list.action_report_inventory_packing_list_pdf').render_qweb_pdf(docids, data=data)[0]
+        #     values1 = {}
+        #     values1['attachment_ids'] = [(0, 0, {'name': picking.origin,
+        #                                          'type': 'binary',
+        #                                          'mimetype': 'application/pdf',
+        #                                          'datas_fname': 'Packing_List_' + (picking.origin) + '.pdf',
+        #                                          'datas': base64.b64encode(pdf)})]
+        #
+        #     values1['model'] = None
+        #     values1['res_id'] = False
+        #
+        #     self.env['mail.mail'].sudo().browse(template_id).write(values1)
+
+        self.process_common_email_acquisitions_manager_notification_template1(super_user, None, vals['subject'], vals['description'],
+                                                        vals['sale_order_lines'], vals['header'],
+                                                        vals['columnProps'], vals['closing_content'],
+                                                        self.all_email, picking)
+
+
+
     def out_notification_for_sale(self, picking):
         Stock_Moves = self.env['stock.move'].search([('picking_id', '=', picking.id)])
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
@@ -195,7 +308,7 @@ class InventoryNotificationScheduler(models.TransientModel):
 
     def process_in_stock_scheduler(self):
         _logger.info("process_in_stock_scheduler called")
-        email_queue = []
+        #email_queue = []
         today_date = date.today()
         today_start = today_date
         days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
@@ -211,113 +324,119 @@ class InventoryNotificationScheduler(models.TransientModel):
             count=count+1
             print("@Processing Count Of Customer = >")
             print(str(count) +" / "+ str(len(customers)))
-            if (customr.email not in email_queue):
-                if (customr.start_date == False and customr.end_date == False) \
-                        or (customr.start_date == False and InventoryNotificationScheduler.string_to_date(
-                    customr.end_date) >= today_start) \
-                        or (customr.end_date == False and InventoryNotificationScheduler.string_to_date(
-                    customr.start_date) <= today_start) \
-                        or (InventoryNotificationScheduler.string_to_date(
-                    customr.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
-                    customr.end_date) >= today_start):
-                    #print("To Customer =")
-                    #print(customr.email)
-                    email_queue.append(customr.email)
-                    #_logger.info("customer :%r", customr)
-                    to_customer = customr
-                    contacts = self.env['res.partner'].search(
-                        [('parent_id', '=', customr.id), ('email', '!=', ''), ('active', '=', True)])
-                    print("contacts")
-                    print(contacts)
-                    product_list = []
-                    cust_ids = []
-                    cust_ids.append(customr.id)
-                    email_list_cc = []
-                    for contact in contacts:
-                        if (contact.email not in email_queue):
-                            if (contact.start_date == False and contact.end_date == False) \
-                                    or (contact.start_date == False and InventoryNotificationScheduler.string_to_date(
-                                contact.end_date) and InventoryNotificationScheduler.string_to_date(
-                                contact.end_date) >= today_start) \
-                                    or (contact.end_date == False and InventoryNotificationScheduler.string_to_date(
-                                contact.start_date) and InventoryNotificationScheduler.string_to_date(
-                                contact.start_date) <= today_start) \
-                                    or (InventoryNotificationScheduler.string_to_date(
-                                contact.start_date) and InventoryNotificationScheduler.string_to_date(
-                                contact.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
-                                contact.end_date) and InventoryNotificationScheduler.string_to_date(
-                                contact.end_date) >= today_start):
-                                cust_ids.extend(contact.ids)
-                                print("cc Customer =")
-                                print(contact.email)
-                                email_list_cc.append(contact.email)
-                                email_queue.append(contact.email)
-                    if (customr.historic_months > 0):
-                        historic_day = customr.historic_months * 30
-                        #_logger.info("historic_day :%r", historic_day)
-                        last_day = fields.Date.to_string(datetime.now() - timedelta(days=historic_day))
-                        #_logger.info("date order  :%r", last_day)
-                        sales = self.env['sale.order'].search(
-                            [('partner_id', 'in', cust_ids), ('date_order', '>', last_day)])
-                    else:
-                        #historic_day = 36 * 30
-                        #_logger.info("historic_day :%r", historic_day)
-                        #last_day = fields.Date.to_string(datetime.now() - timedelta(days=historic_day))
-                        sales = self.env['sale.order'].search([('partner_id', 'in', cust_ids)])
-                    #_logger.info("sales  :%r", sales)
-                    products = {}
-                    for sale in sales:
-                        sale_order_lines = self.env['sale.order.line'].search([('order_id.id', '=', sale.id)])
-                        for line in sale_order_lines:
-                            #_logger.info(" product_id qty_available %r", line.product_id.actual_quantity)
-                            if line.product_id.actual_quantity and line.product_id.actual_quantity is not None and line.product_id.actual_quantity > 0:
-                                products[line.product_id.id] = line.product_id
-                    subject = "SPS Updated In-Stock Product Report"
-                    descrption = "<strong>Good morning " + customr.name + "</strong>" \
-                                                                          "<br/> <br/> Below are items you have previously requested that are currently in stock. " \
-                                                                          "In addition, below is the link to download full product catalog. Please let us know what" \
-                                                                          " ordering needs we can help provide savings on this week! <br/> <a href='/downloadCatalog'>Click Here to Download SPS Product Catalog </a>"
-                    header = ['Manufacturer','Catalog number', 'Description', 'Sales Price', 'Quantity On Hand',
-                              'Min Exp. Date',
-                              'Max Exp. Date', 'Unit Of Measure']
-                    columnProps = ['product_brand_id.name','sku_code', 'name', 'customer_price_list', 'actual_quantity', 'minExDate',
-                                   'maxExDate', 'uom_id.name']
-                    closing_content = "Please reply to this email or contact your Account Manager to hold product or place an order. " \
-                                      "<br/>Many Thanks,		" \
-                                      "<br/>SPS Customer Care" \
-                                      "<br/>" \
-                                      "<br/><strong>Nick Zanetta</strong>" \
-                                      "<br/>412-745-0329	" \
-                                      "<br/>" \
-                                      "<br/><strong>Matt Cochran</strong>" \
-                                      "<br/>412-564-9011	" \
-                                      "<br/>" \
-                                      "<br/><strong>Joe Lamb</strong>	" \
-                                      "<br/>412-745-1327	" \
-                                      "<br/>" \
-                                      "<br/><strong>Brittany Edwards</strong>	" \
-                                      "<br/>412-434-0214	" \
-                                      "<br/>" \
-                                      "<br/><strong>Gabriella Thomas</strong>	" \
-                                      "<br/>412-745-0324" \
-                                      "<br/>" \
-                                      "<br/><strong>Kacie Colteryahn</strong>" \
-                                      "<br/>412-745-1325	" \
-                                      "<br/>" \
-                                      "<br/><strong>Summer Weinberg</strong>" \
-                                      "<br/>412-745-0328			"
-                    if products:
-                        product_list.extend(list(products.values()))
-                        if customr.user_id.email:
-                            email_list_cc.append(customr.user_id.email)
-                        sort_col=True
-                        self.process_email_in_stock_scheduler_template(super_user, customr, subject, descrption,
-                                                                       product_list,
-                                                                       header, columnProps, closing_content,
-                                                                       customr.email,
-                                                                       email_list_cc,sort_col,is_employee=False,partner_id=customr)
+            #if (customr.email not in email_queue):
+            print(customr.email)
+            print("customr.start_date")
+            print(customr.start_date)
+            print("customr.end_date")
+            print(customr.end_date)
+            if (customr.start_date == False and customr.end_date == False) \
+                    or (customr.end_date != False and InventoryNotificationScheduler.string_to_date(
+                customr.end_date) >= today_start) \
+                    or (customr.start_date != False and InventoryNotificationScheduler.string_to_date(
+                customr.start_date) <= today_start) \
+                    or (customr.start_date != False and customr.end_date != False and InventoryNotificationScheduler.string_to_date(
+                customr.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
+                customr.end_date) >= today_start):
+                #print("To Customer =")
+                #print(customr.email)
+                #email_queue.append(customr.email)
+                #_logger.info("customer :%r", customr)
+                to_customer = customr
+                contacts = self.env['res.partner'].search(
+                    [('parent_id', '=', customr.id), ('email', '!=', ''), ('active', '=', True)])
+                print("contacts")
+                print(contacts)
+                product_list = []
+                cust_ids = []
+                cust_ids.append(customr.id)
+                email_list_cc = []
+                for contact in contacts:
+                    #if (contact.email not in email_queue):
+                    if (contact.email!=customr.email and contact.email not in email_list_cc):
+                        if (contact.start_date == False and contact.end_date == False) \
+                                or (contact.start_date == False and InventoryNotificationScheduler.string_to_date(
+                            contact.end_date) and InventoryNotificationScheduler.string_to_date(
+                            contact.end_date) >= today_start) \
+                                or (contact.end_date == False and InventoryNotificationScheduler.string_to_date(
+                            contact.start_date) and InventoryNotificationScheduler.string_to_date(
+                            contact.start_date) <= today_start) \
+                                or (InventoryNotificationScheduler.string_to_date(
+                            contact.start_date) and InventoryNotificationScheduler.string_to_date(
+                            contact.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
+                            contact.end_date) and InventoryNotificationScheduler.string_to_date(
+                            contact.end_date) >= today_start):
+                            cust_ids.extend(contact.ids)
+                            print("cc Customer =")
+                            print(contact.email)
+                            email_list_cc.append(contact.email)
+                        #email_queue.append(contact.email)
+                if (customr.historic_months > 0):
+                    historic_day = customr.historic_months * 30
+                    #_logger.info("historic_day :%r", historic_day)
+                    last_day = fields.Date.to_string(datetime.now() - timedelta(days=historic_day))
+                    #_logger.info("date order  :%r", last_day)
+                    sales = self.env['sale.order'].search(
+                        [('partner_id', 'in', cust_ids), ('date_order', '>', last_day)])
                 else:
-                    pass
+                    #historic_day = 36 * 30
+                    #_logger.info("historic_day :%r", historic_day)
+                    #last_day = fields.Date.to_string(datetime.now() - timedelta(days=historic_day))
+                    sales = self.env['sale.order'].search([('partner_id', 'in', cust_ids)])
+                #_logger.info("sales  :%r", sales)
+                products = {}
+                for sale in sales:
+                    sale_order_lines = self.env['sale.order.line'].search([('order_id.id', '=', sale.id)])
+                    for line in sale_order_lines:
+                        #_logger.info(" product_id qty_available %r", line.product_id.actual_quantity)
+                        if line.product_id.actual_quantity and line.product_id.actual_quantity is not None and line.product_id.actual_quantity > 0:
+                            products[line.product_id.id] = line.product_id
+                subject = "SPS Updated In-Stock Product Report"
+                descrption = "<strong>Good morning " + customr.name + "</strong>" \
+                                                                      "<br/> <br/> Below are items you have previously requested that are currently in stock. " \
+                                                                      "In addition, below is the link to download full product catalog. Please let us know what" \
+                                                                      " ordering needs we can help provide savings on this week! <br/> <a href='/downloadCatalog'>Click Here to Download SPS Product Catalog </a>"
+                header = ['Manufacturer','Catalog number', 'Description', 'Sales Price', 'Quantity On Hand',
+                          'Min Exp. Date',
+                          'Max Exp. Date', 'Unit Of Measure']
+                columnProps = ['product_brand_id.name','sku_code', 'name', 'customer_price_list', 'actual_quantity', 'minExDate',
+                               'maxExDate', 'uom_id.name']
+                closing_content = "Please reply to this email or contact your Account Manager to hold product or place an order. " \
+                                  "<br/>Many Thanks,		" \
+                                  "<br/>SPS Customer Care" \
+                                  "<br/>" \
+                                  "<br/><strong>Nick Zanetta</strong>" \
+                                  "<br/>412-745-0329	" \
+                                  "<br/>" \
+                                  "<br/><strong>Matt Cochran</strong>" \
+                                  "<br/>412-564-9011	" \
+                                  "<br/>" \
+                                  "<br/><strong>Joe Lamb</strong>	" \
+                                  "<br/>412-745-1327	" \
+                                  "<br/>" \
+                                  "<br/><strong>Brittany Edwards</strong>	" \
+                                  "<br/>412-434-0214	" \
+                                  "<br/>" \
+                                  "<br/><strong>Gabriella Thomas</strong>	" \
+                                  "<br/>412-745-0324" \
+                                  "<br/>" \
+                                  "<br/><strong>Kacie Colteryahn</strong>" \
+                                  "<br/>412-745-1325	" \
+                                  "<br/>" \
+                                  "<br/><strong>Summer Weinberg</strong>" \
+                                  "<br/>412-745-0328			"
+                if products:
+                    product_list.extend(list(products.values()))
+                    if customr.user_id.email:
+                        email_list_cc.append(customr.user_id.email)
+                    sort_col=True
+                    self.process_email_in_stock_scheduler_template(super_user, customr, subject, descrption,
+                                                                   product_list,
+                                                                   header, columnProps, closing_content,
+                                                                   customr.email,
+                                                                   email_list_cc,sort_col,is_employee=False,partner_id=customr)
+            else:
+                pass
         end = time.time()
         print("Time for Execution")
         print(end - start)
@@ -974,6 +1093,146 @@ class InventoryNotificationScheduler(models.TransientModel):
         if value:
             return "[" + str(value) + "]"
         return ""
+
+    def process_common_email_acquisitions_manager_notification_template1(self, email_from_user, email_to_user, subject, descrption, products,
+                                                    header, columnProps, closing_content, email_to_team=None,
+                                                    picking=None,
+                                                    custom_template="inventory_notification.mail_template_acquisitions_manager",
+                                                    is_employee=True):
+        template = self.env.ref(custom_template)
+
+        product_dict = {}
+        product_list = []
+        coln_name = []
+        serial_number = 0
+        background_color = "#f0f8ff"
+        for product in products:
+            coln_name = []
+            query_result = False
+            if header[0] == 'Serial Number':
+                serial_number = serial_number + 1
+                product_dict['Serial Number'] = serial_number
+                coln_name.append('Serial Number')
+            if background_color == "#ffffff":
+                background_color = "#f0f8ff"
+            else:
+                background_color = "#ffffff"
+            if hasattr(product, 'id'):
+                stock_warehouse_id = self.env['stock.warehouse'].search([('id', '=', 1), ])
+                stock_location_id = self.env['stock.location'].search(
+                    [('id', '=', stock_warehouse_id.lot_stock_id.id), ])
+                if stock_location_id:
+                    self.env.cr.execute(
+                        "SELECT  min(use_date), max (use_date) FROM stock_production_lot spl LEFT JOIN   stock_quant sq ON sq.lot_id=spl.id LEFT JOIN  stock_location sl ON sl.id=sq.location_id   where sl.id = %s and  sq.product_id = %s",
+                        (stock_location_id.id, product['id'],))
+                    query_result = self.env.cr.dictfetchone()
+            for column_name in columnProps:
+                coln_name.append(column_name)
+                if column_name == 'empty':
+                    column = ""
+                elif column_name == 'minExDate':
+                    if query_result and query_result['min']:
+                        column = datetime.strptime(query_result['min'], "%Y-%m-%d %H:%M:%S")
+                    else:
+                        column = ""
+                elif column_name == 'maxExDate':
+                    if query_result and query_result['max']:
+                        column = datetime.strptime(query_result['max'], "%Y-%m-%d %H:%M:%S")
+                    else:
+                        column = ""
+                else:
+                    if isinstance(product, dict):
+                        column = str(product.get(column_name))
+                    else:
+                        if column_name.find(".") == -1:
+                            column = str(product[column_name])
+                        else:
+                            lst = column_name.split('.')
+                            column = product[lst[0]]
+                            if isinstance(lst, list):
+                                for col in range(1, len(lst)):
+                                    if column[lst[col]]:
+                                        column = column[lst[col]]
+                                    else:
+                                        column = ""
+                            else:
+                                column = column[lst]
+                if column:
+                    product_dict[column_name] = column
+                else:
+                    product_dict[column_name] = ""
+            product_dict['background_color'] = background_color
+            product_list.append(product_dict)
+            product_dict = {}
+
+        if products:
+            vals = {
+                'product_list': product_list,
+                'headers': header,
+                'coln_name': coln_name,
+                'email_from_user': email_from_user,
+                'email_to_user': email_to_user,
+                'email_to_team': email_to_team,
+                'subject': subject,
+                'description': descrption,
+                'template': template,
+                'is_employee': is_employee,
+                'closing_content': closing_content
+            }
+            self.send_email_acquisitions_manager_notification(vals, picking)
+
+    def send_email_acquisitions_manager_notification(self, vals, picking=None):
+        email = ""
+        if vals['email_to_team']:
+            email = vals['email_to_team']
+        if vals['email_to_user']:
+            email = vals['email_to_user'].sudo().email
+
+        local_context = {'products': vals['product_list'], 'headers': vals['headers'], 'columnProps': vals['coln_name'],
+                         'email_from': vals['email_from_user'].sudo().email,
+                         'email_to': email, 'subject': vals['subject'],
+                         'descrption': vals['description'], 'closing_content': vals['closing_content']}
+
+        html_file = self.env['inventory.notification.html'].search([])
+        finalHTML = html_file.process_common_html(vals['subject'], vals['description'], vals['product_list'],
+                                                  vals['headers'], vals['coln_name'])
+
+        '''if hasattr(vals['email_to_user'], 'partner_ids'):
+            partner_ids = [vals['email_to_user'].partner_ids.id]
+        else:
+            partner_ids = [vals['email_to_user'].id]'''
+        try:
+            if email:
+                msg = "\n Email sent --->  " + local_context['subject'] + "\n --From--" + local_context[
+                    'email_from'] + " \n --To-- " + local_context['email_to']
+                _logger.info(msg)
+
+                template_id = vals['template'].with_context(local_context).sudo().send_mail(SUPERUSER_ID,
+                                                                                            raise_exception=True)
+                # File Attachment Code
+                if not picking is None:
+                    docids = self.env['stock.move.line'].search([('picking_id', '=', picking.id), ]).ids
+                    data = None
+                    pdf = \
+                        self.env.ref('sps_receiving_list_report.action_sps_receiving_list_report').render_qweb_pdf(
+                            docids,
+                            data=data)[
+                            0]
+                    values1 = {}
+                    values1['attachment_ids'] = [(0, 0, {'name': picking.origin,
+                                                         'type': 'binary',
+                                                         'mimetype': 'application/pdf',
+                                                         'datas_fname': 'Receiving_List_' + (picking.origin) + '.pdf',
+                                                         'datas': base64.b64encode(pdf)})]
+
+                    values1['model'] = None
+                    values1['res_id'] = False
+
+                    self.env['mail.mail'].sudo().browse(template_id).write(values1)
+                    # current_mail.mail_message_id.write(values1)
+        except:
+            error_msg = "mail sending fail for email id: %r" + email + " sending error report to admin"
+            _logger.info(error_msg)
 
     @staticmethod
     def string_to_date(date_string):

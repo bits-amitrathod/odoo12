@@ -21,6 +21,11 @@ class StockBackorder(models.TransientModel):
 
                 elif picking.picking_type_id.name == 'Delivery Orders' and picking.state=='done':
                     inv_notification.out_notification_for_sale(picking)
+            elif picking.purchase_id:
+                if picking.picking_type_id.name == 'Receipts' and  picking.state == 'done':
+                    inv_notification.po_receive_notification_for_acquisitions_manager(picking)
+
+
         return action
 
     def process_cancel_backorder(self):
@@ -37,4 +42,7 @@ class StockBackorder(models.TransientModel):
 
                 elif picking.picking_type_id.name == 'Delivery Orders' and picking.state=='done':
                     inv_notification.out_notification_for_sale(picking)
+            elif picking.purchase_id:
+                if picking.picking_type_id.name == 'Receipts' and  picking.state == 'done':
+                    inv_notification.po_receive_notification_for_acquisitions_manager(picking)
         return action
