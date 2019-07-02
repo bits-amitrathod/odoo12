@@ -284,7 +284,7 @@
                     <div>
                     <h1 class="page-header" style="padding-top: 0px">Pricing</h1>
                     <!--<div style="position: absolute;top: 0;right: 0;">  -->
-                        <h5 class="update-qty"><b class="click-here">Click here to update quality </b><a t-if="quotation.state in ['sent']" class="btn btn-info btn-update" t-att-href="'/my/orders/edit/%s' % (quotation.id)" data-toggle="modal">
+                        <h5 class="update-qty"><b class="click-here">Click here to update quantity </b><a t-if="quotation.state in ['sent']" class="btn btn-info btn-update" t-att-href="'/my/orders/edit/%s' % (quotation.id)" data-toggle="modal">
                             <b><u>Update Quantity</u></b>
                     </a></h5>
                     </div>
