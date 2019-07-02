@@ -90,7 +90,7 @@ class SpsCustomerRequest(models.Model):
 
             elif sps_customer_request.document_id.template_type.lower().strip() == 'requirement':
                 if sps_customer_request.updated_quantity > 0:
-                    if int(current_processed_docs) < int(current_cust_doc_fixed_count):
+                    if int(current_processed_docs) <= int(current_cust_doc_fixed_count):
                         pr_model = self.add_customer_request_data(sps_customer_request)
                         if pr_model:
                             pr_models.append(pr_model)

@@ -9,6 +9,7 @@ from odoo.addons.portal.controllers.mail import _message_post_helper
 from odoo.osv import expression
 from odoo.exceptions import AccessError
 from odoo.addons.portal.controllers.portal import get_records_pager, pager as portal_pager, CustomerPortal
+from datetime import datetime
 
 class WebsiteSale(http.Controller):
 
@@ -75,12 +76,32 @@ class WebsiteSale(http.Controller):
 
     @http.route(['/quote/<int:order_id>/<token>/accept'], type='http', auth="public", methods=['POST'], website=True)
     def accept(self, order_id, token, **post):
+        flag = False
         Order = request.env['sale.order'].sudo().browse(order_id)
+        SaleOrderLines = request.env['sale.order.line'].sudo().search([('order_id', '=', Order.id)])
+        for SaleOrderLine in SaleOrderLines:
+            StockMove = request.env['stock.move'].sudo().search([('sale_line_id', '=', SaleOrderLine.id)])
+            if SaleOrderLine.product_uom_qty and StockMove.product_uom_qty:
+                if SaleOrderLine.product_uom_qty < StockMove.product_uom_qty:
+                    flag = True
+                    break
+
         if token != Order.access_token:
             return request.render('website.404')
         if Order.state != 'sent':
             return werkzeug.utils.redirect("/quote/%s/%s?message=4" % (order_id, token))
-        Order.action_confirm()
+
+        if flag:
+            Order.action_cancel()
+            Order.action_draft()
+            Order.action_confirm()
+            picking = request.env['stock.picking'].sudo().search([('sale_id', '=', Order.id), ('picking_type_id', '=', 1), ('state', 'not in', ['draft', 'cancel'])])
+            picking.write({'state': 'assigned'})
+            stock_move = request.env['stock.move'].sudo().search([('picking_id', '=', picking.id)])
+            stock_move.write({'state': 'assigned'})
+        else:
+            Order.write({'state': 'sale', 'confirmation_date': datetime.now()})
+
         message = post.get('accept_message')
         if message:
             Order.write({'sale_note': message})
