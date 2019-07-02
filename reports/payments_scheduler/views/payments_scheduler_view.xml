@@ -33,6 +33,7 @@
                     <field name="date_invoice" string="Check-in Date"/>
                     <field name="date_due"/>
                     <field name="pay_to"/>
+                    <field name="residual_signed" string ="To Pay"/>
                     <field name="address"/>
                     <field name="payment_term_id" options="{'no_create': True}"/>
                     <field name="amount_total_signed" string="Bill Amount" sum="Bill Amount"/>
@@ -58,6 +59,7 @@
                           </group>
                         <group>
                                 <field name="pay_to"/>
+                                <field name="residual_signed" string ="To Pay"/>
                                 <field name="address"/>
                                 <field name="number"/>
                                 <field name="payment_term_id" options="{'no_create': True}"/>
