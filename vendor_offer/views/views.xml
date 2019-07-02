@@ -271,7 +271,7 @@
                                   <!--<field name="accelerator" />-->
                                 <field name="accelerator" attrs="{'readonly': [('import_type_ven', '==', 'all_field_import')]}"/>
                                 <field name="priority"/>
-                                <field name="offer_type" attrs="{'readonly': [('import_type_ven', '==', 'all_field_import')]}"/>
+                                <field name="offer_type" />
                                 <field name="potential_profit_margin"/>
                                 <field name="state" invisible="1"/>
                                 <field name="import_type_ven" invisible="1"/>
