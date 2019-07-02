@@ -53,6 +53,10 @@
                         <!-- Adding manufacturer_uom column -->
                         <field name="manufacturer_uom"/>
                 </xpath>
+
+                <xpath expr="//group[@name='sales_person']/field[@name='user_id']"  position="after">
+                     <field name="order_processor"/>
+                </xpath>
             </field>
         </record>
         <record id="view_invoice_form_ex" model="ir.ui.view">

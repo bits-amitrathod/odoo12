@@ -71,7 +71,9 @@ class InventoryNotificationScheduler(models.TransientModel):
     def pull_notification_for_user(self, picking):
         Stock_Moves = self.env['stock.move'].search([('picking_id', '=', picking.id)])
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
-        users = self.env['res.users'].search([('active', '=', True), ('id', '=', picking.sale_id.user_id.id)])
+        # users = self.env['res.users'].search([('active', '=', True), ('id', '=', picking.sale_id.user_id.id)])
+        users = self.env['res.users'].search([('active', '=', True), ('id', '=', picking.sale_id.order_processor.id)])
+
         sales_order = []
         for stock_move in Stock_Moves:
             sale_order = {
