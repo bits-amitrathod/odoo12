@@ -195,7 +195,7 @@
 
                             </tbody>
                         </table>
-                        <table class="table table-striped table-bordered ">
+                        <table class="table table-condensed table-bordered ">
                             <thead>
                                 <tr>
                                     <th>
@@ -217,46 +217,51 @@
                             </thead>
                             <tbody class="invoice_tbody">
 
-                                <tr t-foreach="packing_list.move_lines" t-as="move_line">
-                                    <td>
-                                        <span t-esc="move_line_index + 1"/>
-                                    </td>
-                                    <td>
-                                        <span style="font-weight: lighter">
-                                            Code#
-                                            <span t-esc="move_line.product_tmpl_id.sku_code"/> -
-                                            <span t-esc="move_line.product_tmpl_id.name"/>
-                                        </span>
-                                        <span style="font-weight: lighter" t-foreach="move_line.move_line_ids"
-                                           t-as="move_line_id">
+                                <t t-foreach="packing_list.move_lines" t-as="move_line">
+                                    <t t-set="rowSpan" t-value="len(move_line.move_line_ids)+1"/>
+                                    <tr>
+                                        <td t-att-rowspan="rowSpan">
+                                            <span t-esc="move_line_index + 1"/>
+                                        </td>
+                                        <td>
+                                            <span style="font-weight: lighter">
+                                                Code#
+                                                <span t-esc="move_line.product_tmpl_id.sku_code"/>
+                                                -
+                                                <span t-esc="move_line.product_tmpl_id.name"/>
+                                            </span>
+                                        </td>
+                                        <td t-att-rowspan="rowSpan">
+                                            <span style="font-weight: lighter">
+                                                <span t-field="move_line.ordered_qty"/>
+                                                <span t32-esc="move_line.product_uom.name"/>
+                                            </span>
+                                        </td>
+                                        <td t-att-rowspan="rowSpan">
+                                            <span style="font-weight: lighter">
+                                                <span t-field="move_line.quantity_done"/>
+                                                <span t-esc="move_line.product_uom.name"/>
+                                            </span>
+                                        </td>
+                                        <td t-att-rowspan="rowSpan">
+                                            <span style="font-weight: lighter">
+                                                <span t-esc="round(move_line.remaining_qty)"/>
+                                                <span t-esc="move_line.product_uom.name"/>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr style="font-weight: lighter" t-foreach="move_line.move_line_ids"
+                                        t-as="move_line_id">
+                                        <td>
                                             <span t-esc="move_line_id.qty_done"/>
-                                            <span t-esc="move_line.product_uom.name"/>-
+                                            <span t-esc="move_line.product_uom.name"/>
                                             Lot#:
                                             <span t-esc="move_line_id.lot_id.name"/>
-                                            <br/>
                                             Exp Date:
                                             <span t-esc="move_line_id.lot_id.use_date"/>
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span style="font-weight: lighter">
-                                            <span t-field="move_line.ordered_qty"/>
-                                            <span t32-esc="move_line.product_uom.name"/>
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span style="font-weight: lighter">
-                                            <span t-field="move_line.quantity_done"/>
-                                            <span t-esc="move_line.product_uom.name"/>
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span style="font-weight: lighter">
-                                            <span t-esc="round(move_line.remaining_qty)"/>
-                                            <span t-esc="move_line.product_uom.name"/>
-                                        </span>
-                                    </td>
-                                </tr>
+                                        </td>
+                                    </tr>
+                                </t>
                             </tbody>
                         </table>
 
