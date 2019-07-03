@@ -71,7 +71,10 @@ class InventoryNotificationScheduler(models.TransientModel):
     def pull_notification_for_user(self, picking):
         Stock_Moves = self.env['stock.move'].search([('picking_id', '=', picking.id)])
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
-        users = self.env['res.users'].search([('active', '=', True), ('id', '=', picking.sale_id.user_id.id)])
+        users_sale_person = self.env['res.users'].search([('active', '=', True), ('id', '=', picking.sale_id.user_id.id)])
+        users = self.env['res.users'].search([('active', '=', True), ('id', '=', picking.sale_id.order_processor.id)])
+
+        final_user = users if users else users_sale_person if users_sale_person else super_user
         sales_order = []
         for stock_move in Stock_Moves:
             sale_order = {
@@ -87,17 +90,17 @@ class InventoryNotificationScheduler(models.TransientModel):
             'header': ['Catalog number', 'Description', 'Quantity'],
             'columnProps': ['sku', 'Product', 'qty'],
             'closing_content': 'Thanks & Regards,<br/> Warehouse Team',
-            'description':"Hi " + picking.sale_id.user_id.display_name + \
+            'description':"Hi " + final_user.display_name + \
                               ", <br/><br/> Please find detail Of Sale Order: " + picking.sale_id.name+ "<br/>"+\
-                             "<strong> Notes :  </strong>" + (picking.sale_id.sale_note or "N/A"),
+                             "<strong> Notes :  </strong>" + (str(picking.sale_id.sale_note) if picking.sale_id.sale_note else "N/A") ,
         }
         '''vals['description'] = "Hi " + picking.sale_id.user_id.display_name + \
                               ", <br/><br/> Please find detail Of Sale Order: " + picking.sale_id.name+ "<br/>"+\
                              "<strong> Notes :  </strong>"'''
 
         print("Inside Pull")
-        print(users.sudo().email)
-        self.process_common_email_notification_template(super_user, users, vals['subject'], vals['description'],
+        print(final_user.sudo().email)
+        self.process_common_email_notification_template(super_user, final_user, vals['subject'], vals['description'],
                                                         vals['sale_order_lines'], vals['header'],
                                                         vals['columnProps'], vals['closing_content'])
 
