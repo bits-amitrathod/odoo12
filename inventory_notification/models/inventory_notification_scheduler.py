@@ -89,7 +89,7 @@ class InventoryNotificationScheduler(models.TransientModel):
             'header': ['Catalog number', 'Description', 'Quantity'],
             'columnProps': ['sku', 'Product', 'qty'],
             'closing_content': 'Thanks & Regards,<br/> Warehouse Team',
-            'description':"Hi " + picking.sale_id.user_id.display_name + \
+            'description':"Hi " + picking.sale_id.order_processor.display_name + \
                               ", <br/><br/> Please find detail Of Sale Order: " + picking.sale_id.name+ "<br/>"+\
                              "<strong> Notes :  </strong>" + (picking.sale_id.sale_note or "N/A"),
         }
