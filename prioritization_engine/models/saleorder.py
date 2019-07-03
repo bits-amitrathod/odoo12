@@ -1,7 +1,7 @@
 import logging
 
 import odoo
-from odoo import models, fields, api, _
+from odoo import models, fields,  SUPERUSER_ID,api, _
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools.float_utils import float_compare, float_is_zero
 
@@ -31,6 +31,9 @@ class SaleOrder(models.Model):
         ('gifted', 'Gifted'),
         ('legacy', 'Legacy')], string='Sales Level', related='partner_id.sale_margine', readonly=True, store=True)
     carrier_acc_no = fields.Char("Carrier Account No", related='partner_id.carrier_acc_no', readonly=True)
+
+    order_processor = fields.Many2one('res.users', string='Order Processor', index=True, track_visibility='onchange',
+                              default=lambda self: self.env.user)
 
     @api.multi
     def action_void(self):
@@ -93,6 +96,18 @@ class SaleOrder(models.Model):
             'context': ctx,
         }
 
+    @api.multi
+    def action_confirm(self):
+        res = super(SaleOrder, self).action_confirm()
+        # for order in self:
+        #     order.order_processor = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
+
+        context = self._context
+        current_uid = context.get('uid')
+        user = self.env['res.users'].browse(current_uid).id
+
+        self.update({'order_processor' : user})
+        return  res
 
 class SaleOrderLinePrioritization(models.Model):
     _inherit = "sale.order.line"
