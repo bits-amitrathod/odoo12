@@ -49,8 +49,8 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
 
         ctx = responce.qcontext
         if not ctx['order'].partner_id.allow_purchase:
-            for x in ctx['form_acquirers']:
+            for x in ctx['acquirers']:
                 if x.name == 'Purchase Order':
-                    ctx['form_acquirers'].remove(x)
+                    ctx['acquirers'].remove(x)
 
         return responce
