@@ -1,31 +1,23 @@
 # -*- coding: utf-8 -*-"Hello - needed salary slip for last 3 month for Loan purpose."
 
 import datetime
+import io
 import logging
+import re
 from random import randint
 
 import math
+from odoo import http
 from odoo import models, fields, api, _
 from odoo.addons import decimal_precision as dp
+from odoo.addons.web.controllers.main import serialize_exception, content_disposition
 from odoo.exceptions import UserError, ValidationError
+from odoo.http import request
 from odoo.tools import pdf
+from odoo.tools import pycompat
 from werkzeug.urls import url_encode
 
 from .fedex_request import FedexRequest
-from odoo.exceptions import UserError, AccessError, ValidationError
-import datetime
-import math
-from random import randint
-from odoo.tools import pdf
-import logging
-from odoo import http
-from odoo.http import request
-from odoo.addons.web.controllers.main import serialize_exception, content_disposition
-from odoo.tools import pycompat
-import io
-import re
-import werkzeug
-from pprint import pprint
 
 _logger = logging.getLogger(__name__)
 # Why using standardized ISO codes? It's way more fun to use made up codes...
@@ -80,7 +72,7 @@ class VendorOffer(models.Model):
     _inherit = "purchase.order"
 
     vendor_offer_data = fields.Boolean()
-    status_ven = fields.Char(store=True, string="Status")
+    status_ven = fields.Char(store=True, string="Status", copy=False)
     carrier_info = fields.Char("Carrier Info", related='partner_id.carrier_info', readonly=True)
     carrier_acc_no = fields.Char("Carrier Account No", related='partner_id.carrier_acc_no', readonly=True)
     shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
@@ -98,10 +90,13 @@ class VendorOffer(models.Model):
     rt_price_subtotal_amt = fields.Monetary(string='Subtotal', compute='_amount_all', readonly=True)
     rt_price_total_amt = fields.Monetary(string='Total', compute='_amount_all', readonly=True)
     rt_price_tax_amt = fields.Monetary(string='Tax', compute='_amount_all', readonly=True)
-    #val_temp = fields.Char(string='Temp', default=0)
+    # val_temp = fields.Char(string='Temp', default=0)
     temp_payment_term = fields.Char(string='Temp')
     offer_type_pdf_text = fields.Char(string='offer type Temp')
     credit_offer_type_pdf_text = fields.Char(string='credit offer type Temp')
+
+    carrier_id = fields.Many2one('delivery.carrier', 'Carrier', copy=False)
+    shipping_number = fields.Text(string='Tracking Reference', copy=False)
 
     '''show_validate = fields.Boolean(
         compute='_compute_show_validate',
@@ -245,7 +240,7 @@ class VendorOffer(models.Model):
 
                 line.update({
                     'product_offer_price': product_offer_price,
-                    'product_unit_price' :product_unit_price
+                    'product_unit_price': product_unit_price
                 })
 
     @api.onchange('order_line.taxes_id')
@@ -525,7 +520,7 @@ class VendorOfferProduct(models.Model):
     product_note = fields.Text(string="Notes")
 
     margin = fields.Char(string="Cost %", readonly=True, compute='_cal_margin')
-    #product_unit_price = fields.Monetary(string="Retail Price",default='_cal_offer_price' , store=True)
+    # product_unit_price = fields.Monetary(string="Retail Price",default='_cal_offer_price' , store=True)
     # product_offer_price = fields.Monetary(string="Offer Price", readonly=True, compute='cal_offer_price')
     for_print_product_offer_price = fields.Char(string="Offer Price")
     for_print_price_subtotal = fields.Char(string="Offer Price")
@@ -662,79 +657,79 @@ class VendorOfferProduct(models.Model):
             last_month = fields.Date.to_string(today_date - datetime.timedelta(days=30))
 
             if line.env.context.get('vendor_offer_data') or line.state == 'ven_draft' or line.state == 'ven_sent':
-                    result1 = {}
-                    if not line.product_id:
-                        return result1
-                    #
+                result1 = {}
+                if not line.product_id:
+                    return result1
+                #
 
-                    #
-                    #     if line.import_type_ven_line == all_field_import:
-                    #         if 'order_list_list' in request.session:
-                    #             VendorOfferProduct.set_values_from_import(line)
-                    #
-                    #     else:
-                    ''' sale count will show only done qty '''
+                #
+                #     if line.import_type_ven_line == all_field_import:
+                #         if 'order_list_list' in request.session:
+                #             VendorOfferProduct.set_values_from_import(line)
+                #
+                #     else:
+                ''' sale count will show only done qty '''
 
-                    last_3_months = fields.Date.to_string(today_date - datetime.timedelta(days=90))
-                    last_yr = fields.Date.to_string(today_date - datetime.timedelta(days=365))
+                last_3_months = fields.Date.to_string(today_date - datetime.timedelta(days=90))
+                last_yr = fields.Date.to_string(today_date - datetime.timedelta(days=365))
 
-                    self.env.cr.execute(str_query_cm + " AND sp.date_done>=%s", (cust_location_id,
-                                                                                 line.product_id.id, last_month))
-                    quant_m = self.env.cr.fetchone()
-                    if quant_m[0] is not None:
-                        total_m = total_m + int(quant_m[0])
-                    line.product_sales_count_month = total_m
+                self.env.cr.execute(str_query_cm + " AND sp.date_done>=%s", (cust_location_id,
+                                                                             line.product_id.id, last_month))
+                quant_m = self.env.cr.fetchone()
+                if quant_m[0] is not None:
+                    total_m = total_m + int(quant_m[0])
+                line.product_sales_count_month = total_m
 
-                    self.env.cr.execute(str_query_cm + " AND sp.date_done>=%s", (cust_location_id,
-                                                                                 line.product_id.id, last_3_months))
-                    quant_90 = self.env.cr.fetchone()
-                    if quant_90[0] is not None:
-                        total_90 = total_90 + int(quant_90[0])
-                    line.product_sales_count_90 = total_90
+                self.env.cr.execute(str_query_cm + " AND sp.date_done>=%s", (cust_location_id,
+                                                                             line.product_id.id, last_3_months))
+                quant_90 = self.env.cr.fetchone()
+                if quant_90[0] is not None:
+                    total_90 = total_90 + int(quant_90[0])
+                line.product_sales_count_90 = total_90
 
-                    self.env.cr.execute(str_query_cm + " AND sp.date_done>=%s", (cust_location_id,
-                                                                                 line.product_id.id, last_yr))
-                    quant_yr = self.env.cr.fetchone()
-                    if quant_yr[0] is not None:
-                        total_yr = total_yr + int(quant_yr[0])
-                    line.product_sales_count_yrs = total_yr
+                self.env.cr.execute(str_query_cm + " AND sp.date_done>=%s", (cust_location_id,
+                                                                             line.product_id.id, last_yr))
+                quant_yr = self.env.cr.fetchone()
+                if quant_yr[0] is not None:
+                    total_yr = total_yr + int(quant_yr[0])
+                line.product_sales_count_yrs = total_yr
 
-                    self.env.cr.execute(str_query_cm, (cust_location_id, line.product_id.id))
-                    quant_all = self.env.cr.fetchone()
-                    if quant_all[0] is not None:
-                        total = total + int(quant_all[0])
-                    line.product_sales_count = total
+                self.env.cr.execute(str_query_cm, (cust_location_id, line.product_id.id))
+                quant_all = self.env.cr.fetchone()
+                if quant_all[0] is not None:
+                    total = total + int(quant_all[0])
+                line.product_sales_count = total
 
-                    line.qty_in_stock = line.product_id.qty_available
-                    if line.multiplier.id == False:
-                        if line.product_tier.code == False:
-                            multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'out of scope')])
-                            line.multiplier = multiplier_list.id
-                        elif line.product_sales_count == 0:
-                            multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'no history')])
-                            line.multiplier = multiplier_list.id
-                        elif float(line.qty_in_stock) > (
-                                line.product_sales_count * 2) and line.product_sales_count != 0:
-                            multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'overstocked')])
-                            line.multiplier = multiplier_list.id
-                        elif line.product_id.product_tmpl_id.premium == True:
-                            multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'premium')])
-                            line.multiplier = multiplier_list.id
-                        elif line.product_tier.code == '1':
-                            multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 't1 good 45')])
-                            line.multiplier = multiplier_list.id
-                        elif line.product_tier.code == '2':
-                            multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 't2 good 35')])
-                            line.multiplier = multiplier_list.id
+                line.qty_in_stock = line.product_id.qty_available
+                if line.multiplier.id == False:
+                    if line.product_tier.code == False:
+                        multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'out of scope')])
+                        line.multiplier = multiplier_list.id
+                    elif line.product_sales_count == 0:
+                        multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'no history')])
+                        line.multiplier = multiplier_list.id
+                    elif float(line.qty_in_stock) > (
+                            line.product_sales_count * 2) and line.product_sales_count != 0:
+                        multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'overstocked')])
+                        line.multiplier = multiplier_list.id
+                    elif line.product_id.product_tmpl_id.premium == True:
+                        multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'premium')])
+                        line.multiplier = multiplier_list.id
+                    elif line.product_tier.code == '1':
+                        multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 't1 good 45')])
+                        line.multiplier = multiplier_list.id
+                    elif line.product_tier.code == '2':
+                        multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 't2 good 35')])
+                        line.multiplier = multiplier_list.id
 
-                    # line.update_product_expiration_date()
+                # line.update_product_expiration_date()
 
-                    if (line.product_qty == False):
-                        line.product_qty = '1'
-                        # line.price_subtotal = line.list_price ???
-                        # line.product_unit_price = line.list_price
+                if (line.product_qty == False):
+                    line.product_qty = '1'
+                    # line.price_subtotal = line.list_price ???
+                    # line.product_unit_price = line.list_price
 
-                    self.expired_inventory_cal(line)
+                self.expired_inventory_cal(line)
 
     def expired_inventory_cal(self, line):
         expired_lot_count = 0
@@ -760,15 +755,14 @@ class VendorOfferProduct(models.Model):
             # product_unit_price = math.floor(
             #     round(float(line.product_id.list_price) * (float(multiplier_list.retail) / 100), 2))
 
-
             val_t = float(line.product_id.list_price) * (float(multiplier_list.retail) / 100)
             if (float(val_t) % 1) >= 0.5:
                 product_unit_price = math.ceil(
                     float(line.product_id.list_price) * (float(multiplier_list.retail) / 100))
 
             else:
-                product_unit_price = math.floor(float(line.product_id.list_price) * (float(multiplier_list.retail) / 100))
-
+                product_unit_price = math.floor(
+                    float(line.product_id.list_price) * (float(multiplier_list.retail) / 100))
 
             margin = 0
             if line.multiplier.id:
@@ -820,7 +814,8 @@ class VendorOfferProduct(models.Model):
                     float(line.product_id.list_price) * (float(multiplier_list.retail) / 100))
 
             else:
-                product_unit_price = math.floor(float(line.product_id.list_price) * (float(multiplier_list.retail) / 100))
+                product_unit_price = math.floor(
+                    float(line.product_id.list_price) * (float(multiplier_list.retail) / 100))
 
             val_off = float(product_unit_price) * (float(
                 multiplier_list.margin) / 100 + float(line.possible_competition.margin) / 100)
@@ -920,9 +915,11 @@ class ProductTemplateTire(models.Model):
 
     tier = fields.Many2one('tier.tier', string="Tier")
     class_code = fields.Many2one('classcode.classcode', string="Class Code")
-    actual_quantity = fields.Float(string='Qty Available For Sale', digits=dp.get_precision('Product Unit of Measure'),compute="_compute_qty_available", store=True)
+    actual_quantity = fields.Float(string='Qty Available For Sale', digits=dp.get_precision('Product Unit of Measure'),
+                                   compute="_compute_qty_available", store=True)
 
-    @api.depends('product_variant_ids.stock_quant_ids.reserved_quantity','product_variant_ids.stock_move_ids.remaining_qty')
+    @api.depends('product_variant_ids.stock_quant_ids.reserved_quantity',
+                 'product_variant_ids.stock_move_ids.remaining_qty')
     def _compute_qty_available(self):
         for template in self:
 
@@ -930,21 +927,21 @@ class ProductTemplateTire(models.Model):
             reserved_quantity = 0
             if len(stock_quant) > 0:
                 for lot in stock_quant:
-                    reserved_quantity +=lot.reserved_quantity
+                    reserved_quantity += lot.reserved_quantity
 
             template.update({'actual_quantity': template.qty_available - reserved_quantity})
             # print("---------------template -------------------------")
             # print(template)
             # print(template.actual_quantity)
 
-
     @api.model
     def create(self, vals):
 
         if 'tier' in vals and not vals['tier']:
-            vals['tier']= 2
+            vals['tier'] = 2
 
         return super(ProductTemplateTire, self).create(vals)
+
 
 class StockInventoryActionDone(models.Model):
     _inherit = 'stock.inventory'
@@ -1009,9 +1006,9 @@ class FedexDelivery(models.Model):
         srm.shipment_request_email(order)
         srm.set_currency(_convert_curr_iso_fdx(order.currency_id.name))
         srm.set_shipper(order.partner_id, order.partner_id)
-        #srm.set_recipient(order.company_id.partner_id)
+        # srm.set_recipient(order.company_id.partner_id)
         super_user = self.env['res.users'].browse(1)
-        #print(super_user.partner_id.name)
+        # print(super_user.partner_id.name)
         srm.set_recipient(super_user.partner_id)
         srm.shipping_charges_payment(superself.fedex_account_number)
         srm.shipment_label('COMMON2D', self.fedex_label_file_type, self.fedex_label_stock_type,
@@ -1066,7 +1063,7 @@ class FedexDelivery(models.Model):
             for sequence in range(1, package_count + 1):
                 package_weight = _convert_weight(popup.weight, self.fedex_weight_unit)
                 srm.add_package(package_weight, sequence_number=sequence)
-                _add_customer_references(srm,order)
+                _add_customer_references(srm, order)
                 srm.set_master_package(net_weight, package_count, master_tracking_id=master_tracking_id)
                 request = srm.process_shipment()
                 package_name = sequence
@@ -1114,16 +1111,20 @@ class FedexDelivery(models.Model):
                                 carrier_price = company_currency.compute(request['price']['USD'], order_currency)
 
                         carrier_tracking_ref = carrier_tracking_ref + "," + request['tracking_number']
+                        order.update({
+                            'carrier_id': self,
+                            'shipping_number': carrier_tracking_ref.replace(request['master_tracking_id'], request['master_tracking_id']+'*')
+                        })
 
                         logmessage = _("Shipment created into Fedex<br/>"
                                        "<b>Tracking Numbers:</b> %s<br/>"
                                        "<b>Packages:</b> %s") % (
                                          carrier_tracking_ref, ','.join([str(pl[0]) for pl in package_labels]))
                         if self.fedex_label_file_type != 'PDF':
-                            attachments = [('LabelFedex-%s.%s' % (pl[0], self.fedex_label_file_type), pl[1]) for pl in
+                            attachments = [('FedEx_Label-%s-%s.%s' % (self.fedex_service_type,order.name, self.fedex_label_file_type), pl[1]) for pl in
                                            package_labels]
                         if self.fedex_label_file_type == 'PDF':
-                            attachments = [('LabelFedex.pdf', pdf.merge_pdf([pl[1] for pl in package_labels]))]
+                            attachments = [('FedEx_Label-%s-%s.%s' % (self.fedex_service_type,order.name, self.fedex_label_file_type), pdf.merge_pdf([pl[1] for pl in package_labels]))]
                         order.message_post(body=logmessage, attachments=attachments)
                         shipping_data = {'exact_price': carrier_price,
                                          'tracking_number': carrier_tracking_ref}
@@ -1165,11 +1166,15 @@ class FedexDelivery(models.Model):
                         carrier_price = company_currency.compute(request['price']['USD'], order_currency)
 
                 carrier_tracking_ref = request['tracking_number']
+                order.update({
+                    'carrier_id': self,
+                    'shipping_number': carrier_tracking_ref
+                })
                 logmessage = (
                         _("Shipment created into Fedex <br/> <b>Tracking Number : </b>%s") % (carrier_tracking_ref))
 
                 fedex_labels = [
-                    ('LabelFedex-%s-%s.%s' % (carrier_tracking_ref, index, self.fedex_label_file_type), label)
+                    ('FedEx_Label-%s-%s-%s.%s' % (self.fedex_service_type,order.name, index, self.fedex_label_file_type), label)
                     for index, label in enumerate(srm._get_labels(self.fedex_label_file_type))]
                 order.message_post(body=logmessage, attachments=fedex_labels)
 
@@ -1196,7 +1201,8 @@ def _convert_weight(weight, unit='KG'):
     else:
         raise ValueError
 
-def _add_customer_references(srm,order):
+
+def _add_customer_references(srm, order):
     srm.customer_references('P_O_NUMBER', order.name)
     if order.acq_user_id.id:
         srm.customer_references('CUSTOMER_REFERENCE', order.acq_user_id.name)

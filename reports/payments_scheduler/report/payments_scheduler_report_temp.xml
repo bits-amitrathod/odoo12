@@ -26,6 +26,7 @@
                                     <th style="border: 1px solid black;text-align: center;">Check-in Date</th>
                                     <th style="border: 1px solid black;text-align: center;">Due Date (of Bill)</th>
                                     <th style="border: 1px solid black;text-align: center;">Payable To</th>
+                                    <th style="border: 1px solid black;text-align: center;">To Pay</th>
                                     <th style="border: 1px solid black;text-align: center;width:350px;">Full Address of Vendor</th>
                                     <th style="border: 1px solid black;text-align: center;">Term</th>
                                     <th style="border: 1px solid black;text-align: center;">Bill Amount</th>
@@ -57,6 +58,9 @@
                                     </td>
                                     <td style="border: 1px solid black;">
                                         <span t-esc="order.pay_to"/>
+                                    </td>
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="order.residual_signed"/>
                                     </td>
                                     <td style="border: 1px solid black;">
                                         <span t-esc="order.address"/>
