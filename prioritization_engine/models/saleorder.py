@@ -101,13 +101,15 @@ class SaleOrder(models.Model):
         res = super(SaleOrder, self).action_confirm()
         user = None
         current_user = self.env['res.users'].browse(self._context.get('uid'))
+        sale_order_customer = self.partner_id
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
         user_sale_person = current_user.user_id
 
         if self.team_id.team_type == 'sales':
             user = current_user
-        else:
-            user = user_sale_person if user_sale_person else super_user
+        else :
+            user = sale_order_customer.user_id if sale_order_customer.user_id else super_user
+         
         self.update({'order_processor' : user})
         return  res
 
