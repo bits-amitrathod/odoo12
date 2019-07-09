@@ -9,6 +9,7 @@ class SaleSalespersonReport(models.TransientModel):
     end_date = fields.Date(string="End Date", required=True)
     product_id = fields.Many2many('product.product', string="Products")
     order_partner_id = fields.Many2one('res.partner', string='Customer')
+    contract_id = fields.Many2one('contract.contract', string='Contract')
 
     @api.multi
     def open_table(self):
@@ -44,6 +45,8 @@ class SaleSalespersonReport(models.TransientModel):
             action['domain'].append(('product_id', 'in', self.product_id.ids))
         elif self.order_partner_id:
             action['domain'].append(('order_partner_id', '=', self.order_partner_id.id))
+        if self.contract_id:
+            action['domain'].append(('order_partner_id.contract', '=', self.contract_id.id))
         return action
 
     @staticmethod
