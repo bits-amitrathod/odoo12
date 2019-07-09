@@ -99,13 +99,15 @@ class SaleOrder(models.Model):
     @api.multi
     def action_confirm(self):
         res = super(SaleOrder, self).action_confirm()
-        # for order in self:
-        #     order.order_processor = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
+        user = None
+        current_user = self.env['res.users'].browse(self._context.get('uid')).id
+        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
+        user_sale_person = current_user.user_id
 
-        context = self._context
-        current_uid = context.get('uid')
-        user = self.env['res.users'].browse(current_uid).id
-
+        if self.team_id.team_type == 'sales':
+            user = current_user
+        else:
+            user = user_sale_person if user_sale_person else super_user
         self.update({'order_processor' : user})
         return  res
 
