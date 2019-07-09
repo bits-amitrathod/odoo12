@@ -1,0 +1,9 @@
+<odoo>
+    <data>
+
+           <record id="object0" model="contract.contract">
+             <field name="name">Capstone</field>
+             <field name="code">cap</field>
+           </record>
+    </data>
+</odoo>
