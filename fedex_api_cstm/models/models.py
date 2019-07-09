@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 import os
+from datetime import datetime
 
 import suds
 from odoo import models, api, fields
 from suds.client import Client
 from suds.plugin import MessagePlugin
-from datetime import datetime
 
 
 class LogPlugin(MessagePlugin):
@@ -95,8 +95,9 @@ class FedexApiCstm():
                         for track in datesOrTimes:
                             if track.Type == 'ESTIMATED_DELIVERY':
                                 formatted_response['expected_date'] = track.DateOrTimestamp[
-                                                                       0:track.DateOrTimestamp.find('T')]
-                                isExpectedDate = datetime.strptime(formatted_response['expected_date'],"%Y-%m-%d").strftime("%m/%d/%Y")
+                                                                      0:track.DateOrTimestamp.find('T')]
+                                isExpectedDate = datetime.strptime(formatted_response['expected_date'],
+                                                                   "%Y-%m-%d").strftime("%m/%d/%Y")
 
                             if track.Type == 'ACTUAL_DELIVERY':
                                 formatted_response['delivered_date'] = track.DateOrTimestamp[
@@ -104,7 +105,7 @@ class FedexApiCstm():
 
                             if track.Type == 'SHIP':
                                 formatted_response['shipping_date'] = track.DateOrTimestamp[
-                                                                       0:track.DateOrTimestamp.find('T')]
+                                                                      0:track.DateOrTimestamp.find('T')]
                     address = ""
                     if event.Address:
                         address += event.Address.Residential + "<br/>" if 'Residential' in event.Address and event.Address.Residential else ""
@@ -168,6 +169,11 @@ class FedexDelivery(models.Model):
         context = dict(self._context or {})
         context['carrier'] = order.carrier_id.id
         context['isFedEx'] = order.carrier_id.delivery_type == 'fedex'
+        if order._name == 'purchase.order':
+            context['purchase_order'] = order.id
+        else:
+            context['purchase_order'] = False
+
         if len(tracking_numbers) > 1:
             context['tracking_numbers'] = []
             for tracking_number in tracking_numbers:
@@ -206,18 +212,18 @@ class FedexDelivery(models.Model):
             # str(tracking_number) + ": " +
             if 'data' in logmessage:
                 message += logmessage['data']
-                message += '<div class="well well-sm">Note: This status will be saved under "Deliveries & Invoices" section of this PO#</div>'
             else:
                 message += logmessage['errors_message'] + "<br/>"
 
             if order._name == 'purchase.order':
-                if 'expected_date' in order and 'expected_date' in logmessage:
+                message += '<div class="well well-sm">Note: This status will be saved under "Deliveries & Invoices" section of this PO#</div>'
+                if 'expected_date' in logmessage:
                     order.expected_date = logmessage['expected_date']
 
-                if 'delivered_date' in order and 'delivered_date' in logmessage:
+                if 'delivered_date' in logmessage:
                     order.delivered_date = logmessage['delivered_date']
 
-                if 'shipping_date' in order and 'shipping_date' in logmessage:
+                if 'shipping_date' in logmessage:
                     order.shipping_date = logmessage['shipping_date']
 
         if message:
@@ -260,11 +266,21 @@ class tracking_popup(models.TransientModel):
             return self.env.context.get("carrier")
         return False
 
+    def get_default_purchase_order(self):
+        if self.env.context.get("purchase_order", False):
+            return self.env.context.get("purchase_order")
+        return False
+
     tracking_number = fields.Selection(get_default, string="Tracking Number", required=True)
     carrier_id = fields.Many2one('delivery.carrier', 'Carrier', readonly=True, default=get_default_carrier)
+    order_id = fields.Many2one('purchase.order', string='Purchase Order#', default=get_default_purchase_order)
 
     def open_table(self):
-        return self.carrier_id.fedex_track_request(self, [int(self.tracking_number)])
+        if self.env.context['purchase_order']:
+            order = self.order_id
+        else:
+            order = self
+        return self.carrier_id.fedex_track_request(order, [int(self.tracking_number)])
 
     @api.multi
     def track_fedex(self):
