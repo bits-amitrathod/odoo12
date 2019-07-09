@@ -100,7 +100,7 @@ class SaleOrder(models.Model):
     def action_confirm(self):
         res = super(SaleOrder, self).action_confirm()
         user = None
-        current_user = self.env['res.users'].browse(self._context.get('uid')).id
+        current_user = self.env['res.users'].browse(self._context.get('uid'))
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
         user_sale_person = current_user.user_id
 
