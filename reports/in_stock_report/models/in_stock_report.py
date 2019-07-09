@@ -149,7 +149,7 @@ class ReportInStockReport(models.Model):
             product_template
             ON
             (
-            product_product.product_tmpl_id = product_template.id)
+            product_product.product_tmpl_id = product_template.id  and  product_template.sale_ok = True )
             
             """
         groupby  = """
