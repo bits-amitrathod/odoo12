@@ -31,7 +31,7 @@
     #                   With the help of this moudule you can print sales purchase History .
     #                   '''
     #                ,
-    'depends': ['base', 'sale_management'],
+    'depends': ['base', 'sale_management','contract_searching'],
     'data': [
         'views/sale_view.xml',
         'report/saleperson_report.xml',
