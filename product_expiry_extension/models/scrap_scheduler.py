@@ -25,12 +25,12 @@ class ScrapScheduler(models.TransientModel):
         stock_production_lot_ids = self.env['stock.production.lot'].search([('use_date', '<=', today_start)])
         last_day = int(calendar.monthrange(today_date.year, today_date.month)[1])
         for stock_product_lot in stock_production_lot_ids:
-            lot_date=datetime.datetime.strptime(str(stock_product_lot.use_date), '%Y-%m-%d %H:%M:%S')
-            use_day=int(lot_date.day)
-            use_month=int(lot_date.month)
-            use_year = int(lot_date.year)
-            if use_day == 1 and today_day != last_day and today_month == use_month and today_year == use_year :
-                continue
+            # lot_date=datetime.datetime.strptime(stock_product_lot.use_date, '%Y-%m-%d %H:%M:%S')
+            # use_day=int(lot_date.day)
+            # use_month=int(lot_date.month)
+            # use_year = int(lot_date.year)
+            # if use_day == 1 and today_day != last_day and today_month == use_month and today_year == use_year :
+            #     continue
             for location_id in location_ids:
                 stock_ids=self.env['stock.quant'].search([('lot_id','=',stock_product_lot.id),('location_id', '=', location_id.id),('quantity', '>', 0)])
                 for stock in stock_ids:
@@ -45,6 +45,5 @@ class ScrapScheduler(models.TransientModel):
     def process_manual_scrap_scheduler(self):
         _logger.info("process_manual_scrap_scheduler called..")
         self.process_scrap_scheduler()
-
 
 
