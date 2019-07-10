@@ -19,10 +19,10 @@
     'data': [
         'security/res_user_cust_requests.xml',
         'security/ir.model.access.csv',
+        'views/remove_document_scheduler.xml',
         'views/voided_product_template_views.xml',
         'views/views.xml',
         'views/templates.xml',
-        'views/remove_document_scheduler.xml',
     ],
 
     'qweb': [
