@@ -109,13 +109,21 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
     @http.route(['/shop/confirmation'], type='http', auth="public", website=True)
     def payment_confirmation(self, **post):
         responce = super(WebsiteSales, self).payment_confirmation(**post)
-        responce.qcontext['order'].workflow_process_id = 1
-
-        if request.env.user.user_id.id:
-            responce.qcontext['order'].user_id = request.env.user.user_id
+        order = responce.qcontext['order']
+        order.workflow_process_id = 1
 
         template = request.env.ref('website_sales.common_mail_template').sudo()
-        template.send_mail(responce.qcontext['order'].id, force_send=True)
+        template.send_mail(order.id, force_send=True)
+        msg = "Quotation Email Sent to: " + order.user_id.login
+        order.message_post(body=msg)
+
+        if request.env.user.user_id.id:
+            order.user_id = request.env.user.user_id
+            template.send_mail(order.id, force_send=True)
+            msg = "Quotation Email Sent to: " + order.user_id.login
+            order.message_post(body=msg)
+
+
         return responce
 
 

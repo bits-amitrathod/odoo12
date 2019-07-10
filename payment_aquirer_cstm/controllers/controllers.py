@@ -40,17 +40,30 @@ class PaymentAquirerCstm(http.Controller):
         return value
 
 
+    @http.route(['/shop/cart/expeditedShipping'], type='http', auth="public", methods=['POST'], website=True,
+                csrf=False)
+    def expedited_shipping(self, expedited_shipping, **kw):
+        order = request.env['sale.order'].sudo().browse(request.session['sale_order_id'])
+        order.expedited_shipping = expedited_shipping
+        value = {'success': True}
+        return request.redirect('/shop/payment')
+
+
 class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
     @http.route(['/shop/payment'], type='http', auth="public", website=True)
     def payment(self, **post):
-        # deliveryResponce = WebsiteSaleDelivery().payment(**post)
         responce = super(WebsiteSales, self).payment(**post)
-        # responce.qcontext.update(deliveryResponce.qcontext)
 
         ctx = responce.qcontext
-        if not ctx['order'].partner_id.allow_purchase:
-            for x in ctx['form_acquirers']:
-                if x.name == 'Purchase Order':
-                    ctx['form_acquirers'].remove(x)
+        if 'order' in ctx:
+            if not ctx['order'].partner_id.allow_purchase:
+                for x in ctx['form_acquirers']:
+                    if x.name == 'Purchase Order':
+                        ctx['form_acquirers'].remove(x)
+        else:
+            if 'form_acquirers' in ctx:
+                for x in ctx['form_acquirers']:
+                    if x.name == 'Purchase Order':
+                        ctx['form_acquirers'].remove(x)
 
         return responce
