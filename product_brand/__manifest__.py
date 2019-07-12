@@ -12,7 +12,7 @@
     'category': 'Product',
     'summary': "Product Brand Manager",
 
-     'author': "Benchmark IT Solutions (I) Pvt Ltd.",
+     'author': "Benchmark IT Solutions",
     'website': "http://www.benchmarkitsolutions.com",
     'license': 'AGPL-3',
     'depends': [
