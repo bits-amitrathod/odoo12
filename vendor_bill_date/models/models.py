@@ -13,7 +13,7 @@ class VendorBillDate(models.Model):
             stock_picking_obj = self.env['stock.picking'].search([('origin', '=', self.origin),('state','=','done')])
             if stock_picking_obj:
                 max_po_id=max(stock_picking_obj)
-                self.date_invoice = max_po_id.date_done
+                self.date_invoice = str(max_po_id.date_done)
 
 class Memo(models.Model):
     _inherit = "account.payment"

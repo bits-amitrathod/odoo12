@@ -32,9 +32,9 @@ class inventory_exe(models.Model):
         production_lot_alert_days = int(params.get_param('inventory_extension.production_lot_alert_days'))
 
         if production_lot_alert_days > 0:
-            alert_date = datetime.datetime.strptime(lot_use_date, '%Y-%m-%d %H:%M:%S') - datetime.timedelta(days=production_lot_alert_days)
+            alert_date = datetime.datetime.strptime(str(lot_use_date), '%Y-%m-%d %H:%M:%S') - datetime.timedelta(days=production_lot_alert_days)
         else:
-            alert_date = datetime.datetime.strptime(lot_use_date, '%Y-%m-%d %H:%M:%S') - datetime.timedelta(days=3)
+            alert_date = datetime.datetime.strptime(str(lot_use_date), '%Y-%m-%d %H:%M:%S') - datetime.timedelta(days=3)
 
         vals.update({'use_date': str(lot_use_date), 'alert_date': str(alert_date), 'life_date': str(lot_use_date),'removal_date': str(lot_use_date)})
 
