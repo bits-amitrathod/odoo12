@@ -392,7 +392,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                     sale_order_lines = self.env['sale.order.line'].search([('order_id.id', '=', sale.id)])
                     for line in sale_order_lines:
                         #_logger.info(" product_id qty_available %r", line.product_id.actual_quantity)
-                        if line.product_id.actual_quantity and line.product_id.actual_quantity is not None and line.product_id.actual_quantity > 0 :
+                        if line.product_id.actual_quantity and line.product_id.actual_quantity is not None and line.product_id.actual_quantity > 0 and line.product_id.product_tmpl_id.sale_ok:
                             products[line.product_id.id] = line.product_id
                 subject = "SPS Updated In-Stock Product Report"
                 descrption = "<strong>Good morning " + customr.name + "</strong>" \
