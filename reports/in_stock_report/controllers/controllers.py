@@ -155,7 +155,7 @@ class ReportPrintInStockExport(http.Controller):
                             ELSE 
                                   IF compute_price_param ='percentage' THEN
                                     select percent_price INTO percentage_price_val  from product_pricelist_item where id = id_param limit 1;
-                                    select case list_price when null then '0' else list_price end as list_price INTO list_price_val from product_template  where id=product_tmpl_id_param;
+                                    select case list_price when null then '0' else list_price end as list_price INTO list_price_val from product_template  where id=product_tmpl_id_param and  product_template.sale_ok = True;
                                     IF list_price_val is null then
                                         list_price_val =0;
                                     END IF;
@@ -183,7 +183,7 @@ class ReportPrintInStockExport(http.Controller):
                     
                 BEGIN  		pricelist_param = getPricelist(partner_id_param);
                             select product_tmpl_id INTO product_tmpl_id_param from product_product where id=product_id_param;
-                            select categ_id INTO categ_id_param from product_template where id=product_tmpl_id_param;
+                            select categ_id INTO categ_id_param from product_template where id=product_tmpl_id_param and product_template.sale_ok = True;
                              
                                 select cal_price_rule(id,compute_price,product_id_param,pricelist_param,product_tmpl_id_param) INTO list_price_return_val  from product_pricelist_item 
                                 where pricelist_id = pricelist_param and product_id = product_id_param and min_quantity <= actual_quantity_param
@@ -219,7 +219,7 @@ class ReportPrintInStockExport(http.Controller):
                             END IF;
                             
                 IF list_price_return_val is  null THEN
-                    select list_price INTO list_price_return_val from product_template where id=product_tmpl_id_param;
+                    select list_price INTO list_price_return_val from product_template where id=product_tmpl_id_param and product_template.sale_ok = True;
                         IF list_price_return_val is  null THEN
                         RETURN 0; 
                     ELSE 
@@ -243,7 +243,7 @@ class ReportPrintInStockExport(http.Controller):
                 BEGIN  		
                         pricelist_param = getPricelist(partner_id_param);
                         select product_tmpl_id INTO product_tmpl_id_param from product_product where id=product_id_param;
-                        select categ_id INTO categ_id_param from product_template where id=product_tmpl_id_param;
+                        select categ_id INTO categ_id_param from product_template where id=product_tmpl_id_param and product_template.sale_ok = True;
                         
                          select get_formula_rule(id,compute_price,product_id_param,pricelist_param,product_tmpl_id_param) INTO list_price_return_val  from product_pricelist_item 
                             where pricelist_id = pricelist_param and product_id = product_id_param and min_quantity <= actual_quantity_param
@@ -324,7 +324,7 @@ class ReportPrintInStockExport(http.Controller):
             ON ( public.sale_order_line.product_id = public.product_product.id) 
           INNER JOIN
             public.product_template 
-            ON ( public.product_product.product_tmpl_id = public.product_template.id) 
+            ON ( public.product_product.product_tmpl_id = public.product_template.id and public.product_template.sale_ok = True) 
           INNER JOIN
             public.res_partner 
             ON ( public.sale_order.partner_id = public.res_partner.id) 
