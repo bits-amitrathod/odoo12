@@ -109,7 +109,7 @@ class SaleOrder(models.Model):
             user = current_user
         else :
             user = sale_order_customer.user_id if sale_order_customer.user_id else super_user
-         
+
         self.update({'order_processor' : user})
         return  res
 

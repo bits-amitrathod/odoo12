@@ -12,7 +12,7 @@ class payment_aquirer_cstm(models.Model):
         return "/shop/payment/purchaseorderform"
 
 
-class SalesOrderDeliveryMethod(models.Model):
-    _inherit = "sale.order"
-
-    expedited_shipping = fields.Text('Expedited Shipping')
+# class SalesOrderDeliveryMethod(models.Model):
+#     _inherit = "sale.order"
+#
+#     expedited_shipping = fields.Text('Expedited Shipping')
