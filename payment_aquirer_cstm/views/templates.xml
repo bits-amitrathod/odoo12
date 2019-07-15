@@ -78,4 +78,53 @@
         </xpath>
     </template>
 
+<!--    <template id="payment_sale_note" inherit_id="website_sale.payment" name="Purchase Order">-->
+<!--        <xpath expr="//div[@id='payment_method']" position="before">-->
+<!--            <div class="col-xs-12 col-sm-12 col-md-12">-->
+<!--                <a class="btn btn-success" data-toggle="modal" data-target="#accept">-->
+<!--                    Add Expedited Shipping-->
+<!--                </a>-->
+
+
+
+<!--            <div class="modal" id="accept" role="dialog" aria-hidden="true">-->
+<!--                <div class="modal-dialog">-->
+<!--                    <form id="accept" method="POST"-->
+<!--                          t-attf-action="/shop/cart/expeditedShipping"-->
+<!--                          class="modal-content">-->
+<!--                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>-->
+
+<!--                        <div class="modal-header">-->
+<!--                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">-->
+<!--                                &amp;times;-->
+<!--                            </button>-->
+<!--                            <h4 class="modal-title">Expedited Shipping</h4>-->
+<!--                        </div>-->
+<!--                        <div class="modal-body">-->
+<!--                            <p>-->
+<!--                                Your Order will be shipped Ground unless otherwise stated. If expedited shipping is-->
+<!--                                needed,-->
+<!--                                Please indicate below:-->
+<!--                                (First Overnight by 8:30AM / Priority Overnight by 10:30AM /2nd day AM by 10:30 AM /2nd-->
+<!--                                Day-->
+<!--                                /3rd-->
+<!--                                Day)-->
+<!--                            </p>-->
+<!--                            <textarea rows="4" name="expedited_shipping" placeholder="Expedited Shipping"-->
+<!--                                      class="form-control"><t t-esc="order.expedited_shipping"/></textarea>-->
+<!--                        </div>-->
+<!--                        <div class="modal-footer">-->
+<!--                            <button type="submit" t-object="order" class="btn btn-primary">Save</button>-->
+<!--                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>-->
+<!--                        </div>-->
+<!--                    </form>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--             </div>-->
+
+<!--        </xpath>-->
+<!--    </template>-->
+
+
 </odoo>
