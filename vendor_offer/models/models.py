@@ -1620,11 +1620,17 @@ class ExportPPVendorPricingXL(http.Controller):
 
         #  token=1,debug=1   are added if the URL contains extra parameters , which in some case URL does contain
         #  code will produce error if the parameters are not provided so default are added
+        try:
+            temp_val = product_lines_export_pp[0]
+            temp_val = product_lines_export_pp[1]
 
-        res = request.make_response(self.from_data(product_lines_export_pp[0], product_lines_export_pp[1:]),
-                                    headers=[('Content-Disposition',
-                                              content_disposition(self.filename())),
-                                             ('Content-Type', self.content_type)],
-                                    )
-        product_lines_export_pp.clear()
-        return res
+            res = request.make_response(self.from_data(product_lines_export_pp[0], product_lines_export_pp[1:]),
+                                        headers=[('Content-Disposition',
+                                                  content_disposition(self.filename())),
+                                                 ('Content-Type', self.content_type)],
+                                        )
+            product_lines_export_pp.clear()
+            return res
+
+        except:
+            raise Warning(_('Cannot Export at the moment ,Please try after sometime'))
