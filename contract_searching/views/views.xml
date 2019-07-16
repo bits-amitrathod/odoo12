@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="click_to_dial_field" model="ir.ui.view">
+        <field name="name">res.partner.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field eval="20" name="priority"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='category_id']" position="after">
+                <field name="contract" />
+            </xpath>
+        </field>
+        </record>
+		
+		   <record id="contract_form" model="ir.ui.view">
+        <field name="name">contract.contract.form</field>
+        <field name="model">contract.contract</field>
+        <field eval="20" name="priority"/>
+        <field name="arch" type="xml">
+               <form string="Contract Form" duplicate="false">
+            <field name="name" />
+               </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>
