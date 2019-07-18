@@ -40,13 +40,12 @@ class PaymentAquirerCstm(http.Controller):
         return value
 
 
-    # @http.route(['/shop/cart/expeditedShipping'], type='http', auth="public", methods=['POST'], website=True,
-    #             csrf=False)
-    # def expedited_shipping(self, expedited_shipping, **kw):
-    #     order = request.env['sale.order'].sudo().browse(request.session['sale_order_id'])
-    #     order.expedited_shipping = expedited_shipping
-    #     value = {'success': True}
-    #     return request.redirect('/shop/payment')
+    @http.route(['/shop/cart/expeditedShipping'], type='http', auth="public", methods=['POST'], website=True,
+                csrf=False)
+    def expedited_shipping(self, expedited_shipping, **kw):
+        order = request.env['sale.order'].sudo().browse(request.session['sale_order_id'])
+        order.write({'sale_note': expedited_shipping})
+        return request.redirect('/shop/payment')
 
 
 class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
