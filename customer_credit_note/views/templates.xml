@@ -74,6 +74,7 @@
                                 options='{"always_reload": True, "no_quick_create": True}'
                                 domain="[('customer', '=', True)]"/>
                             <field name="payment_term_id"/>
+                            <field name="preferred_method"/>
                             <field name="cash_rounding_id" groups="account.group_cash_rounding"/>
                         </group>
                         <group>
@@ -190,6 +191,17 @@
             </field>
         </record>
 
+        <record id="invoice_tree_inherited" model="ir.ui.view">
+            <field name="name">account.invoice.tree</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_tree"></field>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='origin']" position="after">
+                    <field name="preferred_method"/>
+                </xpath>
+            </field>
+        </record>
+
         <record id="view_account_invoice_report_search_inherit" model="ir.ui.view">
         <field name="name">account.invoice.report.search</field>
         <field name="model">account.invoice.report</field>
@@ -243,6 +255,12 @@
                 <span t-if="o.type == 'in_invoice'">Vendor Bill Payment</span>
                 <span t-field="o.number"/>
             </h2>
+        </xpath>
+        <xpath expr="//div[@class='page']/div[@class='row mt32 mb32']" position="inside">
+            <div class="col-xs-2" t-if="o.preferred_method">
+                <strong>Preferred Invoice Delivery Method:</strong>
+                <p t-field="o.preferred_method"/>
+            </div>
         </xpath>
     </template>
 
