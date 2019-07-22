@@ -8,7 +8,95 @@
             name="sps_receiving_list_report.adjustment_report"
     />
 
+    <report id="action_sps_receiving_list_report1"
+            string="SPS Receiving List"
+            model="stock.picking"
+            report_type="qweb-html"
+            file="sps_receiving_list_report.adjustment_report1"
+            name="sps_receiving_list_report.adjustment_report1"
+    />
+
     <template id="adjustment_report">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <center>
+                        <b>
+                            <h4>Surgical Product Solutions</h4>
+                        </b>
+                        <b>
+                            <h2>SPS Receiving List</h2>
+                        </b>
+                    </center>
+
+
+                    <t t-foreach="receiving_list" t-as="receiving_list_int">
+                        <t t-set="receiving_item" t-value="receiving_list[receiving_list_int]"/>
+                        <div class="col-sm-6">
+                            <strong>Purchase Order :</strong>
+                            <span t-esc="receiving_item['purchase_order_id']"/>
+                        </div>
+                        <div class="col-sm-6">
+                            <strong>Vendor :</strong>
+                            <span t-esc="receiving_item['purchase_partner_id']"/>
+                        </div>
+                        <table class="table table-condensed" style="border: 1px solid black;">
+                            <thead>
+                                <tr>
+                                    <th style="border: 1px solid black;text-align:  center !important;">
+                                        Product Name
+                                    </th>
+                                    <th style="border: 1px solid black;text-align:  center !important;">
+                                        Qty Received
+                                    </th>
+                                    <th style="border: 1px solid black;text-align:  center !important;">
+                                        UOM
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="border: 1px solid black;">
+                                        <b>
+                                            <span t-esc="receiving_item['product']"/>
+                                        </b>
+                                    </td>
+                                    <td style="border: 1px solid black;">
+
+                                    </td>
+                                    <td style="border: 1px solid black;">
+
+                                    </td>
+                                </tr>
+                                <tr t-foreach="receiving_item['lots']" t-as="lot">
+                                    <td style="border: 1px solid black; text-align:  center ">
+                                        Lot# :
+                                        <span t-esc="lot['lot_id']"/>
+                                        Exp Date :
+                                        <span t-esc="lot['exp_date']"/>
+                                    </td>
+
+                                    <td style="border: 1px solid black; text-align:  center ">
+                                        <b>
+                                            <span t-esc="lot['qty_done']"/>
+                                        </b>
+                                    </td>
+                                    <td style="border: 1px solid black; text-align:  center ">
+                                        <span t-esc="lot['product_uom_id']"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </t>
+
+
+                </div>
+
+            </t>
+        </t>
+    </template>
+
+    <template id="adjustment_report1">
         <t t-call="web.html_container">
             <t t-call="web.external_layout">
                 <div class="page">
