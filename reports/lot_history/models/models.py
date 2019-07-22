@@ -35,7 +35,7 @@ class LotHistory(models.Model):
             """
         self._cr.execute(sql_query)
         lot_id = self.env.context.get('lot_id')
-        sku_code = self.env.context.get('sku_code')
+        description = self.env.context.get('description')
         insert_start = "INSERT INTO lot_history_report" \
                        "(sku_code, description, type,event,event_date,change,lot_no,product_id"
         insert_mid = ",vendor,phone,email"
@@ -45,8 +45,9 @@ class LotHistory(models.Model):
         if lot_id and lot_id is not None:
             where_clause = " AND stock_production_lot.id=" + str(lot_id)
 
-        if sku_code and sku_code is not None:
-            where_clause = where_clause + " AND product_template.sku_code ilike '%" + str(sku_code) + "%'"
+
+        if description and description is not None:
+            where_clause = where_clause + " AND product_template.name  = '" + str(description) + "'"
 
         # -------------------- purchase ------------------------
         sql_query = insert_start + insert_mid + insert_end + """ 

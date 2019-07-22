@@ -46,7 +46,7 @@ class ReportPickTicketGroupByOrderDate(models.TransientModel):
             action["domain"].append(('date', '<=', self.end_date))
 
         if self.sku:
-            action["domain"].append(('sku', '=', self.sku.sku_code))
+            action["domain"].append(('product_id.id', '=', self.sku.id))
 
         if self.location_id:
             action["domain"].append(('type', '=', self.location_id))

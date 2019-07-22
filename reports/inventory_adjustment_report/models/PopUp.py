@@ -22,7 +22,8 @@ class PopUp(models.TransientModel):
         (1, 'Date Range')
     ], string="Compute", help="Choose to analyze the current inventory or from a specific date in the past.")
 
-    product_sku_code = fields.Char('Product SKU')
+    product_sku_code = fields.Many2one('product.product', string='Product SKU',
+                               domain="[('active','=',True),('product_tmpl_id.type','=','product')]")
 
     def open_table(self):
         tree_view_id = self.env.ref('inventory_adjustment_report.form_list_adjustment').id
@@ -41,12 +42,12 @@ class PopUp(models.TransientModel):
             action['domain'].append(('date', '>=', self.start_date))
             action['domain'].append(('date', '<=', self.end_date))
             if self.product_sku_code:
-                action['domain'].append(('product_id.product_tmpl_id.sku_code', 'ilike', self.product_sku_code))
+                action['domain'].append(('product_id.name', '=', self.product_sku_code.name))
             action.update({'target': 'main'})
             return action
         else:
             if self.product_sku_code:
-                action['domain'].append(('product_id.product_tmpl_id.sku_code', 'ilike', self.product_sku_code))
+                action['domain'].append(('product_id.name', '=', self.product_sku_code.name))
             action.update({'target': 'main'})
             return action
 

@@ -23,7 +23,8 @@ class ProductSaleByCountPopUp(models.TransientModel):
 
     sale_person_id = fields.Many2one('res.users', string='Sales Person', required=False)
 
-    sku_code = fields.Char('Product SKU')
+    sku_code = fields.Many2one('product.product', string='Product SKU',
+                               domain="[('active','=',True),('product_tmpl_id.type','=','product')]")
 
     customer_id = fields.Many2one('res.partner', string='Customer', required=False,)
 
@@ -51,7 +52,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
             action["domain"].append(('user_id', '=', self.sale_person_id.id))
 
         if self.sku_code:
-            action["domain"].append(('sku_code', 'ilike', self.sku_code))
+            action["domain"].append(('product_id.name', '=', self.sku_code.name))
 
         if self.compute_at_date:
             if self.start_date:

@@ -30,7 +30,9 @@ class ProductsOnHandByExpiryPopUp(models.TransientModel):
     location_id = fields.Selection(selection=[('lot_stock_id', 'Pick'), ('wh_pack_stock_loc_id', 'Pack'), ('wh_output_stock_loc_id', 'Ship')],String='Location')
     start_date = fields.Date('Start Date', default=fields.date.today())
     end_date = fields.Date('End Date', default=fields.date.today())
-    sku_code = fields.Char(string="Product SKU")
+    sku_code =  fields.Many2one('product.product', string='Product SKU',
+                               domain="[('active','=',True),('product_tmpl_id.type','=','product')]")
+
 
     def open_table(self):
         tree_view_id = self.env.ref('on_hand_by_expiry.on_hand_by_expiry_list_view').id
@@ -93,7 +95,7 @@ class ProductsOnHandByExpiryPopUp(models.TransientModel):
         }
 
         if self.sku_code:
-            action["domain"].append(('sku_code', 'ilike', self.sku_code))
+            action["domain"].append(('product_id.id', '=', self.sku_code.id))
 
         if self.warehouse_id:
            action["domain"].append(('warehouse_id', '=', self.warehouse_id.id))

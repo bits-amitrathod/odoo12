@@ -73,7 +73,8 @@ class InventoryAvailabilityPopUp(models.TransientModel):
                                 Inner Join product_product pp on sq.product_id = pp.id
                                 Inner Join product_template pt on pp.product_tmpl_id = pt.id
                                 where
-                                sq.location_id in """ + str(tuple(list)) + """ and pt.sku_code = '""" + str(self.product_sku) + """' 
+                                sq.location_id in """ + str(tuple(list)) + """ and pt.sku_code = '""" + str(
+                self.product_sku) + """' 
 
                             ORDER
                             BY
@@ -96,8 +97,6 @@ class InventoryAvailabilityPopUp(models.TransientModel):
             'res_model': x_res_model,
             'target': 'main'
         }
-        if self.product_sku:
-            action["domain"].append(('sku_code', '=', self.product_sku))
-        # action.update({'target': 'main'})
+        if self.products:
+            action["domain"].append(('name', '=', self.products.name))
         return action
-

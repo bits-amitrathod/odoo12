@@ -75,7 +75,7 @@ class inventory_allocation_so(models.Model):
             select_query = select_query + " and sp.scheduled_date <='" + str(end_date) + "'"
 
         if product_sku :
-            select_query = select_query+ "and pt.sku_code = '"+str(product_sku)+ "'"
+            select_query = select_query+ "and pt.name = '"+str(product_sku.name)+ "'"
 
 
         select_query = select_query

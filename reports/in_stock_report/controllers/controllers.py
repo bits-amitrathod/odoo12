@@ -76,7 +76,7 @@ class ReportPrintInStockExport(http.Controller):
 
     @http.route('/web/export/in_stock_report', type='http', auth="public")
     @serialize_exception
-    def download_document_xl(self, token, **kwargs):
+    def download_document_xl(self, token=1, **kwargs):
 
         str_query = """
         create or replace TEMPORARY VIEW data AS 
@@ -86,7 +86,7 @@ class ReportPrintInStockExport(http.Controller):
           public.product_brand.name as product_brand,
           public.product_template.sku_code,
           public.product_template.name as product_template,
-          public.product_uom.name as product_uom,
+          public.uom_uom.name as product_uom,
           public.sale_order_line.product_id,
           sale_order.partner_id,
           public.product_template.actual_quantity,
@@ -109,8 +109,8 @@ class ReportPrintInStockExport(http.Controller):
             public.product_brand 
             ON ( public.product_template.product_brand_id = public.product_brand.id) 
           INNER JOIN
-            public.product_uom 
-            ON ( public.product_template.uom_id = public.product_uom.id) 
+            public.uom_uom 
+            ON ( public.product_template.uom_id = public.uom_uom.id) 
         WHERE
           product_template.actual_quantity > 0;
 
@@ -167,6 +167,6 @@ class ReportPrintInStockExport(http.Controller):
             headers=[('Content-Disposition', content_disposition('in_stock_report' + '.xls')),
                      ('Content-Type', 'application/vnd.ms-excel')],
         )
-        res.set_cookie('fileToken', token)
+       # res.set_cookie('fileToken', token)
 
         return res
