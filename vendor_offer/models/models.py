@@ -1481,12 +1481,17 @@ class VendorPricingExport(models.TransientModel):
         return product_lines_export_pp
 
     def download_excel_ven_price(self):
-        self.get_excel_data_vendor_pricing()
-        return {
-            'type': 'ir.actions.act_url',
-            'url': '/web/PPVendorPricing/download_document_xl',
-            'target': 'new'
-        }
+        list_val = self.get_excel_data_vendor_pricing()
+        if list_val and len(list_val) > 0:
+            return {
+                'type': 'ir.actions.act_url',
+                'url': '/web/PPVendorPricing/download_document_xl',
+                'target': 'new'
+            }
+        else:
+            product_lines_export_pp.clear()
+            raise UserError(
+                _('Cannot Export at the moment ,Please try after sometime.'))
 
 
 class ExportPPVendorPricingCSV(http.Controller):
@@ -1620,11 +1625,16 @@ class ExportPPVendorPricingXL(http.Controller):
 
         #  token=1,debug=1   are added if the URL contains extra parameters , which in some case URL does contain
         #  code will produce error if the parameters are not provided so default are added
+        try:
+            res = request.make_response(self.from_data(product_lines_export_pp[0], product_lines_export_pp[1:]),
+                                        headers=[('Content-Disposition',
+                                                  content_disposition(self.filename())),
+                                                 ('Content-Type', self.content_type)],
+                                        )
+            product_lines_export_pp.clear()
+            return res
 
-        res = request.make_response(self.from_data(product_lines_export_pp[0], product_lines_export_pp[1:]),
-                                    headers=[('Content-Disposition',
-                                              content_disposition(self.filename())),
-                                             ('Content-Type', self.content_type)],
-                                    )
-        product_lines_export_pp.clear()
-        return res
+        except:
+            res = request.make_response('','')
+            product_lines_export_pp.clear()
+            return res

@@ -129,4 +129,3 @@ class ReportSpsReceivingList1(models.AbstractModel):
             count = count + 1
 
         return {'new_receiving_list': new_receiving_list}
-
