@@ -50,7 +50,7 @@ class TrendingReportListView(models.Model):
                     [('location_dest_id', '=', cust_location_id), ('state', '=', 'done'),('sale_line_id','!=',None),('product_id','=',product.id),('picking_id.date_done','>=',str(sixth_month)),('picking_id.date_done','<=',str(end_of_month))])
                 for stock_move in stock_move_list:
                     product.currency_id=stock_move.sale_line_id.currency_id
-                    scheduled_date=datetime.date(datetime.strptime(str(stock_move.picking_id.date_done),"%Y-%m-%d %H:%M:%S"))
+                    scheduled_date=datetime.date(datetime.strptime(str(stock_move.picking_id.date_done).split(".")[0],"%Y-%m-%d %H:%M:%S"))
                     for stock_move_line in stock_move.move_line_ids:
                         product.product_uom_name=stock_move_line.product_uom_id.name
                         product.total_sale=product.total_sale + stock_move.sale_line_id.price_total
