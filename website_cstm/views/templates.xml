@@ -1,225 +1,225 @@
 <odoo>
-<!--    <template id="assets_frontend" inherit_id="web.assets_frontend" name="Website Assets">-->
-<!--        <xpath expr="//link[last()]" position="after">-->
-<!--            <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,600i,700,700i,800"-->
-<!--                  rel="stylesheet"/>-->
-<!--            <link rel="stylesheet" href="/website_cstm/static/src/less/website.style.less"/>-->
-<!--        </xpath>-->
+    <template id="assets_frontend" inherit_id="web.assets_frontend" name="Website Assets">
+        <xpath expr="//link[last()]" position="after">
+            <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,600i,700,700i,800"
+                  rel="stylesheet"/>
+            <link rel="stylesheet" href="/website_cstm/static/src/less/website.style.less"/>
+        </xpath>
 
-<!--        <xpath expr="//script[last()]" position="after">-->
-<!--            <script type="text/javascript" src="/website_cstm/static/src/js/script.js"/>-->
-<!--            &lt;!&ndash; Google Tag Manager &ndash;&gt;-->
-<!--            <script>-->
-<!--                <![CDATA[-->
-<!--(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':-->
-<!--new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],-->
-<!--j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=-->
-<!--'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);-->
-<!--})(window,document,'script','dataLayer','GTM-P9BX97D');]]>-->
-<!--            </script>-->
-<!--            &lt;!&ndash; End Google Tag Manager &ndash;&gt;-->
-<!--        </xpath>-->
-<!--    </template>-->
-<!--&lt;!&ndash;    <template id="googleTagBody" inherit_id="website.layout">&ndash;&gt;-->
-<!--&lt;!&ndash;        <xpath expr="//t[@t-set='html_data']" position="after">&ndash;&gt;-->
-<!--&lt;!&ndash;            &lt;!&ndash; Google Tag Manager (noscript) &ndash;&gt;&ndash;&gt;-->
-<!--&lt;!&ndash;            <noscript>&ndash;&gt;-->
-<!--&lt;!&ndash;                <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P9BX97D"&ndash;&gt;-->
-<!--&lt;!&ndash;                        height="0" width="0" style="display:none;visibility:hidden"></iframe>&ndash;&gt;-->
-<!--&lt;!&ndash;            </noscript>&ndash;&gt;-->
-<!--&lt;!&ndash;            &lt;!&ndash; End Google Tag Manager (noscript) &ndash;&gt;&ndash;&gt;-->
-<!--&lt;!&ndash;        </xpath>&ndash;&gt;-->
-<!--&lt;!&ndash;    </template>&ndash;&gt;-->
+        <xpath expr="//script[last()]" position="after">
+            <script type="text/javascript" src="/website_cstm/static/src/js/script.js"/>
+            <!-- Google Tag Manager -->
+            <script>
+                <![CDATA[
+(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-P9BX97D');]]>
+            </script>
+            <!-- End Google Tag Manager -->
+        </xpath>
+    </template>
+    <template id="googleTagBody" inherit_id="website.layout">
+        <xpath expr="//t[@t-set='html_data']" position="after">
+            <!-- Google Tag Manager (noscript) -->
+            <noscript>
+                <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P9BX97D"
+                        height="0" width="0" style="display:none;visibility:hidden"></iframe>
+            </noscript>
+            <!-- End Google Tag Manager (noscript) -->
+        </xpath>
+    </template>
 
-<!--    &lt;!&ndash;-->
-<!--    ~~~~~~~~~~~~~~~~~~~~~~~~~~ HEADER ~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-<!--    &ndash;&gt;-->
-<!--    <template id="headerNavbar" name="Main layout" inherit_id="portal.frontend_layout">-->
-<!--        <xpath expr="//header//div[hasclass('container')]" position="replace">-->
-<!--            <div class="navbar-header">-->
-<!--                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-top-collapse">-->
-<!--                    <span class="sr-only">Toggle navigation</span>-->
-<!--                    <span class="icon-bar"></span>-->
-<!--                    <span class="icon-bar"></span>-->
-<!--                    <span class="icon-bar"></span>-->
-<!--                </button>-->
+    <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~ HEADER ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    -->
+    <template id="headerNavbar" name="Main layout" inherit_id="portal.frontend_layout">
+        <xpath expr="//header//div[hasclass('container')]" position="replace">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-top-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
 
-<!--&lt;!&ndash;                <a class="navbar-brand" href="/">&ndash;&gt;-->
-<!--&lt;!&ndash;                    <span t-field="res_company.logo" t-options="{'widget': 'image'}"&ndash;&gt;-->
-<!--&lt;!&ndash;                          t-att-alt="'Logo of %s' % res_company.name" t-att-title="res_company.name"/>&ndash;&gt;-->
-<!--&lt;!&ndash;                </a>&ndash;&gt;-->
+<!--                <a class="navbar-brand" href="/">-->
+<!--                    <span t-field="res_company.logo" t-options="{'widget': 'image'}"-->
+<!--                          t-att-alt="'Logo of %s' % res_company.name" t-att-title="res_company.name"/>-->
+<!--                </a>-->
 
-<!--            </div>-->
+            </div>
 
-<!--            <div id="navbarCollapse" class="collapse navbar-collapse">-->
-<!--                <t t-if="not request.httprequest.path[0:5] == '/shop'">-->
-<!--                    <form class="navbar-form navbar-right" role="search" t-attf-action="/shop" method="get">-->
-<!--                        <div class="input-group header-searchbox">-->
-<!--                            <input id="SearchBox" type="text" name="search"-->
-<!--                                   class="form-control search_box search-query form-control oe_search_box search_autocomplete"-->
-<!--                                   placeholder="Search..." t-att-value="search"/>-->
-<!--                        </div>-->
-<!--                    </form>-->
-<!--                </t>-->
-<!--                <ul class="nav navbar-nav navbar-right">-->
-<!--                    <li class="active">-->
-<!--                        <a href="#" style="color:#353b4d!important;">(412) 564-1280</a>-->
-<!--                    </li>-->
-<!--                </ul>-->
-<!--            </div>-->
-<!--        </xpath>-->
-<!--    </template>-->
+            <div id="navbarCollapse" class="collapse navbar-collapse">
+                <t t-if="not request.httprequest.path[0:5] == '/shop'">
+                    <form class="navbar-form navbar-right" role="search" t-attf-action="/shop" method="get">
+                        <div class="input-group header-searchbox">
+                            <input id="SearchBox" type="text" name="search"
+                                   class="form-control search_box search-query form-control oe_search_box search_autocomplete"
+                                   placeholder="Search..." t-att-value="search"/>
+                        </div>
+                    </form>
+                </t>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="active">
+                        <a href="#" style="color:#353b4d!important;">(412) 564-1280</a>
+                    </li>
+                </ul>
+            </div>
+        </xpath>
+    </template>
 
-<!--    &lt;!&ndash;-->
-<!--        ~~~~~~~~~~~~~~~~~~~~~~~~~~ FOOTER ~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-<!--    &ndash;&gt;-->
+    <!--
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~ FOOTER ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    -->
 
 
-<!--    <template id="footer_cstm" inherit_id="website.footer_custom" customize_show="True" name="Automatic Footer">-->
-<!--        <xpath expr="//div[@id='footer']" position="replace">-->
-<!--            <footer>-->
-<!--            <div id="footer" class="container hidden-print " t-if="not no_footer">-->
-<!--                <div class="row">-->
-<!--                    <div class="col-md-5 col-sm-12 newsletter">-->
-<!--                        <h6>Sign Up for our Newsletter</h6>-->
+    <template id="footer_cstm" inherit_id="website.footer_custom" customize_show="True" name="Automatic Footer">
+        <xpath expr="//div[@id='footer']" position="replace">
+            <footer>
+            <div id="footer" class="container hidden-print " t-if="not no_footer">
+                <div class="row">
+                    <div class="col-md-5 col-sm-12 newsletter">
+                        <h6>Sign Up for our Newsletter</h6>
 
-<!--                        <div class="oe_snippet_body input-group js_subscribe" data-list-id="1">-->
-<!--                            <input type="email" name="email" class="js_subscribe_email form-control contact_email"-->
-<!--                                   placeholder="Enter your email address..."/>-->
-<!--                            <span class="input-group-btn">-->
-<!--                                <a href="#" class="btn btn-primary js_subscribe_btn action_button"-->
-<!--                                   style="width: 130px;">Subscribe-->
-<!--                                </a>-->
-<!--                                <a href="#" class="btn btn-success js_subscribed_btn hidden action_button"-->
-<!--                                   disabled="disabled" style="width: 130px;">-->
-<!--                                    Thanks-->
-<!--                                </a>-->
-<!--                            </span>-->
-<!--                            <div class="alert alert-success hidden">Thanks for your subscription!</div>-->
-<!--                        </div>-->
+                        <div class="oe_snippet_body input-group js_subscribe" data-list-id="1">
+                            <input type="email" name="email" class="js_subscribe_email form-control contact_email"
+                                   placeholder="Enter your email address..."/>
+                            <span class="input-group-btn">
+                                <a href="#" class="btn btn-primary js_subscribe_btn action_button"
+                                   style="width: 130px;">Subscribe
+                                </a>
+                                <a href="#" class="btn btn-success js_subscribed_btn hidden action_button"
+                                   disabled="disabled" style="width: 130px;">
+                                    Thanks
+                                </a>
+                            </span>
+                            <div class="alert alert-success hidden">Thanks for your subscription!</div>
+                        </div>
 
-<!--                        <p>Sign up to get the latest on sales, new releases and more …</p>-->
-<!--                        <div class="">-->
-<!--                            <a href="https://www.bbb.org/us/pa/pittsburgh/profile/surgical-supplies/surgical-product-solutions-llc-0141-71017485#bbbonlineclick"-->
-<!--                               target="_blank" title="SPS Accredited Business Review">-->
-<!--                                <img src="/website_cstm/static/src/img//black-seal-96-50-surgical-product-solutions-llc-71017485_large.png"-->
-<!--                                     alt=""/>-->
-<!--                            </a>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div class="col-md-2 col-sm-6" id="info">-->
-<!--                        <h6>Main Menu</h6>-->
-<!--                        <ul class="footer_menu">-->
-<!--                            <li>-->
-<!--                                <a href="/" title="Home">Home</a>-->
-<!--                            </li>-->
-<!--                            <li>-->
-<!--                                <a href="/shop" title="Catalog">Shop</a>-->
-<!--                            </li>-->
-<!--                            <li>-->
-<!--                                <a href="/shop/featured" title="Featured Products">Featured Products</a>-->
-<!--                            </li>-->
-<!--                            <li>-->
-<!--                                <a href="/shop/capital-equipment" title="Capital Equipment">Capital Equipment</a>-->
-<!--                            </li>-->
-<!--                            <li>-->
-<!--                                <a href="/about" title="About">About</a>-->
-<!--                            </li>-->
-<!--                            <li>-->
-<!--                                <a href="/faqs" title="FAQs">FAQs</a>-->
-<!--                            </li>-->
-<!--                            <li>-->
-<!--                                <a href="/contactus" title="Contact">Contact</a>-->
-<!--                            </li>-->
-<!--                        </ul>-->
-<!--                    </div>-->
-<!--                    <div class="col-md-2 col-sm-6">-->
-<!--                        <h6>Footer</h6>-->
-<!--                        <ul class="footer_menu">-->
-<!--                            <li>-->
-<!--                                <a href="/downloadCatalog"-->
-<!--                                   title="Download Catalog">Download Catalog-->
-<!--                                </a>-->
-<!--                            </li>-->
-<!--                            <li>-->
-<!--                                <a href="/search" title="Search">Search</a>-->
-<!--                            </li>-->
-<!--                            <li>-->
-<!--                                <a href="/about" title="About Us">About Us</a>-->
-<!--                            </li>-->
-<!--                            <li>-->
-<!--                                <a href="/faqs" title="FAQs">FAQs</a>-->
-<!--                            </li>-->
-<!--                            <li>-->
-<!--                                <a href="/quality_assurance" title="Quality Assurance and Service Guarantee">-->
-<!--                                    Quality Assurance and Service Guarantee-->
-<!--                                </a>-->
-<!--                            </li>-->
-<!--                            <li>-->
-<!--                                <a href="http://www.surgicalproductsolutions.com/" title="SurgicalProductSolutions.com">-->
-<!--                                    SurgicalProductSolutions.com-->
-<!--                                </a>-->
-<!--                            </li>-->
-<!--                            <li>-->
-<!--                                <a href="/terms" title="Terms">Terms</a>-->
-<!--                            </li>-->
-<!--                        </ul>-->
-<!--                    </div>-->
-<!--                    <div class="col-md-2 col-sm-6 social_icons">-->
-<!--                        <h6 class="social">Social</h6>-->
-<!--                        <ul class="social_icons">-->
-<!--                            <li class="linkedin">-->
-<!--                                <a href="https://www.linkedin.com/company/2706681?trk=tyah"-->
-<!--                                   title="Surgical Product Solutions on LinkedIn" rel="me" target="_blank">-->
-<!--                                    <i class="fa fa-linkedin" aria-hidden="true"/>-->
-<!--                                </a>-->
-<!--                            </li>-->
-<!--                        </ul>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="row copyright-hr">-->
+                        <p>Sign up to get the latest on sales, new releases and more …</p>
+                        <div class="">
+                            <a href="https://www.bbb.org/us/pa/pittsburgh/profile/surgical-supplies/surgical-product-solutions-llc-0141-71017485#bbbonlineclick"
+                               target="_blank" title="SPS Accredited Business Review">
+                                <img src="/website_cstm/static/src/img//black-seal-96-50-surgical-product-solutions-llc-71017485_large.png"
+                                     alt=""/>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-6" id="info">
+                        <h6>Main Menu</h6>
+                        <ul class="footer_menu">
+                            <li>
+                                <a href="/" title="Home">Home</a>
+                            </li>
+                            <li>
+                                <a href="/shop" title="Catalog">Shop</a>
+                            </li>
+                            <li>
+                                <a href="/shop/featured" title="Featured Products">Featured Products</a>
+                            </li>
+                            <li>
+                                <a href="/shop/capital-equipment" title="Capital Equipment">Capital Equipment</a>
+                            </li>
+                            <li>
+                                <a href="/about" title="About">About</a>
+                            </li>
+                            <li>
+                                <a href="/faqs" title="FAQs">FAQs</a>
+                            </li>
+                            <li>
+                                <a href="/contactus" title="Contact">Contact</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-2 col-sm-6">
+                        <h6>Footer</h6>
+                        <ul class="footer_menu">
+                            <li>
+                                <a href="/downloadCatalog"
+                                   title="Download Catalog">Download Catalog
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/search" title="Search">Search</a>
+                            </li>
+                            <li>
+                                <a href="/about" title="About Us">About Us</a>
+                            </li>
+                            <li>
+                                <a href="/faqs" title="FAQs">FAQs</a>
+                            </li>
+                            <li>
+                                <a href="/quality_assurance" title="Quality Assurance and Service Guarantee">
+                                    Quality Assurance and Service Guarantee
+                                </a>
+                            </li>
+                            <li>
+                                <a href="http://www.surgicalproductsolutions.com/" title="SurgicalProductSolutions.com">
+                                    SurgicalProductSolutions.com
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/terms" title="Terms">Terms</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-2 col-sm-6 social_icons">
+                        <h6 class="social">Social</h6>
+                        <ul class="social_icons">
+                            <li class="linkedin">
+                                <a href="https://www.linkedin.com/company/2706681?trk=tyah"
+                                   title="Surgical Product Solutions on LinkedIn" rel="me" target="_blank">
+                                    <i class="fa fa-linkedin" aria-hidden="true"/>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row copyright-hr">
 
-<!--                    <hr/>-->
+                    <hr/>
 
-<!--                    <div class="col-md-5 col-sm-5">-->
-<!--                        <p class="credits">-->
-<!--                            <![CDATA[&copy;]]> 2018 <a href="#" title="">Surgical Product Solutions</a>.-->
+                    <div class="col-md-5 col-sm-5">
+                        <p class="credits">
+                            <![CDATA[&copy;]]> 2018 <a href="#" title="">Surgical Product Solutions</a>.
 
-<!--                        </p>-->
-<!--                    </div>-->
-<!--                    <div class="col-md-7 col-sm-7">-->
+                        </p>
+                    </div>
+                    <div class="col-md-7 col-sm-7">
 
-<!--                        <div class="payment_methods">-->
-<!--                            <img src="/website_cstm/static/src/img/american_express-ed5c54cf3ceb18cd4deb3687857b816c07e4f4c7e8719da4a206cea3e7961be1.svg"-->
-<!--                                 alt="American express"/>-->
-<!--                            <img src="/website_cstm/static/src/img/diners_club-16436b9fb6dd9060edb51f1c7c44e23941e544ad798282d6aef1604319562fba.svg"-->
-<!--                                 alt="Diners club"/>-->
-<!--                            <img src="/website_cstm/static/src/img/discover-6a5629e025177299a47e8947dc20617d1be3652b0702cc2c31a0d26f0218e782.svg"-->
-<!--                                 alt="Discover"/>-->
-<!--                            <img src="/website_cstm/static/src/img/jcb-39bd079ac1eb8b4eedd7de6ad2e7f78fa187a571362449bf19afa9e7bad7ac1b.svg"-->
-<!--                                 alt="Jcb"/>-->
-<!--                            <img src="/website_cstm/static/src/img/master-173035bc8124581983d4efa50cf8626e8553c2b311353fbf67485f9c1a2b88d1.svg"-->
-<!--                                 alt="Master"/>-->
-<!--                            <img src="/website_cstm/static/src/img/paypal-49e4c1e03244b6d2de0d270ca0d22dd15da6e92cc7266e93eb43762df5aa355d.svg"-->
-<!--                                 alt="Paypal"/>-->
-<!--                            <img src="/website_cstm/static/src/img/shopify_pay-78300f25adfeb505650e3ecb78b3022f6f64bc84a456ca40e186a347624a4520.svg"-->
-<!--                                 alt="Shopify pay"/>-->
-<!--                            <img src="/website_cstm/static/src/img/visa-319d545c6fd255c9aad5eeaad21fd6f7f7b4fdbdb1a35ce83b89cca12a187f00.svg"-->
-<!--                                 alt="Visa"/>-->
-<!--                        </div>-->
-<!--                        <t t-call="website.language_selector"/>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </footer>-->
-<!--        </xpath>-->
-<!--    </template>-->
+                        <div class="payment_methods">
+                            <img src="/website_cstm/static/src/img/american_express-ed5c54cf3ceb18cd4deb3687857b816c07e4f4c7e8719da4a206cea3e7961be1.svg"
+                                 alt="American express"/>
+                            <img src="/website_cstm/static/src/img/diners_club-16436b9fb6dd9060edb51f1c7c44e23941e544ad798282d6aef1604319562fba.svg"
+                                 alt="Diners club"/>
+                            <img src="/website_cstm/static/src/img/discover-6a5629e025177299a47e8947dc20617d1be3652b0702cc2c31a0d26f0218e782.svg"
+                                 alt="Discover"/>
+                            <img src="/website_cstm/static/src/img/jcb-39bd079ac1eb8b4eedd7de6ad2e7f78fa187a571362449bf19afa9e7bad7ac1b.svg"
+                                 alt="Jcb"/>
+                            <img src="/website_cstm/static/src/img/master-173035bc8124581983d4efa50cf8626e8553c2b311353fbf67485f9c1a2b88d1.svg"
+                                 alt="Master"/>
+                            <img src="/website_cstm/static/src/img/paypal-49e4c1e03244b6d2de0d270ca0d22dd15da6e92cc7266e93eb43762df5aa355d.svg"
+                                 alt="Paypal"/>
+                            <img src="/website_cstm/static/src/img/shopify_pay-78300f25adfeb505650e3ecb78b3022f6f64bc84a456ca40e186a347624a4520.svg"
+                                 alt="Shopify pay"/>
+                            <img src="/website_cstm/static/src/img/visa-319d545c6fd255c9aad5eeaad21fd6f7f7b4fdbdb1a35ce83b89cca12a187f00.svg"
+                                 alt="Visa"/>
+                        </div>
+                        <t t-call="website.language_selector"/>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        </xpath>
+    </template>
 
-<!--&lt;!&ndash;    <template id="layout_footer_copyright" inherit_id="website.layout" name="Footer Copyright">&ndash;&gt;-->
-<!--&lt;!&ndash;        <xpath expr="//footer//div[hasclass('o_footer_copyright')]" position="replace">&ndash;&gt;-->
-<!--&lt;!&ndash;            <div class="container mt16 mb8"></div>&ndash;&gt;-->
-<!--&lt;!&ndash;        </xpath>&ndash;&gt;-->
-<!--&lt;!&ndash;    </template>&ndash;&gt;-->
+    <template id="layout_footer_copyright" inherit_id="website.layout" name="Footer Copyright">
+        <xpath expr="//footer//div[hasclass('o_footer_copyright')]" position="replace">
+            <div class="container mt16 mb8"></div>
+        </xpath>
+    </template>
 
 
 </odoo>

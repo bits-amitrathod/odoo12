@@ -177,11 +177,11 @@ class InventoryNotificationScheduler(models.TransientModel):
                     'sales_order': picking.purchase_id.name,
                     'sku': stock_move_line_single.product_id.product_tmpl_id.sku_code,
                     'Product': stock_move_line_single.product_id.name,
-                    'qty': int(stock_move_line_single.ordered_qty),
+                    'qty': int(stock_move_line_single.product_uom_qty),
                     'lot_name': stock_move_line_single.lot_id.name,
                     'lot_expired_date': stock_move_line_single.lot_id.use_date,
                     'qty_done': int(stock_move_line_single.qty_done),
-                    'status' : "Complete" if int(stock_move_line_single.ordered_qty) == int(stock_move_line_single.qty_done) else "Short" if int(stock_move_line_single.ordered_qty) > int(stock_move_line_single.qty_done) else "Extra"
+                    'status' : "Complete" if int(stock_move_line_single.product_uom_qty) == int(stock_move_line_single.qty_done) else "Short" if int(stock_move_line_single.product_uom_qty) > int(stock_move_line_single.qty_done) else "Extra"
                 }
                 sales_order.append(sale_order)
         sale_order_ref = picking.purchase_id
@@ -220,13 +220,14 @@ class InventoryNotificationScheduler(models.TransientModel):
             'description': "Hi Acquisitions Team, <br/><br/> " +
                            "<div style=\"text-align: center;width: 100%;\"><strong>The Shipment has been completed!</strong></div><br/>" +
                            "<strong> Please proceed  Purchase Order : </strong>" + sale_order_ref.name + "<br/>" + \
-                           "<strong> Date : </strong>" + (str( datetime.strptime(picking.scheduled_date, "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')) if picking.scheduled_date else "N/A") + \
+                           "<strong> Date : </strong>" + (datetime.strptime(str(picking.scheduled_date), "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y') if picking.scheduled_date else "N/A") + \
                            "<br/><strong> Vendor Name :  </strong>" + (sale_order_ref.partner_id.name or "") + "<br/>" + table_data,
 
             'header': ['Catalog number', 'Description', 'Initial Quantity', 'Lot', 'Expiration Date', 'Quantity Done','Status'],
             'columnProps': ['sku', 'Product', 'qty', 'lot_name', 'lot_expired_date', 'qty_done','status'],
             'closing_content': 'Thanks & Regards, <br/> Team'
         }
+
 
         # Email Attachment
         # template_id = template = self.env.ref("inventory_notification.common_mail_template").with_context(local_context).sudo().send_mail(SUPERUSER_ID,

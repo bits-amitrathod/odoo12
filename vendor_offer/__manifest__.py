@@ -12,7 +12,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'purchase','sale','product_brand','prioritization_engine','product_expiry_extension','delivery_fedex'],
+    'depends': ['base', 'purchase','sale','product_brand','prioritization_engine','product_expiry_extension'],
 
     # always loaded
     # 'qweb': [

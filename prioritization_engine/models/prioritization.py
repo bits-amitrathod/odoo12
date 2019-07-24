@@ -379,7 +379,9 @@ class PrioritizationTransient(models.TransientModel):
                  'expiration_tolerance': self.expiration_tolerance, 'partial_ordering': self.partial_ordering,
                  'partial_UOM': self.partial_UOM,
                  'length_of_hold': self.length_of_hold})
-        return {'type': 'ir.actions.act_close_wizard_and_reload_view'}
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'reload', }
 
 
 class SalesChannelPrioritization(models.Model):

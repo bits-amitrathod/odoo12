@@ -34,7 +34,7 @@ class inventory_exe(models.Model):
         if production_lot_alert_days > 0:
             alert_date = datetime.datetime.strptime(lot_use_date, '%Y-%m-%d %H:%M:%S') - datetime.timedelta(days=production_lot_alert_days)
         else:
-            alert_date = datetime.datetime.strptime(str(lot_use_date), '%Y-%m-%d %H:%M:%S') - datetime.timedelta(days=3)
+            alert_date = datetime.datetime.strptime(lot_use_date, '%Y-%m-%d %H:%M:%S') - datetime.timedelta(days=3)
 
         vals.update({'use_date': str(lot_use_date), 'alert_date': str(alert_date), 'life_date': str(lot_use_date),'removal_date': str(lot_use_date)})
 
@@ -78,8 +78,6 @@ class inventory_exe(models.Model):
             if message:
                 res['warning'] = {'title': _('Warning'), 'message': message}
         return res
-
-
 
     def _compute_show_lot_user_date(self):
             _logger.info("_compute_show_lot_user_date")
@@ -209,3 +207,22 @@ class inventory_exe(models.Model):
         # Reset the reserved quantity as we just moved it to the destination location.
         (self - ml_to_delete).with_context(bypass_reservation_update=True).write(
             {'product_uom_qty': 0.00, 'date': fields.Datetime.now(), })
+
+
+class ProductionLotNameAppendDate(models.Model):
+    _inherit = 'stock.production.lot'
+
+    @api.multi
+    def name_get(self):
+        result = []
+        if self.env.context is None:
+            self.env.context = {}
+        for record in self:
+            name = record.name
+            if self.env.context.get('lot_date_display_name'):
+                if record.use_date:
+                    name = record.name + ': #Exp Date :' + str(record.use_date)[0:10] + ':#Qty :' +str(record.product_qty)
+                else:
+                    name = record.name
+            result.append((record.id, name))
+        return result

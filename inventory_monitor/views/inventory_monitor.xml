@@ -6,7 +6,7 @@
             <field name="priority" eval="30"/>
             <field name="inherit_id" ref="base.res_config_settings_view_form" />
             <field name="arch" type="xml">
-               <xpath expr="//form" position="inside" >
+              <xpath expr="//div[hasclass('settings')]" position="inside">
                         <h2>Inventory Monitor</h2>
 
                          <div class="row mt16 o_settings_container" id="production_lot_info">

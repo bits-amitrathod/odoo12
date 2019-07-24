@@ -8,7 +8,8 @@ _logger = logging.getLogger(__name__)
 class TrendingReportListPopUp(models.TransientModel):
     _name = 'inventory.so_popup'
     _description = 'Inventory Allocation Report List PopUp'
-    product_sku = fields.Char()
+    product_sku = fields.Many2one('product.product', string='Product SKU',
+                               domain="[('active','=',True),('product_tmpl_id.type','=','product')]")
     compute_at_date = fields.Selection([
         (0, 'Show All '),
         (1, 'Date Range ')

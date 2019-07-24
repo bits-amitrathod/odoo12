@@ -24,7 +24,7 @@ class InventoryValuationPopUp(models.TransientModel):
         }
 
         if self.sku_code:
-            action["domain"].append(('sku_code', '=', self.sku_code.sku_code))
+            action["domain"].append(('name', '=', self.sku_code.name))
 
         return action
 
@@ -67,7 +67,7 @@ class InventoryCustomProductPopUp(models.TransientModel):
             action["context"] = {'production_lot_ids': product_list[1]}
 
         if self.sku_code:
-            action["domain"].append(('sku_code', '=', self.sku_code.sku_code))
+            action["domain"].append(('name', '=', self.sku_code.name))
 
         return action
 

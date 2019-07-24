@@ -14,8 +14,6 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
-
-
 class StockMoveExtension(models.Model):
     _inherit = "stock.move"
 
@@ -27,23 +25,25 @@ class StockMoveExtension(models.Model):
         return False
 
     def write(self, vals):
-        global serialNumber;
-        global serialNumberExDate;
+        global serialNumber
+        global serialNumberExDate
+
+        temp_var = 0
         for this in  self:
             lotNumbers = []
             product_tmpl=self.env['product.template'].search([('id', '=', int(this.product_id.product_tmpl_id))])
             params = self.env['ir.config_parameter'].sudo()
             group_stock_production_lot = params.get_param('inventory_extension.group_stock_production_lot')
 
-            product_expiry = self.env['ir.module.module'].search([('name', '=', 'product_expiry')])
+            product_expiry = self.env['ir.module.module'].sudo().search([('name', '=', 'product_expiry')])
             module_product_expiry=True if product_expiry.state == 'installed' else False
             show_lots_m2o = this.has_tracking != 'none' and (
                     this.picking_type_id.use_existing_lots or this.state == 'done' or this.origin_returned_move_id.id),  # able to create lots, whatever the value of ` use_create_lots`.
             show_lots_text = this.has_tracking != 'none' and this.picking_type_id.use_create_lots and not this.picking_type_id.use_existing_lots and this.state != 'done' and not this.origin_returned_move_id.id,
             if show_lots_m2o[0] or show_lots_text[0] :
                 try:
-                    serialNumber = False;
-                    serialNumberExDate = False;
+                    serialNumber = False
+                    serialNumberExDate = False
                     for ml in vals.get('move_line_ids', {}):
                         if isinstance(ml[2], dict):
                             if ('lot_id' in ml[2] and not ml[2].get('lot_id') ):
@@ -114,11 +114,11 @@ class StockMoveExtension(models.Model):
                     if 'date_expected' in propagated_changes_dict:
                         propagated_changes_dict.pop('date_expected')
                     if propagated_date_field:
-                        current_date = datetime.strptime(str(move.date_expected), DEFAULT_SERVER_DATETIME_FORMAT)
-                        new_date = datetime.strptime(str(vals.get(propagated_date_field)), DEFAULT_SERVER_DATETIME_FORMAT)
+                        current_date = datetime.strptime(move.date_expected, DEFAULT_SERVER_DATETIME_FORMAT)
+                        new_date = datetime.strptime(vals.get(propagated_date_field), DEFAULT_SERVER_DATETIME_FORMAT)
                         delta_days = (new_date - current_date).total_seconds() / 86400
                         if abs(delta_days) >= move.company_id.propagation_minimum_delta:
-                            old_move_date = datetime.strptime(str(move.move_dest_ids[0].date_expected), DEFAULT_SERVER_DATETIME_FORMAT)
+                            old_move_date = datetime.strptime(move.move_dest_ids[0].date_expected, DEFAULT_SERVER_DATETIME_FORMAT)
                             new_move_date = (old_move_date + relativedelta.relativedelta(days=delta_days or 0)).strftime(DEFAULT_SERVER_DATETIME_FORMAT)
                             propagated_changes_dict['date_expected'] = new_move_date
                     #For pushed moves as well as for pulled moves, propagate by recursive call of write().

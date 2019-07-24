@@ -24,7 +24,7 @@ class inventory_adjustment_report(models.Model):
     @api.multi
     def _calculateSKU(self):
         ACTIONS = {
-            "product": "Stockable Product",
+            "product": "Storable Product",
             "consu": "Consumable",
             "service": "Service",
         }
