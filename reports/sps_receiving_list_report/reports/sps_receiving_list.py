@@ -31,6 +31,7 @@ class ReportSpsReceivingList(models.AbstractModel):
                     'prod_id': old
                 }
 
+
         new_receiving_list = {}
         count = 0
         for obj in receiving_list:
