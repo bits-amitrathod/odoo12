@@ -386,6 +386,7 @@ class VendorOffer(models.Model):
             if (int(self.revision) > 0):
                 temp = int(self.revision) - 1
                 self.revision = str(temp)
+            self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
 
     @api.multi
     def action_button_confirm_api(self, product_id):
