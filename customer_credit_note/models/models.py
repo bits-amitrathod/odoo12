@@ -105,6 +105,34 @@ class CustomerCreditNote(models.Model):
             print('not CRN')
             super(CustomerCreditNote, self).action_validate_invoice_payment()
 
+    def _get_counterpart_move_line_vals(self, invoice=False):
+        if self.payment_type == 'transfer':
+            name = self.name
+        else:
+            name = ''
+            if self.partner_type == 'customer':
+                if self.payment_type == 'inbound':
+                    name += _("Customer Payment Received")
+                elif self.payment_type == 'outbound':
+                    name += _("Customer Credit Note")
+            elif self.partner_type == 'supplier':
+                if self.payment_type == 'inbound':
+                    name += _("Vendor Credit Note")
+                elif self.payment_type == 'outbound':
+                    name += _("Vendor Payment Received")
+            if invoice:
+                name += ': '
+                for inv in invoice:
+                    if inv.move_id:
+                        name += inv.number + ', '
+                name = name[:len(name)-2]
+        return {
+            'name': name,
+            'account_id': self.destination_account_id.id,
+            'journal_id': self.journal_id.id,
+            'currency_id': self.currency_id != self.company_id.currency_id and self.currency_id.id or False,
+        }
+
 
 class AccountInvoiceVendorCredit(models.Model):
     _inherit = "account.invoice"
