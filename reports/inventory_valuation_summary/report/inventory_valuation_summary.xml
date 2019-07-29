@@ -14,11 +14,11 @@
                         <!--}-->
                     </style>
                     <div class="oe_structure"/>
-                    <div class="row justify-content-md-center">
-                            <b>
-                                <h2>Surgical Product Solutions</h2>
-                                <h4>Inventory Valuation Summary</h4>
-                            </b>
+                    <div class="row  d-block">
+
+                                <h2 class ="text-center">Surgical Product Solutions</h2>
+                                <h4 class ="text-center">Inventory Valuation Summary</h4>
+
                     </div>
                     <br/>
                     <!--<t t-set="grandAmount" t-value="0"/>-->

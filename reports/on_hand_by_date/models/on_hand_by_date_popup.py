@@ -22,7 +22,9 @@ class ProductsOnHandByDatePopUp(models.TransientModel):
         help="Choose to analyze the Show Summary or from a specific date in the past.")
 
     vendor_id = fields.Many2one('res.partner', string='Vendor', required=False, )
-    sku_code = fields.Char('Product SKU')
+    sku_code = fields.Many2one('product.product', string='Product SKU',
+                               domain="[('active','=',True),('product_tmpl_id.type','=','product')]")
+
     warehouse_id = fields.Many2one('stock.warehouse', 'Warehouse')
     show_inactive_products = fields.Boolean('Show Active Products', default=True, required=False)
     show_cost = fields.Boolean('Show Cost', default=False, required=False)
@@ -58,7 +60,7 @@ class ProductsOnHandByDatePopUp(models.TransientModel):
             action["domain"].append(('partner_id', '=', self.vendor_id.id))
 
         if self.sku_code:
-            action["domain"].append(('sku_code', 'ilike', self.sku_code))
+            action["domain"].append(('product_name', '=', self.sku_code.name))
 
         if self.quantities is 0:
             action["domain"].append(('qty_done', '>', '0'))

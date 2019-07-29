@@ -5,7 +5,7 @@
             <t t-call="web.external_layout">
                 <page>
                     <div class="oe_structure"/>
-                    <div class="row justify-content-md-center">
+                    <div>
                         <center>
                             <b>
                                 <h2>Surgical Product Solutions</h2>
