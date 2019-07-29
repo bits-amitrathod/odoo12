@@ -3,7 +3,7 @@
     'name': "Online Proposals for Prioritization",
 
 
-    'author': "Benchmark IT Solutions (I) Pvt Ltd.",
+    'author': "Benchmark IT Solutions",
     'website': "http://www.benchmarkitsolutions.com",
 
     # Categories can be used to filter modules in modules listing
@@ -13,7 +13,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','sale','prioritization_engine','vendor_offer'],
+    'depends': ['base','website_quote','prioritization_engine','vendor_offer','website_cstm'],
 
     # always loaded
     'data': [

@@ -1,3 +1,4 @@
+
 from odoo import tools
 import logging
 import datetime
@@ -16,8 +17,7 @@ class ReportInStockReportPopup(models.TransientModel):
     partner_id = fields.Many2one('res.partner', string='Customer', )
     user_id = fields.Many2one('res.users', 'Salesperson')
     warehouse_id = fields.Many2one('stock.warehouse', 'Warehouse')
-    sku_code = fields.Many2one('product.product', string='Product SKU',
-                               domain="[('active','=',True),('product_tmpl_id.type','=','product')]")
+    sku_code = fields.Char('Product SKU')
 
     def open_table(self):
         tree_view_id = self.env.ref('in_stock_report.view_in_stock_report_line_tree').id
@@ -46,7 +46,7 @@ class ReportInStockReportPopup(models.TransientModel):
             action["domain"].append(('warehouse_id', '=', self.warehouse_id.id))
 
         if self.sku_code:
-            action["domain"].append(('product_id.id', 'ilike', self.sku_code.id))
+            action["domain"].append(('sku_code', 'ilike', self.sku_code))
 
 
 
@@ -58,6 +58,7 @@ class ReportInStockReport(models.Model):
     _auto = False
 
     _inherits = {'product.template': 'product_tmpl_id'}
+
 
     partner_id = fields.Many2one('res.partner', string='Customer', )
     user_id = fields.Many2one('res.users', 'Salesperson', readonly=True)
@@ -72,9 +73,9 @@ class ReportInStockReport(models.Model):
 
     min_expiration_date = fields.Date("Min Expiration Date", compute='_calculate_max_min_lot_expiration')
     max_expiration_date = fields.Date("Max Expiration Date", store=False)
-    price_list = fields.Float("Sales Price", compute='_calculate_max_min_lot_expiration')
+    price_list=fields.Float("Sales Price",  compute='_calculate_max_min_lot_expiration')
     # actual_quantity = fields.Float(string='Qty Available For Sale', compute='_calculate_max_min_lot_expiration', digits=dp.get_precision('Product Unit of Measure'))
-    partn_name = fields.Char()
+    partn_name=fields.Char()
 
     @api.multi
     def _calculate_max_min_lot_expiration(self):
@@ -148,10 +149,10 @@ class ReportInStockReport(models.Model):
             product_template
             ON
             (
-            product_product.product_tmpl_id = product_template.id)
-
+            product_product.product_tmpl_id = product_template.id  and  product_template.sale_ok = True)
+            
             """
-        groupby = """
+        groupby  = """
          group by partn_name, public.sale_order.partner_id,
                 public.sale_order.user_id,
                 public.product_template.product_brand_id,
@@ -162,11 +163,11 @@ class ReportInStockReport(models.Model):
         if s_date and e_date and not s_date is None and not e_date is None:
             e_date = datetime.datetime.strptime(str(e_date), "%Y-%m-%d")
             e_date = e_date + datetime.timedelta(days=1)
-            sql_query = sql_query + """ and sale_order.state in ('sale','sent') and sale_order.date_order>=%s  and sale_order.date_order<=%s"""
+            sql_query=sql_query+""" and sale_order.state in ('sale','sent') and sale_order.date_order>=%s  and sale_order.date_order<=%s"""
             sql_query = "CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + sql_query + groupby + " )"
             self._cr.execute(sql_query, (str(s_date), str(e_date)))
         else:
-            sql_query = "CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + sql_query + groupby + " )"
+            sql_query = "CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + sql_query +  groupby +" )"
             self._cr.execute(sql_query)
 
     @api.model_cr
@@ -178,8 +179,8 @@ class ReportPrintInStockReport(models.AbstractModel):
     _name = 'report.in_stock_report.in_stock_report_print'
 
     @api.model
-    def _get_report_values(self, docids, data=None):
+    def get_report_values(self, docids, data=None):
         dates_picked = self.env['popup.report.in.stock.report'].search([('create_uid', '=', self._uid)], limit=1,
-                                                                       order="id desc")
+                                                                  order="id desc")
 
-        return {'dateRange': dates_picked, 'data': self.env['report.in.stock.report'].browse(docids)}
+        return {'dateRange':dates_picked ,'data': self.env['report.in.stock.report'].browse(docids)}

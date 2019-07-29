@@ -20,6 +20,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <!-- End Google Tag Manager -->
         </xpath>
     </template>
+
     <template id="googleTagBody" inherit_id="website.layout">
         <xpath expr="//t[@t-set='html_data']" position="after">
             <!-- Google Tag Manager (noscript) -->

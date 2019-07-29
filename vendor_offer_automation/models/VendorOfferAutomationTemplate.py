@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api
+from odoo import models, fields, api,_
 
 hide_column_list_method = ['mf_product_description', 'mf_quantity_in_stock', 'mf_uom','mf_price', 'mf_sales_count',
                            'mf_sales_count_yr', 'mf_sales_total', 'mf_premium', 'mf_exp_inventory', 'mf_sales_count_90',
@@ -48,5 +48,3 @@ class VendorOfferAutomationTemplateClass(models.Model):
     mf_accelerator = fields.Char(string='Accelerator')
     mf_credit = fields.Char(string='Credit')
     #mf_margin_cost = fields.Char(string='Cost %')
-
-

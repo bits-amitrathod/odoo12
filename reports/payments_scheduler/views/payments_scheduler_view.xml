@@ -27,10 +27,13 @@
                 <tree create="false" edit="false" delete="false">
                     <field name="acquisition_rep" />
                     <field name="partner_id" groups="base.group_user" string="Vendor Name"/>
+                    <field name="reference"  />
+                    <field name="number"/>
                     <field name="origin"  string="Purchase Order #"/>
                     <field name="date_invoice" string="Check-in Date"/>
                     <field name="date_due"/>
                     <field name="pay_to"/>
+                    <field name="residual_signed" string ="To Pay"/>
                     <field name="address"/>
                     <field name="payment_term_id" options="{'no_create': True}"/>
                     <field name="amount_total_signed" string="Bill Amount" sum="Bill Amount"/>
@@ -49,13 +52,16 @@
                           <group>
                                <field name="acquisition_rep" />
                                <field name="partner_id" groups="base.group_user" string="Vendor Name"/>
+                                <field name="reference"  />
                                 <field name="origin"  string="Purchase Order #"/>
                                 <field name="date_invoice" string="Check-in Date"/>
                                 <field name="date_due"/>
                           </group>
                         <group>
                                 <field name="pay_to"/>
+                                <field name="residual_signed" string ="To Pay"/>
                                 <field name="address"/>
+                                <field name="number"/>
                                 <field name="payment_term_id" options="{'no_create': True}"/>
                                 <field name="amount_total_signed" string="Bill Amount" sum="Bill Amount"/>
                           </group>

@@ -1,12 +1,11 @@
 odoo.define('vendor_offer_automation.import_offer_template', function (require) {
 "use strict";
 
+var AbstractAction = require('web.AbstractAction');
 var ControlPanelMixin = require('web.ControlPanelMixin');
 var core = require('web.core');
 var session = require('web.session');
 var time = require('web.time');
-var Widget = require('web.Widget');
-var ajax = require('web.ajax');
 
 var QWeb = core.qweb;
 var _t = core._t;
@@ -27,6 +26,7 @@ var StateMachine = window.StateMachine;
  * @param {Object} attributes jquery.form attributes object
  * @param {Function} callback function to call with the returned data
  */
+
 function jsonp(form, attributes, callback) {
     attributes = attributes || {};
     var options = {jsonp: _.uniqueId('import_callback_')};
@@ -45,38 +45,47 @@ function jsonp(form, attributes, callback) {
     $(form).ajaxSubmit(attributes);
 }
 
-var DataImport = Widget.extend(ControlPanelMixin, {
+function _make_option(term) { return {id: term, text: term }; }
+function _from_data(data, term) {
+    return _.findWhere(data, {id: term}) || _make_option(term);
+}
+
+function dataFilteredQuery(q) {
+    var suggestions = _.clone(this.data);
+    if (q.term) {
+        var exact = _.filter(suggestions, function (s) {
+            return s.id === q.term || s.text === q.term;
+        });
+        if (exact.length) {
+            suggestions = exact;
+        } else {
+            suggestions = [_make_option(q.term)].concat(_.filter(suggestions, function (s) {
+                return s.id.indexOf(q.term) !== -1 || s.text.indexOf(q.term) !== -1
+            }));
+        }
+    }
+    q.callback({results: suggestions});
+}
+
+var DataImport = AbstractAction.extend(ControlPanelMixin, {
     template: 'ImportOfferTemplateView',
     opts: [
-        {name: 'encoding', label: _lt("Encoding:"), value: 'utf-8'},
-        {name: 'separator', label: _lt("Separator:"), value: ','},
+        {name: 'encoding', label: _lt("Encoding:"), value: ''},
+        {name: 'separator', label: _lt("Separator:"), value: ''},
         {name: 'quoting', label: _lt("Text Delimiter:"), value: '"'}
     ],
-    parse_opts: [
+
+    parse_opts_formats: [
         {name: 'date_format', label: _lt("Date Format:"), value: ''},
         {name: 'datetime_format', label: _lt("Datetime Format:"), value: ''},
+    ],
+    parse_opts_separators: [
         {name: 'float_thousand_separator', label: _lt("Thousands Separator:"), value: ','},
         {name: 'float_decimal_separator', label: _lt("Decimal Separator:"), value: '.'}
     ],
     events: {
         // 'change .oe_import_grid input': 'import_dryrun',
-//        'change #customers_list' : function(e){
-//            e.preventDefault();
-//            if(this.$('#customers_list').val() == '0'){
-////                 $(':input','#import-form').not(':button, :submit, :reset, :hidden').val('');
-////                 this.$('#file_selection_widget').hide();
-//                   this.do_action({
-//                   type: 'ir.actions.client',
-//                   tag: 'reload',
-//            });
-//            } else{
-//                 this.$('#file_selection_widget').show();
-//                 this.customer = Number(this.$('#customers_list').val());
-//            }
-//        },
-
         'change .oe_import_file': 'loaded_file',
-        'click .oe_import_file_reload': 'loaded_file',
         'change input.oe_import_has_header, .js_import_options input': 'settings_changed',
         'change input.oe_import_advanced_mode': function (e) {
             this.do_not_change_match = true;
@@ -92,6 +101,8 @@ var DataImport = Widget.extend(ControlPanelMixin, {
         },
         'click .oe_import_moreinfo_action a': function (e) {
             e.preventDefault();
+            // #data will parse the attribute on its own, we don't like
+            // that sort of things
             var action = JSON.parse($(e.target).attr('data-action'));
             // FIXME: when JS-side clean_action
             action.views = _(action.views).map(function (view) {
@@ -117,7 +128,7 @@ var DataImport = Widget.extend(ControlPanelMixin, {
     init: function (parent, action) {
         this._super.apply(this, arguments);
         this.action_manager = parent;
-        this.res_model =  ''; //action.params[0].request_model;//action.params.model;
+        this.res_model =   ''; //action.params[0].request_model;//action.params.model;
         this.parent_context = action.params.context || {};
         // import object id
         this.id = null;
@@ -130,11 +141,22 @@ var DataImport = Widget.extend(ControlPanelMixin, {
         this.parent_model = action.params[0].model;
         this.template_type = 'Inventory';
     },
+     willStart: function () {
+        var self = this;
+        return this._rpc({
+            model: 'sps.vendor.offer.template.transient',
+            method: 'get_import_templates',
+            context: this.parent_context,
+        }).then(function (result) {
+            self.importTemplates = result;
+        });
+    },
     start: function () {
         var self = this;
         this.setup_encoding_picker();
         this.setup_separator_picker();
         this.setup_float_format_picker();
+        this.setup_date_format_picker();
 
         return $.when(
             this._super(),
@@ -142,24 +164,8 @@ var DataImport = Widget.extend(ControlPanelMixin, {
                 self.id = id;
                 self.$('input[name=import_id]').val(id);
 
-
-//                self.$('#file_selection_widget').hide();
-//                self.$('p#user_type_label').html('Partner');
-
-//                $.post( "/userslist", 'input_data=supplier', function( data ) {
-//                    var jsonArray = JSON.parse(JSON.stringify(data));
-//                    self.$('#customers_list').append("<option value='0'></option>");
-//                    for(var index = 0; index < jsonArray.length; index++){
-//                        var jsonObject = jsonArray[index];
-//                        self.$('#customers_list').append("<option value='" + jsonObject.id + "'>" + jsonObject.name + "</option>");
-//                    }}
-//                , "json");
-
-
-
                 self.renderButtons();
                 var status = {
-//                    breadcrumbs: self.action_manager.get_breadcrumbs(),
                     cp_content: {$buttons: self.$buttons},
                 };
                 self.update_control_panel(status);
@@ -176,9 +182,13 @@ var DataImport = Widget.extend(ControlPanelMixin, {
     },
     renderButtons: function() {
         var self = this;
-        this.$buttons = $(QWeb.render("ImportView.buttons", this));
+        this.$buttons = $(QWeb.render("ImportOfferTemplateViewInner.buttons", this));
         this.$buttons.filter('.o_import_validate').on('click', this.validate.bind(this));
         this.$buttons.filter('.o_import_import').on('click', this.import.bind(this));
+        this.$buttons.filter('.o_import_file_reload').on('click', this.loaded_file.bind(this));
+        this.$buttons.filter('.oe_import_file').on('click', function () {
+            self.$('.oe_import_file').click();
+        });
         this.$buttons.filter('.o_import_cancel').on('click', function(e) {
             e.preventDefault();
             self.exit();
@@ -187,88 +197,100 @@ var DataImport = Widget.extend(ControlPanelMixin, {
     setup_encoding_picker: function () {
         this.$('input.oe_import_encoding').select2({
             width: '160px',
-            query: function (q) {
-                var make = function (term) { return {id: term, text: term}; };
-                var suggestions = _.map(
-                    ('utf-8 utf-16 windows-1252 latin1 latin2 big5 ' +
-                     'gb18030 shift_jis windows-1251 koir8_r').split(/\s+/),
-                    make);
-                if (q.term) {
-                    suggestions.unshift(make(q.term));
-                }
-                q.callback({results: suggestions});
-            },
-            initSelection: function (e, c) {
-                return c({id: 'utf-8', text: 'utf-8'});
+            data: _.map(('utf-8 utf-16 windows-1252 latin1 latin2 big5 gb18030 shift_jis windows-1251 koir8_r').split(/\s+/), _make_option),
+            query: dataFilteredQuery,
+            initSelection: function ($e, c) {
+                return c(_make_option($e.val()));
             }
-        }).select2('val', 'utf-8');
+        });
     },
     setup_separator_picker: function () {
+        var data = [
+            {id: ',', text: _t("Comma")},
+            {id: ';', text: _t("Semicolon")},
+            {id: '\t', text: _t("Tab")},
+            {id: ' ', text: _t("Space")}
+        ];
         this.$('input.oe_import_separator').select2({
             width: '160px',
-            query: function (q) {
-                var suggestions = [
-                    {id: ',', text: _t("Comma")},
-                    {id: ';', text: _t("Semicolon")},
-                    {id: '\t', text: _t("Tab")},
-                    {id: ' ', text: _t("Space")}
-                ];
-                if (q.term) {
-                    suggestions.unshift({id: q.term, text: q.term});
-                }
-                q.callback({results: suggestions});
-            },
-            initSelection: function (e, c) {
-                return c({id: ',', text: _t("Comma")});
-            },
+            data: data,
+            query: dataFilteredQuery,
+            // this is not provided to initSelection so can't use this.data
+            initSelection: function ($e, c) {
+                c(_from_data(data, $e.val()) || _make_option($e.val()))
+            }
         });
     },
     setup_float_format_picker: function () {
-        var sug_query = function (q) {
-                    var suggestions = [
-                        {id: ',', text: _t("Comma")},
-                        {id: '.', text: _t("Dot")},
-                    ];
-                    if (q.term) {
-                        suggestions.unshift({id: q.term, text: q.term});
-                    }
-                    q.callback({results: suggestions});
-                };
+        var data_decimal = [
+            {id: ',', text: _t("Comma")},
+            {id: '.', text: _t("Dot")},
+        ];
+        var data_digits = data_decimal.concat([{id: '', text: _t("No Separator")}]);
         this.$('input.oe_import_float_thousand_separator').select2({
             width: '160px',
-            query: sug_query,
-            initSelection: function (e, c) {
-                return c({id: ',', text: _t("Comma")});
-            },
+            data: data_digits,
+            query: dataFilteredQuery,
+            initSelection: function ($e, c) {
+                c(_from_data(data_digits, $e.val()) || _make_option($e.val()))
+            }
         });
         this.$('input.oe_import_float_decimal_separator').select2({
             width: '160px',
-            query: sug_query,
-            initSelection: function (e, c) {
-                return c({id: ',', text: _t("Dot")});
-            },
+            data: data_decimal,
+            query: dataFilteredQuery,
+            initSelection: function ($e, c) {
+                c(_from_data(data_decimal, $e.val()) || _make_option($e.val()))
+            }
         });
     },
-
+setup_date_format_picker: function () {
+        var data = _([
+            'YYYY-MM-DD',
+            'DD/MM/YY',
+            'DD/MM/YYYY',
+            'DD-MM-YYYY',
+            'DD-MMM-YY',
+            'DD-MMM-YYYY',
+            'MM/DD/YY',
+            'MM/DD/YYYY',
+            'MM-DD-YY',
+            'MM-DD-YYYY',
+            'DDMMYY',
+            'DDMMYYYY',
+            'YYMMDD',
+            'YYYYMMDD',
+            'YY/MM/DD',
+            'YYYY/MM/DD',
+            'MMDDYY',
+            'MMDDYYYY',
+        ]).map(_make_option);
+        this.$('input.oe_import_date_format').select2({
+            width: '160px',
+            data: data,
+            query: dataFilteredQuery,
+            initSelection: function ($e, c) {
+                c(_from_data(data, $e.val()) || _make_option($e.val()));
+            }
+        })
+    },
     import_options: function () {
         var self = this;
         var options = {
             headers: this.$('input.oe_import_has_header').prop('checked'),
             advanced: this.$('input.oe_import_advanced_mode').prop('checked'),
             keep_matches: this.do_not_change_match,
-            customer_id: self.customer,
+            name_create_enabled_fields: {},
         };
         _(this.opts).each(function (opt) {
             options[opt.name] =
                 self.$('input.oe_import_' + opt.name).val();
         });
-        _(this.parse_opts).each(function (opt) {
-            if (opt.name === 'date_format' || opt.name === 'datetime_format') {
-                options[opt.name] = time.moment_to_strftime_format(self.$('input.oe_import_' + opt.name).val());
-            }
-            else {
-                options[opt.name] = self.$('input.oe_import_' + opt.name).val();
-            }
+         _(this.parse_opts_formats).each(function (opt) {
+            options[opt.name] = time.moment_to_strftime_format(self.$('input.oe_import_' + opt.name).val());
+        });
+        _(this.parse_opts_separators).each(function (opt) {
+            options[opt.name] = self.$('input.oe_import_' + opt.name).val();
         });
         options['fields'] = [];
         if (this.do_not_change_match) {
@@ -277,17 +299,20 @@ var DataImport = Widget.extend(ControlPanelMixin, {
             }).get();
         }
         this.do_not_change_match = false;
+        this.$('input.o_import_create_option').each(function () {
+            var field = this.getAttribute('field');
+            if (field) {
+                options.name_create_enabled_fields[field] = this.checked;
+            }
+        });
         return options;
     },
 
     //- File & settings change section
     onfile_loaded: function () {
-        var file = this.$('.oe_import_file')[0].files[0];
-        this.$('.oe_import_file_show').val(file !== undefined && file.name || '');
-        this.$buttons.filter('.o_import_button').add(this.$('.oe_import_file_reload'))
-                .prop('disabled', true);
+        this.$buttons.filter('.o_import_import, .o_import_validate, .o_import_file_reload').addClass('d-none');
         if (!this.$('input.oe_import_file').val()) { return this['settings_changed'](); }
-        this.$('.oe_import_date_format').val('');
+        this.$('.oe_import_date_format').select2('val', '');
         this.$('.oe_import_datetime_format').val('');
 
         this.$el.removeClass('oe_import_preview oe_import_error');
@@ -297,20 +322,19 @@ var DataImport = Widget.extend(ControlPanelMixin, {
         if ((file.type && _.last(file.type.split('/')) === "csv") || ( _.last(file.name.split('.')) === "csv")) {
             import_toggle = true;
         }
-        this.$el.find('.oe_import_toggle').toggle(import_toggle);
+        this.$el.find('.oe_import_box').toggle(import_toggle);
         jsonp(this.$el, {
             url: '/offer_template_import/set_file'
         }, this.proxy('settings_changed'));
     },
     onpreviewing: function () {
         var self = this;
-        this.$buttons.filter('.o_import_button').add(this.$('.oe_import_file_reload'))
-                .prop('disabled', true);
+        this.$buttons.filter('.o_import_import, .o_import_validate, .o_import_file_reload').addClass('d-none');
         this.$el.addClass('oe_import_with_file');
         // TODO: test that write // succeeded?
         this.$el.removeClass('oe_import_preview_error oe_import_error');
         this.$el.toggleClass(
-            'oe_import_noheaders',
+            'oe_import_noheaders text-muted',
             !this.$('input.oe_import_has_header').prop('checked'));
         this._rpc({
                 model: 'sps.vendor.offer.template.transient',
@@ -324,32 +348,40 @@ var DataImport = Widget.extend(ControlPanelMixin, {
     },
     onpreview_error: function (event, from, to, result) {
         this.$('.oe_import_options').show();
-        this.$('.oe_import_file_reload').prop('disabled', false);
+        this.$buttons.filter('.o_import_file_reload').removeClass('d-none');
         this.$el.addClass('oe_import_preview_error oe_import_error');
+        this.$el.find('.oe_import_box, .oe_import_with_file').removeClass('d-none');
+        this.$el.find('.o_view_nocontent').addClass('d-none');
         this.$('.oe_import_error_report').html(
-                QWeb.render('ImportView.preview.error', result));
+                QWeb.render('ImportOfferTemplateViewInner.preview.error', result));
     },
     onpreview_success: function (event, from, to, result) {
         var self = this;
-        this.$buttons.filter('.o_import_import').removeClass('btn-primary');
-        this.$buttons.filter('.o_import_validate').addClass('btn-primary');
-        this.$buttons.filter('.o_import_button').add(this.$('.oe_import_file_reload'))
-                .prop('disabled', false);
+        this.$buttons.filter('.oe_import_file')
+            .text(_t('Load New File'))
+            .removeClass('btn-primary').addClass('btn-secondary')
+            .blur();
+        this.$buttons.filter('.o_import_import, .o_import_validate, .o_import_file_reload').removeClass('d-none');
+        this.$el.find('.oe_import_box, .oe_import_with_file').removeClass('d-none');
+        this.$el.find('.o_view_nocontent').addClass('d-none');
         this.$el.addClass('oe_import_preview');
-        this.$('.oe_import_grid').html(QWeb.render('ImportView.preview', result));
+        this.$('input.oe_import_advanced_mode').prop('checked', result.advanced_mode);
+        this.$('.oe_import_grid').html(QWeb.render('ImportOfferTemplateViewInner.preview', result));
 
         if (result.headers.length === 1) {
             this.$('.oe_import_options').show();
-            this.onresults(null, null, null, [{
+            this.onresults(null, null, null, {'messages': [{
                 type: 'warning',
                 message: _t("A single column was found in the file, this often means the file separator is incorrect")
-            }]);
+            }]});
         }
 
-        this.$('.oe_import_date_format').val(time.strftime_to_moment_format(result.options.date_format));
+        // merge option values back in case they were updated/guessed
+        _.each(['encoding', 'separator', 'float_thousand_separator', 'float_decimal_separator'], function (id) {
+            self.$('.oe_import_' + id).select2('val', result.options[id])
+        });
+        this.$('.oe_import_date_format').select2('val', time.strftime_to_moment_format(result.options.date_format));
         this.$('.oe_import_datetime_format').val(time.strftime_to_moment_format(result.options.datetime_format));
-        this.$('.oe_import_float_thousand_separator').val(result.options.float_thousand_separator).change();
-        this.$('.oe_import_float_decimal_separator').val(result.options.float_decimal_separator).change();
         if (result.debug === false){
             this.$('.oe_import_tracking').hide();
             this.$('.oe_import_deferparentstore').hide();
@@ -374,6 +406,24 @@ var DataImport = Widget.extend(ControlPanelMixin, {
         };
         $fields.each(function (k,v) {
             var filtered_data = self.generate_fields_completion(result, k);
+
+            var $thing = $();
+            var bind = function (d) {};
+            if (session.debug) {
+                $thing = $(QWeb.render('ImportOfferTemplateViewInner.create_record_option')).insertAfter(v).hide();
+                bind = function (data) {
+                    switch (data.type) {
+                    case 'many2one': case 'many2many':
+                        $thing.find('input').attr('field', data.id);
+                        $thing.show();
+                        break;
+                    default:
+                        $thing.find('input').attr('field', '').prop('checked', false);
+                        $thing.hide();
+                    }
+                }
+            }
+
             $(v).select2({
                 allowClear: true,
                 minimumInputLength: 0,
@@ -385,11 +435,15 @@ var DataImport = Widget.extend(ControlPanelMixin, {
                         return;
                     }
 
-                    callback(item_finder(default_value));
+                    var data = item_finder(default_value);
+                    bind(data);
+                    callback(data);
                 },
                 placeholder: _t('Don\'t import'),
                 width: 'resolve',
                 dropdownCssClass: 'oe_import_selector'
+            }).on('change', function (e) {
+                bind(item_finder(e.currentTarget.value));
             });
         });
     },
@@ -420,7 +474,8 @@ var DataImport = Widget.extend(ControlPanelMixin, {
                 collection.push({
                     id: id,
                     text: label,
-                    required: field.required
+                    required: field.required,
+                      type: field.type
                 });
 
             }
@@ -488,6 +543,10 @@ var DataImport = Widget.extend(ControlPanelMixin, {
         var fields = this.$('.oe_import_fields input.oe_import_match_field').map(function (index, el) {
             return $(el).select2('val') || false;
         }).get();
+        var columns = this.$('.oe_import_grid-header .oe_import_grid-cell .o_import_header_name').map(function () {
+            return $(this).text().trim().toLowerCase() || false;
+        }).get();
+
         var tracking_disable = 'tracking_disable' in kwargs ? kwargs.tracking_disable : !this.$('#oe_import_tracking').prop('checked')
         var defer_parent_store = 'defer_parent_store' in kwargs ? kwargs.defer_parent_store : !!this.$('#oe_import_deferparentstore').prop('checked')
         delete kwargs.tracking_disable;
@@ -496,19 +555,37 @@ var DataImport = Widget.extend(ControlPanelMixin, {
             {}, this.parent_context,
             {tracking_disable: tracking_disable, defer_parent_store_computation: defer_parent_store}
         );
-
         return this._rpc({
                 model: 'sps.vendor.offer.template.transient',
                 method: 'do',
-                args: [this.id, fields, this.import_options(), this.parent_model, this.customer, this.offer_id,this.import_type_ven],
+                args: [this.id, fields,columns, this.import_options(), this.parent_model, this.customer, this.offer_id,this.import_type_ven],
                 kwargs : kwargs,
-            }).fail(function (error, event) {
+            }).then(null, function (error, event) {
+                // In case of unexpected exception, convert
+                // "JSON-RPC error" to an import failure, and
+                // prevent default handling (warning dialog)
                 if (event) { event.preventDefault(); }
-                return $.when([{
+
+                var msg;
+                if (error.data.type === 'xhrerror') {
+                    var xhr = error.data.objects[0];
+                    switch (xhr.status) {
+                    case 504: // gateway timeout
+                        msg = _t("Import timed out. Please retry. If you still encounter this issue, the file may be too big for the system's configuration, try to split it (import less records per file).");
+                        break;
+                    default:
+                        msg = _t("An unknown issue occurred during import (possibly lost connection, data limit exceeded or memory limits exceeded). Please retry in case the issue is transient. If the issue still occurs, try to split the file rather than import it at once.");
+                    }
+                } else {
+                    msg = (error.data.arguments && error.data.arguments[1] || error.data.arguments[0])
+                        || error.message;
+                }
+
+                return $.when({'messages': [{
                     type: 'error',
                     record: false,
-                    message: error.data.arguments && error.data.arguments[1] || error.message,
-                }]);
+                    message: msg,
+                }]});
             }) ;
     },
     onvalidate: function () {
@@ -517,35 +594,26 @@ var DataImport = Widget.extend(ControlPanelMixin, {
     },
     onimport: function () {
         var self = this;
-        return this.call_import({ dryrun: false }).done(function (message) {
+        return this.call_import({ dryrun: false }).done(function (results) {
+            var message = results.messages;
             if (!_.any(message, function (message) {
                     return message.type === 'error'; })) {
-                self['import_succeeded']();
+                self['import_succeeded'](results);
                 return;
             }
-            self['import_failed'](message);
+            self['import_failed'](results);
         });
     },
-    onimported: function () {
+    onimported: function (event, from, to, results) {
+        this.do_notify(_t("Import completed"), _.str.sprintf(_t("%d records were successfully imported"), results.ids.length));
         this.exit();
     },
     exit: function () {
-//       this.do_action({
-//           type: 'ir.actions.client',
-//            tag: 'reload',
-//
-//       });
-        this.do_action({
-            type: 'ir.actions.client',
-            tag: 'history_back'
-        });
+        this.trigger_up('history_back');
     },
-    onresults: function (event, from, to, message) {
+    onresults: function (event, from, to, results) {
+        var message = results.messages;
         var no_messages = _.isEmpty(message);
-        this.$buttons.filter('.o_import_import').toggleClass('btn-primary', no_messages);
-        this.$buttons.filter('.o_import_import').toggleClass('btn-default', !no_messages);
-        this.$buttons.filter('.o_import_validate').toggleClass('btn-primary', !no_messages);
-        this.$buttons.filter('.o_import_validate').toggleClass('btn-default', no_messages);
         if (no_messages) {
             message.push({
                 type: 'info',
@@ -560,7 +628,7 @@ var DataImport = Widget.extend(ControlPanelMixin, {
 
         this.$el.addClass('oe_import_error');
         this.$('.oe_import_error_report').html(
-            QWeb.render('ImportView.error', {
+            QWeb.render('ImportOfferTemplateViewInner.error', {
                 errors: _(message).groupBy('message'),
                 at: function (rows) {
                     var from = rows.from + offset;
@@ -603,14 +671,14 @@ var DataImport = Widget.extend(ControlPanelMixin, {
                 },
             }));
     },
-    toTitleCase : function (str) {
-	    str = str.toLowerCase().split(' ');
-	    for (var i = 0; i < str.length; i++) {
-		    str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1);
-	    }
-	    console.log(str);
-	    return str.join(' ');
-    },
+//    toTitleCase : function (str) {
+//	    str = str.toLowerCase().split(' ');
+//	    for (var i = 0; i < str.length; i++) {
+//		    str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1);
+//	    }
+//	    console.log(str);
+//	    return str.join(' ');
+//    },
 });
 core.action_registry.add('import_offer_template', DataImport);
 
@@ -631,8 +699,8 @@ StateMachine.create({
         { name: 'validated', from: 'validating', to: 'results' },
         { name: 'import', from: ['preview_success', 'results'], to: 'importing' },
         { name: 'import_succeeded', from: 'importing', to: 'imported'},
-        { name: 'import_failed', from: 'importing', to: 'results' },
-    ]
+        { name: 'import_failed', from: 'importing', to: 'results' }
+    ],
 });
 
 return {

@@ -15,10 +15,15 @@
                             string="Confirm Sale" class="btn-primary" type="object"
                             attrs="{'invisible': [('state', 'not in', ['engine'])]}"/>
                     <button name="action_cancel" states="engine" type="object" string="Cancel"/>
+<!--                    <button string="Shipping Update"-->
+<!--                                type="object" class="btn-primary" name="action_fedex_track_request"/>-->
+
                 </button>
                 <button name="action_cancel" position="after">
                     <button name="action_void" string="Voided" type="object" states="draft,sent"/>
+
                 </button>
+
                 <field name="partner_shipping_id" position="after">
                     <field name="preferred_method"/>
                     <field name="shipping_terms"/>
@@ -48,6 +53,10 @@
                         <!-- Adding manufacturer_uom column -->
                         <field name="manufacturer_uom"/>
                 </xpath>
+
+                <xpath expr="//group[@name='sales_person']/field[@name='user_id']"  position="after">
+                     <field name="order_processor"/>
+                </xpath>
             </field>
         </record>
         <record id="view_invoice_form_ex" model="ir.ui.view">
@@ -70,7 +79,7 @@
                 </field>
                 <xpath expr="/form/sheet[1]/notebook/page[@name='other_info']/group/group[2]/field[@name='origin']"
                        position="replace">
-                      <field name="origin" string="Sale Order#" groups="base.group_user" attrs="{'invisible': True}"/>
+                      <field name="origin" string="Order#" groups="base.group_user" attrs="{'invisible': True}"/>
                 </xpath>
                 <xpath expr="//field[@name='team_id']" position="after">
                     <field name="purchase_order" string="Purchase Order#"/>
@@ -217,6 +226,10 @@
                 <div t-if="doc.user_id.name" class="col-xs-3">
                     <strong>Salesperson:</strong>
                     <p t-field="doc.user_id"/>
+                </div>
+                <div t-if="doc.partner_id.gl_account.name" class="col-xs-3">
+                    <strong>GL Account:</strong>
+                    <p t-field="doc.partner_id.gl_account.name"/>
                 </div>
                 <div name="payment_term" t-if="doc.payment_term_id" class="col-xs-3">
                     <strong>Payment Terms:</strong>

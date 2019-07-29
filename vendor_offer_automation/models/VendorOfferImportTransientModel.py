@@ -8,9 +8,13 @@ import psycopg2
 import itertools
 import math
 import base64
+IMAGE_FIELDS = ["icon", "image", "logo", "picture"]
+DEFAULT_IMAGE_REGEX = r"(?:http|https)://.*(?:png|jpe?g|tiff?|gif|bmp)"
+import re
+import requests
 
 from odoo.tools.translate import _
-from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, pycompat
+from odoo.tools import config, DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, pycompat
 
 FIELDS_RECURSION_LIMIT = 2
 ERROR_PREVIEW_BYTES = 200
@@ -42,7 +46,7 @@ EXTENSIONS = {
 
 
 from odoo import models, fields, api
-
+from odoo.exceptions import AccessError
 _logger = logging.getLogger(__name__)
 
 
@@ -52,6 +56,12 @@ class VendorOfferImportTransientModel(models.TransientModel):
     # customer_id = fields.Integer('Customer')
     columns_from_template = fields.Char(string='Template Columns')
 
+    @api.model
+    def get_import_templates(self):
+        return [{
+            'label': _('Import Template for Vendor Offer'),
+            'template': '/vendor_offer_automation/static/xls/vendor_import.xlsx'
+        }]
 
     @api.model
     def _convert_import_data(self, fields, options,import_type_ven):
@@ -100,12 +110,13 @@ class VendorOfferImportTransientModel(models.TransientModel):
         return cell_values, import_fields, cols
 
     @api.multi
-    def do(self, fields, options, parent_model, customer_id, offer_id, import_type_ven,dryrun=False):
+    def do(self, fields, columns,options, parent_model, customer_id, offer_id, import_type_ven,dryrun=False):
         self.ensure_one()
         import_result = {'messages': []}
         try:
             self._cr.execute('SAVEPOINT import')
             data, import_fields, col = self._convert_import_data(fields, options,import_type_ven)
+            # data = self._parse_import_data(parent_model,data, import_fields, options)
             if len(col) == 1:
 
                 resource_model = self.env[parent_model]
@@ -116,7 +127,11 @@ class VendorOfferImportTransientModel(models.TransientModel):
                                            customer_id=customer_id)
                 for dictionary in dict_list:
                     resource_model_dict.update(dictionary)
-                template = resource_model.create(resource_model_dict)
+                name_create_enabled_fields = options.pop('name_create_enabled_fields', {})
+
+                template = resource_model.create(resource_model_dict).with_context(import_file=True,
+                                                               name_create_enabled_fields=name_create_enabled_fields)
+                import_result = template.load(import_fields, data)
 
                 vendor_offer = self.env['purchase.order'].search([('id', '=', offer_id)])
 
@@ -126,18 +141,37 @@ class VendorOfferImportTransientModel(models.TransientModel):
                 try:
                     if dryrun:
                         self._cr.execute('ROLLBACK TO SAVEPOINT import')
+                        self.pool.reset_changes()
                     else:
                         self._cr.execute('RELEASE SAVEPOINT import')
                 except psycopg2.InternalError:
                     pass
         except ValueError as error:
             _logger.info('Error %r', str(error))
-            return [{
-                'type': 'error',
-                'message': pycompat.text_type(error),
-                'record': False,
-            }]
-        return import_result['messages']
+            return {
+                'messages': [{
+                    'type': 'error',
+                    'message': pycompat.text_type(error),
+                    'record': False,
+                }]
+            }
+
+        # if import_result['ids'] and options.get('headers'):
+        #     BaseImportMapping = self.env['base_import.mapping']
+        #     for index, column_name in enumerate(columns):
+        #         if column_name:
+        #             # Update to latest selected field
+        #             exist_records = BaseImportMapping.search([('res_model', '=', self.res_model), ('column_name', '=', column_name)])
+        #             if exist_records:
+        #                 exist_records.write({'field_name': fields[index]})
+        #             else:
+        #                 BaseImportMapping.create({
+        #                     'res_model': self.res_model,
+        #                     'column_name': column_name,
+        #                     'field_name': fields[index]
+        #                 })
+
+        return import_result
 
     @api.multi
     def parse_preview(self, options, import_type_ven, count=10):
@@ -151,13 +185,22 @@ class VendorOfferImportTransientModel(models.TransientModel):
             # the ``count`` next rows for preview
             self.columns_from_template = ",".join(sorted(headers))
             preview = list(itertools.islice(rows, count))
-            assert preview, "CSV file seems to have no content"
+            assert preview, "file seems to have no content"
             header_types = self._find_type_from_preview(options, preview)
-            if options.get('keep_matches', False) and len(options.get('fields', [])):
+            if options.get('keep_matches') and len(options.get('fields', [])):
                 matches = {}
                 for index, match in enumerate(options.get('fields')):
                     if match:
                         matches[index] = match.split('/')
+
+            if options.get('keep_matches'):
+                advanced_mode = options.get('advanced')
+            else:
+                # Check is label contain relational field
+                has_relational_header = any(len(models.fix_import_export_id_paths(col)) > 1 for col in headers)
+                # Check is matches fields have relational field
+                has_relational_match = any(len(match) > 1 for field, match in matches.items() if match)
+                advanced_mode = has_relational_header or has_relational_match
 
             return {
                 'fields': fields,
@@ -166,6 +209,7 @@ class VendorOfferImportTransientModel(models.TransientModel):
                 'headers_type': header_types or False,
                 'preview': preview,
                 'options': options,
+                'advanced_mode': advanced_mode,
                 'debug': self.user_has_groups('base.group_no_one'),
             }
         except Exception as error:
@@ -174,7 +218,7 @@ class VendorOfferImportTransientModel(models.TransientModel):
             # preview to a list in the return.
             _logger.debug("Error during parsing preview", exc_info=True)
             preview = None
-            if self.file_type == 'text/csv':
+            if self.file_type == 'text/csv' and self.file:
                 preview = self.file[:ERROR_PREVIEW_BYTES].decode('iso-8859-1')
             return {
                 'error': str(error),
@@ -185,10 +229,50 @@ class VendorOfferImportTransientModel(models.TransientModel):
                 'preview': preview,
             }
 
+    @api.model
+    def _find_type_from_preview(self, options, preview):
+        type_fields = []
+        if preview:
+            for column in range(0, len(preview[0])):
+                preview_values = [value[column].strip() for value in preview]
+                type_field = self._try_match_column(preview_values, options)
+                type_fields.append(type_field)
+        return type_fields
+
+    @api.model
+    def _try_match_column(self, preview_values, options):
+        values = set(preview_values)
+        # If all values are empty in preview than can be any field
+        if values == {''}:
+            return ['all']
+
+        return ['id', 'text', 'boolean', 'char', 'datetime', 'selection', 'many2one', 'one2many', 'many2many', 'html']
+
+    def _match_headers(self, rows, fields, options):
+        if not options.get('headers'):
+            return [], {}
+
+        headers = next(rows, None)
+        if not headers:
+            return [], {}
+
+        matches = {}
+        mapping_records = []
+        mapping_fields = {rec['column_name']: rec['field_name'] for rec in mapping_records}
+        for index, header in enumerate(headers):
+            match_field = []
+            mapping_field_name = mapping_fields.get(header.lower())
+            if mapping_field_name:
+                match_field = mapping_field_name.split('/')
+            if not match_field:
+                match_field = [field['name'] for field in self._match_header(header.strip(), fields, options)]
+            matches[index] = match_field or None
+        return headers, matches
+
     @api.multi
     def _read_xls(self, options):
         """ Read file content, using xlrd lib """
-        book = xlrd.open_workbook(file_contents=self.file)
+        book = xlrd.open_workbook(file_contents=self.file or b'')
         return self._read_xls_book(book)
 
     def _read_xls_book(self, book):
@@ -233,6 +317,16 @@ class VendorOfferImportTransientModel(models.TransientModel):
     def get_fields(self, model, import_type_ven='', depth=FIELDS_RECURSION_LIMIT):
         Model = self.env['sps.vendor_offer_automation.template']
         importable_fields = []
+        # importable_fields = [{
+        #     'id': 'id',
+        #     'name': 'id',
+        #     'string': _("External ID"),
+        #     'required': False,
+        #     'fields': [],
+        #     'type': 'id',
+        # }]
+        # if not depth:
+        #     return importable_fields
         model_fields = Model.fields_get()
         blacklist = models.MAGIC_COLUMNS + [Model.CONCURRENCY_CHECK_FIELD]
         hide_column_list = []
@@ -247,14 +341,14 @@ class VendorOfferImportTransientModel(models.TransientModel):
             # be absent or False to mean not-deprecated
             if field.get('deprecated', False) is not False:
                 continue
-            if field.get('readonly'):
-                states = field.get('states')
-                if not states:
-                    continue
-                # states = {state: [(attr, value), (attr2, value2)], state2:...}
-                if not any(attr == 'readonly' and value is False
-                           for attr, value in itertools.chain.from_iterable(states.values())):
-                    continue
+            # if field.get('readonly'):
+            #     states = field.get('states')
+            #     if not states:
+            #         continue
+            #     # states = {state: [(attr, value), (attr2, value2)], state2:...}
+            #     if not any(attr == 'readonly' and value is False
+            #                for attr, value in itertools.chain.from_iterable(states.values())):
+            #         continue
             if not name.startswith('mf_'):
                 continue
             field_value = {
@@ -284,6 +378,50 @@ class VendorOfferImportTransientModel(models.TransientModel):
         # TODO: cache on model?
         return importable_fields
 
+    @api.multi
+    def _parse_import_data(self,parent_model, data, import_fields, options):
+        """ Lauch first call to _parse_import_data_recursive with an
+        empty prefix. _parse_import_data_recursive will be run
+        recursively for each relational field.
+        """
+        return self._parse_import_data_recursive(parent_model, '', data, import_fields, options)
+
+    @api.multi
+    def _parse_import_data_recursive(self, model, prefix, data, import_fields, options):
+        # Get fields of type date/datetime
+        all_fields = self.env[model].fields_get()
+        for name, field in all_fields.items():
+            name = prefix + name
+            if field['type'] in ('date', 'datetime') and name in import_fields:
+                index = import_fields.index(name)
+                self._parse_date_from_data(data, index, name, field['type'], options)
+            # Check if the field is in import_field and is a relational (followed by /)
+            # Also verify that the field name exactly match the import_field at the correct level.
+            elif any(name + '/' in import_field and name == import_field.split('/')[prefix.count('/')] for import_field
+                     in import_fields):
+                # Recursive call with the relational as new model and add the field name to the prefix
+                self._parse_import_data_recursive(field['relation'], name + '/', data, import_fields, options)
+            elif field['type'] in ('float', 'monetary') and name in import_fields:
+                # Parse float, sometimes float values from file have currency symbol or () to denote a negative value
+                # We should be able to manage both case
+                index = import_fields.index(name)
+                self._parse_float_from_data(data, index, name, options)
+            elif field['type'] == 'binary' and field.get('attachment') and any(
+                    f in name for f in IMAGE_FIELDS) and name in import_fields:
+                index = import_fields.index(name)
+
+                with requests.Session() as session:
+                    session.stream = True
+
+                    for num, line in enumerate(data):
+                        if re.match(config.get("import_image_regex", DEFAULT_IMAGE_REGEX), line[index]):
+                            if not self.env.user._can_import_remote_urls():
+                                raise AccessError(_(
+                                    "You can not import images via URL, check with your administrator or support for the reason."))
+
+                            line[index] = self._import_image_by_url(line[index], session, name, num)
+
+        return data
     # @staticmethod
     # def read_imported_file(self, vendor_offer_automation_template, partner_id, offer_id):
     #     book = xlrd.open_workbook(file_contents=self.file)

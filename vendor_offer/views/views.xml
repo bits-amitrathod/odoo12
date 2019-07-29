@@ -232,6 +232,11 @@
                                 name="%(action_view_tracking_text)d"
                                 attrs="{'invisible': [('status', 'not in', ('ven_draft','ven_sent'))]}"
                                 groups="stock.group_stock_user"/>
+                        <!--                        <button string="Track Shipment"-->
+                        <!--                                type="object" class="btn-primary"-->
+                        <!--                                name="action_fedex_track_request"-->
+                        <!--                                attrs="{'invisible': [('carrier_id', '==', False)]}"-->
+                        <!--                                groups="stock.group_stock_user"/>-->
 
                     </header>
                     <sheet>
@@ -267,11 +272,14 @@
                                        context="{'search_default_supplier':1, 'default_supplier':1, 'default_customer':0}"
                                        domain="[('supplier','=',True)]"/>
                                 <field name="acq_user_id"/>
-                                <field name="possible_competition"  attrs="{'readonly': [('import_type_ven', '==', 'all_field_import')]}"/>
-                                  <!--<field name="accelerator" />-->
-                                <field name="accelerator" attrs="{'readonly': [('import_type_ven', '==', 'all_field_import')]}"/>
+                                <field name="possible_competition"
+                                       attrs="{'readonly': [('import_type_ven', '==', 'all_field_import')]}"/>
+                                <!--<field name="accelerator" />-->
+                                <field name="accelerator"
+                                       attrs="{'readonly': [('import_type_ven', '==', 'all_field_import')]}"/>
                                 <field name="priority"/>
-                                <field name="offer_type" attrs="{'readonly': [('import_type_ven', '==', 'all_field_import')]}"/>
+
+                                <field name="offer_type" />
                                 <field name="potential_profit_margin"/>
                                 <field name="state" invisible="1"/>
                                 <field name="import_type_ven" invisible="1"/>
@@ -283,6 +291,8 @@
                                 <field name="declined_date"/>
                                 <field name="max"/>
                                 <field name="new_customer"/>
+                                <field name="carrier_id"/>
+                                <field name="shipping_number"/>
                             </group>
                         </group>
                         <notebook>
@@ -298,7 +308,7 @@
                                                 <field name="name" invisible="1"/>
                                                 <field name="product_tier" readonly="1"/>
                                                 <field name="product_qty"/>
-                                                <field name="expiration_date_str" >
+                                                <field name="expiration_date_str">
 
                                                 </field>
                                                 <field name="qty_in_stock"/>
@@ -312,7 +322,7 @@
                                                 <!--<field name="list_price" invisible="1"/>-->
                                                 <field name="price_unit" invisible="1"/>
                                                 <field name="product_unit_price"/>
-                                                <field name="product_offer_price" />
+                                                <field name="product_offer_price"/>
                                                 <field name="product_retail"/>
                                                 <field name="price_subtotal" string="Total Offer Price"/>
                                                 <field name="taxes_id" widget="many2many_tags"
@@ -337,7 +347,8 @@
                                     <tree editable="bottom">
                                         <field name="currency_id" invisible="1"/>
                                         <field name="sku_code" readonly="1"/>
-                                        <field name="product_id" attrs="{'readonly': [('import_type_ven_line', '==', 'all_field_import')]}"/>
+                                        <field name="product_id"
+                                               attrs="{'readonly': [('import_type_ven_line', '==', 'all_field_import')]}"/>
                                         <field name="product_brand_id" readonly="1"/>
                                         <field name="name" invisible="1"/>
                                         <field name="product_tier" readonly="1"/>
@@ -360,7 +371,8 @@
                                         <field name="taxes_id" widget="many2many_tags"
                                                domain="[('type_tax_use','=','purchase')]"
                                                context="{'default_type_tax_use': 'purchase'}"
-                                               options="{'no_create': True}" attrs="{'readonly': [('import_type_ven_line', '==', 'all_field_import')]}"/>
+                                               options="{'no_create': True}"
+                                               attrs="{'readonly': [('import_type_ven_line', '==', 'all_field_import')]}"/>
                                         <!--    <field name="price_tax"  />
                                           <field name="price_total"   widget="monetary" />
                                           <field name="price_subtotal"   widget="monetary" />
@@ -368,7 +380,8 @@
                                           <field name="rt_price_total"   widget="monetary" />
                                           <field name="rt_price_subtotal"   widget="monetary" />-->
                                         <field name="margin"/>
-                                        <field name="multiplier" attrs="{'readonly': [('import_type_ven_line', '==', 'all_field_import')]}"/>
+                                        <field name="multiplier"
+                                               attrs="{'readonly': [('import_type_ven_line', '==', 'all_field_import')]}"/>
                                         <field name="date_planned" invisible="1"/>
                                         <field name="product_uom" invisible="1"/>
                                         <field name="order_id" invisible="1"/>
@@ -450,11 +463,22 @@
                     <button string="Shipping Label"
                             type="action" class="btn-primary"
                             name="%(action_view_tracking_text)d"
-                            attrs="{'invisible': [('status_ven', 'not in', 'Accepted')]}"
+                            attrs="{'invisible': [('status_ven', 'not in', 'Accepted'),('vendor_offer_data', '=',  False)]}"
                             groups="stock.group_stock_user"/>
+
+                    <!--                    <button string="Track Shipment"-->
+                    <!--                                type="object" class="btn-primary"-->
+                    <!--                                name="action_fedex_track_request"-->
+                    <!--                                attrs="{'invisible': [('carrier_id', '==', False)]}"-->
+                    <!--                                groups="stock.group_stock_user"/>-->
 
 
                 </button>
+                <xpath expr="//header/field[@name='state']" position="replace">
+                    <field name="state" widget="statusbar" statusbar_visible="draft,sent,purchase" readonly="1" attrs="{'invisible':[('vendor_offer_data', '=',  True)]}"/>
+                    <field name="status" widget="statusbar" statusbar_visible="ven_draft,ven_sent,purchase"
+                           readonly="1" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}"/>
+                </xpath>
                 <xpath expr="//group/group/field[@name='origin']" position="replace">
                     <field name="origin" string="Sale Order#"/>
                 </xpath>
@@ -462,7 +486,8 @@
                     <field name="carrier_info"/>
                     <field name="carrier_acc_no"/>
                     <field name="shipping_terms"/>
-
+                    <field name="carrier_id" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}"/>
+                    <field name="shipping_number" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}"/>
 
                 </xpath>
                 <xpath expr="//group/group/field[@name='partner_ref']" position="after">
@@ -476,9 +501,9 @@
 
                 </xpath>
                 <xpath expr="//group/group/field[@name='invoice_status']" position="after">
-                    <field name="delivered_date"></field>
-                    <field name="expected_date"></field>
-                    <field name="appraisal_no"></field>
+                    <field name="delivered_date"/>
+                    <field name="expected_date"/>
+                    <field name="appraisal_no"/>
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']" position="replace">
                     <field name="order_line" attrs="{'readonly': [('vendor_offer_data', '=', True)]}">
@@ -596,7 +621,7 @@
             <field name="model">product.product</field>
             <field name="priority">20</field>
             <field name="arch" type="xml">
-                <tree  create="false" import="false" >
+                <tree create="false" import="false">
                     <field name="sku_code" string="ProductNumber"/>
                     <field name="name" string="ProductDescription"/>
                     <field name="list_price" string="Price"/>
@@ -618,7 +643,7 @@
             <field name="name">Vendor Pricing</field>
             <field name="key">action</field>
             <field name="type">ir.actions.act_window</field>
-             <field name="limit" eval="10"/>
+            <field name="limit" eval="10"/>
             <field name="res_model">product.product</field>
             <field name="view_mode">tree</field>
             <field name="view_id" ref="vendor_offer.vendor_pricing_list"/>
@@ -630,10 +655,11 @@
             <field name="arch" type="xml">
                 <form string="Export PPVendorPricing">
                     <group>
-                        <div> Click On ' Export To File ' button to export PPVendorPricing file </div>
+                        <div>Click On ' Export To File ' button to export PPVendorPricing file</div>
                     </group>
-                    <footer >
-                        <button name="download_excel_ven_price" string="Export To File" type="object" class="btn-primary"/>
+                    <footer>
+                        <button name="download_excel_ven_price" string="Export To File" type="object"
+                                class="btn-primary"/>
                         <button string="Cancel" class="btn-default" special="cancel"/>
                     </footer>
                 </form>
@@ -641,32 +667,32 @@
         </record>
 
         <act_window name="Export PPVendorPricing"
-            res_model="vendor.pricing"
-            src_model="product.product"
-            view_mode="form"
-            target="new"
-            key2="client_action_multi"
-            id="vendor_pricing_act_window"/>
+                    res_model="vendor.pricing"
+                    src_model="product.product"
+                    view_mode="form"
+                    target="new"
+                    key2="client_action_multi"
+                    id="vendor_pricing_act_window"/>
 
         <!--do not remove this commented code -->
 
-         <!--<record id="vendor_offer.action_vendor_pricing" model="ir.actions.server">-->
-            <!--<field name="name">Vendor Pricing</field>-->
-            <!--<field name="type">ir.actions.server</field>-->
-            <!--<field name="model_id" ref="model_vendor_pricing"/>-->
-            <!--<field name="binding_model_id" ref="model_vendor_pricing"/>-->
-            <!--<field name="state">code</field>-->
-            <!--<field name="code">model.download_excel_ven_price()</field>-->
+        <!--<record id="vendor_offer.action_vendor_pricing" model="ir.actions.server">-->
+        <!--<field name="name">Vendor Pricing</field>-->
+        <!--<field name="type">ir.actions.server</field>-->
+        <!--<field name="model_id" ref="model_vendor_pricing"/>-->
+        <!--<field name="binding_model_id" ref="model_vendor_pricing"/>-->
+        <!--<field name="state">code</field>-->
+        <!--<field name="code">model.download_excel_ven_price()</field>-->
         <!--</record>-->
 
-         <!--do not remove this commented code -->
+        <!--do not remove this commented code -->
 
-          <!--<record id="vendor_offer.vendor_pricing_client_action" model="ir.actions.client">-->
-            <!--<field name="name">Vendor Pricing</field>-->
-            <!--<field name="type">ir.actions.client</field>-->
-            <!--<field name="tag">tree_view_button_ven_pri</field>-->
-            <!--<field name="params">[{'showPPVendor':true}]-->
-            <!--</field>-->
+        <!--<record id="vendor_offer.vendor_pricing_client_action" model="ir.actions.client">-->
+        <!--<field name="name">Vendor Pricing</field>-->
+        <!--<field name="type">ir.actions.client</field>-->
+        <!--<field name="tag">tree_view_button_ven_pri</field>-->
+        <!--<field name="params">[{'showPPVendor':true}]-->
+        <!--</field>-->
         <!--</record>-->
 
         <record model="ir.actions.act_window" id="vendor_offer.action_window_multiplier">
@@ -691,21 +717,21 @@
 
         </record>
 
-<!--        <record model="ir.ui.view" id="product_template_form_view_procurement_button">-->
-<!--            <field name="name">product.template_procurement</field>-->
-<!--            <field name="model">product.template</field>-->
-<!--            <field name="inherit_id" ref="product.product_template_only_form_view"/>-->
-<!--            <field name="arch" type="xml">-->
-<!--                <data>-->
-<!--                    <xpath expr="//button[@name='toggle_active']" position="before">-->
-<!--                        <button class="oe_stat_button" icon="fa-cube" type="action" name="actual_quantity_tab">-->
-<!--                            <field name="actual_quantity" string="Qty Available For Sale"-->
-<!--                                   widget="statinfo"/>-->
-<!--                        </button>-->
-<!--                    </xpath>-->
-<!--                </data>-->
-<!--            </field>-->
-<!--        </record>-->
+        <!--        <record model="ir.ui.view" id="product_template_form_view_procurement_button">-->
+        <!--            <field name="name">product.template_procurement</field>-->
+        <!--            <field name="model">product.template</field>-->
+        <!--            <field name="inherit_id" ref="product.product_template_only_form_view"/>-->
+        <!--            <field name="arch" type="xml">-->
+        <!--                <data>-->
+        <!--                    <xpath expr="//button[@name='toggle_active']" position="before">-->
+        <!--                        <button class="oe_stat_button" icon="fa-cube" type="action" name="actual_quantity_tab">-->
+        <!--                            <field name="actual_quantity" string="Qty Available For Sale"-->
+        <!--                                   widget="statinfo"/>-->
+        <!--                        </button>-->
+        <!--                    </xpath>-->
+        <!--                </data>-->
+        <!--            </field>-->
+        <!--        </record>-->
 
         <record id="product_template_form_sku_code_add" model="ir.ui.view">
             <field name="name">product.template.product.form</field>
@@ -714,7 +740,9 @@
             <field name="arch" type="xml">
                 <field name="sale_ok" position="before">
                     <label for="actual_quantity" style="font-size: 18px;color: #F44336;"/>
-                    <span style="font-size: 18px;color: #F44336;font-weight: bold; margin-left: -4px;">: <field name="actual_quantity"/></span>
+                    <span style="font-size: 18px;color: #F44336;font-weight: bold; margin-left: -4px;">:
+                        <field name="actual_quantity"/>
+                    </span>
                     <div/>
                 </field>
             </field>
