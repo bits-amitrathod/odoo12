@@ -19,18 +19,22 @@ odoo.define('website_quote_ext._ex', function (require) {
             var product_id = $input[0]['attributes']['data-product-id']['value'];
             var quote_id = $input[0]['attributes']['data-quote-id']['value'];
             var line_id = $input[0]['attributes']['data-line-id']['value']
+             var r = confirm("Are You Sure, You want to remove line item ?");
+              if (r == true) {
+                     ajax.jsonRpc("/shop/engine/update_json", 'call', {
+                        'quote_id':quote_id,
+                        'line_id': line_id,
+                        'product_id': product_id,
+                        'set_qty': 0
+                    }).then(function (data) {
+                         window.location.reload();
+                    });
+              } else {
+                    console.log("inside false block")
+                    return false;
+              }
 
-             ajax.jsonRpc("/shop/engine/update_json", 'call', {
-                    'quote_id':quote_id,
-                    'line_id': line_id,
-                    'product_id': product_id,
-                    'set_qty': 0
-                }).then(function (data) {
-                     console.log("inside update_json");
-                     console.log(data);
-                     window.location.reload();
-                });
-            return false;
+
          });
 
          // hack to add and remove from cart with json
@@ -69,7 +73,5 @@ odoo.define('website_quote_ext._ex', function (require) {
             return false;
         });
     });
-
-
 
 });

@@ -6,15 +6,56 @@
             </xpath>
         </template>
 
-        <template id="so_modify_content" inherit_id="sale.sale_order_portal_template" name="Modify Content">
-            <xpath expr="//t[@t-set='entries']/ul/li[1]/a[1]" position="after">
-                <a class="btn btn-info" t-att-href="'/my/orders/edit/%s' % (quotation.id)" data-toggle="modal"
-                   t-if="order_valid">
-                    <i class="fa fa-check"></i>
+        <template id="so_quotation_content_inherit" inherit_id="website_quote.so_quotation_content" name="Quotation Content">
+            <!--<xpath expr="//div/h1/div/ul" position="replace">-->
+                <!--<ul class="list-inline">-->
+                  <!--<li groups="sales_team.group_sale_salesman">-->
+                    <!--<a t-if="quotation.state not in ('manual')" class="btn btn-info" t-att-href="'/web#return_label=Website&amp;model=%s&amp;id=%s&amp;action=%s&amp;view_type=form' % (quotation                               ._name, quotation.id, action)">Edit Quote</a>-->
+                    <!--<a t-if="quotation.state in ('manual')" class=" btn btn-info" t-att-href="'/web#return_label=Website&amp;model=%s&amp;id=%s&amp;action=%s&amp;view_type=form' % (quotation                                  ._name, quotation.id, action)">Back to Sales Order</a>-->
+                  <!--</li>-->
+                  <!--<li>-->
+                      <!--<a t-if="quotation.state in ['sent']" class="btn btn-info" t-att-href="'/my/orders/edit/%s' % (quotation.id)" data-toggle="modal">-->
+                          <!--<i class="fa fa-check"></i>-->
+                            <!--Update Quantity-->
+                      <!--</a>-->
+                      <!--<a class="btn btn-info" target="_blank" t-att-href="'/quote/%s/%s' % (quotation.id,quotation.access_token)+'?pdf=True'">Print</a>-->
+                  <!--</li>-->
+                  <!--<li>-->
+                    <!--<t t-call='portal.record_pager'/>-->
+                  <!--</li>-->
+               <!--</ul>-->
+            <!--</xpath>-->
+            <xpath expr="//div[2]/div" position="inside">
+                <label t-if="quotation.partner_id.gl_account.name" class="col-sm-4 col-xs-4 text-right">GL Account:</label>
+                <div class="col-sm-8 col-xs-8">
+                    <div t-if="quotation.partner_id.gl_account.name" t-field="quotation.partner_id.gl_account.name"/>
+                </div>
+            </xpath>
+        </template>
+
+        <template id="so_modify_content" inherit_id="website_quote.so_quotation" name="Modify Content">
+            <!--<xpath expr="//t/t/body/div[1]/div[1]/div[2]/div[8]" position="attributes">
+                <attribute name="class">text-right</attribute>
+            </xpath>-->
+            <xpath expr="//t/t/body/div[1]/div[1]/div[2]/div[8]" position="replace">
+                 <div class="text-right hidden-print mt16 mb16" id="quotation_toolbar" t-if="quotation.state in ('draft', 'sent', 'waiting_date')">
+                          <a class="btn btn-danger" data-toggle="modal" data-target="#modaldecline">
+                              Reject
+                          </a>
+                          <a class="btn btn-success" data-toggle="modal" data-target="#modalaccept" t-if="order_valid and not quotation.require_payment">
+                              Accept
+                          </a>
+                          <a class="text-right btn btn-info" t-att-href="'/my/orders/edit/%s' % (quotation.id)" data-toggle="modal">
+                                   <b><u>Update Quantity</u></b>
+                          </a>
+                 </div>
+            </xpath>
+            <!--<xpath expr="//t/t/body/div[1]/div[1]/div[2]/div[8]/a[3]" position="after">
+                <a class="text-right btn btn-info" t-att-href="'/my/orders/edit/%s' % (quotation.id)" data-toggle="modal">
                     Update Quantity
                 </a>
-            </xpath>
-            <xpath expr="//div[@id='modalaccept']" position="replace">
+             </xpath>-->
+            <xpath expr="//t/t/body/div[1]/div[1]/div[2]/div[5]" position="replace">
                 <div class="modal" id="modalaccept" role="dialog" aria-hidden="true">
                     <div class="modal-dialog">
                         <form id="accept" method="POST"
@@ -37,7 +78,9 @@
                              </t>
                             <div class="modal-body">
                                 <p>
-                                    Give your feedback, this will help us improve our services.
+                                    Your Order will be shipped Ground unless otherwise stated. If expedited shipping is needed, Please indicate below:
+                                            (First Overnight by 8:30AM / Priority Overnight by 10:30AM /2nd day AM by 10:30 AM /2nd Day /3rd Day)
+                                    <!--Give your feedback, this will help us improve our services.-->
                                 </p>
                                 <textarea rows="4" name="accept_message" placeholder="Your feedback....."
                                           class="form-control"/>
@@ -50,7 +93,7 @@
                     </div>
                 </div>
             </xpath>
-            <xpath expr="//div[@id='modaldecline']" position="replace">
+            <xpath expr="//t/t/body/div[1]/div[1]/div[2]/div[6]" position="replace">
                 <div class="modal" id="modaldecline" role="dialog" aria-hidden="true">
                     <div class="modal-dialog">
                         <form id="declines" method="POST"
@@ -83,14 +126,13 @@
         </template>
 
         <template id="cart_lines" name="Shopping Cart Lines">
-            <!--<div t-if="not website_sale_order or not website_sale_order.website_order_line" class="js_cart_lines well well-lg">
-              Your cart is empty!
-            </div>-->
+
             <section id="quote" class="engine">
                 <t t-foreach="quotation.order_lines_layouted()" t-as="page">
                     <table class="table table-striped table-condensed js_cart_lines" id="cart_products">
                         <thead>
                             <tr>
+                                <!--<th class="text-center td-qty">Req no</th>-->
                                 <th class="td-img">Product</th>
                                 <th></th>
                                 <th class="text-center td-qty">Quantity</th>
@@ -103,6 +145,9 @@
                             <t t-foreach="page" t-as="layout_category">
                                 <t t-foreach="layout_category['lines']" t-as="line">
                                     <tr>
+                                       <!-- <td class="text-center" name="Req no">
+                                            <div t-field="line.req_no"/>
+                                        </td>-->
                                         <td colspan="2" t-if="not line.product_id.product_tmpl_id" class='td-img'></td>
                                         <td align="center" t-if="line.product_id.product_tmpl_id" class='td-img'>
                                             <span t-field="line.product_id.image_small"
@@ -123,10 +168,10 @@
                                                 </t>
                                             </div>
                                             <a href='#' class='js_delete_product hidden-xs no-decoration'>
-                                                <small>
+                                                <large>
                                                     <i class='fa fa-trash-o'></i>
                                                     Remove
-                                                </small>
+                                                </large>
                                             </a>
                                         </td>
                                         <td class="text-center td-qty">
@@ -146,8 +191,6 @@
                                             </div>
                                         </td>
                                         <td class="text-center td-quantity" name="quantity">
-                                            <!--  <div onload="startfun()"/>-->
-                                            <!--<t t-call="website.fun()"/>-->
                                         </td>
                                         <td class="text-center td-price" name="price">
                                             <div t-field="line.price_unit"
@@ -160,8 +203,6 @@
                                                 <t t-esc="(line.product_uom_qty*line.price_unit)"
                                                    t-options='{"widget": "monetary", "display_currency": quotation.pricelist_id.currency_id}'/>
                                             </div>
-                                            <!--  <span  t-att-data-line-id="line.id" t-esc="line.product_uom_qty*line.price_unit"
-                                                    t-options='{"widget": "monetary", "display_currency": quotation.pricelist_id.currency_id}'/>-->
                                         </td>
                                     </tr>
                                 </t>
@@ -185,6 +226,199 @@
             </section>
         </template>
 
+        <template id="pricing_inherit" inherit_id="website_quote.pricing" name="prioritization price">
+            <xpath expr="//section[@id='quote']" position="replace">
+
+
+                <section id="quote" style="position: relative;">
+
+                    <style type="text/css">
+                        .update-qty{position: absolute;top: 0;right: 0;}
+                        .click-here{position: relative; top: 9px;}
+                        .btn-update{
+                        margin-left: 10px;}
+
+                        @media (min-width: 768px) and (max-width: 1024px) {
+
+                        h1
+                        {
+                        font-size:28px;
+
+                        }
+                        .update-qty {
+                        position: absolute;
+                        top: -10px;
+                        right: 0;
+                        }
+                        .btn-update{
+                        margin-left: 10px;}
+                        }
+
+                        @media(max-width: 767px) {
+                        .click-here {
+                        position: absolute;
+                        top: 0px;
+                        right: 140px;
+                        }
+                        .action-btn{margin: 10px 50px auto;}
+                        .txt-cen{text-align:center;}
+                        h1
+                        {
+                        font-size:30px;
+                        line-height: 1.5;
+                        }
+                        .update-qty{position: relative !important;top: 0;right: 0;}
+                        address{    word-break: break-all;}
+                        .btn-update{    float: right;
+                        margin-top: -15px;}
+                        }
+                        @media(max-width: 375px) {
+                        h1
+                        {
+                        font-size:24px;
+                        line-height: 1.5;
+                        }
+                        }
+
+                    </style>
+                    <div>
+                    <h1 class="page-header" style="padding-top: 0px">Pricing</h1>
+                    <!--<div style="position: absolute;top: 0;right: 0;">  -->
+                        <h5 class="update-qty"><b class="click-here">Click here to update quantity </b><a t-if="quotation.state in ['sent']" class="btn btn-info btn-update" t-att-href="'/my/orders/edit/%s' % (quotation.id)" data-toggle="modal">
+                            <b><u>Update Quantity</u></b>
+                    </a></h5>
+                    </div>
+
+                    <!--</div>-->
+                    <t t-foreach="quotation.order_lines_layouted()" t-as="page">
+                        <div class="table-responsive">
+                    <table class="table wq-table">
+                    <thead>
+                        <tr>
+                            <th>Products</th>
+                            <th><span t-if="any([line.req_no for line in quotation.order_line])">Requisition No</span></th>
+                            <th>Quantity</th>
+                            <th><span t-if="any([line.tax_id for line in quotation.order_line])">Taxes</span></th>
+                            <th><span t-if="True in [line.discount > 0 for line in quotation.order_line]">Discount</span></th>
+                            <th class="text-right">Unit Price</th>
+                            <th class="text-right" groups="sale.group_show_price_subtotal">Amount</th>
+                            <th class="text-right price_tax_included" groups="sale.group_show_price_total">Total Price</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="page" t-as="layout_category">
+
+                            <t t-if="layout_category_size > 1 or page_size > 1" groups="sale.group_sale_layout">
+                                <tr class="active">
+                                    <td colspan="7" style="font-weight: bold; border-bottom: 1px solid black;">&amp;bull;
+                                        <t t-esc="layout_category['name']"/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <!-- Lines associated -->
+                            <t t-foreach="layout_category['lines']" t-as="line">
+                                <tr>
+                                  <td>
+                                      <span t-field="line.name"/>
+                                  </td>
+                                  <td>
+                                      <span t-if="line.req_no" t-field="line.req_no"/>
+                                  </td>
+                                  <td>
+                                      <div id="quote_qty">
+                                          <span t-field="line.product_uom_qty"/>
+                                          <span t-field="line.product_uom"/>
+                                      </div>
+                                  </td>
+                                  <td>
+                                      <div t-foreach="line.tax_id" t-as="tax">
+                                          <t t-esc="tax.name"/>
+                                      </div>
+                                  </td>
+                                  <td>
+                                      <strong t-if="line.discount" class="text-info">
+                                          <t t-esc="((line.discount % 1) and '%s' or '%d') % line.discount"/>% discount
+                                      </strong>
+                                  </td>
+                                  <td class="text-right">
+                                        <div t-field="line.price_unit"
+                                            t-options='{"widget": "monetary", "display_currency": quotation.pricelist_id.currency_id}'
+                                            t-att-style="line.discount and 'text-decoration: line-through' or None"
+                                            t-att-class="(line.discount and 'text-danger' or '') + ' text-right'"/>
+                                        <div t-if="line.discount">
+                                            <t t-esc="(1-line.discount / 100.0) * line.price_unit" t-options='{"widget": "monetary", "display_currency": quotation.pricelist_id.currency_id}'/>
+                                        </div>
+                                  </td>
+                                  <td class="text-right oe_order_line_price_subtotal" groups="sale.group_show_price_subtotal">
+                                      <span t-field="line.price_subtotal"
+                                            t-options='{"widget": "monetary", "display_currency": quotation.pricelist_id.currency_id}'/>
+                                  </td>
+                                  <td class="text-right oe_order_line_price_total" groups="sale.group_show_price_total">
+                                      <span t-field="line.price_total"
+                                            t-options='{"widget": "monetary", "display_currency": quotation.pricelist_id.currency_id}'/>
+                                  </td>
+                                  <td class="text-center">
+                                      <a t-attf-href="./update_line/#{ line.id }/?order_id=#{ quotation.id }&amp;unlink=True&amp;token=#{ quotation.access_token }" class="mb8 js_update_line_json hidden-print" t-if="line.option_line_id">
+                                          <span class="fa fa-trash-o"></span>
+                                      </a>
+                                  </td>
+                              </tr>
+                            </t>
+
+                            <t t-if="(layout_category_size > 1  or page_size > 1) and layout_category['subtotal']" groups="sale.group_sale_layout">
+                                <tr>
+                                    <td></td><td></td><td></td><td></td>
+                                    <td class="text-right" style="padding-bottom: 32px"><strong>Subtotal:</strong></td>
+                                    <td class="text-right" style="padding-bottom: 32px">
+                                        <t t-set="subtotal" t-value="sum(line.price_subtotal for line in layout_category['lines'])"/>
+                                        <strong data-id="total_amount" t-esc="subtotal" t-options="{'widget': 'monetary', 'display_currency': quotation.pricelist_id.currency_id}"/>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </t>
+                        </t>
+                        <t t-if="page_index == page_size - 1">
+                            <t t-if="any([line.tax_id for line in quotation.order_line])">
+                                <tr>
+                                    <td></td><td></td><td></td><td></td>
+                                    <td class="text-right"><strong>Subtotal:</strong></td>
+                                    <td class="text-right">
+                                        <strong data-id="total_untaxed" t-field="quotation.amount_untaxed" t-options='{"widget": "monetary","display_currency": quotation.pricelist_id.currency_id}'/>
+                                    </td>
+                                    <td></td>
+                                </tr>
+
+                                <tr>
+                                    <td></td><td></td><td></td><td></td>
+                                    <td class="text-right">Taxes:</td>
+                                    <td class="text-right">
+                                        <span data-id="total_taxes" t-field="quotation.amount_tax" t-options='{"widget": "monetary","display_currency": quotation.pricelist_id.currency_id}'/>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </t>
+                            <tr>
+                                <td></td><td></td><td></td><td></td>
+                                <td class="text-right"><strong>Total:</strong></td>
+                                <td class="text-right">
+                                    <strong data-id="total_amount" t-field="quotation.amount_total" t-options='{"widget": "monetary","display_currency": quotation.pricelist_id.currency_id}'/>
+                                </td>
+                                <td></td>
+                            </tr>
+                        </t>
+                    </tbody>
+                    </table>
+                        </div>
+                        <t t-if="page_index &lt; page_size - 1" groups="sale.group_sale_layout">
+                            <p style="page-break-before:always;"> </p>
+                        </t>
+                    </t>
+                </section>
+            </xpath>
+        </template>
+
         <template id="engine_pricing" name="Price">
             <section id="quote" class="engine">
                 <h1 class="page-header">Prioritization Pricing</h1>
@@ -192,6 +426,7 @@
                     <table class="table wq-table">
                         <thead>
                             <tr>
+                                <!--<th class="text-center td-qty">Req no</th>-->
                                 <th>Products</th>
                                 <th>Quantity</th>
                                 <th>
@@ -211,6 +446,7 @@
                         </thead>
                         <tbody>
                             <t t-foreach="page" t-as="layout_category">
+
                                 <t t-if="layout_category_size > 1 or page_size > 1" groups="sale.group_sale_layout">
                                     <tr class="active">
                                         <td colspan="7" style="font-weight: bold; border-bottom: 1px solid black;">&amp;bull;
@@ -221,6 +457,9 @@
                                 <!-- Lines associated -->
                                 <t t-foreach="layout_category['lines']" t-as="line">
                                     <tr>
+                                        <!-- <td class="text-center" name="Req no">
+                                            <div t-field="line.req_no"/>
+                                        </td>-->
                                         <td>
                                             <span t-field="line.name"/>
                                         </td>
@@ -251,13 +490,7 @@
                                                 discount
                                             </strong>
                                         </td>
-                                        <!--<td class="text-center td-price" name="price">
-                                              <t t-if="(compute_currency(line.product_id.lst_price) - line.price_reduce ) &gt; 0.01">
-                                                  <del t-attf-class="#{'text-danger mr8'}" style="white-space: nowrap;" t-esc="compute_currency(line.product_id.website_public_price)" t-options="{'widget': 'monetary', 'display_currency': website.get_current_pricelist().currency_id, 'from_currency': website.currency_id}" />
-                                              </t>
-                                              &lt;!&ndash;<span t-field="line.price_reduce_taxexcl" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'from_currency': website_sale_order.pricelist_id.currency_id, 'display_currency': website.currency_id}" groups="sale.group_show_price_subtotal" />
-                                              <span t-field="line.price_reduce_taxinc" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'from_currency': website_sale_order.pricelist_id.currency_id, 'display_currency': website.currency_id}" groups="sale.group_show_price_total" />&ndash;&gt;
-                                        </td>-->
+
                                         <td class="text-right">
                                             <div t-field="line.price_unit"
                                                  t-options='{"widget": "monetary", "display_currency": quotation.pricelist_id.currency_id}'
@@ -273,17 +506,12 @@
                                                 <t t-esc="(line.product_uom_qty*line.price_unit)"
                                                    t-options='{"widget": "monetary", "display_currency": quotation.pricelist_id.currency_id}'/>
                                             </div>
-                                            <!--  <span  t-att-data-line-id="line.id" t-esc="line.product_uom_qty*line.price_unit"
-                                                    t-options='{"widget": "monetary", "display_currency": quotation.pricelist_id.currency_id}'/>-->
-                                        </td>
-                                        <!--<td class="text-right price_total" groups="sale.group_show_price_total">-->
-                                        <!--<span t-field="line.price_total" t-esc="compute_currency(line.product_uom_qty,line.price_unit)"-->
-                                        <!--t-options='{"widget": "monetary", "display_currency": quotation.pricelist_id.currency_id}'/>-->
-                                        <!--</td>-->
+                                         </td>
+
                                         <td class="text-center">
                                             <a t-attf-href="./update_line/#{ line.id }/?order_id=#{ quotation.id }&amp;unlink=True&amp;token=#{ quotation.access_token }"
                                                class="mb8 js_update_line_json hidden-print" t-if="line.option_line_id">
-                                                <span class="fa fa-trash-o"></span>
+                                                <large><span class="fa fa-trash-o"></span></large>
                                             </a>
                                         </td>
                                     </tr>
@@ -377,11 +605,28 @@
                 <t t-set="invoices_amount" t-value="sum(i.amount_total for i in invoices)"/>
                 <div id="optional_placeholder"></div>
                 <div class="container">
+                    <style type="text/css">
+                        input.quantity {
+                        padding: 14px 8px;
+                        width: 53px !important;
+                        display: inline;
+                        margin-bottom: 1em;
+                        }
+                        @media (min-width: 768px) and (max-width: 1024px) {}
+                        @media(max-width: 767px){.action-btn{    margin: 10px auto;
+                        display: block;
+                       }input.quantity {
+                        width: 50px !important;}
+                        @media(max-width: 375px){.action-btn {    margin: 10px auto;
+                        display: block;
+                        text-align: center; }}
+
+                    </style>
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <div class="row">
-                                <div class="col-md-6 col-xs-9 col-sm-9">
-                                    <h4>
+                                <div class="col-md-6 col-xs-12 col-sm-6">
+                                    <h4 class="txt-cen">
                                         <t t-call='portal.record_pager'/>
                                         <t t-if="order.state in ('sent', 'cancel')">Quotation</t>
                                         <t t-else="">Order</t>
@@ -400,27 +645,41 @@
                                         </t>
                                     </h4>
                                 </div>
-                                <div class="col-md-6 col-sm-3 col-xs-3 hidden-print" id="o_portal_order_actions">
-                                    <t t-if="order.state == 'sent' and portal_confirmation == 'sign'"
+                                <div class="text-right col-md-6 col-sm-6 col-xs-12 hidden-print" id="o_portal_order_actions">
+                                    <!--<t t-if="order.state == 'sent' and portal_confirmation == 'sign'"
                                        name="portal_confirmation_sign">
-                                        <a class="btn btn-primary ml8 pull-right" href="#portal_sign">
+                                        <a class="btn btn-primary ml8 pull-right" href="#portal_sign" style="visibility: hidden">
                                             <i class="fa fa-arrow-circle-right"/>
                                             Accept
                                         </a>
+                                    </t>-->
+                                 <div class="action-btn">
+                                  <t t-if="order.amount_total != 0">
+                                    <a target="_blank" t-att-href="'/my/orders/pdf/%s?%s' % (order.id, keep_query())"
+                                       class="ml8  mt4 mr8 text-primary" title="Download">
+                                        <i class="fa fa-download text-primary fa-2x" aria-hidden="true"/> Download
+                                    </a>
+                                     </t>
+
+
+                                    <a class="btn btn-danger ml8 " data-toggle="modal" data-target="#decline">
+                                            Reject
+                                        </a>
+                                      <t t-if="order.amount_total != 0">
+                                        <a class="btn btn-success ml8 " data-toggle="modal" data-target="#accept">
+                                            Accept
+                                        </a>
                                     </t>
-                                    <t t-if="order.state == 'sale' and portal_confirmation == 'sign'">
+                                   <!-- <t t-if="order.state == 'sale' and portal_confirmation == 'sign'">
                                         <a class="btn btn-success ml8 pull-right" disabled="disabled"
                                            t-attf-title="Order signed on #{order.confirmation_date} by #{order.partner_id.name}">
                                             <i class="fa fa-check-circle"/>
                                             Signed
                                         </a>
-                                    </t>
-                                     <t t-if="order.amount_total != 0">
-                                    <a target="_blank" t-att-href="'/my/orders/pdf/%s?%s' % (order.id, keep_query())"
-                                       class="ml8 pull-right mt4 mr8" title="Download">
-                                        <i class="fa fa-download fa-2x" aria-hidden="true"/>
-                                    </a>
-                                     </t>
+                                    </t>-->
+
+
+                                 </div>
                                 </div>
                             </div>
                         </div>
@@ -488,8 +747,78 @@
                                     </div>
                                 </div>
                             </div>
-                            <hr/>
-                            <div class="row">
+
+                          <div class="row">
+                                <div class="col-md-12 table-responsive">
+                                <table class="table">
+                                    <tr>
+                                                <td style="width:10%"></td>
+                                                <td style="width:50%"><strong>Product</strong> </td>
+                                                 <td style="width:15%"><strong>Unit Price</strong> </td>
+                                                 <td style="width:10%"><strong>Quantity</strong></td>
+                                                 <td style="width:15%"><strong>Subtotal</strong></td>
+
+
+                                    </tr>
+                                 <t t-foreach="order.order_line" t-as="ol">
+                                 <tr>
+
+                                        <t t-if="ol.product_uom_qty != 0">
+                                        <td>
+                                        <span t-field="ol.product_image"
+                                              t-options="{'widget': 'image', 'class': 'img-rounded', 'style':'width: 48px;height:48px'}"/>
+                                              </td><td>
+                                        <span t-esc="ol.product_id.name"/>
+                                        </td><td>
+                                        <span t-field="ol.price_unit"
+                                              t-options='{"widget": "monetary", "display_currency": order.pricelist_id.currency_id}'/>
+                                              </td>
+                                    <t t-if="ol._name == 'sale.order.line'">
+                                            <t t-if="order.state == 'sent'">
+                                            <td>
+                                                    <div class="css_quantity input-group oe_website_spinner">
+                                                    <a title="Decrease Quality" t-attf-href="#"
+                                                       class="mb8 input-group-addon js_add_cart_json ">
+                                                        <i class="fa fa-minus"></i>
+                                                    </a>
+                                                    <input type="text" class="js_quantity form-control quantity"
+                                                           t-att-data-quote-id="ol.order_id.id"
+                                                           t-att-data-line-id="ol.id"
+                                                           t-att-data-product-id="ol.product_id.id"
+                                                           t-att-value="ol.product_uom_qty" readonly="True" style="
+                                                             background-color: white;"/>
+                                                    <lable style="cursor: not-allowed;"
+                                                       class="mb8 input-group-addon float_left js_add_cart_json">
+                                                        <i class="fa fa-plus" style="readonly:true;color: #cacaca;"></i>
+                                                    </lable>
+                                                </div>
+                                                    </td>
+                                            </t>
+                                            <t t-if="order.state != 'sent'">
+                                            <td>
+                                                <span t-esc="ol.product_uom_qty"/>
+                                                </td>
+                                            </t>
+                                    </t>
+                                    <td>
+                                        <span t-field="ol.price_subtotal"
+                                              t-options='{"widget": "monetary", "display_currency": order.pricelist_id.currency_id}'/>
+                                        <input type="hidden" class="change js_quantity form-control quantity"
+                                                           t-att-data-quote-id="ol.order_id.id"
+                                                           t-att-data-line-id="ol.id"
+                                                           t-att-data-product-id="ol.product_id.id"
+                                                           t-att-value="ol.product_uom_qty"/>
+                                        <span>  </span>
+                                        <a href='#' title="Remove" class='js_delete_product no-decoration'> <large>  <i class='fa fa-trash-o' style="margin-left: 5px;font-size: 16px;"></i></large></a>
+                                    </td>
+                                </t>
+                                 </tr>
+                            </t>
+
+                      </table>
+                          </div>
+                        </div>
+                            <!--<div class="row">
                                 <div class="col-md-6">
                                     <strong>Product</strong>
                                 </div>
@@ -499,9 +828,6 @@
                                 <div class="hidden-sm hidden-xs col-md-2 text-center">
                                     <strong>Quantity</strong>
                                 </div>
-                                <!--  <div class="hidden-sm hidden-xs col-md-2 text-center">
-                                    <strong>Available Quantity</strong>
-                                  </div>-->
                                 <div class="hidden-sm hidden-xs col-md-2 text-right">
                                     <strong>Subtotal</strong>
                                 </div>
@@ -525,19 +851,20 @@
                                         <div class="col-xs-2 text-right">
                                             <t t-if="order.state == 'sent'">
                                                 <div class="css_quantity input-group oe_website_spinner">
-                                                    <a t-attf-href="#"
-                                                       class="mb8 input-group-addon js_add_cart_json hidden-xs">
+                                                    <a title="Decrease Quality" t-attf-href="#"
+                                                       class="mb8 input-group-addon js_add_cart_json ">
                                                         <i class="fa fa-minus"></i>
                                                     </a>
                                                     <input type="text" class="js_quantity form-control quantity"
                                                            t-att-data-quote-id="ol.order_id.id"
                                                            t-att-data-line-id="ol.id"
                                                            t-att-data-product-id="ol.product_id.id"
-                                                           t-att-value="ol.product_uom_qty"/>
-                                                    <a t-attf-href="#"
+                                                           t-att-value="ol.product_uom_qty" readonly="True" style="
+                                                             background-color: white;"/>
+                                                    <lable style="cursor: not-allowed;"
                                                        class="mb8 input-group-addon float_left js_add_cart_json hidden-xs">
-                                                        <i class="fa fa-plus"></i>
-                                                    </a>
+                                                        <i class="fa fa-plus" style="readonly:true;color: #cacaca;"></i>
+                                                    </lable>
                                                 </div>
                                             </t>
                                             <t t-if="order.state != 'sent'">
@@ -548,17 +875,17 @@
                                     <div class="col-sm-2 col-xs-4 text-right">
                                         <span t-field="ol.price_subtotal"
                                               t-options='{"widget": "monetary", "display_currency": order.pricelist_id.currency_id}'/>
-                                        <input type="hidden" class="js_quantity form-control quantity"
+                                        <input type="hidden" class="change js_quantity form-control quantity"
                                                            t-att-data-quote-id="ol.order_id.id"
                                                            t-att-data-line-id="ol.id"
                                                            t-att-data-product-id="ol.product_id.id"
                                                            t-att-value="ol.product_uom_qty"/>
                                         <span>  </span>
-                                        <a href='#' class='js_delete_product hidden-xs no-decoration'> <small>  <i class='fa fa-trash-o'></i></small></a>
+                                        <a href='#' title="Remove" class='js_delete_product hidden-xs no-decoration'> <large>  <i class='fa fa-trash-o'></i></large></a>
                                     </div>
                                 </div>
                                 </t>
-                            </t>
+                            </t>-->
 
                             <hr/>
 
@@ -628,29 +955,19 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="text-center hidden-print mt16 mb16" id="portal_sign">
+                        <div class="panel-heading  text-right hidden-print mt16 mb16" id="portal_sign" style="margin-bottom: 0px !important">
+                            <a class="btn btn-info" data-toggle="modal"  onclick="history.back()" data-target="#discussion">
+                                <i class="fa fa-comments-o"></i>
+                                Feedback
+                            </a>
+                            <a class="btn btn-danger" data-toggle="modal" data-target="#decline">
+                                Reject
+                            </a>
                              <t t-if="order.amount_total != 0">
                             <a class="btn btn-success" data-toggle="modal" data-target="#accept">
-                                <i class="fa fa-check"></i>
                                 Accept
                             </a>
                              </t>
-                            <a class="btn btn-danger" data-toggle="modal" data-target="#decline">
-                                <i class="fa fa-times"></i>
-                                Reject
-                            </a>
-                            <!--<div class="row" t-if="order.state == 'sent' and portal_confirmation == 'sign'" id="portal_sign">-->
-                            <!--<div class="col-md-offset-3 col-md-6">-->
-                            <!--<h4>Accept &amp; Sign</h4>-->
-                            <!--<t t-call="portal.portal_signature">-->
-                            <!--<t t-set="object" t-value="order"/>-->
-                            <!--<t t-set="partner_name" t-value="order.partner_id.name"/>-->
-                            <!--<t t-set="callUrl" t-value="'/my/quotes/accept'"/>-->
-                            <!--<t t-set="signLabel" t-value="'Accept Order'"/>-->
-                            <!--<t t-set="accessToken" t-value="order.access_token"/>-->
-                            <!--</t>-->
-                            <!--</div>-->
-                            <!--</div>-->
                         </div>
                         <div class="modal" id="accept" role="dialog" aria-hidden="true">
                             <div class="modal-dialog">
@@ -675,7 +992,8 @@
                                       </t>
                                     <div class="modal-body">
                                         <p>
-                                            Give your feedback, this will help us improve our services.
+                                           Your Order will be shipped Ground unless otherwise stated. If expedited shipping is needed, Please indicate below:
+                                            (First Overnight by 8:30AM / Priority Overnight by 10:30AM /2nd day AM by 10:30 AM /2nd Day /3rd Day)
                                         </p>
                                         <textarea rows="4" name="accept_message" placeholder="Your feedback....."
                                                   class="form-control"/>
@@ -723,7 +1041,7 @@
 
         <template id="portal_my_home_vendor_offer" name="Portal My Home : vendor offer entry"
                   inherit_id="portal.portal_my_home" priority="25">
-            <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <xpath expr="//ul[hasclass('o_portal_docs')]" position="inside">
                 <li t-if="vendor_count" class="list-group-item">
                     <span class="badge" t-esc="vendor_count"/>
                     <a href="/my/vendor">Vendor Offer</a>
@@ -755,7 +1073,7 @@
                                         </a>
                                     </td>
                                     <td>
-                                        <span t-field="order.date_order"/>
+                                        <span t-field="order.date_order" t-options='{"widget": "date"}'/>
                                     </td>
                                     <td>
                                         <t t-if="order.state == 'cancel'">
@@ -803,11 +1121,14 @@
                                 <span t-field="order.date_order" t-options='{"widget": "date"}'/>
                             </div>
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-5">
                                     <strong>Product</strong>
                                 </div>
+                                 <div class="col-md-1">
+                                    <strong>SKU</strong>
+                                </div>
                                 <div class="col-md-2 text-right">
-                                    <strong>Unit Price</strong>
+                                    <strong>Offer Price</strong>
                                 </div>
                                 <div class="col-md-2 text-right">
                                     <strong>Quantity</strong>
@@ -821,11 +1142,14 @@
                                     <div class="col-md-1 text-center">
                                         <img t-att-src="'/web/image/purchase.order.line/%s/product_image/48x48' % ol.id"/>
                                     </div>
-                                    <div id='product_name' class="col-md-5">
+                                    <div id='product_name' class="col-md-4">
                                         <span t-esc="ol.product_id.name"/>
                                     </div>
+                                    <div class="col-md-1">
+                                        <span t-esc="ol.sku_code"/>
+                                    </div>
                                     <div class="col-md-2 text-right">
-                                        <span t-field="ol.price_unit"
+                                        <span t-field="ol.product_offer_price"
                                               t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
                                     </div>
                                     <div class="col-md-2 text-right">
@@ -896,13 +1220,7 @@
                                     <h4 class="modal-title">Validate Order</h4>
                                 </div>
                                 <div class="modal-body" id="sign-dialog">
-                                    <!--<p>
-                                        <span>I agree that by signing this proposal, I
-                                        accept it on the behalf of </span><b t-field="order.partner_id.commercial_partner_id"/><span>, for an amount of </span>
-                                        <b data-id="total_amount" t-field="order.amount_total"
-                                            t-options='{"widget": "monetary", "display_currency": order.pricelist_id.currency_id}'/>
-                                        <span>with payment terms: </span><b t-field="order.payment_term_id"/>.
-                                    </p>-->
+
                                     <t t-call="portal.portal_signature">
                                         <t t-set="object" t-value="order"/>
                                         <t t-set="partner_name" t-value="order.partner_id.name"/>
@@ -923,13 +1241,7 @@
                                     <h4 class="modal-title">Reject Order</h4>
                                 </div>
                                 <div class="modal-body" id="sign-dialog">
-                                    <!--<p>
-                                        <span>I agree that by signing this proposal, I
-                                        accept it on the behalf of </span><b t-field="order.partner_id.commercial_partner_id"/><span>, for an amount of </span>
-                                        <b data-id="total_amount" t-field="order.amount_total"
-                                            t-options='{"widget": "monetary", "display_currency": order.pricelist_id.currency_id}'/>
-                                        <span>with payment terms: </span><b t-field="order.payment_term_id"/>.
-                                    </p>-->
+
                                     <t t-call="portal.portal_signature">
                                         <t t-set="object" t-value="order"/>
                                         <t t-set="partner_name" t-value="order.partner_id.name"/>
@@ -946,7 +1258,7 @@
 
         <template id="portal_my_home_menu_vendor" name="Portal layout : vendor menu entries"
                   inherit_id="portal.portal_layout" priority="20">
-            <xpath expr="//div[hasclass('o_portal_my_details')]" position="inside">
+            <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
                 <li t-if="vendor_offer and vendor_offer.state in ('ven_sent', 'cancel')">
                     <a t-if="vendor_offer" t-attf-href="/my/vendor?{{ keep_query() }}">Vendor Offer</a>
                     <t t-else="">Vendor Offer</t>
