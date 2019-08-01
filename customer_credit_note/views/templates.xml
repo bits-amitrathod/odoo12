@@ -18,5 +18,11 @@
              </t>
            </dl>
          </template>
+
+        <template id="assets_backend" name="mail assets" inherit_id="mail.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/customer_credit_note/static/src/js/thread.js"></script>
+            </xpath>
+        </template>
     </data>
 </odoo>
