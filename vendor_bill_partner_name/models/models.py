@@ -66,23 +66,18 @@ class VendorBillPartnerName(models.Model):
     @api.model
     def _get_default_image(self, partner_type, is_company, parent_id):
         super_return=super(VendorBillPartnerName, self). _get_default_image(partner_type, is_company, parent_id)
-
         colorize, img_path, image = False, False, False
+        if super_return and partner_type == 'ap':
 
-        if partner_type in ['other'] and parent_id:
-            parent_image = self.browse(parent_id).image
-            image = parent_image and base64.b64decode(parent_image) or None
+            if not image :
+                img_path = get_module_resource('vendor_bill_partner_name', 'static/src/img', 'cart.png')
+                colorize = True
 
-        if not image and partner_type == 'ap':
-            img_path = get_module_resource('vendor_bill_partner_name', 'static/src/img', 'cart.png')
-            colorize = True
-
-        if img_path:
-            with open(img_path, 'rb') as f:
-                image = f.read()
+            if img_path:
+                with open(img_path, 'rb') as f:
+                    image = f.read()
         # if image and colorize:
         #     image = tools.image_colorize(image)
-
 
         return tools.image_resize_image_big(base64.b64encode(image)) if image and colorize else super_return
 
