@@ -7,7 +7,6 @@
             <field name="arch" type="xml">
 
                 <button name="action_quotation_send" position="after">
-                    <!--<field name="show_validate" invisible="1"/>-->
                     <button name="action_quotation_send" string="Send by Email" type="object" states="engine"
                             class="btn-primary"/>
                     <button name="print_quotation" string="Print" type="object" states="engine"
@@ -16,13 +15,15 @@
                             string="Confirm Sale" class="btn-primary" type="object"
                             attrs="{'invisible': [('state', 'not in', ['engine'])]}"/>
                     <button name="action_cancel" states="engine" type="object" string="Cancel"/>
-                    <!--<button name="action_validate"
-                            attrs="{'invisible': ['|', ('show_validate', '=', False),('state', 'not in', 'sale')]}"
-                            string="Validate" groups="stock.group_stock_user" type="object" class="oe_highlight"/>-->
+<!--                    <button string="Shipping Update"-->
+<!--                                type="object" class="btn-primary" name="action_fedex_track_request"/>-->
+
                 </button>
                 <button name="action_cancel" position="after">
                     <button name="action_void" string="Voided" type="object" states="draft,sent"/>
+
                 </button>
+
                 <field name="partner_shipping_id" position="after">
                     <field name="preferred_method"/>
                     <field name="shipping_terms"/>
@@ -30,11 +31,31 @@
                 <field name="payment_term_id" position="after">
                     <field name="carrier_info"/>
                     <field name="carrier_acc_no"/>
+                    <field name="is_share"/>
+                    <field name="sale_margine"/>
                 </field>
                 <xpath expr="/form/sheet/notebook/page[1]/field[@name='order_line']/tree/field[@name='product_id']"
                        position="after">
-                        <!--<field name="customer_request_count" />-->
                         <field name="req_no"/>
+                </xpath>
+                 <xpath expr="/form/sheet/notebook/page[1]/field[@name='order_line']/tree/field[@name='name']"
+                       position="attributes">
+                     <!-- For Hiding description column -->
+                           <attribute name="invisible">True</attribute>
+                </xpath>
+                  <xpath expr="/form/sheet/notebook/page[1]/field[@name='order_line']/tree/field[@name='product_id']"
+                       position="before">
+                        <!-- Adding SKU column -->
+                        <field name="default_code"/>
+                </xpath>
+                <xpath expr="/form/sheet/notebook/page[1]/field[@name='order_line']/tree/field[@name='product_uom']"
+                       position="after">
+                        <!-- Adding manufacturer_uom column -->
+                        <field name="manufacturer_uom"/>
+                </xpath>
+
+                <xpath expr="//group[@name='sales_person']/field[@name='user_id']"  position="after">
+                     <field name="order_processor"/>
                 </xpath>
             </field>
         </record>
@@ -48,6 +69,7 @@
                     <field name="shipping_terms"/>
                 </field>
                 <field name="date_due" position="after">
+                    <field name="sale_margine"/>
                     <field name="expiration_date"/>
                 </field>
                 <field name="comment" position="before">
@@ -57,12 +79,9 @@
                 </field>
                 <xpath expr="/form/sheet[1]/notebook/page[@name='other_info']/group/group[2]/field[@name='origin']"
                        position="replace">
-                      <field name="origin" string="Sale Order#" groups="base.group_user" attrs="{'invisible': True}"/>
+                      <field name="origin" string="Order#" groups="base.group_user" attrs="{'invisible': True}"/>
                 </xpath>
-                <!--<xpath expr="/form/sheet[1]/notebook/page[@name='other_info']/group/group[2]/field[@name='name']"-->
-                       <!--position="replace" />-->
                 <xpath expr="//field[@name='team_id']" position="after">
-                  <!--  <field name="name" string="Purchase Order#"/>-->
                     <field name="purchase_order" string="Purchase Order#"/>
                     <field name="origin" string="Sale Order#" groups="base.group_user" attrs="{'invisible': [('origin', '=', False)]}"/>
                 </xpath>
@@ -102,5 +121,265 @@
                 </xpath>
             </field>
         </record>
+
+        <record id="view_order_list_cstm" model="ir.ui.view">
+            <field name="name">sale.order.list.cstm</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_tree"/>
+            <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="is_share"/>
+                <field name="sale_margine"/>
+            </xpath>
+            </field>
+        </record>
+
+        <record id="view_order_quotation_tree_cstm" model="ir.ui.view">
+            <field name="name">sale.order.quotation.tree.cstm</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_quotation_tree"/>
+            <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="after">
+                 <field name="is_share"/>
+                <field name="sale_margine"/>
+            </xpath>
+            </field>
+        </record>
+
+        <record id="view_order_form_inherit_sale_stock" model="ir.ui.view">
+            <field name="name">sale.order.form.sale.stock</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='order_line']/form/group/group/div/field[@name='product_uom']" position="replace">
+                    <field name="product_uom" groups="product.group_uom" class="oe_inline oe_no_button" domain="[()]"
+                                                    attrs="{'readonly': [('state', 'in', ('sale','done', 'cancel'))]}" options="{'no_create_edit': True, 'no_open': True}"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Adding Sales Level & Is_shared field into group by-->
+        <record id="view_sales_order_filter_inherit" model="ir.ui.view">
+            <field name="name">sale.order.common.search.inherit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+            <field name="arch" type="xml">
+		    <xpath expr="/search/group" position="after">
+		        <filter string="Sales Level" domain="[]" context="{'group_by':'sale_margine'}"/>
+                <filter string="Is Shared" domain="[]" context="{'group_by':'is_share'}"/>
+		    </xpath>
+            </field>
+        </record>
+
     </data>
+
+    <template id="inherit_report_saleorder_document" inherit_id="sale.report_saleorder_document">
+        <xpath expr="//t/div[1]" position="replace">
+            <div class="oe_structure"/>
+            <div class="row">
+                <div class="col-xs-6">
+                    <t t-if="doc.partner_shipping_id == doc.partner_invoice_id
+                             and doc.partner_invoice_id != doc.partner_id
+                             or doc.partner_shipping_id != doc.partner_invoice_id">
+                        <strong t-if="doc.partner_shipping_id == doc.partner_invoice_id">Invoicing and shipping address:</strong>
+                        <strong t-if="doc.partner_shipping_id != doc.partner_invoice_id">Invoicing address:</strong>
+                        <div t-field="doc.partner_invoice_id"
+                        t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True, "phone_icons": True}'/>
+                        <div t-if="doc.partner_shipping_id != doc.partner_invoice_id" class="mt8">
+                            <strong>Shipping address:</strong>
+                            <div t-field="doc.partner_shipping_id"
+                                t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True, "phone_icons": True}'/>
+                        </div>
+                    </t>
+                </div>
+                <div class="col-xs-5 col-xs-offset-1">
+                    <div t-field="doc.partner_id"
+                        t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}' />
+                    <p t-if="doc.partner_id.vat"><t t-esc="doc.company_id.country_id.vat_label or 'TIN'"/>: <span t-field="doc.partner_id.vat"/></p>
+                </div>
+            </div>
+
+            <h2>
+                <t t-if="not (env.context.get('proforma', False) or is_pro_forma)">
+                    <span t-if="doc.state not in ['draft','sent']">Order # </span>
+                    <span t-if="doc.state in ['draft','sent']">Quotation # </span>
+                </t>
+                <t t-if="env.context.get('proforma', False) or is_pro_forma">
+                    <span>Pro-Forma Invoice # </span>
+                </t>
+                <span t-field="doc.name"/>
+            </h2>
+
+            <div class="row mt32 mb32" id="informations">
+                <div t-if="doc.client_order_ref" class="col-xs-3">
+                    <strong>Your Reference:</strong>
+                    <p t-field="doc.client_order_ref"/>
+                </div>
+                <div t-if="doc.confirmation_date and doc.state not in ['draft','sent']" class="col-xs-3">
+                    <strong>Date Ordered:</strong>
+                    <p t-field="doc.confirmation_date"/>
+                </div>
+                <div t-if="doc.date_order and doc.state in ['draft','sent']" class="col-xs-3">
+                    <strong>Quotation Date:</strong>
+                    <p t-field="doc.date_order"/>
+                </div>
+                <div t-if="doc.user_id.name" class="col-xs-3">
+                    <strong>Salesperson:</strong>
+                    <p t-field="doc.user_id"/>
+                </div>
+                <div t-if="doc.partner_id.gl_account.name" class="col-xs-3">
+                    <strong>GL Account:</strong>
+                    <p t-field="doc.partner_id.gl_account.name"/>
+                </div>
+                <div name="payment_term" t-if="doc.payment_term_id" class="col-xs-3">
+                    <strong>Payment Terms:</strong>
+                    <p t-field="doc.payment_term_id"/>
+                </div>
+                <div t-if="doc.validity_date and doc.state in ['draft', 'sent']" class="col-xs-3">
+                    <strong>Expiration Date:</strong>
+                    <p t-field="doc.validity_date"/>
+                </div>
+                <div t-if="doc.carrier_track_ref" class="col-xs-3">
+                    <strong>Tracking Reference:</strong>
+                    <p t-field="doc.carrier_track_ref"/>
+                </div>
+                <div t-if="doc.carrier_id" class="col-xs-3">
+                    <strong>Delivery Method:</strong>
+                    <p t-field="doc.carrier_id.name"/>
+                </div>
+            </div>
+
+            <!-- Is there a discount on at least one line? -->
+            <t t-set="display_discount" t-value="any([l.discount for l in doc.order_line])"/>
+
+            <t t-foreach="doc.order_lines_layouted()" t-as="page">
+                <table class="table table-condensed">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Requisition No</th>
+                            <th class="text-right">Quantity</th>
+                            <th class="text-right">Unit Price</th>
+                            <th t-if="display_discount" class="text-right" groups="sale.group_discount_per_so_line">Disc.(%)</th>
+                            <th class="text-right">Taxes</th>
+                            <th class="text-right" groups="sale.group_show_price_subtotal">Amount</th>
+                            <th class="text-right price_tax_included" groups="sale.group_show_price_total">Total Price</th>
+                        </tr>
+                   </thead>
+                   <tbody class="sale_tbody">
+                        <t t-foreach="page" t-as="layout_category">
+
+                            <t t-if="layout_category_size > 1 or page_size > 1" groups="sale.group_sale_layout">
+                                <tr class="active">
+                                    <td colspan="7" style="font-weight: bold; border-bottom: 1px solid black;">&amp;bull;
+                                        <t t-esc="layout_category['name']"/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <!-- Lines associated -->
+                            <t t-foreach="layout_category['lines']" t-as="l">
+                                <tr>
+                                    <td><span t-field="l.name"/></td>
+                                    <td><span t-field="l.req_no"/></td>
+                                    <td class="text-right">
+                                        <span t-field="l.product_uom_qty"/>
+                                        <span t-field="l.product_uom" groups="product.group_uom"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-field="l.price_unit"/>
+                                    </td>
+                                    <td t-if="display_discount" class="text-right" groups="sale.group_discount_per_so_line">
+                                        <span t-field="l.discount"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="', '.join(map(lambda x: (x.description or x.name), l.tax_id))"/>
+                                    </td>
+                                    <td class="text-right" groups="sale.group_show_price_subtotal">
+                                        <span t-field="l.price_subtotal"
+                                            t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                                    </td>
+                                    <td class="text-right" groups="sale.group_show_price_total">
+                                        <span t-field="l.price_total"
+                                            t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <t t-if="(layout_category_size > 1 or page_size > 1) and layout_category['subtotal']" groups="sale.group_sale_layout">
+                                <tr class="text-right">
+                                    <td colspan="6">
+                                        <strong>Subtotal: </strong>
+                                        <t t-set="subtotal" t-value="sum(line.price_subtotal for line in layout_category['lines'])"/>
+                                        <span t-esc="subtotal" t-options="{'widget': 'monetary', 'display_currency': doc.pricelist_id.currency_id}"/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                        </t>
+                    </tbody>
+                </table>
+
+                <t t-if="page_index &lt; page_size - 1" groups="sale.group_sale_layout">
+                    <p style="page-break-before:always;"> </p>
+                </t>
+            </t>
+
+            <div class="clearfix">
+                <div class="row" name="total">
+                    <div class="col-xs-4 pull-right">
+                        <table class="table table-condensed" style="min-width: 200px;max-width: 350px;">
+                            <tr class="border-black" style="border-bottom:1px solid #dddddd;">
+                                <td><strong>Subtotal</strong></td>
+                                <td class="text-right">
+                                    <span t-field="doc.amount_untaxed"
+                                        t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                                </td>
+                            </tr>
+                            <t t-foreach="doc._get_tax_amount_by_group()" t-as="amount_by_group">
+                                <tr style="border-bottom:1px solid #dddddd;">
+                                    <t t-if="amount_by_group[3] == 1 and doc.amount_untaxed == amount_by_group[2]">
+                                        <td>
+                                            <span t-esc="amount_by_group[0]"/>
+                                            <span>&amp;nbsp;<span>on</span>&amp;nbsp;<t t-esc="amount_by_group[2]" t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/></span>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-esc="amount_by_group[1]"
+                                                t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                                        </td>
+                                    </t>
+                                    <t t-else ="">
+                                        <td>
+                                            <span t-esc="amount_by_group[0]"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-esc="amount_by_group[1]"
+                                                t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                                        </td>
+                                    </t>
+                                </tr>
+                            </t>
+                            <tr class="border-black">
+                                <td><strong>Total</strong></td>
+                                <td class="text-right">
+                                    <span t-field="doc.amount_total"
+                                        t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <p t-field="doc.note" />
+            <p t-if="doc.payment_term_id.note">
+                <span t-field="doc.payment_term_id.note"/>
+            </p>
+            <p id="fiscal_position_remark" t-if="doc.fiscal_position_id and doc.fiscal_position_id.note">
+                <strong>Fiscal Position Remark:</strong>
+                <span t-field="doc.fiscal_position_id.note"/>
+            </p>
+            <div class="oe_structure"/>
+        </xpath>
+    </template>
 </odoo>

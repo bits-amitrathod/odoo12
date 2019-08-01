@@ -9,6 +9,7 @@ class SaleSalespersonReport(models.TransientModel):
     end_date = fields.Date(string="End Date", required=True)
     product_id = fields.Many2many('product.product', string="Products")
     order_partner_id = fields.Many2one('res.partner', string='Customer')
+    contract_id = fields.Many2one('contract.contract', string='Contract')
 
     @api.multi
     def open_table(self):
@@ -18,8 +19,13 @@ class SaleSalespersonReport(models.TransientModel):
             e_date = SaleSalespersonReport.string_to_date(str(self.end_date))
             e_date = e_date + datetime.timedelta(days=1)
             s_date=SaleSalespersonReport.string_to_date(str(self.start_date))
-
-            sale_order_line=self.env['sale.order.line'].search([('create_date', '>=', str(s_date)), ('create_date', '<=', str(e_date)), ('state', 'not in', ('cancel','void')),]).ids
+            stock_location = self.env['stock.location'].search([('name', '=', 'Customers')]).ids
+            stock_picking = self.env['stock.picking'].search([('date_done', '>=', str(s_date)), ('date_done', '<=', str(e_date)), ('state', '=', ('done')),('location_dest_id', '=', stock_location[0])])
+            sale_id_list =[]
+            for sp in stock_picking :
+                sale_id_list.append(sp.origin)
+            so_id =self.env['sale.order'].search([('name', 'in', sale_id_list  ),]).ids
+            sale_order_line = self.env['sale.order.line'].search([('order_id', 'in', so_id), ('state', 'not in', ('cancel','void')),]).ids
         else:
             sale_order_line = self.env['sale.order.line'].search([('state', 'not in', ('cancel', 'void')), ]).ids
         action = {
@@ -33,12 +39,14 @@ class SaleSalespersonReport(models.TransientModel):
         }
 
         if self.product_id and self.order_partner_id:
-            action['domain'].append(('product_id', '=', self.product_id.id))
+            action['domain'].append(('product_id', 'in', self.product_id.ids))
             action['domain'].append(('order_partner_id', '=', self.order_partner_id.id))
         elif self.product_id:
-            action['domain'].append(('product_id', '=', self.product_id.id))
+            action['domain'].append(('product_id', 'in', self.product_id.ids))
         elif self.order_partner_id:
             action['domain'].append(('order_partner_id', '=', self.order_partner_id.id))
+        if self.contract_id:
+            action['domain'].append(('order_partner_id.contract', '=', self.contract_id.id))
         return action
 
     @staticmethod

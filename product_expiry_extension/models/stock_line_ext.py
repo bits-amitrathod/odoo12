@@ -15,8 +15,31 @@ from odoo.tools.float_utils import float_round, float_compare, float_is_zero
 
 class inventory_exe(models.Model):
     _inherit = 'stock.move.line'
-    lot_expired_date = fields.Date('Expiration Date')
-    lot_use_date = fields.Date('Expiration Date', compute='_compute_show_lot_user_date',readOnly=True)
+    lot_expired_date = fields.Datetime('Expiration Date')
+    lot_use_date = fields.Datetime('Expiration Date', compute='_compute_show_lot_user_date',readOnly=True, required=True)
+
+
+    @api.onchange('lot_use_date')
+    def _onchange_lot_use_date(self):
+        if self.lot_id.id and self.lot_use_date:
+            values = {}
+            values = self._get_updated_date(self.lot_use_date, values)
+            self.env['stock.production.lot'].search([('id', '=', self.lot_id.id)]).write(values)
+
+
+    def _get_updated_date(self,lot_use_date,vals):
+        params = self.env['ir.config_parameter'].sudo()
+        production_lot_alert_days = int(params.get_param('inventory_extension.production_lot_alert_days'))
+
+        if production_lot_alert_days > 0:
+            alert_date = datetime.datetime.strptime(lot_use_date, '%Y-%m-%d %H:%M:%S') - datetime.timedelta(days=production_lot_alert_days)
+        else:
+            alert_date = datetime.datetime.strptime(lot_use_date, '%Y-%m-%d %H:%M:%S') - datetime.timedelta(days=3)
+
+        vals.update({'use_date': str(lot_use_date), 'alert_date': str(alert_date), 'life_date': str(lot_use_date),'removal_date': str(lot_use_date)})
+
+        return vals
+
     @api.onchange('lot_name', 'lot_id','lot_expired_date')
     def onchange_serial_number(self):
         """ When the user is encoding a move line for a tracked product, we apply some logic to
@@ -60,6 +83,7 @@ class inventory_exe(models.Model):
             _logger.info("_compute_show_lot_user_date")
             for ml in self:
                 ml.lot_use_date= ml.lot_id.use_date
+
 
     def _action_done(self):
         """ This method is called during a move's `action_done`. It'll actually move a quant from
@@ -183,3 +207,22 @@ class inventory_exe(models.Model):
         # Reset the reserved quantity as we just moved it to the destination location.
         (self - ml_to_delete).with_context(bypass_reservation_update=True).write(
             {'product_uom_qty': 0.00, 'date': fields.Datetime.now(), })
+
+
+class ProductionLotNameAppendDate(models.Model):
+    _inherit = 'stock.production.lot'
+
+    @api.multi
+    def name_get(self):
+        result = []
+        if self.env.context is None:
+            self.env.context = {}
+        for record in self:
+            name = record.name
+            if self.env.context.get('lot_date_display_name'):
+                if record.use_date:
+                    name = record.name + ': #Exp Date :' + str(record.use_date[0:10])+ ':#Qty :' +str(record.product_qty)
+                else:
+                    name = record.name
+            result.append((record.id, name))
+        return result

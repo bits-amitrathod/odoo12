@@ -1,0 +1,17 @@
+<odoo>
+    <data>
+
+
+         <!--<record id="view_account_payment_from_invoices_vendor" model="ir.ui.view">-->
+            <!--<field name="name">account.register.payments.credit</field>-->
+            <!--<field name="model">account.payment</field>-->
+            <!--<field name="inherit_id" ref="account.view_account_payment_invoice_form"></field>-->
+            <!--<field name="arch" type="xml">-->
+                <!--<xpath expr="//group/group/field[@name='journal_id']" position="after">-->
+                       <!--<field name="vendor_credit_pay" widget="checkbox"/>-->
+
+                <!--</xpath>-->
+            <!--</field>-->
+        <!--</record>-->
+    </data>
+</odoo>

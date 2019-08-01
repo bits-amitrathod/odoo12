@@ -57,6 +57,7 @@
                     <header>
                         <button name="%(vendor_offer.action_purchase_order_edit_note)d" type="action" context="{'isFooterInvisible':False}"
                                 string="Add Note"/>
+                        <!--<button name="action_duplicate_vendor_offer" type="object" string="Duplicate Offer"/>-->
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
@@ -102,6 +103,8 @@
                                 <field name="declined_date" readonly="1"/>
                                 <field name="max" readonly="1"/>
                                 <field name="new_customer" readonly="1"/>
+                                <field name="carrier_id"/>
+                                <field name="shipping_number"/>
                             </group>
                         </group>
                         <notebook>
@@ -114,7 +117,7 @@
                                                 <field name="sku_code" readonly="1"/>
                                                 <field name="product_brand_id" readonly="1"/>
                                                 <field name="name" invisible="1"/>
-                                                <field name="tier" readonly="1"/>
+                                                <field name="product_tier" readonly="1"/>
                                                 <field name="product_qty"/>
                                                 <field name="expiration_date"/>
                                                 <field name="qty_in_stock"/>
@@ -125,7 +128,7 @@
                                                 <field name="product_sales_count_90"/>
                                                 <field name="product_sales_count_yrs"/>
                                                 <field name="expired_inventory"/>
-                                                <field name="list_price" invisible="1"/>
+                                                <!--<field name="list_price" invisible="1"/>-->
                                                 <field name="product_unit_price"/>
                                                 <field name="product_offer_price"/>
                                                 <field name="product_retail"/>
@@ -144,15 +147,17 @@
                                         <field name="sku_code" readonly="1"/>
                                         <field name="product_brand_id" readonly="1"/>
                                         <field name="name" invisible="1"/>
-                                        <field name="tier" readonly="1"/>
+                                        <field name="product_tier" readonly="1"/>
                                         <field name="product_qty"/>
+                                        <field name="qty_received" />
+                                        <field name="qty_invoiced" />
                                         <field name="expiration_date" widget="date"/>
                                         <field name="qty_in_stock"/>
                                         <field name="product_sales_count"/>
                                         <field name="product_sales_count_month"/>
                                         <field name="product_sales_count_90"/>
                                         <field name="product_sales_count_yrs"/>
-                                        <field name="list_price" invisible="1"/>
+                                        <!--<field name="list_price" invisible="1"/>-->
                                         <field name="expired_inventory"/>
                                         <field name="product_unit_price"/>
                                         <field name="product_offer_price"/>

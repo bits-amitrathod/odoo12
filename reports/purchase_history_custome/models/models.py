@@ -6,33 +6,38 @@ from odoo.tools import float_repr
 _logger = logging.getLogger(__name__)
 
 
-class purchase_history(models.Model):
+class PurchaseHistory(models.Model):
 
-    _inherit = 'purchase.order'
+    _inherit = 'purchase.order.line'
 
 
 
     sku = fields.Char("Product SKU", store=False, compute="_calculateSKU1")
     vendor = fields.Char("Vendor Name", store=False)
-    qty = fields.Integer("Product Qty", store=False)
+    qty = fields.Integer("Delivered Qty", store=False)
     manufacturer_rep = fields.Char("Manufacturer", store=False)
     product_name=fields.Char("Product Name", store=False)
     minExpDate = fields.Date("Min Expiration Date", store=False, compute="_calculateDate1")
     maxExpDate = fields.Date("Max Expiration Date", store=False, compute="_calculateDate2")
     unit_price=fields.Monetary("Price Per Unit", store=False)
+    order_name = fields.Char("Po Name", store=False , compute="_calculateSKU1")
+    date_done = fields.Date("Date Done", store=False, compute="_calculateSKU1")
 
 
     @api.multi
     def _calculateSKU1(self):
         for order in self:
-
-            for p in order.order_line:
+            for p in order:
                 order.sku = p.product_id.product_tmpl_id.sku_code
                 order.vendor = p.partner_id.name
                 order.manufacturer_rep = p.partner_id.name
                 order.product_name = p.product_id.product_tmpl_id.name
-                order.qty = p.product_qty
+                order.qty = p.qty_received
                 order.unit_price = (float_repr(p.price_unit, precision_digits=2))
+                order.order_name = order.order_id.name
+                stock_picking = self.env['stock.picking'].search([('origin','like',order.order_id.name),
+                                                                  ('state','=','done')], limit=1)
+                order.date_done = stock_picking.date_done
 
 
 

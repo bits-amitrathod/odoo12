@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 
 import logging
-
 import random
 import string
 from datetime import datetime
 import csv
 import collections
-
 import json
+import re
 
 try:
     import xlrd
@@ -30,7 +29,8 @@ _logger = logging.getLogger(__name__)
 class DocumentProcessTransientModel(models.TransientModel):
     _name = 'sps.document.process'
 
-    def process_document(self, user_model, uploaded_file_path, template_type_from_user, file_name, document_source='Api',):
+    def process_document(self, user_model, uploaded_file_path, template_type_from_user, file_name,
+                         document_source='Api', ):
         print('template_type_from_user')
         print(template_type_from_user)
         if not user_model.prioritization:
@@ -45,7 +45,7 @@ class DocumentProcessTransientModel(models.TransientModel):
         if user_model.parent_id.id:
             user_id = user_model.parent_id.id
             gl_account_id = user_model.id
-            #return dict(errorCode=8, message='Child Customer not allowed to upload request')
+            # return dict(errorCode=8, message='Child Customer not allowed to upload request')
         else:
             user_id = user_model.id
         mapping_field_list = list(self.env['sps.customer.template'].fields_get().keys())
@@ -86,10 +86,10 @@ class DocumentProcessTransientModel(models.TransientModel):
             document_id = file_uploaded_record.id
             if not document_id is None or document_id:
                 ref = str(document_id) + "_" + file_uploaded_record.token
-                response = dict(errorCode=0, message='File Uploaded Successfully', ref=ref)
+                response = dict(message='File Uploaded Successfully', ref=ref)
+
                 high_priority_requests = []
                 for req in requests:
-                    print('*******Req*****',req)
                     high_priority_product = False
                     customer_sku = req['customer_sku']
                     product_sku = customer_sku
@@ -125,20 +125,29 @@ class DocumentProcessTransientModel(models.TransientModel):
 
                         if sku_postconfig_flag:
                             product_sku = product_sku[:-len(user_model.sku_postconfig)]
-                            print('product_sku : ', product_sku)
+
+                    product_sku = DocumentProcessTransientModel.cleaning_code(product_sku)
                     _logger.info('customer_sku %r product sku %r', customer_sku, product_sku)
-                    product_tmpl = self.env['product.template'].search(
-                        ['|', ('sku_code', '=', product_sku), ('manufacturer_pref', '=', product_sku)])
+
+
+                    self.env.cr.execute("""
+                           select * from 
+                               (SELECT id, regexp_replace(manufacturer_pref , '[^A-Za-z0-9.]', '','g') as manufacturer_pref, 
+                                 regexp_replace(sku_code , '[^A-Za-z0-9.]', '','g') as sku_code_cleaned 
+                                 FROM product_template) 
+                           as temp_data where sku_code_cleaned ='""" +product_sku + """' or manufacturer_pref = '""" +
+                                            product_sku + """' """)
+                    query_result = self.env.cr.dictfetchone()
                     sps_product_id = 0
-                    if len(product_tmpl) > 0:
+                    if query_result:
                         product_model = self.env['product.product'].search(
-                            [['product_tmpl_id', '=', product_tmpl[0].id]])
+                            [['product_tmpl_id', '=', query_result['id']]])
                         if len(product_model) > 0:
                             sps_product_id = product_model[0].id
                     if sps_product_id == 0:
                         print('search product id in mfr_catalog_no')
                         if 'mfr_catalog_no' in req.keys():
-                            mfr_catalog_no1 = req['mfr_catalog_no']
+                            mfr_catalog_no1 = DocumentProcessTransientModel.cleaning_code(req['mfr_catalog_no'])
                             sps_product_id = self.get_sps_product_id(user_model, mfr_catalog_no1)
                     if sps_product_id != 0:
                         sps_product_priotization = self.env[
@@ -156,11 +165,34 @@ class DocumentProcessTransientModel(models.TransientModel):
                             req.update(dict(product_id=sps_product_id, status='Inprocess'))
                         else:
                             req.update(dict(product_id=sps_product_id, status='New'))
+
+                        # set uom flag, if uom_flag is false then check the partial_uom flag
+                        if 'uom' in req.keys():
+                            if req['uom'].lower().strip() in ['e','ea','eac','each','u','un','unit','unit(s)']:
+                                req.update(dict(uom_flag=True))
+                            else:
+                                req.update(dict(uom_flag=False))
+                        else:
+                            _logger.info('Product UOM not mapped.')
+                            # Get Product UOM category id
+                            product_uom_categ = self.env['product.uom.categ'].search([('name', 'in', ['Unit', 'Each'])])
+                            # get product
+                            product = self.env['product.template'].search([('id', '=', req['product_id'])])
+                            if product.manufacturer_uom.category_id.id in product_uom_categ.ids:
+                                if product.manufacturer_uom.name.lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit','unit(s)']:
+                                    req.update(dict(uom_flag=True))
+                                else:
+                                    req.update(dict(uom_flag=False))
+
+                        # calculate product quantity
+                        updated_qty = self._get_updated_qty(req, template_type)
+                        if updated_qty != 0:
+                            req.update(dict(updated_quantity=updated_qty))
                     else:
                         # required_quantity = 0, quantity = 0
                         req.update(dict(product_id=None, status='Voided'))
                     sps_customer_request = dict(document_id=document_id, customer_id=user_id, create_uid=1,
-                                                create_date=today_date, write_uid=1, write_date=today_date)
+                                                    create_date=today_date, write_uid=1, write_date=today_date)
                     for key in req.keys():
                         sps_customer_request.update({key: req[key]})
                     saved_sps_customer_request = self.env['sps.customer.requests'].create(
@@ -175,6 +207,25 @@ class DocumentProcessTransientModel(models.TransientModel):
             _logger.info('file is not acceptable')
             response = dict(errorCode=2, message='Invalid File extension')
         return response
+
+    def _get_updated_qty(self, req, template_type):
+        _logger.info('_get_updated_qty, Template type from user : ')
+        _logger.info(template_type)
+        if template_type.lower().strip() == "requirement":
+            req_qty = req['required_quantity']
+            if req['uom_flag']:
+                return req_qty
+            else:
+                # get product
+                product = self.env['product.template'].search([('id', '=', req['product_id'])])
+                uom = self.env['product.uom'].search([('name', 'ilike', 'Unit'),('category_id.id', '=', 1)])
+                if len(uom) == 0:
+                    uom = self.env['product.uom'].search([('name', 'ilike', 'Each'),('category_id.id', '=', 1)])
+                updated_qty = product.manufacturer_uom._compute_quantity(float(req_qty), uom)
+                return updated_qty
+        else:
+            return 0
+
 
     @staticmethod
     def _get_column_mappings(mapping_field_list, templates_list, file_path, template_type_from_user):
@@ -202,8 +253,6 @@ class DocumentProcessTransientModel(models.TransientModel):
             try:
                 if compare(template_column_list, columns):
                     column_mappings = mapped_columns
-                    print('mapped_columns :')
-                    print(mapped_columns)
                     template_type = customer_template.template_type
                     print('template_type *')
                     print(template_type)
@@ -218,13 +267,9 @@ class DocumentProcessTransientModel(models.TransientModel):
             if template_type_from_user is None:
                 return [], [], False
             matched_template = matched_templates.get(template_type_from_user)
-            print('matched_template :')
-            print(matched_template)
             return matched_template[0], matched_template[1], matched_template[2]
         else:
             print('matched_template = 1')
-        print('template_type **')
-        print(template_type)
         return column_mappings, non_selected_columns, template_type
 
     @staticmethod
@@ -397,3 +442,7 @@ class DocumentProcessTransientModel(models.TransientModel):
                 sps_product_id = product_model[0].id
         print('Got product id', sps_product_id)
         return sps_product_id
+
+    @staticmethod
+    def cleaning_code(str):
+        return re.sub(r'[^A-Za-z0-9.]', '', str)

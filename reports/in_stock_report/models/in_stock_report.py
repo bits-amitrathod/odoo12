@@ -1,8 +1,8 @@
-from odoo import  tools
-import logging
-from odoo.addons import decimal_precision as dp
-import datetime
 
+from odoo import tools
+import logging
+import datetime
+from odoo.addons import decimal_precision as dp
 from odoo import models, fields, api
 
 _logger = logging.getLogger(__name__)
@@ -33,7 +33,7 @@ class ReportInStockReportPopup(models.TransientModel):
             'name': 'In Stock Report',
             'res_model': res_model,
             'context':margins_context,
-            'domain': [('qty_available','>',0)]
+            'domain': [('actual_quantity','>',0)]
         }
 
         if self.partner_id.id:
@@ -73,16 +73,39 @@ class ReportInStockReport(models.Model):
 
     min_expiration_date = fields.Date("Min Expiration Date", compute='_calculate_max_min_lot_expiration')
     max_expiration_date = fields.Date("Max Expiration Date", store=False)
-    price_list=fields.Float("Sales Price",compute='_calculate_max_min_lot_expiration')
-    confirmation_date = fields.Date('Confirmation Date',)
+    price_list=fields.Float("Sales Price",  compute='_calculate_max_min_lot_expiration')
+    # actual_quantity = fields.Float(string='Qty Available For Sale', compute='_calculate_max_min_lot_expiration', digits=dp.get_precision('Product Unit of Measure'))
     partn_name=fields.Char()
 
     @api.multi
     def _calculate_max_min_lot_expiration(self):
         for record in self:
-            record.price_list = record.partner_id.property_product_pricelist.get_product_price(record.product_id, 1.0, record.partner_id)
+            record.actual_quantity = record.product_tmpl_id.actual_quantity
+            if record.partner_id.property_product_pricelist.id:
+                record.price_list = record.partner_id.property_product_pricelist.get_product_price(
+                    record.product_id, record.actual_quantity, record.partner_id)
+            else:
+                record.price_list = 0
+
             self.env.cr.execute(
-                "SELECT min(use_date), max (use_date) FROM stock_production_lot where product_id = %s",
+                """
+                SELECT
+                sum(quantity), min(use_date), max(use_date)
+            FROM
+                stock_quant
+            INNER JOIN
+                stock_production_lot
+            ON
+                (
+                    stock_quant.lot_id = stock_production_lot.id)
+            INNER JOIN
+                stock_location
+            ON
+                (
+                    stock_quant.location_id = stock_location.id)
+            WHERE
+                stock_location.usage in('internal', 'transit') and stock_production_lot.product_id  = %s
+                """,
                 (record.product_id.id,))
             query_result = self.env.cr.dictfetchone()
             record.min_expiration_date = fields.Date.from_string(query_result['min'])
@@ -98,16 +121,17 @@ class ReportInStockReport(models.Model):
         e_date = self.env.context.get('end_date')
 
         sql_query = """
-            SELECT DISTINCT 
-             ON(CONCAT(sale_order.partner_id, product_product.id)) CONCAT(sale_order.partner_id, product_product.id) as partn_name,
-            sale_order_line.id as id,
+            SELECT  DISTINCT on (partn_name)
+             CONCAT(sale_order.partner_id, product_product.id) as partn_name,
+             ROW_NUMBER () OVER (ORDER BY sale_order.partner_id) as id,
             sale_order.partner_id,
             sale_order.user_id,
-            sale_order.confirmation_date,
             product_template.product_brand_id,
             product_product.id AS product_id,
             product_template.id AS product_tmpl_id,
+            product_template.actual_quantity,
             sale_order.warehouse_id,
+            null as price_list,
             null as min_expiration_date,
             null as max_expiration_date
             FROM
@@ -125,16 +149,25 @@ class ReportInStockReport(models.Model):
             product_template
             ON
             (
-            product_product.product_tmpl_id = product_template.id)
+            product_product.product_tmpl_id = product_template.id  and  product_template.sale_ok = True)
+            
             """
+        groupby  = """
+         group by partn_name, public.sale_order.partner_id,
+                public.sale_order.user_id,
+                public.product_template.product_brand_id,
+                public.product_product.id  ,
+                public.product_template.id ,
+                public.sale_order.warehouse_id
+                """
         if s_date and e_date and not s_date is None and not e_date is None:
             e_date = datetime.datetime.strptime(str(e_date), "%Y-%m-%d")
             e_date = e_date + datetime.timedelta(days=1)
             sql_query=sql_query+""" and sale_order.state in ('sale','sent') and sale_order.date_order>=%s  and sale_order.date_order<=%s"""
-            sql_query = "CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + sql_query + " )"
+            sql_query = "CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + sql_query + groupby + " )"
             self._cr.execute(sql_query, (str(s_date), str(e_date)))
         else:
-            sql_query = "CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + sql_query + " )"
+            sql_query = "CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + sql_query +  groupby +" )"
             self._cr.execute(sql_query)
 
     @api.model_cr
@@ -150,8 +183,4 @@ class ReportPrintInStockReport(models.AbstractModel):
         dates_picked = self.env['popup.report.in.stock.report'].search([('create_uid', '=', self._uid)], limit=1,
                                                                   order="id desc")
 
-        # if dates_picked.start_date and dates_picked.end_date and  not dates_picked.start_date is None and not dates_picked.end_date is None:
-        #     date_range = (str(dates_picked.start_date)).replace("-", "/") + " - " + (str(dates_picked.end_date)).replace("-", "/")
-        # else:
-        #     date_range = False
         return {'dateRange':dates_picked ,'data': self.env['report.in.stock.report'].browse(docids)}

@@ -1,0 +1,31 @@
+<odoo>
+  <data>
+      <record id="view_bill_date" model="ir.ui.view">
+            <field name="name">Bill date</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="priority" eval="20"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="/form/sheet/group/group/field[@name='date_invoice']" position="replace">
+                    <field name="date_invoice" string="Bill Date"/>
+                </xpath>
+
+            </field>
+      </record>
+
+      <record id="view_memo" model="ir.ui.view">
+            <field name="name">Memo</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_supplier_payment_tree"/>
+            <field name="priority" eval="20"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="communication"></field>
+                </xpath>
+
+            </field>
+      </record>
+  </data>
+</odoo>

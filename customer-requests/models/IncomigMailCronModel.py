@@ -80,7 +80,8 @@ class IncomingMailCronModel(models.Model):
                             (header, messages, octets) = pop_server.retr(num)
                             message = (b'\n').join(messages)
                             res_id = None
-                            response = {'errorCode':100, 'message':'File Uploaded Successfully'}
+                            response = {'message':'File Uploaded Successfully'}
+
                             try:
                                 if isinstance(message, xmlrpclib.Binary):
                                     message = bytes(message.data)
@@ -109,6 +110,7 @@ class IncomingMailCronModel(models.Model):
                                     tmpl_type = "Inventory"
                                 elif 'Requirement' in subject:
                                     tmpl_type = "Requirement"
+
                                 if message.get_content_maintype() != 'text':
                                     alternative = False
                                     for part in message.walk():
@@ -173,8 +175,7 @@ class IncomingMailCronModel(models.Model):
                                                     _logger.info('email_to_domain email_from: %r', email_from)
                                         #_logger.info('message payload: %r %r', message_payload, email_from)
                                         if not email_from is None:
-                                            users_model = self.env['res.partner'].search(
-                                                [("email", "=", email_from)])
+                                            users_model = self.env['res.partner'].search([("email", "=", email_from)])
                                             if users_model:
                                                 if len(users_model) == 1:
                                                     user_attachment_dir = ATTACHMENT_DIR + str(
@@ -200,24 +201,40 @@ class IncomingMailCronModel(models.Model):
                                                             except Exception as e:
                                                                 _logger.info(str(e))
                                                 else:
-                                                    _logger.error('Presents Same Email Id for multiple users %r', email_from)
-                                                    response = dict(errorCode=101, message='Presents Same Email Id for multiple users : ' + str(email_from))
+                                                    _logger.error('We have found Same Email Id against multiple users %r', email_from)
+                                                    response = dict(errorCode=101, message='We have found Same Email Id against multiple users.')
                                             else:
-                                                _logger.info('user not found for %r', email_from)
-                                                response = dict(errorCode=102, message='User not found for : ' + str(email_from))
+                                                _logger.info('We have not found user in our contact list : %r', email_from)
+                                                response = dict(errorCode=102, message='User not found in our contact list.')
                                         else:
-                                            _logger.info('domain not matched for forwarded email')
-                                            response = dict(errorCode=103, message='Domain not matched for forwarded email : ' + str(email_from))
+                                            _logger.info('Domain not matched for forwarded email')
+                                            response = dict(errorCode=103, message='Domain not matched for forwarded email.')
                                     else:
-                                        _logger.info("No attachements found")
-                                        response = dict(errorCode=104, message='No attachements found : '+str(email_from))
+                                        _logger.info("User has not attached requirement or inventory documnet.")
+                                        response = dict(errorCode=104, message='User has not attached requirement or inventory documnet.')
                                 else:
-                                    _logger.info('Not a Multipart email')
-                                    response = dict(errorCode=105, message='Not a Multipart email'+str(email_from))
+                                    _logger.info('This is not a multipart email')
+                                    response = dict(errorCode=105, message='This is not a multipart email.')
+
                                 pop_server.dele(num)
 
                                 if "errorCode" in response:
-                                    self.send_mail("Sending Email Response as " + str(response['message']) + " for user " + str(email_from))
+                                    if not email_from is None:
+                                        res_partners = self.env['res.partner'].search([("email", "=", email_from)])
+                                        if len(res_partners) > 1:
+                                            customerName = ""
+                                            for res_partner in res_partners:
+                                                if customerName == "":
+                                                    customerName = res_partner['name']
+                                                else:
+                                                    customerName = customerName + "  ,  " + res_partner['name']
+
+                                        if len(res_partners) == 1:
+                                            self.send_mail(str(res_partners['name']), str(email_from),str(response['message']))
+                                        elif len(res_partners) > 1:
+                                            self.send_mail(customerName, str(email_from),str(response['message']))
+                                        else:
+                                            self.send_mail('', str(email_from),str(response['message']))
 
                             except Exception:
                                 _logger.info('Failed to process mail from %s server %s.', server.type, server.name, exc_info=True)
@@ -251,9 +268,10 @@ class IncomingMailCronModel(models.Model):
     def random_string_generator(size=10, chars=string.ascii_lowercase + string.digits):
         return ''.join(random.choice(chars) for _ in range(size))
 
-    def send_mail(self, body):
+    def send_mail(self, customerName, email, reason):
+        today_date = datetime.today().strftime('%m/%d/%Y')
         template = self.env.ref('customer-requests.set_log_email_response').sudo()
-        local_context = {'body': body}
+        local_context = {'customerName': customerName, 'email': email, 'date': today_date, 'reason': reason}
         try:
             template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True, )
         except:

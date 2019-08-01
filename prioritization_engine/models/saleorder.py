@@ -1,9 +1,9 @@
-from odoo import models, fields, api, _
-from odoo.exceptions import UserError, AccessError, ValidationError
-from odoo.tools.float_utils import float_compare, float_is_zero, float_round
-from datetime import datetime
-
 import logging
+
+import odoo
+from odoo import models, fields,  SUPERUSER_ID,api, _
+from odoo.exceptions import UserError, ValidationError
+from odoo.tools.float_utils import float_compare, float_is_zero
 
 _logger = logging.getLogger(__name__)
 
@@ -16,32 +16,24 @@ class SaleOrder(models.Model):
         ('draft', 'Quotation'),
         ('engine', 'Prioritization'),
         ('sent', 'Quotation Sent'),
-        ('return','Return'),
+        ('return', 'Return'),
         ('sale', 'Sales Order'),
         ('done', 'Locked'),
         ('cancel', 'Cancelled'),
         ('void', 'Voided'),
     ], string='Status', readonly=True, copy=False, index=True, track_visibility='onchange', default='draft')
-    '''show_validate = fields.Boolean(
-        compute='_compute_show_validate',
-        help='Technical field used to compute whether the validate should be shown.')'''
     shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
     preferred_method = fields.Selection(string='Preferred Invoice Delivery Method',
                                         related='partner_id.preferred_method', readonly=True)
     carrier_info = fields.Char("Carrier Info", related='partner_id.carrier_info', readonly=True)
+    is_share = fields.Boolean(string='Is Shared', related='partner_id.is_share', readonly=True, store=True)
+    sale_margine = fields.Selection([
+        ('gifted', 'Gifted'),
+        ('legacy', 'Legacy')], string='Sales Level', related='partner_id.sale_margine', readonly=True, store=True)
     carrier_acc_no = fields.Char("Carrier Account No", related='partner_id.carrier_acc_no', readonly=True)
 
-    ''' @api.multi
-    def _compute_show_validate(self):
-        _logger.info('self %r',self)
-        sale_order_list = [self.ids]
-        for sale_id in sale_order_list:
-            multi = self.env['stock.picking'].search([('sale_id', '=', sale_id)])
-            _logger.info('**multi : %r',multi)
-            if len(multi) == 1 and self.delivery_count ==1:
-                self.show_validate=multi.show_validate
-            elif self.delivery_count > 1:
-                self.show_validate=True'''
+    order_processor = fields.Many2one('res.users', string='Order Processor', index=True, track_visibility='onchange',
+                              default=lambda self: self.env.user)
 
     @api.multi
     def action_void(self):
@@ -54,13 +46,6 @@ class SaleOrder(models.Model):
                 raise UserError(
                     'You can not delete a sent quotation or a sales order! Try to cancel or void it before.')
         return models.Model.unlink(self)
-
-    '''def action_validate(self):
-        multi = self.env['stock.picking'].search([('sale_id', '=', self.id)])
-        if len(multi) == 1 and self.delivery_count ==1:
-            return multi.button_validate()
-        elif self.delivery_count>1:
-            raise ValidationError(_('Validate is not possible for multiple delivery please do validate one by one'))'''
 
     def action_assign(self):
         multi = self.env['stock.picking'].search([('sale_id', '=', self.id)])
@@ -82,7 +67,7 @@ class SaleOrder(models.Model):
         self.ensure_one()
         ir_model_data = self.env['ir.model.data']
         try:
-            template_id = ir_model_data.get_object_reference('sale', 'email_template_edi_sale')[1]
+            template_id = ir_model_data.get_object_reference('prioritization_engine', 'email_template_edi_sale_custom')[1]
         except ValueError:
             template_id = False
         try:
@@ -111,12 +96,34 @@ class SaleOrder(models.Model):
             'context': ctx,
         }
 
+    @api.multi
+    def action_confirm(self):
+        res = super(SaleOrder, self).action_confirm()
+        user = None
+        current_user = self.env['res.users'].browse(self._context.get('uid'))
+        sale_order_customer = self.partner_id
+        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
+        user_sale_person = current_user.user_id
 
-class SaleOrderLine(models.Model):
+        if self.team_id.team_type == 'sales':
+            user = current_user
+        else :
+            user = sale_order_customer.user_id if sale_order_customer.user_id else super_user
+
+        self.update({'order_processor' : user})
+        return  res
+
+class SaleOrderLinePrioritization(models.Model):
     _inherit = "sale.order.line"
-    #customer_request_count = fields.Boolean(string='Request count', compute="_get_customer_request_count")
+    # customer_request_count = fields.Boolean(string='Request count', compute="_get_customer_request_count")
     customer_request_id = fields.Many2one('sps.customer.requests', string='Request')
     req_no = fields.Char(string='Requisition Number')
+    default_code = fields.Char("SKU", store=False, readonly=True, related='product_id.product_tmpl_id.default_code')
+    # manufacturer_uom = fields.Char('Manufacturer Unit of Measure',related='product_id.product_tmpl_id.manufacturer_uom.name')
+    manufacturer_uom = fields.Many2one('product.uom',
+                                       'Manuf. UOM', related='product_id.product_tmpl_id.manufacturer_uom',
+                                       readonly=True)
+    product_uom = fields.Many2one('product.uom', string='Unit of Measure', required=True)
 
     '''@api.multi
     def _get_customer_request_count(self):
@@ -131,6 +138,61 @@ class SaleOrderLine(models.Model):
             return multi.action_show_details()
         elif self.order_id.delivery_count > 1:
             raise ValidationError(_('Picking is not possible for multiple delivery please do picking inside Delivery'))
+
+    @api.multi
+    @api.onchange('product_id')
+    def product_id_change(self):
+        if not self.product_id:
+            return {'domain': {'product_uom': []}}
+
+        vals = {}
+        # domain=[]
+        if self.product_id.uom_id.id == self.product_id.manufacturer_uom.id:
+            domain = {'product_uom': [('id', '=', self.product_id.uom_id.id)]}
+        else:
+            domain = {'product_uom': [('id', 'in', (self.product_id.uom_id.id, self.product_id.manufacturer_uom.id))]}
+
+        if not self.product_uom or (self.product_id.uom_id.id != self.product_uom.id):
+            vals['product_uom'] = self.product_id.uom_id
+            vals['product_uom_qty'] = 1.0
+
+        product = self.product_id.with_context(
+            lang=self.order_id.partner_id.lang,
+            partner=self.order_id.partner_id.id,
+            quantity=vals.get('product_uom_qty') or self.product_uom_qty,
+            date=self.order_id.date_order,
+            pricelist=self.order_id.pricelist_id.id,
+            uom=self.product_uom.id
+        )
+
+        result = {'domain': domain}
+
+        title = False
+        message = False
+        warning = {}
+        if product.sale_line_warn != 'no-message':
+            title = _("Warning for %s") % product.name
+            message = product.sale_line_warn_msg
+            warning['title'] = title
+            warning['message'] = message
+            result = {'warning': warning}
+            if product.sale_line_warn == 'block':
+                self.product_id = False
+                return result
+
+        name = product.name_get()[0][1]
+        if product.description_sale:
+            name += '\n' + product.description_sale
+        vals['name'] = name
+
+        self._compute_tax_id()
+
+        if self.order_id.pricelist_id and self.order_id.partner_id:
+            vals['price_unit'] = self.env['account.tax']._fix_tax_included_price_company(
+                self._get_display_price(product), product.taxes_id, self.tax_id, self.company_id)
+        self.update(vals)
+
+        return result
 
 
 class StockPicking(models.Model):
@@ -193,6 +255,11 @@ class StockPicking(models.Model):
         if self._check_backorder():
             return self.action_generate_backorder_wizard()
         self.action_done()
+
+        if picking_type.code == "outgoing":
+            if self.state == 'done' and self.carrier_tracking_ref:
+                self.env['sale.order'].search([('name', '=', self.origin)]).write({'carrier_track_ref': self.carrier_tracking_ref})
+
         return
 
     @api.multi
@@ -209,7 +276,7 @@ class StockPicking(models.Model):
                 self.carrier_tracking_ref = res['tracking_number']
             order_currency = self.sale_id.currency_id or self.company_id.currency_id
             msg = _("Shipment sent to carrier %s for shipping with tracking number %s<br/>Cost: %.2f %s") % (
-            self.carrier_id.name, self.carrier_tracking_ref, self.carrier_price, order_currency.name)
+                self.carrier_id.name, self.carrier_tracking_ref, self.carrier_price, order_currency.name)
             self.message_post(body=msg)
         else:
             self.message_post(body="Already tracking created")
@@ -221,6 +288,10 @@ class AccountInvoice(models.Model):
     note = fields.Char("Customer Message")
     memo = fields.Char("Memo")
     shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
+    is_share = fields.Boolean(string='Is Shared', related='partner_id.is_share', readonly=True)
+    sale_margine = fields.Selection([
+        ('gifted', 'Gifted'),
+        ('legacy', 'Legacy')], string='Sales Level', related='partner_id.sale_margine', readonly=True)
     preferred_method = fields.Selection(string='Preferred Invoice Delivery Method',
                                         related='partner_id.preferred_method', readonly=True)
 
@@ -232,7 +303,10 @@ class AccountInvoice(models.Model):
                          help="Reference of the document that produced this invoice.",
                          readonly=True, states={'draft': [('readonly', False)]})'''
 
-    purchase_order = fields.Char(string='Purchase Order#', store=False, compute="_setInvoicePurchaseOrder", readonly=True)
+    purchase_order = fields.Char(string='Purchase Order#', store=False, compute="_setInvoicePurchaseOrder",
+                                 readonly=True)
+    tracking_reference = fields.Char(string=' TrackingReference', store=False,
+                                     compute='_getSalesOerderPickingOutTrackingReference', readonly=True)
 
     @api.multi
     def _setInvoicePurchaseOrder(self):
@@ -241,3 +315,19 @@ class AccountInvoice(models.Model):
                 order.purchase_order = ""
             else:
                 order.purchase_order = order.name
+
+    @api.multi
+    def _getSalesOerderPickingOutTrackingReference(self):
+        for order in self:
+            if order.origin:
+                order.env.cr.execute(
+                    "select carrier_tracking_ref from stock_picking WHERE origin like '" + order.origin + "' and state like 'done' and name like 'WH/OUT/%' limit 1")
+                query_result = order.env.cr.dictfetchone()
+                if query_result and query_result['carrier_tracking_ref']:
+                    order.tracking_reference = query_result['carrier_tracking_ref']
+
+
+class SaleOrderReport(models.Model):
+    _inherit = "sale.report"
+
+    req_no = fields.Char(string='Requisition Number')

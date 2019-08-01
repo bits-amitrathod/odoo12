@@ -21,7 +21,9 @@
                 <field name="product_brand_id"/>
                 <field name="sku_code" string="Product SKU"/>
                 <field name="product_id" string="Product Name"/>
-                <field name="qty_available" string="Qty In Stock"/>
+<!--                <field name="qty_available" string="Qty In Stock"/>-->
+                <field name="actual_quantity"/>
+                <field name="uom_id" string="Product UOM"/>
                 <field name="price_list" widget="monetary"/>
                 <field name="currency_id"  invisible="1"/>
                 <field name="min_expiration_date"/>
@@ -68,7 +70,10 @@
     </record>
 
     <!-- Product menu-->
-    <menuitem name="In Stock Report" id="menu_procurement_partner_contact_in_stock_report"
+    <menuitem name="In Stock Report" id="menu_procurement_partner_contact_in_stock_report_for_inv"
               action="action_popup_in_stock_report"
               parent="stock.menu_warehouse_report" sequence="5"/>
+     <menuitem name="In Stock Report" id="menu_procurement_partner_contact_in_stock_report_for_sale"
+              action="action_popup_in_stock_report"
+              parent="sale.menu_sale_report" sequence="5"/>
 </odoo>

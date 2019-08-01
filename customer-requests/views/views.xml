@@ -7,7 +7,7 @@
             <field name="model">sps.cust.uploaded.documents</field>
             <field name="mode">primary</field>
             <field name="arch" type="xml">
-                <tree create="false">
+                <tree create="false" default_order="create_date desc">
                     <field name="create_date" string="Uploaded On"/>
                     <field name="customer_id"/>
                     <field name="source"/>
@@ -188,7 +188,17 @@
             <field name="type">ir.actions.client</field>
             <field name="tag">importtemplate</field>
             <field name="params">[{'model': 'sps.customer.template', 'user_type': 'customer', 'request_model':
-                'sps.customer.requests'}]
+                'sps.customer.requests', 'upload_document' : 'False'}]
+            </field>
+        </record>
+
+
+        <record id="customer-document-client-action" model="ir.actions.client">
+            <field name="name">Customer Upload Document</field>
+            <field name="type">ir.actions.client</field>
+            <field name="tag">importtemplate</field>
+            <field name="params">[{'model': 'sps.customer.template', 'user_type': 'customer', 'request_model':
+                'sps.customer.requests', 'upload_document' : 'True'}]
             </field>
         </record>
 
@@ -206,8 +216,36 @@
             <field name="model_id" ref="base.model_res_users"/>
             <field name="email_from"><![CDATA["${object.company_id.name|safe}" <${(object.company_id.email or user.email)|safe}>]]></field>
             <field name="email_to">${object.email|safe}</field>
-            <field name="subject"><![CDATA[API response for user <${(object.company_id.email or user.email)|safe}>]]></field>
-            <field name="body_html">${ctx['body']}</field>
+            <field name="subject"><![CDATA[API response <${(object.company_id.email or user.email)|safe}>]]></field>
+            <field name="body_html"><![CDATA[
+                <p>
+                    Hi Administrator,
+                </p>
+                <p style="text-align: left; margin-top: 10px;">
+                    An upload error has occurred. Please see the below listing for customer / upload information:
+                </p>
+                <table style="width:100%;border:1px solid black;border-collapse:collapse;">
+                    <tr>
+                        <th style="border:1px solid black;border-collapse:collapse;">Customer Name</th>
+                        <th style="border:1px solid black;border-collapse:collapse;">Email</th>
+                        <th style="border:1px solid black;border-collapse:collapse;">Upload Type</th>
+                        <th style="border:1px solid black;border-collapse:collapse;">Date</th>
+                        <th style="border:1px solid black;border-collapse:collapse;">Reason</th>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['customerName']}</td>
+                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['email']}</td>
+                        <td style="border:1px solid black;border-collapse:collapse;">API</td>
+                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['date']}</td>
+                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['reason']}</td>
+                    </tr>
+                </table>
+                <p>
+                    Thanks & Regards,<br/>
+                    ODOO
+                </p>
+
+            ]]></field>
             <field name="user_signature" eval="False"/>
         </record>
 
@@ -216,20 +254,56 @@
             <field name="model_id" ref="base.model_res_users"/>
             <field name="email_from"><![CDATA["${object.company_id.name|safe}" <${(object.company_id.email or user.email)|safe}>]]></field>
             <field name="email_to">${object.email|safe}</field>
-            <field name="subject"><![CDATA[Email response for user <${(object.company_id.email or user.email)|safe}>]]></field>
+            <field name="subject"><![CDATA[Email response <${(object.company_id.email or user.email)|safe}>]]></field>
             <field name="body_html">${ctx['body']}</field>
+            <field name="body_html"><![CDATA[
+                <p>
+                    Hi Administrator,
+                </p>
+                <p style="text-align: left; margin-top: 10px;">
+                    An upload error has occurred. Please see the below listing for customer / upload information:
+                </p>
+                <table style="width:100%;border:1px solid black;border-collapse:collapse;">
+                    <tr>
+                        <th style="border:1px solid black;border-collapse:collapse;">Customer Name</th>
+                        <th style="border:1px solid black;border-collapse:collapse;">Email</th>
+                        <th style="border:1px solid black;border-collapse:collapse;">Upload Type</th>
+                        <th style="border:1px solid black;border-collapse:collapse;">Date</th>
+                        <th style="border:1px solid black;border-collapse:collapse;">Reason</th>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['customerName']}</td>
+                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['email']}</td>
+                        <td style="border:1px solid black;border-collapse:collapse;">Email</td>
+                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['date']}</td>
+                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['reason']}</td>
+                    </tr>
+                </table>
+                <p>
+                    Thanks & Regards,<br/>
+                    ODOO
+                </p>
+
+            ]]></field>
             <field name="user_signature" eval="False"/>
         </record>
 
         <menuitem name="Import" id="prioritization_engine.prioritization_imenu"
                   parent="prioritization_engine.menu_root"/>
 
-        <menuitem name="Imported Documents" id="prioritization_engine.prioritization_documents_imenu"
-                  parent="prioritization_engine.menu_root" action="customer_documents_form_action"/>
+        <menuitem name="Documents" id="prioritization_engine.prioritization_documents_imenu"
+                  parent="prioritization_engine.menu_root"/>
+
+        <menuitem name="Imported Documents" id="prioritization_engine.prioritization_imported_documents_menu"
+                  parent="prioritization_engine.prioritization_documents_imenu" action="customer_documents_form_action"/>
 
         <menuitem name="Customer Template" id="prioritization_engine.prioritization_customer_template_menu"
                   parent="prioritization_engine.prioritization_imenu"
                   action="customer-template-client-action"/>
+
+        <menuitem name="Upload Document" id="prioritization_engine.prioritization_customer_document_menu"
+                  parent="prioritization_engine.prioritization_documents_imenu"
+                  action="customer-document-client-action"/>
 
     </data>
 </odoo>

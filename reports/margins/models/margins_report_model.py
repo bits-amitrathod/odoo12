@@ -64,7 +64,7 @@ class MarginsReport(models.Model):
                 ELSE CASE  WHEN 0 <=(ol.price_subtotal - (ol.product_uom_qty * ol.purchase_price)) THEN (ol.price_subtotal - (ol.product_uom_qty * ol.purchase_price)) ELSE 0 END
         END as margin, 
         CASE 
-                WHEN ol.purchase_price IS NULL OR TRUNC(ol.purchase_price, 2) = 0.00 THEN CASE WHEN ol.price_subtotal <= 0 THEN 0 ELSE 100 END
+                WHEN ol.purchase_price IS NULL OR TRUNC(ol.purchase_price, 2) = 0.00 or TRUNC(ol.product_uom_qty, 2) = 0.00 THEN CASE WHEN ol.price_subtotal <= 0 THEN 0 ELSE 100 END
                 ELSE TRUNC(( ol.price_subtotal /(ol.price_subtotal - (ol.product_uom_qty * ol.purchase_price))), 2)
         END as margin_percentage """\
 

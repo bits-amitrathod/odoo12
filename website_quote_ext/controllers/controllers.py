@@ -9,6 +9,7 @@ from odoo.addons.portal.controllers.mail import _message_post_helper
 from odoo.osv import expression
 from odoo.exceptions import AccessError
 from odoo.addons.portal.controllers.portal import get_records_pager, pager as portal_pager, CustomerPortal
+from datetime import datetime
 
 class WebsiteSale(http.Controller):
 
@@ -75,16 +76,36 @@ class WebsiteSale(http.Controller):
 
     @http.route(['/quote/<int:order_id>/<token>/accept'], type='http', auth="public", methods=['POST'], website=True)
     def accept(self, order_id, token, **post):
+        flag = False
         Order = request.env['sale.order'].sudo().browse(order_id)
-        print("order.client_order_ref")
+        SaleOrderLines = request.env['sale.order.line'].sudo().search([('order_id', '=', Order.id)])
+        for SaleOrderLine in SaleOrderLines:
+            StockMove = request.env['stock.move'].sudo().search([('sale_line_id', '=', SaleOrderLine.id)])
+            if SaleOrderLine.product_uom_qty and StockMove.product_uom_qty:
+                if SaleOrderLine.product_uom_qty < StockMove.product_uom_qty:
+                    flag = True
+                    break
+
         if token != Order.access_token:
             return request.render('website.404')
         if Order.state != 'sent':
             return werkzeug.utils.redirect("/quote/%s/%s?message=4" % (order_id, token))
-        Order.action_confirm()
+
+        if flag:
+            Order.action_cancel()
+            Order.action_draft()
+            Order.action_confirm()
+            picking = request.env['stock.picking'].sudo().search([('sale_id', '=', Order.id), ('picking_type_id', '=', 1), ('state', 'not in', ['draft', 'cancel'])])
+            picking.write({'state': 'assigned'})
+            stock_move = request.env['stock.move'].sudo().search([('picking_id', '=', picking.id)])
+            stock_move.write({'state': 'assigned'})
+        else:
+            Order.write({'state': 'sale', 'confirmation_date': datetime.now()})
+
         message = post.get('accept_message')
+        if message:
+            Order.write({'sale_note': message})
         client_order_ref = post.get('client_order_ref')
-        print(client_order_ref)
         if client_order_ref:
             Order.write({"client_order_ref":client_order_ref})
         if message:
@@ -92,11 +113,27 @@ class WebsiteSale(http.Controller):
                                  **{'token': token} if token else {})
         return werkzeug.utils.redirect("/quote/%s/%s?message=3" % (order_id, token))
 
+    @http.route(['/quote/<int:order_id>/<token>/declines'], type='http', auth="public", methods=['POST'], website=True)
+    def decline(self, order_id, token, **post):
+        Order = request.env['sale.order'].sudo().browse(order_id)
+        if token != Order.access_token:
+            return request.render('website.404')
+        if Order.state != 'sent':
+            return werkzeug.utils.redirect("/quote/%s/%s?message=4" % (order_id, token))
+        Order.action_cancel()
+        message = post.get('decline_message')
+        if message:
+            Order.write({'sale_note': message})
+            _message_post_helper(message=message, res_id=order_id, res_model='sale.order',
+                                 **{'token': token} if token else {})
+        return werkzeug.utils.redirect("/quote/%s/%s?message=2" % (order_id, token))
+
 
 class CustomerPortal(CustomerPortal):
 
     def _prepare_portal_layout_values(self):
         # get customer sales rep
+        values = super(CustomerPortal, self)._prepare_portal_layout_values()
         PuchaseOrder = request.env['purchase.order']
         sales_user = False
         partner = request.env.user.partner_id
@@ -107,12 +144,13 @@ class CustomerPortal(CustomerPortal):
         if partner.user_id and not partner.user_id._is_public():
             sales_user = partner.user_id
 
-        return {
+        values.update({
             'sales_user': sales_user,
             'page_name': 'home',
             'archive_groups': [],
             'vendor_count':vendor_count,
-        }
+        })
+        return values
 
     def _get_archive_groups(self, model, domain=None, fields=None, groupby="create_date", order="create_date desc"):
         if not model:

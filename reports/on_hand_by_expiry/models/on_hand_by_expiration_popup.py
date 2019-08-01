@@ -93,7 +93,7 @@ class ProductsOnHandByExpiryPopUp(models.TransientModel):
         }
 
         if self.sku_code:
-            action["domain"].append(('sku_code', '=', self.sku_code))
+            action["domain"].append(('sku_code', 'ilike', self.sku_code))
 
         if self.warehouse_id:
            action["domain"].append(('warehouse_id', '=', self.warehouse_id.id))

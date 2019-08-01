@@ -26,7 +26,7 @@
                                     <th style="border: 1px solid black;text-align: center;">Manufacturer</th>
                                     <th style="border: 1px solid black;text-align: center;">Product SKU</th>
                                     <th style="border: 1px solid black;text-align: center;">Product Name</th>
-                                    <th style="border: 1px solid black;text-align: center;">Qty In Stock</th>
+                                    <th style="border: 1px solid black;text-align: center;">Qty Available For Sale</th>
                                     <th style="border: 1px solid black;text-align: center;">Sale Price</th>
                                     <th style="border: 1px solid black;text-align: center;">Min. Expiration Date</th>
                                     <th style="border: 1px solid black;text-align: center;">Max. Expiration Date</th>
@@ -50,7 +50,8 @@
                                         <span t-esc="product.product_id.name"/>
                                     </td>
                                     <td align="center" style="border: 1px solid black;">
-                                        <span t-esc="product.qty_available"/>
+                                        <span t-field="product.actual_quantity"/>
+                                        <span t-esc="product.uom_id.name"/>
                                     </td>
 
                                     <td align="right" style="border: 1px solid black;white-space:nowrap;">

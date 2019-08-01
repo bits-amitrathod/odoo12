@@ -1,5 +1,15 @@
 <odoo>
     <data>
+
+        <record id="seq_sfnumber" model="ir.sequence">
+            <field name="name">Sale Force</field>
+            <field name="code">sale.force.no</field>
+            <field name="prefix">SF</field>
+            <field name="padding">5</field>
+<!--            <field name="number_next">50000</field>-->
+            <field name="number_increment">1</field>
+        </record>
+
         <record id="view_form_prioritization_customer" model="ir.ui.view">
             <field name="name">Prioritization customer form</field>
             <field name="model">res.partner</field>
@@ -14,6 +24,9 @@
                             attrs="{'invisible':['|', '|', ('is_parent', '==', False),('prioritization', '==', False)]}">
                         <span class="o_stat_text">Import Template</span>
                     </button>
+                    <!--<button class="oe_stat_button" name="action_gl_account" type="object" icon="fa-child">
+                        <span class="o_stat_text">GL Account</span>
+                    </button>-->
                 </button>
                 <field name="vat" position="after">
                     <field name="sku_preconfig" attrs="{'readonly':[('is_parent', '==', False)]}"
@@ -22,10 +35,12 @@
                            placeholder="****       e.g. *2*B"/>
                     <field name="quickbook_id" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                     <field name="preferred_method" attrs="{'readonly':[('is_parent', '==', False)]}"/>
-                    <field name="allow_purchase" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                     <field name="saleforce_ac" placeholder="Sale Force A/C."/>
+                    <field name="is_share"/>
+                    <field name="sale_margine"/>
                 </field>
                 <field name="lang" position="after">
+                    <field name="allow_purchase" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                     <field name="prioritization" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                     <field name="on_hold" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                     <field name="is_broker" attrs="{'readonly':[('is_parent', '==', False)]}"/>
@@ -58,11 +73,8 @@
                                         <field name="max_threshold"/>
                                         <field name="cooling_period"/>
                                         <field name="partial_ordering"/>
-
                                     </group>
                                 </group>
-                                <!--<field name="price" invisible="not context.get('pricelist',False)" readonly="True"/>-->
-                                <!--<field name="uom_id" options="{'no_open': True, 'no_create': True}" groups="product.group_uom"/>-->
                             </form>
                             <tree editable="bottom">
                                 <field name="sequence" widget="handle"/>
@@ -78,8 +90,6 @@
                                 <field name="cooling_period"/>
                                 <field name="partial_ordering"/>
                                 <field name="partial_UOM"/>
-                                <!--<field name="price" invisible="not context.get('pricelist',False)" readonly="True"/>-->
-                                <!--<field name="uom_id" options="{'no_open': True, 'no_create': True}" groups="product.group_uom"/>-->
                             </tree>
                         </field>
                     </page>
@@ -105,6 +115,14 @@
                                 <field name="priority"/>
                                 <field name="expiration_tolerance"/>
                                 <field name="length_of_hold"/>
+                                <field name="doc_process_count"/>
+
+                                <div class="content-group">
+                                        <div>
+                                          <p style="color: #025325;">Document Processing Count at least 1</p>
+                                        </div>
+                                </div>
+
                                 <!--<field name="gl_account"/>-->
                             </group>
                             <group>
@@ -119,28 +137,6 @@
                 </xpath>
             </field>
         </record>
-
-        <!--<record id="view_tree_prioritization_customer" model="ir.ui.view">-->
-        <!--<field name="name">Prioritization customer Tree</field>-->
-        <!--<field name="model">res.partner</field>-->
-        <!--<field eval="12" name="priority"/>-->
-        <!--<field name="arch" type="xml">-->
-
-        <!--<tree string="Contacts">-->
-        <!--<field name="display_name" string="Name"/>-->
-        <!--<field name="function" invisible="1"/>-->
-        <!--<field name="company_type" string="Company"/>-->
-        <!--<field name="phone"/>-->
-        <!--<field name="email"/>-->
-        <!--<field name="user_id" invisible="1"/>-->
-        <!--<field name="is_company" invisible="1"/>-->
-        <!--<field name="country_id" invisible="1"/>-->
-        <!--<field name="parent_id" invisible="1"/>-->
-        <!--<field name="active" invisible="1"/>-->
-        <!--</tree>-->
-        <!--</field>-->
-        <!--</record>-->
-
 
         <record id="contact_tree_ex" model="ir.ui.view">
             <field name="name">res.partner.tree_ex</field>
@@ -166,6 +162,7 @@
                             <field name="priority"/>
                             <field name="expiration_tolerance"/>
                             <field name="length_of_hold"/>
+
                         </group>
                         <group>
                             <field name="min_threshold"/>
@@ -189,7 +186,6 @@
             <field name="res_model">res.partner</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <!--<field name="view_id" ref="view_tree_prioritization_customer"/>-->
             <field name="context">{'default_customer':1, 'search_default_customer':1, 'default_company_type':
                 'company','default_is_company': 1}
             </field>
@@ -211,7 +207,6 @@
             <field name="res_model">prioritization.transient</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
-            <!--  <field name="target">new</field>-->
             <field name="target">new</field>
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
@@ -234,7 +229,7 @@
                     <group name="Category" string="Category">
                         <group>
                             <field name="location"/>
-                            <field name="sku_code"/>
+                            <!--<field name="sku_code"/>-->
                         </group>
                         <group>
                             <field name="premium"/>
@@ -242,6 +237,42 @@
                         </group>
                     </group>
                 </page>
+            </field>
+        </record>
+
+        <record id="product_template_form_sku_code_add" model="ir.ui.view">
+            <field name="name">product.template.product.form</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <field name="sale_ok" position="before">
+                    <label for="sku_code"/>
+                    <field name="sku_code"/>
+                    <div/>
+                </field>
+            </field>
+        </record>
+
+        <record id="product_template_form_default_code_readonly" model="ir.ui.view">
+            <field name="name">product.template.product.form</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='default_code']" position="attributes">
+                    <attribute name="attrs">{"invisible": [["product_variant_count","&gt;",1]]}</attribute>
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="product_form_for_mfg_uom" model="ir.ui.view">
+            <field name="name">product.product.form_for_mfg_uom</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/sheet/notebook/page/group/group/field[@name='uom_po_id']" position="after">
+                    <field name="manufacturer_uom" groups="product.group_uom" options="{'no_create': True}"/>
+                </xpath>
             </field>
         </record>
 
@@ -258,8 +289,7 @@
                 </xpath>
                 <xpath expr="/form/sheet/notebook/page[1]/field[@name='child_ids']/form[1]/sheet/group/group[2]/field[@name='name']"
                        position="after">
-                    <field name="gl_account" placeholder=" G L Account No.."/>
-
+                    <field name="gl_account" placeholder=" GL Account No.." widget="one2many"/>
                 </xpath>
             </field>
         </record>
@@ -271,7 +301,7 @@
                 <form string="Notification Setting" create="false">
                     <sheet>
                         <group>
-                           <field name="historic_months"/>
+                            <field name="historic_months"/>
                         </group>
                         <group>
                             <group>
@@ -289,6 +319,25 @@
                             </group>
                         </group>
                     </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_glaccount_setting_tree" model="ir.ui.view">
+            <field name="name">gl.account.tree</field>
+            <field name="model">gl.account</field>
+            <field name="arch" type="xml">
+                <tree string="GL Account setting">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_glaccount_setting_form" model="ir.ui.view">
+            <field name="name">gl.account.form</field>
+            <field name="model">gl.account</field>
+            <field name="arch" type="xml">
+                <form string="GL Account setting">
+                    <field name="name"/>
                 </form>
             </field>
         </record>
@@ -311,6 +360,18 @@
                     You can either do it immediately or mark it as Todo for future processing. Use your scanner to
                     validate the transferred quantity quicker.
                 </p>
+            </field>
+        </record>
+        <record id="action_glaccount_setting" model="ir.actions.act_window">
+            <field name="name">Gl Account Setting</field>
+            <field name="res_model">gl.account</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click here to create a new gl Account.
+                </p>
+
             </field>
         </record>
 
@@ -355,6 +416,64 @@
             </field>
         </record>
 
+        <record id="set_log_gl_account_response" model="mail.template">
+            <field name="name">Logs For GL Account</field>
+            <field name="model_id" ref="base.model_res_users"/>
+            <field name="email_from">
+                <![CDATA["${object.company_id.name|safe}" <${(object.company_id.email or user.email)|safe}>]]></field>
+            <field name="email_to">${object.email|safe}</field>
+            <field name="subject">
+                <![CDATA[GL Account No Response for user <${(object.company_id.email or user.email)|safe}>]]></field>
+            <field name="body_html">${ctx['body']}</field>
+            <field name="user_signature" eval="False"/>
+        </record>
+
+        <record id="action_send_prioritization_credential_email" model="ir.actions.server">
+            <field name="name">Send Prioritization API Credential Email</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="binding_model_id" ref="base.model_res_partner"/>
+            <field name="state">code</field>
+            <field name="code">model.browse(env.context.get('active_ids', [])).with_context({'active':
+                True})._check_prioritization_setting_checkbox()
+            </field>
+        </record>
+
+        <!-- Email template for Send Prioritization Credentials -->
+        <record id="send_prioritization_credential_email" model="mail.template">
+            <field name="name">Send Prioritization API Credentials</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="email_from"><![CDATA[<${(object.email or user.email)|safe}>]]></field>
+            <field name="email_to">${object.email|safe}</field>
+            <field name="subject"><![CDATA[Prioritization Engine API Credentials]]></field>
+            <field name="body_html"><![CDATA[
+            <p>Hello <small>${object.name|safe},</small></p>
+                <p>
+                    Prioritization Engine API Credential with required fields are as follows.
+                </p>
+                <p style="text-align: left; margin-top: 10px;">
+                    <b>User Name</b> : ${ctx['username']}
+                </p>
+                <p>
+                    <b>Password</b> : ${ctx['password']}
+                </p>
+                <p>
+                    <b>Url</b> : ${ctx['url']}
+                </p>
+                <p>
+                    <b>Template Type</b> : 'Requirement / Inventory'
+                </p>
+                <p>
+                    <b>File</b> : 'Customer Requirement file / Customer Inventory file'
+                </p>
+                <p>
+                    Thanks.
+                </p>
+
+            ]]></field>
+            <field name="user_signature" eval="False"/>
+        </record>
+
         <!-- Top menu item -->
         <menuitem name="Priority Engine" id="prioritization_engine.menu_root"
                   web_icon="prioritization_engine,static/description/icon.png"/>
@@ -382,10 +501,6 @@
 
         <menuitem name="Run Scheduler" id="prioritization_run_scheduler_menu" parent="prioritization_operation_menu"
                   action="prioritization_run_scheduler"/>
-        <!-- actions -->
-        <!-- <menuitem name="Import Document" id="prioritization_engine.prioritization_import_menu" parent="prioritization_engine.prioritization_imenu"
-                action="action_notification_setting"/>-->
 
-        <!--<menuitem name="menu_name" id="unique_id" web_icon="module_name,path_of_icon" sequence="1"/>-->
     </data>
 </odoo>

@@ -30,6 +30,7 @@ class inventory_adjustment_report(models.Model):
         }
 
         for order in self:
+            order.currency_id = order.product_id.product_tmpl_id.company_id.currency_id
             order.p_sku = order.product_id.product_tmpl_id.sku_code
             keys=order.product_id.product_tmpl_id.type
             if keys==False:
@@ -41,7 +42,7 @@ class inventory_adjustment_report(models.Model):
             order.p_qty = order.qty_done
             order.amount = (float_repr(order.product_id.product_tmpl_id.list_price, precision_digits=2))
             order.total_amt = (float_repr(order.p_qty * order.amount, precision_digits=2))
-            if order.location_dest_id.name == 'Input' :
+            if order.location_dest_id.name in ('Input','Stock') :
                 order.adj_status = 'Inventory Adjustment'
             else:
                 order.adj_status = 'Scrapped'

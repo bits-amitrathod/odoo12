@@ -27,17 +27,24 @@ class RmaPopUp(models.TransientModel):
 
             for sale_order_line in sale_order_lines:
                 if sale_order_line.product_id.product_tmpl_id.type != 'service':
-                    return_qty=0
+                    return_qty = 0
+                    price_unit = 0
+                    price_total = 0
+                    umo_name = ''
                     for picking_id in sale_order_line.order_id.picking_ids:
                         if picking_id.location_dest_id.name == 'Stock' and picking_id.state == 'done':
                             for stock_move in picking_id.move_lines:
-                                return_qty=stock_move.product_uom_qty
+                                if stock_move.product_id.id == sale_order_line.product_id.id:
+                                    price_unit += sale_order_line.product_id.list_price
+                                    price_total += (sale_order_line.product_id.list_price * stock_move.product_uom_qty)
+                                    umo_name = stock_move.product_uom.name
+                                    return_qty += stock_move.product_uom_qty
                     products_list.append([sale_order_line.product_id.product_tmpl_id.name,
                                           sale_order_line.product_id.product_tmpl_id.sku_code,
                                           return_qty,
-                                          sale_order_line.product_uom.name,
-                                          sale_order_line.price_unit,
-                                          sale_order_line.price_total])
+                                          umo_name,
+                                          price_unit,
+                                          price_total])
 
             data_dict.update(dict(moves=products_list))
 

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import api, fields, models, _, tools
+import odoo.addons.decimal_precision as dp
 import logging
 import datetime
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, pycompat, misc
@@ -17,9 +18,9 @@ class ReceivingListPopUp(models.TransientModel):
     ], string="Order Type", default=1, help="Choose to analyze the Show Summary or from a specific date in the past.",
         required=True)
 
-    sale_order_id = fields.Many2one('sale.order', string='Order Number',domain="[('picking_ids.state','=','assigned'),('picking_ids.picking_type_id','=',2)]" , )
+    sale_order_id = fields.Many2one('sale.order', string='Order Number',domain="[('picking_ids.state','in',('assigned','done')),('picking_ids.picking_type_id','=',2)]" , )
 
-    purchase_order_id = fields.Many2one('purchase.order', string='Order Number', domain="[('picking_ids.state','=','assigned'),('picking_type_id.code','=','incoming')]" , order='picking_name')
+    purchase_order_id = fields.Many2one('purchase.order', string='Order Number', domain="[('picking_ids.state','in',('assigned','done')),('picking_type_id.code','=','incoming')]" , order='picking_name')
 
     def open_table(self):
         data = {'order_type': self.order_type}
@@ -47,7 +48,9 @@ class ReceivingListPoReport(models.Model):
     location_dest_id = fields.Many2one('stock.location', string='Destionation', )
     picking_name = fields.Char('Picking #')
     product_tmpl_id = fields.Many2one('product.template', "Product")
-    product_uom_qty = fields.Float('Quantity')
+    product_uom_qty = fields.Float('Quantity',digits=dp.get_precision('Product Unit of Measure'))
+    qty_done = fields.Float('Qty Received',digits=dp.get_precision('Product Unit of Measure'))
+    date_done = fields.Datetime('Date Done')
     product_uom_id = fields.Many2one('product.uom', 'UOM')
     state = fields.Selection([
         ('draft', 'New'), ('cancel', 'Cancelled'),
@@ -74,10 +77,12 @@ class ReceivingListPoReport(models.Model):
                     stock_warehouse.id as warehouse_id,
                     stock_picking.state,
                     stock_picking.picking_type_id,
+                    stock_picking.date_done,
                     stock_picking.name as picking_name,
                     product_product.product_tmpl_id,
                     stock_picking.location_dest_id,
                     stock_move_line.product_uom_qty,
+                    stock_move_line.qty_done,
                     stock_move_line.product_uom_id
                 FROM
                     purchase_order_line
@@ -128,7 +133,7 @@ class ReceivingListPoReport(models.Model):
                         product_product.product_tmpl_id = product_template.id)
                 WHERE
                     stock_picking_type.code = 'incoming'
-                AND stock_picking.state = 'assigned'
+                AND stock_picking.state in ('assigned','done')
         """
 
         sql_query = "CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + select_query + " )"
@@ -150,7 +155,9 @@ class ReceivingListReport(models.Model):
     location_dest_id = fields.Many2one('stock.location', string='Destionation', )
     picking_name = fields.Char('Picking #')
     product_tmpl_id = fields.Many2one('product.template', "Product")
-    product_uom_qty = fields.Float('Quantity')
+    product_uom_qty = fields.Float('Quantity',digits=dp.get_precision('Product Unit of Measure'))
+    qty_done = fields.Float('Qty Received',digits=dp.get_precision('Product Unit of Measure'))
+    date_done = fields.Datetime('Date Done')
     product_uom_id = fields.Many2one('product.uom', 'UOM')
     state = fields.Selection([
         ('draft', 'New'), ('cancel', 'Cancelled'),
@@ -176,9 +183,11 @@ class ReceivingListReport(models.Model):
                     stock_picking.state,
                     stock_picking.picking_type_id,
                     stock_picking.name as picking_name,
+                    stock_picking.date_done,
                     product_product.product_tmpl_id,
                     stock_picking.location_dest_id,
                     stock_move_line.product_uom_qty,
+                    stock_move_line.qty_done,
                     stock_move_line.product_uom_id
                 FROM
                     stock_picking
@@ -210,7 +219,7 @@ class ReceivingListReport(models.Model):
                     (
                         stock_picking.sale_id = sale_order.id)
                 WHERE
-                    stock_picking.state = 'assigned' and stock_picking.location_id in (12,16,9)
+                    stock_picking.state in ('assigned','done') and stock_picking.location_id in (12,16,9)
         """
 
         sql_query = "CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + select_query + " )"

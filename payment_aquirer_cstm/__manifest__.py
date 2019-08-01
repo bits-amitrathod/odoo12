@@ -12,11 +12,11 @@
     'category': 'e-commerce',
     'version': '0.1',
 
-    'depends': ['base','payment','website_sale'],
+    'depends': ['base','payment','website_sale','prioritization_engine'],
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'views/views.xml',
         'views/templates.xml',
         'data/payment_acquirer_cstm_data.xml',
