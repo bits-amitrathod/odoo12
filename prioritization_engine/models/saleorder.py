@@ -1,7 +1,7 @@
 import logging
 
 import odoo
-from odoo import models, fields, api, _
+from odoo import models, fields,  SUPERUSER_ID,api, _
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools.float_utils import float_compare, float_is_zero
 
@@ -31,6 +31,9 @@ class SaleOrder(models.Model):
         ('gifted', 'Gifted'),
         ('legacy', 'Legacy')], string='Sales Level', related='partner_id.sale_margine', readonly=True, store=True)
     carrier_acc_no = fields.Char("Carrier Account No", related='partner_id.carrier_acc_no', readonly=True)
+
+    order_processor = fields.Many2one('res.users', string='Order Processor', index=True, track_visibility='onchange',
+                              default=lambda self: self.env.user)
 
     @api.multi
     def action_void(self):
@@ -64,7 +67,7 @@ class SaleOrder(models.Model):
         self.ensure_one()
         ir_model_data = self.env['ir.model.data']
         try:
-            template_id = ir_model_data.get_object_reference('sale', 'email_template_edi_sale')[1]
+            template_id = ir_model_data.get_object_reference('prioritization_engine', 'email_template_edi_sale_custom')[1]
         except ValueError:
             template_id = False
         try:
@@ -93,6 +96,22 @@ class SaleOrder(models.Model):
             'context': ctx,
         }
 
+    @api.multi
+    def action_confirm(self):
+        res = super(SaleOrder, self).action_confirm()
+        user = None
+        current_user = self.env['res.users'].browse(self._context.get('uid'))
+        sale_order_customer = self.partner_id
+        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
+        user_sale_person = current_user.user_id
+
+        if self.team_id.team_type == 'sales':
+            user = current_user
+        else :
+            user = sale_order_customer.user_id if sale_order_customer.user_id else super_user
+
+        self.update({'order_processor' : user})
+        return  res
 
 class SaleOrderLinePrioritization(models.Model):
     _inherit = "sale.order.line"

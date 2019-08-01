@@ -1,6 +1,8 @@
 
-from odoo import models, fields, api, _
-
+from odoo import models, fields, api, _,tools
+import base64
+import threading
+from odoo.modules import get_module_resource
 
 class VendorBillPartnerName(models.Model):
     _inherit = "res.partner"
@@ -59,6 +61,28 @@ class VendorBillPartnerName(models.Model):
                 name = name.replace('\n', '<br/>')
             res.append((partner.id, name))
         return res
+
+
+    @api.model
+    def _get_default_image(self, partner_type, is_company, parent_id):
+        super_return=super(VendorBillPartnerName, self). _get_default_image(partner_type, is_company, parent_id)
+        colorize, img_path, image = False, False, False
+        if super_return and partner_type == 'ap':
+
+            if not image :
+                img_path = get_module_resource('vendor_bill_partner_name', 'static/src/img', 'cart.png')
+                colorize = True
+
+            if img_path:
+                with open(img_path, 'rb') as f:
+                    image = f.read()
+        # if image and colorize:
+        #     image = tools.image_colorize(image)
+
+        return tools.image_resize_image_big(base64.b64encode(image)) if image and colorize else super_return
+
+
+
 
 
 class account_invoice(models.Model):

@@ -27,5 +27,5 @@ class accoun_invoicr_changes(models.Model):
                 if inv_cntact.country_id   and inv_cntact.country_id.name : address = (address + ', ' + inv_cntact.country_id.name if address is not None else inv_cntact.country_id.name )
             if address is not None: sp.address = address
             purchase_order = self.env["purchase.order"].search([('name', '=', sp.origin)])
-            if purchase_order :
+            if purchase_order and purchase_order.acq_user_id and purchase_order.acq_user_id.partner_id and purchase_order.acq_user_id.partner_id.name :
                 sp.acquisition_rep = purchase_order.acq_user_id.partner_id.name
