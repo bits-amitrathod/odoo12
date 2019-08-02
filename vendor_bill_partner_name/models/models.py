@@ -11,9 +11,9 @@ class VendorBillPartnerName(models.Model):
         [('contact', 'Contact'),
          ('invoice', 'Invoice address'),
          ('delivery', 'Shipping address'),
-         ('other', 'Other'),
+         ('other', 'AP Address'),
          # ('private', 'Private Address'),
-         ('ap', 'AP Address'),
+         # ('ap', 'AP Address'),
          ], string='Address Type',
         default='contact',
         help="Used to select automatically the right address according to the context in sales and purchases documents.")
