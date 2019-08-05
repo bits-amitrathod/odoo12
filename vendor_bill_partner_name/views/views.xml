@@ -27,6 +27,73 @@
                 </xpath>
             </field>
         </record>
+
+        <record id="vendor_bill_cart_image" model="ir.ui.view">
+            <field name="name">Cart_image_update</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="priority" eval="20"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//div[@class='o_kanban_image']/t/img[2]" position="after">
+                    <img t-if="record.type.raw_value === 'other'" t-att-src='_s + "/vendor_bill_partner_name/static/src/img/cart.png"'/>
+                </xpath>
+
+                <xpath expr="//div[@class='o_kanban_image']/t/t" position="replace">
+                    <t t-if="record.type.raw_value !== 'invoice' &amp;&amp; record.type.raw_value !== 'delivery' &amp;&amp; record.type.raw_value !== 'other'">
+                        <img t-if="record.is_company.raw_value === true" t-att-src='_s + "/base/static/src/img/company_image.png"'/>
+                        <img t-if="record.is_company.raw_value === false" t-att-src='_s + "/base/static/src/img/avatar.png"'/>
+                    </t>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="vendor_bill_cart_image_list" model="ir.ui.view">
+            <field name="name">Cart_image_update_list</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.res_partner_kanban_view"/>
+            <field name="priority" eval="20"/>
+            <field name="arch" type="xml">
+
+                <!--<xpath expr="//div[@class='o_kanban_image']/t/t" position="after">-->
+                    <!--<img t-if="record.type.raw_value === 'other'" t-att-src='_s + "/vendor_bill_partner_name/static/src/img/cart.png"'/>-->
+                <!--</xpath>-->
+
+                <xpath expr="//div[@class='o_kanban_image']" position="replace">
+                    <div class="o_kanban_image">
+
+                                    <t t-if="record.image_small.raw_value  &amp;&amp; record.type.raw_value != 'other'">
+                                        <img t-att-src="kanban_image('res.partner', 'image_small', record.id.raw_value)"/>
+                                    </t>
+                                    <t t-if="!record.image_small.raw_value">
+                                        <t t-if="record.type.raw_value === 'delivery'">
+                                            <img t-att-src='_s + "/base/static/src/img/truck.png"' class="o_kanban_image oe_kanban_avatar_smallbox"/>
+                                        </t>
+                                        <t t-if="record.type.raw_value === 'invoice'">
+                                            <img t-att-src='_s + "/base/static/src/img/money.png"' class="o_kanban_image oe_kanban_avatar_smallbox"/>
+                                         </t>
+                                        <t t-if="record.type.raw_value != 'invoice' &amp;&amp; record.type.raw_value != 'delivery' &amp;&amp; record.type.raw_value != 'other' " >
+                                            <t t-if="record.is_company.raw_value === true">
+                                                <img t-att-src='_s + "/base/static/src/img/company_image.png"'/>
+                                            </t>
+                                            <t t-if="record.is_company.raw_value === false ">
+                                                <img t-att-src='_s + "/base/static/src/img/avatar.png"'/>
+                                            </t>
+                                        </t>
+                                    </t>
+                         <img t-if="record.type.raw_value === 'other'" t-att-src='_s + "/vendor_bill_partner_name/static/src/img/cart.png"'/>
+                                </div>
+
+                    <!--<t t-if="record.type.raw_value !== 'invoice' &amp;&amp; record.type.raw_value !== 'delivery' &amp;&amp; record.type.raw_value !== 'other'">-->
+                        <!--<img t-if="record.is_company.raw_value === true" t-att-src='_s + "/base/static/src/img/company_image.png"'/>-->
+                        <!--<img t-if="record.is_company.raw_value === false" t-att-src='_s + "/base/static/src/img/avatar.png"'/>-->
+                    <!--</t>-->
+                </xpath>
+
+            </field>
+        </record>
+
         <!--<record id="sale_invoice_payment_form_partner_name" model="ir.ui.view">
             <field name="name">account.invoice.form_exx</field>
             <field name="model">account.invoice</field>
