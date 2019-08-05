@@ -4,7 +4,6 @@ import base64
 import threading
 from odoo.modules import get_module_resource
 
-
 class VendorBillPartnerName(models.Model):
     _inherit = "res.partner"
 
@@ -74,8 +73,8 @@ class VendorBillPartnerName(models.Model):
     def _get_default_image(self, partner_type, is_company, parent_id):
         super_return=super(VendorBillPartnerName, self). _get_default_image(partner_type, is_company, parent_id)
         colorize, img_path, image = False, False, False
-        if super_return and partner_type == 'other':
 
+        if super_return and partner_type == 'other':
             if not image :
                 img_path = get_module_resource('vendor_bill_partner_name', 'static/src/img', 'cart.png')
                 colorize = True

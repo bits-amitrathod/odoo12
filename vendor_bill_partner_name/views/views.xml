@@ -41,6 +41,7 @@
 
                 <xpath expr="//div[@class='o_kanban_image']/t/t" position="replace">
                     <t t-if="record.type.raw_value !== 'invoice' &amp;&amp; record.type.raw_value !== 'delivery' &amp;&amp; record.type.raw_value !== 'other'">
+
                         <img t-if="record.is_company.raw_value === true" t-att-src='_s + "/base/static/src/img/company_image.png"'/>
                         <img t-if="record.is_company.raw_value === false" t-att-src='_s + "/base/static/src/img/avatar.png"'/>
                     </t>
@@ -48,7 +49,6 @@
 
             </field>
         </record>
-
         <record id="vendor_bill_cart_image_list" model="ir.ui.view">
             <field name="name">Cart_image_update_list</field>
             <field name="model">res.partner</field>
@@ -93,6 +93,7 @@
 
             </field>
         </record>
+
 
         <!--<record id="sale_invoice_payment_form_partner_name" model="ir.ui.view">
             <field name="name">account.invoice.form_exx</field>
