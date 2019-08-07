@@ -6,7 +6,7 @@
             </xpath>
         </template>
 
-        <template id="so_quotation_content_inherit" inherit_id="website_quote.so_quotation_content" name="Quotation Content">
+        <template id="so_quotation_content_inherit" inherit_id="sale.sale_order_portal_template" name="Quotation Content">
             <!--<xpath expr="//div/h1/div/ul" position="replace">-->
                 <!--<ul class="list-inline">-->
                   <!--<li groups="sales_team.group_sale_salesman">-->
@@ -33,11 +33,11 @@
             </xpath>
         </template>
 
-        <template id="so_modify_content" inherit_id="website_quote.so_quotation" name="Modify Content">
+        <template id="so_modify_content" inherit_id="sale.sale_order_portal_template" name="Modify Content">
             <!--<xpath expr="//t/t/body/div[1]/div[1]/div[2]/div[8]" position="attributes">
                 <attribute name="class">text-right</attribute>
             </xpath>-->
-            <xpath expr="//t/t/body/div[1]/div[1]/div[2]/div[8]" position="replace">
+            <xpath expr="//t[@t-set='entries']/ul/li[1]/a[1]" position="after">
                  <div class="text-right hidden-print mt16 mb16" id="quotation_toolbar" t-if="quotation.state in ('draft', 'sent', 'waiting_date')">
                           <a class="btn btn-danger" data-toggle="modal" data-target="#modaldecline">
                               Reject
@@ -50,12 +50,13 @@
                           </a>
                  </div>
             </xpath>
+
             <!--<xpath expr="//t/t/body/div[1]/div[1]/div[2]/div[8]/a[3]" position="after">
                 <a class="text-right btn btn-info" t-att-href="'/my/orders/edit/%s' % (quotation.id)" data-toggle="modal">
                     Update Quantity
                 </a>
              </xpath>-->
-            <xpath expr="//t/t/body/div[1]/div[1]/div[2]/div[5]" position="replace">
+            <xpath expr="//div[@id='modalaccept']" position="replace">
                 <div class="modal" id="modalaccept" role="dialog" aria-hidden="true">
                     <div class="modal-dialog">
                         <form id="accept" method="POST"
@@ -93,7 +94,7 @@
                     </div>
                 </div>
             </xpath>
-            <xpath expr="//t/t/body/div[1]/div[1]/div[2]/div[6]" position="replace">
+            <xpath expr="//div[@id='modaldecline']" position="replace">
                 <div class="modal" id="modaldecline" role="dialog" aria-hidden="true">
                     <div class="modal-dialog">
                         <form id="declines" method="POST"
@@ -126,13 +127,14 @@
         </template>
 
         <template id="cart_lines" name="Shopping Cart Lines">
-
+            <!--<div t-if="not website_sale_order or not website_sale_order.website_order_line" class="js_cart_lines well well-lg">
+              Your cart is empty!
+            </div>-->
             <section id="quote" class="engine">
                 <t t-foreach="quotation.order_lines_layouted()" t-as="page">
                     <table class="table table-striped table-condensed js_cart_lines" id="cart_products">
                         <thead>
                             <tr>
-                                <!--<th class="text-center td-qty">Req no</th>-->
                                 <th class="td-img">Product</th>
                                 <th></th>
                                 <th class="text-center td-qty">Quantity</th>
@@ -226,8 +228,8 @@
             </section>
         </template>
 
-        <template id="pricing_inherit" inherit_id="website_quote.pricing" name="prioritization price">
-            <xpath expr="//section[@id='quote']" position="replace">
+        <template id="pricing_inherit" inherit_id="sale.report_saleorder_document" name="prioritization price">
+            <xpath expr="//div[@class='page']" position="replace">
 
 
                 <section id="quote" style="position: relative;">
@@ -1041,7 +1043,7 @@
 
         <template id="portal_my_home_vendor_offer" name="Portal My Home : vendor offer entry"
                   inherit_id="portal.portal_my_home" priority="25">
-            <xpath expr="//ul[hasclass('o_portal_docs')]" position="inside">
+            <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
                 <li t-if="vendor_count" class="list-group-item">
                     <span class="badge" t-esc="vendor_count"/>
                     <a href="/my/vendor">Vendor Offer</a>
@@ -1258,7 +1260,7 @@
 
         <template id="portal_my_home_menu_vendor" name="Portal layout : vendor menu entries"
                   inherit_id="portal.portal_layout" priority="20">
-            <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <xpath expr="//div[hasclass('o_portal_my_details')]" position="inside">
                 <li t-if="vendor_offer and vendor_offer.state in ('ven_sent', 'cancel')">
                     <a t-if="vendor_offer" t-attf-href="/my/vendor?{{ keep_query() }}">Vendor Offer</a>
                     <t t-else="">Vendor Offer</t>

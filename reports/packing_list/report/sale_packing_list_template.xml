@@ -14,8 +14,8 @@
                         <!--border: 1px solid #000;-->
                         <!--}-->
                     </style>
-                    <div class="oe_structure"></div>
-                    <div class="row">
+                    <div class="oe_structure"/>
+                    <div class="row justify-content-md-center">
                         <center>
                             <b>
                                 <h2>Surgical Product Solutions</h2>

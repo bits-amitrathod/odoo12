@@ -308,9 +308,9 @@ class ReportPrintInStockExport(http.Controller):
           public.product_brand.name as product_brand,
           public.product_template.sku_code,
           public.product_template.name as product_template,
-          public.product_uom.name as product_uom,
-          public.sale_order_line.product_id as product_id,
-          sale_order.partner_id as partner_id,
+          public.uom_uom.name as product_uom,
+          public.sale_order_line.product_id,
+          sale_order.partner_id,
           public.product_template.actual_quantity,
           list_price_val(sale_order.partner_id,product_product.id,public.product_template.actual_quantity) as list_price,
           is_pricelist_formula(sale_order.partner_id,product_product.id,public.product_template.actual_quantity) as formula
@@ -332,8 +332,8 @@ class ReportPrintInStockExport(http.Controller):
             public.product_brand 
             ON ( public.product_template.product_brand_id = public.product_brand.id) 
           INNER JOIN
-            public.product_uom 
-            ON ( public.product_template.uom_id = public.product_uom.id) 
+            public.uom_uom 
+            ON ( public.product_template.uom_id = public.uom_uom.id) 
         WHERE
           product_template.actual_quantity > 0;
 
