@@ -9,7 +9,7 @@ class VendorBillPartnerName(models.Model):
         [('contact', 'Contact'),
          ('invoice', 'Invoice address'),
          ('delivery', 'Shipping address'),
-         # ('other', 'Other address'),
+         ('other', 'Other address'),
          # ('private', 'Private Address'),
          ('ap', 'AP Address'),
          ], string='Address Type',
