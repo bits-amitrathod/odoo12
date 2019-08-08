@@ -26,11 +26,11 @@
             <field name="arch" type="xml">
                 <xpath expr="//form/sheet/div" position="replace">
                   <div>
-                        <label string="Draft Vendor Bill" attrs="{'invisible': ['|',('state','!=','draft'), ('type','!=','in_invoice')]}"/>
-                        <label string="- First Number:" attrs="{'invisible': [('sequence_number_next_prefix','=',False)]}"/>
-                        <label string="Draft Vendor Credit Note" attrs="{'invisible': ['|',('state','!=','draft'), ('type','!=','in_refund')]}"/>
-                        <label string="Vendor Bill Payment" attrs="{'invisible': ['|',('state', '=', 'draft'), ('type','!=','in_invoice')]}"/>
-                        <label string="Vendor Credit Note" attrs="{'invisible': ['|',('state', '=', 'draft'), ('type','!=','in_refund')]}"/>
+                        <label for="draft_vendor_bill" string="Draft Vendor Bill" attrs="{'invisible': ['|',('state','!=','draft'), ('type','!=','in_invoice')]}"/>
+                        <label for="first_number" string="- First Number:" attrs="{'invisible': [('sequence_number_next_prefix','=',False)]}"/>
+                        <label for="draft_vendor_credit_note" string="Draft Vendor Credit Note" attrs="{'invisible': ['|',('state','!=','draft'), ('type','!=','in_refund')]}"/>
+                        <label for="vendor_bill_payment" string="Vendor Bill Payment" attrs="{'invisible': ['|',('state', '=', 'draft'), ('type','!=','in_invoice')]}"/>
+                        <label for="vendor_credit_note" string="Vendor Credit Note" attrs="{'invisible': ['|',('state', '=', 'draft'), ('type','!=','in_refund')]}"/>
                         <h1 class="mt0">
                             <field name="number" class="oe_inline"  attrs="{'invisible': [('state', '=', 'draft')]}"/>
                             <div  attrs="{'invisible': [('sequence_number_next_prefix','=',False)]}">
@@ -52,16 +52,16 @@
                     <sheet string="Invoice">
                     <div class="oe_button_box" name="button_box">
                     </div>
-                    <label string="Customer Credit Note" attrs="{'invisible': ['|',('state','=','draft'), ('type','!=','out_refund')]}"/>
-                    <label string="Customer Invoice" attrs="{'invisible': ['|',('state','=','draft'), ('type','!=','out_invoice')]}"/>
+                    <label for="customer_credit_note" string="Customer Credit Note" attrs="{'invisible': ['|',('state','=','draft'), ('type','!=','out_refund')]}"/>
+                    <label for="customer_invoices" string="Customer Invoice" attrs="{'invisible': ['|',('state','=','draft'), ('type','!=','out_invoice')]}"/>
                     <h1 class="mt0">
                         <div attrs="{'invisible': [('sequence_number_next_prefix','!=',False)]}">
-                            <label string="Draft Customer Invoice" attrs="{'invisible': ['|',('state','not in',('draft',)), ('type','!=','out_invoice')]}"/>
-                            <label string="Draft Customer Credit Note" attrs="{'invisible': ['|',('state','not in',('draft',)), ('type','!=','out_refund')]}"/>
+                            <label for="draft_customer_invoice" string="Draft Customer Invoice" attrs="{'invisible': ['|',('state','not in',('draft',)), ('type','!=','out_invoice')]}"/>
+                            <label for="draft_customer_credit_note" string="Draft Customer Credit Note" attrs="{'invisible': ['|',('state','not in',('draft',)), ('type','!=','out_refund')]}"/>
                             <field name="number" readonly="1" class="oe_inline" attrs="{'invisible': [('state','in',('draft',))]}"/>
                         </div>
                         <div  attrs="{'invisible': [('sequence_number_next_prefix','=',False)]}">
-                            <label string="Invoice Number:"/><br/>
+                            <label for="invoice_number" string="Invoice Number:"/><br/>
                             <field name="sequence_number_next_prefix" class="oe_inline"/>
                             <field name="sequence_number_next" class="oe_inline"/>
                         </div>
@@ -213,7 +213,7 @@
                 <field name="date"/>
                 <filter string="This Year" name="thisyear" domain="['|', ('date', '=', False), '&amp;',('date','&lt;=', time.strftime('%%Y-12-31')),('date','&gt;=',time.strftime('%%Y-01-01')                  )]" help="Journal invoices with period in current year"/>
                 <separator/>
-                <filter string="To Invoice" domain="[('state','=','draft')]" help = "Draft Invoices"/>
+                <filter name="to_invoice" string="To Invoice" domain="[('state','=','draft')]" help = "Draft Invoices"/>
                 <filter string="Invoiced" name="current" domain="[('state','not in', ('draft','cancel'))]"/>
                 <separator/>
                 <filter string="This Month" name="this_month" domain="[('date', '&gt;=', context_today().strftime('%%Y-%%m-01'))]"/>
@@ -222,8 +222,8 @@
                 <filter string="Customer" name="customer" domain="['|', ('type','=','out_invoice'),('type','=','out_refund')]"/>
                 <filter string="Vendor" name="supplier" domain="['|', ('type','=','in_invoice'),('type','=','in_refund')]"/>
                 <separator/>
-                <filter string="Invoice" domain="['|', ('type','=','out_invoice'),('type','=','in_invoice')]"/>
-                <filter string="Customer Credit Note" domain="['|', ('type','=','out_refund'),('type','=','in_refund')]"/>
+                <filter name="invoice" string="Invoice" domain="['|', ('type','=','out_invoice'),('type','=','in_invoice')]"/>
+                <filter name="customer_credit_note" string="Customer Credit Note" domain="['|', ('type','=','out_refund'),('type','=','in_refund')]"/>
                 <field name="partner_id" operator="child_of"/>
                 <field name="user_id" />
                 <field name="categ_id" filter_domain="[('categ_id', 'child_of', self)]"/>
@@ -232,11 +232,11 @@
                     <filter string="Partner" name="partner_id" context="{'group_by':'partner_id','residual_visible':True}"/>
                     <filter string="Salesperson" name='user' context="{'group_by':'user_id'}"/>
                     <filter string="Product Category" name="category_product" context="{'group_by':'categ_id','residual_invisible':True}"/>
-                    <filter string="Status" context="{'group_by':'state'}"/>
-                    <filter string="Company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>
+                    <filter name="status" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="company" string="Company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>
                     <separator orientation="vertical" />
-                    <filter string="Date" context="{'group_by':'date'}"/>
-                    <filter string="Due Month" context="{'group_by':'date_due:month'}"/>
+                    <filter name="date" string="Date" context="{'group_by':'date'}"/>
+                    <filter name="due_month" string="Due Month" context="{'group_by':'date_due:month'}"/>
                     <filter string="Analytic Account" name="account_analytic_id" context="{'group_by':'account_analytic_id'}" groups="analytic.group_analytic_accounting" />
                 </group>
             </search>

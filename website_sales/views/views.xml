@@ -86,7 +86,7 @@
                                             <div class="text-muted small" t-field="product.description_sale"/>
                                         </div>
                                         <div class="pull-right">
-                                            <t t-call="website_sale.variants"/>
+                                            <t t-call="sale.variants"/>
                                         </div>
                                     </td>
 

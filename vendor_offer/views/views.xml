@@ -152,21 +152,21 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="purchase_order_form_inherit">
-            <field name="name">purchase.order.form.inherit</field>
-            <field name="model">purchase.order</field>
-            <field name="inherit_id" ref="purchase.purchase_order_form"/>
-            <field name="arch" type="xml">
-                <data>
-                    <xpath expr="//form[1]/sheet[1]/notebook[1]" position="inside">
-                        <page name="studio_page_ptSZN" string="Notes">
-                            <field name="notes_activity"
-                                   attrs="{'readonly': True}"/>
-                        </page>
-                    </xpath>
-                </data>
-            </field>
-        </record>
+<!--        <record model="ir.ui.view" id="purchase_order_form_inherit">-->
+<!--            <field name="name">purchase.order.form.inherit</field>-->
+<!--            <field name="model">purchase.order</field>-->
+<!--            <field name="inherit_id" ref="purchase.purchase_order_form"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <data>-->
+<!--                    <xpath expr="//form[1]/sheet[1]/notebook[1]" position="inside">-->
+<!--                        <page name="studio_page_ptSZN" string="Notes">-->
+<!--                            <field name="notes_activity"-->
+<!--                                   attrs="{'readonly': True}"/>-->
+<!--                        </page>-->
+<!--                    </xpath>-->
+<!--                </data>-->
+<!--            </field>-->
+<!--        </record>-->
 
         <menuitem action="purchase_form_action_vendor" id="purchase.menu_purchase_form_action"
                   parent="purchase.menu_procurement_management" sequence="5"/>
@@ -446,7 +446,7 @@
         </record>
 
 
-        <record id="purchase_order_form" model="ir.ui.view">
+        <record id="purchase_order_form_inherit_2" model="ir.ui.view">
 
             <field name="name">purchase.order.form</field>
             <field name="model">purchase.order</field>
@@ -466,19 +466,14 @@
                             attrs="{'invisible': [('status_ven', 'not in', 'Accepted'),('vendor_offer_data', '=',  False)]}"
                             groups="stock.group_stock_user"/>
 
-                    <!--                    <button string="Track Shipment"-->
-                    <!--                                type="object" class="btn-primary"-->
-                    <!--                                name="action_fedex_track_request"-->
-                    <!--                                attrs="{'invisible': [('carrier_id', '==', False)]}"-->
-                    <!--                                groups="stock.group_stock_user"/>-->
+<!--                                        <button string="Track Shipment"-->
+<!--                                                    type="object" class="btn-primary"-->
+<!--                                                    name="action_fedex_track_request"-->
+<!--                                                    attrs="{'invisible': [('carrier_id', '==', False)]}"-->
+<!--                                                    groups="stock.group_stock_user"/>-->
 
 
                 </button>
-                <xpath expr="//header/field[@name='state']" position="replace">
-                    <field name="state" widget="statusbar" statusbar_visible="draft,sent,purchase" readonly="1" attrs="{'invisible':[('vendor_offer_data', '=',  True)]}"/>
-                    <field name="status" widget="statusbar" statusbar_visible="ven_draft,ven_sent,purchase"
-                           readonly="1" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}"/>
-                </xpath>
                 <xpath expr="//group/group/field[@name='origin']" position="replace">
                     <field name="origin" string="Sale Order#"/>
                 </xpath>
@@ -486,8 +481,7 @@
                     <field name="carrier_info"/>
                     <field name="carrier_acc_no"/>
                     <field name="shipping_terms"/>
-                    <field name="carrier_id" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}"/>
-                    <field name="shipping_number" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}"/>
+
 
                 </xpath>
                 <xpath expr="//group/group/field[@name='partner_ref']" position="after">
@@ -495,15 +489,15 @@
                            attrs="{'invisible': [('vendor_offer_data','=',False)]}"></field>
 
                 </xpath>
-                <xpath expr="//group/group/field[@name='incoterm_id']" position="after">
+                <xpath expr="//page[@name='purchase_delivery_invoice']/group/group" position="inside">
                     <field name="shipping_date"></field>
                     <field name="shipping_label_issued"></field>
 
                 </xpath>
                 <xpath expr="//group/group/field[@name='invoice_status']" position="after">
-                    <field name="delivered_date"/>
-                    <field name="expected_date"/>
-                    <field name="appraisal_no"/>
+                    <field name="delivered_date"></field>
+                    <field name="expected_date"></field>
+                    <field name="appraisal_no"></field>
                 </xpath>
                 <xpath expr="//notebook/page/field[@name='order_line']" position="replace">
                     <field name="order_line" attrs="{'readonly': [('vendor_offer_data', '=', True)]}">
@@ -546,6 +540,13 @@
                 </xpath>
 
 
+                <xpath expr="//form[1]/sheet[1]/notebook[1]" position="inside">
+                    <page name="studio_page_ptSZN" string="Notes">
+                        <field name="notes_activity" attrs="{'readonly': True}"/>
+                    </page>
+                </xpath>
+
+
             </field>
         </record>
 
@@ -561,15 +562,15 @@
             </field>
         </record>
 
-        <!--<record id="action_duplicate_vendor_offer" model="ir.actions.server">-->
-        <!--<field name="name">Duplicate Offer</field>-->
-        <!--<field name="type">ir.actions.server</field>-->
-        <!--<field name="model_id" ref="model_purchase_order"/>-->
-        <!--<field name="binding_model_id" ref="vendor_offer.model_purchase_order"/>-->
-        <!--<field name="state">code</field>-->
-        <!--<field attrs="{'invisible':[('vendor_offer_data', '=',  False)]}"/>-->
-        <!--<field name="code">model.action_duplicate_vendor_offer()</field>-->
-        <!--</record>-->
+<!--        <record id="action_duplicate_vendor_offer" model="ir.actions.server">-->
+<!--        <field name="name">Duplicate Offer</field>-->
+<!--        <field name="type">ir.actions.server</field>-->
+<!--        <field name="model_id" ref="model_purchase_order"/>-->
+<!--        <field name="binding_model_id" ref="vendor_offer.model_purchase_order"/>-->
+<!--        <field name="state">code</field>-->
+<!--        <field attrs="{'invisible':[('vendor_offer_data', '=',  False)]}"/>-->
+<!--        <field name="code">model.action_duplicate_vendor_offer()</field>-->
+<!--        </record>-->
 
         <record id="product_template_form_view" model="ir.ui.view">
             <field name="name">product.template.common.form</field>

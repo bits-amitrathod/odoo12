@@ -11,7 +11,7 @@ class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
     group_stock_production_lot = fields.Boolean(string="Lots & Serial Numbers", default=True,
                                                 implied_group='stock.group_production_lot')
-    module_product_expiry = fields.Boolean(string="Expiration Dates",
+    module_product_expiry = fields.Boolean(string="Expiration Dates 1",
                                            help="Track following dates on lots & serial numbers: best before, removal, end of life, alert. \n Such dates are set automatically at lot/serial number creation based on values set on the product (in days).")
     production_lot_alert_days = fields.Integer(string="Alert Days")
     production_lot_alert_settings = fields.Boolean(string="Alert Setting", default=True)

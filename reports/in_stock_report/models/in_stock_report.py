@@ -1,4 +1,3 @@
-
 from odoo import tools
 import logging
 import datetime
@@ -17,7 +16,8 @@ class ReportInStockReportPopup(models.TransientModel):
     partner_id = fields.Many2one('res.partner', string='Customer', )
     user_id = fields.Many2one('res.users', 'Salesperson')
     warehouse_id = fields.Many2one('stock.warehouse', 'Warehouse')
-    sku_code = fields.Char('Product SKU')
+    sku_code = fields.Many2one('product.product', string='Product SKU',
+                               domain="[('active','=',True),('product_tmpl_id.type','=','product')]")
 
     def open_table(self):
         tree_view_id = self.env.ref('in_stock_report.view_in_stock_report_line_tree').id
@@ -46,7 +46,7 @@ class ReportInStockReportPopup(models.TransientModel):
             action["domain"].append(('warehouse_id', '=', self.warehouse_id.id))
 
         if self.sku_code:
-            action["domain"].append(('sku_code', 'ilike', self.sku_code))
+            action["domain"].append(('product_id.id', 'ilike', self.sku_code.id))
 
 
 
@@ -179,8 +179,8 @@ class ReportPrintInStockReport(models.AbstractModel):
     _name = 'report.in_stock_report.in_stock_report_print'
 
     @api.model
-    def get_report_values(self, docids, data=None):
+    def _get_report_values(self, docids, data=None):
         dates_picked = self.env['popup.report.in.stock.report'].search([('create_uid', '=', self._uid)], limit=1,
-                                                                  order="id desc")
+                                                                       order="id desc")
 
-        return {'dateRange':dates_picked ,'data': self.env['report.in.stock.report'].browse(docids)}
+        return {'dateRange': dates_picked, 'data': self.env['report.in.stock.report'].browse(docids)}
