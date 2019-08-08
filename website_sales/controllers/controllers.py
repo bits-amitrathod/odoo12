@@ -117,10 +117,6 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         msg = "Quotation Email Sent to: " + order.user_id.login
         order.message_post(body=msg)
 
-        # Payment acquirer fix
-        if 'expedited_shipping' in request.session:
-            request.session['expedited_shipping'] = ""
-
         if request.env.user.user_id.id and not request.env.user.user_id.id == order.user_id.id:
             order.user_id = request.env.user.user_id
             template.send_mail(order.id, force_send=True)

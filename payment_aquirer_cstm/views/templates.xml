@@ -78,8 +78,8 @@
         </xpath>
     </template>
 
-    <template id="payment_sale_note" inherit_id="website_sale.payment" name="Purchase Order">
-        <xpath expr="//div[@id='payment_method']" position="before">
+    <template id="payment_sale_note" inherit_id="website_sale_delivery.payment_delivery" name="Purchase Order">
+        <xpath expr="//div[@id='delivery_carrier']" position="before">
             <div class="col-xs-12 col-sm-12 col-md-12" t-if="showShippingNote">
                 <input type="hidden" value="" id="freeShipingLabel"  t-att-value="freeShipingLabel" />
                 <label><input type="checkbox" value="" id="hasShippingNote" style="margin-right: 10px;"/> Do you want to use your shipping method?</label>
