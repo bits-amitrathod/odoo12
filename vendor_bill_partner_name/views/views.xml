@@ -35,16 +35,6 @@
             <field name="priority" eval="20"/>
             <field name="arch" type="xml">
 
-                <!--<xpath expr="//div[@class='o_kanban_image']/t/img[2]" position="after">-->
-                    <!--<img t-if="record.type.raw_value === 'other'" t-att-src='_s + "/vendor_bill_partner_name/static/src/img/cart.png"'/>-->
-                <!--</xpath>-->
-
-                <!--<xpath expr="//div[@class='o_kanban_image']/t/t" position="replace">-->
-                    <!--<t t-if="record.type.raw_value !== 'invoice' &amp;&amp; record.type.raw_value !== 'delivery' &amp;&amp; record.type.raw_value !== 'other'">-->
-                        <!--<img t-if="record.is_company.raw_value === true" t-att-src='_s + "/base/static/src/img/company_image.png"'/>-->
-                        <!--<img t-if="record.is_company.raw_value === false" t-att-src='_s + "/base/static/src/img/avatar.png"'/>-->
-                    <!--</t>-->
-                <!--</xpath>-->
             <xpath expr="//div[@class='o_kanban_image']" position="replace">
                 <div class="o_kanban_image">
                         <img t-if="record.image_small.raw_value" t-att-src="'data:image/png;base64,'+record.image_small.raw_value"/>
@@ -60,9 +50,9 @@
                     </div>
             </xpath>
 
+
             </field>
         </record>
-
         <record id="vendor_bill_cart_image_list" model="ir.ui.view">
             <field name="name">Cart_image_update_list</field>
             <field name="model">res.partner</field>
@@ -107,6 +97,7 @@
 
             </field>
         </record>
+
 
         <!--<record id="sale_invoice_payment_form_partner_name" model="ir.ui.view">
             <field name="name">account.invoice.form_exx</field>

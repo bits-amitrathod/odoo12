@@ -19,6 +19,7 @@ class ProductionLot(models.Model):
                                  help='Date to determine the expired lots and serial numbers using the filter "Expiration Alerts".')
     product_expiry_alert = fields.Boolean(compute='_compute_product_expiry_alert',
                                           help="The Alert Date has been reached.")
+    product_qty = fields.Float('Quantity', compute='_product_qty', search='_search_qty_available')
 
     @api.depends('alert_date')
     def _compute_product_expiry_alert(self):
@@ -79,3 +80,17 @@ class ProductionLot(models.Model):
         dates_dict = self._get_dates()
         for field, value in dates_dict.items():
             setattr(self, field, value)
+
+    def _search_qty_available(self, operator, value):
+        product_ids = [0]
+        if value == 0.0 and operator == '>' and not ({'from_date', 'to_date'} & set(self.env.context.keys())):
+            product_ids = self._search_qty_available_new(
+                operator, value )
+        return [('id', 'in', product_ids)]
+
+    def _search_qty_available_new(self, operator, value):
+        # lot_list = self.env['stock.production.lot'].search([('product_id','=',self._context['default_product_id']),('product_qty','>', value)]).ids
+        lot_list = [0]
+        for lot in list(filter(lambda x: (x.product_qty > value), self.env['stock.production.lot'].search([('product_id','=',self._context['default_product_id'])]))):
+             lot_list.append(lot.id)
+        return lot_list
