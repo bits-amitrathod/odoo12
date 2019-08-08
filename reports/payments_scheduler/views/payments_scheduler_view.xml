@@ -26,7 +26,7 @@
             <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false">
                     <field name="acquisition_rep" />
-                    <field name="partner_id" groups="base.group_user" string="Vendor Name"/>
+                    <field name="company_name" groups="base.group_user" string="Vendor Name"/>
                     <field name="reference"  />
                     <field name="number"/>
                     <field name="origin"  string="Purchase Order #"/>
