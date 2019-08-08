@@ -13,6 +13,10 @@ class sale_order(models.Model):
 
     def write(self, val):
         super(sale_order, self).write(val)
+
+        if self.sale_note:
+            self.write({'sale_note':False})
+            
         if 'sale_note' in val:
             if val['sale_note']:
                 body = _(val['sale_note'])
@@ -53,12 +57,12 @@ class sale_order(models.Model):
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
-    note = fields.Text('Notes', compute='_get_note')
-
-    def _get_note(self):
-        for stock_picking in self:
-            sale_order = self.env['sale.order'].search([('name', '=', stock_picking.origin)])
-            stock_picking.note = sale_order.sale_note
+    # note = fields.Text('Notes', compute='_get_note')
+    #
+    # def _get_note(self):
+    #     for stock_picking in self:
+    #         sale_order = self.env['sale.order'].search([('name', '=', stock_picking.origin)])
+    #         stock_picking.note = sale_order.sale_note
 
     @api.multi
     def button_validate(self):
