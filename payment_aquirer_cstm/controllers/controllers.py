@@ -2,6 +2,7 @@
 import odoo
 from odoo import http
 from odoo.http import request
+from odoo.addons.portal.controllers.mail import _message_post_helper
 
 
 class PaymentAquirerCstm(http.Controller):
@@ -44,14 +45,17 @@ class PaymentAquirerCstm(http.Controller):
                 csrf=False)
     def expedited_shipping(self, expedited_shipping, **kw):
         order = request.env['sale.order'].sudo().browse(request.session['sale_order_id'])
-        order.write({'sale_note': expedited_shipping})
+        # order.write({'sale_note': expedited_shipping})
+        request.session['expedited_shipping'] = expedited_shipping
+        if expedited_shipping:
+            order.message_post(body="<strong>Expedited Shipping:</strong> "+expedited_shipping)
         return request.redirect('/shop/payment')
 
 
-class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
+class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.WebsiteSale):
     @http.route(['/shop/payment'], type='http', auth="public", website=True)
     def payment(self, **post):
-        responce = super(WebsiteSales, self).payment(**post)
+        responce = super(WebsiteSalesPaymentAquirerCstm, self).payment(**post)
 
         ctx = responce.qcontext
         if 'order' in ctx:
@@ -64,5 +68,13 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
                 for x in ctx['form_acquirers']:
                     if x.name == 'Purchase Order':
                         ctx['form_acquirers'].remove(x)
+
+        ctx['showShippingNote'] = False
+        ctx['expedited_shipping'] = 'expedited_shipping' in request.session and request.session['expedited_shipping'] or ""
+        for x in ctx['deliveries']:
+            if x.delivery_type == "fixed" and x.fixed_price == 0:
+                ctx['showShippingNote'] = True
+                ctx['freeShipingLabel'] = "delivery_"+str(x.id)
+            break
 
         return responce

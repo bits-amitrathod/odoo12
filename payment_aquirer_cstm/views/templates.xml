@@ -80,8 +80,11 @@
 
     <template id="payment_sale_note" inherit_id="website_sale.payment" name="Purchase Order">
         <xpath expr="//div[@id='payment_method']" position="before">
-            <div class="col-xs-12 col-sm-12 col-md-12">
-                <label><input type="checkbox" value="" id="hasShippingNote"/> Has additional shipping notes</label>
+            <div class="col-xs-12 col-sm-12 col-md-12" t-if="showShippingNote">
+                <input type="hidden" value="" id="freeShipingLabel"  t-att-value="freeShipingLabel" />
+                <label><input type="checkbox" value="" id="hasShippingNote" style="margin-right: 10px;"/> Do you want to use your shipping method?</label>
+                <br/>
+                <div  class="well" id="expedited_shipping" style="margin-bottom: 0px;margin-top: 10px;"><t t-esc="expedited_shipping"/></div>
                 <br/>
                 <a class="btn btn-success" data-toggle="modal" data-target="#accept" id="editShippingNote">
                     Edit additional shipping notes
@@ -113,7 +116,7 @@
                                 Day)
                             </p>
                             <textarea rows="4" name="expedited_shipping" placeholder="Expedited Shipping" id="noteText"
-                                      class="form-control"><t t-esc="order.sale_note"/></textarea>
+                                      class="form-control"><t t-esc="expedited_shipping"/></textarea>
                         </div>
                         <div class="modal-footer">
                             <button type="submit" t-object="order" class="btn btn-primary">Save</button>
