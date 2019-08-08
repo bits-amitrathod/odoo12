@@ -22,14 +22,11 @@ odoo.define('payment_aquirer_cstm.payment_aquirer_cstm', function (require) {
                 });
             }, 500);
         });
-
-
-
-
-
-
+//----------------- Checkbox Shipping -------------------------------
         $('#hasShippingNote').on("change", function (event) {
             if(event.target.checked){
+                $(delivery_method).hide();
+                $("#"+freeShipingLabel.value).prop('checked', true).click();
                 $("#editShippingNote").show();
                  if($("#noteText").val() ==""){
                     $('#accept').modal('show');
@@ -37,20 +34,24 @@ odoo.define('payment_aquirer_cstm.payment_aquirer_cstm', function (require) {
 
             }else{
                 $("#editShippingNote").hide();
+                $(delivery_method).show()
                  var self = $(this);
                 clickwatch(function(){
 
                     ajax.post("/shop/cart/expeditedShipping",{expedited_shipping:""}).then(function (data) {
                         window.hasShippingNoteValue == null;
                         $("#noteText").val("");
-//                        console.log("----ajax-------",data);
+                        $("#expedited_shipping").hide()
                     });
                 }, 500);
             }
         });
 
+        if(expedited_shipping.innerText == ""){
+            $("#expedited_shipping").hide()
+        }
+
         $('#accept').on('hidden.bs.modal', function () {
-        console.log("-----------");
             $("#noteText").val(window.hasShippingNoteValue);
             if(window.hasShippingNoteValue == null){
                $('#hasShippingNote').prop('checked', false).trigger("change");
@@ -65,4 +66,5 @@ odoo.define('payment_aquirer_cstm.payment_aquirer_cstm', function (require) {
             window.hasShippingNoteValue = null;
             $('#hasShippingNote').prop('checked', false).trigger("change");
         }
+
 });
