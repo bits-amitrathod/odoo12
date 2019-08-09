@@ -7,16 +7,16 @@ class accoun_invoicr_changes(models.Model):
     pay_to = fields.Char("Payable To ", compute="_compute_data")
     address = fields.Char("Full Address ", compute="_compute_data")
     acquisition_rep = fields.Char("Acquisition Rep ", compute="_compute_data")
-
+    company_name = fields.Char("Vendor Name ", compute="_compute_data")
 
     def _compute_data(self):
         for sp in self:
             inv_cntact = None;
             address = None;
-            for contact in  sp.partner_id.child_ids:
-                if contact.type == 'invoice':
-                    inv_cntact = contact
-                    break
+            if sp.partner_id:
+                sp.company_name = sp.partner_id.commercial_company_name
+                inv_cntact = sp.partner_id
+
             if inv_cntact is not None :
                 sp.pay_to = inv_cntact.name if inv_cntact.name is not None else ""
                 if inv_cntact.street: address = inv_cntact.street
