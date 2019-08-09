@@ -6,22 +6,11 @@
 			 <link href="/cheque_print/static/src/less/report_check_top.less" rel="stylesheet"/>
 		</xpath>
 </template>
-<template id="ckus_check">
-    <div class="ckus_check">
-        <t t-if="page['state'] == 'cancelled'">
-            <div class="o-watermark">VOID</div>
-        </t>
-        <div class="sequence_number" t-if="page['sequence_number']" t-esc="page['sequence_number']" />
-        <div class="ckus_date" t-esc="page['payment_date']"/>
-        <div class="ckus_payee_name" t-esc="page['partner_name']"/>
-        <div class="ckus_amount">
-            <t t-esc="page['amount']"/>
-        </div>
-        <div class="ckus_amount_in_word" t-esc="page['amount_in_word']"/>
-        <div class="ckus_name" t-esc="page['parent']"/>
+<template id="ckus_check_ext" inherit_id="l10n_us_check_printing.ckus_check">
+    <xpath expr="//div[1]/div[6]" position="replace">
+		<div class="ckus_name" t-esc="page['parent']"/>
         <div class="ckus_payee_addr" t-esc="page['partner_id']" t-options='{"widget": "contact", "fields": ["address"], "no_marker": True}'/>
-        <div class="ckus_memo" t-esc="page['memo']"/>
-    </div>
+    </xpath>
 </template>
 </data>
 </odoo>
