@@ -1245,7 +1245,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         local_context = {'email_from': super_user_email,
                          'email_to': self.warehouse_email + ', ' + self.sales_email + ', ' + self.acquisitions_email,
                          'subject': 'Vendor Offer Acceptance Notification ' + purchase_order.name ,
-                         'descrption': 'Hi Team, <br><br/> ' + ' Vendor Offer has been accepted for ' + purchase_order.name ,
+                         'descrption': 'Hi Team, <br><br/> ' + ' Vendor Offer has been accepted for ' + purchase_order.name + ' and Appraisal No# is <b>' + purchase_order.appraisal_no + '</b>' + (' with Offer Type <b>' + purchase_order.offer_type if purchase_order.offer_type+"</b>" else "" ) ,
                          'closing_content': "Thanks & Regards,<br/> Admin Team"}
         try:
             ship_label = None;
@@ -1282,6 +1282,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         except:
             error_msg = "mail sending fail for email id: %r" + super_user_email + " sending error report to admin"
             _logger.info(error_msg)
+
     @staticmethod
     def string_to_date(date_string):
         if date_string == False:
