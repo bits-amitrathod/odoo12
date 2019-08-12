@@ -22,10 +22,10 @@ odoo.define('payment_aquirer_cstm.payment_aquirer_cstm', function (require) {
                 });
             }, 500);
         });
-//----------------- Checkbox Shipping -------------------------------
+//----------------- Checkbox Shipping -------------------------------   delivery_carrier
         $('#hasShippingNote').on("change", function (event) {
             if(event.target.checked){
-                $(delivery_method).hide();
+                $(delivery_carrier).hide();
                 $("#"+freeShipingLabel.value).prop('checked', true).click();
                 $("#editShippingNote").show();
                  if($("#noteText").val() ==""){
@@ -34,7 +34,7 @@ odoo.define('payment_aquirer_cstm.payment_aquirer_cstm', function (require) {
 
             }else{
                 $("#editShippingNote").hide();
-                $(delivery_method).show()
+                $(delivery_carrier).show()
                  var self = $(this);
                 clickwatch(function(){
 
