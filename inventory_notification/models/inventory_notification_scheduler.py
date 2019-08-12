@@ -1245,7 +1245,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         local_context = {'email_from': super_user_email,
                          'email_to': self.warehouse_email + ', ' + self.sales_email + ', ' + self.acquisitions_email,
                          'subject': 'Vendor Offer Acceptance Notification ' + purchase_order.name ,
-                         'descrption': 'Hi Team, <br><br/> ' + ' Vendor Offer has been accepted for <b>' + purchase_order.name + '</b> and Appraisal No# is <b>' + purchase_order.appraisal_no + '</b>' + (' with Offer Type <b>' + purchase_order.offer_type + '</b>' if purchase_order.offer_type else " ." ) ,
+                         'descrption': 'Hi Team, <br><br/> ' + ' Vendor Offer has been accepted for <b>"' + purchase_order.name + '"</b> and Appraisal No# is <b>"' + purchase_order.appraisal_no + '"</b>' + (' with Offer Type <b>"' + purchase_order.offer_type + '"</b>.' if purchase_order.offer_type else "." ) ,
                          'closing_content': "Thanks & Regards,<br/> Admin Team"}
         try:
             ship_label = None;
