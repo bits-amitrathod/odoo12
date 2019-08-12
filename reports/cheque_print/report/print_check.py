@@ -12,8 +12,11 @@ class report_print_check(models.Model):
         multi_stub = self.company_id.us_check_multi_stub
         pages = []
         parent_name=''
-        if self.partner_id.parent_name:
-            parent_name=self.partner_id.parent_name
+        if self.partner_id.parent_id:
+            partner_id = self.partner_id
+            while partner_id.parent_id:
+                partner_id = partner_id.parent_id
+            parent_name = partner_id.name
         else:
             parent_name = self.partner_id.name
         for i, p in enumerate(stub_pages):
