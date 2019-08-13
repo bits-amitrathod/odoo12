@@ -1237,6 +1237,58 @@ class InventoryNotificationScheduler(models.TransientModel):
             error_msg = "mail sending fail for email id: %r" + email + " sending error report to admin"
             _logger.info(error_msg)
 
+    def send_email_after_vendor_offer_conformation(self, purchase_order_id):
+        print('send_email_after_vendor_offer_conformation')
+        template = self.env.ref("inventory_notification.mail_template_vendor_offer_acceptance")
+        super_user_email = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ]).sudo().email
+        purchase_order = self.env['purchase.order'].search([('id', '=', purchase_order_id), ]).ensure_one()
+        local_context = {'email_from': super_user_email,
+                         'email_to': self.warehouse_email + ', ' + self.sales_email + ', ' + self.acquisitions_email,
+                         'subject': 'Vendor Offer Acceptance Notification ' + purchase_order.name,
+                         'descrption': 'Hi Team, <br><br/> ' + ' Vendor Offer has been accepted for <b>"' + purchase_order.name + '"</b> and Appraisal No# is <b>"' + purchase_order.appraisal_no + '"</b>' + (
+                             ' with Offer Type <b>"' + purchase_order.offer_type + '"</b>.' if purchase_order.offer_type else "."),
+                         'closing_content': "Thanks & Regards,<br/> Admin Team"}
+        try:
+            ship_label = None;
+
+            if purchase_order.shipping_number:
+                ship_label = self.env['ir.attachment'].search(
+                    [('res_model', '=', 'purchase.order'), ('res_name', '=', purchase_order.name),
+                     ('mimetype', '=', 'application/pdf')])[0]
+
+            data = None
+            pdf = self.env.ref('vendor_offer.action_report_vendor_offer').render_qweb_pdf(purchase_order_id, data=data)[
+                0]
+            values1 = {}
+            values1['attachment_ids'] = [(0, 0, {'name': purchase_order.name,
+                                                 'type': 'binary',
+                                                 'mimetype': 'application/pdf',
+                                                 'datas_fname': 'Vendor_Offer_' + purchase_order.name + '.pdf',
+                                                 'datas': base64.b64encode(pdf)})
+                                         ]
+            local_context['descrption'] = local_context[
+                                              'descrption'] + ' <br><br/> PFA files for Vendor Offer ' + ' <b>" Vendor_Offer_' + purchase_order.name + '.pdf " </b>'
+            if ship_label is not None:
+                values1['attachment_ids'].append(
+                    (0, 0, {'name': ship_label.name,
+                            'type': 'binary',
+                            'mimetype': 'application/pdf',
+                            'datas_fname': ship_label.name,
+                            'datas': ship_label.datas})
+                )
+                local_context['descrption'] = local_context[
+                                                  'descrption'] + 'and Shipping label <b> "' + ship_label.name + ' "</b>'
+
+            values1['model'] = None
+            values1['res_id'] = False
+            template_id = template.with_context(local_context).sudo().send_mail(SUPERUSER_ID, raise_exception=True)
+            self.env['mail.mail'].sudo().browse(template_id).write(values1)
+
+        except:
+            error_msg = "mail sending fail for email id: %r" + super_user_email + " sending error report to admin"
+            _logger.info(error_msg)
+
+
     @staticmethod
     def string_to_date(date_string):
         if date_string == False:
