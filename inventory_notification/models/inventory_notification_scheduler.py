@@ -26,6 +26,7 @@ class InventoryNotificationScheduler(models.TransientModel):
     sales_email = "salesteam@surgicalproductsolutions.com"
     acquisitions_email = "acquisitions@surgicalproductsolutions.com"
     all_email="sps@surgicalproductsolutions.com"
+    appraisal_email = "appraisal@surgicalproductsolutions.com"
 
     def process_manual_notification_scheduler(self):
         _logger.info("process_manual_notification_scheduler called..")
@@ -1243,7 +1244,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         super_user_email = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ]).sudo().email
         purchase_order = self.env['purchase.order'].search([('id', '=', purchase_order_id), ]).ensure_one()
         local_context = {'email_from': super_user_email,
-                         'email_to': self.warehouse_email + ', ' + self.sales_email + ', ' + self.acquisitions_email,
+                         'email_to': self.warehouse_email + ', ' + self.sales_email + ', ' + self.appraisal_email,
                          'subject': 'Vendor Offer Acceptance Notification ' + purchase_order.name,
                          'descrption': 'Hi Team, <br><br/> ' + ' Vendor Offer has been accepted for <b>"' + purchase_order.name + '"</b> and Appraisal No# is <b>"' + purchase_order.appraisal_no + '"</b>' + (
                              ' with Offer Type <b>"' + purchase_order.offer_type + '"</b>.' if purchase_order.offer_type else "."),
