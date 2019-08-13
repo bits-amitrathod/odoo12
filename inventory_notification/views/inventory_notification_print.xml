@@ -172,4 +172,29 @@
             <field name="user_signature" eval="False"/>
         </record>
 
+    <record id="mail_template_vendor_offer_acceptance" model="mail.template">
+            <field name="name">Vendor Offer Notification: Vendor Offer Acceptance</field>
+            <field name="model_id" ref="base.model_res_users"/>
+            <field name="email_from">${ctx['email_from']}</field>
+            <field name="email_to">${ctx['email_to']}</field>
+            <field name="subject">${ctx['subject']}</field>
+            <field name="body_html">
+                <![CDATA[
+                <div style="margin:auto;width:100%;background-color:  #ffffff;  padding-left: 60px;"/>
+                    <div>
+                        <div >
+                            <p> ${ctx['descrption'] | safe} </p>
+                        </div>
+                        <center>  </center>
+                    </div>
+                    <br/>
+                    <div  style="margin-top:20px">
+                         <p> ${ctx['closing_content'] | safe} </p>
+                    </div>
+                </div>
+                ]]>
+            </field>
+            <field name="user_signature" eval="False"/>
+        </record>
+
 </odoo>
