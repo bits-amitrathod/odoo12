@@ -252,7 +252,8 @@
             <!-- Is there a discount on at least one line? -->
             <t t-set="display_discount" t-value="any([l.discount for l in doc.order_line])"/>
 
-            <t t-foreach="doc.order_lines_layouted()" t-as="page">
+<!--            <! Below line is commented becauese not used in odoo12 -->
+<!--            <t t-foreach="doc.order_lines_layouted()" t-as="page">-->
                 <table class="table table-condensed">
                     <thead>
                         <tr>
@@ -323,7 +324,7 @@
                 <t t-if="page_index &lt; page_size - 1" groups="sale.group_sale_layout">
                     <p style="page-break-before:always;"> </p>
                 </t>
-            </t>
+<!--            </t>-->
 
             <div class="clearfix">
                 <div class="row" name="total">

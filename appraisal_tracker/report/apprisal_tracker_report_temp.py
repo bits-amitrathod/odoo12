@@ -27,7 +27,7 @@ class apprisal_tracker_vendor_report(models.AbstractModel):
     _name = 'report.appraisal_tracker.appraisal_tracker_report'
 
     @api.model
-    def get_report_values(self, docids, data=None):
+    def _get_report_values(self, docids, data=None):
 
         purchase_orders=[]
         # if not docids:

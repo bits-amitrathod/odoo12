@@ -10,7 +10,7 @@
         </record>
 
         <!--Email template -->
-        <record id="email_template_edi_sale_custom" model="mail.template">
+        <record id="email_template_sale_custom" model="mail.template">
             <field name="name">Sales Order - Send by Email</field>
             <field name="email_from">${(object.user_id.email and '&quot;%s&quot; &lt;%s&gt;' % (object.user_id.name, object.user_id.email) or '')|safe}</field>
             <field name="subject">${object.company_id.name} ${object.state in ('draft', 'sent') and 'Quotation' or 'Order'} (Ref ${object.name or 'n/a' })</field>
@@ -25,9 +25,9 @@
 % set access_action = object.with_context(force_website=True).get_access_action()
 % set is_online = access_action and access_action['type'] == 'ir.actions.act_url'
 % set doc_name = 'quotation' if object.state in ('draft', 'sent') else 'order confirmation'
-% set pay_sign_name =  object.get_portal_confirmation_action()
+<!--% set pay_sign_name =  object.get_portal_confirmation_action()-->
 % set access_name = is_online and object.state in ('draft', 'sent') and pay_sign_name in ('pay', 'sign') and 'Accept and %s online' % pay_sign_name or 'View %s' % doc_name
-% set access_url = is_online and object.get_mail_url() or ''
+<!--% set access_url = is_online and object.get_mail_url() or ''-->
 
 % if object.partner_id.parent_id:
     (<i>${object.partner_id.parent_id.name}</i>)
