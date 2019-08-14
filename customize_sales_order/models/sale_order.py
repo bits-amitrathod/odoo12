@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api
+from odoo import _
 
 
 class sale_order(models.Model):
@@ -9,6 +10,38 @@ class sale_order(models.Model):
     sale_note = fields.Text('Sale Notes')
 
     carrier_track_ref = fields.Char('Tracking Reference', store=True, readonly=True, compute='_get_carrier_tracking_ref')
+
+    def write(self, val):
+        super(sale_order, self).write(val)
+
+        if self.sale_note:
+            self.write({'sale_note':False})
+            
+        if 'sale_note' in val:
+            if val['sale_note']:
+                body = _(val['sale_note'])
+                sale_order_val = {
+                    'body': body,
+                    'model': 'sale.order',
+                    'message_type': 'notification',
+                    'no_auto_thread': False,
+                    'subtype_id': self.env['ir.model.data'].xmlid_to_res_id('mail.mt_note'),
+                    'res_id': self.id,
+                    'author_id': self.env.user.partner_id.id,
+                }
+                self.env['mail.message'].sudo().create(sale_order_val)
+                stock_picking = self.env['stock.picking'].search([('sale_id', '=', self.id)])
+                for stk_picking in stock_picking:
+                    stock_picking_val = {
+                        'body': body,
+                        'model': 'stock.picking',
+                        'message_type': 'notification',
+                        'no_auto_thread': False,
+                        'subtype_id': self.env['ir.model.data'].xmlid_to_res_id('mail.mt_note'),
+                        'res_id': stk_picking.id,
+                        'author_id': self.env.user.partner_id.id,
+                    }
+                    self.env['mail.message'].sudo().create(stock_picking_val)
 
     @api.one
     def _get_carrier_tracking_ref(self):
@@ -24,12 +57,12 @@ class sale_order(models.Model):
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
-    note = fields.Text('Notes', compute='_get_note')
-
-    def _get_note(self):
-        for stock_picking in self:
-            sale_order = self.env['sale.order'].search([('name', '=', stock_picking.origin)])
-            stock_picking.note = sale_order.sale_note
+    # note = fields.Text('Notes', compute='_get_note')
+    #
+    # def _get_note(self):
+    #     for stock_picking in self:
+    #         sale_order = self.env['sale.order'].search([('name', '=', stock_picking.origin)])
+    #         stock_picking.note = sale_order.sale_note
 
     @api.multi
     def button_validate(self):
