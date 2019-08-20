@@ -67,7 +67,7 @@
                 </xpath>
             </field>
         </record>
-
+        
         <record id="invoice_tree_inherited" model="ir.ui.view">
             <field name="name">account.invoice.tree</field>
             <field name="model">account.invoice</field>
