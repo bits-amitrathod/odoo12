@@ -82,7 +82,7 @@
         <xpath expr="//div[@id='delivery_carrier']" position="before">
             <div class="col-xs-12 col-sm-12 col-md-12" t-if="showShippingNote">
                 <input type="hidden" value="" id="freeShipingLabel"  t-att-value="freeShipingLabel" />
-                <label><input type="checkbox" value="" id="hasShippingNote" style="margin-right: 10px;"/> Do you want to use your shipping method?</label>
+                <label><input type="checkbox" value="" id="hasShippingNote" style="margin-right: 10px;"/> Please click here to ship using your Account.</label>
                 <br/>
                 <div  class="well" id="expedited_shipping" style="margin-bottom: 0px;margin-top: 10px;"><t t-esc="expedited_shipping"/></div>
                 <br/>
