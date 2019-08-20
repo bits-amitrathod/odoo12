@@ -166,10 +166,10 @@ class TrendingReportListView(models.Model):
             if(customer.month_count>=code):
                 customer.average_sale = (customer.total_sale / code)
             elif(self.get_day_from_purchase(customer.id)):
-                #if (self.get_day_from_purchase(customer.id)/30 > 1):
-                customer.average_sale=(customer.total_sale *30 / self.get_day_from_purchase(customer.id))
-                '''else:
-                    customer.average_sale=customer.total_sale'''
+                if (self.get_day_from_purchase(customer.id)/30 > 1):
+                    customer.average_sale=(customer.total_sale *30 / self.get_day_from_purchase(customer.id))
+                else:
+                    customer.average_sale=customer.total_sale
     @api.model
     def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
 
