@@ -98,7 +98,6 @@
             </field>
         </record>
 
-
         <!--<record id="sale_invoice_payment_form_partner_name" model="ir.ui.view">
             <field name="name">account.invoice.form_exx</field>
             <field name="model">account.invoice</field>

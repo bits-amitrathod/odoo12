@@ -26,6 +26,7 @@ class InventoryNotificationScheduler(models.TransientModel):
     sales_email = "salesteam@surgicalproductsolutions.com"
     acquisitions_email = "acquisitions@surgicalproductsolutions.com"
     all_email="sps@surgicalproductsolutions.com"
+    appraisal_email = "appraisal@surgicalproductsolutions.com"
 
     def process_manual_notification_scheduler(self):
         _logger.info("process_manual_notification_scheduler called..")
@@ -1243,15 +1244,17 @@ class InventoryNotificationScheduler(models.TransientModel):
         super_user_email = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ]).sudo().email
         purchase_order = self.env['purchase.order'].search([('id', '=', purchase_order_id), ]).ensure_one()
         local_context = {'email_from': super_user_email,
-                         'email_to': self.warehouse_email + ', ' + self.sales_email + ', ' + self.acquisitions_email,
-                         'subject': 'Vendor Offer Acceptance Notification ' + purchase_order.name ,
-                         'descrption': 'Hi Team, <br><br/> ' + ' Vendor Offer has been accepted for <b>"' + purchase_order.name + '"</b> and Appraisal No# is <b>"' + purchase_order.appraisal_no + '"</b>' + (' with Offer Type <b>"' + purchase_order.offer_type + '"</b>.' if purchase_order.offer_type else "." ) ,
+                         'email_to': self.warehouse_email + ', ' + self.sales_email + ', ' + self.appraisal_email,
+                         'subject': 'Vendor Offer Acceptance Notification ' + purchase_order.name,
+                         'descrption': 'Hi Team, <br><br/> ' + ' Vendor Offer has been accepted for <b>"' + purchase_order.name + '"</b> and Appraisal No# is <b>"' + purchase_order.appraisal_no + '"</b>' + (
+                         ' with Offer Type <b>"' + purchase_order.offer_type + '"</b>.' if purchase_order.offer_type else "."),
                          'closing_content': "Thanks & Regards,<br/> Admin Team"}
         try:
             ship_label = None;
-
-            if purchase_order.shipping_number :
-                ship_label = self.env['ir.attachment'].search([('res_model', '=', 'purchase.order'),('res_name', '=', purchase_order.name ),('mimetype', '=', 'application/pdf')])[0]
+            if purchase_order.shipping_number:
+                ship_label = self.env['ir.attachment'].search(
+                    [('res_model', '=', 'purchase.order'), ('res_name', '=', purchase_order.name),
+                     ('mimetype', '=', 'application/pdf')])[0]
 
             data = None
             pdf = self.env.ref('vendor_offer.action_report_vendor_offer').render_qweb_pdf(purchase_order_id, data=data)[
@@ -1263,16 +1266,19 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                  'datas_fname': 'Vendor_Offer_' + purchase_order.name + '.pdf',
                                                  'datas': base64.b64encode(pdf)})
                                          ]
-            local_context['descrption'] = local_context['descrption'] +' <br><br/> PFA files for Vendor Offer ' + ' <b>" Vendor_Offer_' + purchase_order.name + '.pdf " </b>'
-            if ship_label is not None :
+
+            local_context['descrption'] = local_context[
+                                              'descrption'] + ' <br><br/> PFA files for Vendor Offer ' + ' <b>" Vendor_Offer_' + purchase_order.name + '.pdf " </b>'
+            if ship_label is not None:
                 values1['attachment_ids'].append(
                     (0, 0, {'name': ship_label.name,
                             'type': 'binary',
                             'mimetype': 'application/pdf',
-                            'datas_fname':ship_label.name ,
+                            'datas_fname': ship_label.name,
                             'datas': ship_label.datas})
                 )
-                local_context['descrption'] = local_context['descrption'] + 'and Shipping label <b> "' + ship_label.name +' "</b>'
+                local_context['descrption'] = local_context[
+                                                  'descrption'] + 'and Shipping label <b> "' + ship_label.name + ' "</b>'
 
             values1['model'] = None
             values1['res_id'] = False
