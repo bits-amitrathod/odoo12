@@ -149,7 +149,7 @@ class FedexRequest():
         self.RequestedShipment.SpecialServicesRequested.SpecialServiceTypes.append(
             SpecialServiceTypes.EMAIL_NOTIFICATION)
 
-        if order.acq_user_id.email:
+        if order and order.acq_user_id and order.acq_user_id.email:
             eMailNotificationRecipient = self.client.factory.create('EMailNotificationRecipient')
             eMailNotificationRecipient.EMailNotificationRecipientType.value = self.client.factory.create(
                 'EMailNotificationRecipientType').RECIPIENT
