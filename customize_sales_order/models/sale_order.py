@@ -14,8 +14,8 @@ class sale_order(models.Model):
     def write(self, val):
         super(sale_order, self).write(val)
 
-        if self.sale_note:
-            self.write({'sale_note':False})
+        '''if self.sale_note:
+            self.write({'sale_note':False})'''
             
         if 'sale_note' in val:
             if val['sale_note']:
