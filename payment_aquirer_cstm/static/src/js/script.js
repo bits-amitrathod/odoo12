@@ -25,7 +25,7 @@ odoo.define('payment_aquirer_cstm.payment_aquirer_cstm', function (require) {
 //----------------- Checkbox Shipping -------------------------------   delivery_carrier
         $('#hasShippingNote').on("change", function (event) {
             if(event.target.checked){
-                $(delivery_method).hide();
+                $(delivery_carrier).hide();
                 $("#"+freeShipingLabel.value).click();
                 $("#editShippingNote").show();
                  if($("#noteText").val() ==""){
