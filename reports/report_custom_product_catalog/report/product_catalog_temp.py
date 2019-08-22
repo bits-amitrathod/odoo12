@@ -185,55 +185,21 @@ class ProductCatalogXL(http.Controller):
 
         #  token=1,debug=1   are added if the URL contains extra parameters , which in some case URL does contain
         #  code will produce error if the parameters are not provided so default are added
+
         product_catalog_export = []
         try:
             # list_val = self.get_excel_data_product_catalog()
             # if list_val and len(list_val) > 0:
 
-            str_query = """
-                            create or replace TEMPORARY VIEW pr_data AS 
-                            select pt.type,
-                            case pt.type when 'product' then 'Stockable Product' 
-                            when 'consu' then 'Consumable' when 'service' then 'Service' end as type_name,
-                            pt.default_code  ,pt.name,pb.name as manufacture,pt.list_price,pp.id,
-                            pt.actual_quantity
-                            from product_template as pt left join product_brand as pb
-                            on pt.product_brand_id = pb.id 
-                            left join product_product as pp on pp.product_tmpl_id = pt.id where pt.active=True;
-
-                            create  or replace TEMPORARY VIEW pr_data2 AS 
-                            SELECT
-                                  min(use_date) as min_expiration_date,
-                                  max(use_date) as max_expiration_date,
-                                  stock_production_lot.product_id 
-                                FROM
-                                  stock_quant 
-                                  INNER JOIN
-                                    stock_production_lot 
-                                    ON ( stock_quant.lot_id = stock_production_lot.id) 
-                                  INNER JOIN
-                                    stock_location 
-                                    ON ( stock_quant.location_id = stock_location.id) 
-                                WHERE stock_location.usage in ( 'internal', 'transit')
-                                group by  stock_production_lot.product_id ;
-                                
-                                select
-                                  * 
-                                from
-                                  pr_data 
-                                  left JOIN
-                                    pr_data2 
-                                    ON ( pr_data.id = pr_data2.product_id )
-
-                                """
+            str_query = "  select sku as default_code, manufacture   ,name  , qty as actual_quantity ,list_price ,min_date  as min_expiration_date , max_date as max_expiration_date from cust_pro_catalog WHERE user_id = '"+str(request.context['uid'])+"'"
             request.env.cr.execute(str_query)
             order_lines = request.env.cr.dictfetchall()
 
-            product_catalog_export.append((['Product Type', 'Product SKU', 'Manufacture', 'Product Name',
+            product_catalog_export.append((['Product SKU', 'Manufacture', 'Product Name',
                                             'Product Qty','Price','Max Exp Date','Min Exp Date']))
 
             for line in order_lines:
-                product_catalog_export.append(([line['type_name'], line['default_code'], line['manufacture'], line['name'],
+                product_catalog_export.append(([line['default_code'], line['manufacture'], line['name'],
                                                 line['actual_quantity'],line['list_price'],line['max_expiration_date'],
                                                 line['min_expiration_date']]))
 
