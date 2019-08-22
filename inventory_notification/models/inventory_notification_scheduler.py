@@ -1247,11 +1247,10 @@ class InventoryNotificationScheduler(models.TransientModel):
                          'email_to': self.warehouse_email + ', ' + self.sales_email + ', ' + self.appraisal_email,
                          'subject': 'Vendor Offer Acceptance Notification ' + purchase_order.name,
                          'descrption': 'Hi Team, <br><br/> ' + ' Vendor Offer has been accepted for <b>"' + purchase_order.name + '"</b> and Appraisal No# is <b>"' + purchase_order.appraisal_no + '"</b>' + (
-                             ' with Offer Type <b>"' + purchase_order.offer_type + '"</b>.' if purchase_order.offer_type else "."),
+                         ' with Offer Type <b>"' + purchase_order.offer_type + '"</b>.' if purchase_order.offer_type else "."),
                          'closing_content': "Thanks & Regards,<br/> Admin Team"}
         try:
             ship_label = None;
-
             if purchase_order.shipping_number:
                 ship_label = self.env['ir.attachment'].search(
                     [('res_model', '=', 'purchase.order'), ('res_name', '=', purchase_order.name),
@@ -1267,6 +1266,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                  'datas_fname': 'Vendor_Offer_' + purchase_order.name + '.pdf',
                                                  'datas': base64.b64encode(pdf)})
                                          ]
+
             local_context['descrption'] = local_context[
                                               'descrption'] + ' <br><br/> PFA files for Vendor Offer ' + ' <b>" Vendor_Offer_' + purchase_order.name + '.pdf " </b>'
             if ship_label is not None:
@@ -1288,7 +1288,6 @@ class InventoryNotificationScheduler(models.TransientModel):
         except:
             error_msg = "mail sending fail for email id: %r" + super_user_email + " sending error report to admin"
             _logger.info(error_msg)
-
 
     @staticmethod
     def string_to_date(date_string):

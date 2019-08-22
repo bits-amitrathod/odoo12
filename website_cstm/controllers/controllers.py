@@ -43,11 +43,11 @@ class WebsiteCstm(http.Controller):
         StockNotifcation = request.env['website_cstm.product_instock_notify'].sudo()
         isSubcribed = StockNotifcation.search([
             ('product_tmpl_id', '=', int(product_id)),
-            ('email', '=', email),
+            ('email', '=', email.lower()),
             ('status', '=', 'pending'),
         ], limit=1)
         if not isSubcribed:
-            StockNotifcation.create({'status': 'pending', 'email': email, 'product_tmpl_id': product_id})
+            StockNotifcation.create({'status': 'pending', 'email': email.lower(), 'product_tmpl_id': product_id})
             return True
         else:
             return False

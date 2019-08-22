@@ -19,6 +19,12 @@
            </dl>
          </template>
 
+        <template id="assets_backend" name="mail assets" inherit_id="mail.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/customer_credit_note/static/src/js/thread.js"></script>
+            </xpath>
+        </template>
+
         <record id="invoice_supplier_form_credit_note_label_update" model="ir.ui.view">
             <field name="name">account.invoice.supplier.form</field>
             <field name="model">account.invoice</field>

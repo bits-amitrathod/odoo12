@@ -103,14 +103,30 @@ class WebsiteSale(http.Controller):
             Order.write({'state': 'sale', 'confirmation_date': datetime.now()})
 
         message = post.get('accept_message')
-        if message:
-            Order.write({'sale_note': message})
         client_order_ref = post.get('client_order_ref')
         if client_order_ref:
             Order.write({"client_order_ref":client_order_ref})
         if message:
-            _message_post_helper(message=message, res_id=order_id, res_model='sale.order',
-                                 **{'token': token} if token else {})
+            # Order.write({'sale_note': message})
+            body = _(message)
+            _message_post_helper(res_model='sale.order', res_id=Order.id, message=body, token=Order.access_token,
+                                 message_type='notification', subtype="mail.mt_note",
+                                 partner_ids=Order.user_id.sudo().partner_id.ids)
+            # stock picking notification
+            stock_picking = request.env['stock.picking'].sudo().search([('sale_id', '=', Order.id)])
+            stock_picking_sudo = stock_picking.sudo()
+
+            for stk_picking in stock_picking_sudo:
+                values = {
+                    'body': body,
+                    'model': 'stock.picking',
+                    'message_type': 'notification',
+                    'no_auto_thread': False,
+                    'subtype_id': request.env['ir.model.data'].xmlid_to_res_id('mail.mt_note'),
+                    'res_id': stk_picking.id,
+                    'author_id': stk_picking.sale_id.partner_id.id,
+                }
+                request.env['mail.message'].sudo().create(values)
         return werkzeug.utils.redirect("/quote/%s/%s?message=3" % (order_id, token))
 
     @http.route(['/quote/<int:order_id>/<token>/declines'], type='http', auth="public", methods=['POST'], website=True)
@@ -123,9 +139,27 @@ class WebsiteSale(http.Controller):
         Order.action_cancel()
         message = post.get('decline_message')
         if message:
-            Order.write({'sale_note': message})
-            _message_post_helper(message=message, res_id=order_id, res_model='sale.order',
-                                 **{'token': token} if token else {})
+            # Order.write({'sale_note': message})
+            body = _(message)
+            _message_post_helper(res_model='sale.order', res_id=Order.id, message=body, token=Order.access_token,
+                                 message_type='notification', subtype="mail.mt_note",
+                                 partner_ids=Order.user_id.sudo().partner_id.ids)
+
+            # stock picking notification
+            stock_picking = request.env['stock.picking'].sudo().search([('sale_id', '=', Order.id)])
+            stock_picking_sudo = stock_picking.sudo()
+
+            for stk_picking in stock_picking_sudo:
+                values = {
+                    'body': body,
+                    'model': 'stock.picking',
+                    'message_type': 'notification',
+                    'no_auto_thread': False,
+                    'subtype_id': request.env['ir.model.data'].xmlid_to_res_id('mail.mt_note'),
+                    'res_id': stk_picking.id,
+                    'author_id': stk_picking.sale_id.partner_id.id,
+                }
+                request.env['mail.message'].sudo().create(values)
         return werkzeug.utils.redirect("/quote/%s/%s?message=2" % (order_id, token))
 
 
