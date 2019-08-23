@@ -535,7 +535,7 @@ class PrioritizationEngine(models.TransientModel):
         # get team id
         crm_team = self.env['crm.team'].search([('team_type', '=', 'engine')])
 
-        sale_orders = self.env['sale.order'].search([('state', 'in', ('engine','sent')), ('team_id', '=', crm_team['id'])])
+        sale_orders = self.env['sale.order'].search([('state', 'in', ('engine', 'sent', 'void')), ('team_id', '=', crm_team['id'])])
 
         for sale_order in sale_orders:
             _logger.info('sale order id : %r, partner_id : %r, create_date: %r', sale_order['id'], sale_order['partner_id'].id, sale_order['create_date'])
