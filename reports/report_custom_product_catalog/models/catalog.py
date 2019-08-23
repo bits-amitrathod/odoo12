@@ -40,65 +40,35 @@ class InventoryCustomProductPopUp(models.TransientModel):
     def open_table(self):
 
         tree_view_id = self.env.ref('report_custom_product_catalog.custom_list_view').id
-        form_view_id = self.env.ref('product.product_template_form_view').id
+        # form_view_id = self.env.ref('product.custom_form_view').id
+        form_view_id = self.env.ref('report_custom_product_catalog.custom_form_view').id
+        user_id =self._context.get('uid')
+        print("----------------  user id  ---------------")
+        print(user_id)
+
+        sql_query = " DELETE FROM  cust_pro_catalog WHERE user_id = '"+str(user_id)+"'; "
+
+        self._cr.execute(sql_query)
+
+        insert = "INSERT INTO cust_pro_catalog (product_tmpl_id,sku,manufacture,name,qty,list_price,min_date,max_date,user_id )"
+        part1 = insert + " SELECT  product_tmpl_id , sku, Manufacture, name, sum, list_price, min, max, user_id FROM (SELECT   min(l.use_date), max(l.use_date), sum(s.quantity), l.product_id FROM public.stock_production_lot as l  inner join  stock_quant  as s  on l.id = s.lot_id where " + (
+            " l.product_id = " + str(self.sku_code.id) if self.sku_code  else " 1=1 ") + (
+                    " and l.use_date > to_date('" + str(self.start_date) + "','YYYY-MM-DD')" if self.start_date else " and 1=1 ") + (
+                    " and l.use_date < to_date('" + str(
+                        self.end_date ) + "','YYYY-MM-DD')" if self.end_date else " and 1=1 ") + " and s.company_id != 0.0 group by l.product_id ) a left join (SELECT p.product_tmpl_id,p.id, pt.name, pt.list_price, sku_code as sku, b.name as manufacture , '"+str(user_id)+"' as user_id FROM product_product p Inner join product_template pt ON  p.product_tmpl_id = pt.id INNER join product_brand b ON b.id = pt.product_brand_id) b ON a.product_id = b.id"
+        # print(part1)
+        self._cr.execute(part1)
 
         action = {
             "type": "ir.actions.act_window",
-            "view_mode": "form,tree",
-            "res_model": 'product.product',
+            "view_mode": "tree,form",
+            "res_model": 'cust.pro.catalog',
             "name": "Custom Product Catalog",
             'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
-            'domain': []
+            'domain': [('user_id', '=', user_id)]
         }
-
-        if self.start_date or self.end_date:
-            product_ids = self.fetchData()
-
-            product_list = list(product_ids[0])
-
-            filtered_product_list = []
-
-            for p_id in product_list[0]:
-                flag = self.get_quantity(p_id)
-                if flag:
-                    filtered_product_list.append(p_id)
-
-            action["domain"].append(('id', 'in', filtered_product_list))
-            action["context"] = {'production_lot_ids': product_list[1]}
-
-        if self.sku_code:
-            action["domain"].append(('sku_code', '=', self.sku_code.sku_code))
-
         return action
 
-    def fetchData(ctx):
-        sql_query = """select array_agg(product_id), json_object_agg(product_id, id) from stock_production_lot 
-        where """
-        if ctx.end_date and ctx.start_date:
-            e_date = datetime.datetime.strptime(str(ctx.end_date), "%Y-%m-%d")
-            sql_query = sql_query + """ use_date>=date(%s)  and  use_date<=date(%s)"""
-            ctx._cr.execute(sql_query, (str(ctx.start_date), str(e_date),))
-        elif ctx.start_date:
-            sql_query = sql_query + """ use_date>=date(%s) """
-            ctx._cr.execute(sql_query, (str(ctx.start_date),))
-        elif ctx.end_date:
-            e_date = datetime.datetime.strptime(str(ctx.end_date), "%Y-%m-%d")
-            e_date = e_date + datetime.timedelta(days=1)
-            sql_query = sql_query + """ use_date<=date(%s)"""
-            ctx._cr.execute(sql_query, (str(e_date),))
-
-        return ctx._cr.fetchall()
-
-    def get_quantity(self, product_id):
-        self.env.cr.execute(
-            "SELECT sum(quantity) as qut FROM public.stock_quant where company_id != 0.0 and  product_id = " + str(
-                product_id))
-        query_result = self.env.cr.dictfetchone()
-
-        if not query_result['qut'] is None and int(query_result['qut']) > 0:
-            return True
-        else:
-            return False
 
 
 class ProductCatalogReport(models.Model):
@@ -106,8 +76,8 @@ class ProductCatalogReport(models.Model):
 
     product_qty = fields.Float("Product Qty", compute='_compare_qty', store=False,
                                digits=dp.get_precision('Product Unit of Measure'))
-    exp_min_date = fields.Date("Exp Min Date", compute='_compare_qty', store=False)
-    exp_max_date = fields.Date("Exp Max Date", compute='_compare_qty', store=False)
+    exp_min_date = fields.Date("Exp Min Date", store=False)
+    exp_max_date = fields.Date("Exp Max Date", store=False)
 
     @api.multi
     def _compare_qty(self):
@@ -127,3 +97,36 @@ class ProductCatalogReport(models.Model):
                     product.exp_min_date = fields.Datetime.from_string(str(query_result['min'])).date()
                 if query_result['max']:
                     product.exp_max_date = fields.Datetime.from_string(str(query_result['max'])).date()
+
+class customeproductcata(models.Model):
+    _name = 'cust.pro.catalog'
+    _rec_name = 'product_tmpl_id'
+
+
+    name = fields.Char(string=" Product Name")
+    product_tmpl_id = fields.Many2one('product.template', string='Product')
+    min_date = fields.Date(string="Min Exp Date")
+    max_date = fields.Date(string="Max Exp Date")
+    currency_id = fields.Many2one(related='product_tmpl_id.currency_id', string="Currency", readonly=True,
+                                  required=True)
+    qty = fields.Integer("Product Qty")
+    list_price = fields.Monetary("Price", currency_field='currency_id')
+    sku = fields.Char(string="Product SKU")
+    manufacture = fields.Char(string="Manufacture")
+    user_id = fields.Char("User Id")
+
+
+    @api.model_cr
+    def init(self):
+        self.init_table()
+
+    def init_table(self):
+        sql_query = """ 
+                    TRUNCATE TABLE "cust_pro_catalog"
+                    RESTART IDENTITY;
+                """
+        self._cr.execute(sql_query)
+
+    @api.model_cr
+    def delete_and_create(self):
+        self.init_table()
