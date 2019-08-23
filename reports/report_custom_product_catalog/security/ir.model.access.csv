@@ -1,6 +1,8 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_custom_product_group_by_popup_product_catalog_manager,popup.product.catalog stock manager,model_popup_product_catalog,stock.group_stock_manager,1,1,1,1
-access_custom_product_group_by_popup_product_catalog_user,popup.product.catalog stock user,model_popup_product_catalog,stock.group_stock_user,0,0,0,0
+access_custom_product_group_by_popup_product_catalog_user,popup.product.catalog stock user,model_popup_product_catalog,stock.group_stock_user,1,1,1,1
 access_custom_product_group_by_popup_custom_product_catalog_manager,popup.custom.product.catalog stock manager,model_popup_custom_product_catalog,stock.group_stock_manager,1,1,1,1
-access_custom_product_group_by_popup_product_catalog_user,popup.custom.product.catalog stock user,model_popup_custom_product_catalog,stock.group_stock_user,0,0,0,0
+access_custom_product_group_by_popup_product_catalog_user,popup.custom.product.catalog stock user,model_popup_custom_product_catalog,stock.group_stock_user,1,1,1,1
 
+access_custom_product_group_by_cust_pro_catalog_manager,cust.pro.catalog stock manager,model_cust_pro_catalog,stock.group_stock_manager,1,1,1,1
+access_custom_product_group_by_cust_pro_catalog_user,cust.pro.catalog stock user,model_cust_pro_catalog,stock.group_stock_user,1,1,1,1
