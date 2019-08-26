@@ -143,15 +143,15 @@ class ReportInventoryMonitor(models.AbstractModel):
 class ProductTemplate(models.Model):
     _name = 'inventory.monitor1'
 
-    max_inventory_level = fields.Char("Max Inv Level", default="0")
+    max_inventory_level = fields.Integer("Max Inv Level", default="0")
     max_inventory_percent= fields.Char("Current % of Max Inv Level", default="0%")
-    qty_in_stock = fields.Char("Qty In Stock")
+    qty_in_stock = fields.Integer("Qty In Stock")
     type = fields.Selection( [('product', 'Stockable Product'),('consu', 'Consumable'), ('service', 'Service')] , string="Type")
     sku_code = fields.Char("SKU / Catalog No")
     max_inventory_future_percent = fields.Char("Future % of Max Inv Level", default="0%")
     inventory_percent_color=fields.Integer("Inv Percent Color", default="0")
     future_percent_color = fields.Integer("Inv Percent Color", default="0")
-    qty_on_order = fields.Char("Qty On Order")
+    qty_on_order = fields.Integer("Qty On Order")
 
     inventory_monitor=fields.Boolean("Can be Monitored")
     max_inventory_product_level_duration = fields.Integer(string="Max Inventory Level")
@@ -174,13 +174,13 @@ class ProductTemplate(models.Model):
             sale_quant = sale_quant + int(quant)
             avg_sale_quant = float(sale_quant/3)
             max_inventory = int((avg_sale_quant) * float(max_inventory_level_duration/30))
-            ml.max_inventory_level = str(float(max_inventory))
+            ml.max_inventory_level =  int(max_inventory)
         if  product_id.incoming_qty:
             purchase_qty=purchase_qty+int(product_id.incoming_qty)
 
         quantity = int(product_id.qty_available) + int(quantity)
-        ml.qty_on_order= str(purchase_qty)
-        ml.qty_in_stock = str(int(quantity))
+        ml.qty_on_order= int(purchase_qty)
+        ml.qty_in_stock =  int(quantity)
         ml.type = ml.product_tmpl_id.type
         ml.sku_code = ml.product_tmpl_id.sku_code
 
@@ -190,7 +190,7 @@ class ProductTemplate(models.Model):
 
             ml.max_inventory_percent = "" + str(int(max_inventory_percent)) + "%"
             ml.max_inventory_future_percent="" +str(int(inventory_future_percent))+"%"
-            ml.max_inventory_level = str(int(max_inventory))
+            ml.max_inventory_level =  int(max_inventory)
             ml.inventory_percent_color = int(max_inventory_percent)
             ml.future_percent_color = int(inventory_future_percent)
 
