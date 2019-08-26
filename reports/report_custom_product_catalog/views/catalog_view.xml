@@ -150,7 +150,7 @@
             </field>
         </record>
 
-        <act_window name="Export Custom Product Catalog"
+        <act_window name="Export-Custom Product Catalog"
                     res_model="report.report_custom_product_catalog.catalog_temp"
                     src_model="cust.pro.catalog"
                     view_mode="form"

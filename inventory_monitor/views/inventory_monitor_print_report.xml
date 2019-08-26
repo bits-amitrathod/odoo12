@@ -4,7 +4,7 @@
         <report
                 id="action_print_report_inventory_monitor"
                 string="Inventory Monitor"
-                model="product.template"
+                model="inventory.monitor1"
                 report_type="qweb-html"
                 file="inventory_monitor.inventory_monitor_print"
                 name="inventory_monitor.inventory_monitor_print"
