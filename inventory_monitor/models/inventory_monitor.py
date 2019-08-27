@@ -144,11 +144,11 @@ class ProductTemplate(models.Model):
     _name = 'inventory.monitor1'
 
     max_inventory_level = fields.Integer("Max Inv Level", default="0")
-    max_inventory_percent= fields.Char("Current % of Max Inv Level", default="0%")
+    max_inventory_percent= fields.Integer("Current % of Max Inv Level", default="0")
     qty_in_stock = fields.Integer("Qty In Stock")
     type = fields.Selection( [('product', 'Stockable Product'),('consu', 'Consumable'), ('service', 'Service')] , string="Type")
     sku_code = fields.Char("SKU / Catalog No")
-    max_inventory_future_percent = fields.Char("Future % of Max Inv Level", default="0%")
+    max_inventory_future_percent = fields.Integer("Future % of Max Inv Level", default="0")
     inventory_percent_color=fields.Integer("Inv Percent Color", default="0")
     future_percent_color = fields.Integer("Inv Percent Color", default="0")
     qty_on_order = fields.Integer("Qty On Order")
@@ -188,8 +188,8 @@ class ProductTemplate(models.Model):
             max_inventory_percent = (quantity/int(max_inventory))*100
             inventory_future_percent =((purchase_qty + ml.actual_quantity)/int(max_inventory))*100
 
-            ml.max_inventory_percent = "" + str(int(max_inventory_percent)) + "%"
-            ml.max_inventory_future_percent="" +str(int(inventory_future_percent))+"%"
+            ml.max_inventory_percent =  int(max_inventory_percent)
+            ml.max_inventory_future_percent= int(inventory_future_percent)
             ml.max_inventory_level =  int(max_inventory)
             ml.inventory_percent_color = int(max_inventory_percent)
             ml.future_percent_color = int(inventory_future_percent)
@@ -202,7 +202,7 @@ class ProductTemplate(models.Model):
         tree_view_id = self.env.ref('inventory_monitor.view_inventory_moniter_line_tree_test').id
         form_view_id = self.env.ref('inventory_monitor.view_inventory_moniter_line_form_test').id
 
-        sql = "INSERT INTO inventory_monitor1 (product_tmpl_id , max_inventory_product_level_duration ,actual_quantity ,inventory_monitor,product_id ,max_inventory_level ,max_inventory_percent ,max_inventory_future_percent , inventory_percent_color ,future_percent_color )SELECT product_template.id as product_tmpl_id, max_inventory_product_level_duration, actual_quantity,inventory_monitor ,product_product.id as product_id , '0' as max_inventory_level ,'0%' as max_inventory_percent , '0%' as max_inventory_future_percent , '0' as inventory_percent_color, '0' as future_percent_color FROM product_template left join product_product ON product_product.product_tmpl_id =  product_template.id where inventory_monitor = true "
+        sql = "INSERT INTO inventory_monitor1 (product_tmpl_id , max_inventory_product_level_duration ,actual_quantity ,inventory_monitor,product_id ,max_inventory_level ,max_inventory_percent ,max_inventory_future_percent , inventory_percent_color ,future_percent_color )SELECT product_template.id as product_tmpl_id, max_inventory_product_level_duration, actual_quantity,inventory_monitor ,product_product.id as product_id , '0' as max_inventory_level ,'0' as max_inventory_percent , '0' as max_inventory_future_percent , '0' as inventory_percent_color, '0' as future_percent_color FROM product_template left join product_product ON product_product.product_tmpl_id =  product_template.id where inventory_monitor = true "
         self._cr.execute(sql)
 
         max_inventory_level_duration = self.get_max_inventory_level_duration()

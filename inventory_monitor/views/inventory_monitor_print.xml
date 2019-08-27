@@ -46,13 +46,13 @@
                                             <span t-esc="order.max_inventory_level"/>
                                         </td>
                                         <td align="right" style="border: 1px solid black;white-space:nowrap;">
-                                              <span t-esc="order.max_inventory_percent"  />
+                                              <span t-esc="order.max_inventory_percent"  /><span>%</span>
                                         </td>
                                         <td align="right" style="border: 1px solid black;white-space:nowrap;">
                                               <span t-esc="order.qty_in_stock"  />
                                         </td>
                                         <td align="right" style="border: 1px solid black;white-space:nowrap;">
-                                              <span t-esc="order.max_inventory_future_percent" />
+                                              <span t-esc="order.max_inventory_future_percent" /> <span>%</span>
                                         </td>
                                         <td align="right" style="border: 1px solid black;white-space:nowrap;">
                                               <span t-esc="order.qty_on_order" />
