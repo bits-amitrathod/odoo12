@@ -20,7 +20,7 @@
                     <table class="table  table-condensed" style="border: 1px solid black;width:100%">
                             <thead>
                                 <tr style="border: 1px solid black;">
-                                    <th style="border: 1px solid black;text-align: center;">Manufacture Name </th>
+<!--                                    <th style="border: 1px solid black;text-align: center;">Manufacture Name </th>-->
                                     <th style="border: 1px solid black;text-align: center;">SKU / Catalog No</th>
                                     <th style="border: 1px solid black;text-align: center;">Product Name</th>
                                     <th style="border: 1px solid black;text-align: center;">Max Inv Level</th>
@@ -32,27 +32,27 @@
                             </thead>
                             <tbody>
                                     <tr t-foreach="data" t-as="order">
-                                         <td style="border: 1px solid black;">
-                                            <span t-esc="order.product_brand_id.name"/>
-                                        </td>
+<!--                                         <td style="border: 1px solid black;">-->
+<!--                                            <span t-esc="order.product_brand_id.name"/>-->
+<!--                                        </td>-->
                                         <td style="border: 1px solid black;">
                                             <span t-esc="order.sku_code"/>
                                         </td>
 
                                         <td style="border: 1px solid black;">
-                                            <span t-esc="order.name"/>
+                                            <span t-esc="order.product_id.name"/>
                                         </td>
                                         <td align="center" style="border: 1px solid black;">
                                             <span t-esc="order.max_inventory_level"/>
                                         </td>
                                         <td align="right" style="border: 1px solid black;white-space:nowrap;">
-                                              <span t-esc="order.max_inventory_percent"  />
+                                              <span t-esc="order.max_inventory_percent"  /><span>%</span>
                                         </td>
                                         <td align="right" style="border: 1px solid black;white-space:nowrap;">
                                               <span t-esc="order.qty_in_stock"  />
                                         </td>
                                         <td align="right" style="border: 1px solid black;white-space:nowrap;">
-                                              <span t-esc="order.max_inventory_future_percent" />
+                                              <span t-esc="order.max_inventory_future_percent" /> <span>%</span>
                                         </td>
                                         <td align="right" style="border: 1px solid black;white-space:nowrap;">
                                               <span t-esc="order.qty_on_order" />
