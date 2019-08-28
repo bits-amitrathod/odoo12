@@ -537,7 +537,7 @@ class PrioritizationEngine(models.TransientModel):
         sale_orders = self.env['sale.order'].search([('state', 'in', ('engine', 'sent', 'void')), ('team_id', '=', crm_team['id'])])
 
         for sale_order in sale_orders:
-            _logger.info('sale order id : %r, partner_id : %r, create_date: %r', sale_order['id'], sale_order['partner_id'].id, sale_order['create_date'])
+            _logger.info('sale order name : %r, partner_id : %r, create_date: %r', sale_order['name'], sale_order['partner_id'].id, sale_order['create_date'])
 
             stock_picking = self.env['stock.picking'].search([('sale_id.id', '=', sale_order['id'])])
 
