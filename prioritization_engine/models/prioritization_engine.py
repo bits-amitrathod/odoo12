@@ -375,7 +375,7 @@ class PrioritizationEngine(models.TransientModel):
                 _logger.info('customer_request_id  :  %r  ', allocated_product['customer_request_id'])
 
                 sale_order_line_dict = {'customer_request_id': allocated_product['customer_request_id'],'req_no': allocated_product['req_no'], 'order_id': sale_order['id'], 'product_id': allocated_product['product_id'],
-                                        'order_partner_id' : partner_id_key, 'product_uom_qty' : allocated_product['customer_required_quantity']}
+                                        'order_partner_id' : partner_id_key, 'product_uom_qty' : allocated_product['allocated_product_quantity']}
 
                 self.env['sale.order.line'].create(dict(sale_order_line_dict))
 
@@ -414,7 +414,7 @@ class PrioritizationEngine(models.TransientModel):
                 sale_order_line_dict = {
                     'customer_request_id': allocated_product['customer_request_id'],'req_no': allocated_product['req_no'], 'order_id': sale_order['id'],
                     'product_id': allocated_product['product_id'],'order_partner_id': partner_id_key,
-                    'product_uom_qty': allocated_product['customer_required_quantity']}
+                    'product_uom_qty': allocated_product['allocated_product_quantity']}
 
                 self.env['sale.order.line'].create(dict(sale_order_line_dict))
 
@@ -528,7 +528,6 @@ class PrioritizationEngine(models.TransientModel):
         except Exception:
             _logger.error("Unable to update document status")
 
-
     # Release reserved product quantity(Which sales order product not confirm within length of hold period)
     def release_reserved_product_quantity(self):
         _logger.info('release reserved product quantity....')
@@ -543,29 +542,27 @@ class PrioritizationEngine(models.TransientModel):
             stock_picking = self.env['stock.picking'].search([('sale_id.id', '=', sale_order['id'])])
 
             for stock_pick in stock_picking:
-                stock_move_lines = self.env['stock.move.line'].search([('picking_id.id', '=', stock_pick['id'])])
-                if stock_move_lines and len(stock_move_lines)>0:
-                    for stock_move_line in  stock_move_lines:
-                        _logger.info('stock move line : %r',stock_move_line)
+                stock_moves = self.env['stock.move'].search([('picking_id.id', '=', stock_pick['id'])])
+                if stock_moves and len(stock_moves)>0:
+                    for stock_move in  stock_moves:
 
                         # get length of hold
-                        _setting_object = self.env['sps.customer.requests'].get_settings_object(sale_order['partner_id'].id, stock_move_line['product_id'].id, None, None)
-                        print(_setting_object)
-                        # _logger.info('length of hold %r', _setting_object.length_of_hold)
+                        _setting_object = self.env['sps.customer.requests'].get_settings_object(sale_order['partner_id'].id, stock_move['product_id'].id, None, None)
+
+                        _logger.info('length of hold %r', _setting_object.length_of_hold)
 
                         # get current datetime
                         current_datetime = datetime.now()
-                        _logger.info('current datetime :%r ',current_datetime)
+
                         create_date = datetime.strptime(self.change_date_format(sale_order['create_date']), '%Y,%m,%d,%H,%M,%S')
                         # calculate datetime difference.
                         duration = current_datetime - create_date  # For build-in functions
                         duration_in_hours = self.return_duration_in_hours(duration)
-                        if _setting_object and int(_setting_object.length_of_hold) <= int(duration_in_hours):
-                            if stock_move_line.move_id:
-                                _logger.info('call stock_move_line.move_id._do_unreserve()')
-                                stock_move_line.move_id._do_unreserve()
-                        else:
-                             _logger.info('Product is in length of hold, unable to release quantity.')
+                    if _setting_object and int(_setting_object.length_of_hold) <= int(duration_in_hours):
+                        _logger.info('call stock_move._do_unreserve()')
+                        stock_move._do_unreserve()
+                    else:
+                        _logger.info('Product is in length of hold, unable to release quantity.')
 
             self.change_sale_order_state(sale_order)
 
