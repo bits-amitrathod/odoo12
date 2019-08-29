@@ -558,11 +558,12 @@ class PrioritizationEngine(models.TransientModel):
                         # calculate datetime difference.
                         duration = current_datetime - create_date  # For build-in functions
                         duration_in_hours = self.return_duration_in_hours(duration)
-                    if _setting_object and int(_setting_object.length_of_hold) <= int(duration_in_hours):
-                        _logger.info('call stock_move._do_unreserve()')
-                        stock_move._do_unreserve()
-                    else:
-                        _logger.info('Product is in length of hold, unable to release quantity.')
+
+                        if _setting_object and int(_setting_object.length_of_hold) <= int(duration_in_hours):
+                            _logger.info('call stock_move._do_unreserve()')
+                            stock_move._do_unreserve()
+                        else:
+                            _logger.info('Product is in length of hold, unable to release quantity.')
 
             self.change_sale_order_state(sale_order)
 
