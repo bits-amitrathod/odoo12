@@ -1463,7 +1463,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                                    sale_order_ref.carrier_acc_no or "N/A") + "<br/>" + \
                            "<strong> Delivery Method #:  </strong>" + (sale_order_ref.carrier_id.name or "N/A")
                            + "<br/>" + "<strong> Date: </strong>" + \
-                           (str(datetime.strptime(picking.scheduled_date, "%Y-%m-%d %H:%M:%S").strftime(
+                           (str(datetime.strptime(str(picking.scheduled_date), "%Y-%m-%d %H:%M:%S").strftime(
                                '%m/%d/%Y')) if picking.scheduled_date else "N/A") + \
                            "<br/><strong> Customer Name:  </strong>" + (
                                    sale_order_ref.partner_id.name or "") + "<br/>" + \

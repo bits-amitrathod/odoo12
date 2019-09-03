@@ -31,7 +31,7 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
 
         payload = responce.qcontext
         irConfig = request.env['ir.config_parameter'].sudo()
-        payload['isVisibleWebsiteExpirationDate'] = irConfig.get_param('website_sales.default_website_expiration_date')
+        payload['isVisibleWebsiteExpirationDate'] = irConfig.get_param('website_sales.website_expiration_date')
         if payload['products'] and payload['isVisibleWebsiteExpirationDate']:
             productProduct = request.env['product.product'].search([('product_tmpl_id', 'in', payload['products'].ids)])
 
@@ -82,7 +82,7 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         payload['productExpiration'] = productMaxMinDates
         payload['userEmail'] = request.env.user.email
         payload['isVisibleWebsiteExpirationDate'] = request.env['ir.config_parameter'].sudo().get_param(
-            'website_sales.default_website_expiration_date')
+            'website_sales.website_expiration_date')
         return request.render("website_sale.product", payload)
 
     def fetch_lot_expirydates(self, product_id):
