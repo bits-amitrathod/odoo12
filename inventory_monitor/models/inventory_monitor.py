@@ -226,8 +226,7 @@ class ProductTemplate(models.Model):
 
     def init_table(self):
         sql_query = """ 
-                    TRUNCATE TABLE "inventory_monitor1"
-                    RESTART IDENTITY;
+                    DELETE FROM inventory_monitor1
                 """
         self._cr.execute(sql_query)
 
