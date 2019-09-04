@@ -131,7 +131,7 @@ class WebsiteSale(odoo.addons.website_sale.controllers.main.WebsiteSale):
 
         values['productExpiration'] = productMaxMinDates;
         values['isVisibleWebsiteExpirationDate'] = request.env['ir.config_parameter'].sudo().get_param(
-            'website_sales.default_website_expiration_date')
+            'website_sales.website_expiration_date')
 
         porductRows = []
         porductRows.append([])

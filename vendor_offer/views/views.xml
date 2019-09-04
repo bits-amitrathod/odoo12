@@ -152,21 +152,27 @@
             </field>
         </record>
 
-<!--        <record model="ir.ui.view" id="purchase_order_form_inherit">-->
-<!--            <field name="name">purchase.order.form.inherit</field>-->
-<!--            <field name="model">purchase.order</field>-->
-<!--            <field name="inherit_id" ref="purchase.purchase_order_form"/>-->
-<!--            <field name="arch" type="xml">-->
-<!--                <data>-->
-<!--                    <xpath expr="//form[1]/sheet[1]/notebook[1]" position="inside">-->
-<!--                        <page name="studio_page_ptSZN" string="Notes">-->
-<!--                            <field name="notes_activity"-->
-<!--                                   attrs="{'readonly': True}"/>-->
-<!--                        </page>-->
-<!--                    </xpath>-->
-<!--                </data>-->
-<!--            </field>-->
-<!--        </record>-->
+
+ <!-- This domain filter added for purchase tree view which is remove from odoo12 base view  -->
+     <record id="purchase.purchase_rfq" model="ir.actions.act_window">
+           <field name="domain">[('state','in',('draft','sent','cancel', 'confirmed'))]</field>
+    </record>
+
+        <!--        <record model="ir.ui.view" id="purchase_order_form_inherit">-->
+        <!--            <field name="name">purchase.order.form.inherit</field>-->
+        <!--            <field name="model">purchase.order</field>-->
+        <!--            <field name="inherit_id" ref="purchase.purchase_order_form"/>-->
+        <!--            <field name="arch" type="xml">-->
+        <!--                <data>-->
+        <!--                    <xpath expr="//form[1]/sheet[1]/notebook[1]" position="inside">-->
+        <!--                        <page name="studio_page_ptSZN" string="Notes">-->
+        <!--                            <field name="notes_activity"-->
+        <!--                                   attrs="{'readonly': True}"/>-->
+        <!--                        </page>-->
+        <!--                    </xpath>-->
+        <!--                </data>-->
+        <!--            </field>-->
+        <!--        </record>-->
 
         <menuitem action="purchase_form_action_vendor" id="purchase.menu_purchase_form_action"
                   parent="purchase.menu_procurement_management" sequence="5"/>
@@ -746,6 +752,18 @@
                     </span>
                     <div/>
                 </field>
+            </field>
+        </record>
+
+<!-- Adding Billing status column for odoo 12 -->
+        <record id="purchase_order_tree_inherit" model="ir.ui.view">
+            <field name="name">purchase order billing status</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='invoice_status']" position="replace">
+                     <field name="invoice_status" invisible="not context.get('show_purchase', True)"/>
+                </xpath>
             </field>
         </record>
 

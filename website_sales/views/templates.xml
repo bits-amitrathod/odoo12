@@ -82,10 +82,10 @@
 
                 <div class="col-xs-12 col-md-6 o_setting_box" id="product_lot_expiration_date_setting">
                     <div class="o_setting_left_pane">
-                        <field name="default_website_expiration_date"/>
+                        <field name="website_expiration_date"/>
                     </div>
                     <div class="o_setting_right_pane">
-                        <label for="default_website_expiration_date"/>
+                        <label for="website_expiration_date"/>
                         <div class="text-muted">
                             Display an product lot expiration minimum &amp; maximum dates
                         </div>

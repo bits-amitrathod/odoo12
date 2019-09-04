@@ -255,7 +255,7 @@
                                         </t>
                                     </t>
                                     <t t-if="product.website_price &gt; 0">
-                                        <t t-call="website_sale.product_price"/>
+<!--                                        <t t-call="website_sale.product_price"/>-->
                                     </t>
                                     <t t-else="">
                                         <h3>Call for Pricing 412-564-1280</h3>

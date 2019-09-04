@@ -35,35 +35,38 @@
                     <p t-field="o.origin"/>
                  </div>
             </xpath>
-            <xpath expr="//t/div[1]/div[2]/div[5]" position="replace">
-                 <div class="col-xs-2" t-if="o.tracking_reference">
-                    <strong>Tracking Reference#:</strong>
-                    <p t-field="o.tracking_reference"/>
-                 </div>
-            </xpath>
+<!--            <xpath expr="//div[@name='reference'']" position="replace">-->
+<!--                 <div class="col-xs-2" t-if="o.tracking_reference">-->
+<!--                    <strong>Tracking Reference#:</strong>-->
+<!--                    <p t-field="o.tracking_reference"/>-->
+<!--                 </div>-->
+<!--            </xpath>-->
              <xpath expr="//div[@class='row']" position="attributes">
                   <attribute name="style">margin:0px;margin-top: 30%;padding-top:40px;margin-bottom: 5%</attribute>
             </xpath>
-             <xpath expr="//div[@name='invoice_address']" position="attributes">
-            <attribute name="groups">!sale.group_delivery_invoice_address</attribute>
-        </xpath>
-        <xpath expr="//div[@class='col-xs-6']" position="replace">
-            <div class="col-xs-6" style="border: 1px solid #ddd;"  groups="sale.group_delivery_invoice_address">
+<!--             <xpath expr="//t[@t-set='address']" position="attributes">-->
+<!--            <attribute name="groups">!sale.group_delivery_invoice_address</attribute>-->
+<!--        </xpath>-->
+
+         <xpath expr="//t[@t-set='address']" position="replace">
+            <div class="col-auto mw-100 mb-2" style="border: 1px solid #ddd;display:inline-block;width:40%;"  groups="sale.group_delivery_invoice_address">
                 <strong >Bill To:</strong>
                 <div t-field="o.partner_id"
                     t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
                 <div t-if="o.partner_id.vat" class="mt16"><t t-esc="o.company_id.country_id.vat_label or 'TIN'"/>: <span t-field="o.partner_id.vat"/></div>
             </div>
-        </xpath>
-         <xpath expr="//div[@class='col-xs-5 col-xs-offset-1']" position="replace">
-            <div class="col-xs-5 col-xs-offset-1" style="border: 1px solid #ddd;margin-left:5px;width:47%" groups="sale.group_delivery_invoice_address">
+
+
+
+            <div class="col-auto mw-100 mb-2" style="border: 1px solid #ddd;margin-left:5px;width:40%;display:inline-block;" groups="sale.group_delivery_invoice_address">
                 <div t-if="o.partner_shipping_id and (o.partner_shipping_id != o.partner_id)">
                     <strong>Ship To:</strong>
                     <div t-field="o.partner_shipping_id"
                         t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
                 </div>
             </div>
-        </xpath>
+         </xpath>
+
         </template>
 
     </data>

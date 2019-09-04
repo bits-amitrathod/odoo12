@@ -72,7 +72,7 @@ class ProductSaleByCountReport(models.Model):
                 select_query = select_query + " and "
             else:
                 select_query = select_query + " where "
-            select_query = select_query + " sale_order.user_id <='" + str(user_id) + "'"
+            select_query = select_query + " sale_order.user_id ='" + str(user_id) + "'"
 
         group_by = """
             GROUP BY

@@ -67,7 +67,7 @@ class SaleOrder(models.Model):
         self.ensure_one()
         ir_model_data = self.env['ir.model.data']
         try:
-            template_id = ir_model_data.get_object_reference('prioritization_engine', 'email_template_edi_sale_custom')[1]
+            template_id = ir_model_data.get_object_reference('prioritization_engine', 'email_template_sale_custom')[1]
         except ValueError:
             template_id = False
         try:
@@ -81,7 +81,7 @@ class SaleOrder(models.Model):
             'default_template_id': template_id,
             'default_composition_mode': 'comment',
             'mark_so_as_sent': True,
-            'custom_layout': "sale.mail_template_data_notification_email_sale_order",
+            'custom_layout': "mail.mail_notification_paynow",
             'proforma': self.env.context.get('proforma', False),
             'force_email': True
         }
