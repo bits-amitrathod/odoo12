@@ -50,6 +50,12 @@ class SpsTransientBaseImport(models.TransientModel):
     # customer_id = fields.Integer('Customer')
     columns_from_template = fields.Char(string='Template Columns')
 
+    @api.model
+    def get_import_templates(self):
+        return [{
+            'label': _('Import Template for Vendor Offer'),
+            'template': '/vendor_offer_automation/static/xls/vendor_import.xlsx'
+        }]
 
     @api.model
     def _convert_import_data(self, fields, options):
@@ -72,26 +78,26 @@ class SpsTransientBaseImport(models.TransientModel):
         return cell_values, import_fields, cols
 
     @api.multi
-    def do(self, fields, options, parent_model, customer_id, template_type, upload_document, dryrun=False):
+    def do(self, fields, columns,options, parent_model, customer_id, template_type, upload_document, dryrun=False):
         self.ensure_one()
         import_result = {'messages': []}
         try:
             data, import_fields, col = self._convert_import_data(fields, options)
 
-            if 'customer_sku' not in import_fields:
+            if 'mf_customer_sku' not in import_fields:
                 raise ValueError(_("You must configure Customer Sku field to import"))
 
-            if template_type == 'Inventory' and 'quantity' not in import_fields:
+            if template_type == 'Inventory' and 'mf_quantity' not in import_fields:
                 raise ValueError(_("You must configure Stock field to import"))
 
-            if template_type == 'Requirement' and 'required_quantity' not in import_fields:
+            if template_type == 'Requirement' and 'mf_required_quantity' not in import_fields:
                 raise ValueError(_("You must configure Required Quantity field to import"))
 
             self._cr.execute('SAVEPOINT import')
             if len(col) == 1:
                 resource_model = self.env[parent_model]
                 columns = col[0]
-                dict_list = [{'mf_' + import_field: columns[idx]} for idx, import_field in enumerate(import_fields)]
+                dict_list = [{ import_field: columns[idx]} for idx, import_field in enumerate(import_fields)]
                 resource_model_dict = dict(template_file=self.file, file_name=self.file_name,
                                            customer_id=customer_id)
                 for dictionary in dict_list:
@@ -101,10 +107,16 @@ class SpsTransientBaseImport(models.TransientModel):
                                                             ('customer_id', '=', customer_id)])
                 for template_resource in template_resources:
                     template_resource.write(dict(template_status='InActive'))
-                resource_model.create(resource_model_dict)
+                name_create_enabled_fields = options.pop('name_create_enabled_fields', {})
+                template = resource_model.create(resource_model_dict).with_context(import_file=True,
+                                                               name_create_enabled_fields=name_create_enabled_fields)
+                # import_result = template.load(import_fields, data)
+                import_result['ids'] = [template.id]
+
                 try:
                     if dryrun:
                         self._cr.execute('ROLLBACK TO SAVEPOINT import')
+                        self.pool.reset_changes()
                     else:
                         if upload_document == 'True':
                             self._cr.execute('RELEASE SAVEPOINT import')
@@ -112,17 +124,22 @@ class SpsTransientBaseImport(models.TransientModel):
                             directory_path = ATTACHMENT_DIR + str(customer_id) + "/" + template_type + "/"
                             myfile_path = directory_path + str(self.file_name)
                             self.env['sps.document.process'].sudo().process_document(users_model,myfile_path,template_type,self.file_name, 'Manual')
+
                         else:
                             self._cr.execute('RELEASE SAVEPOINT import')
+
                 except psycopg2.InternalError:
                     pass
         except ValueError as error:
-            return [{
-                'type': 'error',
-                'message': pycompat.text_type(error),
-                'record': False,
-            }]
-        return import_result['messages']
+            _logger.info('Error %r', str(error))
+            return {
+                'messages': [{
+                    'type': 'error',
+                    'message': pycompat.text_type(error),
+                    'record': False,
+                }]
+            }
+        return import_result
 
     @api.multi
     def parse_preview(self, options, count=10):
@@ -163,6 +180,7 @@ class SpsTransientBaseImport(models.TransientModel):
     @api.model
     def get_fields(self, model, depth=FIELDS_RECURSION_LIMIT):
         Model = self.env['sps.customer.template']
+        importable_fields = []
         importable_fields = [{
             'id': 'id',
             'name': 'id',
@@ -188,25 +206,27 @@ class SpsTransientBaseImport(models.TransientModel):
             if not name.startswith('mf_'):
                 continue
             field_value = {
-                'id': name[3:],
-                'name': name[3:],
+                # 'id': name[3:],
+                # 'name': name[3:],
+                'id': name,
+                'name': name,
                 'string': field['string'],
                 'required': bool(field.get('required')),
                 'fields': [],
                 'type': field['type'],
             }
 
-            # if field['type'] in ('many2many', 'many2one'):
-            #     field_value['fields'] = [
-            #         dict(field_value, name='id', string=_("External ID"), type='id'),
-            #         dict(field_value, name='.id', string=_("Database ID"), type='id'),
-            #     ]
-            # elif field['type'] == 'one2many' and depth:
-            #     field_value['fields'] = self.get_fields(field['relation'], depth=depth - 1)
-            #     if self.user_has_groups('base.group_no_one'):
-            #         field_value['fields'].append(
-            #             {'id': '.id', 'name': '.id', 'string': _("Database ID"), 'required': False, 'fields': [],
-            #              'type': 'id'})
+            if field['type'] in ('many2many', 'many2one'):
+                field_value['fields'] = [
+                    dict(field_value, name='id', string=_("External ID"), type='id'),
+                    dict(field_value, name='.id', string=_("Database ID"), type='id'),
+                ]
+            elif field['type'] == 'one2many' and depth:
+                field_value['fields'] = self.get_fields(field['relation'], depth=depth - 1)
+                if self.user_has_groups('base.group_no_one'):
+                    field_value['fields'].append(
+                        {'id': '.id', 'name': '.id', 'string': _("Database ID"), 'required': False, 'fields': [],
+                         'type': 'id'})
 
             importable_fields.append(field_value)
 

@@ -73,7 +73,7 @@ class PrioritizationEngine(models.TransientModel):
         filtered_production_lot_dict_to_be_returned = {}
         filtered_production_lot_dict_to_be_returned.clear()
         for available_production_lot in available_production_lot_dict.get(product_id,{}):
-            if datetime.strptime(available_production_lot.get(list(available_production_lot.keys()).pop(0), {}).get('use_date'),
+            if datetime.strptime(str(available_production_lot.get(list(available_production_lot.keys()).pop(0), {}).get('use_date')),
                     '%Y-%m-%d %H:%M:%S') >= self.get_product_expiration_tolerance_date(expiration_tolerance):
 
                 if product_id in filtered_production_lot_dict_to_be_returned.keys():
@@ -392,7 +392,7 @@ class PrioritizationEngine(models.TransientModel):
             stock_move.write({'state': 'assigned'})
             # sale_order.write(dict(state='engine', confirmation_date=''))
             # sale_order.force_quotation_send()
-            sale_order.write({'state':'sent', 'confirmation_date':''})
+            sale_order.write({'state':'sent', 'confirmation_date':None})
 
 
     # Generate sale order for gl account
@@ -433,7 +433,7 @@ class PrioritizationEngine(models.TransientModel):
 
     # Change date format to calculate date difference (2018-06-25 23:08:15) to (2018, 6, 25, 23, 8, 15)
     def change_date_format(self, date):
-        formatted_date = date.split(".")[0].replace("-", ",").replace(" ", ",").replace(":", ",")
+        formatted_date = str(date).split(".")[0].replace("-", ",").replace(" ", ",").replace(":", ",")
         return formatted_date
 
     def get_available_product_count(self, customer_id, product_id):

@@ -175,7 +175,8 @@ class DocumentProcessTransientModel(models.TransientModel):
                         else:
                             _logger.info('Product UOM not mapped.')
                             # Get Product UOM category id
-                            product_uom_categ = self.env['product.uom.categ'].search([('name', 'in', ['Unit', 'Each'])])
+
+                            product_uom_categ = self.env['uom.category'].search([('name', 'in', ['Unit', 'Each'])])
                             # get product
                             product = self.env['product.template'].search([('id', '=', req['product_id'])])
                             if product.manufacturer_uom.category_id.id in product_uom_categ.ids:
@@ -183,7 +184,6 @@ class DocumentProcessTransientModel(models.TransientModel):
                                     req.update(dict(uom_flag=True))
                                 else:
                                     req.update(dict(uom_flag=False))
-
                         # calculate product quantity
                         updated_qty = self._get_updated_qty(req, template_type)
                         if updated_qty != 0:
