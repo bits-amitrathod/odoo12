@@ -4,25 +4,24 @@
             <t name="Home" priority="29" t-name="website.homepage">
                 <t t-set="pageName" t-value="'homepage'"/>
                 <div id="wrap" class="oe_structure oe_empty">
-                    <div id="myCarousel1528282178244" class="carousel slide s_banner" data-interval="10000"
-                         style="height:600px;">
+                    <div id="carouselExampleCaptions" class="carousel slide main-slider" data-ride="carousel">
                         <ol class="carousel-indicators">
-                            <li data-target="#myCarousel1528282178244" data-slide-to="0"/>
-                            <li data-target="#myCarousel1528282178244" data-slide-to="1" class="active"/>
-                            <li data-target="#myCarousel1528282178244" data-slide-to="2"/>
+                            <li data-target="#carouselExampleCaptions" data-slide-to="0"/>
+                            <li data-target="#carouselExampleCaptions" data-slide-to="1" class="active"/>
+                            <li data-target="#carouselExampleCaptions" data-slide-to="2"/>
                         </ol>
                         <div class="carousel-inner">
-                            <div class="item bg-alpha oe_img_bg oe_custom_bg"
+                            <div class="carousel-item bg-alpha oe_img_bg oe_custom_bg"
                                  style="background-image: url(&quot;/website_cstm/static/src/img/slideshow_3_2048x2048.jpg&quot;);">
-                                <div class="container">
-                                    <div class="row content">
-                                        <div class="carousel-content mt128  ml-res-768 col-md-5 col-md-offset-1 mb64 animated fadeInDown">
-                                            <h1 class="header">Start Saving<br/>On Top Brands
+                                <div class="container carousel-caption d-none d-md-block">
+                                    <div class="row">
+                                        <div class="ml-res-768 col-md-5 animated fadeInDown">
+                                            <h1 class="header text-left">Start Saving<br/>On Top Brands
                                             </h1>
-                                            <p class="o_default_snippet_text subtitle">We sell high-end surgical
+                                            <p class="o_default_snippet_text subtitle text-left">We sell high-end surgical
                                                 disposables<br/>from top manufacturers.
                                             </p>
-                                            <p>
+                                            <p class="text-left">
                                                 <a href="/shop"
                                                    class="btn btn-warning btn-large o_default_snippet_text action_button"
                                                    data-original-title="" title="">Shop Our Store Today
@@ -32,11 +31,11 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="item bg-alpha oe_img_bg oe_custom_bg active"
+                            <div class="carousel-item bg-alpha oe_img_bg oe_custom_bg active"
                                  style="background-image: url(&quot;/website_cstm/static/src/img/slideshow_1_2048x2048.jpg&quot;);">
-                                <div class="container">
-                                    <div class="row content">
-                                        <div class="carousel-content  mt128 mb96 col-md-12  animated fadeInDown">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <div class="row">
+                                        <div class="col-12 animated fadeInDown">
                                             <h1 class="o_default_snippet_text header text-center">Surgical Product
                                                 Solutions
                                             </h1>
@@ -54,18 +53,18 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="item bg-alpha oe_img_bg oe_custom_bg"
+                            <div class="carousel-item bg-alpha oe_img_bg oe_custom_bg"
                                  style="background-image: url(&quot;/website_cstm/static/src/img/slideshow_2_2048x2048.jpg&quot;);">
-                                <div class="container">
-                                    <div class="row content">
-                                        <div class="carousel-content col-md-6 col-xs-12 ml-res-768 mt128 mb96  animated fadeInDown">
-                                            <h1 class="o_default_snippet_text header">One Problem<br/>Multiple Solutions
+                                <div class="container carousel-caption d-none d-md-block">
+                                    <div class="row">
+                                        <div class="col-md-6 ml-res-768 animated fadeInDown">
+                                            <h1 class="o_default_snippet_text header text-left">One Problem<br/>Multiple Solutions
                                             </h1>
-                                            <p class="o_default_snippet_text subtitle">Our Focus is simple:<br/>Helping
+                                            <p class="o_default_snippet_text subtitle text-left">Our Focus is simple:<br/>Helping
                                                 customers become higher quality<br/>healthcare providers without
                                                 compromise.
                                             </p>
-                                            <p>
+                                            <p class="text-left">
                                                 <a href="http://surgicalproductsolutions.com/"
                                                    class="btn btn-warning btn-large o_default_snippet_text action_button">
                                                     Learn More
@@ -76,14 +75,14 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="carousel-control left" data-target="#myCarousel1528282178244" data-slide="prev"
-                             style="width: 10%" data-cke-saved-href="#myCarousel1528282178244">
-                            <i class="fa fa-chevron-left" data-original-title="" title=""/>
-                        </div>
-                        <div class="carousel-control right" data-target="#myCarousel1528282178244" data-slide="next"
-                             style="width: 10%" data-cke-saved-href="#myCarousel1528282178244">
-                            <i class="fa fa-chevron-right" data-original-title="" title=""/>
-                        </div>
+                       <a class="carousel-control-prev" href="#carouselExampleCaptions" role="button" data-slide="prev">
+      <span><i class="fa fa-chevron-left arrows"></i></span>
+      <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#carouselExampleCaptions" role="button" data-slide="next">
+      <span><i class="fa fa-chevron-right arrows"></i></span>
+      <span class="sr-only">Next</span>
+    </a>
                     </div>
                     <section class="mb4 mt32">
                         <div class="homepage_content content_page clearfix">
@@ -169,8 +168,8 @@
                              style="background-image: url(&quot;/website_cstm/static/src/img/banner_1_2048x2048.jpg&quot;);height:350px;">
                             <div class="homepage_content content_page clearfix">
                                 <div class="container">
-                                    <div class="center-div-info">
-                                        <h1 class="headline text-center text-white">Take A Look<br/>At Our Full Catalog
+                                    <div class="center-div-info pt-5">
+                                        <h1 class="headline text-center text-white pt-5">Take A Look<br/>At Our Full Catalog
                                         </h1>
                                         <div class="text-center">
                                             <a href="/shop" class="action_button">
@@ -182,7 +181,7 @@
                             </div>
                         </div>
                     </section>
-                    <section class="mb0 mt0" style="background:#f6f6f6;height: 300px;">
+                    <section class="mb0 mt0" style="background:#f6f6f6;height: 245px;">
                         <div class="container">
                             <div class="contact-section">
                                 <div class="homepage_content section clearfix" style="margin-top: 50px;">
@@ -207,8 +206,8 @@
                              style="background-image: url(&quot;/website_cstm/static/src/img/banner_3_2048x2048.jpg&quot;);height:400px;">
                             <div class="homepage_content content_page clearfix">
                                 <div class="container">
-                                    <div class="center-div-info">
-                                        <h1 class="headline text-center text-white">Download Our<br/>Product Inventory
+                                    <div class="center-div-info pt-5">
+                                        <h1 class="headline text-center text-white pt-5">Download Our<br/>Product Inventory
                                         </h1>
                                         <div class="text-center">
                                             <a href="/downloadCatalog"

@@ -29,7 +29,7 @@
 
     .carousel {
         @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
-       height:360px !important;
+
         }
         @media (max-width:767px) {
             height:200px !important;
@@ -37,10 +37,8 @@
     }
 header a.navbar-brand.logo img {
     height: auto !important;
-    margin-top: 12px!important;
-    @media (max-width:767px) {
-     margin-top: -10px!important;
-    }
+    margin-top: 0px!important;
+    width:85%;
     @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
         width:80%;
         margin-top: 0px !important;
@@ -86,14 +84,16 @@ header a.navbar-brand.logo img {
        padding: 10px 10px!important;
 }
 .navbar-brand{
+ @media (max-width:767px) {
+ margin-right:0;
+}
 img{
  @media (max-width:767px) {
     width: 85%;
     margin-top: -15px;
     }
-      @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
-
-          width: 85%;
+    @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+    width: 85%;
     margin-top: -15px;
     }
 }
@@ -260,9 +260,7 @@ img{
     background-color: rgba(255,255,255,0.3);
 }
 .carousel-indicators {
-    right: 0 !important;
-    width: 80% !important;
-    margin-left: 0%!important;
+left: auto;
     @media(max-width:767px){
 bottom:0;
     }
@@ -286,9 +284,6 @@ bottom:0;
 }
 a.action-button-center{
     margin-top: 6.5em;
-    @media(max-width:767px){
-        margin-top: 2.5em;
-    }
 }
 .thumbnail {
     position:relative;
@@ -350,11 +345,9 @@ h1{
     font-family: 'americangothicbold';
     font-weight: 600;
     font-size: 50px;
-    margin-bottom: 20px;
-    margin-top: 80px;
     @media(max-width:767px){
-        font-size: 2.25rem;
-        margin-top: 10px;
+        font-size: 2rem;
+        margin-top: -70px;
         margin-bottom: 0px;
     }
 }
@@ -457,12 +450,10 @@ font-size: 18px;
     margin-bottom: 10px;
 }
 background-color: #323d49;
-    border-top: solid 1px rgba(0,0,0,0);
     font-size: 15px;
     line-height: 1.7em;
     color: #ffffff;
-    padding: 10px 0;
-    margin-top: 2em;
+
     .social_icons {
 
         li{
@@ -517,18 +508,14 @@ background-color: #323d49;
 }
 div.footer {
     background-color: #323d49;
-    border-top: solid 1px rgba(0,0,0,0);
     font-size: 15px;
     line-height: 1.7em;
     color: #ffffff;
-    padding: 10px 0;
-    margin-top: 0;
 }
 .copyright-hr{
     margin-bottom: 40px;
-hr{
-    margin-bottom: 4px;
-}
+     padding-top:20px;
+    border-top:1px solid #eee;
 
 }
 .payment_methods {
@@ -799,7 +786,7 @@ padding-bottom: 30px;
 .newsletter input.contact_email {
     width: 100%;
     display: inline-block;
-    margin-right: 2%;
+    margin-right: 0;
     height: auto !important;
 }
 .cart{
@@ -1059,9 +1046,9 @@ footer #footer {
     padding-bottom:4em;
   .vendor-btn{
   font-family: 'Open Sans', sans-serif;
-         width: 30%;
-    margin: 0 1% 1em;
-    padding: 1.1em 1%;
+
+    margin: 0.6rem 0;
+    padding:0.9rem 0.4rem;
     color: #ffffff;
     background: #506681;
     background: -moz-linear-gradient(top, #506681 0%, #244061 100%);
@@ -1073,18 +1060,12 @@ footer #footer {
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#506681', endColorstr='#244061',GradientType=0 );
     -moz-box-shadow: 0px 1px 1px 1px #9a9c9a;
     -webkit-box-shadow: 0px 1px 1px 1px #9a9c9a;
-    box-shadow: 0px 1px 1px 1px #9a9c9a;
+    box-shadow: 0px 1px 5px 1px #9a9c9a;
 
    &:hover{
     opacity: .9;
     }
-    @media(max-width:767px){
 
-    width: 98%;
-    }
-    @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
-        width: 31%;
-    }
 
 
 }
@@ -1204,16 +1185,14 @@ position: relative;
 .banner-img{
   .oe_img_bg {
       @media(max-width:767px){
-      height: 100px !important;
+      height: 170px !important;
       }
    }
 }
 
 
 @media screen and (min-width: 1920px) {
-    .carousel {
-    height:900px !important;
-    }
+
 }
 
 #wrapwrap > main{
@@ -1366,10 +1345,10 @@ a {
 }
 
 @media (min-width: 992px){
-    .navbar-brand img {
+    /*--.navbar-brand img {
         max-width: 85%;
         margin-top: -15px;
-    }
+    }--*/
 }
 
 
@@ -1567,3 +1546,108 @@ a {
     color: #d9534f;
     text-decoration: none;
 }
+
+/*---New Css---*/
+
+.main-slider{
+.oe_img_bg{
+min-height:45rem !important;
+@media(max-width:1366px){
+min-height:40rem !important;
+}
+@media(max-width:1024px){
+min-height:30rem !important;
+}
+@media(max-width:767px){
+min-height:12.5rem !important;
+}
+}
+}
+.navbar{
+padding: 1rem 1rem !important;
+background-color: #ffffff !important;
+ .container{
+  position:relative;
+ }
+}
+.nav-link{
+    font-family: Lato;
+    font-weight: bold;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    color: #323d49 !important;
+    position: relative;
+    display: block;
+    letter-spacing: 0.0625rem;
+    margin-top:3.875rem;
+    @media (max-width:767px) {
+    margin-top:0;
+    }
+}
+.o_top_menu{
+    position: absolute;
+    right: 0;
+    top: 0.4rem;
+    @media (max-width:767px) {
+    position: relative;
+    }
+
+}
+.o_contact_no{
+    font-family: Lato;
+    font-weight: bold;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    color: #323d49;
+    position: relative;
+    display: block;
+    letter-spacing: 0.0625rem;
+}
+
+.navbar-light .navbar-nav .nav-link, .navbar-light .navbar-nav .nav > li > a {
+    color:#323d49;
+}
+.navbar-light .navbar-nav .nav-link.active{
+    color:#e8051a !important;
+}
+.carousel-caption {
+    position: absolute;
+    right: 0;
+    bottom: auto;
+    left: 0;
+    top: 40%;
+    z-index: 10;
+    padding-top: 0;
+    padding-bottom: 0;
+    color: #FFFFFF;
+    text-align: center;
+}
+.o_footer {
+    background-color: #323d49 !important;
+}
+.arrows{
+    font-size: 35px;
+    width: 60px;
+    height: 55px;
+    background: rgba(0, 0, 0, 0.6);
+    line-height: 1.6;
+}
+.carousel-control-prev, .carousel-control-next{
+   width:10%;
+   @media (max-width:767px){
+   width:15%;
+
+   }
+}
+.ml-sm-34{
+  @media (max-width:767px){
+   margin-left: 33px;
+   }
+}
+.input-group .input-group-addon {
+    padding: 0.6rem 0.75rem;
+}
+.breadcrumb{
+display:none;
+}
+

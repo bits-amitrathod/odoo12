@@ -16,8 +16,8 @@
                         <div class="">
                             <div class="row">
                                 <t t-foreach="brand_rec" t-as="o">
-                                    <a t-att-href="keep('/shop/brands',brand = o.id)">
-                                        <div class="col-md-3 col-sm-4 vendor-btn">
+                                    <a t-att-href="keep('/shop/brands',brand = o.id)" class="col-md-3 col-sm-4">
+                                        <div class="vendor-btn">
                                             <t t-esc='o.name'/>
                                         </div>
                                     </a>
