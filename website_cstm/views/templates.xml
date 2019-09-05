@@ -3,6 +3,7 @@
         <xpath expr="//link[last()]" position="after">
             <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,600i,700,700i,800"
                   rel="stylesheet"/>
+            <link href="https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i,700,700i,900" rel="stylesheet"/>
             <link rel="stylesheet" href="/website_cstm/static/src/less/website.style.less"/>
         </xpath>
 
@@ -48,7 +49,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 <!--            </div>-->
 
-            <div class="collapse navbar-collapse" id="top_menu_collapse">
+            <div class="collapse navbar-collapse o_top_menu" id="top_menu_collapse">
+                  <ul class="nav navbar-nav navbar-right">
+                    <li class="active">
+                        <a href="#" class="o_contact_no ">(412) 564-1280</a>
+                    </li>
+                </ul>
                 <t t-if="not request.httprequest.path[0:5] == '/shop'">
                     <form class="navbar-form navbar-right" role="search" t-attf-action="/shop" method="get">
                         <div class="input-group header-searchbox">
@@ -58,13 +64,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                         </div>
                     </form>
                 </t>
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="active">
-                        <a href="#" style="color:#353b4d!important;">(412) 564-1280</a>
-                    </li>
-                </ul>
-            </div>
 
+            </div>
         </xpath>
     </template>
 
@@ -169,7 +170,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                             <li class="linkedin">
                                 <a href="https://www.linkedin.com/company/2706681?trk=tyah"
                                    title="Surgical Product Solutions on LinkedIn" rel="me" target="_blank">
-                                    <i class="fa fa-linkedin" aria-hidden="true"/>
+                                    <i class="fa fa-linkedin"/>
                                 </a>
                             </li>
                         </ul>
@@ -205,7 +206,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                             <img src="/website_cstm/static/src/img/visa-319d545c6fd255c9aad5eeaad21fd6f7f7b4fdbdb1a35ce83b89cca12a187f00.svg"
                                  alt="Visa"/>
                         </div>
+                        <div class="ml-sm-34">
                         <t t-call="website.language_selector"/>
+                        </div>
                     </div>
                 </div>
             </div>
