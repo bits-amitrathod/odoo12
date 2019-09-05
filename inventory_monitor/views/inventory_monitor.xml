@@ -128,6 +128,69 @@
         </field>
     </record>
 
+    <record id="view_inventory_moniter_line_tree_test" model="ir.ui.view">
+        <field name="name">inventory.monitor1.tree</field>
+        <field name="model">inventory.monitor1</field>
+        <field name="context">{"inventory_monitor":1}</field>
+        <field name="arch" type="xml">
+            <tree string="Inventory Monitor" create="false" edit="false" delete="false">
+                <field name="sku_code" />
+                <field name="product_id" />
+                <field name="max_inventory_level" />
+                <field name="inventory_percent_color" invisible="1" />
+                <field name="max_inventory_percent" options='{"bg_color": "#c9f3c9:inventory_percent_color&lt;=75;#f3b8b4:inventory_percent_color&lt;45;#f5e5b8:inventory_percent_color&gt;=125"}'/>
+                <field name="qty_in_stock"/>
+                <field name="future_percent_color" invisible="1"/>
+                <field name="max_inventory_future_percent"  options='{"bg_color": "#c9f3c9:future_percent_color&lt;=75;#f3b8b4:future_percent_color&lt;45;#f5e5b8:future_percent_color&gt;=125"}'/>
+                <field name="qty_on_order"/>
+                <field name="inventory_monitor" invisible="1" eval="True"/>
+                <field name="type" />
+
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="view_inventory_moniter_line_form_test" model="ir.ui.view">
+        <field name="name">inventory.monitor1.tree</field>
+        <field name="model">inventory.monitor1</field>
+        <field name="context">{"inventory_monitor":1}</field>
+        <field name="arch" type="xml">
+            <form string="Inventory Monitor" create="false" edit="false" delete="false">
+               <sheet>
+                   <group>
+                       <field name="sku_code" />
+                       <field name="product_id" />
+                       <field name="max_inventory_level" />
+                       <label for="max_inventory_percent"/>
+                       <div>
+                            <field name="max_inventory_percent" options='{"bg_color": "#c9f3c9:inventory_percent_color&lt;=75;#f3b8b4:inventory_percent_color&lt;45;#f5e5b8:inventory_percent_color&gt;=125"}'/>
+                            <span>%</span>
+                       </div>
+                   </group>
+                   <group>
+                       <field name="qty_in_stock"/>
+                       <label for="max_inventory_future_percent"/>
+                       <div>
+                            <field name="max_inventory_future_percent" options='{"bg_color": "#c9f3c9:future_percent_color&lt;=75;#f3b8b4:future_percent_color&lt;45;#f5e5b8:future_percent_color&gt;=125"}'/>
+                            <span>%</span>
+                       </div>
+                       <field name="qty_on_order"/>
+                       <field name="type" />
+                   </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="product_normal_action_puchased_method" model="ir.actions.server">
+            <field name="name">Inventory Monitor</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="model_inventory_monitor1"/>
+            <field name="state">code</field>
+            <field name="code">action = model.action_your_report()</field>
+        </record>
+
     <record model="ir.ui.view" id="product_template_form_view_procurement_button1">
             <field name="name">product.template_max_inventory_level_duration</field>
             <field name="model">product.template</field>
@@ -146,6 +209,9 @@
         </record>
 
       <!-- Product menu-->
-      <menuitem name="Inventory Monitor" id="menu_procurement_partner_contact_form_ext" action="product_normal_action_puchased_ext"
+<!--    <menuitem name="Inventory Monitor" id="menu_procurement_partner_contact_form_ext" action="product_normal_action_puchased_ext"-->
+<!--          parent="stock.menu_stock_warehouse_mgmt" sequence="50"/>-->
+
+    <menuitem name="Inventory Monitor" id="menu_procurement_partner_contact_form_ext_test" action="product_normal_action_puchased_method"
           parent="stock.menu_stock_warehouse_mgmt" sequence="50"/>
 </odoo>

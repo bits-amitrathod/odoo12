@@ -19,6 +19,12 @@
            </dl>
          </template>
 
+        <template id="assets_backend" name="mail assets" inherit_id="mail.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/customer_credit_note/static/src/js/thread.js"></script>
+            </xpath>
+        </template>
+
         <record id="invoice_supplier_form_credit_note_label_update" model="ir.ui.view">
             <field name="name">account.invoice.supplier.form</field>
             <field name="model">account.invoice</field>
@@ -43,24 +49,24 @@
             </field>
         </record>
 
-<record id="invoice_form_credit_note_label_update" model="ir.ui.view">
-    <field name="name">account.invoice.form</field>
-    <field name="model">account.invoice</field>
-    <field name="inherit_id" ref="account.invoice_form"></field>
-    <field name="arch" type="xml">
-        <xpath expr="//form/sheet/span" position="replace">
-            <label  for="" string="Customer Credit Note" attrs="{'invisible': ['|',('state','=','draft'), ('type','!=','out_refund')]}"/>
-            <label  for="" string="Customer Invoice" attrs="{'invisible': ['|',('state','=','draft'), ('type','!=','out_invoice')]}"/>
-        </xpath>
-        <xpath expr="//form/sheet/h1[@class='mt0']/div[1]" position="replace">
-            <div attrs="{'invisible': [('sequence_number_next_prefix','!=',False)]}">
-                <label for="" string="Draft Customer Invoice" attrs="{'invisible': ['|',('state','not in',('draft',)), ('type','!=','out_invoice')]}"/>
-                <label for="" string="Draft Customer Credit Note" attrs="{'invisible': ['|',('state','not in',('draft',)), ('type','!=','out_refund')]}"/>
-                <field name="number" readonly="1" class="oe_inline" attrs="{'invisible': [('state','in',('draft',))]}"/>
-            </div>
-        </xpath>
-    </field>
-</record>
+        <record id="invoice_form_credit_note_label_update" model="ir.ui.view">
+            <field name="name">account.invoice.form</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form"></field>
+            <field name="arch" type="xml">
+                <xpath expr="//form/sheet/label[1]" position="replace">
+                    <label string="Customer Credit Note" attrs="{'invisible': ['|',('state','=','draft'), ('type','!=','out_refund')]}"/>
+                    <label string="Customer Invoice" attrs="{'invisible': ['|',('state','=','draft'), ('type','!=','out_invoice')]}"/>
+                </xpath>
+                <xpath expr="//form/sheet/h1[@class='mt0']/div[1]" position="replace">
+                    <div attrs="{'invisible': [('sequence_number_next_prefix','!=',False)]}">
+                        <label string="Draft Customer Invoice" attrs="{'invisible': ['|',('state','not in',('draft',)), ('type','!=','out_invoice')]}"/>
+                        <label string="Draft Customer Credit Note" attrs="{'invisible': ['|',('state','not in',('draft',)), ('type','!=','out_refund')]}"/>
+                        <field name="number" readonly="1" class="oe_inline" attrs="{'invisible': [('state','in',('draft',))]}"/>
+                    </div>
+                </xpath>
+            </field>
+        </record>
 
         <record id="invoice_tree_inherited" model="ir.ui.view">
             <field name="name">account.invoice.tree</field>

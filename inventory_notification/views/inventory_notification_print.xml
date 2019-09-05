@@ -180,7 +180,6 @@
             <field name="subject">${ctx['subject']}</field>
             <field name="body_html">
                 <![CDATA[
-
                 <div style="margin:auto;width:100%;background-color:  #ffffff;  padding-left: 60px;"/>
                     <div>
                         <div >

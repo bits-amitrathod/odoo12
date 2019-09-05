@@ -35,6 +35,10 @@ class SaleOrder(models.Model):
     order_processor = fields.Many2one('res.users', string='Order Processor', index=True, track_visibility='onchange',
                               default=lambda self: self.env.user)
 
+    @api.onchange('client_order_ref')
+    def update_account_invoice_purchase_order(self):
+        self.env['account.invoice'].search([('origin', '=', self.name)]).write({'name': self.client_order_ref})
+
     @api.multi
     def action_void(self):
         return self.write({'state': 'void'})

@@ -1,5 +1,8 @@
 
-from odoo import models, fields, api, _
+from odoo import models, fields, api, _,tools
+import base64
+import threading
+from odoo.modules import get_module_resource
 
 
 class VendorBillPartnerName(models.Model):
@@ -9,9 +12,9 @@ class VendorBillPartnerName(models.Model):
         [('contact', 'Contact'),
          ('invoice', 'Invoice address'),
          ('delivery', 'Shipping address'),
-         # ('other', 'Other address'),
+         ('other', 'AP Address'),
          # ('private', 'Private Address'),
-         ('ap', 'AP Address'),
+         # ('ap', 'AP Address'),
          ], string='Address Type',
         default='contact',
         help="Used to select automatically the right address according to the context in sales and purchases documents.")
@@ -34,8 +37,15 @@ class VendorBillPartnerName(models.Model):
                         name = dict(self.fields_get(['type'])['type']['selection'])[partner.type]
                     if not partner.is_company:
                         if partner.type :
-                            name = "%s :- %s ,%s" % ((partner.type).upper(),
-                                                    partner.commercial_company_name or partner.parent_id.name,name)
+                            if partner.type == 'other':
+                                typ = 'AP'
+                                name = "%s :- %s ,%s" % (typ,
+                                                         partner.commercial_company_name or partner.parent_id.name,
+                                                         name)
+                            else:
+                                name = "%s :- %s ,%s" % ((partner.type).upper(),
+                                                         partner.commercial_company_name or partner.parent_id.name,
+                                                         name)
                 else:
                     if partner.type:
                         name = "%s :- %s" % (('main').upper(),
@@ -60,6 +70,42 @@ class VendorBillPartnerName(models.Model):
             res.append((partner.id, name))
         return res
 
+    @api.model
+    def _get_default_image(self, partner_type, is_company, parent_id):
+        super_return = super(VendorBillPartnerName, self)._get_default_image(partner_type, is_company, parent_id)
+        colorize, img_path, image = False, False, False
+
+        if super_return and partner_type == 'other':
+            if not image:
+                img_path = get_module_resource('vendor_bill_partner_name', 'static/src/img', 'cart.png')
+                colorize = True
+
+            if img_path:
+                with open(img_path, 'rb') as f:
+                    image = f.read()
+        # if image and colorize:
+        #     image = tools.image_colorize(image)
+
+        return tools.image_resize_image_big(base64.b64encode(image)) if image and colorize else super_return
+
+
+    @api.model
+    def _get_default_image(self, partner_type, is_company, parent_id):
+        super_return=super(VendorBillPartnerName, self). _get_default_image(partner_type, is_company, parent_id)
+        colorize, img_path, image = False, False, False
+
+        if super_return and partner_type == 'other':
+            if not image :
+                img_path = get_module_resource('vendor_bill_partner_name', 'static/src/img', 'cart.png')
+                colorize = True
+
+            if img_path:
+                with open(img_path, 'rb') as f:
+                    image = f.read()
+        # if image and colorize:
+        #     image = tools.image_colorize(image)
+
+        return tools.image_resize_image_big(base64.b64encode(image)) if image and colorize else super_return
 
 class account_invoice(models.Model):
     _inherit = "account.invoice"

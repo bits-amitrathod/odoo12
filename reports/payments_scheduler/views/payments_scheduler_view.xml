@@ -26,15 +26,16 @@
             <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false">
                     <field name="acquisition_rep" />
-                    <field name="partner_id" groups="base.group_user" string="Vendor Name"/>
+                    <field name="company_name" groups="base.group_user" string="Vendor Bill Contact Name"/>
+                    <field name="company_address" groups="base.group_user" string="Vendor Bill Address"/>
                     <field name="reference"  />
                     <field name="number"/>
                     <field name="origin"  string="Purchase Order #"/>
                     <field name="date_invoice" string="Check-in Date"/>
                     <field name="date_due"/>
-                    <field name="pay_to"/>
+                    <field name="pay_to" string="AP Contact Name"/>
                     <field name="residual_signed" string ="To Pay"/>
-                    <field name="address"/>
+                    <field name="address" string="AP Contact Address"/>
                     <field name="payment_term_id" options="{'no_create': True}"/>
                     <field name="amount_total_signed" string="Bill Amount" sum="Bill Amount"/>
                     <field name="state" invisible="1" />
@@ -51,16 +52,17 @@
                     <sheet>
                           <group>
                                <field name="acquisition_rep" />
-                               <field name="partner_id" groups="base.group_user" string="Vendor Name"/>
-                                <field name="reference"  />
-                                <field name="origin"  string="Purchase Order #"/>
-                                <field name="date_invoice" string="Check-in Date"/>
-                                <field name="date_due"/>
+                               <field name="company_name" groups="base.group_user" string="Vendor Bill Contact Name"/>
+                               <field name="company_address" groups="base.group_user" string="Vendor Bill Address"/>
+                               <field name="reference"  />
+                               <field name="origin"  string="Purchase Order #"/>
+                               <field name="date_invoice" string="Check-in Date"/>
+                               <field name="date_due"/>
                           </group>
                         <group>
-                                <field name="pay_to"/>
+                                <field name="partner_id" string="AP Contact Name"/>
                                 <field name="residual_signed" string ="To Pay"/>
-                                <field name="address"/>
+                                <field name="address" string="AP Contact Address"/>
                                 <field name="number"/>
                                 <field name="payment_term_id" options="{'no_create': True}"/>
                                 <field name="amount_total_signed" string="Bill Amount" sum="Bill Amount"/>

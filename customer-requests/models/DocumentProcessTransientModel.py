@@ -132,9 +132,9 @@ class DocumentProcessTransientModel(models.TransientModel):
 
                     self.env.cr.execute("""
                            select * from 
-                               (SELECT id, regexp_replace(manufacturer_pref , '[^A-Za-z0-9.]', '','g') as manufacturer_pref, 
-                                 regexp_replace(sku_code , '[^A-Za-z0-9.]', '','g') as sku_code_cleaned 
-                                 FROM product_template) 
+                               (SELECT id, regexp_replace(TRIM(LEADING '0' FROM CAST(manufacturer_pref AS TEXT)) , '[^A-Za-z0-9.]', '','g') as manufacturer_pref, 
+                                            regexp_replace(TRIM(LEADING '0' FROM CAST(sku_code AS TEXT)) , '[^A-Za-z0-9.]', '','g') as sku_code_cleaned
+                                FROM product_template)
                            as temp_data where sku_code_cleaned ='""" +product_sku + """' or manufacturer_pref = '""" +
                                             product_sku + """' """)
                     query_result = self.env.cr.dictfetchone()
@@ -445,4 +445,4 @@ class DocumentProcessTransientModel(models.TransientModel):
 
     @staticmethod
     def cleaning_code(str):
-        return re.sub(r'[^A-Za-z0-9.]', '', str)
+        return re.sub(r'[^A-Za-z0-9.]', '', str.lstrip('0'))
