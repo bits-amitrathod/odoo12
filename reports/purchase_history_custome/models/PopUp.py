@@ -29,7 +29,8 @@ class PopUp(models.TransientModel):
         tree_view_id = self.env.ref('purchase_history_custome.form_list').id
         form_view_id = self.env.ref('purchase_history_custome.form_cust_view').id
         if self.end_date:
-            self.end_date = datetime.datetime.strptime(str(self.end_date), "%Y-%m-%d") + datetime.timedelta(days=1)
+            end_date = datetime.datetime.strptime(str(self.end_date), "%Y-%m-%d")
+            end_date = end_date + datetime.timedelta(days=1)
 
         action = {
             'type': 'ir.actions.act_window',
