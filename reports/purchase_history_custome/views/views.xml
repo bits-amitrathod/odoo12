@@ -58,7 +58,7 @@
 
 
       <record id="view_stock_quantity_history" model="ir.ui.view">
-        <field name="name">Purchase Report</field>
+        <field name="name">Purchase History Report</field>
         <field name="model">popup.view.model.purchase.history</field>
         <field name="arch" type="xml">
             <form string="Purchase History">
@@ -82,7 +82,7 @@
         </field>
     </record>
     <record id="action_stock_quantity_history" model="ir.actions.act_window">
-        <field name="name">Purchase Report</field>
+        <field name="name">Purchase History Report</field>
         <field name="res_model">popup.view.model.purchase.history</field>
         <field name="view_type">form</field>
         <field name="view_mode">form</field>

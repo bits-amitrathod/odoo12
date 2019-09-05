@@ -37,7 +37,7 @@ class PurchaseHistory(models.Model):
                 order.order_name = order.order_id.name
                 stock_picking = self.env['stock.picking'].search([('origin','like',order.order_id.name),
                                                                   ('state','=','done')], limit=1)
-                order.date_done = stock_picking.date_done
+                order.date_done = str(stock_picking.date_done)
 
 
 
@@ -51,7 +51,7 @@ class PurchaseHistory(models.Model):
                     order.product_id.id))
                 query_result = self.env.cr.dictfetchone()
                 print(query_result)
-                order.minExpDate = query_result['min']
+                order.minExpDate = str(query_result['min'])
                 print(order.minExpDate)
 
 
@@ -65,7 +65,7 @@ class PurchaseHistory(models.Model):
                     order.product_id.id))
                 query_result = order.env.cr.dictfetchone()
                 print(query_result)
-                order.maxExpDate = query_result['max']
+                order.maxExpDate = str(query_result['max'])
                 print(order.maxExpDate)
 
 
