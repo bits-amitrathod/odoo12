@@ -54,16 +54,23 @@
             <field name="model">account.invoice</field>
             <field name="inherit_id" ref="account.invoice_form"></field>
             <field name="arch" type="xml">
-                <xpath expr="//form/sheet/label[1]" position="replace">
-                    <label string="Customer Credit Note" attrs="{'invisible': ['|',('state','=','draft'), ('type','!=','out_refund')]}"/>
-                    <label string="Customer Invoice" attrs="{'invisible': ['|',('state','=','draft'), ('type','!=','out_invoice')]}"/>
+                <xpath expr="//form/sheet/span[1]" position="replace">
+                    <span class="o_form_label" attrs="{'invisible': ['|',('state','=','draft'), ('type','!=','out_refund')]}">Customer Credit Note</span>
+                     <span class="o_form_label" attrs="{'invisible': ['|',('state','=','draft'), ('type','!=','out_invoice')]}">Customer Invoice</span>
+                    <!--<label string="Customer Credit Note" attrs="{'invisible': ['|',('state','=','draft'), ('type','!=','out_refund')]}"/>-->
+                    <!--<label string="Customer Invoice" attrs="{'invisible': ['|',('state','=','draft'), ('type','!=','out_invoice')]}"/>-->
                 </xpath>
                 <xpath expr="//form/sheet/h1[@class='mt0']/div[1]" position="replace">
                     <div attrs="{'invisible': [('sequence_number_next_prefix','!=',False)]}">
-                        <label string="Draft Customer Invoice" attrs="{'invisible': ['|',('state','not in',('draft',)), ('type','!=','out_invoice')]}"/>
-                        <label string="Draft Customer Credit Note" attrs="{'invisible': ['|',('state','not in',('draft',)), ('type','!=','out_refund')]}"/>
-                        <field name="number" readonly="1" class="oe_inline" attrs="{'invisible': [('state','in',('draft',))]}"/>
-                    </div>
+                            <label for="number" string="Draft Customer Invoice" attrs="{'invisible': ['|',('state','not in',('draft',)), ('type','!=','out_invoice')]}"/>
+                            <label for="number" string="Draft Customer Credit Note" attrs="{'invisible': ['|',('state','not in',('draft',)), ('type','!=','out_refund')]}"/>
+                            <field name="number" readonly="1" class="oe_inline" attrs="{'invisible': [('state','in',('draft',))]}"/>
+                        </div>
+                    <!--<div attrs="{'invisible': [('sequence_number_next_prefix','!=',False)]}">-->
+                        <!--<label string="Draft Customer Invoice" attrs="{'invisible': ['|',('state','not in',('draft',)), ('type','!=','out_invoice')]}"/>-->
+                        <!--<label string="Draft Customer Credit Note" attrs="{'invisible': ['|',('state','not in',('draft',)), ('type','!=','out_refund')]}"/>-->
+                        <!--<field name="number" readonly="1" class="oe_inline" attrs="{'invisible': [('state','in',('draft',))]}"/>-->
+                    <!--</div>-->
                 </xpath>
             </field>
         </record>
