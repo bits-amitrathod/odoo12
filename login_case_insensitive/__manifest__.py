@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Vendor Bill Partner Name ",
+    'name': "Login Case Insensitive",
 
     'author': "Benchmark IT Solutions",
     'website': "http://www.benchmarkitsolutions.com",
@@ -12,10 +12,11 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','account','sale'],
+    'depends': ['base'],
     'data': [
         'security/ir.model.access.csv',
         'views/views.xml',
+        'demo/data.xml',
     ],
 
     'application': True,

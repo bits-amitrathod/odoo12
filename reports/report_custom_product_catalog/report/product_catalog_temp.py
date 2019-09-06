@@ -196,12 +196,12 @@ class ProductCatalogXL(http.Controller):
             order_lines = request.env.cr.dictfetchall()
 
             product_catalog_export.append((['Product SKU', 'Manufacture', 'Product Name',
-                                            'Product Qty','Price','Max Exp Date','Min Exp Date']))
+                                            'Product Qty','Price','Min Exp Date','Max Exp Date']))
 
             for line in order_lines:
                 product_catalog_export.append(([line['default_code'], line['manufacture'], line['name'],
-                                                line['actual_quantity'],line['list_price'],line['max_expiration_date'],
-                                                line['min_expiration_date']]))
+                                                line['actual_quantity'],line['list_price'],line['min_expiration_date'],
+                                                line['max_expiration_date']]))
 
             res = request.make_response(self.from_data(product_catalog_export[0], product_catalog_export[1:]),
                                         headers=[('Content-Disposition',
