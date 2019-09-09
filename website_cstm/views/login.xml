@@ -44,7 +44,7 @@
                                            required="required" readonly="readonly"/>
                                     <span class="input-group-btn" style="vertical-align: top;">
                                         <a href="/web/database/selector" class="btn btn-default"
-                                           style="padding: 14px 18px;">Select
+                                           style="padding: 14px 18px;height: 50px;">Select
                                             <i class="fa fa-database"></i>
                                         </a>
                                     </span>
