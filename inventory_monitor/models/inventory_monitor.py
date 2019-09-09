@@ -219,7 +219,7 @@ class ProductTemplate(models.Model):
             "type": "ir.actions.act_window",
             "view_mode": "tree,form",
             "res_model": 'inventory.monitor1',
-            "name": "inventory monitor ",
+            "name": "Inventory Monitor ",
             'views': [(tree_view_id, 'tree'),(form_view_id,'form')],
         }
         return action

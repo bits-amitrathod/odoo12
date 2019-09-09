@@ -48,29 +48,50 @@ class LoginCaseInsensitive(models.Model):
             user = super(LoginCaseInsensitive, self).write(values)
         return user
 
-
-
     @classmethod
     def _login(cls, db, login, password):
         if not password:
-            return False
-        user_id = False
+            raise AccessDenied()
+        ip = request.httprequest.environ['REMOTE_ADDR'] if request else 'n/a'
         try:
             with cls.pool.cursor() as cr:
                 self = api.Environment(cr, SUPERUSER_ID, {})[cls._name]
-                user = self.search([('login', '=', login)])
-                if user:
-                    user_id = user.id
-                    user.sudo(user_id).check_credentials(password)
-                    user.sudo(user_id)._update_last_login()
+                with self._assert_can_auth():
+                    user = self.search(self._get_login_domain(login))
+                    if not user:
+                        raise AccessDenied()
+                    user = user.sudo(user.id)
+                    user._check_credentials(password)
+                    user._update_last_login()
         except AccessDenied:
-            user_id = False
+            _logger.info("Login failed for db:%s login:%s from %s", db, login, ip)
+            raise
 
-        status = "successful" if user_id else "failed"
-        ip = request.httprequest.environ['REMOTE_ADDR'] if request else 'n/a'
-        _logger.info("Login %s for db:%s login:%s from %s", status, db, login, ip)
+        _logger.info("Login successful for db:%s login:%s from %s", db, login, ip)
 
-        return user_id
+        return user.id
+
+    # @classmethod
+    # def _login(cls, db, login, password):
+    #     if not password:
+    #         return False
+    #     user_id = False
+    #     try:
+    #         with cls.pool.cursor() as cr:
+    #             self = api.Environment(cr, SUPERUSER_ID, {})[cls._name]
+    #             user = self.search([('login', '=', login)])
+    #             if user:
+    #                 user_id = user.id
+    #                 user.sudo(user_id).check_credentials(password)
+    #                 user.sudo(user_id)._update_last_login()
+    #     except AccessDenied:
+    #         user_id = False
+    #
+    #     status = "successful" if user_id else "failed"
+    #     ip = request.httprequest.environ['REMOTE_ADDR'] if request else 'n/a'
+    #     _logger.info("Login %s for db:%s login:%s from %s", status, db, login, ip)
+    #
+    #     return user_id
 
     @api.model
     def signupnew(self, values, token=None):
