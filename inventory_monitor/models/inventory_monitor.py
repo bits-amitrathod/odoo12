@@ -12,7 +12,7 @@ _logger = logging.getLogger(__name__)
 
 
 
-class ProductTemplate(models.Model):
+'''class ProductTemplate(models.Model):
     _inherit = 'product.template'
     max_inventory_level = fields.Char("Max Inv Level",compute='_compute_max_inventory_level')
     max_inventory_percent= fields.Char("Current % of Max Inv Level",compute='_compute_max_inventory_level')
@@ -80,7 +80,7 @@ class ProductTemplate(models.Model):
 
     @api.model_cr
     def delete_and_create(self):
-        print("delete_and_create")
+        print("delete_and_create")'''
 
 
 class ResConfigSettings(models.TransientModel):
@@ -136,12 +136,12 @@ class ReportInventoryMonitor(models.AbstractModel):
     @api.model
     def get_report_values(self, docids, data=None):
          _logger.info("print report called...")
-         monitor=self.env['inventory.monitor1'].browse(docids)
+         monitor=self.env['inventory.monitor'].browse(docids)
          return {'data': monitor}
 
 
 class ProductTemplate(models.Model):
-    _name = 'inventory.monitor1'
+    _name = 'inventory.monitor'
 
     max_inventory_level = fields.Integer("Max Inv Level", default="0")
     max_inventory_percent= fields.Integer("Current % of Max Inv Level", default="0")
@@ -211,14 +211,14 @@ class ProductTemplate(models.Model):
         last_3_months = fields.Date.to_string(today_date - datetime.timedelta(days=90))
         cust_location_id = self.env['stock.location'].search([('name', '=', 'Customers')]).id
 
-        list = self.env['inventory.monitor1'].search([]).sudo()
+        list = self.env['inventory.monitor'].search([]).sudo()
         for ml in list :
             self._compute_max_inventory_level(max_inventory_level_duration,today_date,last_3_months,cust_location_id,ml)
 
         action = {
             "type": "ir.actions.act_window",
             "view_mode": "tree,form",
-            "res_model": 'inventory.monitor1',
+            "res_model": 'inventory.monitor',
             "name": "inventory monitor ",
             'views': [(tree_view_id, 'tree'),(form_view_id,'form')],
         }
