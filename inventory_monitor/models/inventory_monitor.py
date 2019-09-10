@@ -12,7 +12,7 @@ _logger = logging.getLogger(__name__)
 
 
 
-class ProductTemplate(models.Model):
+'''class ProductTemplate(models.Model):
     _inherit = 'product.template'
     max_inventory_level = fields.Char("Max Inv Level",compute='_compute_max_inventory_level')
     max_inventory_percent= fields.Char("Current % of Max Inv Level",compute='_compute_max_inventory_level')
@@ -80,7 +80,7 @@ class ProductTemplate(models.Model):
 
     @api.model_cr
     def delete_and_create(self):
-        print("delete_and_create")
+        print("delete_and_create")'''
 
 
 class ResConfigSettings(models.TransientModel):
@@ -218,7 +218,7 @@ class ProductTemplate(models.Model):
         action = {
             "type": "ir.actions.act_window",
             "view_mode": "tree,form",
-            "res_model": 'inventory.monito1',
+            "res_model": 'inventory.monitor',
             "name": "inventory monitor ",
             'views': [(tree_view_id, 'tree'),(form_view_id,'form')],
         }
