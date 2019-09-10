@@ -12,7 +12,7 @@ _logger = logging.getLogger(__name__)
 
 
 
-class ProductTemplate(models.Model):
+'''class ProductTemplate(models.Model):
     _inherit = 'product.template'
     max_inventory_level = fields.Char("Max Inv Level",compute='_compute_max_inventory_level')
     max_inventory_percent= fields.Char("Current % of Max Inv Level",compute='_compute_max_inventory_level')
@@ -80,7 +80,7 @@ class ProductTemplate(models.Model):
 
     @api.model_cr
     def delete_and_create(self):
-        print("delete_and_create")
+        print("delete_and_create")'''
 
 
 class ResConfigSettings(models.TransientModel):
@@ -202,7 +202,7 @@ class ProductTemplate(models.Model):
         tree_view_id = self.env.ref('inventory_monitor.view_inventory_moniter_line_tree_test').id
         form_view_id = self.env.ref('inventory_monitor.view_inventory_moniter_line_form_test').id
 
-        sql = "INSERT INTO inventory_monitor1 (product_tmpl_id , max_inventory_product_level_duration ,actual_quantity ,inventory_monitor,product_id ,max_inventory_level ,max_inventory_percent ,max_inventory_future_percent , inventory_percent_color ,future_percent_color )SELECT product_template.id as product_tmpl_id, max_inventory_product_level_duration, actual_quantity,inventory_monitor ,product_product.id as product_id , '0' as max_inventory_level ,'0' as max_inventory_percent , '0' as max_inventory_future_percent , '0' as inventory_percent_color, '0' as future_percent_color FROM product_template left join product_product ON product_product.product_tmpl_id =  product_template.id where inventory_monitor = true "
+        sql = "INSERT INTO inventory_monitor (product_tmpl_id , max_inventory_product_level_duration ,actual_quantity ,inventory_monitor,product_id ,max_inventory_level ,max_inventory_percent ,max_inventory_future_percent , inventory_percent_color ,future_percent_color )SELECT product_template.id as product_tmpl_id, max_inventory_product_level_duration, actual_quantity,inventory_monitor ,product_product.id as product_id , '0' as max_inventory_level ,'0' as max_inventory_percent , '0' as max_inventory_future_percent , '0' as inventory_percent_color, '0' as future_percent_color FROM product_template left join product_product ON product_product.product_tmpl_id =  product_template.id where inventory_monitor = true "
         self._cr.execute(sql)
 
         max_inventory_level_duration = self.get_max_inventory_level_duration()
@@ -218,7 +218,7 @@ class ProductTemplate(models.Model):
         action = {
             "type": "ir.actions.act_window",
             "view_mode": "tree,form",
-            "res_model": 'inventory.monito1',
+            "res_model": 'inventory.monitor',
             "name": "inventory monitor ",
             'views': [(tree_view_id, 'tree'),(form_view_id,'form')],
         }
@@ -226,7 +226,7 @@ class ProductTemplate(models.Model):
 
     def init_table(self):
         sql_query = """ 
-                    DELETE FROM inventory_monitor1
+                    DELETE FROM inventory_monitor
                 """
         self._cr.execute(sql_query)
 
