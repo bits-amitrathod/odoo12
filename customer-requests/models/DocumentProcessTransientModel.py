@@ -199,7 +199,13 @@ class DocumentProcessTransientModel(models.TransientModel):
                         sps_customer_request)
                     if high_priority_product:
                         high_priority_requests.append(saved_sps_customer_request)
-                self.env['sps.customer.requests'].process_customer_requests(high_priority_requests)
+
+                # Send Email Notification to customer about the progress of uploaded or sent document
+                if len(high_priority_requests) == 0:
+                    template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
+                    self.env['prioritization.engine.model'].send_mail(user_model.name, user_model.email, template)
+                else:
+                    self.env['sps.customer.requests'].process_customer_requests(high_priority_requests)
             else:
                 _logger.info('file is not acceptable')
                 response = dict(errorCode=12, message='Error saving document record')
