@@ -79,14 +79,14 @@
     </template>
 
     <template id="payment_sale_note" inherit_id="website_sale_delivery.payment_delivery" name="Purchase Order">
-        <xpath expr="//div[@id='delivery_carrier']" position="before">
-            <div class="col-xs-12 col-sm-12 col-md-12" t-if="showShippingNote">
+        <xpath expr="//div[@class='card']" position="before">
+            <div class="col-sm-12 col-md-12" t-if="showShippingNote">
                 <input type="hidden" value="" id="freeShipingLabel"  t-att-value="freeShipingLabel" />
                 <label><input type="checkbox" value="" id="hasShippingNote" style="margin-right: 10px;"/> Please click here to ship using your Account.</label>
                 <br/>
                 <div  class="well" id="expedited_shipping" style="margin-bottom: 0px;margin-top: 10px;"><t t-esc="expedited_shipping"/></div>
                 <br/>
-                <a class="btn btn-success" data-toggle="modal" data-target="#accept" id="editShippingNote">
+                <a class="btn btn-success" data-toggle="modal" data-target="#accept" id="editShippingNote" style="color:#fff;">
                     Edit additional shipping notes
                 </a>
 
