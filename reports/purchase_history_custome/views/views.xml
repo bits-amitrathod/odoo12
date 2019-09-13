@@ -17,7 +17,8 @@
                   <field name="minExpDate" widget="date"/>
                   <field name="maxExpDate" widget="date"/>
                   <field name="unit_price" widget="monetary"/>
-                   <field name="price_subtotal" widget="monetary"  string="Total"/>
+                  <field name="retail_price" widget="monetary"/>
+                  <field name="price_subtotal" widget="monetary"  string="Total"/>
                   <field name="currency_id" invisible="1"/>
               </tree>
           </field>
@@ -43,7 +44,8 @@
                                 <field name="date_done" widget="date"/>
                             </group>
                             <group>
-                                <field name="unit_price" />
+                                <field name="unit_price"/>
+                                <field name="retail_price" widget="monetary"/>
                                 <field name="minExpDate" widget="date"/>
                                   <field name="maxExpDate" widget="date"/>
                                      <field name="product_uom"/>
