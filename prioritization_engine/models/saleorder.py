@@ -4,6 +4,7 @@ import odoo
 from odoo import models, fields,  SUPERUSER_ID,api, _
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools.float_utils import float_compare, float_is_zero
+from werkzeug.urls import url_encode
 
 _logger = logging.getLogger(__name__)
 
@@ -116,6 +117,21 @@ class SaleOrder(models.Model):
 
         self.update({'order_processor' : user})
         return  res
+
+    @api.multi
+    def get_share_url(self, redirect=False, signup_partner=False, pid=None):
+        """Override for sales order.
+
+        If the SO is in a state where an action is required from the partner,
+        return the URL with a login token. Otherwise, return the URL with a
+        generic access token (no login).
+        """
+        self.ensure_one()
+        if self.state not in ['sale', 'done']:
+            auth_param = url_encode(self.partner_id.signup_get_auth_param()[self.partner_id.id])
+        return self.get_portal_url(query_string='&%s' % auth_param)
+        return super(SaleOrder, self)._get_share_url(redirect, signup_partner, pid)
+
 
 class SaleOrderLinePrioritization(models.Model):
     _inherit = "sale.order.line"
