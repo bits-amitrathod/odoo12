@@ -95,10 +95,10 @@ class WebsiteSale(http.Controller):
             Order.action_cancel()
             Order.action_draft()
             Order.action_confirm()
-            picking = request.env['stock.picking'].sudo().search([('sale_id', '=', Order.id), ('picking_type_id', '=', 1), ('state', 'not in', ['draft', 'cancel'])])
-            picking.write({'state': 'assigned'})
-            stock_move = request.env['stock.move'].sudo().search([('picking_id', '=', picking.id)])
-            stock_move.write({'state': 'assigned'})
+            # picking = request.env['stock.picking'].sudo().search([('sale_id', '=', Order.id), ('picking_type_id', '=', 1), ('state', 'not in', ['draft', 'cancel'])])
+            # picking.write({'state': 'assigned'})
+            # stock_move = request.env['stock.move'].sudo().search([('picking_id', '=', picking.id)])
+            # stock_move.write({'state': 'assigned'})
         else:
             Order.write({'state': 'sale', 'confirmation_date': datetime.now()})
 
