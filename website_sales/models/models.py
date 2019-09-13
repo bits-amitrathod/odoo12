@@ -19,5 +19,4 @@ class ResConfigSettings(models.TransientModel):
     def set_values(self):
         super(ResConfigSettings, self).set_values()
         ICPSudo = self.env['ir.config_parameter'].sudo()
-        ICPSudo.set_param('website_sales.git', self.website_expiration_date)
-
+        ICPSudo.set_param('website_sales.website_expiration_date', self.website_expiration_date)
