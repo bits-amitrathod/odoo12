@@ -477,13 +477,13 @@ class VendorOffer(models.Model):
         else:
             return super(VendorOffer, self).write(values)
 
-    def get_mail_url(self):
+    def get_mail_url(self,redirect=False):
         self.ensure_one()
         params = {}
         if hasattr(self, 'partner_id') and self.partner_id:
             params.update(self.partner_id.signup_get_auth_param()[self.partner_id.id])
             # ' + str(self.id) + '
-        return '/my/vendor?' + url_encode(params)
+        return '%s?%s' % ('/mail/view' if redirect else self.access_url, url_encode(params))
 
 
 class VendorOfferProduct(models.Model):
