@@ -126,13 +126,14 @@
                                                         </p>
 
                                                     </td>
-                                                    <td>
+                                                    <!-- Below line is commented because requested_date has been remove in odoo12-->
+<!--                                                    <td>-->
 
-                                                        <p style="font-weight: lighter">
-                                                            <span t-esc="packing_list.sale_id.requested_date"></span>
-                                                        </p>
+<!--                                                        <p style="font-weight: lighter">-->
+<!--                                                            <span t-esc="packing_list.sale_id.requested_date"></span>-->
+<!--                                                        </p>-->
 
-                                                    </td>
+<!--                                                    </td>-->
                                                     <td>
 
                                                         <p style="font-weight: lighter">
@@ -233,7 +234,7 @@
                                         </td>
                                         <td t-att-rowspan="rowSpan">
                                             <span style="font-weight: lighter">
-                                                <span t-field="move_line.ordered_qty"/>
+                                                <span t-field="move_line.product_uom_qty"/>
                                                 <span t32-esc="move_line.product_uom.name"/>
                                             </span>
                                         </td>
