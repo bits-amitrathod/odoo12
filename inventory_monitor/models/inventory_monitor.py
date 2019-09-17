@@ -88,7 +88,6 @@ class ResConfigSettings(models.TransientModel):
     max_inventory_level=fields.Boolean("Max Inventory Level")
     max_inventory_level_duration = fields.Integer(string="Duration")
 
-
     @api.onchange('max_inventory_level_duration')
     def _onchange_max_inventory_level_duration(self):
         if self.max_inventory_level_duration > 365:
@@ -131,6 +130,26 @@ class ResConfigSettings(models.TransientModel):
                                                          self.max_inventory_level_duration)
 
 
+
+
+class maxinventorydurationpopup(models.TransientModel):
+    _name = 'max.inventory.popup'
+    # _inherit = 'res.config.settings'
+
+    @api.model
+    def _defaultvalue(self):
+         sql_query = "select max_inventory_level_duration  from res_config_settings order by id desc  LIMIT 1 "
+         self._cr.execute(sql_query)
+         view_ref_res = self._cr.fetchone()
+         return  view_ref_res[0]
+
+    max_inventory_level_duration = fields.Integer(string="Duration" , default = _defaultvalue)
+
+
+    def open_table(self):
+        return self.env['inventory.monitor'].sudo().action_your_report(self.max_inventory_level_duration)
+
+
 class ReportInventoryMonitor(models.AbstractModel):
     _name = 'report.inventory_monitor.inventory_monitor_print'
     @api.model
@@ -159,7 +178,6 @@ class ProductTemplate(models.Model):
     product_id = fields.Many2one('product.product', "Product Name")
     actual_quantity = fields.Integer("Actual Quantity ")
 
-
     def _compute_max_inventory_level(self,max_inventory_level_duration,today_date,last_3_months,cust_location_id,ml):
 
         if ml.product_tmpl_id.max_inventory_product_level_duration is not None and ml.product_tmpl_id.max_inventory_product_level_duration > 0 :
@@ -186,7 +204,7 @@ class ProductTemplate(models.Model):
 
         if max_inventory>0:
             max_inventory_percent = (quantity/int(max_inventory))*100
-            inventory_future_percent =((purchase_qty + ml.actual_quantity)/int(max_inventory))*100
+            inventory_future_percent =((purchase_qty + ml.qty_in_stock)/int(max_inventory))*100
 
             ml.max_inventory_percent =  int(max_inventory_percent)
             ml.max_inventory_future_percent= int(inventory_future_percent)
@@ -194,9 +212,7 @@ class ProductTemplate(models.Model):
             ml.inventory_percent_color = int(max_inventory_percent)
             ml.future_percent_color = int(inventory_future_percent)
 
-
-
-    def action_your_report(self):
+    def action_your_report(self,max_inventory_level_duration):
         print("action_your_report")
         self.init_table()
         tree_view_id = self.env.ref('inventory_monitor.view_inventory_moniter_line_tree_test').id
@@ -204,8 +220,6 @@ class ProductTemplate(models.Model):
 
         sql = "INSERT INTO inventory_monitor (product_tmpl_id , max_inventory_product_level_duration ,actual_quantity ,inventory_monitor,product_id ,max_inventory_level ,max_inventory_percent ,max_inventory_future_percent , inventory_percent_color ,future_percent_color )SELECT product_template.id as product_tmpl_id, max_inventory_product_level_duration, actual_quantity,inventory_monitor ,product_product.id as product_id , '0' as max_inventory_level ,'0' as max_inventory_percent , '0' as max_inventory_future_percent , '0' as inventory_percent_color, '0' as future_percent_color FROM product_template left join product_product ON product_product.product_tmpl_id =  product_template.id where inventory_monitor = true "
         self._cr.execute(sql)
-
-        max_inventory_level_duration = self.get_max_inventory_level_duration()
 
         today_date = datetime.datetime.now()
         last_3_months = fields.Date.to_string(today_date - datetime.timedelta(days=90))
