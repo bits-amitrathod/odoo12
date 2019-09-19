@@ -17,7 +17,6 @@
                 file="packing_list.sale_packing_list_template"
                 name="packing_list.sale_packing_list_template"
                 attachment_use="True"
-                menu="False"
         />
     </data>
 </odoo>

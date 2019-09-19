@@ -5,7 +5,7 @@
             <t t-call="web.external_layout">
                 <page>
                     <div class="oe_structure"/>
-                    <div class="row justify-content-md-center">
+                    <div>
                         <center>
                             <b>
                                 <h2>Surgical Product Solutions</h2>
@@ -26,7 +26,7 @@
                         <t t-set="m5_total_price" t-value="0"/>
                         <t t-set="m6_total_price" t-value="0"/>
                         <t t-set="currency" t-value="0"/>
-                        <table class="table table-condensed" style="border: 1px solid black;">
+                        <table class="table table-sm" style="border: 1px solid black; ">
                             <thead style="display: table-header-group;">
                                 <tr>
                                     <th style="border: 1px solid black;text-align: left; width:15%; ">Product SKU</th>
@@ -58,7 +58,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr t-foreach="data" t-as="product">
+                                <tr t-foreach="data" t-as="product" style="page-break-inside: avoid;">
                                     <td style="border: 1px solid black;">
                                         <span t-esc="product.sku_code"/>
                                     </td>

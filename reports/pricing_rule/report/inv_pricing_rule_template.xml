@@ -14,7 +14,7 @@
                         <!--}-->
                     </style>
                     <div class="oe_structure"/>
-                    <div class="row justify-content-md-center">
+                    <div>
                         <center>
                             <b>
                                 <h2>Surgical Product Solutions</h2>
@@ -24,22 +24,17 @@
 
                     </div>
                     <br/>
-                    <div class="row">
-
-                        <div class="col-md-12" >
-
-                            <table class="table  table-condensed" style="border: 1px solid black;width:100%">
+                               <table class="table table-sm" style="border: 1px solid black;">
                                 <thead>
                                     <tr>
-                                        <th>
-                                             <div class="col-md-12">Pricing Rule</div></th>
-                                            <th><div class="col-md-12">Pricing Rule</div></th>
+                                        <th>Pricing Rule</th>
+                                        <th>Pricing Rule</th>
                                     </tr>
                                 </thead>
                                 <tbody class="invoice_tbody"  t-foreach="pricing_rule_result" t-as="pricing_rule">
-                                    <tr >
+                                    <tr style="page-break-inside: avoid" >
                                        <th>
-                                            <div class="col-md-12" style="margin-top:10px">
+
                                                     <strong>
                                                          <span t-esc="pricing_rule[0].product_code"/>:
                                                          <span t-esc="pricing_rule[0].customer_name"/>
@@ -57,10 +52,10 @@
                                                 <p style="font-weight: lighter">
                                                     Applies to the customer: <span t-esc="pricing_rule[0].customer_name"/>
                                                 </p>
-                                            </div>
+
                                         </th>
                                         <th>
-                                            <div class="col-md-12" style="margin-top:10px ">
+
                                                 <t t-if="pricing_rule[1]!=False">
                                                     <strong>
                                                         <span t-esc="pricing_rule[1].product_code"/>:
@@ -80,16 +75,12 @@
                                                         Applies to the customer: <span t-esc="pricing_rule[1].customer_name"/>
                                                     </p>
                                                 </t>
-                                            </div>
+
                                         </th>
                                     </tr>
 
                                 </tbody>
                             </table>
-                        </div>
-
-                    </div>
-
                 </page>
             </t>
         </t>

@@ -5,7 +5,7 @@
             <t t-call="web.external_layout">
                 <page>
                     <div class="oe_structure"/>
-                    <div class="row justify-content-md-center">
+                    <div>
                     <center>
                         <b>
                             <h2> Surgical Product Solutions </h2>
@@ -29,7 +29,7 @@
                                 </h4>
                             </b>
                         </center>
-                        <table class="table table-condensed" style="">
+                        <table class="table table-sm" style="">
                             <thead>
                                 <tr style="">
                                     <th width="10%" style="text-align: center;center;border: 1px solid black; border-bottom: 1px solid #555555 !important;" >Sales Order</th>
@@ -43,7 +43,7 @@
                                 </tr>
                                </thead>
                             <tbody>
-                                <tr t-foreach="products_on_order[1]" t-as="order"  style="border: 1px solid black;">
+                                <tr t-foreach="products_on_order[1]" t-as="order"  style="border: 1px solid black;page-break-inside: avoid;">
                                     <td width="10%" style="text-align: center;center;border: 1px solid black;">
                                         <span t-esc="order[0]"/>
                                     </td>

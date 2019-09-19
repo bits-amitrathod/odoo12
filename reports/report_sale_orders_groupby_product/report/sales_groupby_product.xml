@@ -14,17 +14,17 @@
                         }
                     </style>
                     <div class="oe_structure"/>
-                    <div class="row justify-content-md-center">
-                        <center>
+                    <div class="row">
+                       <div class="col-md-12">
                             <b>
-                                <h2>Surgical Product Solutions</h2>
-                                <h4>Gross Sales By Product</h4>
-                                 <h4 t-if="popup.compute_at_date">
+                                <h2 style="text-align: center">Surgical Product Solutions</h2>
+                                <h4 style="text-align: center">Gross Sales By Product</h4>
+                                 <h4 t-if="popup.compute_at_date" style="text-align: center">
                                     Date Range: <span t-esc="popup.start_date" t-options='{"widget": "date"}'/>
                                              -  <span t-esc="popup.end_date" t-options='{"widget": "date"}'/>
                                 </h4>
                             </b>
-                        </center>
+                        </div>
 
                     </div>
                     <br/>
@@ -34,7 +34,7 @@
                             <span t-esc="product['name']"/>
                         </b>
 
-                        <table class="table table-condensed table-bordered table-bordered">
+                        <table class="table table-sm table-bordered">
                             <tr>
                                 <th class="text-right" style="width:10%">#</th>
                                 <th class="text-center">Sales Order#</th>
@@ -46,7 +46,7 @@
                             <t t-set="index" t-value="1"/>
                             <t t-set="totalAmount" t-value="0"/>
 
-                            <tr t-foreach="product['table']" t-as="saleOrder">
+                            <tr t-foreach="product['table']" t-as="saleOrder"  style="page-break-inside: avoid">
                                 <t t-set="amount" t-value="float(saleOrder[4])"/>
 
                                 <td class="text-right" t-esc="index"/>

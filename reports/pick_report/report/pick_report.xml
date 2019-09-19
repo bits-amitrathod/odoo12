@@ -8,7 +8,6 @@
                 report_type="qweb-html"
                 file="pick_report.pick_tmpl"
                 name="pick_report.pick_tmpl"
-                menu="False"
                 />
 
         <!-- QWeb Reports -->
@@ -20,7 +19,6 @@
             file="pick_report.pick_tmpl"
             name="pick_report.pick_tmpl"
             attachment_use="True"
-            menu="False"
         />
     </data>
 </odoo>

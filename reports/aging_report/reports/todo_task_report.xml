@@ -13,14 +13,14 @@
             <t t-call="web.external_layout">
                 <page>
                     <div class="oe_structure"/>
-                    <div class="row justify-content-md-center">
+                    <div>
 
                         <center>
                             <b>
-                                <h4>Surgical Product Solutions</h4>
+                                <h2>Surgical Product Solutions</h2>
                             </b>
                             <b>
-                                <h2>Aging Report</h2>
+                                <h4>Aging Report</h4>
                             </b>
                         </center>
 
@@ -38,7 +38,7 @@
                              <div style="width:100%;border-bottom: 1px solid black">
                                    <p  t-if="receving" style="height:10px">Receiving</p>
                                 </div>
-                             <table class="table table-condensed table-bordered" style="border: 1px solid black;margin-top: 15px;" >
+                             <table class="table table-sm table-bordered" style="border: 1px solid black;margin-top: 15px;" >
                                 <tr style="border: 1px solid black;">
                                     <th style="border: 1px solid black;text-align: center; width:130px;">Product SKU</th>
                                     <th style="border: 1px solid black;text-align: center;">Product Name</th>
@@ -50,7 +50,7 @@
                                     <th style="border: 1px solid black;text-align: center;width:70px">Days</th>
                                 </tr>
                                 <t t-foreach="receving" t-as="record">
-                                    <tr>
+                                    <tr style="page-break-inside: avoid">
                                         <td align="center" class="col-xs-2" style="border: 1px solid #000;" >
                                             <span t-esc="record['sku']"/>
                                         </td>
@@ -86,7 +86,7 @@
                                  <div style="width:100%;border-bottom: 1px solid black">
                                      <p  t-if="shipping" style="height:10px">Shipping</p>
                                  </div>
-                                <table class="table table-condensed table-bordered" style="border: 1px solid black;margin-top: 15px;" >
+                                <table class="table table-sm table-bordered" style="border: 1px solid black;margin-top: 15px;" >
                                     <tr style="border: 1px solid black;">
                                         <th style="border: 1px solid black;text-align: center; width:130px;">Product SKU</th>
                                         <th style="border: 1px solid black;text-align: center;">Product Name</th>
@@ -98,7 +98,7 @@
                                         <th style="border: 1px solid black;text-align: center;width:70px">Days</th>
                                     </tr>
                                     <t t-foreach="shipping" t-as="record">
-                                        <tr>
+                                        <tr style="page-break-inside: avoid">
                                             <td align="center" class="col-xs-2" style="border: 1px solid #000;" >
                                                 <span t-esc="record['sku']"/>
                                             </td>
@@ -136,7 +136,7 @@
                              <div style="width:100%;border-bottom: 1px solid black">
                                 <p t-if="stock" style="height:10px">Stock</p>
                               </div>
-                             <table class="table table-condensed table-bordered" style="border: 1px solid black;margin-top: 15px;" >
+                             <table class="table table-sm table-bordered" style="border: 1px solid black;margin-top: 15px;" >
                                 <tr style="border: 1px solid black;">
                                     <th style="border: 1px solid black;text-align: center; width:130px;">Product SKU</th>
                                     <th style="border: 1px solid black;text-align: center;">Product Name</th>
@@ -148,7 +148,7 @@
                                     <th style="border: 1px solid black;text-align: center;width:70px">Days</th>
                                 </tr>
                                 <t t-foreach="stock" t-as="record">
-                                    <tr>
+                                    <tr style="page-break-inside: avoid">
                                         <td align="center" class="col-xs-2" style="border: 1px solid #000;" >
                                             <span t-esc="record['sku']"/>
                                         </td>

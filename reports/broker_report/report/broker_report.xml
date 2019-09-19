@@ -8,7 +8,6 @@
                 report_type="qweb-html"
                 file="broker_report.brokerreport_temp_test"
                 name="broker_report.brokerreport_temp_test"
-                menu ="False"
         />
     </data>
 </odoo>

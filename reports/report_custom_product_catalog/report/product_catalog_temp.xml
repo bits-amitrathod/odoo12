@@ -5,18 +5,18 @@
             <t t-call="web.external_layout">
                 <page>
                     <div class="oe_structure"/>
-                    <div class="row justify-content-md-center">
-                    <center>
+                    <div class="row">
+                  <div class="col-md-12">
                         <b>
-                            <h2> Surgical Product Solutions </h2>
-                            <h4> Custom Product Catalog </h4>
+                            <h2  style="text-align: center"> Surgical Product Solutions </h2>
+                            <h4  style="text-align: center"> Custom Product Catalog </h4>
                         </b>
-                    </center>
+                    </div>
                     </div>
                     <br/>
                         <t t-set="total_sum" t-value="0"/>
                         <div>
-                        <table class="table table-condensed" style="border: 1px solid black;">
+                        <table class="table table-sm" style="border: 1px solid black;">
                             <thead style="display: table-header-group;">
                                 <tr style="border: 1px solid black;">
                                     <th style="border: 1px solid black;text-align: center !important;white-space: nowrap;">Product Type</th>
@@ -30,7 +30,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr t-foreach="data" t-as="product">
+                                <tr t-foreach="data" t-as="product"  style="page-break-inside: avoid">
                                     <td style="border: 1px solid black;">
                                         <span t-esc="product.type"/>
                                     </td>
@@ -69,18 +69,18 @@
             <t t-call="web.external_layout">
                 <page>
                     <div class="oe_structure"/>
-                    <div class="row justify-content-md-center">
-                    <center>
+                    <div class="row">
+                    <div class="col-md-12">
                         <b>
-                            <h2> Surgical Product Solutions </h2>
-                            <h4> Product Catalog </h4>
+                            <h2 style="text-align: center"> Surgical Product Solutions </h2>
+                            <h4 style="text-align: center"> Product Catalog </h4>
                         </b>
-                    </center>
+                    </div>
                     </div>
                     <br/>
                         <t t-set="total_sum" t-value="0"/>
                         <div >
-                        <table class="table table-condensed" style="border: 1px solid black;">
+                        <table class="table table-sm" style="border: 1px solid black;">
                             <thead style="display: table-header-group;">
                                 <tr style="border: 1px solid black;">
                                     <th style="border: 1px solid black;text-align:center;"> Product SKU </th>
@@ -89,7 +89,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr t-foreach="data" t-as="product">
+                                <tr t-foreach="data" t-as="product" style="page-break-inside: avoid">
                                     <td style="border: 1px solid black;text-align:center;">
                                         <span t-esc="product.sku_code"/>
                                     </td>

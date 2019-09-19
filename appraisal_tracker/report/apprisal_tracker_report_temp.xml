@@ -6,7 +6,7 @@
             <t t-call="web.external_layout" t-as="data" >
                 <page>
                     <div class="oe_structure"/>
-                    <div class="row">
+                    <div>
                     <center>
                         <b>
                             <h2> Surgical Product Solutions </h2>
@@ -18,10 +18,10 @@
                     </div>
                     <br/>
 
-                    <div class="" style=" width: 100%;text-align: center;" >
-                    <table class="table table-condensed" style="border: 1px solid black; " >
+
+                    <table class="table table-sm" style="border: 1px solid black; " >
                             <thead>
-                                <tr style="border: 1px solid black;width: 50%;">
+                                <tr style="border: 1px solid black;">
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Appraisal No#</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Priority</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Revision</th>
@@ -38,7 +38,9 @@
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">New Customer</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Margin Detail</th>
                                 </tr>
-                                    <tr t-foreach="data" t-as="order" style="width: 50%;">
+                                </thead>
+                         <tbody>
+                                    <tr t-foreach="data" t-as="order" style="page-break-inside: avoid;">
                                         <td style="border: 1px solid black;width: 5%;">
                                             <span t-esc="order.appraisal_no"/>
                                         </td>
@@ -84,9 +86,9 @@
                                             <span t-esc="order.broker_margin"/>
                                         </td>
                                     </tr>
-                            </thead>
+                             </tbody>
                     </table>
-                    </div>
+
                 </page>
             </t>
         </t>

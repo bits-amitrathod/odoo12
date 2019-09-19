@@ -19,7 +19,7 @@
                     </div>
                     <br/>
                     <div>
-                        <table class="table  table-condensed" style="border: 1px solid black">
+                        <table class="table  table-sm" style="border: 1px solid black">
                             <thead style="display: table-header-group;">
                                 <tr>
                                     <th style="border: 1px solid black;text-align: center;">Customer</th>
@@ -33,7 +33,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr t-foreach="data" t-as="product">
+                                <tr t-foreach="data" t-as="product" style="page-break-inside: avoid">
                                     <td style="border: 1px solid black;">
                                         <span t-esc="product.partner_id.name"/>
                                     </td>

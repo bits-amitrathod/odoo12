@@ -8,7 +8,6 @@
                 report_type="qweb-html"
                 file="sales_by_count.sales_by_count_template"
                 name="sales_by_count.sales_by_count_template"
-                menu = "False"
                 />
     </data>
 </odoo>
