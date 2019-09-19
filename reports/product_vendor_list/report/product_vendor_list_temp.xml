@@ -5,11 +5,11 @@
             <t t-call="web.external_layout">
                 <page>
                     <div class="oe_structure"/>
-                    <div class="row justify-content-md-center">
+                    <div>
                         <center>
                             <b>
-                                <h4 style="font-weight: bold;">Surgical Product Solutions</h4>
-                                <h2>Product Vendors</h2>
+                                <h2>Surgical Product Solutions</h2>
+                                <h4>Product Vendors</h4>
                                 <h> <span t-esc="data[0].product_id.name"/> </h>
 
                             </b>
@@ -19,7 +19,7 @@
                     </div>
                     <br/>
                     <!--<div class="table-responsive">-->
-                    <table class="table table-condensed" style="border: 1px solid black;">
+                    <table class="table table-sm" style="border: 1px solid black;">
                         <thead>
                             <tr style="border: 1px solid black;">
                                 <th style="border: 1px solid black;text-align: center;">Vendor</th>
@@ -29,7 +29,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr t-foreach="data" t-as="order">
+                            <tr t-foreach="data" t-as="order" style="page-break-inside: avoid">
                                 <td align="center" style="border: 1px solid black;">
                                     <span t-esc="order.partner_id.name"/>
                                 </td>

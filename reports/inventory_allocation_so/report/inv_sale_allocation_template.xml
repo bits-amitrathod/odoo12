@@ -14,13 +14,13 @@
                         <!--}-->
                     </style>
                     <div class="oe_structure"/>
-                    <div class="row justify-content-md-center">
-                        <center>
+                    <div class="row">
+                      <div class="col-md-12">
                             <b>
-                                <h2>Surgical Product Solutions</h2>
-                                <h4>Inventory Allocation For Sale Orders</h4>
+                                <h2 style="text-align: center">Surgical Product Solutions</h2>
+                                <h4 style="text-align: center">Inventory Allocation For Sale Orders</h4>
                             </b>
-                        </center>
+                        </div>
 
                     </div>
                     <br/>
@@ -38,7 +38,7 @@
 
                         <div class="col-md-12" >
 
-                            <table class="table table-condensed  table-bordered" >
+                            <table class="table table-sm table-bordered">
                                 <thead >
                                     <tr style="border: 1px solid black">
                                         <th style="border: 1px solid black;border-bottom: 1px solid #555555 !important;">Product SKU</th>
@@ -48,7 +48,7 @@
                                     </tr>
                                 </thead>
                                 <tbody class="invoice_tbody" style="border: 1px solid black;width:100%">
-                                    <tr t-foreach="sale_order_value" t-as="order">
+                                    <tr t-foreach="sale_order_value" t-as="order" style="page-break-inside: avoid">
                                         <td style="border: 1px solid black">
                                             <span t-esc="order.product_code"/>
                                         </td>

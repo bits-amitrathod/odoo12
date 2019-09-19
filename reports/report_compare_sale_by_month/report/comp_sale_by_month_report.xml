@@ -8,7 +8,6 @@
                 report_type="qweb-html"
                 file="report_compare_sale_by_month.compsalebymonth_template"
                 name="report_compare_sale_by_month.compsalebymonth_template"
-                menu = "False"
         />
     </data>
 </odoo>

@@ -14,10 +14,10 @@
                 <div class="page">
                     <center>
                            <b>
-                            <h4>Surgical Product Solutions</h4>
+                            <h2>Surgical Product Solutions</h2>
                         </b>
                         <b>
-                            <h2>Adjustment Report</h2>
+                            <h4>Adjustment Report</h4>
                         </b>
                     </center>
                     <center>
@@ -27,7 +27,7 @@
                     </center>
                     <!-- Report page content -->
                      <t t-set="total_amount" t-value="0"/>
-                    <table class="table table-condensed table-bordered" style="border: 1px solid black;">
+                    <table class="table table-sm table-bordered" style="border: 1px solid black;">
                         <tr>
                             <!--<th style="border: 1px solid black;text-align: center;">Inventory Reference</th>-->
                             <th style="border: 1px solid black;text-align: center;">Product SKU</th>
@@ -41,7 +41,7 @@
                             <th style="border: 1px solid black;text-align: center;">Adjustment Status</th>
                         </tr>
                             <t t-foreach="data" t-as="o">
-                                <tr>
+                                <tr style="page-break-inside: avoid">
                                     <td align="left"  style="border: 1px solid #000;">
                                         <span t-esc="o.p_sku"/>
                                     </td>

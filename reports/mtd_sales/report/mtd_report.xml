@@ -8,7 +8,6 @@
                 report_type="qweb-html"
                 file="mtd_sales.mtd_temp"
                 name="mtd_sales.mtd_temp"
-                menu = "False"
                 />
 
     </data>

@@ -5,7 +5,7 @@
             <t t-call="web.external_layout">
                 <page>
                     <div class="oe_structure"/>
-                    <div class="row justify-content-md-center">
+                    <div>
                         <center>
                             <b>
                                 <h2>Surgical Product Solutions</h2>
@@ -13,9 +13,9 @@
                             </b>
                         </center>
                         <br/>
-                        <table class="table table-condensed" style="margin-bottom: 0px;">
+                        <table class="table table-sm" style="margin-bottom: 0px;">
                             <tr>
-                                <td style="border: 1px solid #ffffff;width:40%">
+                                <td style="border: 1px solid #ffffff;width:50%">
                                     <strong>Order Number:</strong>
                                      <t t-if="data">
                                     <span  t-esc="data[0].order_id.name"/>
@@ -29,7 +29,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="border: 1px solid #ffffff;width:40%">
+                                <td style="border: 1px solid #ffffff;width:50%">
                                     <t t-if="order_type">
                                         <strong> Vendor Name / Facility Name:</strong>
                                     </t>
@@ -48,7 +48,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="border: 1px solid #ffffff;width:40%;">
+                                <td style="border: 1px solid #ffffff;width:50%;">
                                     <strong>Warehouse:</strong>
                                      <t t-if="data">
                                         <span  t-esc="data[0].warehouse_id.name"/>
@@ -64,7 +64,7 @@
                         </table>
                         <br/>
 
-                        <table class="table table-condensed" style="border: 1px solid black;">
+                        <table class="table table-sm" style="border: 1px solid black;">
                             <thead>
                                 <tr>
                                     <th style="border: 1px solid black;border-bottom: 1px solid #555555 !important;">Product Name</th>
@@ -78,7 +78,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr t-foreach="data" t-as="product">
+                                <tr t-foreach="data" t-as="product" style="page-break-inside: avoid;">
                                     <td style="border: 1px solid black;">
                                         <span t-esc="product.product_tmpl_id.name"/>
                                     </td>

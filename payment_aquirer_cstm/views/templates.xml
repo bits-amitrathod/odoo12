@@ -86,7 +86,7 @@
                 <br/>
                 <div  class="well" id="expedited_shipping" style="margin-bottom: 0px;margin-top: 10px;"><t t-esc="expedited_shipping"/></div>
                 <br/>
-                <a class="btn btn-success" data-toggle="modal" data-target="#accept" id="editShippingNote" style="color:#fff;">
+                <a class="btn btn-success" datDiscount Summarya-toggle="modal" data-target="#accept" id="editShippingNote" style="color:#fff;">
                     Edit additional shipping notes
                 </a>
 

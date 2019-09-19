@@ -5,18 +5,18 @@
             <t t-call="web.external_layout">
                 <page>
                     <div class="oe_structure"/>
-                    <div class="row justify-content-md-center">
-                        <center>
+                    <div class="row">
+                       <div class="col-md-12">
                             <b>
-                                <h2>Surgical Product Solutions</h2>
-                                <h4>Trending Report</h4>
+                                <h2 style="text-align: center">Surgical Product Solutions</h2>
+                                <h4 style="text-align: center">Trending Report</h4>
                             </b>
-                        </center>
+                        </div>
                         <center>
                         </center>
                     </div>
                     <br/>
-                    <table class="table table-condensed" style="border: 1px solid black;">
+                    <table class="table table-sm" style="border: 1px solid black;    font-size: 14px;">
                         <t t-set="code_value" t-value="code"/>
                         <thead>
                             <tr style="border: 1px solid black;">
@@ -68,7 +68,7 @@
                         </thead>
                         <tbody>
                             <t t-set="total_value" t-value="0"/>
-                            <tr t-foreach="data" t-as="order">
+                            <tr t-foreach="data" t-as="order" style="page-break-inside: avoid">
                                 <td style="border: 1px solid black;">
                                     <span t-esc="order.name"/>
                                 </td>

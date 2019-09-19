@@ -5,31 +5,31 @@
         <t t-call="web.external_layout">
             <page>
                 <div class="oe_structure"/>
-                <div class="row justify-content-md-center">
-                    <center>
+                <div class="row">
+                   <div class="col-md-12">
                         <b>
-                            <h3>Surgical Product Solutions</h3>
-                            <h2>T.P.S Report</h2>
+                            <h2 style="text-align: center">Surgical Product Solutions</h2>
+                            <h4 style="text-align: center">T.P.S Report</h4>
 
                         </b>
-                         <h4 style="display: inline;" t-if="popup.start_date and popup.end_date">Date Range:<span t-esc="popup.start_date" t-options='{"widget": "date"}'/>-<span t-esc="popup.end_date" t-options='{"widget": "date"}'/></h4>
+                         <h4 style="text-align: center;" t-if="popup.start_date and popup.end_date">Date Range:<span t-esc="popup.start_date" t-options='{"widget": "date"}'/>-<span t-esc="popup.end_date" t-options='{"widget": "date"}'/></h4>
                         <!--Date Range: <b>-->
                         <!--<span t-esc="start_date"/>-->
                         <!-- - -->
                         <!--<span t-esc="end_date"/>-->
                         <!--</b>-->
-                    </center>
+                    </div>
                 </div>
                 <br/>
 
 
                 <!--<div class="table-responsive">-->
-                    <table class="table table-condensed table-bordered" >
+                    <table class="table table-sm">
                         <tr>
                             <!--<th style="border: 1px solid black;text-align: center;">Internal Reference</th>-->
-                            <th style="border: 1px solid white;border-bottom: 1px solid black;width: 20%;">Product SKU</th>
-                            <th style="border: 1px solid white;border-bottom: 1px solid black;" >Product Name</th>
-                            <th class="text-right"  style="border: 1px solid white;border-bottom: 1px solid black;width: 20%;">Sales</th>
+                            <th style="border: 1px solid #000;width: 20%;">Product SKU</th>
+                            <th style="border: 1px solid #000;" >Product Name</th>
+                            <th class="text-right"  style="border: 1px solid #000;width: 20%;">Sales</th>
 
                         </tr>
 
@@ -39,14 +39,14 @@
                                 <!--<td style="border: 1px solid black;">-->
                                     <!--<span t-esc="a.default_code"/>-->
                                 <!--</td>-->
-                                <td style="border: 1px solid white;">
+                                <td style="border: 1px solid #000;">
                                     <span t-esc="a.sku_code"/>
                                 </td>
-                                <td style="border: 1px solid white;">
+                                <td style="border: 1px solid #000;">
                                     <span t-esc="a.product_name"/>
                                 </td>
 
-                                <td align="right" class="text-right" style="border: 1px solid white;">
+                                <td align="right" class="text-right" style="border: 1px solid #000;">
                                     <span t-esc="a.total_sales"  t-options='{"widget": "monetary","display_currency": a.currency_id}'/>
                                 </td>
                             </tr>

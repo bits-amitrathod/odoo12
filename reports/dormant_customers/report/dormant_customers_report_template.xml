@@ -5,20 +5,20 @@
             <t t-call="web.external_layout">
                 <page>
                     <div class="oe_structure"/>
-                    <div class="row justify-content-md-center">
-                        <center>
+                    <div class="row">
+                         <div class="col-md-12">
                             <b>
-                                <h2>Surgical Product Solutions</h2>
-                                <h4>Dormant Customers</h4>
-                                <h4 t-if="dateRange.compute_at_date">Customers who have not purchased within date range:<span t-esc="dateRange.start_date" t-options='{"widget": "date"}'/>
+                                <h2 style="text-align: center">Surgical Product Solutions</h2>
+                                <h4 style="text-align: center">Dormant Customers</h4>
+                                <h4 t-if="dateRange.compute_at_date" style="text-align: center">Customers who have not purchased within date range:<span t-esc="dateRange.start_date" t-options='{"widget": "date"}'/>
                                 - <span t-esc="dateRange.end_date" t-options='{"widget": "date"}'/>
                                 </h4>
                             </b>
-                        </center>
+                        </div>
                     </div>
                     <br/>
                     <div>
-                        <table class="table table-condensed" style="border: 1px solid black;">
+                        <table class="table table-sm" style="border: 1px solid black;">
                             <thead style="display: table-header-group;">
                                 <tr>
                                     <th style="border: 1px solid black;text-align: center; width:35%;">Customer</th>
@@ -30,7 +30,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr t-foreach="data" t-as="order">
+                                <tr t-foreach="data" t-as="order" style="page-break-inside: avoid">
                                     <td align="left" style="border: 1px solid black;">
                                         <span t-esc="order.display_name"/>
                                     </td>

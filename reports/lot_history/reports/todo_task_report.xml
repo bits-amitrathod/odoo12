@@ -6,7 +6,6 @@
             report_type="qweb-html"
             file="lot_history.purchase_report"
             name="lot_history.purchase_report"
-            menu = "False"
     />
 
     <template id="purchase_report">
@@ -14,7 +13,7 @@
             <t t-call="web.external_layout">
                 <page>
                     <div class="oe_structure"/>
-                    <div class="row justify-content-md-center">
+                    <div>
 
                         <center>
                             <b>
@@ -25,7 +24,7 @@
                             </b>
                         </center>
                         <!-- Report page content -->
-                            <table class="table table-condensed table-bordered" style="border: 1px solid black;">
+                            <table class="table table-sm table-bordered" style="border: 1px solid black;">
                                 <thead>
                                 <tr>
                                     <th style="border: 1px solid black;text-align: left;">Product SKU</th>
@@ -42,7 +41,7 @@
                                 </thead>
                                 <tbody>
                                     <t t-foreach="data" t-as="lot">
-                                        <tr>
+                                        <tr style="page-break-inside: avoid">
                                             <td style="border: 1px solid black;">
                                                 <span t-esc="lot.sku_code"/>
                                             </td>

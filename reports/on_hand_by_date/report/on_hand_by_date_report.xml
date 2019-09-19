@@ -8,7 +8,6 @@
                 report_type="qweb-html"
                 file="on_hand_by_date.on_hand_by_date_temp"
                 name="on_hand_by_date.on_hand_by_date_temp"
-                menu = "False"
                 />
 
         <report
@@ -18,7 +17,6 @@
                 report_type="qweb-html"
                 file="on_hand_by_date.on_hand_by_date_temp"
                 name="on_hand_by_date.on_hand_by_date_temp"
-                menu = "False"
                 />
     </data>
 </odoo>

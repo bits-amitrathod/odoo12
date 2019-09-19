@@ -5,21 +5,23 @@
             <t t-call="web.external_layout">
                 <page>
                     <div class="oe_structure"/>
-                    <div class="row justify-content-md-center">
-                        <center>
+                    <div class="row">
+                        <div class="col-md-12">
+
                             <b>
-                                <h2>Surgical Product Solutions</h2>
-                                <h4>Discount Summary</h4>
-                                <h4 t-if="popup.compute_at_date">
+                                <h2 style="text-align: center">Surgical Product Solutions</h2>
+                                <h4 style="text-align: center">Discount Summary</h4>
+                                <h4 t-if="popup.compute_at_date" style="text-align: center">
                                     <span t-esc="popup.start_date" t-options='{"widget": "date"}'/>
                                     to <span t-esc="popup.end_date" t-options='{"widget": "date"}'/>
                                 </h4>
                             </b>
-                        </center>
+
+                        </div>
                     </div>
                     <br/>
                     <div>
-                        <table class="table table-condensed" style="border: 1px solid black;">
+                        <table class="table table-sm" style="border: 1px solid black;">
                             <thead style="display: table-header-group;">
                                 <tr style="border: 1px solid black;">
                                     <th style="border: 1px solid black;text-align: center;">Sales Order#</th>
@@ -32,7 +34,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr t-foreach="data" t-as="order">
+                                <tr t-foreach="data" t-as="order" style="page-break-inside: avoid">
                                     <td style="border: 1px solid black;">
                                         <span t-esc="order.name"/>
                                     </td>

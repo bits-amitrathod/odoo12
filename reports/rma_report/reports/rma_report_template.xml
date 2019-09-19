@@ -4,16 +4,14 @@
             <t t-call="web.external_layout">
                 <page>
                     <div class="oe_structure"/>
-                    <div class="row justify-content-md-center">
+                    <div class="row">
 
-                        <center>
+                      <div class="col-md-12">
                             <b>
-                                <h4>Surgical Product Solutions</h4>
+                                <h2 style="text-align: center">Surgical Product Solutions</h2>
+                                <h4 style="text-align: center">RMA Report</h4>
                             </b>
-                            <b>
-                                <h2>RMA Report</h2>
-                            </b>
-                        </center>
+                        </div>
                         <br/>
                         <table style="width:100%">
                             <tr>
@@ -30,7 +28,7 @@
                         </table>
                         <hr style="width: 100%; color: black; height: 1px;" />
                             <t t-set="total_price" t-value="0"/>
-                            <table class="table table-condensed table-bordered" style="border: 1px solid black;">
+                            <table class="table table-sm" style="border: 1px solid black;">
                                 <tr style="border: 1px solid black;">
                                     <th style="border: 1px solid black;text-align: center;">Product Name</th>
                                     <th style="border: 1px solid black;text-align: center;">Product SKU</th>
@@ -40,7 +38,7 @@
                                     <th style="border: 1px solid black;text-align: center;">Total</th>
                                 </tr>
                                     <t t-foreach="data['moves']" t-as="product">
-                                        <tr>
+                                        <tr style="page-break-inside: avoid">
                                             <td align="center" class="col-xs-2" style="border: 1px solid #000;">
                                                 <span t-esc="product[0]"/>
                                             </td>

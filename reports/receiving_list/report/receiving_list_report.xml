@@ -16,7 +16,6 @@
             report_type="qweb-html"
             file="receiving_list.receiving_list_temp"
             name="receiving_list.receiving_list_temp"
-            menu = "False"
             />
     </data>
 </odoo>
