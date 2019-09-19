@@ -150,15 +150,17 @@ class SpsCustomerRequest(models.Model):
         if len(customer_level_setting) == 1:
             _logger.info("Inside get_settings_object if block")
             if customer_level_setting.customer_id.prioritization and customer_level_setting.customer_id.on_hold is False:
-                if customer_level_setting.length_of_hold != 0:
+                if customer_level_setting.length_of_hold > 0:
                     return customer_level_setting
-                else:
+                elif sps_customer_request_id is not None and status is not None:
                     self.update_customer_status(sps_customer_request_id, status, "Product length of hold is 0. It should be minimum 1 hour")
+                    return False
+                else:
                     return False
             else:
                 _logger.info('Customer prioritization setting is False or customer is On Hold. Customer id is :%r',
                              str(customer_level_setting.customer_id.id))
-                if sps_customer_request_id != None and status != None:
+                if sps_customer_request_id is not None and status is not None:
                     self.update_customer_status(sps_customer_request_id, status, "Customer prioritization setting is False or customer is On Hold.")
                 return False
         else:
@@ -175,7 +177,7 @@ class SpsCustomerRequest(models.Model):
                 else:
                     _logger.info('Customer prioritization setting is False or customer is On Hold. Customer id is :%r',
                                  str(global_level_setting.id))
-                    if sps_customer_request_id != None and status != None:
+                    if sps_customer_request_id is not None and status is not None:
                         self.update_customer_status(sps_customer_request_id, status, "Customer prioritization setting is False or customer is On Hold.")
                     return False
 

@@ -175,7 +175,7 @@ class IncomingMailCronModel(models.Model):
                                                     _logger.info('email_to_domain email_from: %r', email_from)
                                         #_logger.info('message payload: %r %r', message_payload, email_from)
                                         if not email_from is None:
-                                            users_model = self.env['res.partner'].search([("email", "=", email_from)])
+                                            users_model = self.env['res.partner'].search([("email", "=ilike", email_from)])
                                             if users_model:
                                                 if len(users_model) == 1:
                                                     user_attachment_dir = ATTACHMENT_DIR + str(
@@ -220,7 +220,7 @@ class IncomingMailCronModel(models.Model):
 
                                 if "errorCode" in response:
                                     if not email_from is None:
-                                        res_partners = self.env['res.partner'].search([("email", "=", email_from)])
+                                        res_partners = self.env['res.partner'].search([("email", "=ilike", email_from)])
                                         if len(res_partners) > 1:
                                             customerName = ""
                                             for res_partner in res_partners:

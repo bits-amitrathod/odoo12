@@ -132,9 +132,9 @@ class DocumentProcessTransientModel(models.TransientModel):
 
                     self.env.cr.execute("""
                            select * from 
-                               (SELECT id, regexp_replace(manufacturer_pref , '[^A-Za-z0-9.]', '','g') as manufacturer_pref, 
-                                 regexp_replace(sku_code , '[^A-Za-z0-9.]', '','g') as sku_code_cleaned 
-                                 FROM product_template) 
+                               (SELECT id, regexp_replace(TRIM(LEADING '0' FROM CAST(manufacturer_pref AS TEXT)) , '[^A-Za-z0-9.]', '','g') as manufacturer_pref, 
+                                            regexp_replace(TRIM(LEADING '0' FROM CAST(sku_code AS TEXT)) , '[^A-Za-z0-9.]', '','g') as sku_code_cleaned
+                                FROM product_template)
                            as temp_data where sku_code_cleaned ='""" +product_sku + """' or manufacturer_pref = '""" +
                                             product_sku + """' """)
                     query_result = self.env.cr.dictfetchone()
@@ -218,9 +218,9 @@ class DocumentProcessTransientModel(models.TransientModel):
             else:
                 # get product
                 product = self.env['product.template'].search([('id', '=', req['product_id'])])
-                uom = self.env['uom.uom'].search([('name', 'ilike', 'Unit'),('category_id.id', '=', 1)])
+                uom = self.env['product.uom'].search([('name', 'ilike', 'Unit'),('category_id.id', '=', 1)])
                 if len(uom) == 0:
-                    uom = self.env['uom.uom'].search([('name', 'ilike', 'Each'),('category_id.id', '=', 1)])
+                    uom = self.env['product.uom'].search([('name', 'ilike', 'Each'),('category_id.id', '=', 1)])
                 updated_qty = product.manufacturer_uom._compute_quantity(float(req_qty), uom)
                 return updated_qty
         else:
@@ -445,4 +445,4 @@ class DocumentProcessTransientModel(models.TransientModel):
 
     @staticmethod
     def cleaning_code(str):
-        return re.sub(r'[^A-Za-z0-9.]', '', str)
+        return re.sub(r'[^A-Za-z0-9.]', '', str.lstrip('0'))
