@@ -53,3 +53,33 @@ class ReportSaleOrderLine(models.Model):
         for order in self:
                 order.sku_code = order.product_id.product_tmpl_id.sku_code
 
+
+class ProductTemplate(models.Model):
+    _inherit = 'product.template'
+
+    @api.multi
+    def action_view_sales(seaclf):
+        tree_view_id = self.env.ref('report_sale_orders_groupby_product.report_sale_orders_group_by_product_tree').id
+        action = {
+            'name': 'Sales by Channel',
+            'type': 'ir.actions.act_window',
+            'view_mode': 'tree',
+            'views': [(tree_view_id, 'tree')],
+            'res_model': 'sale.order.line',
+            'domain': [('product_id', '=', self.id)]
+        }
+        print(self.sku_code)
+        return action
+
+    @api.multi
+    def action_view_po(self):
+        tree_view_id = self.env.ref('purchase.purchase_order_line_tree').id
+        action = {
+            'name': 'Purchase by Channel',
+            'type': 'ir.actions.act_window',
+            'view_mode': 'tree',
+            'views': [(tree_view_id, 'tree')],
+            'res_model': 'purchase.order.line',
+            'domain': [('product_id', '=', self.id)]
+        }
+        return action
