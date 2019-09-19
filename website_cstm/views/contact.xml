@@ -143,7 +143,7 @@
                                       class="s_website_form form-horizontal container-fluid"
                                       enctype="multipart/form-data" data-editable-form="false" style="padding: 0;">
                                     <div class="form-group form-field o_website_form_required_custom">
-                                        <label class="col-md-3 col-sm-4 control-label" for="contact_name" style="text-align: left;">Name
+                                        <label class="col-md-3 col-sm-4 control-label pt-0" for="contact_name" style="text-align: left;">Name
                                         </label>
                                         <div class="col-md-12 col-sm-12">
                                             <input type="text" class="form-control o_website_form_input"
@@ -159,7 +159,7 @@
                                         <!--</div>-->
                                     <!--</div>-->
                                     <div class="form-group form-field o_website_form_required_custom">
-                                        <label class="col-md-3 col-sm-4 control-label" for="email_from" style="text-align: left;">Email</label>
+                                        <label class="col-md-3 col-sm-4 control-label pt-0" for="email_from" style="text-align: left;">Email</label>
                                         <div class="col-md-12 col-sm-12">
                                             <input type="hidden" class="form-control o_website_form_input" name="name" required="" value="Website Contact Us" />
                                             <input type="text" class="form-control o_website_form_input"
@@ -184,7 +184,7 @@
                                         <!--</div>-->
                                     <!--</div>-->
                                     <div class="form-group form-field o_website_form_required_custom">
-                                        <label class="col-md-12 col-sm-12 control-label" for="description" style="text-align: left;">Message</label>
+                                        <label class="col-md-12 col-sm-12 control-label pt-0" for="description" style="text-align: left;">Message</label>
                                         <div class="col-md-12 col-sm-12">
                                             <textarea class="form-control o_website_form_input" name="description" style="margin-bottom: 0px;"
                                               required=""><t t-esc="request.params.get('description', '')" /></textarea>

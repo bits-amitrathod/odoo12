@@ -32,9 +32,9 @@ class MsQuery(models.Model):
             raise UserError(e)
 
         if prefix == 'SELECT' :
-            result = self._cr.dictfetchall()
+            result = self._cr.fetchall()
             if result :
-               self.result = result[0].keys()
+               self.result = result[0]
             else :
                 self.result = "Data not found"
         elif prefix == 'UPDATE' :
