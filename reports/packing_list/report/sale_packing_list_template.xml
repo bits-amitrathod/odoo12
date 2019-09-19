@@ -153,7 +153,7 @@
                                                     <td>
 
                                                         <p style="font-weight: lighter">
-                                                            <span t-esc="packing_list.carrier_id.name"></span>
+                                                            <span t-esc="packing_list.delivery_method_name"></span>
                                                         </p>
 
                                                     </td>

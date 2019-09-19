@@ -44,7 +44,7 @@
                  <field name="requested_date" string="Req. Ship Date"/>
                  <field name="date_done" string="Date Shipped"/>
                  <field name="shipping_terms" string="Shipping Terms"/>
-                 <field name="carrier_id" string="Ship Via"/>
+                 <field name="delivery_method_name" string="Ship Via"/>
                  <field name="carrier_tracking_ref" />
                  <field name="state"/>
 
