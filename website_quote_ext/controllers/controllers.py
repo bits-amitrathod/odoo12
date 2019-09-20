@@ -107,7 +107,7 @@ class WebsiteSale(http.Controller):
         if client_order_ref:
             Order.write({"client_order_ref":client_order_ref})
         if message:
-            # Order.write({'sale_note': message})
+            Order.write({'sale_note': message})
             body = _(message)
             _message_post_helper(res_model='sale.order', res_id=Order.id, message=body, token=Order.access_token,
                                  message_type='notification', subtype="mail.mt_note",
