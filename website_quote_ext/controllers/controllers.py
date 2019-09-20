@@ -139,7 +139,7 @@ class WebsiteSale(http.Controller):
         Order.action_cancel()
         message = post.get('decline_message')
         if message:
-            # Order.write({'sale_note': message})
+            Order.write({'sale_note': message})
             body = _(message)
             _message_post_helper(res_model='sale.order', res_id=Order.id, message=body, token=Order.access_token,
                                  message_type='notification', subtype="mail.mt_note",
