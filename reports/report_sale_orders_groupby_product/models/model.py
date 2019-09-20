@@ -60,25 +60,26 @@ class ProductTemplate(models.Model):
     @api.multi
     def action_view_sales(self):
         tree_view_id = self.env.ref('report_sale_orders_groupby_product.report_sale_orders_group_by_product_tree').id
+        pivote_view_id = self.env.ref('report_sale_orders_groupby_product.view_sold_level_pivot').id
         action = {
             'name': 'Sales by Channel',
             'type': 'ir.actions.act_window',
-            'view_mode': 'tree',
-            'views': [(tree_view_id, 'tree')],
+            'view_mode': 'tree,pivot',
+            'views': [(tree_view_id, 'tree'),(pivote_view_id, 'pivot')],
             'res_model': 'sale.order.line',
             'domain': [('product_id', '=', self.id)]
         }
-        print(self.sku_code)
         return action
 
     @api.multi
     def action_view_po(self):
         tree_view_id = self.env.ref('purchase.purchase_order_line_tree').id
+        pivote_view_id = self.env.ref('report_sale_orders_groupby_product.view_prchase_level_pivot').id
         action = {
             'name': 'Purchase by Channel',
             'type': 'ir.actions.act_window',
-            'view_mode': 'tree',
-            'views': [(tree_view_id, 'tree')],
+            'view_mode': 'tree,pivot',
+            'views': [(tree_view_id, 'tree'),(pivote_view_id, 'pivot')],
             'res_model': 'purchase.order.line',
             'domain': [('product_id', '=', self.id)]
         }
