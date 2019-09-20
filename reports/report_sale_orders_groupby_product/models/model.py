@@ -58,7 +58,7 @@ class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
     @api.multi
-    def action_view_sales(seaclf):
+    def action_view_sales(self):
         tree_view_id = self.env.ref('report_sale_orders_groupby_product.report_sale_orders_group_by_product_tree').id
         action = {
             'name': 'Sales by Channel',

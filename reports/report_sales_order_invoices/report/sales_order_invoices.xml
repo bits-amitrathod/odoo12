@@ -15,14 +15,15 @@
                             }
                         </style>
                         <div class="oe_structure"/>
-                        <div class="row justify-content-md-center">
+                        <div>
+                            <center>
 
                                 <b>
                                     <h2>Surgical Product Solutions</h2>
-                                    <h4 align ="center">Sales Order Invoice</h4>
+                                    <h4>Sales Order Invoice</h4>
                                 </b>
 
-
+                            </center>
                         </div>
                         <br/>
                         <div class="row">
@@ -70,7 +71,7 @@
                         </div>
 
 
-                        <table class="table table-condensed" name="invoice_line_table">
+                        <table class="table table-sm" name="invoice_line_table">
                             <thead>
                                 <tr>
                                     <th>Description</th>
