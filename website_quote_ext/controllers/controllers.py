@@ -95,10 +95,10 @@ class WebsiteSale(http.Controller):
             Order.action_cancel()
             Order.action_draft()
             Order.action_confirm()
-            picking = request.env['stock.picking'].sudo().search([('sale_id', '=', Order.id), ('picking_type_id', '=', 1), ('state', 'not in', ['draft', 'cancel'])])
-            picking.write({'state': 'assigned'})
-            stock_move = request.env['stock.move'].sudo().search([('picking_id', '=', picking.id)])
-            stock_move.write({'state': 'assigned'})
+            # picking = request.env['stock.picking'].sudo().search([('sale_id', '=', Order.id), ('picking_type_id', '=', 1), ('state', 'not in', ['draft', 'cancel'])])
+            # picking.write({'state': 'assigned'})
+            # stock_move = request.env['stock.move'].sudo().search([('picking_id', '=', picking.id)])
+            # stock_move.write({'state': 'assigned'})
         else:
             Order.write({'state': 'sale', 'confirmation_date': datetime.now()})
 
@@ -107,7 +107,7 @@ class WebsiteSale(http.Controller):
         if client_order_ref:
             Order.write({"client_order_ref":client_order_ref})
         if message:
-            # Order.write({'sale_note': message})
+            Order.write({'sale_note': message})
             body = _(message)
             _message_post_helper(res_model='sale.order', res_id=Order.id, message=body, token=Order.access_token,
                                  message_type='notification', subtype="mail.mt_note",
@@ -139,7 +139,7 @@ class WebsiteSale(http.Controller):
         Order.action_cancel()
         message = post.get('decline_message')
         if message:
-            # Order.write({'sale_note': message})
+            Order.write({'sale_note': message})
             body = _(message)
             _message_post_helper(res_model='sale.order', res_id=Order.id, message=body, token=Order.access_token,
                                  message_type='notification', subtype="mail.mt_note",

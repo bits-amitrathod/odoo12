@@ -155,24 +155,7 @@ class IncomingMailCronModel(models.Model):
                                         plain_text = html2text.HTML2Text()
                                         message_payload = plain_text.handle(
                                             tools.ustr(body, encoding, errors='replace'))
-                                        if '- Forwarded message -' in message_payload:
-                                            messages = message_payload.split('- Forwarded message -')
-                                            _logger.info('Forwarded message payload: %r', messages)
-                                            total_parts = len(messages)
-                                            originator_part = messages[total_parts - 1]
-                                            _logger.info('originator_part: %r', originator_part)
-                                            match = re.search(r'[\w\.-]+@[\w\.-]+', originator_part)
-                                            _logger.info('match: %r', match)
-                                            if match:
-                                                email_from_domain = re.search("@[\w.]+", email_from).group(0)
-                                                _logger.info('email_from_domain: %r', email_from_domain)
-                                                email_to_domain = re.search("@[\w.]+", email_to).group(0)
-                                                _logger.info('email_to_domain: %r', email_to_domain)
-                                                if email_to_domain != email_from_domain:
-                                                    email_from = None
-                                                else:
-                                                    email_from = str(match.group(0))
-                                                    _logger.info('email_to_domain email_from: %r', email_from)
+
                                         #_logger.info('message payload: %r %r', message_payload, email_from)
                                         if not email_from is None:
                                             users_model = self.env['res.partner'].search([("email", "=ilike", email_from)])
@@ -206,9 +189,6 @@ class IncomingMailCronModel(models.Model):
                                             else:
                                                 _logger.info('We have not found user in our contact list : %r', email_from)
                                                 response = dict(errorCode=102, message='User not found in our contact list.')
-                                        else:
-                                            _logger.info('Domain not matched for forwarded email')
-                                            response = dict(errorCode=103, message='Domain not matched for forwarded email.')
                                     else:
                                         _logger.info("User has not attached requirement or inventory documnet.")
                                         response = dict(errorCode=104, message='User has not attached requirement or inventory documnet.')
