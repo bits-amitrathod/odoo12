@@ -19,7 +19,8 @@ class PurchaseHistory(models.Model):
     product_name=fields.Char("Product Name", store=False)
     minExpDate = fields.Date("Min Expiration Date", store=False, compute="_calculateDate1")
     maxExpDate = fields.Date("Max Expiration Date", store=False, compute="_calculateDate2")
-    unit_price=fields.Monetary("Price Per Unit", store=False)
+    unit_price = fields.Monetary("Price Per Unit", store=False)
+    retail_price = fields.Monetary("Retail Price", store=False)
     order_name = fields.Char("Po Name", store=False , compute="_calculateSKU1")
     date_done = fields.Date("Date Done", store=False, compute="_calculateSKU1")
 
@@ -34,6 +35,7 @@ class PurchaseHistory(models.Model):
                 order.product_name = p.product_id.product_tmpl_id.name
                 order.qty = p.qty_received
                 order.unit_price = (float_repr(p.price_unit, precision_digits=2))
+                order.retail_price = (float_repr(p.product_unit_price, precision_digits=2))
                 order.order_name = order.order_id.name
                 stock_picking = self.env['stock.picking'].search([('origin','like',order.order_id.name),
                                                                   ('state','=','done')], limit=1)
@@ -67,5 +69,4 @@ class PurchaseHistory(models.Model):
                 print(query_result)
                 order.maxExpDate = str(query_result['max'])
                 print(order.maxExpDate)
-
 
