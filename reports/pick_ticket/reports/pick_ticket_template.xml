@@ -5,7 +5,7 @@
             <t t-call="web.external_layout">
                 <page>
                     <div class="oe_structure"/>
-                    <div class="row justify-content-md-center">
+                    <div>
                         <center>
                             <b>
                                 <h2>Surgical Product Solution</h2>
@@ -25,8 +25,8 @@
                     <t t-foreach="picks" t-as="pick_int">
                         <t t-set="pick" t-value="picks[pick_int]"/>
 
-                        <table class="table table-condensed" style="margin-bottom: 0px;">
-                            <tr>
+                        <table class="table table-sm" style="margin-bottom: 0px;">
+                            <tr style="page-break-inside: avoid">
                                 <td style="border: none;">
                                     <strong>Pick Number:</strong>
                                     <span t-esc="pick['picking']"/>
@@ -48,7 +48,7 @@
                                     <span t-esc="pick['priority']"/>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr style="page-break-inside: avoid">
                                 <td style="border: none;">
                                     <strong>Scheduled Date:</strong>
                                     <span t-esc="pick['scheduled_date']" t-options='{"widget": "date"}'/>
@@ -67,7 +67,7 @@
                                 </td>
                             </tr>
                         </table>
-                        <table class="table table-condensed" style="border: 1px solid black;">
+                        <table class="table table-sm" style="border: 1px solid black;">
                             <thead>
                                 <tr>
                                     <th style="border: 1px solid black;text-align:  center !important;">
@@ -88,7 +88,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr t-foreach="pick['product']" t-as="product">
+                                <tr t-foreach="pick['product']" t-as="product" style="page-break-inside: avoid">
                                     <td style="border: 1px solid black;">
                                         <span t-esc="product['product']"/>
                                     </td>

@@ -6,6 +6,7 @@ from odoo.exceptions import UserError, ValidationError
 from odoo.tools.float_utils import float_compare, float_is_zero
 from werkzeug.urls import url_encode
 
+
 _logger = logging.getLogger(__name__)
 
 
@@ -129,9 +130,8 @@ class SaleOrder(models.Model):
         self.ensure_one()
         if self.state not in ['sale', 'done']:
             auth_param = url_encode(self.partner_id.signup_get_auth_param()[self.partner_id.id])
-        return self.get_portal_url(query_string='&%s' % auth_param)
+            return self.get_portal_url(query_string='&%s' % auth_param)
         return super(SaleOrder, self)._get_share_url(redirect, signup_partner, pid)
-
 
 class SaleOrderLinePrioritization(models.Model):
     _inherit = "sale.order.line"

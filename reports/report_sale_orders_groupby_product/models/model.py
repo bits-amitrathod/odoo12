@@ -43,9 +43,10 @@ class ReportSaleOrdersGroupbyProduct(models.TransientModel):
 class ReportSaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
-    _inherits = {'sale.order': 'order_id'}
+     # Below line is commented due to sales order duplicate exception
+    # _inherits = {'sale.order': 'order_id'}
     order_id = fields.Many2one('sale.order', string='Order Reference')
-
+    date_order = fields.Datetime('Last Sold', compute='_compute_date_order', store=False)
     sku_code = fields.Char('Product SKU', store=False, compute="_get_sku")
 
     @api.multi
@@ -53,3 +54,39 @@ class ReportSaleOrderLine(models.Model):
         for order in self:
                 order.sku_code = order.product_id.product_tmpl_id.sku_code
 
+    @api.multi
+    def _compute_date_order(self):
+        for order in self:
+            order.date_order = order.order_id.date_order
+
+
+class ProductTemplate(models.Model):
+    _inherit = 'product.template'
+
+    @api.multi
+    def action_view_sales(self):
+        tree_view_id = self.env.ref('report_sale_orders_groupby_product.report_sale_orders_group_by_product_tree').id
+        pivote_view_id = self.env.ref('report_sale_orders_groupby_product.view_sold_level_pivot').id
+        action = {
+            'name': 'Sales by Channel',
+            'type': 'ir.actions.act_window',
+            'view_mode': 'tree,pivot',
+            'views': [(tree_view_id, 'tree'),(pivote_view_id, 'pivot')],
+            'res_model': 'sale.order.line',
+            'domain': [('product_id', '=', self.id)]
+        }
+        return action
+
+    @api.multi
+    def action_view_po(self):
+        tree_view_id = self.env.ref('purchase.purchase_order_line_tree').id
+        pivote_view_id = self.env.ref('report_sale_orders_groupby_product.view_prchase_level_pivot').id
+        action = {
+            'name': 'Purchase by Channel',
+            'type': 'ir.actions.act_window',
+            'view_mode': 'tree,pivot',
+            'views': [(tree_view_id, 'tree'),(pivote_view_id, 'pivot')],
+            'res_model': 'purchase.order.line',
+            'domain': [('product_id', '=', self.id)]
+        }
+        return action

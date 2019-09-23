@@ -19,6 +19,7 @@
                         <div class="oe_structure"/>
                         <div>
                             <center>
+
                                 <b>
                                     <h2>Surgical Product Solutions</h2>
                                     <h4>Sales Order Invoice</h4>
@@ -141,7 +142,9 @@
                          </div>-->
 
 
+
                         <table class="table table-sm" name="invoice_line_table" style="margin-bottom:0;">
+
                             <thead>
                                 <tr>
                                     <th>Description</th>

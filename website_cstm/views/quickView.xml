@@ -2,6 +2,10 @@
     <template id="product_extended_view" inherit_id="website_sale.products">
         <xpath expr="//t[@t-call='website.layout']" position="inside">
             <t t-foreach="products" t-as="product">
+                 <t t-set="first_possible_combination" t-value="product._get_first_possible_combination()"/>
+                 <t t-set="combination_info" t-value="product._get_combination_info(first_possible_combination, add_qty=add_qty or 1, pricelist=pricelist)"/>
+                 <t t-set="product_variant" t-value="product.env['product.product'].browse(combination_info['product_id'])"/>
+
                 <div class="modal fade product_view" t-att-id="'product_view'+str(product.id)">
                     <div class="modal-dialog">
                         <div class="modal-content" style="background-color: #f6f6f6;">
@@ -59,7 +63,7 @@
 
 
                                             <t t-if="product.website_price &gt; 0">
-<!--                                                <t t-call="website_sale.product_price"/>-->
+                                                <t t-call="website_sale.product_price"/>
                                             </t>
                                             <t t-else="">
                                                 <h3 >Call for Pricing 412-564-1280</h3>

@@ -24,6 +24,27 @@
             </field>
         </record>
 
+        <record id="view_sold_level_pivot" model="ir.ui.view">
+            <field name="name">pivot</field>
+            <field name="model">sale.order.line</field>
+            <field name="arch" type="xml">
+                <pivot string="Sold ">
+                    <field name="qty_delivered" type="row"/>
+                    <field name="sku_code" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+
+        <record id="view_prchase_level_pivot" model="ir.ui.view">
+            <field name="name">pivot</field>
+            <field name="model">purchase.order.line</field>
+            <field name="arch" type="xml">
+                <pivot string="Sold ">
+                    <field name="product_qty" type="row"/>
+                    <field name="product_id" type="measure"/>
+                </pivot>
+            </field>
+        </record>
 
         <record id="report_sale_orders_group_by_product_tree" model="ir.ui.view">
             <field name="name">popup.sale.orders.groupby.product.report.tree</field>
