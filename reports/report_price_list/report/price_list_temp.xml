@@ -18,7 +18,7 @@
                     <br/>
                     <t t-set="total_sum" t-value="0"/>
                     <div>
-                        <table class="table table-condensed" style="border: 1px solid black;">
+                        <table class="table table-sm" style="border: 1px solid black;">
                             <thead style="display: table-header-group;">
                                 <tr>
                                     <th style="border: 1px solid black;text-align:  center !important;width:200px;">

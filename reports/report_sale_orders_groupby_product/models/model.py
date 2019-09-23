@@ -43,9 +43,10 @@ class ReportSaleOrdersGroupbyProduct(models.TransientModel):
 class ReportSaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
-    _inherits = {'sale.order': 'order_id'}
+     # Below line is commented due to sales order duplicate exception
+    # _inherits = {'sale.order': 'order_id'}
     order_id = fields.Many2one('sale.order', string='Order Reference')
-
+    date_order = fields.Datetime('Last Sold', compute='_compute_date_order', store=False)
     sku_code = fields.Char('Product SKU', store=False, compute="_get_sku")
 
     @api.multi

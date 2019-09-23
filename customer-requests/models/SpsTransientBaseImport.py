@@ -86,12 +86,15 @@ class SpsTransientBaseImport(models.TransientModel):
 
             if 'mf_customer_sku' not in import_fields:
                 raise ValueError(_("You must configure Customer Sku field to import"))
-
             if template_type == 'Inventory' and 'mf_quantity' not in import_fields:
                 raise ValueError(_("You must configure Stock field to import"))
 
             if template_type == 'Requirement' and 'mf_required_quantity' not in import_fields:
+
                 raise ValueError(_("You must configure Required Quantity field to import"))
+
+            # if 'uom' not in import_fields:
+            #     raise ValueError(_("You must configure UOM field to import"))
 
             self._cr.execute('SAVEPOINT import')
             if len(col) == 1:
@@ -103,8 +106,7 @@ class SpsTransientBaseImport(models.TransientModel):
                 for dictionary in dict_list:
                     resource_model_dict.update(dictionary)
                 resource_model_dict.update(dict(template_type=template_type, template_status='Active'))
-                template_resources = resource_model.search([('template_type', '=', template_type),
-                                                            ('customer_id', '=', customer_id)])
+                template_resources = resource_model.search([('customer_id', '=', customer_id)])
                 for template_resource in template_resources:
                     template_resource.write(dict(template_status='InActive'))
                 name_create_enabled_fields = options.pop('name_create_enabled_fields', {})

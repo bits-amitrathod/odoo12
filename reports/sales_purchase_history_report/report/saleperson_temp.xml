@@ -11,14 +11,12 @@
                             <h2>Surgical Product Solutions</h2>
                             <h4>Sales Purchase History</h4>
                         </b>
-
                         <h4 t-if="date">
                             <span t-esc="date"/>
                         </h4>
                     </center>
                     </div>
                     <br/>
-
                         <t t-set="total_price" t-value="0"/>
                         <table class="table table-condensed" style="border: 1px solid black;">
                             <thead>
