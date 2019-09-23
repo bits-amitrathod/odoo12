@@ -17,7 +17,7 @@
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'views/sale_view.xml',
     ],
     'installable': True,
 
