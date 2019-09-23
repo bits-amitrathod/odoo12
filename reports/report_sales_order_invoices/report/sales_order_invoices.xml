@@ -6,13 +6,15 @@
                 <t t-foreach="invoices" t-as="invoice">
                     <div class="page">
                         <style>
-                            .noborders {
-                            border: 0;
-                            }
 
                             .table-bordered > tbody > tr > td,.table-bordered > tbody > tr > th {
                             border: 1px solid #000;
                             }
+                            .no-borders {
+                            border: 0 !important;
+
+                            }
+
                         </style>
                         <div class="oe_structure"/>
                         <div>
@@ -26,52 +28,123 @@
                             </center>
                         </div>
                         <br/>
-                        <div class="row">
-                            <div class="col-md-6 col-xs-6">
-                                <h3>Bill To:</h3>
-                                <address t-field="invoice.partner_id"
-                                         t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
-                                <h3>Customer :</h3>
-                                <span
+                        <table class="table table-sm">
+                            <tbody>
+                                <tr>
+                                    <td class="no-borders">
+                                        <h4>Bill To:</h4>
+                                        <address t-field="invoice.partner_id"
+                                                 t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
+
+                                    </td>
+                                    <td class="no-borders">
+                                        <div class="mt8" t-if="invoice.partner_shipping_id">
+                                            <h4>Ship To:</h4>
+                                            <span
+                                                    t-field="invoice.partner_shipping_id"
+                                                    t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True, "phone_icons": True}'/>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="no-borders">
+
+                                        <h4>Customer:</h4>
+                                        <span
+                                                t-field="invoice.partner_id"
+                                                t-options='{"widget": "contact", "fields": [ "name"], "no_marker": True}'/>
+                                    </td>
+                                    <td class="no-borders">
+                                        <div class="mt8" t-if="invoice.partner_shipping_id">
+
+                                            <h4>Contact:</h4>
+                                            <span
+                                                    t-field="invoice.partner_id"
+                                                    t-options='{"widget": "contact", "fields": ["email"], "no_marker": True }'/>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!--    <div class="row">
+                                <div class="col-md-6 col-xs-6">
+                                    <h3>Bill To:</h3>
+                                    <address t-field="invoice.partner_id"
+                                             t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
+                                    <h3>Customer :</h3>
+                                    <span
                                             t-field="invoice.partner_id"
                                             t-options='{"widget": "contact", "fields": [ "name"], "no_marker": True}'/>
-                            </div>
-                            <div class="col-md-5 col-xs-5">
-                                <!--t-if="invoice.partner_shipping_id != invoice.partner_invoice_id" -->
-                                <div class="mt8"  t-if="invoice.partner_shipping_id">
-                                    <h3>Ship To:</h3>
-                                    <span
-                                            t-field="invoice.partner_shipping_id"
-                                            t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True, "phone_icons": True}'/>
-                                    <h3>Contact :</h3>
-                                     <span
-                                            t-field="invoice.partner_id"
-                                            t-options='{"widget": "contact", "fields": ["email"], "no_marker": True }'/>
                                 </div>
-                            </div>
-                        </div>
+                                <div class="col-md-5 col-xs-5">
+                                    &lt;!&ndash;t-if="invoice.partner_shipping_id != invoice.partner_invoice_id" &ndash;&gt;
+                                    <div class="mt8" t-if="invoice.partner_shipping_id">
+                                        <h3>Ship To:</h3>
+                                        <span
+                                                t-field="invoice.partner_shipping_id"
+                                                t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True, "phone_icons": True}'/>
+                                        <h3>Contact :</h3>
+                                        <span
+                                                t-field="invoice.partner_id"
+                                                t-options='{"widget": "contact", "fields": ["email"], "no_marker": True }'/>
+                                    </div>
+                                </div>
+                            </div>-->
                         <t t-set="order" t-value="orders[invoice.id]"/>
-                        <div class="row mt32 mb32">
-                            <div class="col-xs-2" t-if="invoice.partner_id.display_name">
-                                <strong>Seller:</strong>
-                                <p t-field="invoice.user_id"/>
-                            </div>
-                            <div class="col-xs-2" t-if="invoice.partner_id.display_name">
-                                <strong>Payment Terms:</strong>
-                                <p t-field="invoice.payment_term_id"/>
-                            </div>
-                            <div class="col-xs-2" t-if="hasattr(order,'carrier_id') and order.carrier_id">
-                                <strong>Carrier :</strong>
-                                <p t-field="order.carrier_id"/>
-                            </div>
-                            <div class="col-xs-2" t-if="hasattr(order,'commitment_date') and order.commitment_date">
-                                <strong>Requested Ship Date :</strong>
-                                <p t-field="order.commitment_date" t-options="{'widget': 'date'}"/>
-                            </div>
-                        </div>
+                        <table class="table table-sm"  style="margin-bottom:0;">
+                            <tbody>
+                                <tr>
+                                    <td class="no-borders">
+                                        <div t-if="invoice.partner_id.display_name">
+                                            <strong>Seller:</strong>
+                                            <p t-field="invoice.user_id"/>
+                                        </div>
+                                    </td>
+                                    <td class="no-borders">
+                                        <div t-if="invoice.partner_id.display_name">
+                                            <strong>Payment Terms:</strong>
+                                            <p t-field="invoice.payment_term_id"/>
+                                        </div>
+                                    </td>
+                                    <td class="no-borders">
+                                        <div t-if="hasattr(order,'carrier_id') and order.carrier_id">
+                                            <strong>Carrier :</strong>
+                                            <p t-field="order.carrier_id"/>
+                                        </div>
+                                    </td>
+                                    <td class="no-borders">
+                                        <div t-if="hasattr(order,'commitment_date') and order.commitment_date">
+                                            <strong>Requested Ship Date :</strong>
+                                            <p t-field="order.commitment_date" t-options="{'widget': 'date'}"/>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!-- <div class="row mt32 mb32">
+                             <div class="col-xs-2" t-if="invoice.partner_id.display_name">
+                                 <strong>Seller:</strong>
+                                 <p t-field="invoice.user_id"/>
+                             </div>
+                             <div class="col-xs-2" t-if="invoice.partner_id.display_name">
+                                 <strong>Payment Terms:</strong>
+                                 <p t-field="invoice.payment_term_id"/>
+                             </div>
+                             <div class="col-xs-2" t-if="hasattr(order,'carrier_id') and order.carrier_id">
+                                 <strong>Carrier :</strong>
+                                 <p t-field="order.carrier_id"/>
+                             </div>
+                             <div class="col-xs-2" t-if="hasattr(order,'commitment_date') and order.commitment_date">
+                                 <strong>Requested Ship Date :</strong>
+                                 <p t-field="order.commitment_date" t-options="{'widget': 'date'}"/>
+                             </div>
+                         </div>-->
 
 
-                        <table class="table table-sm" name="invoice_line_table">
+
+                        <table class="table table-sm" name="invoice_line_table" style="margin-bottom:0;">
+
                             <thead>
                                 <tr>
                                     <th>Description</th>
@@ -96,7 +169,8 @@
                                         <span t-field="l.uom_id" groups="product.group_uom"/>
                                     </td>
                                     <td class="text-right">
-                                        <span t-field="l.price_unit"  t-options='{"widget": "monetary", "display_currency": invoice.currency_id}'/>
+                                        <span t-field="l.price_unit"
+                                              t-options='{"widget": "monetary", "display_currency": invoice.currency_id}'/>
                                     </td>
                                     <td t-if="display_discount" class="text-right">
                                         <span t-field="l.discount"/>
@@ -120,59 +194,60 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <div class="clearfix">
-                            <div id="total" class="row">
-                                <div class="col-xs-4 pull-right">
-                                    <table class="table table-condensed" style="min-width: 250px;max-width: 400px;">
-                                        <tr class="border-black" style="border-bottom:1px solid #dddddd;">
-                                            <td>
-                                                <strong>Subtotal</strong>
-                                            </td>
-                                            <td class="text-right">
-                                                <span t-field="invoice.amount_untaxed"
-                                                      t-options='{"widget": "monetary", "display_currency": invoice.currency_id}'/>
-                                            </td>
+                        <!--    <div class="clearfix"> </div>-->
+                        <div id="total" class="row">
+                            <div class="col-md-12">
+                                <table class="table table-sm" style="width: 356px;float:right;">
+                                    <tr class="border-black" style="border-bottom:1px solid #dddddd;">
+                                        <td>
+                                            <strong>Subtotal</strong>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-field="invoice.amount_untaxed"
+                                                  t-options='{"widget": "monetary", "display_currency": invoice.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                    <t t-foreach="invoice._amount_by_group()" t-as="amount_by_group">
+                                        <tr style="border-bottom:1px solid #dddddd;">
+                                            <t t-if="len(invoice.tax_line_ids) == 1 and invoice.amount_untaxed == amount_by_group[2]">
+                                                <td>
+                                                    <span t-esc="amount_by_group[0]"/>
+                                                    <span>&amp;nbsp;
+                                                        <span>on</span>
+                                                        <t t-esc="amount_by_group[4]"/>
+                                                    </span>
+                                                </td>
+                                                <td class="text-right">
+                                                    <span t-esc="amount_by_group[3]"/>
+                                                </td>
+                                            </t>
+                                            <t t-else="">
+                                                <td>
+                                                    <span t-esc="amount_by_group[0]"/>
+                                                </td>
+                                                <td class="text-right">
+                                                    <span t-esc="amount_by_group[3]"/>
+                                                </td>
+                                            </t>
                                         </tr>
-                                        <t t-foreach="invoice._amount_by_group()" t-as="amount_by_group">
-                                            <tr style="border-bottom:1px solid #dddddd;">
-                                                <t t-if="len(invoice.tax_line_ids) == 1 and invoice.amount_untaxed == amount_by_group[2]">
-                                                    <td>
-                                                        <span t-esc="amount_by_group[0]"/>
-                                                        <span>&amp;nbsp;
-                                                            <span>on</span>
-                                                            <t t-esc="amount_by_group[4]"/>
-                                                        </span>
-                                                    </td>
-                                                    <td class="text-right">
-                                                        <span t-esc="amount_by_group[3]"/>
-                                                    </td>
-                                                </t>
-                                                <t t-else="">
-                                                    <td>
-                                                        <span t-esc="amount_by_group[0]"/>
-                                                    </td>
-                                                    <td class="text-right">
-                                                        <span t-esc="amount_by_group[3]"/>
-                                                    </td>
-                                                </t>
-                                            </tr>
-                                        </t>
-                                        <tr class="border-black">
-                                            <td>
-                                                <strong>Total</strong>
-                                            </td>
-                                            <td class="text-right">
-                                                <span t-field="invoice.amount_total"
-                                                      t-options='{"widget": "monetary", "display_currency": invoice.currency_id}'/>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </div>
+                                    </t>
+                                    <tr class="border-black">
+                                        <td>
+                                            <strong>Total</strong>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-field="invoice.amount_total"
+                                                  t-options='{"widget": "monetary", "display_currency": invoice.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                </table>
                             </div>
                         </div>
+
                         <p>Approval:_______________________________ Date:_____________</p>
-                        <p style="page-break-after:always;"/>
+
                     </div>
+                    <div style="page-break-after:always;"></div>
                 </t>
             </t>
         </t>
