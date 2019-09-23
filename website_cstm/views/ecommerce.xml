@@ -101,7 +101,7 @@
                     </div>
 
                     <!--~~~~~~~~~~~~~~~~~~ Expration~~~~~~~~~~~~~~~~ -->
-                    <t t-call="website_sales.productExpirationDate"/>
+<!--                    <t t-call="website_sales.productExpirationDate"/>-->
 
                     <div t-if="product.actual_quantity &lt;= 0"
                          t-attf-class="availability_message_#{product_template} linkCstm mt16">
@@ -132,13 +132,19 @@
     <!--</template>-->
 
 
-    <template id="website_sale.product" name="Product">
+   <template id="website_sale.product" name="Product">
+
+        <t t-set="first_possible_combination" t-value="product._get_first_possible_combination()"/>
+        <t t-set="combination_info" t-value="product._get_combination_info(first_possible_combination, add_qty=add_qty or 1, pricelist=pricelist)"/>
+        <t t-set="product_variant" t-value="product.env['product.product'].browse(combination_info['product_id'])"/>
+
+
+
+
         <t t-call="website.layout">
-            <t t-set="additional_title" t-value="product.name"/>
+            <t t-set="additional_title" t-value="product.name" />
             <div itemscope="itemscope" itemtype="http://schema.org/Product" id="wrap" class="js_sale">
-                <section
-                        t-attf-class="container mt8 oe_website_sale #{(compute_currency(product.lst_price) - product.website_price) &gt; 0.01 and website.get_current_pricelist().discount_policy == 'without_discount'  and 'discount'}"
-                        id="product_detail">
+                <section t-attf-class="container py-2 oe_website_sale #{'discount' if combination_info['has_discounted_price'] else ''}" id="product_detail">
                     <div class="row">
                         <div class="col-sm-4">
                             <ol class="breadcrumb">
@@ -255,7 +261,7 @@
                                         </t>
                                     </t>
                                     <t t-if="product.website_price &gt; 0">
-<!--                                        <t t-call="website_sale.product_price"/>-->
+                                        <t t-call="website_sale.product_price"/>
                                     </t>
                                     <t t-else="">
                                         <h3>Call for Pricing 412-564-1280</h3>
