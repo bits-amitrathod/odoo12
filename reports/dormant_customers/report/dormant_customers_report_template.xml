@@ -5,16 +5,16 @@
             <t t-call="web.external_layout">
                 <page>
                     <div class="oe_structure"/>
-                    <div class="row">
-                         <div class="col-md-12">
+                    <div>
+                         <center>
                             <b>
-                                <h2 style="text-align: center">Surgical Product Solutions</h2>
-                                <h4 style="text-align: center">Dormant Customers</h4>
-                                <h4 t-if="dateRange.compute_at_date" style="text-align: center">Customers who have not purchased within date range:<span t-esc="dateRange.start_date" t-options='{"widget": "date"}'/>
+                                <h2>Surgical Product Solutions</h2>
+                                <h4>Dormant Customers</h4>
+                                <h4 t-if="dateRange.compute_at_date">Customers who have not purchased within date range:<span t-esc="dateRange.start_date" t-options='{"widget": "date"}'/>
                                 - <span t-esc="dateRange.end_date" t-options='{"widget": "date"}'/>
                                 </h4>
                             </b>
-                        </div>
+                        </center>
                     </div>
                     <br/>
                     <div>

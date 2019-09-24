@@ -24,7 +24,7 @@
                                         <div class="mt16" attrs="{'invisible': [('max_inventory_level', '=', False)]}">
                                             <field name="max_inventory_level_duration" class="oe_inline"/>
                                             <span>days</span>
-                                             <p style="color: #025325;" >Duration of max inventory level shouldn't beyond 365 days</p>
+                                             <p style="color: #025325;" >Duration of max inventory level should be less than 365 days</p>
                                         </div>
                                     </div>
                                 </div>
@@ -215,7 +215,7 @@
                                  <span> <b>Max Inventory Level Duration &amp;nbsp;&amp;nbsp; </b> </span>
                                     <field  name="max_inventory_level_duration" class="oe_inline"   />
                                  <span> Days</span>
-                                  <p style="color: #1aaa58;" > * Duration of max inventory level shouldn't beyond 365 days</p>
+                                  <p style="color: #1aaa58;" > * Duration of max inventory level should be less than 365 days</p>
                             </div>
                     </group>
                     <footer>

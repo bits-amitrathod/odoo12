@@ -13,14 +13,14 @@
             <t t-call="web.external_layout">
                 <page>
                     <div class="oe_structure"/>
-                    <div class="row">
+                    <div>
 
                         <center>
                             <b>
                                 <h4>Surgical Product Solutions</h4>
                             </b>
                             <b>
-                                <h2>Purchase History Report</h2>
+                                <h4>Purchase History Report</h4>
                             </b>
                         </center>
                         <center>
@@ -30,7 +30,7 @@
                         </center>
                         <!-- Report page content -->
 
-                            <table class="table table-condensed table-bordered" style="border: 1px solid #000;">
+                            <table class="table table-sm table-bordered" style="border: 1px solid #000;">
                                 <thead>
                                 <tr>
                                     <th style="border: 1px solid black;text-align: center;">Purchase Order#</th>

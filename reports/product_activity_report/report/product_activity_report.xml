@@ -10,7 +10,7 @@
                         }
                     </style>
                     <div class="oe_structure"/>
-                    <div class="row justify-content-md-center">
+                    <div>
                         <center>
                             <b>
                                 <h2>Surgical Product Solutions</h2>
@@ -41,7 +41,7 @@
                                 </strong>
                             </div>
 
-                            <table class="table table-condensed table-bordered table-bordered">
+                            <table class="table table-sm table-bordered">
                                 <thead>
                                     <tr>
                                         <th>Event</th>
