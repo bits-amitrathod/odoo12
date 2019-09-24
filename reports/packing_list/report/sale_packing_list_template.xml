@@ -107,6 +107,9 @@
                                                         Req. Ship Date
                                                     </th>
                                                     <th>
+                                                        Date Shipped
+                                                    </th>
+                                                    <th>
                                                         Shipping Terms
                                                     </th>
                                                     <th>
@@ -127,13 +130,20 @@
 
                                                     </td>
                                                     <!-- Below line is commented because requested_date has been remove in odoo12-->
-<!--                                                    <td>-->
+                                                    <td>
 
-<!--                                                        <p style="font-weight: lighter">-->
-<!--                                                            <span t-esc="packing_list.sale_id.requested_date"></span>-->
-<!--                                                        </p>-->
+                                                        <p style="font-weight: lighter">
+                                                            <span t-esc="packing_list.sale_id.requested_date" t-options='{"widget": "datetime"}'></span>
+                                                        </p>
 
-<!--                                                    </td>-->
+                                                    </td>
+                                                    <td>
+
+                                                        <p style="font-weight: lighter">
+                                                            <span t-esc="packing_list.date_done" t-options='{"widget": "datetime"}'></span>
+                                                        </p>
+
+                                                    </td>
                                                     <td>
 
                                                         <p style="font-weight: lighter">
@@ -144,7 +154,7 @@
                                                     <td>
 
                                                         <p style="font-weight: lighter">
-                                                            <span t-esc="packing_list.carrier_id.name"></span>
+                                                            <span t-esc="packing_list.delivery_method_name"></span>
                                                         </p>
 
                                                     </td>
@@ -259,7 +269,7 @@
                                             Lot#:
                                             <span t-esc="move_line_id.lot_id.name"/>
                                             Exp Date:
-                                            <span t-esc="move_line_id.lot_id.use_date"/>
+                                            <span t-esc="move_line_id.lot_id.use_date" t-options='{"widget": "datetime"}'/>
                                         </td>
                                     </tr>
                                 </t>

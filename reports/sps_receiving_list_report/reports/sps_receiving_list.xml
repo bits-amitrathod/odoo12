@@ -36,11 +36,14 @@
                         <table class="tav  ble table-condensed" style="border: 1px solid black;width:100%;margin-bottom: 50px;">
                             <thead>
                                 <tr>
-                                    <th style="border: 1px solid black;text-align:  center !important; width:80%">
+                                    <th style="border: 1px solid black;text-align:  center !important; width:70%">
                                         Product Name
                                     </th>
                                     <th style="border: 1px solid black;text-align:  center !important; width:10%">
                                         Qty Received
+                                    </th>
+                                    <th style="border: 1px solid black;text-align:  center !important; width:10%">
+                                        Date Validated
                                     </th>
                                     <th style="border: 1px solid black;text-align:  center !important; width:10%">
                                         UOM
@@ -75,18 +78,26 @@
                                     <td style="border-top: 1px solid black;">
 
                                     </td>
+                                    <td style="border-top: 1px solid black;">
+
+                                    </td>
                                 </tr>
                                 <tr t-foreach="receiving_item['lots']" t-as="lot">
                                     <td style="border: 1px solid black; text-align:  center ">
                                         Lot# :
                                         <span t-esc="lot['lot_id']"/>
                                         Exp Date :
-                                        <span t-esc="lot['exp_date']"/>
+                                        <span t-esc="lot['exp_date']" t-options='{"widget": "datetime"}'/>
                                     </td>
 
                                     <td style="border: 1px solid black; text-align:  center ">
                                         <b>
                                             <span t-esc="lot['qty_done']"/>
+                                        </b>
+                                    </td>
+                                    <td style="border: 1px solid black; text-align:  center ">
+                                        <b>
+                                            <span t-esc="lot['date_done']" t-options='{"widget": "datetime"}'/>
                                         </b>
                                     </td>
                                     <td style="border: 1px solid black; text-align:  center ">
@@ -101,6 +112,9 @@
 
                                     </td>
                                      <td style="border: 1px solid black;">
+
+                                    </td>
+                                    <td style="border: 1px solid black;">
 
                                     </td>
 
@@ -241,7 +255,7 @@
                                         Lot# :
                                         <span t-esc="lot['lot_id']"/>
                                         Exp Date :
-                                        <span t-esc="lot['exp_date']"/>
+                                        <span t-esc="lot['exp_date']" t-options='{"widget": "datetime"}'/>
                                     </td>
 
                                     <td style="border: 1px solid black; text-align:  center ">
