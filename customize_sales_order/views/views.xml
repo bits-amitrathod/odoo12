@@ -49,5 +49,21 @@
 		    </xpath>
             </field>
         </record>
+
+      <record id="view_order_form_with_carrier_inherited" model="ir.ui.view">
+            <field name="name">delivery.sale.order.form.view.with_carrier</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="delivery.view_order_form_with_carrier"/>
+            <field name="arch" type="xml">
+                <data>
+                  <xpath expr="//div[@name='carrier_selection']/div[1]" position="replace">
+                      <div>
+                          <field name="delivery_method_readonly_flag" invisible="1"/>
+                          <field name="carrier_id" context="{'order_id': id}" class="oe_inline" options="{'no_create': True, 'no_open': True}" attrs="{'readonly':[('delivery_method_readonly_flag','=',0)]}"/> <i class="fa fa-check text-success" aria-hidden="true" attrs="{'invisible':['|','|',('carrier_id','=',False),('state','not in',('draft','sent')),('delivery_rating_success','=',False)]}"></i>
+                      </div>
+                  </xpath>
+                </data>
+            </field>
+      </record>
   </data>
 </odoo>
