@@ -14,21 +14,21 @@
                         <!--}-->
                     </style>
                     <div class="oe_structure"/>
-                    <div class="row">
-                      <div class="col-md-12">
+                    <div>
+                        <center>
                             <b>
-                                <h2 style="text-align: center">Surgical Product Solutions</h2>
-                                <h4 style="text-align: center">Inventory Allocation For Sale Orders</h4>
+                                <h2>Surgical Product Solutions</h2>
+                                <h4>Inventory Allocation For Sale Orders</h4>
                             </b>
-                        </div>
 
+                        </center>
                     </div>
                     <br/>
 
                     <div t-foreach="sale_order_list" t-as="sale_order" class="row">
-                         <t t-set="total_qty" t-value="0"/>
-                         <t t-set="total_cost" t-value="0"/>
-                         <t t-set="res_currency" t-value="1"/>
+                        <t t-set="total_qty" t-value="0"/>
+                        <t t-set="total_cost" t-value="0"/>
+                        <t t-set="res_currency" t-value="1"/>
                         <div class="col-md-12">
                             <strong>
                                 <span t-esc="sale_order"/>
@@ -36,15 +36,25 @@
                             <hr style="display: block;height: 1px;border: 0;border-top-color: currentcolor;border-top-style: none;border-top-width: 0px;border-top: 2px solid black;margin-top: 0px;padding: 0;"/>
                         </div>
 
-                        <div class="col-md-12" >
+                        <div class="col-md-12">
 
                             <table class="table table-sm table-bordered">
-                                <thead >
+                                <thead>
                                     <tr style="border: 1px solid black">
-                                        <th style="border: 1px solid black;border-bottom: 1px solid #555555 !important;">Product SKU</th>
-                                        <th style="border: 1px solid black;border-bottom: 1px solid #555555 !important;">Product Name</th>
-                                        <th class="text-right" style="border: 1px solid black;border-bottom: 1px solid #555555 !important;">Qty</th>
-                                        <th class="text-right" style="border: 1px solid black;border-bottom: 1px solid #555555 !important;">Cost</th>
+                                        <th style="border: 1px solid black;border-bottom: 1px solid #555555 !important;">
+                                            Product SKU
+                                        </th>
+                                        <th style="border: 1px solid black;border-bottom: 1px solid #555555 !important;">
+                                            Product Name
+                                        </th>
+                                        <th class="text-right"
+                                            style="border: 1px solid black;border-bottom: 1px solid #555555 !important;">
+                                            Qty
+                                        </th>
+                                        <th class="text-right"
+                                            style="border: 1px solid black;border-bottom: 1px solid #555555 !important;">
+                                            Cost
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody class="invoice_tbody" style="border: 1px solid black;width:100%">
@@ -56,26 +66,32 @@
                                             <span t-esc="order.product_name"/>
                                         </td>
                                         <td class="text-right" style="border: 1px solid black">
-                                             <t t-set="total_qty" t-value="total_qty + order.product_quantity"/>
+                                            <t t-set="total_qty" t-value="total_qty + order.product_quantity"/>
                                             <span t-esc="order.product_uom_qty"/>
                                         </td>
                                         <td class="text-right" style="border: 1px solid black">
-                                             <t t-set="total_cost" t-value="total_cost + order.cost"/>
-                                             <t t-set="res_currency" t-value="order.currency_id"/>
-                                            <span t-esc="order.cost"  t-options='{"widget": "monetary","display_currency": order.currency_id}' />
+                                            <t t-set="total_cost" t-value="total_cost + order.cost"/>
+                                            <t t-set="res_currency" t-value="order.currency_id"/>
+                                            <span t-esc="order.cost"
+                                                  t-options='{"widget": "monetary","display_currency": order.currency_id}'/>
                                         </td>
                                     </tr>
-                                    <tr >
-                                    <td colspan="2" style="border: 1px solid black; text-align: right;">
-                                        <b >Total</b>
-                                    </td>
-                                    <td class="text-right" style="border: 1px solid black">
-                                        <b ><span t-esc="total_qty"/></b>
-                                    </td>
-                                    <td class="text-right" style="border: 1px solid black">
-                                        <b ><span  t-esc="total_cost"   t-options='{"widget": "monetary","display_currency": res_currency}'/></b>
-                                    </td>
-                                </tr>
+                                    <tr>
+                                        <td colspan="2" style="border: 1px solid black; text-align: right;">
+                                            <b>Total</b>
+                                        </td>
+                                        <td class="text-right" style="border: 1px solid black">
+                                            <b>
+                                                <span t-esc="total_qty"/>
+                                            </b>
+                                        </td>
+                                        <td class="text-right" style="border: 1px solid black">
+                                            <b>
+                                                <span t-esc="total_cost"
+                                                      t-options='{"widget": "monetary","display_currency": res_currency}'/>
+                                            </b>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
