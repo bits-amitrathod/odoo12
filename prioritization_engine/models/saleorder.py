@@ -163,7 +163,7 @@ class SaleOrderLinePrioritization(models.Model):
     @api.onchange('product_id')
     def product_id_change(self):
         if not self.product_id:
-            return {'domain': domain}
+            return {'domain': {'product_uom': []}}
 
         vals = {}
         # domain=[]
