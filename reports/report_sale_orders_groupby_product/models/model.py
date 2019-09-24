@@ -54,6 +54,11 @@ class ReportSaleOrderLine(models.Model):
         for order in self:
                 order.sku_code = order.product_id.product_tmpl_id.sku_code
 
+    @api.multi
+    def _compute_date_order(self):
+        for order in self:
+            order.date_order = order.order_id.date_order
+
 
 class ProductTemplate(models.Model):
     _inherit = 'product.template'

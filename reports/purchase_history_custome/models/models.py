@@ -4,6 +4,7 @@ from odoo import models, fields, api
 import logging
 from odoo.tools import float_repr
 _logger = logging.getLogger(__name__)
+import datetime
 
 
 class PurchaseHistory(models.Model):
@@ -39,7 +40,7 @@ class PurchaseHistory(models.Model):
                 order.order_name = order.order_id.name
                 stock_picking = self.env['stock.picking'].search([('origin','like',order.order_id.name),
                                                                   ('state','=','done')], limit=1)
-                order.date_done = str(stock_picking.date_done)
+                order.date_done = datetime.datetime.strptime(str(stock_picking.date_done), "%Y-%m-%d %H:%M:%S").date()
 
 
 

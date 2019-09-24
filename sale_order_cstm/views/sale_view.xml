@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="sale_order_view_search_inherit_quotation_filter" model="ir.ui.view">
+            <field name="name">sale.order.search.inherit.quotation 2</field>
+            <field name="model">sale.order</field>
+            <field name="mode">primary</field>
+            <field name="priority">4</field>
+            <field name="inherit_id" ref="sale.sale_order_view_search_inherit_quotation"/>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='my_quotation']" position="after">
+                    <filter string="Quotation Send" name="quotation_send" domain="[('state','=','sent')]"/>
+                    <filter string="From Website" name="from_website" domain="[('team_id.team_type', '=', 'website')]"/>
+<!--                    <filter string="Recovery Email to Send" name="recovery_email" domain="[('cart_recovery_email_sent', '=', False)]" />
+                    <filter string="Confirmed Orders" name="order_confirmed" domain="[('state', 'in', ('sale', 'done'))]"/>-->
+                </xpath>
+            </field>
+        </record>
+
+    <record id="sale.action_quotations_with_onboarding" model="ir.actions.act_window">
+            <field name="name">Quotations</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="sale.view_quotation_tree_with_onboarding"/>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+            <field name="search_view_id" ref="sale_order_view_search_inherit_quotation_filter"/>
+            <field name="context">{'search_default_my_quotation': 1}</field>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create a new quotation, the first step of a new sale!
+              </p><p>
+                Once the quotation is confirmed by the customer, it becomes a sales order.<br/> You will be able to create an invoice and collect the payment.
+              </p>
+            </field>
+        </record>
+</odoo>
