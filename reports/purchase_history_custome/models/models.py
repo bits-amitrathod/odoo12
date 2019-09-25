@@ -23,6 +23,9 @@ class PurchaseHistory(models.Model):
     order_name = fields.Char("Po Name", store=False , compute="_calculateSKU1")
     date_done = fields.Date("Date Done", store=False, compute="_calculateSKU1")
 
+    delivered_product_offer_price = fields.Monetary("Total Delivered Qty Offer Price", store=False, compute="_calculateSKU1")
+    delivered_product_retail_price = fields.Monetary("Total Delivered Qty Retail Price", store=False, compute="_calculateSKU1")
+
 
     @api.multi
     def _calculateSKU1(self):
@@ -33,7 +36,9 @@ class PurchaseHistory(models.Model):
                 order.manufacturer_rep = p.partner_id.name
                 order.product_name = p.product_id.product_tmpl_id.name
                 order.qty = p.qty_received
-                order.unit_price = (float_repr(p.price_unit, precision_digits=2))
+                order.delivered_product_offer_price =  round(p.qty_received * p.product_offer_price, 2)
+                order.delivered_product_retail_price = round(p.qty_received * p.product_unit_price, 2)
+                #order.unit_price = (float_repr(p.price_unit, precision_digits=2))
                 order.order_name = order.order_id.name
                 stock_picking = self.env['stock.picking'].search([('origin','like',order.order_id.name),
                                                                   ('state','=','done')], limit=1)

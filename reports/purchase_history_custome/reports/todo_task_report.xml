@@ -43,8 +43,10 @@
                                     <th style="border: 1px solid black;text-align: center;">Date Done</th>
                                     <th style="border: 1px solid black;text-align: center;">Min Expiration Date</th>
                                     <th style="border: 1px solid black;text-align: center;">Max Expiration Date</th>
-                                    <th style="border: 1px solid black;text-align: center;">Price Per Unit</th>
-                                    <th style="border: 1px solid black;text-align: center;">Price Total</th>
+                                    <th style="border: 1px solid black;text-align: center;">Offer Price</th>
+                                    <th style="border: 1px solid black;text-align: center;">Retail Price</th>
+                                     <th style="border: 1px solid black;text-align: center;">Total Delivered Qty Retail Price</th>
+                                    <th style="border: 1px solid black;text-align: center;">Total Delivered Qty Offer Price</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -82,10 +84,16 @@
                                                 <span t-esc="o.maxExpDate" t-options="{'widget':'date'}"/>
                                             </td>
                                             <td align="right"  style="border: 1px solid #000; white-space:nowrap;">
-                                                <span t-esc="o.unit_price" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                                <span t-esc="o.product_unit_price" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                             </td>
                                               <td align="right"  style="border: 1px solid #000; white-space:nowrap;">
-                                                <span t-esc="o.price_subtotal" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                                <span t-esc="o.product_offer_price" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                            </td>
+                                            <td align="right"  style="border: 1px solid #000; white-space:nowrap;">
+                                                <span t-esc="o.delivered_product_retail_price" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                            </td>
+                                              <td align="right"  style="border: 1px solid #000; white-space:nowrap;">
+                                                <span t-esc="o.delivered_product_offer_price" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                             </td>
                                         </tr>
                                     </t>
