@@ -100,12 +100,29 @@ class IncomingMailCronModel(models.Model):
                                 _Attachment = namedtuple('Attachment', ('fname', 'content', 'info'))
                                 attachments = []
                                 body = u''
-                                email_from = tools.decode_message_header(message, 'From')
-                                _logger.info('Email from %r', email_from)
-                                match = re.search(r'[\w\.-]+@[\w\.-]+', email_from)
-                                email_from = str(match.group(0))
                                 subject = tools.decode_message_header(message, 'Subject')
-                                tmpl_type = None
+                                email_from = None
+                                saleforce_ac = None
+                                if '{CustomerId:' in subject:
+                                    strlist = subject.split()
+                                    for word in strlist:
+                                        if re.findall(r'[{][cC]\w+', word):
+                                            saleforce_ac = word.split(':')[1].replace('}', '')
+                                    print('Customer Id : ')
+                                    print(saleforce_ac)
+                                    # find customer in res.partner
+                                    if saleforce_ac and saleforce_ac is not None:
+                                        res_partner = self.env['res.partner'].search([("saleforce_ac", "=", saleforce_ac)])
+                                        if len(res_partner) == 1:
+                                            email_from = res_partner.email
+                                else:
+                                    email_from = tools.decode_message_header(message, 'From')
+
+                                if email_from is not None:
+                                    match = re.search(r'[\w\.-]+@[\w\.-]+', email_from)
+                                    email_from = str(match.group(0))
+                                    _logger.info('Email from %r', email_from)
+
                                 if 'Inventory' in subject:
                                     tmpl_type = "Inventory"
                                 elif 'Requirement' in subject:
@@ -158,7 +175,7 @@ class IncomingMailCronModel(models.Model):
 
                                         #_logger.info('message payload: %r %r', message_payload, email_from)
                                         if not email_from is None:
-                                            users_model = self.env['res.partner'].search([("email", "=", email_from)])
+                                            users_model = self.env['res.partner'].search([("email", "=ilike", email_from)])
                                             if users_model:
                                                 if len(users_model) == 1:
                                                     user_attachment_dir = ATTACHMENT_DIR + str(
@@ -189,6 +206,9 @@ class IncomingMailCronModel(models.Model):
                                             else:
                                                 _logger.info('We have not found user in our contact list : %r', email_from)
                                                 response = dict(errorCode=102, message='User not found in our contact list.')
+                                        else:
+                                            _logger.info('We have not found user in our contact list : %r', email_from)
+                                            response = dict(errorCode=103, message='User not found in our contact list.')
                                     else:
                                         _logger.info("User has not attached requirement or inventory documnet.")
                                         response = dict(errorCode=104, message='User has not attached requirement or inventory documnet.')
@@ -200,7 +220,7 @@ class IncomingMailCronModel(models.Model):
 
                                 if "errorCode" in response:
                                     if not email_from is None:
-                                        res_partners = self.env['res.partner'].search([("email", "=", email_from)])
+                                        res_partners = self.env['res.partner'].search([("email", "=ilike", email_from)])
                                         if len(res_partners) > 1:
                                             customerName = ""
                                             for res_partner in res_partners:
