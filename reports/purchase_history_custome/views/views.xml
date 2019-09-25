@@ -45,15 +45,10 @@
                                 <field name="date_done" widget="date"/>
                             </group>
                             <group>
-<<<<<<< HEAD
                                <field name="product_unit_price" widget="monetary"/>
                            <field name="product_offer_price" widget="monetary" />
                            <field name="delivered_product_retail_price" widget="monetary"/>
                            <field name="delivered_product_offer_price" widget="monetary" />
-=======
-                                <field name="unit_price"/>
-                                <field name="retail_price" widget="monetary"/>
->>>>>>> 154067e3d2519ccbfb46a4d69bb5758270b29276
                                 <field name="minExpDate" widget="date"/>
                                   <field name="maxExpDate" widget="date"/>
                                      <field name="product_uom"/>
