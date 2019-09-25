@@ -137,11 +137,11 @@
 
                                                     </td>
                                                     <td>
-
                                                         <p style="font-weight: lighter">
-                                                            <span t-esc="packing_list.date_done" t-options='{"widget": "datetime"}'></span>
+                                                            <t t-if="packing_list.picking_type_id.id == 5">
+                                                                <span t-esc="packing_list.date_done" t-options='{"widget": "datetime"}'></span>
+                                                            </t>
                                                         </p>
-
                                                     </td>
                                                     <td>
 
