@@ -13,7 +13,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','sale','prioritization_engine','vendor_offer','website_cstm'],
+    'depends': ['base','sale','prioritization_engine','vendor_offer','website_cstm','portal'],
 
     # always loaded
     'data': [
