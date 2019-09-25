@@ -24,7 +24,7 @@
                                         <div class="mt16" attrs="{'invisible': [('max_inventory_level', '=', False)]}">
                                             <field name="max_inventory_level_duration" class="oe_inline"/>
                                             <span>days</span>
-                                             <p style="color: #025325;" >Duration of max inventory level shouldn't beyond 365 days</p>
+                                             <p style="color: #025325;" >Duration of max inventory level should be less than 365 days</p>
                                         </div>
                                     </div>
                                 </div>
@@ -53,7 +53,7 @@
              </xpath>
         </field>
     </record>
-    <record id="product_template_monitor_search_view" model="ir.ui.view">
+<!--    <record id="product_template_monitor_search_view" model="ir.ui.view">
         <field name="name">product.template.search</field>
         <field name="model">product.template</field>
         <field name="arch" type="xml">
@@ -70,7 +70,7 @@
                 <separator/>
                 <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
                 <field string="Attributes" name="attribute_line_ids" groups="product.group_product_variant"/>
-                <field name="pricelist_id" widget="selection" context="{'pricelist': self}" filter_domain="[]" groups="product.group_sale_pricelist"/> <!-- Keep widget=selection on this field to pass numeric `self` value, which is not the case for regular m2o widgets! -->
+                <field name="pricelist_id" widget="selection" context="{'pricelist': self}" filter_domain="[]" groups="product.group_sale_pricelist"/> &lt;!&ndash; Keep widget=selection on this field to pass numeric `self` value, which is not the case for regular m2o widgets! &ndash;&gt;
                 <separator/>
                 <filter string="Late Activities" name="activities_overdue"
                     domain="[('activity_ids.date_deadline', '&lt;', context_today().strftime('%Y-%m-%d'))]"
@@ -127,11 +127,11 @@
             available vendors, etc.
           </p>
         </field>
-    </record>
+    </record>-->
 
     <record id="view_inventory_moniter_line_tree_test" model="ir.ui.view">
-        <field name="name">inventory.monitor1.tree</field>
-        <field name="model">inventory.monitor1</field>
+        <field name="name">inventory.monitor.tree</field>
+        <field name="model">inventory.monitor</field>
         <field name="context">{"inventory_monitor":1}</field>
         <field name="arch" type="xml">
             <tree string="Inventory Monitor" create="false" edit="false" delete="false">
@@ -153,8 +153,8 @@
 
 
     <record id="view_inventory_moniter_line_form_test" model="ir.ui.view">
-        <field name="name">inventory.monitor1.tree</field>
-        <field name="model">inventory.monitor1</field>
+        <field name="name">inventory.monitor.tree</field>
+        <field name="model">inventory.monitor</field>
         <field name="context">{"inventory_monitor":1}</field>
         <field name="arch" type="xml">
             <form string="Inventory Monitor" create="false" edit="false" delete="false">
@@ -184,14 +184,6 @@
         </field>
     </record>
 
-    <record id="product_normal_action_puchased_method" model="ir.actions.server">
-            <field name="name">Inventory Monitor</field>
-            <field name="type">ir.actions.server</field>
-            <field name="model_id" ref="model_inventory_monitor1"/>
-            <field name="state">code</field>
-            <field name="code">action = model.action_your_report()</field>
-        </record>
-
     <record model="ir.ui.view" id="product_template_form_view_procurement_button1">
             <field name="name">product.template_max_inventory_level_duration</field>
             <field name="model">product.template</field>
@@ -212,7 +204,41 @@
       <!-- Product menu-->
 <!--    <menuitem name="Inventory Monitor" id="menu_procurement_partner_contact_form_ext" action="product_normal_action_puchased_ext"-->
 <!--          parent="stock.menu_stock_warehouse_mgmt" sequence="50"/>-->
+ <record id="max_inventory_level_duration_popup" model="ir.ui.view">
+        <field name="name">Max Inventory Level Duration</field>
+        <field name="model">max.inventory.popup</field>
+         <field name="priority">50</field>
+        <field name="arch" type="xml">
+             <form>
+                 <group>
+                             <div >
+                                 <span> <b>Max Inventory Level Duration &amp;nbsp;&amp;nbsp; </b> </span>
+                                    <field  name="max_inventory_level_duration" class="oe_inline"   />
+                                 <span> Days</span>
+                                  <p style="color: #1aaa58;" > * Duration of max inventory level should be less than 365 days</p>
+                            </div>
+                    </group>
+                    <footer>
+                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+             </form>
+        </field>
+    </record>
 
-    <menuitem name="Inventory Monitor" id="menu_procurement_partner_contact_form_ext_test" action="product_normal_action_puchased_method"
+
+    <record id="max_inventory_level_duration" model="ir.actions.act_window">
+        <field name="name"> Max Inventory Level Duration </field>
+        <field name="res_model">max.inventory.popup</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="max_inventory_level_duration_popup"/>
+        <field name="target">new</field>
+    </record>
+
+
+       <menuitem name="Inventory Monitor" id="menu_procurement_partner_contact_form_ext_test" action="max_inventory_level_duration"
           parent="stock.menu_stock_warehouse_mgmt" sequence="50"/>
+
+
 </odoo>

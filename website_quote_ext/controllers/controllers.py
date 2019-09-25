@@ -10,19 +10,24 @@ from odoo.osv import expression
 from odoo.exceptions import AccessError
 from odoo.addons.portal.controllers.portal import get_records_pager, pager as portal_pager, CustomerPortal
 from datetime import datetime
+from odoo.exceptions import AccessError, MissingError
+from odoo.addons.payment.controllers.portal import PaymentProcessing
+from odoo.addons.portal.controllers.mail import _message_post_helper
+from odoo.addons.portal.controllers.portal import CustomerPortal, pager as portal_pager, get_records_pager
 
 class WebsiteSale(http.Controller):
-
-    def _order_check_access(self, order_id, access_token=None):
-        order = request.env['sale.order'].browse([order_id])
-        order_sudo = order.sudo()
+    def _document_check_access(self, model_name, document_id, access_token=None):
+        document = request.env[model_name].browse([document_id])
+        document_sudo = document.sudo().exists()
+        if not document_sudo:
+            raise MissingError(_("This document does not exist."))
         try:
-            order.check_access_rights('read')
-            order.check_access_rule('read')
+            document.check_access_rights('read')
+            document.check_access_rule('read')
         except AccessError:
-            if not access_token or not consteq(order_sudo.access_token, access_token):
+            if not access_token or not consteq(document_sudo.access_token, access_token):
                 raise
-        return order_sudo
+        return document_sudo
 
     def _order_get_page_view_values(self, order, access_token, **kwargs):
         order_invoice_lines = {il.product_id.id: il.invoice_id for il in order.invoice_ids.mapped('invoice_line_ids')}
@@ -33,8 +38,6 @@ class WebsiteSale(http.Controller):
         if access_token:
             values['no_breadcrumbs'] = True
             values['access_token'] = access_token
-        values['portal_confirmation'] = order.get_portal_confirmation_action()
-
         if kwargs.get('error'):
             values['error'] = kwargs['error']
         if kwargs.get('warning'):
@@ -46,7 +49,6 @@ class WebsiteSale(http.Controller):
         values.update(get_records_pager(history, order))
 
         return values
-
 
     @http.route(['/shop/engine/update_json'], type='json', auth="public", methods=['POST'], website=True, csrf=False)
     def update_engine_json(self, quote_id,product_id, line_id=None, add_qty=None, set_qty=None, display=True):
@@ -64,19 +66,77 @@ class WebsiteSale(http.Controller):
         count = request.website.sale_get_engine_count(quote_id,product_id)
         return count
 
-    @http.route(['/my/orders/edit/<int:order>'], type='http', auth="public", website=True)
-    def portal_order_page(self, order=None, access_token=None, **kw):
+    @http.route(['/my/orders/edit/<int:order_id>'], type='http', auth="public", website=True)
+    def portal_order_page_edit(self, order_id, report_type=None, access_token=None, message=False, download=False, **kw):
+        print('In portal_order_page')
         try:
-            order_sudo = self._order_check_access(order, access_token=access_token)
-        except AccessError as e:
-            print(e)
+            order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
+        except (AccessError, MissingError):
             return request.redirect('/my')
-        values = self._order_get_page_view_values(order_sudo, access_token, **kw)
+
+        if report_type in ('html', 'pdf', 'text'):
+            return self._show_report(model=order_sudo, report_type=report_type,
+                                     report_ref='sale.action_report_saleorder', download=download)
+
+        # use sudo to allow accessing/viewing orders for public user
+        # only if he knows the private token
+        now = odoo_fields.Date.today()
+
+        # Log only once a day
+        if order_sudo and request.session.get(
+                'view_quote_%s' % order_sudo.id) != now and request.env.user.share and access_token:
+            request.session['view_quote_%s' % order_sudo.id] = now
+            body = _('Quotation viewed by customer')
+            _message_post_helper(res_model='sale.order', res_id=order_sudo.id, message=body,
+                                 token=order_sudo.access_token, message_type='notification', subtype="mail.mt_note",
+                                 partner_ids=order_sudo.user_id.sudo().partner_id.ids)
+
+        values = {
+            'sale_order': order_sudo,
+            'message': message,
+            'token': access_token,
+            'return_url': '/shop/payment/validate',
+            'bootstrap_formatting': True,
+            'partner_id': order_sudo.partner_id.id,
+            'report_type': 'html',
+        }
+        if order_sudo.company_id:
+            values['res_company'] = order_sudo.company_id
+
+        if order_sudo.has_to_be_paid():
+            domain = expression.AND([
+                ['&', ('website_published', '=', True), ('company_id', '=', order_sudo.company_id.id)],
+                ['|', ('specific_countries', '=', False), ('country_ids', 'in', [order_sudo.partner_id.country_id.id])]
+            ])
+            acquirers = request.env['payment.acquirer'].sudo().search(domain)
+
+            values['acquirers'] = acquirers.filtered(
+                lambda acq: (acq.payment_flow == 'form' and acq.view_template_id) or
+                            (acq.payment_flow == 's2s' and acq.registration_view_template_id))
+            values['pms'] = request.env['payment.token'].search(
+                [('partner_id', '=', order_sudo.partner_id.id),
+                 ('acquirer_id', 'in', acquirers.filtered(lambda acq: acq.payment_flow == 's2s').ids)])
+
+        if order_sudo.state in ('draft', 'sent', 'cancel'):
+            history = request.session.get('my_quotations_history', [])
+        else:
+            history = request.session.get('my_orders_history', [])
+        values.update(get_records_pager(history, order_sudo))
+
         return request.render("website_quote_ext.portal_order_page_ex", values)
 
-    @http.route(['/quote/<int:order_id>/<token>/accept'], type='http', auth="public", methods=['POST'], website=True)
-    def accept(self, order_id, token, **post):
+
+    @http.route(['/my/orders/<int:order_id>/accepts'], type='http', auth="public", methods=['POST'], website=True)
+    def accepts(self, order_id, access_token=None, **post):
+        try:
+            order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
+        except (AccessError, MissingError):
+            return request.redirect('/my')
+
+        message = post.get('accept_message')
+
         flag = False
+        query_string=False
         Order = request.env['sale.order'].sudo().browse(order_id)
         SaleOrderLines = request.env['sale.order.line'].sudo().search([('order_id', '=', Order.id)])
         for SaleOrderLine in SaleOrderLines:
@@ -86,34 +146,35 @@ class WebsiteSale(http.Controller):
                     flag = True
                     break
 
-        if token != Order.access_token:
+        if access_token != Order.access_token:
             return request.render('website.404')
         if Order.state != 'sent':
-            return werkzeug.utils.redirect("/quote/%s/%s?message=4" % (order_id, token))
+            return request.redirect(order_sudo.get_portal_url(query_string=query_string))
 
         if flag:
             Order.action_cancel()
             Order.action_draft()
             Order.action_confirm()
-            picking = request.env['stock.picking'].sudo().search([('sale_id', '=', Order.id), ('picking_type_id', '=', 1), ('state', 'not in', ['draft', 'cancel'])])
+            picking = request.env['stock.picking'].sudo().search(
+                [('sale_id', '=', Order.id), ('picking_type_id', '=', 1), ('state', 'not in', ['draft', 'cancel'])])
             picking.write({'state': 'assigned'})
             stock_move = request.env['stock.move'].sudo().search([('picking_id', '=', picking.id)])
             stock_move.write({'state': 'assigned'})
         else:
             Order.write({'state': 'sale', 'confirmation_date': datetime.now()})
 
-        message = post.get('accept_message')
+
         client_order_ref = post.get('client_order_ref')
         if client_order_ref:
-            Order.write({"client_order_ref":client_order_ref})
+            Order.write({"client_order_ref": client_order_ref})
         if message:
             # Order.write({'sale_note': message})
             body = _(message)
-            _message_post_helper(res_model='sale.order', res_id=Order.id, message=body, token=Order.access_token,
+            _message_post_helper(res_model='sale.order', res_id=order_id, message=body, token=access_token,
                                  message_type='notification', subtype="mail.mt_note",
                                  partner_ids=Order.user_id.sudo().partner_id.ids)
             # stock picking notification
-            stock_picking = request.env['stock.picking'].sudo().search([('sale_id', '=', Order.id)])
+            stock_picking = request.env['stock.picking'].sudo().search([('sale_id', '=', order_id)])
             stock_picking_sudo = stock_picking.sudo()
 
             for stk_picking in stock_picking_sudo:
@@ -127,26 +188,30 @@ class WebsiteSale(http.Controller):
                     'author_id': stk_picking.sale_id.partner_id.id,
                 }
                 request.env['mail.message'].sudo().create(values)
-        return werkzeug.utils.redirect("/quote/%s/%s?message=3" % (order_id, token))
 
-    @http.route(['/quote/<int:order_id>/<token>/declines'], type='http', auth="public", methods=['POST'], website=True)
-    def decline(self, order_id, token, **post):
-        Order = request.env['sale.order'].sudo().browse(order_id)
-        if token != Order.access_token:
-            return request.render('website.404')
-        if Order.state != 'sent':
-            return werkzeug.utils.redirect("/quote/%s/%s?message=4" % (order_id, token))
-        Order.action_cancel()
+        return request.redirect(order_sudo.get_portal_url(query_string=query_string))
+
+
+    @http.route(['/my/orders/<int:order_id>/declines'], type='http', auth="public", methods=['POST'], website=True)
+    def decline(self, order_id, access_token=None, **post):
+        print ("Inside SPS Controller....")
+        try:
+            order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
+        except (AccessError, MissingError):
+            return request.redirect('/my')
+
+        order_sudo.action_cancel()
         message = post.get('decline_message')
+
         if message:
             # Order.write({'sale_note': message})
             body = _(message)
-            _message_post_helper(res_model='sale.order', res_id=Order.id, message=body, token=Order.access_token,
+            _message_post_helper(res_model='sale.order', res_id=order_id, message=body, token=access_token,
                                  message_type='notification', subtype="mail.mt_note",
-                                 partner_ids=Order.user_id.sudo().partner_id.ids)
+                                 partner_ids=order_sudo.user_id.sudo().partner_id.ids)
 
             # stock picking notification
-            stock_picking = request.env['stock.picking'].sudo().search([('sale_id', '=', Order.id)])
+            stock_picking = request.env['stock.picking'].sudo().search([('sale_id', '=', order_id)])
             stock_picking_sudo = stock_picking.sudo()
 
             for stk_picking in stock_picking_sudo:
@@ -160,7 +225,10 @@ class WebsiteSale(http.Controller):
                     'author_id': stk_picking.sale_id.partner_id.id,
                 }
                 request.env['mail.message'].sudo().create(values)
-        return werkzeug.utils.redirect("/quote/%s/%s?message=2" % (order_id, token))
+
+        query_string = False
+
+        return request.redirect(order_sudo.get_portal_url(query_string=query_string))
 
 
 class CustomerPortal(CustomerPortal):
