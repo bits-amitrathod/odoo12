@@ -48,8 +48,8 @@ class PrioritizationEngine(models.TransientModel):
                             prioritization_engine_request['customer_request_logs'] += 'In Cooling period.'
                             _logger.debug('Cooling period false.....')
                     else:
-                        prioritization_engine_request['customer_request_logs'] += 'Product Lot not available.'
-                        _logger.debug('Product Lot not available....')
+                        prioritization_engine_request['customer_request_logs'] += 'As per requested expiration tolerance product lot not available.'
+                        _logger.debug('As per requested expiration tolerance product lot not available.')
                 else:
                     prioritization_engine_request['customer_request_logs'] += 'Auto allocate is false.'
                     _logger.debug('Auto allocate is false....')
@@ -385,11 +385,11 @@ class PrioritizationEngine(models.TransientModel):
             print('**********After action_confirm************', sale_order.state)
             _logger.info('sale order id  : %r  sale order state : %r', sale_order.id, sale_order.state)
 
-            picking = self.env['stock.picking'].search([('sale_id', '=', sale_order.id),('picking_type_id', '=', 1)])
-            _logger.info('picking state   : %r', picking.state)
-            picking.write({'state':'assigned'})
-            stock_move = self.env['stock.move'].search([('picking_id', '=', picking.id)])
-            stock_move.write({'state': 'assigned'})
+            # picking = self.env['stock.picking'].search([('sale_id', '=', sale_order.id),('picking_type_id', '=', 1)])
+            # _logger.info('picking state   : %r', picking.state)
+            # picking.write({'state':'assigned'})
+            # stock_move = self.env['stock.move'].search([('picking_id', '=', picking.id)])
+            # stock_move.write({'state': 'assigned'})
             # sale_order.write(dict(state='engine', confirmation_date=''))
             # sale_order.force_quotation_send()
             sale_order.write({'state':'sent', 'confirmation_date':''})
@@ -422,11 +422,11 @@ class PrioritizationEngine(models.TransientModel):
             sale_order.action_confirm()
             _logger.info('sale order id  : %r  sale order state : %r', sale_order.id, sale_order.state)
 
-            picking = self.env['stock.picking'].search([('sale_id', '=', sale_order.id), ('picking_type_id', '=', 1)])
-            _logger.info('picking before   : %r', picking.state)
-            picking.write({'state':'assigned'})
-            stock_move = self.env['stock.move'].search([('picking_id', '=', picking.id)])
-            stock_move.write({'state': 'assigned'})
+            # picking = self.env['stock.picking'].search([('sale_id', '=', sale_order.id), ('picking_type_id', '=', 1)])
+            # _logger.info('picking before   : %r', picking.state)
+            # picking.write({'state':'assigned'})
+            # stock_move = self.env['stock.move'].search([('picking_id', '=', picking.id)])
+            # stock_move.write({'state': 'assigned'})
             # sale_order.write(dict(state='engine', confirmation_date=''))
             # sale_order.force_quotation_send()
             sale_order.write({'state':'sent', 'confirmation_date':''})
@@ -483,7 +483,7 @@ class PrioritizationEngine(models.TransientModel):
     # Update uploaded document status
     def _check_uploaded_document_status(self):
         # get all document whose status is draft and In Process.
-        sps_cust_uploaded_documents = self.env['sps.cust.uploaded.documents'].search([('status', 'in', ('draft','In Process'))])
+        sps_cust_uploaded_documents = self.env['sps.cust.uploaded.documents'].search([('status', 'in', ('draft', 'In Process'))])
 
         for sps_cust_uploaded_document in sps_cust_uploaded_documents:
             _logger.info('Document Id :%r',sps_cust_uploaded_document.id)
@@ -491,11 +491,14 @@ class PrioritizationEngine(models.TransientModel):
             current_cust_doc_fixed_count = sps_cust_uploaded_document.customer_id['doc_process_count']
             current_processing_doc_id = sps_cust_uploaded_document.id
             current_processed_docs = sps_cust_uploaded_document.document_processed_count
+            template = None
 
             if sps_cust_uploaded_document.template_type.lower().strip() == 'requirement':
                 if current_processed_docs >= current_cust_doc_fixed_count:
                     self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
+                    template = self.env.ref('customer-requests.final_email_response_on_uploaded_document').sudo()
                 else:
+                    template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
                     sps_customer_requirements = self.env['sps.customer.requests'].search([('document_id', '=', sps_cust_uploaded_document.id),
                                                         ('status', 'in', ('Partial', 'InCoolingPeriod', 'New', 'Inprocess', 'Incomplete', 'Unprocessed'))])
                     if len(sps_customer_requirements) > 0:
@@ -507,8 +510,10 @@ class PrioritizationEngine(models.TransientModel):
 
             elif sps_cust_uploaded_document.template_type.lower().strip() == 'inventory':
                  if int(current_processed_docs) >= int(current_cust_doc_fixed_count):
+                     template = self.env.ref('customer-requests.final_email_response_on_uploaded_document').sudo()
                      self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
                  else:
+                    template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
                     if int(current_processing_doc_id) == int(sps_cust_uploaded_document.id):
                         sps_customer_requirements = self.env['sps.customer.requests'].search([('document_id', '=', sps_cust_uploaded_document.id),
                                                             ('status', 'in', ('Partial', 'InCoolingPeriod', 'New', 'Inprocess', 'Incomplete', 'Unprocessed'))])
@@ -521,6 +526,12 @@ class PrioritizationEngine(models.TransientModel):
                     else:
                         if sps_cust_uploaded_document.status != 'Completed':
                             self._update_uploaded_document_status(sps_cust_uploaded_document.id,'Completed')
+            # Send Email Notification to customer about the progress of uploaded or sent document
+            sps_customer_requests = self.env['sps.customer.requests'].search([('document_id', '=', sps_cust_uploaded_document.id),('status', 'in', ('Partial', 'Fulfilled'))])
+            if len(sps_customer_requests) == 0 and template is not None:
+                # Send Email
+                print('Send final email')
+                self.send_mail(sps_cust_uploaded_document.customer_id.name, sps_cust_uploaded_document.customer_id.email, template)
 
     def _update_uploaded_document_status(self,document_id,status):
         try:
@@ -581,6 +592,13 @@ class PrioritizationEngine(models.TransientModel):
     def send_mail(self, body):
         template = self.env.ref('prioritization_engine.set_log_gl_account_response').sudo()
         local_context = {'body': body}
+        try:
+            template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True, )
+        except:
+            response = {'message': 'Unable to connect to SMTP Server'}
+
+    def send_mail(self, customerName, customerEmail, template):
+        local_context = {'customerName': customerName, 'customerEmail': customerEmail}
         try:
             template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True, )
         except:

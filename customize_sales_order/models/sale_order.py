@@ -11,6 +11,8 @@ class sale_order(models.Model):
 
     carrier_track_ref = fields.Char('Tracking Reference', store=True, readonly=True, compute='_get_carrier_tracking_ref')
 
+    delivery_method_readonly_flag = fields.Integer('Delivery method readonly flag', default=1, compute='_get_delivery_method_readonly_flag')
+
     def write(self, val):
         super(sale_order, self).write(val)
 
@@ -53,6 +55,20 @@ class sale_order(models.Model):
                     so.carrier_track_ref = sp.carrier_tracking_ref
                     break
             break
+
+    @api.one
+    def _get_delivery_method_readonly_flag(self):
+        for sale_ordr in self:
+            if sale_ordr.state in ('draft', 'sent'):
+                sale_ordr.delivery_method_readonly_flag = 1
+            elif sale_ordr.state == 'sale':
+                stock_pickings = self.env['stock.picking'].search([('sale_id', '=', sale_ordr.id),('picking_type_id', '=', 1)])
+                for stock_picking in stock_pickings:
+                    if stock_picking.state == 'assigned':
+                        sale_ordr.delivery_method_readonly_flag = 1
+
+
+
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'

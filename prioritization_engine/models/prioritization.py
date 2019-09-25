@@ -423,10 +423,8 @@ class StockMove(models.Model):
         for move in self.filtered(lambda m: m.state in ['confirmed', 'waiting', 'partially_available']):
             product_lot_qty_dict.clear()
 
-            if (move.picking_id and move.picking_id.sale_id) and (
-                    move.picking_id.sale_id.team_id.team_type.lower().strip() == 'engine' and move.picking_id.sale_id.state.lower().strip() in (
+            if (move.picking_id and move.picking_id.sale_id) and (move.picking_id.sale_id.team_id.team_type.lower().strip() == 'engine' and move.picking_id.sale_id.state.lower().strip() in (
                     'sale')):
-                _logger.info('sales channel is engine')
                 available_production_lot_dict = self.env['available.product.dict'].get_available_production_lot_dict()
 
                 # get expiration tolerance
@@ -457,6 +455,11 @@ class StockMove(models.Model):
                         taken_quantity = move._update_reserved_quantity(need, prdt_lot_qty['available_qty'], move.location_id, prdt_lot_qty['lot_id'], strict=False)
                         _logger.info('taken_quantity : %r', taken_quantity)
                         need = need - taken_quantity
+                    if need == taken_quantity:
+                        assigned_moves |= move
+                    elif need == 0.0:
+                        assigned_moves |= move
+                        break
             else:
                 if move.location_id.should_bypass_reservation() \
                         or move.product_id.type == 'consu':
