@@ -86,6 +86,9 @@
                                             <td align="right"  style="border: 1px solid #000; white-space:nowrap;">
                                                 <span t-esc="o.product_unit_price" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                             </td>
+                                            <td align="right"  style="border: 1px solid #000; white-space:nowrap;">
+                                                <span t-esc="o.retail_price" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                            </td>
                                               <td align="right"  style="border: 1px solid #000; white-space:nowrap;">
                                                 <span t-esc="o.product_offer_price" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                             </td>

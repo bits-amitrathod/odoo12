@@ -16,11 +16,11 @@
     'version': '0.1',
 
 
-    'depends': ['base'],
+    'depends': ['base','l10n_us_check_printing'],
 
     # always loaded
     'data': [
-        'report/cheque_print_template.xml',
+        'report/print_check.xml',
     ],
     'installable': True,
     'application': True,

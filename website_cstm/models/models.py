@@ -19,7 +19,7 @@ class website_cstm(models.Model):
         notificationList = {}
         template = self.env.ref('website_cstm.mail_template_product_instock_notification_email')
         for subcriber in subcribers:
-            if subcriber.product_tmpl_id.qty_available > 0:
+            if subcriber.product_tmpl_id.actual_quantity > 0:
                 if not subcriber.email in notificationList :
                     notificationList[subcriber.email] = []
                 notificationList[subcriber.email].append(subcriber)

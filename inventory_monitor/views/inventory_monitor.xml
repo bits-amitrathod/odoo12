@@ -127,8 +127,8 @@
     </record>
 
     <record id="view_inventory_moniter_line_tree_test" model="ir.ui.view">
-        <field name="name">inventory.monitor1.tree</field>
-        <field name="model">inventory.monitor1</field>
+        <field name="name">inventory.monitor.tree</field>
+        <field name="model">inventory.monitor</field>
         <field name="context">{"inventory_monitor":1}</field>
         <field name="arch" type="xml">
             <tree string="Inventory Monitor" create="false" edit="false" delete="false">
@@ -150,8 +150,8 @@
 
 
     <record id="view_inventory_moniter_line_form_test" model="ir.ui.view">
-        <field name="name">inventory.monitor1.tree</field>
-        <field name="model">inventory.monitor1</field>
+        <field name="name">inventory.monitor.tree</field>
+        <field name="model">inventory.monitor</field>
         <field name="context">{"inventory_monitor":1}</field>
         <field name="arch" type="xml">
             <form string="Inventory Monitor" create="false" edit="false" delete="false">
@@ -184,7 +184,7 @@
     <record id="product_normal_action_puchased_method" model="ir.actions.server">
             <field name="name">Inventory Monitor</field>
             <field name="type">ir.actions.server</field>
-            <field name="model_id" ref="model_inventory_monitor1"/>
+            <field name="model_id" ref="model_inventory_monitor"/>
             <field name="state">code</field>
             <field name="code">action = model.action_your_report()</field>
         </record>

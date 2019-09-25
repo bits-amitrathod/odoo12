@@ -19,7 +19,8 @@ class PurchaseHistory(models.Model):
     product_name=fields.Char("Product Name", store=False)
     minExpDate = fields.Date("Min Expiration Date", store=False, compute="_calculateDate1")
     maxExpDate = fields.Date("Max Expiration Date", store=False, compute="_calculateDate2")
-    unit_price=fields.Monetary("Price Per Unit", store=False)
+    unit_price = fields.Monetary("Price Per Unit", store=False)
+    retail_price = fields.Monetary("Retail Price", store=False)
     order_name = fields.Char("Po Name", store=False , compute="_calculateSKU1")
     date_done = fields.Date("Date Done", store=False, compute="_calculateSKU1")
 
@@ -72,5 +73,4 @@ class PurchaseHistory(models.Model):
                 print(query_result)
                 order.maxExpDate = query_result['max']
                 print(order.maxExpDate)
-
 
