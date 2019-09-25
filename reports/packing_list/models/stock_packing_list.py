@@ -18,6 +18,7 @@ class PricingRule(models.Model):
     _inherit="stock.picking"
     shipping_terms=fields.Char(string="Shipping Term",compute='_compute_picking_vals')
     requested_date=fields.Date(string="Req. Ship Date",compute='_compute_picking_vals')
+    delivery_method_name = fields.Char(string="Ship Via",compute='_compute_picking_vals')
     # name = fields.Char(string="Name")
     # state= fields.Char(string="State")
     # carrier_id=fields.Integer(string="Carrier")
@@ -49,6 +50,8 @@ class PricingRule(models.Model):
               picking.requested_date=picking.sale_id.requested_date
               if picking.sale_id.shipping_terms:
                 picking.shipping_terms=self.shipping_term(picking.sale_id.shipping_terms)
+              if picking.sale_id.carrier_id:
+                picking.delivery_method_name = picking.sale_id.carrier_id.name
 
     def shipping_term(self,i):
         switcher = {
