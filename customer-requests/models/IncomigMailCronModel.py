@@ -116,6 +116,8 @@ class IncomingMailCronModel(models.Model):
                                         if len(res_partner) == 1:
                                             email_from = res_partner.email
                                 else:
+                                    _logger.info('Customer Id is not found in email subject.')
+                                    response = dict(errorCode=106, message='Customer Id is not found in email subject.')
                                     email_from = tools.decode_message_header(message, 'From')
 
                                 if email_from is not None:
