@@ -42,7 +42,7 @@
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">New Customer</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">T1 Margin</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">T2 Margin</th>
-                                    <th style="border: 1px solid black;text-align: center;width: 5%;">&lt;40 Margin</th>
+                                    <th style="border: 1px solid black;text-align: center;width: 5%;">Broker Margin</th>
                                 </tr>
                                     <tr t-foreach="data" t-as="order" style="width: 50%;">
                                         <td style="border: 1px solid black;width: 5%;">

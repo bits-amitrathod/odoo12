@@ -431,7 +431,7 @@ class VendorOffer(models.Model):
                     self.amount_untaxed = self.credit_amount_untaxed
                     self.amount_total = self.credit_amount_total
 
-            #self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
+            self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
 
     @api.multi
     def action_button_confirm_api(self, product_id):
