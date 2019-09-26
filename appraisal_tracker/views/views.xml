@@ -46,7 +46,7 @@
                            attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"></field>
                      <field name="less_than_40_margin"
                            options='{"bg_color": "#f3f397 : lscolor"+"==3;"+"#c9fbcf : lscolor"+"==2;"+"#ff7098 : lscolor"+"==1"}'
-                           string="&lt;40% Margin"
+                           string="Broker Margin"
                            attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"></field>
                     <!--<field name="broker_margin"-->
                            <!--options='{"bg_color": "#f3f397 : color"+"==3;"+"#c9fbcf : color"+"==2;"+"#ff7098 : color"+"==1"}'-->
