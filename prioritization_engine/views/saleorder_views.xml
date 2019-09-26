@@ -38,11 +38,13 @@
                        position="after">
                         <field name="req_no"/>
                 </xpath>
-                 <xpath expr="/form/sheet/notebook/page[1]/field[@name='order_line']/tree/field[@name='name']"
-                       position="attributes">
+
+                <!-- Below line is commented because sales quotation Add a section Add a note are not displaying in odoo12 -->
+<!--                 <xpath expr="/form/sheet/notebook/page[1]/field[@name='order_line']/tree/field[@name='name']"-->
+<!--                       position="attributes">-->
                      <!-- For Hiding description column -->
-                           <attribute name="invisible">True</attribute>
-                </xpath>
+<!--                           <attribute name="invisible">True</attribute>-->
+<!--                </xpath>-->
                   <xpath expr="/form/sheet/notebook/page[1]/field[@name='order_line']/tree/field[@name='product_id']"
                        position="before">
                         <!-- Adding SKU column -->
