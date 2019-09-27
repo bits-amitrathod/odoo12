@@ -302,4 +302,9 @@
         </xpath>
     </template>
 
+        <template id="inherit_report_purchaseorder_document" inherit_id="purchase.report_purchaseorder_document">
+           <xpath expr="//div[@class='page']/div[1]" position="after">
+               <br/>
+           </xpath>
+        </template>
 </odoo>
