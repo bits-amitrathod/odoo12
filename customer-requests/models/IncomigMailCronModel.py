@@ -100,11 +100,11 @@ class IncomingMailCronModel(models.Model):
                                 _Attachment = namedtuple('Attachment', ('fname', 'content', 'info'))
                                 attachments = []
                                 body = u''
-                                subject = tools.decode_message_header(message, 'Subject').replace(' ','')
+                                subject = tools.decode_message_header(message, 'Subject').replace(' ','').lower()
                                 email_from = None
                                 tmpl_type = None
 
-                                if '{CustomerId:' in subject:
+                                if '{customerid:' in subject:
                                     match1 = re.findall(r'{[\w\.-]+:[\w\.-]+', subject)
                                     saleforce_ac = match1[0].split(':')[1]
                                     # find customer in res.partner
