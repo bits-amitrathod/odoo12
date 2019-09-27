@@ -100,7 +100,8 @@ class IncomingMailCronModel(models.Model):
                                 _Attachment = namedtuple('Attachment', ('fname', 'content', 'info'))
                                 attachments = []
                                 body = u''
-                                subject = tools.decode_message_header(message, 'Subject').replace(' ','').lower()
+                                email_subject = tools.decode_message_header(message, 'Subject')
+                                subject = email_subject.replace(' ','').lower()
                                 email_from = None
                                 tmpl_type = None
 
@@ -114,16 +115,16 @@ class IncomingMailCronModel(models.Model):
                                             email_from = res_partner.email
                                         elif len(res_partner) > 1:
                                             _logger.info('We have found Same Customer Id against multiple users. %r', str(saleforce_ac))
-                                            response = dict(errorCode=106, message='We have found Same Customer Id against multiple users.')
+                                            response = dict(errorCode=106, message='We have found Same Customer Id against multiple users. Customer Id : ' + str(saleforce_ac))
                                         else:
                                             _logger.info('Customer Id is not found in customer list : %r', str(saleforce_ac))
-                                            response = dict(errorCode=107, message='Customer Id is not found in customer list.')
+                                            response = dict(errorCode=107, message='Customer Id is not found in customer list. Customer Id : ' + str(saleforce_ac))
                                     else:
                                         _logger.info('Customer Id is not found in email subject.')
-                                        response = dict(errorCode=108, message='Customer Id is not found in email subject.')
+                                        response = dict(errorCode=108, message='Customer Id is not found in email subject : " ' + email_subject + ' "')
                                 else:
                                     _logger.info('Customer Id is not found in email subject.')
-                                    response = dict(errorCode=109, message='Customer Id is not found in email subject.')
+                                    response = dict(errorCode=109, message='Customer Id is not found in email subject : " ' + email_subject + ' "')
                                     # email_from = tools.decode_message_header(message, 'From')
 
                                 if email_from is not None:
