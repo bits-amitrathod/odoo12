@@ -2253,14 +2253,14 @@ class InventoryNotificationScheduler(models.TransientModel):
                 coln_name.append(column_name)
                 if column_name == 'minExDate':
                     if query_result and query_result['min']:
-                        column = query_result['min'].strftime('%m/%d/%Y')
-                        #column = datetime.strptime(query_result['min'], "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
+                        min=str(query_result['min'])
+                        column = datetime.strptime(min, "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
                     else:
                         column = ""
                 elif column_name == 'maxExDate':
                     if query_result and query_result['max']:
-                        column = query_result['max'].strftime('%m/%d/%Y')
-                        #column = datetime.strptime(query_result['max'], "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
+                        max=str(query_result['max'])
+                        column = datetime.strptime(max, "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
                     else:
                         column = ""
                 elif column_name == 'customer_price_list':
