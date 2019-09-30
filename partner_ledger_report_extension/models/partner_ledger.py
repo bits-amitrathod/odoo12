@@ -134,7 +134,6 @@ class ReportPartnerLedgerExtension(models.AbstractModel):
                 'class': 'o_account_reports_domain_total',
                 'columns': [{'name': v} for v in total_columns],
             })
-            print(lines)
         return lines
 
 
