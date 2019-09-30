@@ -1,26 +1,32 @@
-
-from odoo import models, fields, api, _
+from odoo import models, api, _, fields
+from odoo.tools import float_is_zero
+from odoo.tools.misc import format_date
+from datetime import datetime, timedelta
 
 
 class ReportPartnerLedgerExtension(models.AbstractModel):
     _inherit = "account.partner.ledger"
     _description = "Partner Ledger"
 
-
     @api.model
-    def get_lines(self, options, line_id=None):
+    def _get_lines(self, options, line_id=None):
+        offset = int(options.get('lines_offset', 0))
         lines = []
-        if line_id:
-            line_id = line_id.replace('partner_', '')
         context = self.env.context
+        company_id = context.get('company_id') or self.env.user.company_id
+        if line_id:
+            line_id = int(line_id.split('_')[1]) or None
+        elif options.get('partner_ids') and len(options.get('partner_ids')) == 1:
+            # If a default partner is set, we only want to load the line referring to it.
+            partner_id = options['partner_ids'][0]
+            line_id = partner_id
+        if line_id:
+            if 'partner_' + str(line_id) not in options.get('unfolded_lines', []):
+                options.get('unfolded_lines', []).append('partner_' + str(line_id))
 
-        # If a default partner is set, we only want to load the line referring to it.
-        if options.get('partner_id'):
-            line_id = options['partner_id']
-
-        grouped_partners = self.group_by_partner_id(options, line_id)
+        grouped_partners = self._group_by_partner_id(options, line_id)
         sorted_partners = sorted(grouped_partners, key=lambda p: p.name or '')
-        unfold_all = context.get('print_mode') and not options.get('unfolded_lines') or options.get('partner_id')
+        unfold_all = context.get('print_mode') and not options.get('unfolded_lines')
         total_initial_balance = total_debit = total_credit = total_balance = 0.0
         for partner in sorted_partners:
             debit = grouped_partners[partner]['debit']
@@ -31,26 +37,36 @@ class ReportPartnerLedgerExtension(models.AbstractModel):
             total_debit += debit
             total_credit += credit
             total_balance += balance
-            lines.append({
-                'id': 'partner_' + str(partner.id),
-                'name': partner.name,
-                'columns': [{'name': v} for v in
-                            [self.format_value(initial_balance), self.format_value(debit), self.format_value(credit),
-                             self.format_value(balance)]],
-                'level': 2,
-                'trust': partner.trust,
-                'unfoldable': True,
-                'unfolded': 'partner_' + str(partner.id) in options.get('unfolded_lines') or unfold_all,
-                'colspan': 5,
-            })
+            columns = [self.format_value(initial_balance), self.format_value(debit), self.format_value(credit)]
+            if self.user_has_groups('base.group_multi_currency'):
+                columns.append('')
+            columns.append(self.format_value(balance))
+            # don't add header for `load more`
+            if offset == 0:
+                lines.append({
+                    'id': 'partner_' + str(partner.id),
+                    'name': partner.name,
+                    'columns': [{'name': v} for v in columns],
+                    'level': 2,
+                    'trust': partner.trust,
+                    'unfoldable': True,
+                    'unfolded': 'partner_' + str(partner.id) in options.get('unfolded_lines') or unfold_all,
+                    'colspan': 6,
+                })
+            user_company = self.env.user.company_id
+            used_currency = user_company.currency_id
             if 'partner_' + str(partner.id) in options.get('unfolded_lines') or unfold_all:
-                progress = initial_balance
+                if offset == 0:
+                    progress = initial_balance
+                else:
+                    progress = float(options.get('lines_progress', initial_balance))
                 domain_lines = []
                 amls = grouped_partners[partner]['lines']
-                too_many = False
-                if len(amls) > 80 and not context.get('print_mode'):
-                    amls = amls[-80:]
-                    too_many = True
+
+                remaining_lines = 0
+                if not context.get('print_mode'):
+                    remaining_lines = grouped_partners[partner]['total_lines'] - offset - len(amls)
+
                 for line in amls:
                     if options.get('cash_basis'):
                         line_debit = line.debit_cash_basis
@@ -58,53 +74,75 @@ class ReportPartnerLedgerExtension(models.AbstractModel):
                     else:
                         line_debit = line.debit
                         line_credit = line.credit
+                    date = amls.env.context.get('date') or fields.Date.today()
+                    line_currency = line.company_id.currency_id
+                    line_debit = line_currency._convert(line_debit, used_currency, user_company, date)
+                    line_credit = line_currency._convert(line_credit, used_currency, user_company, date)
                     progress_before = progress
                     progress = progress + line_debit - line_credit
-                    name = '-'.join(
-                        (line.move_id.name not in ['', '/'] and [line.move_id.name] or []) +
-                        (line.ref not in ['', '/', False] and [line.ref] or []) +
-                        ([line.name] if line.name and line.name not in ['', '/'] else [])
-                    )
-                    if len(name) > 200 and not self.env.context.get('no_format'):
-                        name = name[:197] + "..."
                     caret_type = 'account.move'
                     if line.invoice_id:
                         caret_type = 'account.invoice.in' if line.invoice_id.type in (
                         'in_refund', 'in_invoice') else 'account.invoice.out'
                     elif line.payment_id:
                         caret_type = 'account.payment'
+                    domain_columns = [line.journal_id.code, line.account_id.code, self._format_aml_name_char(line),
+                                      line.date_maturity and format_date(self.env, line.date_maturity) or '',
+                                      line.full_reconcile_id.name or '', self.format_value(progress_before),
+                                      line_debit != 0 and self.format_value(line_debit) or '',
+                                      line_credit != 0 and self.format_value(line_credit) or '']
+                    if self.user_has_groups('base.group_multi_currency'):
+                        domain_columns.append(self.with_context(no_format=False).format_value(line.amount_currency,
+                                                                                              currency=line.currency_id) if line.amount_currency != 0 else '')
+                    domain_columns.append(self.format_value(progress))
+                    columns = [{'name': v} for v in domain_columns]
+                    columns[3].update({'class': 'date'})
                     domain_lines.append({
                         'id': line.id,
                         'parent_id': 'partner_' + str(partner.id),
-                        'name': line.date,
-                        'columns': [{'name': v} for v in
-                                    [line.journal_id.code, line.account_id.code, name, line.full_reconcile_id.name,
-                                     self.format_value(progress_before),
-                                     line_debit != 0 and self.format_value(line_debit) or '',
-                                     line_credit != 0 and self.format_value(line_credit) or '',
-                                     self.format_value(progress)]],
+                        'name': format_date(self.env, line.date),
+                        'class': 'date',
+                        'columns': columns,
                         'caret_options': caret_type,
                         'level': 4,
                     })
-                if too_many:
+
+                # load more
+                if remaining_lines > 0:
                     domain_lines.append({
-                        'id': 'too_many_' + str(partner.id),
-                        'parent_id': 'partner_' + str(partner.id),
-                        'action': 'view_too_many',
-                        'action_id': 'partner,%s' % (partner.id,),
-                        'name': _('There are more than 80 items in this list, click here to see all of them'),
-                        'colspan': 8,
+                        'id': 'loadmore_%s' % partner.id,
+                        'offset': offset + self.MAX_LINES,
+                        'progress': progress,
+                        'class': 'o_account_reports_load_more text-center',
+                        'parent_id': 'partner_%s' % partner.id,
+                        'name': _('Load more... (%s remaining)') % remaining_lines,
+                        'colspan': 10 if self.user_has_groups('base.group_multi_currency') else 9,
                         'columns': [{}],
                     })
                 lines += domain_lines
+
         if not line_id:
+            total_columns = ['', '', '', '', '', self.format_value(total_initial_balance),
+                             self.format_value(total_debit), self.format_value(total_credit)]
+            if self.user_has_groups('base.group_multi_currency'):
+                total_columns.append('')
+            total_columns.append(self.format_value(total_balance))
             lines.append({
                 'id': 'grouped_partners_total',
                 'name': _('Total'),
                 'level': 0,
                 'class': 'o_account_reports_domain_total',
-                'columns': [{'name': v} for v in
-                            ['', '', '', '', self.format_value(total_initial_balance), self.format_value(total_debit),
-                             self.format_value(total_credit), self.format_value(total_balance)]],
+                'columns': [{'name': v} for v in total_columns],
             })
+            print(lines)
         return lines
+
+
+    def _format_aml_name_char(self, aml):
+        name = '-'.join(
+            (aml.move_id.name not in ['', '/'] and [aml.move_id.name] or []) +
+            (aml.ref not in ['', '/', False] and [aml.ref] or []) +
+            ([aml.name] if aml.name and aml.name not in ['', '/'] else [])
+        )
+
+        return name
