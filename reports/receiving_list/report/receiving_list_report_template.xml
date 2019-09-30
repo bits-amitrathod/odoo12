@@ -5,7 +5,7 @@
             <t t-call="web.external_layout">
                 <page>
                     <div class="oe_structure"/>
-                    <div>
+<!--                    <div>-->
                         <center>
                             <b>
                                 <h2>Surgical Product Solutions</h2>
@@ -104,7 +104,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
+<!--                    </div>-->
                 </page>
             </t>
         </t>

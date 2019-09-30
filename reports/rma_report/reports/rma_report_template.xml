@@ -4,7 +4,7 @@
             <t t-call="web.external_layout">
                 <page>
                     <div class="oe_structure"/>
-                    <div class="row">
+<!--                    <div class="row">-->
 
                       <div class="col-md-12">
                             <b>
@@ -61,7 +61,7 @@
                                         </tr>
                                     </t>
                             </table>
-                        </div>
+<!--                        </div>-->
                 </page>
             </t>
         </t>

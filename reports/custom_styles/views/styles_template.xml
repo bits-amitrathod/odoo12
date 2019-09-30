@@ -1,0 +1,12 @@
+<odoo>
+  <template id="assets_frontend" inherit_id="web.assets_backend" name="Website Assets">
+        <xpath expr="//link[last()]" position="after">
+            <link rel="stylesheet" href="/custom_styles/static/src/less/custom.less"/>
+        </xpath>
+  </template>
+    <template id="assets_frontend" inherit_id="web.report_assets_common" name="Website Assets">
+        <xpath expr="//link[last()]" position="after">
+            <link rel="stylesheet" href="/custom_styles/static/src/less/custom.style.less"/>
+        </xpath>
+  </template>
+</odoo>
