@@ -98,6 +98,11 @@ class VendorOffer(models.Model):
     carrier_id = fields.Many2one('delivery.carrier', 'Carrier', copy=False)
     shipping_number = fields.Text(string='Tracking Reference', copy=False)
 
+    credit_amount_untaxed = fields.Monetary(string='Untaxed Credit Offer Price', compute='_amount_all', readonly=True)
+    credit_amount_total = fields.Monetary(string='Total Credit Offer Price', compute='_amount_all', readonly=True)
+    cash_amount_untaxed = fields.Monetary(string='Untaxed Credit Offer Price', compute='_amount_all', readonly=True)
+    cash_amount_total = fields.Monetary(string='Total Credit Offer Price', compute='_amount_all', readonly=True)
+
     '''show_validate = fields.Boolean(
         compute='_compute_show_validate',
         help='Technical field used to compute whether the validate should be shown.')'''
@@ -254,8 +259,10 @@ class VendorOffer(models.Model):
 
                 amount_untaxed = amount_tax = price_total = 0.0
                 rt_price_tax = product_retail = rt_price_total = potential_profit_margin = 0.0
+                cash_amount_untaxed = 0.0
                 for line in order.order_line:
                     amount_tax += line.price_tax
+                    cash_amount_untaxed += line.price_subtotal
                     amount_untaxed += line.price_subtotal
                     price_total += line.price_total
 
@@ -279,19 +286,51 @@ class VendorOffer(models.Model):
                 if not rt_price_total == 0:
                     potential_profit_margin = (price_total / rt_price_total * 100) - 100
 
+                credit_amount_untaxed = 0
+                credit_amount_total = 0
+                if product_retail > 0:
+                    per_val = round((amount_untaxed / product_retail) * 100, 2)
+                    per_val = per_val+10
+                    credit_amount_untaxed = product_retail * (per_val/100)
+                    credit_amount_total = credit_amount_untaxed + amount_tax
+
                 order.update({
                     'max': round(max, 2),
                     'potential_profit_margin': abs(round(potential_profit_margin, 2)),
-
                     'amount_untaxed': amount_untaxed,
                     'amount_tax': amount_tax,
                     'amount_total': price_total,
-
                     'rt_price_subtotal_amt': product_retail,
                     'rt_price_tax_amt': rt_price_tax,
                     'rt_price_total_amt': rt_price_total,
+                    'credit_amount_untaxed': math.floor(round(credit_amount_untaxed, 2)) ,
+                    'credit_amount_total': math.floor( round(credit_amount_total, 2)),
+                    'cash_amount_untaxed': cash_amount_untaxed,
+                    'cash_amount_total': cash_amount_untaxed + amount_tax
                 })
+                if order.offer_type:
+                    if order.offer_type == 'credit':
+                        order.update({
+                            'amount_untaxed': credit_amount_untaxed,
+                            'amount_total': credit_amount_total
+                        })
             else:
+                amount_untaxed = amount_tax = price_total = 0.0
+                rt_price_tax = product_retail = rt_price_total = 0.0
+
+                for line in order.order_line:
+                    amount_tax += line.price_tax
+                    rt_price_tax += line.rt_price_tax
+                    rt_price_total += line.rt_price_total
+                    product_retail += line.product_retail
+
+                    order.update({
+                        'amount_tax': amount_tax,
+                        'rt_price_subtotal_amt': product_retail,
+                        'rt_price_tax_amt': rt_price_tax,
+                        'rt_price_total_amt': rt_price_total,
+                    })
+
                 super(VendorOffer, self)._amount_all()
 
     @api.multi
@@ -395,7 +434,13 @@ class VendorOffer(models.Model):
             if (int(self.revision) > 0):
                 temp = int(self.revision) - 1
                 self.revision = str(temp)
-            self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
+
+            if self.offer_type:
+                if self.offer_type == 'credit':
+                    self.amount_untaxed = self.credit_amount_untaxed
+                    self.amount_total = self.credit_amount_total
+
+            #self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
 
     @api.multi
     def action_button_confirm_api(self, product_id):
@@ -539,6 +584,19 @@ class VendorOfferProduct(models.Model):
     rt_price_tax = fields.Monetary(compute='_compute_amount', string='Tax')
     import_type_ven_line = fields.Char(string='Import Type of Product for calculation')
 
+    delivered_product_offer_price = fields.Monetary("Total Received Qty Offer Price", store=False,
+                                                    compute="_calculat_delv_price")
+    delivered_product_retail_price = fields.Monetary("Total Received Qty Retail Price", store=False,
+                                                     compute="_calculat_delv_price")
+
+    @api.multi
+    def _calculat_delv_price(self):
+        for order in self:
+            for p in order:
+                order.delivered_product_offer_price = round(p.qty_received * p.product_offer_price, 2)
+                order.delivered_product_retail_price = round(p.qty_received * p.product_unit_price, 2)
+
+
     def action_show_details(self):
         multi = self.env['stock.move'].search([('purchase_line_id', '=', self.id)])
         if len(multi) >= 1 and self.order_id.picking_count == 1:
@@ -548,105 +606,6 @@ class VendorOfferProduct(models.Model):
 
     def set_values_from_import(self):
         pass
-        # order_list_list = request.session['order_list_list']
-        # for line in order_list_list:
-        #     if self.product_id.id == line['product_id']:
-        #         self.order_id.multiplier = line['multiplier']
-        #         self.order_id.possible_competition = line['possible_competition']
-        #         if 'potential_profit_margin' in line:
-        #             self.order_id.potential_profit_margin = line['potential_profit_margin']
-        #         if 'max' in line:
-        #             self.order_id.max = line['max']
-        #         if 'credit' in line:
-        #             if (line['credit']).upper() == 'YES':
-        #                 self.order_id.offer_type = 'credit'
-        #             if (line['credit']).upper() == 'NO':
-        #                 self.order_id.offer_type = 'cash'
-        #             self.order_id.update({
-        #                 'offer_type': self.order_id.offer_type
-        #             })
-        #             try:
-        #                 self.order_id.write({
-        #                     'offer_type': self.order_id.offer_type
-        #                 })
-        #             except:
-        #                 pass
-        #
-        #         temp_acc = False
-        #         if 'accelerator' in line:
-        #             if (line['accelerator']).upper() == 'YES':
-        #                 self.order_id.update({
-        #                     'accelerator': True
-        #                 })
-        #                 temp_acc = True
-        #             if (line['accelerator']).upper() == 'NO':
-        #                 self.order_id.update({
-        #                     'accelerator': False
-        #                 })
-        #             try:
-        #                 self.order_id.write({
-        #                     'accelerator': temp_acc
-        #                 })
-        #             except:
-        #                 pass
-        #
-        #         if 'expiration_date' in line:
-        #             try:
-        #                 datetime.datetime.strptime(line['expiration_date'], '%Y-%m-%d')
-        #                 self.update({
-        #                     'expiration_date': line['expiration_date'],
-        #                 })
-        #             except :
-        #                 pass
-        #
-        #         if 'margin' in line:
-        #             self.update({
-        #                 'margin': line['margin'],
-        #             })
-        #
-        #         if 'product_sales_count_90' in line:
-        #             self.update({'product_sales_count_90': line['product_sales_count_90']})
-        #         if 'product_sales_count_yrs' in line:
-        #             self.update({'product_sales_count_yrs': line['product_sales_count_yrs']})
-        #         if 'product_sales_count' in line:
-        #             self.update({'product_sales_count': line['product_sales_count']})
-        #         if 'expired_inventory' in line:
-        #             self.update({'expired_inventory': line['expired_inventory']})
-        #         if 'qty_in_stock' in line:
-        #             self.update({'qty_in_stock': line['qty_in_stock']})
-        #
-        #         self.update({
-        #             'product_unit_price': line['retail_price'],
-        #             'product_offer_price': line['offer_price'],
-        #         })
-        #
-        #         self.price_subtotal = line['offer_price_total']
-        #         self.price_total = line['offer_price_total']
-        #         self.price_unit = line['offer_price']
-        #         self.product_retail = line['retail_price_total']
-        #         self.rt_price_total = line['retail_price_total']
-        #
-        # amount_untaxed = amount_tax = price_total = 0.0
-        # rt_price_tax = product_retail = rt_price_total = potential_profit_margin_v = max_v = 0.0
-        # for idx, line in enumerate(order_list_list):
-        #     amount_tax += 0
-        #     amount_untaxed += float(line['offer_price_total'])
-        #     price_total += float(line['offer_price_total'])
-        #
-        #     product_retail += float(line['retail_price_total'])
-        #     rt_price_tax += 0
-        #     rt_price_total += float(line['retail_price_total'])
-        #
-        # self.order_id.update({
-        #
-        #     'amount_untaxed': amount_untaxed,
-        #     'amount_tax': amount_tax,
-        #     'amount_total': price_total,
-        #
-        #     'rt_price_subtotal_amt': product_retail,
-        #     'rt_price_tax_amt': rt_price_tax,
-        #     'rt_price_total_amt': rt_price_total,
-        # })
 
     @api.onchange('product_id')
     @api.depends('product_id')
@@ -859,11 +818,8 @@ class VendorOfferProduct(models.Model):
     @api.depends('product_qty', 'product_offer_price', 'taxes_id')
     def _compute_amount(self):
         for line in self:
-            if line.env.context.get('vendor_offer_data') or line.state == 'ven_draft' or line.state == 'ven_sent':
-                # if line.import_type_ven_line == all_field_import:
-                #     if 'order_list_list' in request.session:
-                #         VendorOfferProduct.set_values_from_import(line)
-                # else:
+            if line.env.context.get('vendor_offer_data') or line.state == 'ven_draft' or line.state == 'ven_sent' :
+
 
                 taxes1 = line.taxes_id.compute_all(float(line.product_unit_price), line.order_id.currency_id,
                                                    line.product_qty, product=line.product_id,
@@ -884,6 +840,15 @@ class VendorOfferProduct(models.Model):
                 })
 
             else:
+                taxes1 = line.taxes_id.compute_all(float(line.product_unit_price), line.order_id.currency_id,
+                                                   line.product_qty, product=line.product_id,
+                                                   partner=line.order_id.partner_id)
+                line.update({
+                    'rt_price_tax': sum(t.get('amount', 0.0) for t in taxes1.get('taxes', [])),
+                    'product_retail': taxes1['total_excluded'],
+                    'rt_price_total': taxes1['total_included'],
+                })
+
                 super(VendorOfferProduct, self)._compute_amount()
 
 
