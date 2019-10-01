@@ -288,6 +288,72 @@
             <field name="user_signature" eval="False"/>
         </record>
 
+        <record id="email_response_on_uploaded_document" model="mail.template">
+            <field name="name">email response on uploaded documents</field>
+            <field name="model_id" ref="base.model_res_users"/>
+            <field name="email_from"><![CDATA["${object.company_id.name|safe}" <${(object.company_id.email or user.email)|safe}>]]></field>
+            <field name="email_to"><![CDATA[<${ctx['customerEmail']}>]]></field>
+            <field name="subject"><![CDATA[Email response <${(object.company_id.email or user.email)|safe}>]]></field>
+            <field name="body_html">${ctx['body']}</field>
+            <field name="body_html"><![CDATA[
+                <p>
+                    Dear ${ctx['customerName']},
+                </p>
+                <p style="text-align: left; margin-top: 10px;">
+                    Unfortunate, we are currently out of stock on the products that you requested.
+                </P>
+                <p style="text-align: left; margin-top: 10px;">
+                    We will check and get back to you within next 2 hours.
+                </p>
+                <p style="text-align: left; margin-top: 10px;">
+                    If you have further questions, please reach out to your direct Account Manager.
+                </P>
+                <P style="text-align: left; margin-top: 10px;">
+                    We Appreciate your business,
+                </P>
+                <P style="text-align: left; margin-top: 10px;">
+                    SPS Sales Team
+                </P>
+                <P style="text-align: left; margin-top: 2px;">
+                    412-564-1280
+                </p>
+            ]]></field>
+            <field name="user_signature" eval="False"/>
+        </record>
+
+        <record id="final_email_response_on_uploaded_document" model="mail.template">
+            <field name="name">final email response on uploaded documents</field>
+            <field name="model_id" ref="base.model_res_users"/>
+            <field name="email_from"><![CDATA["${object.company_id.name|safe}" <${(object.company_id.email or user.email)|safe}>]]></field>
+            <field name="email_to"><![CDATA[<${ctx['customerEmail']}>]]></field>
+            <field name="subject"><![CDATA[Email response <${(object.company_id.email or user.email)|safe}>]]></field>
+            <field name="body_html">${ctx['body']}</field>
+            <field name="body_html"><![CDATA[
+                <p>
+                    Dear ${ctx['customerName']},
+                </p>
+                <p style="text-align: left; margin-top: 10px;">
+                    Unfortunate, we are currently out of stock on the products that you requested.
+                </P>
+                <p style="text-align: left; margin-top: 10px;">
+                    We have made a note, and will notify you when these items are back in stock.
+                </p>
+                <p style="text-align: left; margin-top: 10px;">
+                    If you have further questions, please reach out to your direct Account Manager.
+                </P>
+                <P style="text-align: left; margin-top: 10px;">
+                    We Appreciate your business,
+                </P>
+                <P style="text-align: left; margin-top: 10px;">
+                    SPS Sales Team
+                </P>
+                <P style="text-align: left; margin-top: 2px;">
+                    412-564-1280
+                </p>
+            ]]></field>
+            <field name="user_signature" eval="False"/>
+        </record>
+
         <menuitem name="Import" id="prioritization_engine.prioritization_imenu"
                   parent="prioritization_engine.menu_root"/>
 

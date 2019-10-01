@@ -216,7 +216,7 @@
                 simpler especially when the file has many columns.</p>
 
                 <div class="oe_import_error_report"></div>
-                <div class="table-responsive">
+                <div class="table-responsive-sm">
                     <table class="table-striped table-bordered oe_import_grid bg-white" />
                 </div>
             </div>

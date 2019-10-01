@@ -1,10 +1,11 @@
 from odoo import api, models
 
+
 class ReportSpsReceivingList(models.AbstractModel):
     _name = 'report.sps_receiving_list_report.adjustment_report'
 
     @api.model
-    def get_report_values(self, docids, data=None):
+    def _get_report_values(self, docids, data=None):
         stock_move_lines = self.env['stock.move.line'].search([('id', 'in', docids)], order='product_id')
         old = 0
         receiving_list = {}
@@ -13,6 +14,7 @@ class ReportSpsReceivingList(models.AbstractModel):
                 'lot_id': move_lines.lot_id.name,
                 'exp_date': move_lines.exp_date,
                 'qty_done': int(float(move_lines.qty_rece)),
+                'date_done': move_lines.picking_id.date_done,
                 'product_uom_id': move_lines.product_uom_id.name,
             }
             if old == move_lines.product_id.id:
@@ -79,6 +81,7 @@ class ReportSpsReceivingList1(models.AbstractModel):
                 'lot_id': move_lines.lot_id.name,
                 'exp_date': move_lines.exp_date,
                 'qty_done': int(float(move_lines.qty_rece)),
+                'date_done': move_lines.picking_id.date_done,
                 'product_uom_id': move_lines.product_uom_id.name,
             }
             if old == move_lines.product_id.id:

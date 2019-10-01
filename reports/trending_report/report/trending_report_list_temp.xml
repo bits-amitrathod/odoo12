@@ -16,7 +16,7 @@
                         </center>
                     </div>
                     <br/>
-                    <table class="table table-sm" style="border: 1px solid black;    font-size: 14px;">
+                    <table class="table table-sm" style="border: 1px solid black;font-size: 12px;">
                         <t t-set="code_value" t-value="code"/>
                         <thead>
                             <tr style="border: 1px solid black;">
@@ -24,41 +24,41 @@
                                 <th style="border: 1px solid black;text-align: center;">Months Ago First Order</th>
                                 <t t-if="int(code_value) == 12">
                                     <th style="border: 1px solid black;text-align: center;">
-                                        <span t-esc="(datetime.datetime.strptime(str(start_date), '%Y-%m-%d').date()- relativedelta(months=11)).strftime('%b-%Y')"/>
+                                        <span t-esc="(datetime.datetime.strptime(str(start_date), '%Y-%m-%d').date()- relativedelta(months=11)).strftime('%b - %Y')"/>
                                     </th>
                                     <th style="border: 1px solid black;text-align: center;">
-                                        <span t-esc="(datetime.datetime.strptime(str(start_date), '%Y-%m-%d').date()- relativedelta(months=10)).strftime('%b-%Y')"/>
+                                        <span t-esc="(datetime.datetime.strptime(str(start_date), '%Y-%m-%d').date()- relativedelta(months=10)).strftime('%b - %Y')"/>
                                     </th>
                                     <th style="border: 1px solid black;text-align: center;">
-                                        <span t-esc="(datetime.datetime.strptime(str(start_date), '%Y-%m-%d').date()- relativedelta(months=9)).strftime('%b-%Y')"/>
+                                        <span t-esc="(datetime.datetime.strptime(str(start_date), '%Y-%m-%d').date()- relativedelta(months=9)).strftime('%b - %Y')"/>
                                     </th>
                                     <th style="border: 1px solid black;text-align: center;">
-                                        <span t-esc="(datetime.datetime.strptime(str(start_date), '%Y-%m-%d').date()- relativedelta(months=8)).strftime('%b-%Y')"/>
+                                        <span t-esc="(datetime.datetime.strptime(str(start_date), '%Y-%m-%d').date()- relativedelta(months=8)).strftime('%b - %Y')"/>
                                     </th>
                                     <th style="border: 1px solid black;text-align: center;">
-                                        <span t-esc="(datetime.datetime.strptime(str(start_date), '%Y-%m-%d').date()- relativedelta(months=7)).strftime('%b-%Y')"/>
+                                        <span t-esc="(datetime.datetime.strptime(str(start_date), '%Y-%m-%d').date()- relativedelta(months=7)).strftime('%b - %Y')"/>
                                     </th>
                                     <th style="border: 1px solid black;text-align: center;">
-                                        <span t-esc="(datetime.datetime.strptime(str(start_date), '%Y-%m-%d').date()- relativedelta(months=6)).strftime('%b-%Y')"/>
+                                        <span t-esc="(datetime.datetime.strptime(str(start_date), '%Y-%m-%d').date()- relativedelta(months=6)).strftime('%b - %Y')"/>
                                     </th>
                                 </t>
                                 <th style="border: 1px solid black;text-align: center;">
-                                    <span t-esc="(datetime.datetime.strptime(str(start_date), '%Y-%m-%d').date()- relativedelta(months=5)).strftime('%b-%Y')"/>
+                                    <span t-esc="(datetime.datetime.strptime(str(start_date), '%Y-%m-%d').date()- relativedelta(months=5)).strftime('%b - %Y')"/>
                                 </th>
                                 <th style="border: 1px solid black;text-align: center;">
-                                    <span t-esc="(datetime.datetime.strptime(str(start_date), '%Y-%m-%d').date()- relativedelta(months=4)).strftime('%b-%Y')"/>
+                                    <span t-esc="(datetime.datetime.strptime(str(start_date), '%Y-%m-%d').date()- relativedelta(months=4)).strftime('%b - %Y')"/>
                                 </th>
                                 <th style="border: 1px solid black;text-align: center;">
-                                    <span t-esc="(datetime.datetime.strptime(str(start_date), '%Y-%m-%d').date()- relativedelta(months=3)).strftime('%b-%Y')"/>
+                                    <span t-esc="(datetime.datetime.strptime(str(start_date), '%Y-%m-%d').date()- relativedelta(months=3)).strftime('%b - %Y')"/>
                                 </th>
                                 <th style="border: 1px solid black;text-align: center;">
-                                    <span t-esc="(datetime.datetime.strptime(str(start_date), '%Y-%m-%d').date()- relativedelta(months=2)).strftime('%b-%Y')"/>
+                                    <span t-esc="(datetime.datetime.strptime(str(start_date), '%Y-%m-%d').date()- relativedelta(months=2)).strftime('%b - %Y')"/>
                                 </th>
                                 <th style="border: 1px solid black;text-align: center;">
-                                    <span t-esc="(datetime.datetime.strptime(str(start_date), '%Y-%m-%d').date()- relativedelta(months=1)).strftime('%b-%Y')"/>
+                                    <span t-esc="(datetime.datetime.strptime(str(start_date), '%Y-%m-%d').date()- relativedelta(months=1)).strftime('%b - %Y')"/>
                                 </th>
                                 <th style="border: 1px solid black;text-align: center;">
-                                    <span t-esc="datetime.datetime.strptime(str(start_date), '%Y-%m-%d').date().strftime('%b-%Y')"/>
+                                    <span t-esc="datetime.datetime.strptime(str(start_date), '%Y-%m-%d').date().strftime('%b - %Y')"/>
                                 </th>
                                 <th style="border: 1px solid black;text-align: center;">Total Purchased Month</th>
                                 <th style="border: 1px solid black;text-align: center;">Average</th>
