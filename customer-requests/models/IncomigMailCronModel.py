@@ -184,8 +184,8 @@ class IncomingMailCronModel(models.Model):
                                                 tools.ustr(body, encoding, errors='replace'))
 
                                             #_logger.info('message payload: %r %r', message_payload, customer_email)
-                                            if customer_email is not None:
-                                                users_model = self.env['res.partner'].search([("email", "=ilike", customer_email)])
+                                            if saleforce_ac is not None:
+                                                users_model = self.env['res.partner'].search([("saleforce_ac", "=", saleforce_ac)])
                                                 if users_model:
                                                     if len(users_model) == 1:
                                                         user_attachment_dir = ATTACHMENT_DIR + str(
@@ -211,13 +211,13 @@ class IncomingMailCronModel(models.Model):
                                                                 except Exception as e:
                                                                     _logger.info(str(e))
                                                     else:
-                                                        _logger.error('We have found Same Email Id against multiple users. %r', customer_email)
-                                                        response = dict(errorCode=101, message='We have found Same Email Id against multiple users.')
+                                                        _logger.error('We have found Same Customer Id against multiple Customer.')
+                                                        response = dict(errorCode=101, message='We have found Same Customer Id against multiple Customer.')
                                                 else:
-                                                    _logger.info('Customer not found in customers. : %r', customer_email)
+                                                    _logger.info('Customer not found in customers.')
                                                     response = dict(errorCode=102, message='Customer not found in customers.')
                                             else:
-                                                _logger.info('Customer not found in customers : %r', customer_email)
+                                                _logger.info('Customer not found in customers.')
                                                 response = dict(errorCode=103, message='Customer not found in customers.')
                                         else:
                                             _logger.info("Customer has not attached requirement or inventory documnet.")
@@ -225,12 +225,15 @@ class IncomingMailCronModel(models.Model):
                                     else:
                                         _logger.info('This is not a multipart email')
                                         response = dict(errorCode=105, message='This is not a multipart email.')
+                                else:
+                                    _logger.info('Customer Email Id missing.')
+                                    response = dict(errorCode=110, message='Customer Email Id missing.')
 
                                 pop_server.dele(num)
 
                                 if "errorCode" in response:
-                                    if customer_email is not None:
-                                        res_partners = self.env['res.partner'].search([("email", "=ilike", customer_email)])
+                                    if saleforce_ac is not None:
+                                        res_partners = self.env['res.partner'].search([("saleforce_ac", "=", saleforce_ac)])
                                         if len(res_partners) > 1:
                                             customerName = ""
                                             for res_partner in res_partners:
