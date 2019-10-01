@@ -547,6 +547,8 @@
                                <field name="vendor_offer_data" invisible="1"/>
                             <field name="product_unit_price" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />
                              <field name="product_retail" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />
+                              <field name="delivered_product_offer_price" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />
+                             <field name="delivered_product_retail_price" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />
                             <!--     <field name="product_offer_price"
                                        attrs="{'readonly': [('vendor_offer_data', '=', True)],'invisible': [('vendor_offer_data', '=', False)]}"/>-->
 

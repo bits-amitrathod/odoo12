@@ -20,6 +20,7 @@
                            attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"/>
                     <field name="partner_id" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"
                            string="Facility"/>
+                    <field name="cust_type_appraisal" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"/>
                     <field name="name" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"
                            string="PO#"/>
                     <field name="payment_term_id" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"
@@ -35,19 +36,20 @@
                     <field name="delivered_date" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"/>
                     <field name="tier1_retail" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"   widget="monetary" />
                     <field name="tier2_retail" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"   widget="monetary" />
+                    <field name="less_than_40_retail" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"   widget="monetary" />
                     <field name="new_customer" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"/>
-                    <field name="tier1_margin"
-                           options='{"bg_color": "#f3f397 : t1color"+"==3;"+"#c9fbcf : t1color"+"==2;"+"#ff7098 : t1color"+"==1"}'
-                           string="T1 Margin"
-                           attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"></field>
-                    <field name="tier2_margin"
-                           options='{"bg_color": "#f3f397 : t2color"+"==3;"+"#c9fbcf : t2color"+"==2;"+"#ff7098 : t2color"+"==1"}'
-                           string="T2 Margin"
-                           attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"></field>
-                     <field name="less_than_40_margin"
-                           options='{"bg_color": "#f3f397 : lscolor"+"==3;"+"#c9fbcf : lscolor"+"==2;"+"#ff7098 : lscolor"+"==1"}'
-                           string="Broker Margin"
-                           attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"></field>
+                    <!--<field name="tier1_margin"-->
+                           <!--options='{"bg_color": "#f3f397 : t1color"+"==3;"+"#c9fbcf : t1color"+"==2;"+"#ff7098 : t1color"+"==1"}'-->
+                           <!--string="T1 Margin"-->
+                           <!--attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"></field>-->
+                    <!--<field name="tier2_margin"-->
+                           <!--options='{"bg_color": "#f3f397 : t2color"+"==3;"+"#c9fbcf : t2color"+"==2;"+"#ff7098 : t2color"+"==1"}'-->
+                           <!--string="T2 Margin"-->
+                           <!--attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"></field>-->
+                     <!--<field name="less_than_40_margin"-->
+                           <!--options='{"bg_color": "#f3f397 : lscolor"+"==3;"+"#c9fbcf : lscolor"+"==2;"+"#ff7098 : lscolor"+"==1"}'-->
+                           <!--string="Broker Margin"-->
+                           <!--attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"></field>-->
                     <!--<field name="broker_margin"-->
                            <!--options='{"bg_color": "#f3f397 : color"+"==3;"+"#c9fbcf : color"+"==2;"+"#ff7098 : color"+"==1"}'-->
                            <!--string="Margin Detail"-->
@@ -179,8 +181,11 @@
                                         <field name="product_sales_count_yrs"/>
                                         <!--<field name="list_price" invisible="1"/>-->
                                         <field name="expired_inventory"/>
+                                           <field name="vendor_offer_data" invisible="1"/>
                                         <field name="product_unit_price"/>
                                         <field name="product_offer_price"/>
+                                          <field name="delivered_product_offer_price" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />
+                                        <field name="delivered_product_retail_price" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />
                                         <field name="product_retail"/>
                                         <field name="price_subtotal" string="Total Offer Price"/>
                                         <field name="taxes_id" widget="many2many_tags"

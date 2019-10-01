@@ -27,6 +27,7 @@
                                     <!--<th style="border: 1px solid black;text-align: center;width: 5%;">Revision</th>-->
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Acq Manager</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Facility</th>
+                                    <th style="border: 1px solid black;text-align: center;width: 5%;">Type</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">PO#</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Payment Terms</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Total Offer</th>
@@ -39,10 +40,11 @@
                                     <!--<th style="border: 1px solid black;text-align: center;width: 5%;">Note</th>-->
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Tier 1 Retail</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Tier 2 Retail</th>
+                                    <th style="border: 1px solid black;text-align: center;width: 5%;">&lt; 40% Retail</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">New Customer</th>
-                                    <th style="border: 1px solid black;text-align: center;width: 5%;">T1 Margin</th>
-                                    <th style="border: 1px solid black;text-align: center;width: 5%;">T2 Margin</th>
-                                    <th style="border: 1px solid black;text-align: center;width: 5%;">Broker Margin</th>
+                                    <!--<th style="border: 1px solid black;text-align: center;width: 5%;">T1 Margin</th>-->
+                                    <!--<th style="border: 1px solid black;text-align: center;width: 5%;">T2 Margin</th>-->
+                                    <!--<th style="border: 1px solid black;text-align: center;width: 5%;">Broker Margin</th>-->
                                 </tr>
                                     <tr t-foreach="data" t-as="order" style="width: 50%;">
                                         <td style="border: 1px solid black;width: 5%;">
@@ -60,6 +62,9 @@
                                         </td>
                                         <td  style="border: 1px solid black;width: 5%;">
                                              <span t-esc="order.partner_id.name"/>
+                                        </td>
+                                         <td  style="border: 1px solid black;width: 5%;">
+                                             <span t-esc="order.cust_type_appraisal"/>
                                         </td>
                                          <td  style="border: 1px solid black;width: 5%;">
                                              <span t-esc="order.name"/>
@@ -89,9 +94,7 @@
                                          <!--<td  style="border: 1px solid black;width: 5%;">-->
                                              <!--<span t-esc="order.notes_desc"/>-->
                                         <!--</td>-->
-                                         <td  style="border: 1px solid black;width: 5%;">
-                                             <span t-esc="order.new_customer"/>
-                                        </td>
+
                                          <td  style="border: 1px solid black;width: 5%;">
                                             <span t-esc="order.tier1_retail" t-options='{"widget": "monetary", "display_currency": order.currency_id}' />
                                         </td>
@@ -99,14 +102,20 @@
                                             <span t-esc="order.tier2_retail" t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
                                         </td>
                                          <td  style="border: 1px solid black;width: 5%;">
-                                            <span t-esc="order.tier1_margin"/>
+                                            <span t-esc="order.less_than_40_retail" t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
                                         </td>
                                          <td  style="border: 1px solid black;width: 5%;">
-                                            <span t-esc="order.tier2_margin"/>
+                                             <span t-esc="order.new_customer"/>
                                         </td>
-                                         <td  style="border: 1px solid black;width: 5%;">
-                                            <span t-esc="order.less_than_40_margin"/>
-                                        </td>
+                                         <!--<td  style="border: 1px solid black;width: 5%;">-->
+                                            <!--<span t-esc="order.tier1_margin"/>-->
+                                        <!--</td>-->
+                                         <!--<td  style="border: 1px solid black;width: 5%;">-->
+                                            <!--<span t-esc="order.tier2_margin"/>-->
+                                        <!--</td>-->
+                                         <!--<td  style="border: 1px solid black;width: 5%;">-->
+                                            <!--<span t-esc="order.less_than_40_margin"/>-->
+                                        <!--</td>-->
                                          <!--<td  style="border: 1px solid black;width: 5%;">-->
                                             <!--<span t-esc="order.broker_margin"/>-->
                                         <!--</td>-->

@@ -303,8 +303,8 @@ class VendorOffer(models.Model):
                     'rt_price_subtotal_amt': product_retail,
                     'rt_price_tax_amt': rt_price_tax,
                     'rt_price_total_amt': rt_price_total,
-                    'credit_amount_untaxed': credit_amount_untaxed,
-                    'credit_amount_total': credit_amount_total,
+                    'credit_amount_untaxed': math.floor(round(credit_amount_untaxed, 2)) ,
+                    'credit_amount_total': math.floor( round(credit_amount_total, 2)),
                     'cash_amount_untaxed': cash_amount_untaxed,
                     'cash_amount_total': cash_amount_untaxed + amount_tax
                 })
@@ -431,7 +431,7 @@ class VendorOffer(models.Model):
                     self.amount_untaxed = self.credit_amount_untaxed
                     self.amount_total = self.credit_amount_total
 
-            self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
+            #self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
 
     @api.multi
     def action_button_confirm_api(self, product_id):
@@ -574,6 +574,19 @@ class VendorOfferProduct(models.Model):
     rt_price_total = fields.Monetary(compute='_compute_amount', string='Total')
     rt_price_tax = fields.Monetary(compute='_compute_amount', string='Tax')
     import_type_ven_line = fields.Char(string='Import Type of Product for calculation')
+
+    delivered_product_offer_price = fields.Monetary("Total Received Qty Offer Price", store=False,
+                                                    compute="_calculat_delv_price")
+    delivered_product_retail_price = fields.Monetary("Total Received Qty Retail Price", store=False,
+                                                     compute="_calculat_delv_price")
+
+    @api.multi
+    def _calculat_delv_price(self):
+        for order in self:
+            for p in order:
+                order.delivered_product_offer_price = round(p.qty_received * p.product_offer_price, 2)
+                order.delivered_product_retail_price = round(p.qty_received * p.product_unit_price, 2)
+
 
     def action_show_details(self):
         multi = self.env['stock.move'].search([('purchase_line_id', '=', self.id)])
