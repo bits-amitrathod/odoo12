@@ -306,9 +306,9 @@ class VendorOffer(models.Model):
         ir_model_data = self.env['ir.model.data']
         try:
             if self.env.context.get('send_rfq', False):
-                template_id = ir_model_data.get_object_reference('vendor_offer', 'email_template_edi_vendor_offer')[1]
+                template_id = ir_model_data.get_object_reference('vendor_offer', 'email_template_edi_vendor_offer_done')[1]
             else:
-                template_id = ir_model_data.get_object_reference('vendor_offer', 'email_template_edi_vendor_offer')[1]
+                template_id = ir_model_data.get_object_reference('vendor_offer', 'email_template_edi_vendor_offer_done')[1]
         except ValueError:
             template_id = False
         try:
@@ -316,15 +316,24 @@ class VendorOffer(models.Model):
         except ValueError:
             compose_form_id = False
         ctx = dict(self.env.context or {})
+
         ctx.update({
             'default_model': 'purchase.order',
             'default_res_id': self.ids[0],
             'default_use_template': bool(template_id),
             'default_template_id': template_id,
             'default_composition_mode': 'comment',
-            'custom_layout': "vendor_offer.mail_template_data_notification_email_vendor_offer",
+            'custom_layout': "vendor_offer.mail_notification_vendor_offer",
             'force_email': True
         })
+
+        lang = self.env.context.get('lang')
+        if {'default_template_id', 'default_model', 'default_res_id'} <= ctx.keys():
+            template = self.env['mail.template'].browse(ctx['default_template_id'])
+            if template and template.lang:
+                lang = template._render_template(template.lang, ctx['default_model'], ctx['default_res_id'])
+
+        self = self.with_context(lang=lang)
         if self.temp_payment_term != temp_payment_term or self.status != 'ven_sent':
             self.write({
                 'temp_payment_term': temp_payment_term,
