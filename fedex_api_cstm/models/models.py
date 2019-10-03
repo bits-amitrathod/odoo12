@@ -96,7 +96,7 @@ class FedexApiCstm():
                             if track.Type == 'ESTIMATED_DELIVERY':
                                 formatted_response['expected_date'] = track.DateOrTimestamp[
                                                                       0:track.DateOrTimestamp.find('T')]
-                                isExpectedDate = datetime.strptime(formatted_response['expected_date'],
+                                isExpectedDate = datetime.strptime(str(formatted_response['expected_date']),
                                                                    "%Y-%m-%d").strftime("%m/%d/%Y")
 
                             if track.Type == 'ACTUAL_DELIVERY':
