@@ -222,12 +222,12 @@ class InventoryNotificationScheduler(models.TransientModel):
                 if flag == True :
                     flag = False
                     table_data = table_data + "<td style = \"width:30%\"> "+ note.note +" </td>" \
-                    " <td> "+ (str(datetime.strptime(note.note_date, "%Y-%m-%d %H:%M:%S").strftime( '%m/%d/%Y')) if note.note_date else "N/A")+ " </td> </tr> "
+                    " <td> "+ (str(datetime.strptime(str(note.note_date), "%Y-%m-%d %H:%M:%S").strftime( '%m/%d/%Y')) if note.note_date else "N/A")+ " </td> </tr> "
                 else:
                     table_data = table_data + "<tr>" \
                     "<td></td> " \
                     "<td>"+ note.note +"</td> " \
-                    "<td> "+ (str(datetime.strptime(note.note_date, "%Y-%m-%d %H:%M:%S").strftime( '%m/%d/%Y')) if note.note_date else "N/A")+ "</td> " \
+                    "<td> "+ (str(datetime.strptime(str(note.note_date), "%Y-%m-%d %H:%M:%S").strftime( '%m/%d/%Y')) if note.note_date else "N/A")+ "</td> " \
                     "</tr> "
         table_data = table_data + "</table>"
         vals = {
@@ -239,7 +239,7 @@ class InventoryNotificationScheduler(models.TransientModel):
             'description': "Hi Acquisitions Team, <br/><br/> " +
                            "<div style=\"text-align: center;width: 100%;\"><strong>The Shipment has been completed!</strong></div><br/>" +
                            "<strong> Please proceed  Purchase Order : </strong>" + sale_order_ref.name + "<br/>" + \
-                           "<strong> Date : </strong>" + (str( datetime.strptime(picking.scheduled_date, "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')) if picking.scheduled_date else "N/A") + \
+                           "<strong> Date : </strong>" + (str(datetime.strptime(str(picking.scheduled_date), "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')) if picking.scheduled_date else "N/A") + \
                            "<br/><strong> Vendor Name :  </strong>" + (sale_order_ref.partner_id.name or "") + "<br/>" + table_data,
 
             'header': ['Catalog number', 'Description', 'Initial Quantity', 'Lot', 'Expiration Date','Qty Put In Lot', 'Quantity Done','Status'],
@@ -798,12 +798,12 @@ class InventoryNotificationScheduler(models.TransientModel):
                     column = ""
                 elif column_name == 'minExDate':
                     if query_result and query_result['min']:
-                        column = datetime.strptime(query_result['min'], "%Y-%m-%d %H:%M:%S")
+                        column = datetime.strptime(str(query_result['min']), "%Y-%m-%d %H:%M:%S")
                     else:
                         column = ""
                 elif column_name == 'maxExDate':
                     if query_result and query_result['max']:
-                        column = datetime.strptime(query_result['max'], "%Y-%m-%d %H:%M:%S")
+                        column = datetime.strptime(str(query_result['max']), "%Y-%m-%d %H:%M:%S")
                     else:
                         column = ""
                 else:
@@ -930,12 +930,14 @@ class InventoryNotificationScheduler(models.TransientModel):
                 coln_name.append(column_name)
                 if column_name == 'minExDate':
                     if query_result and query_result['min']:
-                        column = datetime.strptime(query_result['min'], "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
+                        min=str(query_result['min'])
+                        column = datetime.strptime(min, "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
                     else:
                         column = ""
                 elif column_name == 'maxExDate':
                     if query_result and query_result['max']:
-                        column = datetime.strptime(query_result['max'], "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
+                        max=str(query_result['max'])
+                        column = datetime.strptime(max, "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
                     else:
                         column = ""
                 elif column_name == 'customer_price_list':
@@ -1062,11 +1064,11 @@ class InventoryNotificationScheduler(models.TransientModel):
                         (stock_location_id.id, product.id,))
                     query_result = self.env.cr.dictfetchone()
                 if query_result and query_result['min']:
-                    minExDate = datetime.strptime(query_result['min'], "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
+                    minExDate = datetime.strptime(str(query_result['min']), "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
                 else:
                     minExDate = ""
                 if query_result and query_result['max']:
-                    maxExDate = datetime.strptime(query_result['max'], "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
+                    maxExDate = datetime.strptime(str(query_result['max']), "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
                 else:
                     maxExDate = ""
                 vals = {
@@ -1136,12 +1138,12 @@ class InventoryNotificationScheduler(models.TransientModel):
                     column = ""
                 elif column_name == 'minExDate':
                     if query_result and query_result['min']:
-                        column = datetime.strptime(query_result['min'], "%Y-%m-%d %H:%M:%S")
+                        column = datetime.strptime(str(query_result['min']), "%Y-%m-%d %H:%M:%S")
                     else:
                         column = ""
                 elif column_name == 'maxExDate':
                     if query_result and query_result['max']:
-                        column = datetime.strptime(query_result['max'], "%Y-%m-%d %H:%M:%S")
+                        column = datetime.strptime(str(query_result['max']), "%Y-%m-%d %H:%M:%S")
                     else:
                         column = ""
                 else:
@@ -1293,4 +1295,5 @@ class InventoryNotificationScheduler(models.TransientModel):
     def string_to_date(date_string):
         if date_string == False:
             return None
-        return datetime.strptime(date_string, DEFAULT_SERVER_DATE_FORMAT).date()
+        datestring=str(date_string)
+        return datetime.strptime(datestring, DEFAULT_SERVER_DATE_FORMAT).date()
