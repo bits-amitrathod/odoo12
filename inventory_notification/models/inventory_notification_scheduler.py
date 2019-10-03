@@ -932,13 +932,13 @@ class InventoryNotificationScheduler(models.TransientModel):
                 if column_name == 'minExDate':
                     if query_result and query_result['min']:
                         min=str(query_result['min'])
-                        column = datetime.strptime(min, "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
+                        column = datetime.strptime(str(min), "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
                     else:
                         column = ""
                 elif column_name == 'maxExDate':
                     if query_result and query_result['max']:
                         max=str(query_result['max'])
-                        column = datetime.strptime(max, "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
+                        column = datetime.strptime(str(max), "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
                     else:
                         column = ""
                 elif column_name == 'customer_price_list':
@@ -1297,4 +1297,4 @@ class InventoryNotificationScheduler(models.TransientModel):
         if date_string == False:
             return None
         datestring=str(date_string)
-        return datetime.strptime(datestring, DEFAULT_SERVER_DATE_FORMAT).date()
+        return datetime.strptime(str(datestring), DEFAULT_SERVER_DATE_FORMAT).date()
