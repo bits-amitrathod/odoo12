@@ -53,4 +53,4 @@ class PopUp(models.TransientModel):
 
     @staticmethod
     def string_to_date(date_string):
-        return datetime.datetime.strptime(date_string, DEFAULT_SERVER_DATETIME_FORMAT).date()
+        return datetime.datetime.strptime(str(date_string), DEFAULT_SERVER_DATETIME_FORMAT).date()
