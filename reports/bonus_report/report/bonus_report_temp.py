@@ -23,8 +23,8 @@ class ReportProductVendorList(models.AbstractModel):
         popup = self.env['bonusreport.popup'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
 
         if popup.compute_at_date:
-            date = datetime.strptime(popup.start_date, '%Y-%m-%d').strftime('%m/%d/%Y') + " - " + datetime.strptime(
-                popup.end_date, '%Y-%m-%d').strftime('%m/%d/%Y')
+            date = datetime.strptime(str(popup.start_date), '%Y-%m-%d').strftime('%m/%d/%Y') + " - " + datetime.strptime(
+                str(popup.end_date), '%Y-%m-%d').strftime('%m/%d/%Y')
         else:
             date = False
 
