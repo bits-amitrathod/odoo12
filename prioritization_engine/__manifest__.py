@@ -12,7 +12,7 @@
 
     # any module necessary for this one to work correctly
 
-    'depends': ['base','sale','product','product_brand','sale_management','stock','web_one2many_selectable','account'],
+    'depends': ['base','sale','product','product_brand','sale_management','stock','web_one2many_selectable','account','customer-requests'],
 
     # always loaded
     'data': [
