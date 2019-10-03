@@ -15,6 +15,7 @@ class TrendingReportListPopUp(models.TransientModel):
     shipping_number = fields.Char("Tracking Reference")
     purchase_order = fields.Char()
     def open_table(self):
+
         tree_view_id = self.env.ref('packing_list.view_inv_all_packing_list_tree').id
         x_res_model = 'stock.picking'
         pull_location_id = self.env['stock.location'].search([('name', '=', 'Packing Zone'),('active', '=', True)]).id
@@ -26,7 +27,7 @@ class TrendingReportListPopUp(models.TransientModel):
                              LEFT JOIN sale_order_line sol ON sol.order_id=so.id
                              LEFT JOIN product_product pp ON pp.id=sol.product_id
                              LEFT JOIN product_template pt  ON pt.id=pp.product_tmpl_id 
-                      where sp.state='done' and pt.type='product'   """
+                      where sp.state != 'cancel' and pt.type='product'   """
 
         if not self.order_number and not self.shipping_number and not self.purchase_order:
             if (self.start_date and self.end_date) or (not self.start_date is None and not self.end_date is None):
@@ -35,7 +36,7 @@ class TrendingReportListPopUp(models.TransientModel):
                     select_query = select_query + " and sp.write_date >='" + str(start_date) + "'"
                 if self.end_date and (not self.end_date is None):
                     end_date = datetime.datetime.strptime(str(self.end_date), "%Y-%m-%d")
-                    if (self.start_date and (not self.start_date is None)) and start_date == end_date:
+                    if (self.start_date and (not self.start_date is None)):
                         end_date = end_date + datetime.timedelta(days=1)
                     select_query = select_query + " and sp.write_date <='" + str(end_date) + "'"
         if self.order_number and not self.order_number is None:
@@ -62,7 +63,7 @@ class TrendingReportListPopUp(models.TransientModel):
             'views': [(tree_view_id, 'tree')],
             'name': _('Packing List'),
             'res_model': x_res_model,
-            'domain': [('id', 'in', picking_ids)],
+            'domain': [('id', 'in', picking_ids),('picking_type_id.code', '=', 'outgoing')],
             'target': 'main'
         }
         # action.update({'target': 'main'})
