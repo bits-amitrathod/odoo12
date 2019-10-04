@@ -29,12 +29,12 @@ class ReportSaleOrdersGroupbyProduct(models.TransientModel):
             'name': _('Gross Sales By Product'),
             'res_model': 'sale.order.line',
             'context': {'search_default_product': 1},
-            'domain': [('state', 'in', ['sale', 'done'])]
+            'domain': [('state', 'in', ['sale', 'done']),('qty_delivered', '>',0)]
         }
 
         if self.compute_at_date:
             action.update({'domain': [('order_id.date_order', '>=', self.start_date), ('order_id.date_order', '<=', self.end_date),
-                   ('state', 'in', ('sale', 'done'))]})
+                   ('state', 'in', ('sale', 'done')),('qty_delivered', '>',0)]})
             return action
         else:
             return action
@@ -46,7 +46,7 @@ class ReportSaleOrderLine(models.Model):
      # Below line is commented due to sales order duplicate exception
     # _inherits = {'sale.order': 'order_id'}
     order_id = fields.Many2one('sale.order', string='Order Reference')
-    date_order = fields.Datetime('Last Sold', compute='_compute_date_order', store=False)
+    date_order = fields.Datetime('Order Date', compute='_compute_date_order', store=False)
     sku_code = fields.Char('Product SKU', store=False, compute="_get_sku")
 
     @api.multi
