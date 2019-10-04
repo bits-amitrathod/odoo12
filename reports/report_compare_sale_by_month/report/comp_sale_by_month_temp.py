@@ -9,7 +9,7 @@ class ReportCompareSaleByMonthWise(models.AbstractModel):
     _name = 'report.report_compare_sale_by_month.compsalebymonth_template'
 
     @api.model
-    def get_report_values(self, docids, data=None):
+    def _get_report_values(self, docids, data=None):
 
         popup = self.env['compbysale.popup'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
         products = self.env['product.product'].search([('create_uid', '=', self._uid)], limit=1,)
