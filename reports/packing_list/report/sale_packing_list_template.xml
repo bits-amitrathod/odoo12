@@ -132,9 +132,9 @@
                                                     <!-- Below line is commented because requested_date has been remove in odoo12-->
                                                     <td>
 
-                                                        <p style="font-weight: lighter">
-                                                            <span t-esc="packing_list.sale_id.requested_date" t-options='{"widget": "datetime"}'></span>
-                                                        </p>
+<!--                                                        <p style="font-weight: lighter">-->
+<!--                                                            <span t-esc="packing_list.sale_id.requested_date" t-options='{"widget": "datetime"}'></span>-->
+<!--                                                        </p>-->
 
                                                     </td>
                                                     <td>

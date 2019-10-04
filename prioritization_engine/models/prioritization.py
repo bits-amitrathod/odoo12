@@ -6,6 +6,8 @@ from operator import itemgetter
 from odoo.exceptions import ValidationError, AccessError
 from odoo.tools.float_utils import float_compare, float_round, float_is_zero
 from collections import OrderedDict
+import re
+
 
 _logger = logging.getLogger(__name__)
 
@@ -218,6 +220,13 @@ class Customer(models.Model):
                 'message': _('Please Select Purchase Order Method For Prioritization setting'),
             }
         return {'value': vals, 'warning': warning}
+
+    @api.constrains('email')
+    @api.one
+    def _validate_mail_lowercase(self):
+        if self.email:
+           if not self.email == self.email.lower():
+                 raise ValidationError("Email address should contain small letters only.")
 
     @api.multi
     def _check_prioritization_setting_checkbox(self):

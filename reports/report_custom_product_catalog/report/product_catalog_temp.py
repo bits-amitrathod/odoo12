@@ -137,7 +137,7 @@ class ProductCatalogXL(http.Controller):
 
         for i, fieldname in enumerate(field):
             worksheet.write(0, i, fieldname)
-            if i == 3:
+            if i == 2:
                 worksheet.col(i).width = 20000  #
             else:
                 worksheet.col(i).width = 4000  # around 110 pixels
@@ -195,11 +195,11 @@ class ProductCatalogXL(http.Controller):
             request.env.cr.execute(str_query)
             order_lines = request.env.cr.dictfetchall()
 
-            product_catalog_export.append((['Product SKU', 'Manufacture', 'Product Name',
+            product_catalog_export.append((['Manufacture','Product SKU','Product Name',
                                             'Product Qty','Price','Min Exp Date','Max Exp Date']))
 
             for line in order_lines:
-                product_catalog_export.append(([line['default_code'], line['manufacture'], line['name'],
+                product_catalog_export.append(([line['manufacture'],line['default_code'],  line['name'],
                                                 line['actual_quantity'],line['list_price'],line['min_expiration_date'],
                                                 line['max_expiration_date']]))
 

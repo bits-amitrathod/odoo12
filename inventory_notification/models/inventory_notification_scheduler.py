@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api, SUPERUSER_ID
+from odoo import models, fields, api
 import logging
 from datetime import datetime
 from datetime import date, timedelta
@@ -11,16 +11,17 @@ import base64
 
 _logger = logging.getLogger(__name__)
 
+# Changes done due to odoo_12
+SUPERUSER_ID_INFO = 2
+
 class InventoryNotificationScheduler(models.TransientModel):
     _name = 'inventory.notification.scheduler'
 
     # warehouse_email = "vasimkhan@benchmarkit.solutions"
-    #     # sales_email = "rohitkabadi@benchmarkit.solutions"
-    #     # acquisitions_email = "ajinkyanimbalkar@benchmarkit.solutions"
-
-    # warehouse_email = "vasimkhan@benchmarkit.solutions"
     # sales_email = "rohitkabadi@benchmarkit.solutions"
-    # acquisitions_email = "tushatgodase@benchmarkit.solutions"
+    # acquisitions_email = "ajinkyanimbalkar@benchmarkit.solutions"
+    # all_email = "tushargodase@benchmarkit.solutions"
+    # appraisal_email = "amitrathod@benchmarkit.solutions"
 
     warehouse_email = "warehouse@surgicalproductsolutions.com"
     sales_email = "salesteam@surgicalproductsolutions.com"
@@ -44,7 +45,7 @@ class InventoryNotificationScheduler(models.TransientModel):
 
     def pick_notification_for_customer(self, picking):
         Stock_Moves = self.env['stock.move'].search([('picking_id', '=', picking.id)])
-        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
+        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
         users = self.env['res.users'].search([('active', '=', True), ('id', '=', picking.sale_id.user_id.id)])
         sales_order = []
         for stock_move in Stock_Moves:
@@ -71,7 +72,7 @@ class InventoryNotificationScheduler(models.TransientModel):
 
     def pull_notification_for_user(self, picking):
         Stock_Moves = self.env['stock.move'].search([('picking_id', '=', picking.id)])
-        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
+        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
         users_sale_person = self.env['res.users'].search([('active', '=', True), ('id', '=', picking.sale_id.user_id.id)])
         users = self.env['res.users'].search([('active', '=', True), ('id', '=', picking.sale_id.order_processor.id)])
 
@@ -111,7 +112,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         for stock_move in Stock_Moves_list:
             temp = self.env['stock.move.line'].search([('move_id', '=', stock_move.id)])
             Stock_Moves_line.append(temp)
-        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
+        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
         users = self.env['res.users'].search([('active', '=', True), ('id', '=', picking.sale_id.user_id.id)])
         sales_order = []
         for stock_move_line in Stock_Moves_line:
@@ -173,7 +174,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         for stock_move in Stock_Moves_list:
             temp = self.env['stock.move.line'].search([('move_id', '=', stock_move.id)])
             Stock_Moves_line.append(temp)
-        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
+        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
 
         sales_order = []
         for stock_move_line_single in Stock_Moves_list:
@@ -248,7 +249,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         }
 
         # Email Attachment
-        # template_id = template = self.env.ref("inventory_notification.common_mail_template").with_context(local_context).sudo().send_mail(SUPERUSER_ID,
+        # template_id = template = self.env.ref("inventory_notification.common_mail_template").with_context(local_context).sudo().send_mail(SUPERUSER_ID_INFO,
         #                                                                             raise_exception=True)
         # # File Attachment Code
         # if not picking is None:
@@ -277,7 +278,7 @@ class InventoryNotificationScheduler(models.TransientModel):
 
     def out_notification_for_sale(self, picking):
         Stock_Moves = self.env['stock.move'].search([('picking_id', '=', picking.id)])
-        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
+        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
         users = self.env['res.users'].search([('active', '=', True), ('id', '=', picking.sale_id.user_id.id)])
         sales_order = []
         for stock_move in Stock_Moves:
@@ -321,7 +322,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         customers = self.env['res.partner'].search(
             [('customer', '=', True), ('is_parent', '=', True), ('email', '!=', ''), ('active', '=', True),
              (weekday, '=', True)])
-        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
+        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
         start = time.time()
         count=0
         for customr in customers:
@@ -495,7 +496,7 @@ class InventoryNotificationScheduler(models.TransientModel):
 
     def process_on_hold_customer(self):
         customers = self.env['res.partner'].search([('on_hold', '=', True), ('is_parent', '=', True)])
-        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
+        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
         users = self.env['res.users'].search([('active', '=', True)])
         for customer in customers:
             _logger.info("customer :%r", customer)
@@ -528,7 +529,7 @@ class InventoryNotificationScheduler(models.TransientModel):
 
     def process_hold_off_customer(self, partner_id):
         sales = self.env['sale.order'].search([('state', '=', 'sale'), ('partner_id', '=', partner_id.id)])
-        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
+        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
         users = self.env['res.users'].search([('active', '=', True)])
         sales_order = []
         for sale in sales:
@@ -569,7 +570,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                             self.warehouse_email)
 
     def process_notification_for_product_red_status(self, products):
-        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
+        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
         users = self.env['res.users'].search([('active', '=', True)])
         green_products = []
         yellow_products = []
@@ -611,7 +612,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                     self.process_notify_red_product(red_product, user, super_user)'''
 
     def process_notification_for_product_green_status(self, products):
-        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
+        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
         users = self.env['res.users'].search([('active', '=', True)])
         green_products = []
         yellow_products = []
@@ -656,7 +657,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
         dayName = today_date.weekday()
         weekday = days[dayName]
-        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
+        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
         _logger.info("weekday: %r", weekday)
         custmer_user = self.env['res.users'].search([('partner_id.customer', '=', True), ('active', '=', True)])
         for customer in custmer_user:
@@ -736,7 +737,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         self.process_notification_for_product_green_status(products)
 
     def process_packing_email_notification(self, vals):
-        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
+        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
         # users = self.env['res.users'].search([('active', '=', True)])
         template = self.env.ref(vals['custom_template'])
         '''for packing in vals['picking_list']:
@@ -754,7 +755,7 @@ class InventoryNotificationScheduler(models.TransientModel):
             msg = "\n Email sent --->  " + local_context['subject'] + "\n --From--" + local_context[
                 'email_from'] + " \n --To-- " + local_context['email_to']
             _logger.info(msg)
-            template.with_context(local_context).sudo().send_mail(SUPERUSER_ID, raise_exception=True)
+            template.with_context(local_context).sudo().send_mail(SUPERUSER_ID_INFO, raise_exception=True)
         except:
             error_msg = "mail sending fail for email id: %r" + local_context[
                 'email_to'] + " sending error report to admin"
@@ -873,7 +874,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                     'email_from'] + " \n --To-- " + local_context['email_to']
                 _logger.info(msg)
 
-                template_id = vals['template'].with_context(local_context).sudo().send_mail(SUPERUSER_ID,
+                template_id = vals['template'].with_context(local_context).sudo().send_mail(SUPERUSER_ID_INFO,
                                                                                             raise_exception=True)
                 # File Attachment Code
                 if not picking is None:
@@ -931,13 +932,13 @@ class InventoryNotificationScheduler(models.TransientModel):
                 if column_name == 'minExDate':
                     if query_result and query_result['min']:
                         min=str(query_result['min'])
-                        column = datetime.strptime(min, "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
+                        column = datetime.strptime(str(min), "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
                     else:
                         column = ""
                 elif column_name == 'maxExDate':
                     if query_result and query_result['max']:
                         max=str(query_result['max'])
-                        column = datetime.strptime(max, "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
+                        column = datetime.strptime(str(max), "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
                     else:
                         column = ""
                 elif column_name == 'customer_price_list':
@@ -1021,7 +1022,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                 msg = "\n Email sent --->  " + local_context['subject'] + "\n --From--" + local_context[
                     'email_from'] + " \n --To-- " + local_context['email_to']
                 _logger.info(msg)
-                template_id = vals['template'].with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True)
+                template_id = vals['template'].with_context(local_context).send_mail(SUPERUSER_ID_INFO, raise_exception=True)
         except:
             erro_msg = "mail sending fail for email id: %r" + vals[
                 'email_to_user'].sudo().email + " sending error report to admin"
@@ -1031,7 +1032,7 @@ class InventoryNotificationScheduler(models.TransientModel):
 
     def process_common_product_scheduler(self, subject, descrption, products, header, columnProps, closing_content,
                                          email_to_team):
-        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
+        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
         users = self.env['res.users'].search([('active', '=', True)])
         today_date = date.today()
         today_start = fields.Date.to_string(today_date)
@@ -1213,7 +1214,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                     'email_from'] + " \n --To-- " + local_context['email_to']
                 _logger.info(msg)
 
-                template_id = vals['template'].with_context(local_context).sudo().send_mail(SUPERUSER_ID,
+                template_id = vals['template'].with_context(local_context).sudo().send_mail(SUPERUSER_ID_INFO,
                                                                                             raise_exception=True)
                 # File Attachment Code
                 if not picking is None:
@@ -1243,7 +1244,7 @@ class InventoryNotificationScheduler(models.TransientModel):
     def send_email_after_vendor_offer_conformation(self, purchase_order_id):
         print('send_email_after_vendor_offer_conformation')
         template = self.env.ref("inventory_notification.mail_template_vendor_offer_acceptance")
-        super_user_email = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ]).sudo().email
+        super_user_email = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ]).sudo().email
         purchase_order = self.env['purchase.order'].search([('id', '=', purchase_order_id), ]).ensure_one()
         local_context = {'email_from': super_user_email,
                          'email_to': self.warehouse_email + ', ' + self.sales_email + ', ' + self.appraisal_email,
@@ -1284,7 +1285,7 @@ class InventoryNotificationScheduler(models.TransientModel):
 
             values1['model'] = None
             values1['res_id'] = False
-            template_id = template.with_context(local_context).sudo().send_mail(SUPERUSER_ID, raise_exception=True)
+            template_id = template.with_context(local_context).sudo().send_mail(SUPERUSER_ID_INFO, raise_exception=True)
             self.env['mail.mail'].sudo().browse(template_id).write(values1)
 
         except:
@@ -1296,4 +1297,4 @@ class InventoryNotificationScheduler(models.TransientModel):
         if date_string == False:
             return None
         datestring=str(date_string)
-        return datetime.strptime(datestring, DEFAULT_SERVER_DATE_FORMAT).date()
+        return datetime.strptime(str(datestring), DEFAULT_SERVER_DATE_FORMAT).date()

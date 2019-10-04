@@ -8,8 +8,8 @@
             <field name="priority">20</field>
             <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false">
+                     <field name="manufacture"/>
                     <field name="sku"  string="Product SKU"/>
-                    <field name="manufacture"/>
                     <field name="name" string="Product Name"/>
                     <field name="qty" string="Product Qty"/>
                     <field name="list_price" string="Price"  widget='monetary'/>
