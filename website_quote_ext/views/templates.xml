@@ -345,7 +345,7 @@
                                             <span t-field="line.product_uom" groups="uom.group_uom"/>
                                         </div>
                                     </td>
-                                    <td t-attf-class="text-right {{ 'd-none d-sm-table-cell' if report_type == 'html' else '' }}">
+                                    <td t-attf-class="text-right {{ '' if report_type == 'html' else '' }}">
                                         <div
                                             t-if="line.discount &gt;= 0"
                                             t-field="line.price_unit"
@@ -361,7 +361,7 @@
                                             <t t-esc="((line.discount % 1) and '%s' or '%d') % line.discount"/>% discount
                                         </strong>
                                     </td>
-                                    <td t-attf-class="text-right {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
+                                    <td t-attf-class="text-right {{ '' if report_type == 'html' else '' }}">
                                         <span t-esc="', '.join(map(lambda x: (x.description or x.name), line.tax_id))"/>
                                     </td>
                                     <td class="text-right">
