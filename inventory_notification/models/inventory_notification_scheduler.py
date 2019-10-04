@@ -94,11 +94,14 @@ class InventoryNotificationScheduler(models.TransientModel):
             'closing_content': 'Thanks & Regards,<br/> Warehouse Team',
             'description':"Hi " + final_user.display_name + \
                               ", <br/><br/> Please find detail Of Sale Order: " + picking.sale_id.name+ "<br/>"+\
-                             "<strong> Notes :  </strong>" + (str(picking.sale_id.sale_note) if picking.sale_id.sale_note else "N/A") ,
+                             "" ,
         }
+        # < strong > Notes: < / strong > " + (str(picking.sale_id.sale_note) if picking.sale_id.sale_note else "
+        # N / A
+        # ")
         '''vals['description'] = "Hi " + picking.sale_id.user_id.display_name + \
                               ", <br/><br/> Please find detail Of Sale Order: " + picking.sale_id.name+ "<br/>"+\
-                             "<strong> Notes :  </strong>"'''
+                             '''
 
         print("Inside Pull")
         print(final_user.sudo().email)
