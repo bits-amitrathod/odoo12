@@ -5,7 +5,7 @@
             <t t-call="web.external_layout">
                 <page>
                     <div class="oe_structure"/>
-                    <div class="row">
+                    <div>
                         <center>
                             <b>
                                 <h2>Surgical Product Solutions</h2>
@@ -20,7 +20,7 @@
                     </div>
                     <br/>
                     <div>
-                        <table class="table table-condensed" style="border: 1px solid black;">
+                        <table class="table table-sm" style="border: 1px solid black;">
                             <thead>
                                 <tr align="center" style="border: 1px solid black;">
                                     <th style="border: 1px solid black;text-align: left;">Product SKU</th>

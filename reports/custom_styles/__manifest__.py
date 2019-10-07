@@ -7,7 +7,7 @@
     'version': '11.0.0.1',
      'author': "Benchmark IT Solutions",
     'website': "http://www.benchmarkitsolutions.com",
-    'depends': ['base', 'sale','purchase'],
+    'depends': ['base', 'sale','purchase','web'],
     'data': [
         'views/styles_template.xml',
     ],

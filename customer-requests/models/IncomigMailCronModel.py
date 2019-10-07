@@ -112,6 +112,8 @@ class IncomingMailCronModel(models.Model):
                                     # find customer in res.partner
                                     if saleforce_ac and saleforce_ac is not None:
                                         res_partner = self.env['res.partner'].search([("saleforce_ac", "=", saleforce_ac)])
+                                        # when new email in inbox, send email to admin
+                                        self.send_mail(str(email_from), str(email_subject), str(res_partner.name))
                                         if len(res_partner) == 1:
                                             customer_email = res_partner.email
                                         elif len(res_partner) > 1:
@@ -287,6 +289,16 @@ class IncomingMailCronModel(models.Model):
         today_date = datetime.today().strftime('%m/%d/%Y')
         template = self.env.ref('customer-requests.set_log_email_response').sudo()
         local_context = {'emailFrom': emailFrom, 'emailSubject': emailSubject, 'customerName': customerName, 'email': customerEmail, 'date': today_date, 'reason': reason}
+        try:
+            template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True, )
+        except:
+            response = {'message': 'Unable to connect to SMTP Server'}
+
+    def send_mail(self, email_from, email_subject, customer_name):
+        print('In send email new')
+        today_date = datetime.today().strftime('%m/%d/%Y')
+        template = self.env.ref('customer-requests.new_email_in_inbox').sudo()
+        local_context = {'emailFrom': email_from, 'emailSubject': email_subject, 'date': today_date, 'customerName': customer_name}
         try:
             template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True, )
         except:
