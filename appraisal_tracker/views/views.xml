@@ -186,6 +186,8 @@
                                         <field name="product_offer_price"/>
                                           <field name="delivered_product_offer_price" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />
                                         <field name="delivered_product_retail_price" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />
+                                          <field name="billed_product_offer_price" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />
+                                          <field name="billed_product_retail_price" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />
                                         <field name="product_retail"/>
                                         <field name="price_subtotal" string="Total Offer Price"/>
                                         <field name="taxes_id" widget="many2many_tags"

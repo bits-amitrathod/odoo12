@@ -440,7 +440,7 @@ class VendorOffer(models.Model):
                     self.amount_untaxed = self.credit_amount_untaxed
                     self.amount_total = self.credit_amount_total
 
-            #self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
+            self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
 
     @api.multi
     def action_button_confirm_api(self, product_id):
@@ -589,12 +589,24 @@ class VendorOfferProduct(models.Model):
     delivered_product_retail_price = fields.Monetary("Total Received Qty Retail Price", store=False,
                                                      compute="_calculat_delv_price")
 
+    billed_product_offer_price = fields.Monetary("Total Billed Qty Offer Price", store=False,
+                                                    compute="_calculat_bill_price")
+    billed_product_retail_price = fields.Monetary("Total Billed Qty Retail Price", store=False,
+                                                     compute="_calculat_bill_price")
+
     @api.multi
     def _calculat_delv_price(self):
         for order in self:
             for p in order:
                 order.delivered_product_offer_price = round(p.qty_received * p.product_offer_price, 2)
                 order.delivered_product_retail_price = round(p.qty_received * p.product_unit_price, 2)
+
+    @api.multi
+    def _calculat_bill_price(self):
+        for order in self:
+            for p in order:
+                order.billed_product_offer_price = round(p.qty_invoiced * p.product_offer_price, 2)
+                order.billed_product_retail_price = round(p.qty_invoiced * p.product_unit_price, 2)
 
 
     def action_show_details(self):
