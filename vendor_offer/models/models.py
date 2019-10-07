@@ -348,6 +348,7 @@ class VendorOffer(models.Model):
                 template_id = ir_model_data.get_object_reference('vendor_offer', 'email_template_edi_vendor_offer_done')[1]
             else:
                 template_id = ir_model_data.get_object_reference('vendor_offer', 'email_template_edi_vendor_offer_done')[1]
+
         except ValueError:
             template_id = False
         try:

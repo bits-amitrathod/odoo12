@@ -135,9 +135,9 @@ class DocumentProcessTransientModel(models.TransientModel):
                                (SELECT id, regexp_replace(TRIM(LEADING '0' FROM CAST(manufacturer_pref AS TEXT)) , '[^A-Za-z0-9.]', '','g') as manufacturer_pref, 
                                             regexp_replace(TRIM(LEADING '0' FROM CAST(sku_code AS TEXT)) , '[^A-Za-z0-9.]', '','g') as sku_code_cleaned
                                 FROM product_template)
-                           as temp_data where sku_code_cleaned ='""" +product_sku + """' or manufacturer_pref = '""" +
-                                            product_sku + """' """)
+                           as temp_data where lower(sku_code_cleaned) ='""" + product_sku.lower() + """' or lower(manufacturer_pref) = '""" + product_sku.lower() + """' """)
                     query_result = self.env.cr.dictfetchone()
+
                     sps_product_id = 0
                     if query_result:
                         product_model = self.env['product.product'].search(
@@ -224,9 +224,9 @@ class DocumentProcessTransientModel(models.TransientModel):
             else:
                 # get product
                 product = self.env['product.template'].search([('id', '=', req['product_id'])])
-                uom = self.env['product.uom'].search([('name', 'ilike', 'Unit'),('category_id.id', '=', 1)])
+                uom = self.env['uom.uom'].search([('name', 'ilike', 'Unit'),('category_id.id', '=', 1)])
                 if len(uom) == 0:
-                    uom = self.env['product.uom'].search([('name', 'ilike', 'Each'),('category_id.id', '=', 1)])
+                    uom = self.env['uom.uom'].search([('name', 'ilike', 'Each'),('category_id.id', '=', 1)])
                 updated_qty = product.manufacturer_uom._compute_quantity(float(req_qty), uom)
                 return updated_qty
         else:
@@ -438,12 +438,17 @@ class DocumentProcessTransientModel(models.TransientModel):
                 product_sku = product_sku[:-len(user_model.sku_postconfig)]
                 print('product_sku : ', product_sku)
         _logger.info('customer_sku %r product sku %r', customer_sku, product_sku)
-        product_tmpl = self.env['product.template'].search(
-            ['|', ('manufacturer_pref', '=', product_sku), ('sku_code', '=', product_sku)])
+        self.env.cr.execute("""select * from 
+                                (SELECT id, regexp_replace(TRIM(LEADING '0' FROM CAST(manufacturer_pref AS TEXT)) , '[^A-Za-z0-9.]', '','g') as manufacturer_pref, 
+                                regexp_replace(TRIM(LEADING '0' FROM CAST(sku_code AS TEXT)) , '[^A-Za-z0-9.]', '','g') as sku_code_cleaned
+                                FROM product_template)
+                                as temp_data where lower(sku_code_cleaned) ='""" + product_sku.lower() + """' or lower(manufacturer_pref) = '""" + product_sku.lower() + """' """)
+        query_result = self.env.cr.dictfetchone()
         sps_product_id = 0
-        if len(product_tmpl) > 0:
+
+        if query_result:
             product_model = self.env['product.product'].search(
-                [['product_tmpl_id', '=', product_tmpl.id]])
+                [['product_tmpl_id', '=', query_result['id']]])
             if len(product_model) > 0:
                 sps_product_id = product_model[0].id
         print('Got product id', sps_product_id)

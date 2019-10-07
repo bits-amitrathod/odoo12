@@ -63,9 +63,10 @@
 
                     <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban">
                                 <t t-if="record.image_small.raw_value &amp;&amp; !record.is_company.raw_value">
-                                    <div class="o_kanban_image_fill_left d-none d-md-block" t-attf-style="background-image:url('#{kanban_image('res.partner', 'image_medium', record.id.raw_value)}')">
-                                        <!--<img class="o_kanban_image_inner_pic" t-if="record.parent_id.raw_value" t-att-alt="record.parent_id.value" t-att-src="kanban_image('res.partner', 'image_small', record.parent_id.raw_value)"/>-->
-                                    </div>
+                                    <img class="o_kanban_image d-none d-md-block" t-att-src="kanban_image('res.partner', 'image_small', record.id.raw_value)" t-att-alt="record.display_name"/>
+                                    <!--<div class="o_kanban_image_fill_left d-none d-md-block" t-attf-style="background-image:url('#{kanban_image('res.partner', 'image_medium', record.id.raw_value)}')">-->
+                                        <!--<img class="o_kanban_image_inner_pic" t-if="record.parent_id.raw_value" t-att-alt="record.parent_id.value" t-att-src="kanban_image('res.partner', 'image_small', record.parent_id.raw_value)" style="display:none;"/>-->
+                                    <!--</div>-->
                                     <!--<div class="o_kanban_image rounded-circle d-md-none" t-attf-style="background-image:url('#{kanban_image('res.partner', 'image_small', record.id.raw_value)}')">-->
                                         <!--<img class="o_kanban_image_inner_pic" t-if="record.parent_id.raw_value" t-att-alt="record.parent_id.value" t-att-src="kanban_image('res.partner', 'image_small', record.parent_id.raw_value)"/>-->
                                     <!--</div>-->

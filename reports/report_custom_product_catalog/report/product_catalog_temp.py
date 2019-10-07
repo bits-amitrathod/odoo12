@@ -195,7 +195,7 @@ class ProductCatalogXL(http.Controller):
             request.env.cr.execute(str_query)
             order_lines = request.env.cr.dictfetchall()
 
-            product_catalog_export.append((['Manufacture','Product SKU', 'Product Name',
+            product_catalog_export.append((['Manufacture','Product SKU','Product Name',
                                             'Product Qty','Price','Min Exp Date','Max Exp Date']))
 
             for line in order_lines:

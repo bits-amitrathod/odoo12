@@ -81,4 +81,4 @@ class ProductsOnHandByDatePopUp(models.TransientModel):
 
     @staticmethod
     def string_to_date(date_string):
-        return datetime.strptime(date_string, DEFAULT_SERVER_DATE_FORMAT).date()
+        return datetime.strptime(str(date_string), DEFAULT_SERVER_DATE_FORMAT).date()

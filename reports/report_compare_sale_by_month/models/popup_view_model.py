@@ -111,6 +111,7 @@ class DiscountSummaryPopUp(models.TransientModel):
                     data['current_month_total_qty'] = data['current_month_total_qty'] + record.qty_done
                     data['current_month_total_amount'] = data['current_month_total_amount'] + (record.move_id.sale_line_id.price_total)
                     # data.location = stock_move_line.location_id.name
+                    data['sku_code'] = record.product_id.product_tmpl_id.sku_code
                     product_dict[int(record.product_id.id)] = data
                 else:
                     object = self.comparebymonth()
@@ -127,6 +128,7 @@ class DiscountSummaryPopUp(models.TransientModel):
                         data['last_month_total_qty']= data['last_month_total_qty'] + record.qty_done
                         data['last_month_total_amount'] = data['last_month_total_amount'] + record.move_id.sale_line_id.price_total
                         # data.location = stock_move_line.location_id.name
+                        data['sku_code'] = record.product_id.product_tmpl_id.sku_code
                         product_dict[int(record.product_id.id)] = data
                     else:
                         object = self.comparebymonth()
@@ -135,6 +137,7 @@ class DiscountSummaryPopUp(models.TransientModel):
                         object['product_name'] = record.product_id.name
                         object['currency_symbol'] = record.product_id.currency_id.symbol
                         # object.location = stock_move_line.location_id.name
+                        object['sku_code'] = record.product_id.product_tmpl_id.sku_code
                         product_dict[int(record.product_id.id)] = object
         return product_dict
 

@@ -39,7 +39,7 @@ class AgingReport(models.Model):
             order.warehouse_name = order.warehouse_id.name
             date_format = "%Y-%m-%d"
             today = date.today().strftime('%Y-%m-%d')
-            a = datetime.strptime(today, date_format)
+            a = datetime.strptime(str(today), date_format)
             b = datetime.strptime(str(order.create_date), date_format)
             diff = a - b
             order.days = diff.days
