@@ -68,7 +68,7 @@ class apprisal_tracker_vendor(models.Model):
 
                         if (((line.product_id.tier.code == '1') and \
                              ((abs(float(amt - 1)) >= 0.4) and (abs(float(amt - 1)) < 0.48)))
-                                or (line.product_id.tier.code == '2' and (abs(float(amt-1)) >= 0.4))
+                                or (line.product_id.tier.code == '2' and (abs(float(amt-1)) > 0.4))
                         ):
                             tier2_retail_temp = tier2_retail_temp + line.product_retail
 
@@ -95,7 +95,7 @@ class apprisal_tracker_vendor(models.Model):
 
                         if (((line.product_id.tier.code == '1') and \
                                 ((abs(float(amt - 1)) >= 0.4) and (abs(float(amt - 1)) < 0.48)))
-                                or (line.product_id.tier.code == '2' and (abs(float(amt-1)) >= 0.4))
+                                or (line.product_id.tier.code == '2' and (abs(float(amt-1)) > 0.4))
                                 ):
 
                             tier2_retail_temp = tier2_retail_temp + line.product_retail
