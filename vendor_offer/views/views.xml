@@ -573,6 +573,25 @@
                                 </div>
                                 <field name="rt_price_total_amt" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Total Retail Price"/>
                             </group>
+
+                    <group class="oe_subtotal_footer " attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" style="margin-right: 15px;">
+                                <field name="billed_offer_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}" string="Billed Untaxed Offer Price"/>
+                                <field name="rt_price_tax_amt" widget="monetary" options="{'currency_field': 'currency_id'}" string="Taxes"/>
+                                <div class="oe_subtotal_footer_separator oe_inline">
+                                    <label for="billed_offer_total"/>
+                                </div>
+                                <field name="billed_offer_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Billed Total Retail Price"/>
+                            </group>
+
+                    <group class="oe_subtotal_footer " attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" style="margin-right: 15px;">
+                                <field name="billed_retail_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}" string="Billed Untaxed Retail Price"/>
+                                <field name="rt_price_tax_amt" widget="monetary" options="{'currency_field': 'currency_id'}" string="Taxes"/>
+                                <div class="oe_subtotal_footer_separator oe_inline">
+                                    <label for="billed_retail_total"/>
+                                </div>
+                                <field name="billed_retail_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Billed Total Retail Price"/>
+                            </group>
+
                 </xpath>
 
                 <xpath expr="//form[1]/sheet[1]/notebook[1]" position="inside">
@@ -817,6 +836,22 @@
                 </xpath>
             </field>
         </record>
+
+
+
+                <odoo>
+                    <record id="view_picking_form_inherit_website_sale_stock" model="ir.ui.view">
+                        <field name="name">stock.picking.form.inherit.show.date.done</field>
+                        <field name="model">stock.picking</field>
+                        <field name="inherit_id" ref="stock.view_picking_form"/>
+                        <field name="arch" type="xml">
+                            <xpath expr="//sheet/group/group/field[@name='scheduled_date']" position="after">
+                                     <field name="arrival_date"  />
+                             </xpath>
+                        </field>
+                    </record>
+                </odoo>
+
 
 
         <menuitem

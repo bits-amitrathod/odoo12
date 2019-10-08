@@ -103,6 +103,11 @@ class VendorOffer(models.Model):
     cash_amount_untaxed = fields.Monetary(string='Untaxed Credit Offer Price', compute='_amount_all', readonly=True)
     cash_amount_total = fields.Monetary(string='Total Credit Offer Price', compute='_amount_all', readonly=True)
 
+    billed_retail_untaxed = fields.Monetary(string='Billed Untaxed Retail', compute='_amount_all', readonly=True)
+    billed_retail_total = fields.Monetary(string='Billed Retail Total', compute='_amount_all', readonly=True)
+    billed_offer_untaxed = fields.Monetary(string='Billed Untaxed Offer', compute='_amount_all', readonly=True)
+    billed_offer_total = fields.Monetary(string='Billed Offer Total', compute='_amount_all', readonly=True)
+
     '''show_validate = fields.Boolean(
         compute='_compute_show_validate',
         help='Technical field used to compute whether the validate should be shown.')'''
@@ -154,6 +159,7 @@ class VendorOffer(models.Model):
     ], string='Status', readonly=True, index=True, copy=False, default='draft', track_visibility='onchange')
 
     import_type_ven = fields.Char(string='Import Type')
+    arrival_date_grp = fields.Datetime(string="Arrival Date")
 
     @api.multi
     def _compute_show_validate(self):
@@ -260,6 +266,7 @@ class VendorOffer(models.Model):
                 amount_untaxed = amount_tax = price_total = 0.0
                 rt_price_tax = product_retail = rt_price_total = potential_profit_margin = 0.0
                 cash_amount_untaxed = 0.0
+                billed_retail_untaxed = billed_offer_untaxed = 0.0
                 for line in order.order_line:
                     amount_tax += line.price_tax
                     cash_amount_untaxed += line.price_subtotal
@@ -269,6 +276,7 @@ class VendorOffer(models.Model):
                     product_retail += line.product_retail
                     rt_price_tax += line.rt_price_tax
                     rt_price_total += line.rt_price_total
+
 
                     # line.for_print_product_offer_price = str(line.product_offer_price)
                     # line.for_print_price_subtotal = str(line.price_subtotal)
@@ -307,6 +315,7 @@ class VendorOffer(models.Model):
                     'credit_amount_total': math.floor( round(credit_amount_total, 2)),
                     'cash_amount_untaxed': cash_amount_untaxed,
                     'cash_amount_total': cash_amount_untaxed + amount_tax
+
                 })
                 if order.offer_type:
                     if order.offer_type == 'credit':
@@ -317,18 +326,25 @@ class VendorOffer(models.Model):
             else:
                 amount_untaxed = amount_tax = price_total = 0.0
                 rt_price_tax = product_retail = rt_price_total = 0.0
+                billed_retail_untaxed = billed_offer_untaxed = 0.0
 
                 for line in order.order_line:
                     amount_tax += line.price_tax
                     rt_price_tax += line.rt_price_tax
                     rt_price_total += line.rt_price_total
                     product_retail += line.product_retail
+                    billed_retail_untaxed += line.billed_product_retail_price
+                    billed_offer_untaxed += line.billed_product_offer_price
 
                     order.update({
                         'amount_tax': amount_tax,
                         'rt_price_subtotal_amt': product_retail,
                         'rt_price_tax_amt': rt_price_tax,
                         'rt_price_total_amt': rt_price_total,
+                        'billed_retail_untaxed': billed_retail_untaxed,
+                        'billed_offer_untaxed': billed_offer_untaxed,
+                        'billed_retail_total': billed_retail_untaxed + amount_tax,
+                        'billed_offer_total': billed_offer_untaxed + amount_tax
                     })
 
                 super(VendorOffer, self)._amount_all()
@@ -1202,6 +1218,28 @@ def _convert_curr_iso_fdx(code):
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
+
+    arrival_date = fields.Datetime(string="Arrival Date")
+
+    @api.model
+    def create(self, vals):
+        record = super(StockPicking, self).create(vals)
+        for pick in self:
+            purchase_order = self.env['purchase.order'].search([('name', '=', pick.origin)])
+            for order in purchase_order:
+                order.arrival_date_grp = pick.arrival_date
+        return record
+
+    @api.multi
+    def write(self, vals):
+        record = super(StockPicking, self).write(vals)
+        if 'arrival_date' in vals:
+            for pick in self:
+                purchase_order = self.env['purchase.order'].search([('name', '=', pick.origin)])
+                for order in purchase_order:
+                    order.arrival_date_grp = vals['arrival_date']
+        return record
+
 
     @api.multi
     def send_to_shipper(self):

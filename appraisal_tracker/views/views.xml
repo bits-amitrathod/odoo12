@@ -54,7 +54,7 @@
                            <!--options='{"bg_color": "#f3f397 : color"+"==3;"+"#c9fbcf : color"+"==2;"+"#ff7098 : color"+"==1"}'-->
                            <!--string="Margin Detail"-->
                            <!--attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"></field>-->
-                    <field name="status_ven" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"/>
+                    <field name="status_ven_app" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"/>
                     <field name="color" invisible="1"/>
                       <field name="t1color" invisible="1"/>
                       <field name="t2color" invisible="1"/>
@@ -210,18 +210,43 @@
 
                                 </field>
                                 <group>
+                                       <field name="vendor_offer_data" invisible="1"/>
                                     <group class="oe_subtotal_footer oe_right">
 
                                         <field name="amount_untaxed" widget="monetary" string="Untaxed Offer Price"/>
-                                        <field name="amount_tax" string="Tax"/>
+                                        <field name="amount_tax" string="Taxes"/>
+                                         <div class="oe_subtotal_footer_separator oe_inline">
+                                            <label for="amount_total"/>
+                                        </div>
                                         <field name="amount_total" widget="monetary" string="Total Offer Price"/>
 
                                     </group>
                                     <group class="oe_subtotal_footer oe_right">
                                         <field name="rt_price_subtotal_amt" widget="monetary"
                                                string="Untaxed Retail Price"/>
-                                        <field name="rt_price_tax_amt" string="Tax"/>
+                                        <field name="rt_price_tax_amt" string="Taxes"/>
+                                         <div class="oe_subtotal_footer_separator oe_inline">
+                                            <label for="rt_price_total_amt"/>
+                                        </div>
                                         <field name="rt_price_total_amt" widget="monetary" string="Total Retail Price"/>
+                                    </group>
+
+                            <group class="oe_subtotal_footer " attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" style="margin-right: 15px;">
+                                        <field name="billed_offer_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}" string="Billed Untaxed Offer Price"/>
+                                        <field name="rt_price_tax_amt" widget="monetary" options="{'currency_field': 'currency_id'}" string="Taxes"/>
+                                        <div class="oe_subtotal_footer_separator oe_inline">
+                                            <label for="billed_offer_total"/>
+                                        </div>
+                                        <field name="billed_offer_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Billed Total Retail Price"/>
+                                    </group>
+
+                            <group class="oe_subtotal_footer " attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" style="margin-right: 15px;">
+                                        <field name="billed_retail_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}" string="Billed Untaxed Retail Price"/>
+                                        <field name="rt_price_tax_amt" widget="monetary" options="{'currency_field': 'currency_id'}" string="Taxes"/>
+                                        <div class="oe_subtotal_footer_separator oe_inline">
+                                            <label for="billed_retail_total"/>
+                                        </div>
+                                        <field name="billed_retail_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Billed Total Retail Price"/>
                                     </group>
                                 </group>
                                 <field name="notes" class="oe_inline"
@@ -302,8 +327,8 @@
             <field name="arch" type="xml">
                 <!--<xpath expr="//group[@name='order_line']" >-->
                 <group expand="0" string="Group By">
-                    <filter string="Status" domain="[]" name="status_ven" context="{'group_by':'status_ven'}"/>
-                    <!--<filter string="Product" domain="[]" context="{'group_by':'product_id','vendor_offer_data': True}"/>-->
+                    <filter string="Status" domain="[]" name="status_ven_app" context="{'group_by':'status_ven'}"/>
+                    <filter string="Arrival Date" name="arrival_date_grp"  domain="[]" context="{'group_by':'arrival_date_grp','vendor_offer_data': True}"/>
                 </group>
                 <!--</xpath>-->
             </field>
