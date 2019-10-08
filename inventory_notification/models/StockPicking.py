@@ -23,8 +23,12 @@ class StockPicking(models.Model):
 
                 elif self.picking_type_id.name == 'Delivery Orders' and self.state == 'done':
                     inv_notification.out_notification_for_sale(self)
+                    product_ids = self.env['stock.move.line'].search([('picking_id', '=', self.id)]).product_id
+                    inv_notification.process_notify_low_stock_products(product_ids)
             # elif picking.purchase_id:
             #     if self.picking_type_id.name == 'Receipts' and self.state == 'done':
             #         inv_notification.po_receive_notification_for_acquisitions_manager(self)
+
+
 
         return action
