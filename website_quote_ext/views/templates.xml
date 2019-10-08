@@ -973,10 +973,11 @@
         <template id="portal_my_home_vendor_offer" name="Portal My Home : vendor offer entry"
                   inherit_id="portal.portal_my_home" priority="25">
             <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
-                <li t-if="vendor_count" class="list-group-item">
-                    <span class="badge" t-esc="vendor_count"/>
-                    <a href="/my/vendor">Vendor Offer</a>
-                </li>
+                <t t-if="vendor_count" t-call="portal.portal_docs_entry">
+                    <t t-set="title">Vendor Offer</t>
+                    <t t-set="url" t-value="'/my/vendor'"/>
+                    <t t-set="count" t-value="vendor_count"/>
+                </t>
             </xpath>
         </template>
 
