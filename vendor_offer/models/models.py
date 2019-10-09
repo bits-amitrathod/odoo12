@@ -276,6 +276,8 @@ class VendorOffer(models.Model):
                     product_retail += line.product_retail
                     rt_price_tax += line.rt_price_tax
                     rt_price_total += line.rt_price_total
+                    billed_retail_untaxed += line.billed_product_retail_price
+                    billed_offer_untaxed += line.billed_product_offer_price
 
 
                     # line.for_print_product_offer_price = str(line.product_offer_price)
@@ -314,7 +316,11 @@ class VendorOffer(models.Model):
                     'credit_amount_untaxed': math.floor(round(credit_amount_untaxed, 2)) ,
                     'credit_amount_total': math.floor( round(credit_amount_total, 2)),
                     'cash_amount_untaxed': cash_amount_untaxed,
-                    'cash_amount_total': cash_amount_untaxed + amount_tax
+                    'cash_amount_total': cash_amount_untaxed + amount_tax,
+                    'billed_retail_untaxed': billed_retail_untaxed,
+                    'billed_offer_untaxed': billed_offer_untaxed,
+                    'billed_retail_total': billed_retail_untaxed + amount_tax,
+                    'billed_offer_total': billed_offer_untaxed + amount_tax
 
                 })
                 if order.offer_type:
