@@ -9,6 +9,7 @@
             <field name="arch" type="xml">
                 <tree create="false" default_order="create_date desc">
                     <field name="create_date" string="Uploaded On"/>
+                    <field name="email_from"/>
                     <field name="customer_id"/>
                     <field name="source"/>
                     <field name="document_processed_count"/>
@@ -72,6 +73,7 @@
                     <group>
                         <field name="customer_id"/>
                         <field name="source"/>
+                        <field name="email_from" attrs="{'invisible': [('source', '!=', 'Email')]}"/>
                         <field name="status"/>
                         <field name="template_type" string="Document Type"/>
                         <field name="document_processed_count" string="Document Processed Count"/>

@@ -18,7 +18,7 @@ class SpsCustomerUploadedDocument(models.Model):
     source = fields.Char()
     status = fields.Char()
     document_processed_count = fields.Integer(string="Document Processed Count", default=0, required=True)
-
+    email_from = fields.Char("Email From")
     template_type = fields.Char()
 
 
