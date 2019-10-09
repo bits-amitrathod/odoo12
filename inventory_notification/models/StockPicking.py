@@ -23,7 +23,7 @@ class StockPicking(models.Model):
 
                 elif self.picking_type_id.name == 'Delivery Orders' and self.state == 'done':
                     inv_notification.out_notification_for_sale(self)
-                    product_ids = self.env['stock.move.line'].search([('picking_id', '=', self.id)]).product_id
+                    product_ids = self.unique(self.env['stock.move.line'].search([('picking_id', '=', self.id)]))
                     inv_notification.process_notify_low_stock_products(product_ids)
             # elif picking.purchase_id:
             #     if self.picking_type_id.name == 'Receipts' and self.state == 'done':
@@ -32,3 +32,13 @@ class StockPicking(models.Model):
 
 
         return action
+
+    def unique(self,list1):
+        # intilize a null list
+        unique_list = []
+        # traverse for all elements
+        for x in list1:
+            # check if exists in unique_list or not
+            if x.product_id not in unique_list:
+                unique_list.append(x.product_id)
+        return unique_list

@@ -17,17 +17,17 @@ SUPERUSER_ID_INFO = 2
 class InventoryNotificationScheduler(models.TransientModel):
     _name = 'inventory.notification.scheduler'
 
-    warehouse_email = "vasimkhan@benchmarkit.solutions"
-    sales_email = "rohitkabadi@benchmarkit.solutions"
-    acquisitions_email = "ajinkyanimbalkar@benchmarkit.solutions"
-    all_email = "tushargodase@benchmarkit.solutions"
-    appraisal_email = "amitrathod@benchmarkit.solutions"
+    # warehouse_email = "vasimkhan@benchmarkit.solutions"
+    # sales_email = "rohitkabadi@benchmarkit.solutions"
+    # acquisitions_email = "ajinkyanimbalkar@benchmarkit.solutions"
+    # all_email = "tushargodase@benchmarkit.solutions"
+    # appraisal_email = "amitrathod@benchmarkit.solutions"
 
-    # warehouse_email = "warehouse@surgicalproductsolutions.com"
-    # sales_email = "salesteam@surgicalproductsolutions.com"
-    # acquisitions_email = "acquisitions@surgicalproductsolutions.com"
-    # all_email="sps@surgicalproductsolutions.com"
-    # appraisal_email = "appraisal@surgicalproductsolutions.com"
+    warehouse_email = "warehouse@surgicalproductsolutions.com"
+    sales_email = "salesteam@surgicalproductsolutions.com"
+    acquisitions_email = "acquisitions@surgicalproductsolutions.com"
+    all_email="sps@surgicalproductsolutions.com"
+    appraisal_email = "appraisal@surgicalproductsolutions.com"
 
     def process_manual_notification_scheduler(self):
         _logger.info("process_manual_notification_scheduler called..")
@@ -713,9 +713,9 @@ class InventoryNotificationScheduler(models.TransientModel):
         self.process_common_email_notification_template(from_user, to_user, subject,
                                                         description, products, header, columnProps, closing_content,
                                                         self.acquisitions_email)
-    def process_notify_low_product(self, products, to_user, from_user):
+    def process_notify_low_product(self, products, to_user, from_user,max_inventory_level_duration):
         subject = "Products which are in Low Stock"
-        description = "Hi Team, <br><br/>Please find a listing below of products whose inventory level status is now Color(Red) :"
+        description = "Hi Team, <br><br/>Please find a listing below of products whose inventory level status is now Color(Red) : <br/><br/> <b>On Basis of Max Inventory Level Duration </b>  : " + str(max_inventory_level_duration) + " Days"
         header = ['Catalog #', 'Product Description', 'Sales Price', 'Cost', 'Product Type',
                   'Qty On Hand', 'Forecasted Quantity', 'Unit Of Measure','Current inventory Level','Max Inventory Level','Suggested Order Qty','Price Range']
         columnProps = ['sku_code', 'product_name', 'sale_price', 'standard_price', 'product_type',
@@ -789,19 +789,20 @@ class InventoryNotificationScheduler(models.TransientModel):
                 'standard_price': "$ " + str(
                     ml.product_tmpl_id.standard_price) if ml.product_tmpl_id.standard_price else "",
                 'product_type': switcher.get(ml.type, " "),
-                'qty_on_hand': int(ml.actual_quantity),
+                'qty_on_hand': int(qty_in_stock),
                 'forecasted_qty': int(ml.virtual_available),
                 'product_name': self.check_isAvailable_product_code(
                     ml.default_code) + " " + ml.product_tmpl_id.name,
                 'unit_of_measure': ml.product_tmpl_id.uom_id.name,
-                'max_inventory_percent' : max_inventory_percent,
+                'max_inventory_percent' : int(ml.actual_quantity),
                 'max_inventory_level' : max_inventory_level,
-                'suggested_order_qty' : ((max_inventory_level- quantity)/2),
-                'price_range' : '$ '+ str((ml.product_tmpl_id.standard_price * 0.55)) +' - $'+  str( (ml.product_tmpl_id.standard_price * 0.60))            }
+                'suggested_order_qty' : round(((max_inventory_level- quantity)/2)),
+                'price_range' : '$ '+ str((float("{0:.2f}".format(ml.product_tmpl_id.list_price * 0.55)))) +' - $'+  str( ( float("{0:.2f}".format(ml.product_tmpl_id.list_price * 0.60))))
+            }
             if inventory_percent_color <= 75:
                 red_product.append(vals)
         if red_product:
-            self.process_notify_low_product(red_product, None, super_user)
+            self.process_notify_low_product(red_product, None, super_user,max_inventory_level_duration)
 
     def process_notify_available(self):
         today_date = date.today()
