@@ -59,21 +59,21 @@ class apprisal_tracker_vendor(models.Model):
 
                     order.cust_type_appraisal = 'Wholesaler'
                     for line in order.order_line:
+                        if line.product_unit_price and line.product_unit_price > 0:
+                            amt = line.product_offer_price / line.product_unit_price
 
-                        amt = line.product_offer_price / line.product_unit_price
+                            if (line.product_id.tier.code == '1') and \
+                                    (abs(float(amt - 1)) >= 0.48):
+                                tier1_retail_temp = tier1_retail_temp + line.product_retail
 
-                        if (line.product_id.tier.code == '1') and \
-                                (abs(float(amt - 1)) >= 0.48):
-                            tier1_retail_temp = tier1_retail_temp + line.product_retail
+                            if (((line.product_id.tier.code == '1') and \
+                                 ((abs(float(amt - 1)) >= 0.4) and (abs(float(amt - 1)) < 0.48)))
+                                    or (line.product_id.tier.code == '2' and (abs(float(amt-1)) > 0.4))
+                            ):
+                                tier2_retail_temp = tier2_retail_temp + line.product_retail
 
-                        if (((line.product_id.tier.code == '1') and \
-                             ((abs(float(amt - 1)) >= 0.4) and (abs(float(amt - 1)) < 0.48)))
-                                or (line.product_id.tier.code == '2' and (abs(float(amt)) >= 0.4))
-                        ):
-                            tier2_retail_temp = tier2_retail_temp + line.product_retail
-
-                        if abs(float(amt - 1)) < 0.4:
-                            less_than_40_retail = less_than_40_retail + line.product_retail
+                            if abs(float(amt - 1)) < 0.4:
+                                less_than_40_retail = less_than_40_retail + line.product_retail
                         order.update({
                             'tier1_retail': tier1_retail_temp,
                             'tier2_retail': tier2_retail_temp,
@@ -85,23 +85,23 @@ class apprisal_tracker_vendor(models.Model):
                     order.cust_type_appraisal = 'Broker'
 
                     for line in order.order_line:
+                        if line.product_unit_price and line.product_unit_price > 0:
+                            amt = line.product_offer_price/line.product_unit_price
 
-                        amt = line.product_offer_price/line.product_unit_price
+                            if (line.product_id.tier.code == '1') and \
+                                    (abs(float(amt - 1)) >= 0.48):
 
-                        if (line.product_id.tier.code == '1') and \
-                                (abs(float(amt - 1)) >= 0.48):
+                                tier1_retail_temp = tier1_retail_temp + line.product_retail
 
-                            tier1_retail_temp = tier1_retail_temp + line.product_retail
+                            if (((line.product_id.tier.code == '1') and \
+                                    ((abs(float(amt - 1)) >= 0.4) and (abs(float(amt - 1)) < 0.48)))
+                                    or (line.product_id.tier.code == '2' and (abs(float(amt-1)) > 0.4))
+                                    ):
 
-                        if (((line.product_id.tier.code == '1') and \
-                                ((abs(float(amt - 1)) >= 0.4) and (abs(float(amt - 1)) < 0.48)))
-                                or (line.product_id.tier.code == '2' and (abs(float(amt)) >= 0.4))
-                                ):
+                                tier2_retail_temp = tier2_retail_temp + line.product_retail
 
-                            tier2_retail_temp = tier2_retail_temp + line.product_retail
-
-                        if abs(float(amt - 1)) < 0.4:
-                            less_than_40_retail = less_than_40_retail + line.product_retail
+                            if abs(float(amt - 1)) < 0.4:
+                                less_than_40_retail = less_than_40_retail + line.product_retail
 
                     order.update({
                         'tier1_retail': tier1_retail_temp,
