@@ -17,17 +17,17 @@ SUPERUSER_ID_INFO = 2
 class InventoryNotificationScheduler(models.TransientModel):
     _name = 'inventory.notification.scheduler'
 
-    warehouse_email = "vasimkhan@benchmarkit.solutions"
-    sales_email = "rohitkabadi@benchmarkit.solutions"
-    acquisitions_email = "ajinkyanimbalkar@benchmarkit.solutions"
-    all_email = "tushargodase@benchmarkit.solutions"
-    appraisal_email = "amitrathod@benchmarkit.solutions"
+    # warehouse_email = "vasimkhan@benchmarkit.solutions"
+    # sales_email = "rohitkabadi@benchmarkit.solutions"
+    # acquisitions_email = "ajinkyanimbalkar@benchmarkit.solutions"
+    # all_email = "tushargodase@benchmarkit.solutions"
+    # appraisal_email = "amitrathod@benchmarkit.solutions"
 
-    # warehouse_email = "warehouse@surgicalproductsolutions.com"
-    # sales_email = "salesteam@surgicalproductsolutions.com"
-    # acquisitions_email = "acquisitions@surgicalproductsolutions.com"
-    # all_email="sps@surgicalproductsolutions.com"
-    # appraisal_email = "appraisal@surgicalproductsolutions.com"
+    warehouse_email = "warehouse@surgicalproductsolutions.com"
+    sales_email = "salesteam@surgicalproductsolutions.com"
+    acquisitions_email = "acquisitions@surgicalproductsolutions.com"
+    all_email="sps@surgicalproductsolutions.com"
+    appraisal_email = "appraisal@surgicalproductsolutions.com"
 
     def process_manual_notification_scheduler(self):
         _logger.info("process_manual_notification_scheduler called..")
