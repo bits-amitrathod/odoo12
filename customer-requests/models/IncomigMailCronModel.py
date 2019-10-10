@@ -9,6 +9,7 @@ import string
 import os
 import html2text
 import errno
+import base64
 from collections import namedtuple
 
 import werkzeug.local
@@ -55,7 +56,6 @@ poplib._MAXLINE = 65536
 #dir_path = os.path.dirname(os.path.dirname(os.path.dirname(path)))
 #ATTACHMENT_DIR =  dir_path + "/Documents/attachments/"
 ATTACHMENT_DIR = "/home/odoo/Documents/attachments/"
-
 
 class IncomingMailCronModel(models.Model):
     _inherit = 'fetchmail.server'
@@ -112,8 +112,6 @@ class IncomingMailCronModel(models.Model):
                                     # find customer in res.partner
                                     if saleforce_ac and saleforce_ac is not None:
                                         res_partner = self.env['res.partner'].search([("saleforce_ac", "=", saleforce_ac)])
-                                        # when new email in inbox, send email to admin
-                                        self.send_mail(str(email_from), str(email_subject), str(res_partner.name))
                                         if len(res_partner) == 1:
                                             customer_email = res_partner.email
                                         elif len(res_partner) > 1:
@@ -200,6 +198,8 @@ class IncomingMailCronModel(models.Model):
                                                                 if exc.errno != errno.EEXIST:
                                                                     raise
                                                         for attachment in attachments:
+                                                            # when new email in inbox, send email to admin
+                                                            self.send_mail(str(email_from), str(email_subject), str(res_partner.name), attachment)
                                                             filename = getattr(attachment, 'fname')
                                                             if not filename is None:
                                                                 try:
@@ -294,12 +294,28 @@ class IncomingMailCronModel(models.Model):
         except:
             response = {'message': 'Unable to connect to SMTP Server'}
 
-    def send_mail(self, email_from, email_subject, customer_name):
-        print('In send email new')
+    def send_mail(self, email_from, email_subject, customer_name, attachment):
         today_date = datetime.today().strftime('%m/%d/%Y')
         template = self.env.ref('customer-requests.new_email_in_inbox').sudo()
         local_context = {'emailFrom': email_from, 'emailSubject': email_subject, 'date': today_date, 'customerName': customer_name}
         try:
-            template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True, )
+            filename = getattr(attachment, 'fname')
+            if filename is not None:
+                try:
+                    file_contents_bytes = getattr(attachment, 'content')
+                    file_extension = filename[filename.rindex('.') + 1:]
+                    print('file extension : '+file_extension)
+                except Exception as e:
+                    _logger.info(str(e))
+            values={}
+            values['attachment_ids'] = [(0, 0, {'name': filename,
+                                                 'type': 'binary',
+                                                 'mimetype': 'application/'+file_extension,
+                                                 'datas_fname': filename,
+                                                 'datas': base64.b64encode(file_contents_bytes)})]
+            values['model'] = None
+            values['res_id'] = False
+            sent_email_template = template.with_context(local_context).sudo().send_mail(SUPERUSER_ID, raise_exception=True)
+            self.env['mail.mail'].sudo().browse(sent_email_template).write(values)
         except:
             response = {'message': 'Unable to connect to SMTP Server'}
