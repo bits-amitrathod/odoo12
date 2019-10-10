@@ -83,10 +83,12 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
         if 'expedited_shipping' in request.session:
             expedited_shipping = request.session['expedited_shipping']
             if expedited_shipping:
+                order.write({'sale_note': expedited_shipping})
                 _message_post_helper(res_model='sale.order', res_id=order.id,
                                      message="<strong>Expedited Shipping:</strong> " + expedited_shipping,
                                      token=order.access_token,
                                      message_type='notification', subtype="mail.mt_note",
                                      partner_ids=order.user_id.sudo().partner_id.ids)
                 request.session['expedited_shipping'] = ""
+
         return responce
