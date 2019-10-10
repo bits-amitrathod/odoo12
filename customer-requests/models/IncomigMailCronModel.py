@@ -209,7 +209,7 @@ class IncomingMailCronModel(models.Model):
                                                                     file_ref.write(file_contents_bytes)
                                                                     file_ref.close()
                                                                     response = self.env['sps.document.process'].process_document(
-                                                                        users_model, file_path, tmpl_type,filename, 'Email')
+                                                                        users_model, file_path, tmpl_type,filename, email_from, 'Email')
                                                                 except Exception as e:
                                                                     _logger.info(str(e))
                                                     else:
