@@ -83,7 +83,7 @@
                        position="replace">
                       <field name="origin" string="Order#" groups="base.group_user" attrs="{'invisible': True}"/>
                 </xpath>
-                <xpath expr="//field[@name='currency_id']" position="after">
+                <xpath expr="//form/sheet/group/group[2]/div" position="after">
                     <field name="purchase_order" string="Purchase Order#"/>
                     <field name="origin" string="Sale Order#" groups="base.group_user" attrs="{'invisible': [('origin', '=', False)]}"/>
                 </xpath>
