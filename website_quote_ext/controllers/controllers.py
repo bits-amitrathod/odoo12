@@ -168,7 +168,7 @@ class WebsiteSale(http.Controller):
         if client_order_ref:
             Order.write({"client_order_ref": client_order_ref})
         if message:
-            # Order.write({'sale_note': message})
+            Order.write({'sale_note': message})
             body = _(message)
             _message_post_helper(res_model='sale.order', res_id=order_id, message=body, token=access_token,
                                  message_type='notification', subtype="mail.mt_note",
@@ -204,7 +204,7 @@ class WebsiteSale(http.Controller):
         message = post.get('decline_message')
 
         if message:
-            # Order.write({'sale_note': message})
+            order_sudo.write({'sale_note': message})
             body = _(message)
             _message_post_helper(res_model='sale.order', res_id=order_id, message=body, token=access_token,
                                  message_type='notification', subtype="mail.mt_note",

@@ -199,7 +199,7 @@ class IncomingMailCronModel(models.Model):
                                                                     raise
                                                         for attachment in attachments:
                                                             # when new email in inbox, send email to admin
-                                                            self.send_mail(str(email_from), str(email_subject), str(res_partner.name), attachment)
+                                                            self.send_mail_with_attachment(str(email_from), str(email_subject), str(res_partner.name), attachment)
                                                             filename = getattr(attachment, 'fname')
                                                             if not filename is None:
                                                                 try:
@@ -294,7 +294,7 @@ class IncomingMailCronModel(models.Model):
         except:
             response = {'message': 'Unable to connect to SMTP Server'}
 
-    def send_mail(self, email_from, email_subject, customer_name, attachment):
+    def send_mail_with_attachment(self, email_from, email_subject, customer_name, attachment):
         today_date = datetime.today().strftime('%m/%d/%Y')
         template = self.env.ref('customer-requests.new_email_in_inbox').sudo()
         local_context = {'emailFrom': email_from, 'emailSubject': email_subject, 'date': today_date, 'customerName': customer_name}
