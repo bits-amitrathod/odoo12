@@ -18,20 +18,22 @@ class sale_order(models.Model):
 
         '''if self.sale_note:
             self.write({'sale_note':False})'''
-            
-        if 'sale_note' in val:
-            if val['sale_note']:
-                body = _(val['sale_note'])
-                sale_order_val = {
-                    'body': body,
-                    'model': 'sale.order',
-                    'message_type': 'notification',
-                    'no_auto_thread': False,
-                    'subtype_id': self.env['ir.model.data'].xmlid_to_res_id('mail.mt_note'),
-                    'res_id': self.id,
-                    'author_id': self.env.user.partner_id.id,
-                }
-                self.env['mail.message'].sudo().create(sale_order_val)
+
+        # if 'sale_note' in val or self.sale_note:
+        if self.sale_note and self.team_id.team_type != 'engine':
+                # body = _(val['sale_note'])
+                body = self.sale_note
+                # body = self.sale_note
+                # sale_order_val = {
+                #     'body': body,
+                #     'model': 'sale.order',
+                #     'message_type': 'notification',
+                #     'no_auto_thread': False,
+                #     'subtype_id': self.env['ir.model.data'].xmlid_to_res_id('mail.mt_note'),
+                #     'res_id': self.id,
+                #     'author_id': self.env.user.partner_id.id,
+                # }
+                # self.env['mail.message'].sudo().create(sale_order_val)
                 stock_picking = self.env['stock.picking'].search([('sale_id', '=', self.id)])
                 for stk_picking in stock_picking:
                     stock_picking_val = {
