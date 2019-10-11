@@ -61,7 +61,7 @@ class FileUploadController(Controller):
                 response = request.env['sps.document.process'].sudo().process_document(user_api_settings,
                                                                                        uploaded_file_path,
                                                                                        template_type_from_user,
-                                                                                       str(request.params['file'].filename))
+                                                                                       str(request.params['file'].filename, ''))
                 _logger.info("response :%r", response)
             elif len(user_api_settings) > 1:
                 response = dict(errorCode=3, message='We have found Same Email Id against multiple users.')

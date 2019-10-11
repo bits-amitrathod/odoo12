@@ -29,7 +29,7 @@ _logger = logging.getLogger(__name__)
 class DocumentProcessTransientModel(models.TransientModel):
     _name = 'sps.document.process'
 
-    def process_document(self, user_model, uploaded_file_path, template_type_from_user, file_name,
+    def process_document(self, user_model, uploaded_file_path, template_type_from_user, file_name, email_from,
                          document_source='Api', ):
         print('template_type_from_user')
         print(template_type_from_user)
@@ -78,7 +78,7 @@ class DocumentProcessTransientModel(models.TransientModel):
                                       gl_account_id=gl_account_id,
                                       customer_id=user_id, template_type=template_type,
                                       document_name=file_name,
-                                      file_location=uploaded_file_path, source=document_source, status='draft',
+                                      file_location=uploaded_file_path, source=document_source, email_from=email_from, status='draft',
                                       create_uid=1, create_date=today_date, write_uid=1,
                                       write_date=today_date)
             file_uploaded_record = self.env['sps.cust.uploaded.documents'].create(

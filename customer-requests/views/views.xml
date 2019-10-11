@@ -9,6 +9,7 @@
             <field name="arch" type="xml">
                 <tree create="false" default_order="create_date desc">
                     <field name="create_date" string="Uploaded On"/>
+                    <field name="email_from"/>
                     <field name="customer_id"/>
                     <field name="source"/>
                     <field name="document_processed_count"/>
@@ -72,6 +73,7 @@
                     <group>
                         <field name="customer_id"/>
                         <field name="source"/>
+                        <field name="email_from" attrs="{'invisible': [('source', '!=', 'Email')]}"/>
                         <field name="status"/>
                         <field name="template_type" string="Document Type"/>
                         <field name="document_processed_count" string="Document Processed Count"/>
@@ -395,6 +397,17 @@
                 </p>
             ]]></field>
             <field name="user_signature" eval="False"/>
+        </record>
+
+       <record id="view_res_partner_filter_inherit" model="ir.ui.view">
+            <field name="name">res.partner.select.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_res_partner_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="/search" position="inside">
+                   <field name="saleforce_ac"/>
+               </xpath>
+            </field>
         </record>
 
         <menuitem name="Import" id="prioritization_engine.prioritization_imenu"
