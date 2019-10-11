@@ -64,7 +64,8 @@ class DocumentProcessTransientModel(models.TransientModel):
 
         if len(mappings) == 0:
             if not template_type:
-                return dict(errorCode=9, message='Ambiguity in Template Type')
+                _logger.info('-------Template mismatch------------')
+                return dict(errorCode=9, message='Template mismatch')
             return dict(errorCode=4, message='Mappings Not Found')
 
         requests, file_acceptable = DocumentProcessTransientModel._parse_csv(uploaded_file_path, mappings,
