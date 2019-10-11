@@ -194,8 +194,8 @@
                         </tr>
                         <tr>
                             <td style="border:0 !important;vertical-align: bottom;padding: 0;font-size:14px;"><p>PRINT NAME:</p></td>
-                            <td style="border-bottom:1px solid #000;vertical-align: bottom;padding: 0;border-top:1px solid #fff">
-                                <p style="font-weight:600;font-size:14px important;padding: 0;">
+                            <td style="border-bottom:1px solid #000;vertical-align: bottom;padding: 0;border-top:1px solid #fff;" align="center">
+                                <p style="font-weight:600;font-size:14px important;padding: 0;top: 5px;">
                                     Justin Tennant
                                 </p>
                             </td>
@@ -203,9 +203,9 @@
                         </tr>
                           <tr>
                             <td style="border:0 !important;vertical-align: bottom;padding: 0;font-size:14px;"><p>BUYER SIGNATURE:</p></td>
-                            <td style="border-bottom:1px solid #000;vertical-align: bottom;padding: 0;">
+                            <td style="border-bottom:1px solid #000;vertical-align: bottom;padding: 0;" align="center">
                                <img src='/vendor_offer/static/img/signature.png'
-                                     style="height: 45px;width:100px;"/>
+                                     style="height: 42px;width:98px;"/>
                             </td>
                             <td style="border:0 !important;vertical-align: bottom;padding: 0;padding-left:10px"><p style="font-size:14px;"><span>DATE:</span>
                                 <span style="font-weight:600;font-size:16px !important; margin-left:10px; "
