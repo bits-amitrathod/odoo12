@@ -203,9 +203,9 @@
                         </tr>
                           <tr>
                             <td style="border:0 !important;vertical-align: bottom;padding: 0;font-size:14px;"><p>BUYER SIGNATURE:</p></td>
-                            <td style="border-bottom:1px solid #000;vertical-align: bottom;padding: 0;" align="center">
+                            <td style="border-bottom:1px solid #000;vertical-align: bottom;padding: 5px;" align="center">
                                <img src='/vendor_offer/static/img/signature.png'
-                                     style="height: 42px;width:98px;"/>
+                                     style="height: 38px;width:98px;"/>
                             </td>
                             <td style="border:0 !important;vertical-align: bottom;padding: 0;padding-left:10px"><p style="font-size:14px;"><span>DATE:</span>
                                 <span style="font-weight:600;font-size:16px !important; margin-left:10px; "
@@ -251,7 +251,7 @@
                     </tbody>
                 </table>
             </div>
-            <div style="page-break-inside: avoid"></div>
+            <div style="page-break-inside: auto"></div>
             <div class="page " style="">
                 <div class="oe_structure"/>
                 <h2>
