@@ -21,6 +21,28 @@ _logger = logging.getLogger(__name__)
 class LoginCaseInsensitive(models.Model):
     _inherit = "res.users"
 
+
+    def _create_user_from_template(self, values):
+        template_user_id = literal_eval(self.env['ir.config_parameter'].sudo().get_param('base.template_portal_user_id', 'False'))
+        template_user = self.browse(template_user_id)
+        if not template_user.exists():
+            raise ValueError(_('Signup: invalid template user'))
+
+        if not values.get('login'):
+            raise ValueError(_('Signup: no login given for new user'))
+        if not values.get('partner_id') and not values.get('name'):
+            raise ValueError(_('Signup: no name or partner given for new user'))
+
+        # create a copy of the template user (attached to a specific partner_id if given)
+        values['active'] = True
+        values['customer'] = True
+        try:
+            with self.env.cr.savepoint():
+                return template_user.with_context(no_reset_password=True).copy(values)
+        except Exception as e:
+            # copy may failed if asked login is not available.
+            raise SignupError(ustr(e))
+
     @api.model
     def create(self, values):
         temp_email = values['login']
@@ -134,50 +156,50 @@ class LoginCaseInsensitive(models.Model):
                 if partner.company_id:
                     values['company_id'] = partner.company_id.id
                     values['company_ids'] = [(6, 0, [partner.company_id.id])]
-                self._signup_create_user_new(values)
+                self._create_user_from_template(values)
         else:
             # no token, sign up an external user
             values['email'] = values.get('email') or values.get('login')
-            self._signup_create_user_new(values)
+            self._create_user_from_template(values)
 
         return (self.env.cr.dbname, values.get('login'), values.get('password'))
 
-    @api.model
-    def _signup_create_user_new(self, values):
-        """ create a new user from the template user """
-        get_param = self.env['ir.config_parameter'].sudo().get_param
-        template_user_id = literal_eval(get_param('auth_signup.template_user_id', 'False'))
-        template_user = self.browse(template_user_id)
-        assert template_user.exists(), 'Signup: invalid template user'
-
-        # check that uninvited users may sign up
-        if 'partner_id' not in values:
-            if not literal_eval(get_param('auth_signup.allow_uninvited', 'False')):
-                raise SignupError(_('Signup is not allowed for uninvited users'))
-
-        assert values.get('login'), "Signup: no login given for new user"
-        assert values.get('partner_id') or values.get('name'), "Signup: no name or partner given for new user"
-
-        # create a copy of the template user (attached to a specific partner_id if given)
-        values['active'] = True
-        try:
-            with self.env.cr.savepoint():
-                temp_email = values['email']
-                if values['email'] == temp_email.lower():
-                    user = request.env['res.users'].sudo().search([('email', '=ilike', values['email'])])
-                    if user:
-                        raise SignupError()
-                    else:
-                        return template_user.with_context(no_reset_password=True).copy(values)
-                else:
-                    raise ValidationError("Email address should contain small letters only.")
-
-        except Exception as e:
-            # copy may failed if asked login is not available.
-            if values['email'] != temp_email.lower():
-                raise SignupError("Email address should contain small letters only.")
-            else:
-                raise SignupError(ustr(e))
+    # @api.model
+    # def _signup_create_user_new(self, values):
+    #     """ create a new user from the template user """
+    #     get_param = self.env['ir.config_parameter'].sudo().get_param
+    #     template_user_id = literal_eval(get_param('auth_signup.template_user_id', 'False'))
+    #     template_user = self.browse(template_user_id)
+    #     assert template_user.exists(), 'Signup: invalid template user'
+    #
+    #     # check that uninvited users may sign up
+    #     if 'partner_id' not in values:
+    #         if not literal_eval(get_param('auth_signup.allow_uninvited', 'False')):
+    #             raise SignupError(_('Signup is not allowed for uninvited users'))
+    #
+    #     assert values.get('login'), "Signup: no login given for new user"
+    #     assert values.get('partner_id') or values.get('name'), "Signup: no name or partner given for new user"
+    #
+    #     # create a copy of the template user (attached to a specific partner_id if given)
+    #     values['active'] = True
+    #     try:
+    #         with self.env.cr.savepoint():
+    #             temp_email = values['email']
+    #             if values['email'] == temp_email.lower():
+    #                 user = request.env['res.users'].sudo().search([('email', '=ilike', values['email'])])
+    #                 if user:
+    #                     raise SignupError()
+    #                 else:
+    #                     return template_user.with_context(no_reset_password=True).copy(values)
+    #             else:
+    #                 raise ValidationError("Email address should contain small letters only.")
+    #
+    #     except Exception as e:
+    #         # copy may failed if asked login is not available.
+    #         if values['email'] != temp_email.lower():
+    #             raise SignupError("Email address should contain small letters only.")
+    #         else:
+    #             raise SignupError(ustr(e))
 
     def reset_password_new(self, login):
         """ retrieve the user corresponding to login (login or email),
