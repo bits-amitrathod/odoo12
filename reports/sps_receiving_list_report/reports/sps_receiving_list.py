@@ -72,7 +72,7 @@ class ReportSpsReceivingList1(models.AbstractModel):
     _name = 'report.sps_receiving_list_report.adjustment_report1'
 
     @api.model
-    def get_report_values(self, docids, data=None):
+    def _get_report_values(self, docids, data=None):
         stock_move_lines = self.env['stock.move.line'].search([('picking_id', 'in', docids)], order='product_id')
         old = 0
         receiving_list = {}
