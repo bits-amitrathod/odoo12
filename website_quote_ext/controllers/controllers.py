@@ -194,7 +194,6 @@ class WebsiteSale(http.Controller):
 
     @http.route(['/my/orders/<int:order_id>/declines'], type='http', auth="public", methods=['POST'], website=True)
     def decline(self, order_id, access_token=None, **post):
-        print ("Inside SPS Controller....")
         try:
             order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
         except (AccessError, MissingError):
