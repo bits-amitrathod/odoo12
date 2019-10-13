@@ -8,6 +8,7 @@
                 report_type="qweb-html"
                 file="pick_ticket.pick_ticket_report1"
                 name="pick_ticket.pick_ticket_report1"
+                menu="False"
                 />
     </data>
 </odoo>

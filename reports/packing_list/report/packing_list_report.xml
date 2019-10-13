@@ -8,6 +8,7 @@
                 report_type="qweb-html"
                 file="packing_list.sale_packing_list_template"
                 name="packing_list.sale_packing_list_template"
+                menu="False"
         />
         <report
                 id="action_report_inventory_packing_list_pdf"
