@@ -14,10 +14,10 @@ class ReportCompareSaleByMonthWise(models.AbstractModel):
         popup = self.env['compbysale.popup'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
         products = self.env['product.product'].search([('create_uid', '=', self._uid)], limit=1,)
         if popup.compute_at_date:
-            date = datetime.datetime.strptime(popup.last_start_date, '%Y-%m-%d').strftime('%m/%d/%Y') + " - " + \
-                   datetime.datetime.strptime(popup.last_end_date, '%Y-%m-%d').strftime('%m/%d/%Y')+"        "+ \
-                   datetime.datetime.strptime(popup.current_start_date, '%Y-%m-%d').strftime('%m/%d/%Y') + " - " + \
-                   datetime.datetime.strptime(popup.current_end_date, '%Y-%m-%d').strftime('%m/%d/%Y')
+            date = datetime.datetime.strptime(str(popup.last_start_date), '%Y-%m-%d').strftime('%m/%d/%Y') + " - " + \
+                   datetime.datetime.strptime(str(popup.last_end_date), '%Y-%m-%d').strftime('%m/%d/%Y')+"        "+ \
+                   datetime.datetime.strptime(str(popup.current_start_date), '%Y-%m-%d').strftime('%m/%d/%Y') + " - " + \
+                   datetime.datetime.strptime(str(popup.current_end_date), '%Y-%m-%d').strftime('%m/%d/%Y')
             s_date = (fields.Datetime.from_string(popup.current_start_date).date())
             l_date = (fields.Datetime.from_string(popup.current_end_date).date())
             ps_date = (fields.Datetime.from_string(popup.last_start_date).date())
