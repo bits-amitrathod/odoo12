@@ -215,7 +215,8 @@
             <field name="model">purchase.order</field>
             <field name="context">{state: 'ven_draft'}</field>
             <field name="arch" type="xml">
-                <form string="Vendor Offer" class="o_sale_order" duplicate="false">
+                <form string="Vendor Offer" class="o_sale_order" duplicate="false"   attrs="{'delete': [('state', 'in', ('draft', 'ven_draft','ven_sent'))],
+                'edit': [('state', 'in', ('draft', 'ven_draft','ven_sent'))]}" >
                     <header>
                         <button name="action_send_offer_email" string="Send" type="object" context="{'send_rfq':True}"
                                 class="btn-primary" attrs="{'invisible':[('state', 'in', ('purchase','cancel'))]}"/>
@@ -396,12 +397,23 @@
 
                                 </field>
                                 <group>
-                                    <group class="oe_subtotal_footer oe_right">
+                                     <group class="oe_subtotal_footer oe_right" style=" margin-left: 20px;">
 
-                                        <field name="amount_untaxed" widget="monetary"
-                                               string="Untaxed Offer Price"/>
+                                        <field name="credit_amount_untaxed" widget="monetary"
+                                               string="Untaxed Credit Offer Price"/>
                                         <field name="amount_tax" string="Tax"/>
-                                        <field name="amount_total" widget="monetary" string="Total Offer Price"/>
+                                        <field name="credit_amount_total" widget="monetary" string="Total Credit Offer Price"/>
+                                        <!--<field name="val_bool_temp" invisible="1"/>-->
+                                        <!--attrs="{'invisible':[('val_bool_temp','=',False)]}"  -->
+                                        <!--<button name="update_values_vendor" string="Update Values" type="object"-->
+                                        <!--class="btn-primary"/>-->
+                                    </group>
+                                    <group class="oe_subtotal_footer oe_right" style=" margin-left: 20px;">
+
+                                        <field name="cash_amount_untaxed" widget="monetary"
+                                               string="Untaxed Cash Offer Price"/>
+                                        <field name="amount_tax" string="Tax"/>
+                                        <field name="cash_amount_total" widget="monetary" string="Total Cash Offer Price"/>
                                         <!--<field name="val_bool_temp" invisible="1"/>-->
                                         <!--attrs="{'invisible':[('val_bool_temp','=',False)]}"  -->
                                         <!--<button name="update_values_vendor" string="Update Values" type="object"-->
@@ -532,9 +544,16 @@
                                    force_save="1"/>
                             <field name="price_unit" attrs="{'readonly': [('vendor_offer_data', '=', True)]}"/>
                             <field name="product_offer_price" invisible="1"/>
+                               <field name="vendor_offer_data" invisible="1"/>
+                            <field name="product_unit_price" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />
+                             <field name="product_retail" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />
+                              <field name="delivered_product_offer_price" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />
+                             <field name="delivered_product_retail_price" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />
+                            <field name="billed_product_offer_price" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />
+                             <field name="billed_product_retail_price" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />
                             <!--     <field name="product_offer_price"
                                        attrs="{'readonly': [('vendor_offer_data', '=', True)],'invisible': [('vendor_offer_data', '=', False)]}"/>-->
-                            <field name="vendor_offer_data" invisible="1"/>
+
                             <field name="taxes_id" widget="many2many_tags" domain="[('type_tax_use','=','purchase')]"
                                    context="{'default_type_tax_use': 'purchase'}" options="{'no_create': True}"/>
                             <field name="price_subtotal" widget="monetary"/>
@@ -544,7 +563,36 @@
                     </field>
                     <field name="vendor_offer_data" invisible="1"/>
                 </xpath>
+                <xpath expr="//notebook/page/group[@class='oe_subtotal_footer oe_right']" position="after">
 
+                    <group class="oe_subtotal_footer " attrs="{'invisible':[('vendor_offer_data', '=',  False)]}">
+                                <field name="rt_price_subtotal_amt" widget="monetary" options="{'currency_field': 'currency_id'}" string="Untaxed Retail Price"/>
+                                <field name="rt_price_tax_amt" widget="monetary" options="{'currency_field': 'currency_id'}" string="Taxes"/>
+                                <div class="oe_subtotal_footer_separator oe_inline">
+                                    <label for="rt_price_total_amt"/>
+                                </div>
+                                <field name="rt_price_total_amt" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Total Retail Price"/>
+                            </group>
+
+                    <group class="oe_subtotal_footer " attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" style="margin-right: 15px;">
+                                <field name="billed_offer_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}" string="Billed Untaxed Offer Price"/>
+                                <field name="rt_price_tax_amt" widget="monetary" options="{'currency_field': 'currency_id'}" string="Taxes"/>
+                                <div class="oe_subtotal_footer_separator oe_inline">
+                                    <label for="billed_offer_total"/>
+                                </div>
+                                <field name="billed_offer_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Billed Total Retail Price"/>
+                            </group>
+
+                    <group class="oe_subtotal_footer " attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" style="margin-right: 15px;">
+                                <field name="billed_retail_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}" string="Billed Untaxed Retail Price"/>
+                                <field name="rt_price_tax_amt" widget="monetary" options="{'currency_field': 'currency_id'}" string="Taxes"/>
+                                <div class="oe_subtotal_footer_separator oe_inline">
+                                    <label for="billed_retail_total"/>
+                                </div>
+                                <field name="billed_retail_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Billed Total Retail Price"/>
+                            </group>
+
+                </xpath>
 
                 <xpath expr="//form[1]/sheet[1]/notebook[1]" position="inside">
                     <page name="studio_page_ptSZN" string="Notes">
@@ -556,6 +604,7 @@
             </field>
         </record>
 
+
         <record id="invoice_supplier_form_ex" model="ir.ui.view">
             <field name="name">account.invoice.supplier.form_ex</field>
             <field name="model">account.invoice</field>
@@ -565,6 +614,15 @@
                        position="after">
                     <field name="is_vender_offer_invoice" attrs="{'readonly': True}"/>
                 </xpath>
+                <!--<xpath expr="/form/sheet[1]/notebook/page[1]/group/group[2][@class='oe_subtotal_footer oe_right']"-->
+                       <!--position="after">-->
+                     <!--<field name="rt_price_subtotal_amt" widget="monetary" options="{'currency_field': 'currency_id'}" string="Untaxed Retail Price"/>-->
+                        <!--<field name="rt_price_tax_amt" widget="monetary" options="{'currency_field': 'currency_id'}" string="Taxes"/>-->
+                        <!--<div class="oe_subtotal_footer_separator oe_inline">-->
+                            <!--<label for="rt_price_total_amt"/>-->
+                        <!--</div>-->
+                        <!--<field name="rt_price_total_amt" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Total Retail Price"/>-->
+                <!--</xpath>-->
             </field>
         </record>
 
@@ -778,6 +836,22 @@
                 </xpath>
             </field>
         </record>
+
+
+
+
+                    <record id="view_picking_form_inherit_website_sale_stock" model="ir.ui.view">
+                        <field name="name">stock.picking.form.inherit.show.date.done</field>
+                        <field name="model">stock.picking</field>
+                        <field name="inherit_id" ref="stock.view_picking_form"/>
+                        <field name="arch" type="xml">
+                            <xpath expr="//sheet/group/group/field[@name='scheduled_date']" position="after">
+                                     <field name="arrival_date" attrs="{'invisible': [('move_line_exist', '!=', False),('state', 'in', ('draft','assigned','confirmed','done'))]}" />
+                             </xpath>
+                        </field>
+                    </record>
+
+
 
 
         <menuitem

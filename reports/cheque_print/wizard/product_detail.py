@@ -44,10 +44,6 @@ class ProductDetail(models.TransientModel):
     def _print_report(self, data):
         data['form'].update(self.read(['start_date', 'end_date', 'top_products', 'no_of_products'])[0])
         if data['form']['top_products'] == 'by_units':
-            action = self.env.ref('tps_report_sale.action_report_products').report_action(self, data=data, config=False)
-            action.update({'target': 'main'})
-            return action
+            return self.env.ref('tps_report_sale.action_report_products').report_action(self, data=data, config=False)
         else:
-            action = self.env.ref('tps_report_sale.action_report_products_amount').report_action(self, data=data, config=False)
-            action.update({'target': 'main'})
-            return action
+            return self.env.ref('tps_report_sale.action_report_products_amount').report_action(self, data=data, config=False)

@@ -633,9 +633,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                 'product_type': switcher.get(product.type, " "),
                 'qty_on_hand': int(product.actual_quantity),
                 'forecasted_qty': int(product.virtual_available),
-                'product_name': self.check_isAvailable_product_code(
-                    product.default_code) + " " + product.product_tmpl_id.name,
-                'unit_of_measure': product.product_tmpl_id.uom_id.name
+                'product_name': self.check_isAvailable_product_code(product.default_code) + " " + product.product_tmpl_id.name,'unit_of_measure': product.product_tmpl_id.uom_id.name
             }
             if product.inventory_percent_color > 125:
                 green_products.append(vals)
@@ -715,6 +713,96 @@ class InventoryNotificationScheduler(models.TransientModel):
         self.process_common_email_notification_template(from_user, to_user, subject,
                                                         description, products, header, columnProps, closing_content,
                                                         self.acquisitions_email)
+    def process_notify_low_product(self, products, to_user, from_user,max_inventory_level_duration):
+        subject = "Products which are in Low Stock"
+        description = "Hi Team, <br><br/>Please find a listing below of products whose inventory level status is now Color(Red) : <br/><br/> <b>On Basis of Max Inventory Level Duration </b>  : " + str(max_inventory_level_duration) + " Days"
+        header = ['Catalog #', 'Product Description', 'Sales Price', 'Cost', 'Product Type',
+                  'Qty On Hand', 'Forecasted Quantity', 'Unit Of Measure','Current inventory Level','Max Inventory Level','Suggested Order Qty','Price Range']
+        columnProps = ['sku_code', 'product_name', 'sale_price', 'standard_price', 'product_type',
+                       'qty_on_hand', 'forecasted_qty', 'unit_of_measure','current_inventory_percent','max_inventory_level','suggested_order_qty','price_range']
+        closing_content = "Thanks & Regards,<br/> Admin Team"
+        self.process_common_email_notification_template(from_user, to_user, subject,
+                                                        description, products, header, columnProps, closing_content,
+                                                        self.acquisitions_email)
+
+    # this notification send when SO Delivery Out Validate
+    def process_notify_low_stock_products(self, products):
+        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
+
+        params = self.env['ir.config_parameter'].sudo()
+        max_inventory_level_duration = int(params.get_param('inventory_monitor.max_inventory_level_duration'))
+
+        today_date = datetime.now()
+        last_3_months = fields.Date.to_string(today_date - timedelta(days=90))
+        cust_location_id = self.env['stock.location'].search([('name', '=', 'Customers')]).id
+
+        red_product = []
+        switcher = {
+            'product': "Stockable",
+            'consu': "Consumable",
+            'service': "Service"
+        }
+        for ml in products:
+
+            if ml.product_tmpl_id.max_inventory_product_level_duration is not None and ml.product_tmpl_id.max_inventory_product_level_duration > 0:
+                max_inventory_level_duration = int(ml.product_tmpl_id.max_inventory_product_level_duration)
+
+            quantity = 0
+            sale_quant = 0
+            purchase_qty = 0
+            max_inventory = 0
+
+            max_inventory_percent = 0
+            # max_inventory_future_percent = 0
+            max_inventory_level = 0
+            inventory_percent_color = 0
+            # future_percent_color = 0
+
+
+            product_id = ml
+            quant = self.get_quant(cust_location_id, product_id, last_3_months)
+            if quant is not None and max_inventory_level_duration > 0:
+                sale_quant = sale_quant + int(quant)
+                avg_sale_quant = float(sale_quant / 3)
+                max_inventory = int((avg_sale_quant) * float(max_inventory_level_duration / 30))
+                max_inventory_level = int(max_inventory)
+            if product_id.incoming_qty:
+                purchase_qty = purchase_qty + int(product_id.incoming_qty)
+
+            quantity = int(product_id.qty_available) + int(quantity)
+            qty_in_stock = int(quantity)
+            sku_code = ml.product_tmpl_id.sku_code
+
+            if max_inventory > 0:
+                 # max_inventory_percent = (quantity / int(max_inventory)) * 100
+                # inventory_future_percent = ((purchase_qty + qty_in_stock) / int(max_inventory)) * 100
+
+                max_inventory_percent = int((quantity / int(max_inventory)) * 100)
+                max_inventory_level = int(max_inventory)
+                inventory_percent_color = int(max_inventory_percent)
+                # max_inventory_future_percent = int(inventory_future_percent)
+                # future_percent_color = int(inventory_future_percent)
+
+            vals = {
+                'sku_code': self.check_isAvailable(ml.product_tmpl_id.sku_code),
+                'sale_price': "$ " + str(ml.lst_price) if ml.lst_price else "",
+                'standard_price': "$ " + str(
+                    ml.product_tmpl_id.standard_price) if ml.product_tmpl_id.standard_price else "",
+                'product_type': switcher.get(ml.type, " "),
+                'qty_on_hand': int(ml.product_tmpl_id.qty_available),
+                'forecasted_qty': int(ml.virtual_available),
+                'product_name': self.check_isAvailable_product_code(
+                    ml.default_code) + " " + ml.product_tmpl_id.name,
+                'unit_of_measure': ml.product_tmpl_id.uom_id.name,
+                'current_inventory_percent' : int(ml.product_tmpl_id.actual_quantity),
+                'max_inventory_level' : max_inventory_level,
+                'suggested_order_qty' : round(((max_inventory_level - ml.product_tmpl_id.actual_quantity)/2)),
+                'price_range' : '$ '+ str((float("{0:.2f}".format(ml.product_tmpl_id.list_price * 0.55)))) +' - $'+  str( ( float("{0:.2f}".format(ml.product_tmpl_id.list_price * 0.60))))
+            }
+            if inventory_percent_color <= 75:
+                red_product.append(vals)
+        if red_product:
+            self.process_notify_low_product(red_product, None, super_user,max_inventory_level_duration)
 
     def process_notify_available(self):
         today_date = date.today()
@@ -1304,3 +1392,10 @@ class InventoryNotificationScheduler(models.TransientModel):
             return None
         datestring=str(date_string)
         return datetime.strptime(str(datestring), DEFAULT_SERVER_DATE_FORMAT).date()
+
+    def get_quant(self,cust_location_id,product_id , last_3_months):
+        self.env.cr.execute(
+            "SELECT sum(sml.qty_done) FROM sale_order_line AS sol LEFT JOIN stock_picking AS sp ON sp.sale_id=sol.id LEFT JOIN stock_move_line AS sml ON sml.picking_id=sp.id WHERE sml.state='done' AND sml.location_dest_id =%s AND sml.product_id =%s AND sp.date_done>=%s",
+            (cust_location_id, product_id.id, last_3_months))
+        quant = self.env.cr.fetchone()
+        return quant[0]
