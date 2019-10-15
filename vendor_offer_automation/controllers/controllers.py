@@ -12,7 +12,7 @@ class VendorOfferAutomation(http.Controller):
     def set_file(self, file, import_id, jsonp='callback'):
         import_id = int(import_id)
 
-        written = request.env['sps.vendor.offer.template.transient'].browse(import_id).write({
+        written = request.env['sps.vendor.offer.template.transient'].browse(import_id).sudo().write({
             'file': file.read(),
             'file_name': file.filename,
             'file_type': file.content_type,
