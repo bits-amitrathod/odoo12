@@ -83,15 +83,6 @@
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
-                            <button type="object"
-                                    name="action_view_picking"
-                                    class="oe_stat_button"
-                                    icon="fa-truck"
-                                    attrs="{'invisible':[('state', 'in', ('draft','sent','to approve')),('picking_ids','=',[])]}">
-                                <field name="picking_count" widget="statinfo" string="Shipment"
-                                       help="Incoming Shipments"/>
-                                <field name="picking_ids" invisible="1"/>
-                            </button>
                             <button type="object" name="action_view_invoice"
                                     class="oe_stat_button"
                                     icon="fa-pencil-square-o"
@@ -99,6 +90,16 @@
                                 <field name="invoice_count" widget="statinfo" string="Vendor Bills"/>
                                 <field name='invoice_ids' invisible="1"/>
                             </button>
+                            <button type="object"
+                                    name="action_view_picking"
+                                    class="oe_stat_button"
+                                    icon="fa-truck"
+                                    attrs="{'invisible':[('state', 'in', ('draft','sent','to approve')),('picking_ids','=',[])]}">
+                                <field name="picking_count" widget="statinfo" string="Receipt"
+                                       help="Incoming Shipments"/>
+                                <field name="picking_ids" invisible="1"/>
+                            </button>
+
                         </div>
                         <div class="oe_title">
 
