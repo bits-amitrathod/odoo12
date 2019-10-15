@@ -374,7 +374,7 @@ class PrioritizationTransient(models.TransientModel):
     priority = fields.Integer("Priority")
     cooling_period = fields.Integer("Cooling Period in days")
     auto_allocate = fields.Boolean("Allow Auto Allocation?")
-    length_of_hold = fields.Integer("Length Of Hold in hours")
+    length_of_hold = fields.Integer("Length Of Hold in hours", default=1)
     expiration_tolerance = fields.Integer("Expiration Tolerance in months")
     partial_ordering = fields.Boolean("Allow Partial Ordering?")
     partial_UOM = fields.Boolean("Allow Partial UOM?")
