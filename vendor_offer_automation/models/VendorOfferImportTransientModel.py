@@ -136,7 +136,7 @@ class VendorOfferImportTransientModel(models.TransientModel):
                 vendor_offer = self.env['purchase.order'].search([('id', '=', offer_id)])
 
                 if len(vendor_offer) == 1:
-                    vendor_offer[0].write({'template_id': template.id, 'document': self.file,
+                    vendor_offer[0].sudo().write({'template_id': template.id, 'document': self.file,
                                            'import_type_ven': import_type_ven})
                 try:
                     if dryrun:
