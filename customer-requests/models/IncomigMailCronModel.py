@@ -105,6 +105,7 @@ class IncomingMailCronModel(models.Model):
                                 subject = email_subject.replace(' ','').lower()
                                 customer_email = None
                                 tmpl_type = None
+                                saleforce_ac = None
 
                                 if '{customerid:' in subject:
                                     match1 = re.findall(r'{[\w\.-]+:[\w\.-]+', subject)
@@ -122,115 +123,113 @@ class IncomingMailCronModel(models.Model):
                                             response = dict(errorCode=107, message='Customer Id is not found in customers.')
                                     else:
                                         _logger.info('Customer Id is not found in email subject.')
-                                        response = dict(errorCode=108, message='Customer Id is not found.')
-                                else:
-                                    _logger.info('Customer Id is not found in email subject.')
-                                    response = dict(errorCode=109, message='Customer Id is not found.')
+                                        response = dict(errorCode=108, message='Customer Id is not found in email subject.')
 
+                                    if customer_email is not None:
+                                        match = re.search(r'[\w\.-]+@[\w\.-]+', customer_email)
+                                        customer_email = str(match.group(0))
+                                        _logger.info('Email from %r', customer_email)
 
-                                if customer_email is not None:
-                                    match = re.search(r'[\w\.-]+@[\w\.-]+', customer_email)
-                                    customer_email = str(match.group(0))
-                                    _logger.info('Email from %r', customer_email)
+                                        # if 'Inventory' in subject:
+                                        #     tmpl_type = "Inventory"
+                                        # elif 'Requirement' in subject:
+                                        #     tmpl_type = "Requirement"
 
-                                    # if 'Inventory' in subject:
-                                    #     tmpl_type = "Inventory"
-                                    # elif 'Requirement' in subject:
-                                    #     tmpl_type = "Requirement"
-
-                                    if message.get_content_maintype() != 'text':
-                                        alternative = False
-                                        for part in message.walk():
-                                            if part.get_content_type() == 'multipart/alternative':
-                                                alternative = True
-                                            if part.get_content_maintype() == 'multipart':
-                                                continue  # skip container
-                                            filename = part.get_param('filename', None, 'content-disposition')
-                                            if not filename:
-                                                filename = part.get_param('name', None)
-                                            if filename:
-                                                if isinstance(filename, tuple):
-                                                    filename = email.utils.collapse_rfc2231_value(filename).strip()
-                                                else:
-                                                    filename = tools.decode_smtp_header(filename)
-                                            encoding = part.get_content_charset()
-                                            if filename and part.get('content-id'):
-                                                inner_cid = part.get('content-id').strip('><')
-                                                attachments.append(_Attachment(filename, part.get_payload(decode=True),
-                                                                               {'cid': inner_cid}))
-                                                continue
-                                            if filename or part.get('content-disposition', '').strip().startswith(
-                                                    'attachment'):
-                                                attachments.append(
-                                                    _Attachment(filename or 'attachment', part.get_payload(decode=True),
-                                                                {}))
-                                                continue
-                                            if part.get_content_type() == 'text/plain' and (
-                                                    not alternative or not body):
-                                                body = tools.append_content_to_html(body, tools.ustr(
-                                                    part.get_payload(decode=True), encoding, errors='replace'),
-                                                                                    preserve=True)
-                                            elif part.get_content_type() == 'text/html':
-                                                body = tools.ustr(part.get_payload(decode=True), encoding,
-                                                                  errors='replace')
-                                            else:
-                                                attachments.append(
-                                                    _Attachment(filename or 'attachment', part.get_payload(decode=True),
-                                                                {}))
-                                        if len(attachments) > 0:
-                                            encoding = message.get_content_charset()
-                                            plain_text = html2text.HTML2Text()
-                                            message_payload = plain_text.handle(
-                                                tools.ustr(body, encoding, errors='replace'))
-
-                                            #_logger.info('message payload: %r %r', message_payload, customer_email)
-                                            if saleforce_ac is not None:
-                                                users_model = self.env['res.partner'].search([("saleforce_ac", "=", saleforce_ac)])
-                                                if users_model:
-                                                    if len(users_model) == 1:
-                                                        user_attachment_dir = ATTACHMENT_DIR + str(
-                                                            datetime.now().strftime("%d%m%Y")) + "/" + str(
-                                                            users_model.id) + "/"
-                                                        if not os.path.exists(os.path.dirname(user_attachment_dir)):
-                                                            try:
-                                                                os.makedirs(os.path.dirname(user_attachment_dir))
-                                                            except OSError as exc:
-                                                                if exc.errno != errno.EEXIST:
-                                                                    raise
-                                                        for attachment in attachments:
-                                                            # when new email in inbox, send email to admin
-                                                            self.send_mail_with_attachment(str(email_from), str(email_subject), str(res_partner.name), attachment)
-                                                            filename = getattr(attachment, 'fname')
-                                                            if not filename is None:
-                                                                try:
-                                                                    file_contents_bytes = getattr(attachment, 'content')
-                                                                    file_path = user_attachment_dir + str(filename)
-                                                                    file_ref = open(str(file_path), "wb+")
-                                                                    file_ref.write(file_contents_bytes)
-                                                                    file_ref.close()
-                                                                    response = self.env['sps.document.process'].process_document(
-                                                                        users_model, file_path, tmpl_type,filename, email_from, 'Email')
-                                                                except Exception as e:
-                                                                    _logger.info(str(e))
+                                        if message.get_content_maintype() != 'text':
+                                            alternative = False
+                                            for part in message.walk():
+                                                if part.get_content_type() == 'multipart/alternative':
+                                                    alternative = True
+                                                if part.get_content_maintype() == 'multipart':
+                                                    continue  # skip container
+                                                filename = part.get_param('filename', None, 'content-disposition')
+                                                if not filename:
+                                                    filename = part.get_param('name', None)
+                                                if filename:
+                                                    if isinstance(filename, tuple):
+                                                        filename = email.utils.collapse_rfc2231_value(filename).strip()
                                                     else:
-                                                        _logger.error('We have found Same Customer Id against multiple Customer.')
-                                                        response = dict(errorCode=101, message='We have found Same Customer Id against multiple Customer.')
+                                                        filename = tools.decode_smtp_header(filename)
+                                                encoding = part.get_content_charset()
+                                                if filename and part.get('content-id'):
+                                                    inner_cid = part.get('content-id').strip('><')
+                                                    attachments.append(_Attachment(filename, part.get_payload(decode=True),
+                                                                                   {'cid': inner_cid}))
+                                                    continue
+                                                if filename or part.get('content-disposition', '').strip().startswith(
+                                                        'attachment'):
+                                                    attachments.append(
+                                                        _Attachment(filename or 'attachment', part.get_payload(decode=True),
+                                                                    {}))
+                                                    continue
+                                                if part.get_content_type() == 'text/plain' and (
+                                                        not alternative or not body):
+                                                    body = tools.append_content_to_html(body, tools.ustr(
+                                                        part.get_payload(decode=True), encoding, errors='replace'),
+                                                                                        preserve=True)
+                                                elif part.get_content_type() == 'text/html':
+                                                    body = tools.ustr(part.get_payload(decode=True), encoding,
+                                                                      errors='replace')
+                                                else:
+                                                    attachments.append(
+                                                        _Attachment(filename or 'attachment', part.get_payload(decode=True),
+                                                                    {}))
+                                            if len(attachments) > 0:
+                                                encoding = message.get_content_charset()
+                                                plain_text = html2text.HTML2Text()
+                                                message_payload = plain_text.handle(
+                                                    tools.ustr(body, encoding, errors='replace'))
+
+                                                #_logger.info('message payload: %r %r', message_payload, customer_email)
+                                                if saleforce_ac is not None:
+                                                    users_model = self.env['res.partner'].search([("saleforce_ac", "=", saleforce_ac)])
+                                                    if users_model:
+                                                        if len(users_model) == 1:
+                                                            user_attachment_dir = ATTACHMENT_DIR + str(
+                                                                datetime.now().strftime("%d%m%Y")) + "/" + str(
+                                                                users_model.id) + "/"
+                                                            if not os.path.exists(os.path.dirname(user_attachment_dir)):
+                                                                try:
+                                                                    os.makedirs(os.path.dirname(user_attachment_dir))
+                                                                except OSError as exc:
+                                                                    if exc.errno != errno.EEXIST:
+                                                                        raise
+                                                            for attachment in attachments:
+                                                                # when new email in inbox, send email to admin
+                                                                self.send_mail_with_attachment(str(email_from), str(email_subject), str(res_partner.name), attachment)
+                                                                filename = getattr(attachment, 'fname')
+                                                                if not filename is None:
+                                                                    try:
+                                                                        file_contents_bytes = getattr(attachment, 'content')
+                                                                        file_path = user_attachment_dir + str(filename)
+                                                                        file_ref = open(str(file_path), "wb+")
+                                                                        file_ref.write(file_contents_bytes)
+                                                                        file_ref.close()
+                                                                        response = self.env['sps.document.process'].process_document(
+                                                                            users_model, file_path, tmpl_type,filename, email_from, 'Email')
+                                                                    except Exception as e:
+                                                                        _logger.info(str(e))
+                                                        else:
+                                                            _logger.error('We have found Same Customer Id against multiple Customer.')
+                                                            response = dict(errorCode=101, message='We have found Same Customer Id against multiple Customer.')
+                                                    else:
+                                                        _logger.info('Customer not found in customers.')
+                                                        response = dict(errorCode=102, message='Customer not found in customers.')
                                                 else:
                                                     _logger.info('Customer not found in customers.')
-                                                    response = dict(errorCode=102, message='Customer not found in customers.')
+                                                    response = dict(errorCode=103, message='Customer not found in customers.')
                                             else:
-                                                _logger.info('Customer not found in customers.')
-                                                response = dict(errorCode=103, message='Customer not found in customers.')
+                                                _logger.info("Customer has not attached requirement or inventory documnet.")
+                                                response = dict(errorCode=104, message='Customer has not attached requirement or inventory documnet.')
                                         else:
-                                            _logger.info("Customer has not attached requirement or inventory documnet.")
-                                            response = dict(errorCode=104, message='Customer has not attached requirement or inventory documnet.')
+                                            _logger.info('This is not a multipart email')
+                                            response = dict(errorCode=105, message='This is not a multipart email.')
                                     else:
-                                        _logger.info('This is not a multipart email')
-                                        response = dict(errorCode=105, message='This is not a multipart email.')
+                                        _logger.info('Customer Email Id missing.')
+                                        response = dict(errorCode=110, message='Customer Email Id missing.')
                                 else:
-                                    _logger.info('Customer Email Id missing.')
-                                    response = dict(errorCode=110, message='Customer Email Id missing.')
-
+                                    _logger.info('Customer Id is not found in email subject or Invalid email subject.')
+                                    response = dict(errorCode=109, message='Customer Id is not found in email subject or Invalid email subject.')
                                 pop_server.dele(num)
 
                                 if "errorCode" in response:
