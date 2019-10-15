@@ -9,6 +9,7 @@
 <template id="ckus_check_ext" inherit_id="l10n_us_check_printing.ckus_check">
     <xpath expr="//div[1]/div[6]" position="replace">
 		<div class="ckus_name" t-esc="page['parent']"/>
+		<div> </div>
         <div class="ckus_payee_addr" t-esc="page['partner_id']" t-options='{"widget": "contact", "fields": ["address"], "no_marker": True}'/>
     </xpath>
 </template>
