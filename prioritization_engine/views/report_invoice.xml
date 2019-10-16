@@ -49,7 +49,8 @@
 <!--        </xpath>-->
 
          <xpath expr="//t[@t-set='address']" position="replace">
-            <div class="col-auto mw-100 mb-2" style="border: 1px solid #ddd;display:inline-block;width:40%;"  groups="sale.group_delivery_invoice_address">
+             <div style="margin-bottom:40px;">
+            <div class="col-auto mw-100 mb-3" style="margin-top: 21px;margin-bottom: 30px;border: 1px solid #ddd;display:inline-block;width:50%;vertical-align: top;"  groups="sale.group_delivery_invoice_address">
                 <strong >Bill To:</strong>
                 <div t-field="o.partner_id"
                     t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
@@ -58,13 +59,14 @@
 
 
 
-            <div class="col-auto mw-100 mb-2" style="border: 1px solid #ddd;margin-left:5px;width:40%;display:inline-block;" groups="sale.group_delivery_invoice_address">
+            <div class="col-auto mw-100 mb-3" style="margin-top: 21px;margin-bottom: 30px;border: 1px solid #ddd;margin-left:5px;width:49%;display:inline-block;" groups="sale.group_delivery_invoice_address">
                 <div t-if="o.partner_shipping_id and (o.partner_shipping_id != o.partner_id)">
                     <strong>Ship To:</strong>
                     <div t-field="o.partner_shipping_id"
                         t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
                 </div>
             </div>
+             </div>
          </xpath>
 
         </template>
