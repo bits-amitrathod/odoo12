@@ -90,7 +90,7 @@
            </record>
 
          <record id="object13" model="multiplier.multiplier">
-             <field name="name">OVERSTOCKED</field>
+             <field name="name">TIER 3</field>
                 <field name="code">overstocked</field>
                 <field name="retail">25</field>
                 <field name="margin">30</field>
