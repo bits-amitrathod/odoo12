@@ -15,13 +15,8 @@ class OnHandByDateReportModel(models.AbstractModel):
         #         FROM res_pricing_rule pr
         #          """
         # self._cr.execute(select)
-        if len(docids) == 1:
-            picking = self.env['stock.picking'].search([('id', 'in', docids)])
-            stock_picking_type = self.env['stock.picking.type'].search([('name', '=', 'Delivery Orders')])
-            stock_out = self.env['stock.picking'].search([('sale_id', '=', picking.sale_id.id), ('picking_type_id', '=', stock_picking_type.id)])
-            result = self.env['stock.picking'].search([('id', 'in', stock_out.ids), ('state', 'not in', ['cancel'])])
-        else:
-            result = self.env['stock.picking'].search([('id', 'in', docids), ('state', 'not in', ['cancel'])])
+        
+        result = self.env['stock.picking'].search([('id', 'in', docids), ('state', 'not in', ['cancel'])])
 
         # products=[]
         # it = iter(result)
