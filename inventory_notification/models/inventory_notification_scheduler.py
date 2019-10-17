@@ -1351,7 +1351,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                      ('mimetype', '=', 'application/pdf')])[0]
 
             data = None
-            pdf = self.env.ref('vendor_offer.action_report_vendor_offer').render_qweb_pdf(purchase_order_id, data=data)[
+            pdf = self.env.ref('vendor_offer.action_report_vendor_offer_accepted').render_qweb_pdf(purchase_order_id, data=data)[
                 0]
             values1 = {}
             values1['attachment_ids'] = [(0, 0, {'name': purchase_order.name,
