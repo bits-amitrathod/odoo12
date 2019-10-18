@@ -403,7 +403,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                 descrption = "<strong>Good morning " + customr.name + "</strong>" \
                                                                       "<br/> <br/> Below are items you have previously requested that are currently in stock. " \
                                                                       "In addition, below is the link to download full product catalog. Please let us know what" \
-                                                                      " ordering needs we can help provide savings on this week! <br/> <a href='/downloadCatalog'>Click Here to Download SPS Product Catalog </a>"
+                                                                      " ordering needs we can help provide savings on this week! <br/> <a href='https://www.shopsps.com/downloadCatalog'>Click Here to Download SPS Product Catalog </a>"
                 header = ['Manufacturer','Catalog number', 'Description', 'Sales Price', 'Quantity On Hand',
                           'Min Exp. Date',
                           'Max Exp. Date', 'Unit Of Measure']
