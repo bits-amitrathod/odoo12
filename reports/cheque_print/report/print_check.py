@@ -7,6 +7,7 @@ class report_print_check(models.Model):
 
     def _check_build_page_info(self, i, p):
         multi_stub = self.company_id.account_check_printing_multi_stub
+        self.set_check_amount_in_words()
         parent_name = ''
         if self.partner_id.parent_id:
             partner_id = self.partner_id

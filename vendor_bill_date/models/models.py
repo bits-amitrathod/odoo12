@@ -15,5 +15,12 @@ class VendorBillDate(models.Model):
                 max_po_id=max(stock_picking_obj)
                 self.date_invoice = str(max_po_id.date_done)
 
+    @api.model
+    def create(self, vals):
+        ret_invoice=super(VendorBillDate,self).create(vals)
+        ret_invoice.action_date_assign()
+        return ret_invoice
+
+
 class Memo(models.Model):
     _inherit = "account.payment"
