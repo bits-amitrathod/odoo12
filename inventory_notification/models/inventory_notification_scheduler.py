@@ -721,6 +721,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         columnProps = ['sku_code', 'product_name', 'sale_price', 'standard_price', 'product_type',
                        'qty_on_hand', 'forecasted_qty', 'unit_of_measure','current_inventory_percent','max_inventory_level','suggested_order_qty','price_range']
         closing_content = "Thanks & Regards,<br/> Admin Team"
+        _logger.info(" ********low Stock ***** email send **** after prepareing sub,hear etc...... ********")
         self.process_common_email_notification_template(from_user, to_user, subject,
                                                         description, products, header, columnProps, closing_content,
                                                         self.acquisitions_email)
@@ -802,7 +803,9 @@ class InventoryNotificationScheduler(models.TransientModel):
             if inventory_percent_color <= 75:
                 red_product.append(vals)
         if red_product:
+            _logger.info(" ********low Stock ***** email send **** after red product fount ******** 1")
             self.process_notify_low_product(red_product, None, super_user,max_inventory_level_duration)
+            _logger.info(" ********low Stock ***** email send **** after red product fount ******** 2")
 
     def process_notify_available(self):
         today_date = date.today()

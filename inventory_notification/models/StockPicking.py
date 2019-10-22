@@ -20,9 +20,15 @@ class StockPicking(models.Model):
                 elif self.picking_type_id.name == 'Pack' or self.picking_type_id.name == 'Pull' and self.state == 'done':
                     inv_notification.pull_notification_for_user(self)
                 elif self.picking_type_id.name == 'Delivery Orders' and self.state == 'done':
+                    _logger.info(" Delivery Orders ******** Start********")
+                    _logger.info(" Delivery Orders ******** Delivery Done ***** Start********")
                     inv_notification.out_notification_for_sale(self)
+                    _logger.info(" Delivery Orders ******** Delivery Done ***** End********")
+                    _logger.info(" Delivery Orders ********low Stock ***** Start ********")
                     product_ids = self.unique(self.env['stock.move.line'].search([('picking_id', '=', self.id)]))
                     inv_notification.process_notify_low_stock_products(product_ids)
+                    _logger.info(" Delivery Orders ********low Stock ***** End ********")
+                    _logger.info(" Delivery Orders ************* End********")
             # elif picking.purchase_id:
             #     if self.picking_type_id.name == 'Receipts' and self.state == 'done':
             #         inv_notification.po_receive_notification_for_acquisitions_manager(self)
