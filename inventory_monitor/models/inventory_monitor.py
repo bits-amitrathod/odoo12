@@ -100,7 +100,7 @@ class maxinventorydurationpopup(models.TransientModel):
          self._cr.execute(sql_query)
          view_ref_res = self._cr.fetchone()
          if view_ref_res[0] is None:
-             return 0
+             return 90
          else:
              return view_ref_res[0]
 
