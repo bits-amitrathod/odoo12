@@ -20,7 +20,9 @@ class StockBackorder(models.TransientModel):
                     inv_notification.pull_notification_for_user(picking)
 
                 elif picking.picking_type_id.name == 'Delivery Orders' and picking.state=='done':
+                    _logger.info(" Delivery Orders ******** backorder ***** Start********")
                     inv_notification.out_notification_for_sale(picking)
+                    _logger.info(" Delivery Orders ******** backorder ***** End ********")
             # elif picking.purchase_id:
             #     if picking.picking_type_id.name == 'Receipts' and  picking.state == 'done':
             #         inv_notification.po_receive_notification_for_acquisitions_manager(picking)
@@ -41,7 +43,9 @@ class StockBackorder(models.TransientModel):
                     inv_notification.pull_notification_for_user(picking)
 
                 elif picking.picking_type_id.name == 'Delivery Orders' and picking.state=='done':
+                    _logger.info(" Delivery Orders ******** cancel_backorder ***** Start********")
                     inv_notification.out_notification_for_sale(picking)
+                    _logger.info(" Delivery Orders ******** cancel_backorder ***** End********")
             # elif picking.purchase_id:
             #     if picking.picking_type_id.name == 'Receipts' and  picking.state == 'done':
             #         inv_notification.po_receive_notification_for_acquisitions_manager(picking)

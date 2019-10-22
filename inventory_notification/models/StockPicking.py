@@ -14,6 +14,8 @@ class StockPicking(models.Model):
         inv_notification = self.env['inventory.notification.scheduler'].search([])
         for picking in self:
             if picking.sale_id:
+                _logger.info("***********Pick type and State ****************************")
+                _logger.info(self.picking_type_id.name + "  *********** " + self.state)
                 if self.picking_type_id.name == 'Pick' and self.state == 'done':
                     # inv_notification.pick_notification_for_customer(self)
                     inv_notification.pick_notification_for_user(self)
