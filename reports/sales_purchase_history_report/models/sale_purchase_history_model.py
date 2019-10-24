@@ -20,6 +20,7 @@ class SalePurchaseHistory(models.Model):
     unit_price_converted = fields.Monetary("Unit Price", currency_field='currency_id', store=False)
     total_price_converted = fields.Monetary("Total", currency_field='currency_id', store=False)
     product_uom_converted = fields.Many2one('uom.uom', 'Unit of Measure', currency_field='currency_id', store=False)
+    account_manager_cust_name = fields.Char(string="Account Manager", compute='_compare_data', store=False)
     # user_id = fields.Many2one('res.users', string='User', store=False)
     # currency_id = fields.Many2one("res.currency", string="Currency",readonly=True)
     # product_uom = fields.Char(string='UOM', store=False)
@@ -28,6 +29,7 @@ class SalePurchaseHistory(models.Model):
     def _compare_data(self):
         for sale_order_line in self:
             sale_order_line.customer_name=sale_order_line.order_id.partner_id.name
+            sale_order_line.account_manager_cust_name = sale_order_line.order_id.partner_id.account_manager_cust.name
             sale_order_line.product_sku_ref=sale_order_line.product_id.product_tmpl_id.sku_code
             if sale_order_line.order_id.state != 'cancel':
                 stock_location=self.env['stock.location'].search([('name', '=', 'Customers')])

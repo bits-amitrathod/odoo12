@@ -4,6 +4,13 @@ from odoo import models, fields, api
 from odoo import _
 
 
+class CustomerContract(models.Model):
+    _inherit = "res.partner"
+
+    account_manager_cust = fields.Many2one('res.users', string="Account Manager", domain="[('active', '=', True)"
+                                                                                         ",('share','=',False)]")
+
+
 class sale_order(models.Model):
     _inherit = 'sale.order'
 
