@@ -486,7 +486,7 @@
         </record>
 
         <!-- Top menu item -->
-        <menuitem name="Priority Engine" id="prioritization_engine.menu_root"
+        <menuitem name="STOCKHAWK" id="prioritization_engine.menu_root"
                   web_icon="prioritization_engine,static/description/icon.png"/>
 
         <!-- menu categories -->

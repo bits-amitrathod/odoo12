@@ -345,13 +345,11 @@
                     Dear ${ctx['customerName']},
                 </p>
                 <p style="text-align: left; margin-top: 10px;">
-                    Unfortunate, we are currently out of stock on the products that you requested.
-                </P>
-                <p style="text-align: left; margin-top: 10px;">
-                    We will check and get back to you within next 2 hours.
+                    Unfortunately, we are currently out of stock on the products that you requested.
+                    We have documented your request on your account and get back to you within the next 2 hours.
                 </p>
                 <p style="text-align: left; margin-top: 10px;">
-                    If you have further questions, please reach out to your direct Account Manager.
+                    Please feel free to reach out to your direct Account Manager if you need additional assistance.
                 </P>
                 <P style="text-align: left; margin-top: 10px;">
                     We Appreciate your business,
@@ -378,13 +376,11 @@
                     Dear ${ctx['customerName']},
                 </p>
                 <p style="text-align: left; margin-top: 10px;">
-                    Unfortunate, we are currently out of stock on the products that you requested.
-                </P>
-                <p style="text-align: left; margin-top: 10px;">
-                    We have made a note, and will notify you when these items are back in stock.
+                    Unfortunately, we are currently out of stock on the products that you requested.
+                    We have documented your request on your account.
                 </p>
                 <p style="text-align: left; margin-top: 10px;">
-                    If you have further questions, please reach out to your direct Account Manager.
+                    Please feel free to reach out to your direct Account Manager if you need additional assistance.
                 </P>
                 <P style="text-align: left; margin-top: 10px;">
                     We Appreciate your business,
