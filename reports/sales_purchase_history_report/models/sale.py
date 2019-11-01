@@ -10,6 +10,8 @@ class SaleSalespersonReport(models.TransientModel):
     product_id = fields.Many2many('product.product', string="Products")
     order_partner_id = fields.Many2one('res.partner', string='Customer')
     contract_id = fields.Many2one('contract.contract', string='Contract')
+    order_account_manager_cust = fields.Many2one('res.users', string="Account Manager", domain="[('active', '=', True)"
+                                                                                               ",('share','=',False)]")
 
     @api.multi
     def open_table(self):
@@ -47,6 +49,8 @@ class SaleSalespersonReport(models.TransientModel):
             action['domain'].append(('order_partner_id', '=', self.order_partner_id.id))
         if self.contract_id:
             action['domain'].append(('order_partner_id.contract', '=', self.contract_id.id))
+        if self.order_account_manager_cust:
+            action['domain'].append(('order_partner_id.account_manager_cust', '=', self.order_account_manager_cust.id))
         return action
 
     @staticmethod
