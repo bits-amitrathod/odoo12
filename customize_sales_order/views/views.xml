@@ -1,5 +1,17 @@
 <odoo>
   <data>
+
+      <record id="view_partner_property_form" model="ir.ui.view">
+            <field name="name">res.partner.account.manager.form.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='property_delivery_carrier_id']" position="before">
+                  <field name="account_manager_cust"/>
+                </xpath>
+            </field>
+        </record>
+
     <record id="view_order_form_inherit" model="ir.ui.view">
             <field name="name">sale.order.form</field>
             <field name="model">sale.order</field>

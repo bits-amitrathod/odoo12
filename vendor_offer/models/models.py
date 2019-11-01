@@ -1390,7 +1390,8 @@ class VendorPricingExport(models.TransientModel):
                     " as amount_total_ven_pri , " \
                     " case when ninty_sales.qty_done  is NULL THEN '0' ELSE ninty_sales.qty_done END  " \
                     " as product_sales_count_90 , " \
-                    " qty_available_count.qty_available " \
+                    " qty_available_count.qty_available ," \
+                    "  pt.actual_quantity "\
                     " from product_product pp inner join product_template pt " \
                     " on pp.product_tmpl_id=pt.id and pt.type='product' " \
                     " left join tier_tier tt on   pt.tier=tt.id " \
@@ -1478,7 +1479,7 @@ class VendorPricingExport(models.TransientModel):
             product_lines_export_pp.append(
                 ([line['sku_code'], line['name'], line['list_price'], line['product_brand_id'],
                   line['tier'], line['product_sales_count'], line['product_sales_count_yrs'],
-                  line['qty_available'], line['amount_total_ven_pri'], line['premium'],
+                  line['actual_quantity'], line['amount_total_ven_pri'], line['premium'],
                   line['expired_lot_count'], line['product_sales_count_90']]))
 
         ''' code for writing csv file in default location in odoo 

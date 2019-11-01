@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Priority Engine",
+    'name': "STOCKHAWK",
     'author': "Benchmark IT Solutions (I) Pvt Ltd.",
     'website': "http://www.benchmarkitsolutions.com",
 
