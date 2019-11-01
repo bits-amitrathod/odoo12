@@ -11,6 +11,7 @@ import html2text
 import errno
 import base64
 from collections import namedtuple
+import time
 
 import werkzeug.local
 import werkzeug.wsgi
@@ -62,10 +63,42 @@ class IncomingMailCronModel(models.Model):
 
     @api.multi
     def fetch_mail(self):
+        """ WARNING: meant for cron usage only - will commit() after each email! """
+        additionnal_context = {
+            'fetchmail_cron_running': True
+        }
+        MailThread = self.env['mail.thread']
+        start_time = time.time()
+        _logger.info('***********start time********')
+        _logger.info(start_time)
         for server in self:
             count, failed = 0, 0
             pop_server = None
-            if server.type == 'pop':
+            if server.type == 'imap':
+                try:
+                    imap_server = server.connect()
+                    imap_server.select()
+                    result, data = imap_server.search(None, '(UNSEEN)')
+                    for num in data[0].split():
+                        res_id = None
+                        result, data = imap_server.fetch(num, '(RFC822)')
+                        imap_server.store(num, '-FLAGS', '\\Seen')
+                        try:
+                            res_id = MailThread.with_context(**additionnal_context).message_process(server.object_id.model, data[0][1], save_original=server.original, strip_attachments=(not server.attach))
+                        except Exception:
+                            _logger.info('Failed to process mail from %s server %s.', server.type, server.name, exc_info=True)
+                            failed += 1
+                        imap_server.store(num, '+FLAGS', '\\Seen')
+                        self._cr.commit()
+                        count += 1
+                    _logger.info("Fetched %d email(s) on %s server %s; %d succeeded, %d failed.", count, server.type, server.name, (count - failed), failed)
+                except Exception:
+                    _logger.info("General failure when trying to fetch mail from %s server %s.", server.type, server.name, exc_info=True)
+                finally:
+                    if imap_server:
+                        imap_server.close()
+                        imap_server.logout()
+            elif server.type == 'pop':
                 _logger.info('Server tpye is POP')
                 try:
                     while True:
@@ -281,7 +314,12 @@ class IncomingMailCronModel(models.Model):
                     if pop_server:
                         pop_server.quit()
             server.write({'date': fields.Datetime.now()})
-        return super(IncomingMailCronModel, self).fetch_mail()
+        end_time = time.time()
+        _logger.info('***********End time********')
+        _logger.info(end_time)
+        _logger.info('***********Required time for processing the documents...(In Seconds)********')
+        _logger.info(end_time - start_time)
+        return True
 
     @staticmethod
     def random_string_generator(size=10, chars=string.ascii_lowercase + string.digits):
