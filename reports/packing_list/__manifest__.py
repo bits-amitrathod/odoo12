@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Packing List",
+    'name': " Packing List",
      'summary':"Report",
     'author': "Benchmark IT Solutions",
     'website': "http://www.benchmarkitsolutions.com",
