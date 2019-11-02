@@ -376,46 +376,46 @@
     </template>
 
 
-    <!--    <template id="sortCstm" inherit_id="website_sale.sort" active="True" customize_show="True" name="Show Sort by">-->
-    <!--        <xpath expr="//div[hasclass('dropdown_sorty_by')]" position="replace">-->
-    <!--            <t t-set="list_price_desc_label">Catalog price: High to Low</t>-->
-    <!--            <t t-set="list_price_asc_label">Catalog price: Low to High</t>-->
-    <!--            <t t-set="name_asc_label">Name - A to Z</t>-->
-    <!--            <t t-set="name_desc_label">Name - Z to A</t>-->
-    <!--            <t t-set="qty_available_desc_label">Quantity: High to Low</t>-->
-    <!--            <t t-set="qty_available_asc_label">Quantity: Low to High</t>-->
-    <!--            <t t-set="website_sale_sortable" t-value="[-->
-    <!--                (list_price_desc_label, 'list_price desc'),-->
-    <!--                (list_price_asc_label, 'list_price asc'),-->
-    <!--                (name_asc_label, 'name asc'),-->
-    <!--                (name_desc_label, 'name desc'),-->
-    <!--                (qty_available_asc_label, 'qty_available asc'),-->
-    <!--                (qty_available_desc_label, 'qty_available desc')-->
-    <!--            ]"/>-->
-    <!--            <t t-set="website_sale_sortable_current"-->
-    <!--               t-value="[sort for sort in website_sale_sortable if sort[1]==request.params.get('order', '')]"/>-->
-    <!--            <div class="dropdown btn-group dropdown_sorty_by">-->
-    <!--                <a href="#" class="dropdown-toggle btn btn-default" data-toggle="dropdown">-->
-    <!--                    <t t-if='len(website_sale_sortable_current)'>-->
-    <!--                        <span>Sorting by :-->
-    <!--                            <t t-raw='website_sale_sortable_current[0][0]'/>-->
-    <!--                        </span>-->
-    <!--                    </t>-->
-    <!--                    <t t-else='1'>-->
-    <!--                        <span>Sort by</span>-->
-    <!--                        <span class="caret"></span>-->
-    <!--                    </t>-->
-    <!--                </a>-->
-    <!--                <ul class="dropdown-menu" role="menu">-->
-    <!--                    <li t-foreach="website_sale_sortable" t-as="sortby">-->
-    <!--                        <a t-att-href="keep('/shop', order=sortby[1])">-->
-    <!--                            <span t-raw="sortby[0]"/>-->
-    <!--                        </a>-->
-    <!--                    </li>-->
-    <!--                </ul>-->
-    <!--            </div>-->
-    <!--        </xpath>-->
-    <!--    </template>-->
+        <template id="sortCstm" inherit_id="website_sale.sort" active="True" customize_show="True" name="Show Sort by">
+            <xpath expr="//div[hasclass('dropdown_sorty_by')]" position="replace">
+                <t t-set="list_price_desc_label">Catalog price: High to Low</t>
+                <t t-set="list_price_asc_label">Catalog price: Low to High</t>
+                <t t-set="name_asc_label">Name - A to Z</t>
+                <t t-set="name_desc_label">Name - Z to A</t>
+                <t t-set="qty_available_desc_label">Quantity: High to Low</t>
+                <t t-set="qty_available_asc_label">Quantity: Low to High</t>
+                <t t-set="website_sale_sortable" t-value="[
+                    (list_price_desc_label, 'list_price desc'),
+                    (list_price_asc_label, 'list_price asc'),
+                    (name_asc_label, 'name asc'),
+                    (name_desc_label, 'name desc'),
+                    (qty_available_asc_label, 'actual_quantity asc'),
+                    (qty_available_desc_label, 'actual_quantity desc')
+                ]"/>
+                <t t-set="website_sale_sortable_current"
+                   t-value="[sort for sort in website_sale_sortable if sort[1]==request.params.get('order', '')]"/>
+                <div class="dropdown btn-group dropdown_sorty_by">
+                    <a href="#" class="dropdown-toggle btn btn-default" data-toggle="dropdown">
+                        <t t-if='len(website_sale_sortable_current)'>
+                            <span>Sorting by :
+                                <t t-raw='website_sale_sortable_current[0][0]'/>
+                            </span>
+                        </t>
+                        <t t-else='1'>
+                            <span>Sort by</span>
+                            <span class="caret"></span>
+                        </t>
+                    </a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li t-foreach="website_sale_sortable" t-as="sortby">
+                            <a t-att-href="keep('/shop', order=sortby[1])">
+                                <span t-raw="sortby[0]"/>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </xpath>
+        </template>
 
 
 </odoo>

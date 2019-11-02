@@ -15,7 +15,7 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
     ], type='http', auth="public", website=True)
     def shop(self, page=0, category=None, search='', ppg=False, **post):
         if not 'order' in post:
-            post.update({'order': 'name asc'})
+            post.update({'order': 'actual_quantity desc'})
 
         if request.httprequest.path == "/shop/featured":
             result = request.env['product.public.category'].search([('name', 'ilike', 'featured')], limit=1)
