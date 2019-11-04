@@ -215,7 +215,7 @@
             <field name="model">purchase.order</field>
             <field name="context">{state: 'ven_draft'}</field>
             <field name="arch" type="xml">
-                <form string="Vendor Offer" class="o_sale_order" duplicate="false"   attrs="{'delete': [('state', 'in', ('draft', 'ven_draft','ven_sent'))],
+                <form string="Vendor Offer" class="o_sale_order vendor_offer_class" duplicate="false"   attrs="{'delete': [('state', 'in', ('draft', 'ven_draft','ven_sent'))],
                 'edit': [('state', 'in', ('draft', 'ven_draft','ven_sent'))]}" >
                     <header>
                         <button name="action_send_offer_email" string="Send" type="object" context="{'send_rfq':True}"
