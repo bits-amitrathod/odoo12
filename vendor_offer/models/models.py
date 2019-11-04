@@ -144,7 +144,7 @@ class VendorOffer(models.Model):
         ('purchase', 'Purchase Order'),
         ('done', 'Locked'),
         ('cancel', 'Cancelled')
-    ], string='Status', readonly=True, index=True, copy=False, default='ven_draft', track_visibility='onchange',
+    ], string='Offer Type', readonly=True, index=True, copy=False, default='ven_draft', track_visibility='onchange',
         store=True)
 
     state = fields.Selection([
@@ -563,9 +563,20 @@ class VendorOffer(models.Model):
                 values['revision'] = str(temp)
                 values['revision_date'] = fields.Datetime.now()
             record = super(VendorOffer, self).write(values)
+            if 'arrival_date_grp' in values:
+                for purchase in self:
+                    stock_pick = self.env['stock.picking'].search([('origin', '=', purchase.name)])
+                    for pick in stock_pick:
+                        pick.arrival_date = values['arrival_date_grp']
             return record
         else:
-            return super(VendorOffer, self).write(values)
+            record = super(VendorOffer, self).write(values)
+            if 'arrival_date_grp' in values:
+                for purchase in self:
+                    stock_pick = self.env['stock.picking'].search([('origin', '=', purchase.name)])
+                    for pick in stock_pick:
+                        pick.arrival_date = values['arrival_date_grp']
+            return record
 
     def get_mail_url(self,redirect=False):
         self.ensure_one()
@@ -1255,7 +1266,8 @@ class StockPicking(models.Model):
             for pick in self:
                 purchase_order = self.env['purchase.order'].search([('name', '=', pick.origin)])
                 for order in purchase_order:
-                    order.arrival_date_grp = vals['arrival_date']
+                    if order.arrival_date_grp and (order.arrival_date_grp != vals['arrival_date']):
+                        order.arrival_date_grp = vals['arrival_date']
         return record
 
 
