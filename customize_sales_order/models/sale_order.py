@@ -2,6 +2,7 @@
 
 from odoo import models, fields, api
 from odoo import _
+from odoo.exceptions import UserError
 
 
 class CustomerContract(models.Model):
@@ -22,6 +23,9 @@ class sale_order(models.Model):
 
     def write(self, val):
         super(sale_order, self).write(val)
+
+        if self.carrier_id and self.state in 'sale':
+            self.env['stock.picking'].search([('sale_id', '=', self.id), ('picking_type_id', '=', 5)]).write({'carrier_id':self.carrier_id.id})
 
         '''if self.sale_note:
             self.write({'sale_note':False})'''
@@ -76,8 +80,25 @@ class sale_order(models.Model):
                     if stock_picking.state == 'assigned':
                         sale_ordr.delivery_method_readonly_flag = 1
 
+    @api.multi
+    def set_delivery_line(self):
+        # Remove delivery products from the sales order
+        self._remove_delivery_line()
 
-
+        for order in self:
+            if order.state not in ('draft', 'sent', 'sale'):
+                raise UserError(_('You can add delivery price only on unconfirmed quotations.'))
+            elif not order.carrier_id:
+                raise UserError(_('No carrier set for this order.'))
+            elif not order.delivery_rating_success:
+                raise UserError(_('Please use "Check price" in order to compute a shipping price for this quotation.'))
+            else:
+                price_unit = order.carrier_id.rate_shipment(order)['price']
+                # TODO check whether it is safe to use delivery_price here
+                order._create_delivery_line(order.carrier_id, price_unit)
+            if order.carrier_id and order.state in 'sale':
+                self.env['stock.picking'].search([('sale_id', '=', order.id), ('picking_type_id', '=', 5)]).write({'carrier_id':order.carrier_id.id})
+        return True
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
