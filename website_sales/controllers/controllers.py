@@ -14,8 +14,13 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         '/shop/category/<model("product.public.category"):category>/page/<int:page>'
     ], type='http', auth="public", website=True)
     def shop(self, page=0, category=None, search='', ppg=False, **post):
+        product_template = request.env['product.template'].search([('actual_quantity', '=', False)])
+        if len(product_template)>0:
+            for product in product_template:
+                product.update({'actual_quantity':0})
+
         if not 'order' in post:
-            post.update({'order': 'name asc'})
+            post.update({'order': 'actual_quantity desc'})
 
         if request.httprequest.path == "/shop/featured":
             result = request.env['product.public.category'].search([('name', 'ilike', 'featured')], limit=1)

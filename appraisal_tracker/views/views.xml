@@ -52,7 +52,7 @@
             <field name="context">[status: 'purchase']</field>
             <field name="arch" type="xml">
 
-                <form string="Appraisal Tracker" class="o_sale_order" create="false" delete="false" edit="false"
+                <form string="Appraisal Tracker" class="o_sale_order vendor_offer_class" create="false" delete="false" edit="false"
                       menu="false" print="false">
                     <header>
                         <button name="%(vendor_offer.action_purchase_order_edit_note)d" type="action" context="{'isFooterInvisible':False}"
