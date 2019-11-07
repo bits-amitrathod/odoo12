@@ -1523,7 +1523,7 @@ class VendorPricingExport(models.TransientModel):
                            END     AS product_sales_count_90,
                            CASE
                            when pt.actual_quantity IS NULL THEN '0' 
-                           ELSE pt.actual_quantity as actual_quantity
+                           ELSE pt.actual_quantity end as actual_quantity,
                            CASE 
                              WHEN qty_on_order.product_qty IS NULL THEN '0' 
                              ELSE qty_on_order.product_qty 
