@@ -80,6 +80,13 @@ class sale_order(models.Model):
                     if stock_picking.state == 'assigned':
                         sale_ordr.delivery_method_readonly_flag = 1
 
+    @api.onchange('carrier_id')
+    def onchange_carrier_id(self):
+        if self.state in ('draft', 'sent', 'sale'):
+            self.delivery_price = 0.0
+            self.delivery_rating_success = False
+            self.delivery_message = False
+
     @api.multi
     def set_delivery_line(self):
         # Remove delivery products from the sales order
@@ -99,6 +106,21 @@ class sale_order(models.Model):
             if order.carrier_id and order.state in 'sale':
                 self.env['stock.picking'].search([('sale_id', '=', order.id), ('picking_type_id', '=', 5)]).write({'carrier_id':order.carrier_id.id})
         return True
+
+    def get_delivery_price(self):
+        for order in self.filtered(lambda o: o.state in ('draft', 'sent', 'sale') and len(o.order_line) > 0):
+            # We do not want to recompute the shipping price of an already validated/done SO
+            # or on an SO that has no lines yet
+            order.delivery_rating_success = False
+            res = order.carrier_id.rate_shipment(order)
+            if res['success']:
+                order.delivery_rating_success = True
+                order.delivery_price = res['price']
+                order.delivery_message = res['warning_message']
+            else:
+                order.delivery_rating_success = False
+                order.delivery_price = 0.0
+                order.delivery_message = res['error_message']
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
