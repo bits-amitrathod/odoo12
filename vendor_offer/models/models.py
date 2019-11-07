@@ -1520,11 +1520,10 @@ class VendorPricingExport(models.TransientModel):
                            CASE 
                              WHEN ninty_sales.qty_done IS NULL THEN '0' 
                              ELSE ninty_sales.qty_done 
-                           END     AS product_sales_count_90, 
-                           CASE 
-                             WHEN qty_available_count.qty_available IS NULL THEN '0' 
-                             ELSE qty_available_count.qty_available 
-                           END     AS qty_available, 
+                           END     AS product_sales_count_90,
+                           CASE
+                           when pt.actual_quantity IS NULL THEN '0' 
+                           ELSE pt.actual_quantity as actual_quantity
                            CASE 
                              WHEN qty_on_order.product_qty IS NULL THEN '0' 
                              ELSE qty_on_order.product_qty 
