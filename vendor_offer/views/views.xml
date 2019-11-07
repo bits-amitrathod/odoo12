@@ -648,7 +648,7 @@
                     <field name="tier" string="TIER"/>
                     <field name="product_sales_count"/>
                     <field name="product_sales_count_yrs"/>
-                    <field name="qty_in_stock"/>
+                    <field name="actual_quantity"/>
                     <field name="amount_total_ven_pri"/>
                     <field name="premium" string="PREMIUM"/>
                     <field name="expired_inventory"/>

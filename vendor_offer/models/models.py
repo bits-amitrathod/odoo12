@@ -1700,7 +1700,7 @@ class VendorPricingExport(models.TransientModel):
             product_lines_export_pp.append(
                 ([line['sku_code'], line['name'], line['list_price'], line['product_brand_id'],
                   line['tier'], line['product_sales_count'], line['product_sales_count_yrs'],
-                  line['qty_available'], line['amount_total_ven_pri'], line['premium'],
+                  line['actual_quantity'], line['amount_total_ven_pri'], line['premium'],
                   line['expired_lot_count'], line['product_sales_count_90'], line['qty_on_order'],
                   line['aging_days'], line['scrap_qty']]))
 
