@@ -64,10 +64,6 @@ class IncomingMailCronModel(models.Model):
     @api.multi
     def fetch_mail(self):
         """ WARNING: meant for cron usage only - will commit() after each email! """
-        additionnal_context = {
-            'fetchmail_cron_running': True
-        }
-        MailThread = self.env['mail.thread']
         start_time = time.time()
         _logger.info('***********start time********')
         _logger.info(start_time)
@@ -75,6 +71,10 @@ class IncomingMailCronModel(models.Model):
             count, failed = 0, 0
             pop_server = None
             if server.type == 'imap':
+                additionnal_context = {
+                    'fetchmail_cron_running': True
+                }
+                MailThread = self.env['mail.thread']
                 try:
                     imap_server = server.connect()
                     imap_server.select()
