@@ -1269,7 +1269,7 @@ class VendorPricingList(models.Model):
     inventory_scraped_yr = fields.Char(string='Inventory Scrapped', compute='onchange_product_id_vendor_offer_pricing',
                                        readonly=True, store=False)
 
-    average_aging = fields.Monetary(string='Average Aging', compute='onchange_product_id_vendor_offer_pricing',
+    average_aging = fields.Char(string='Average Aging', compute='onchange_product_id_vendor_offer_pricing',
                                     readonly=True, store=False)
 
     def onchange_product_id_vendor_offer_pricing(self):
@@ -1363,11 +1363,11 @@ class VendorPricingList(models.Model):
                                                                                            PUBLIC.stock_warehouse.wh_output_stock_loc_id,
                                                                                            wh_pack_stock_loc_id)) 
                                         WHERE      PUBLIC.stock_quant.quantity>0 
-                                        AND        product_template.id = %s 
+                                        AND        product_template.id = %s  AND stock_production_lot.use_date >= %s
                                         GROUP BY   PUBLIC.stock_production_lot.create_date, 
                                                    PUBLIC.product_template.id
                                                    """
-            self._cr.execute(sql_query, (line.id,))
+            self._cr.execute(sql_query, (line.product_tmpl_id.id,today_date))
             product_lot_list = self.env.cr.dictfetchall()
             sum_qty_day = 0
             total_quantity = 0
@@ -1383,6 +1383,8 @@ class VendorPricingList(models.Model):
 
             if total_quantity > 0:
                 line.average_aging = int(round(sum_qty_day / total_quantity, 0))
+            else:
+                line.average_aging = 0
 
             scrapped_list = self.env['stock.scrap'].search([('product_id', '=', line.id), ('state', '=', 'done')
                                                                , ('date_expected', '>', last_yr),
@@ -1391,7 +1393,7 @@ class VendorPricingList(models.Model):
             for obj in scrapped_list:
                 total_qty = total_qty + obj.scrap_qty
 
-            line.inventory_scraped_yr = total_qty
+            line.inventory_scraped_yr = int(total_qty)
 
     def expired_inventory_cal(self, line):
         expired_lot_count = 0
@@ -1587,7 +1589,7 @@ class VendorPricingExport(models.TransientModel):
                                   
                                   
                           LEFT JOIN ( 
-                         select  case when sum(quantity) = 0 then 0 else round(cast (sum(sum_qty_day)/sum(quantity) as numeric),2) end   as aging_days,pt_id as pt_id  from
+                         select  case when sum(quantity) = 0 then 0 else round(cast (sum(sum_qty_day)/sum(quantity) as numeric),0) end   as aging_days,pt_id as pt_id  from
 									( SELECT     date_part('day', now() -  Date(PUBLIC.stock_production_lot.create_date)) as diff, 
                                                        Sum(PUBLIC.stock_quant.quantity)              AS quantity ,
 										Sum(PUBLIC.stock_quant.quantity)  * date_part('day', now() -  Date(PUBLIC.stock_production_lot.create_date)) as sum_qty_day,
@@ -1610,7 +1612,7 @@ class VendorPricingExport(models.TransientModel):
                                                                   PUBLIC.stock_location.id IN (PUBLIC.stock_warehouse.lot_stock_id, 
                                                                                                PUBLIC.stock_warehouse.wh_output_stock_loc_id,
                                                                                                wh_pack_stock_loc_id)) 
-                                            WHERE      PUBLIC.stock_quant.quantity>0 
+                                            WHERE      PUBLIC.stock_quant.quantity>0 AND PUBLIC.stock_production_lot.use_date >= %s
                                         
                                             GROUP BY   PUBLIC.stock_production_lot.create_date, 
                                                        PUBLIC.product_template.id ) as all_rec
@@ -1687,7 +1689,7 @@ class VendorPricingExport(models.TransientModel):
 
         start_time = time.time()
         #self.env.cr.execute(sql_fuction)
-        self.env.cr.execute(str_query + str_query_join, (cust_location_id, last_yr, cust_location_id, last_yr,
+        self.env.cr.execute(str_query + str_query_join, (cust_location_id, last_yr, cust_location_id, last_yr,today_date,
                                                          cust_location_id, last_3_months, today_date,
                                                          today_date, last_yr))
         new_list = self.env.cr.dictfetchall()
