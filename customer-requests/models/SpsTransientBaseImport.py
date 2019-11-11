@@ -93,8 +93,8 @@ class SpsTransientBaseImport(models.TransientModel):
 
                 raise ValueError(_("You must configure Required Quantity field to import"))
 
-            # if 'uom' not in import_fields:
-            #     raise ValueError(_("You must configure UOM field to import"))
+            if 'mf_uom' not in import_fields:
+                raise ValueError(_("You must configure UOM field to import"))
 
             self._cr.execute('SAVEPOINT import')
             if len(col) == 1:
@@ -110,8 +110,7 @@ class SpsTransientBaseImport(models.TransientModel):
                 for template_resource in template_resources:
                     template_resource.write(dict(template_status='InActive'))
                 name_create_enabled_fields = options.pop('name_create_enabled_fields', {})
-                template = resource_model.create(resource_model_dict).with_context(import_file=True,
-                                                               name_create_enabled_fields=name_create_enabled_fields)
+                template = resource_model.create(resource_model_dict).with_context(import_file=True, name_create_enabled_fields=name_create_enabled_fields)
                 # import_result = template.load(import_fields, data)
                 import_result['ids'] = [template.id]
 
@@ -125,7 +124,7 @@ class SpsTransientBaseImport(models.TransientModel):
                             users_model = self.env['res.partner'].search([("id", "=", customer_id)])
                             directory_path = ATTACHMENT_DIR + str(customer_id) + "/" + template_type + "/"
                             myfile_path = directory_path + str(self.file_name)
-                            self.env['sps.document.process'].sudo().process_document(users_model,myfile_path,template_type,self.file_name, '', 'Manual')
+                            self.env['sps.document.process'].sudo().process_document(users_model, myfile_path, template_type, self.file_name, '', 'Manual')
 
                         else:
                             self._cr.execute('RELEASE SAVEPOINT import')
