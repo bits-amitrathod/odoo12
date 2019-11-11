@@ -654,6 +654,9 @@
                     <field name="expired_inventory"/>
                     <!--<field name="product_sales_count_month"/>-->
                     <field name="product_sales_count_90"/>
+                    <field name="incoming_qty" string="Quantity On Order"/>
+                    <field name="average_aging"/>
+                    <field name="inventory_scraped_yr"/>
                 </tree>
             </field>
         </record>
