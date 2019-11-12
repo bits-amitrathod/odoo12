@@ -174,6 +174,9 @@ class DocumentProcessTransientModel(models.TransientModel):
                                 req.update(dict(product_id=product_id, status='Inprocess'))
                             else:
                                 req.update(dict(product_id=product_id, status='New'))
+                            # calculate product quantity
+                            if req['required_quantity'] != 0:
+                                req.update(dict(updated_quantity=req['required_quantity']))
                         else:
                             req.update(dict(product_id=None, status='Voided'))
                         sps_customer_request = dict(document_id=document_id, customer_id=user_id, create_uid=1, create_date=today_date, write_uid=1, write_date=today_date)

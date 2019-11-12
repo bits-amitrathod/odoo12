@@ -279,7 +279,7 @@ class IncomingMailCronModel(models.Model):
                                                 if customerName == "":
                                                     customerName = res_partner['name']
                                                 else:
-                                                    customerName = customerName + "  ,  " + res_partner['name']
+                                                    customerName = str(customerName) + "  ,  " + str(res_partner['name'])
 
                                         if len(res_partners) == 1:
                                             self.send_mail(str(email_from), str(email_subject), str(res_partners['name']), str(customer_email), str(response['message']), response['attachment'])

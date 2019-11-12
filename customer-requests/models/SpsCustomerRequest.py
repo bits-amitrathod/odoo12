@@ -34,7 +34,7 @@ class SpsCustomerRequest(models.Model):
     vendor_pricing = fields.Char()
     quantity = fields.Float()
     required_quantity = fields.Float()
-    # updated_quantity = fields.Float()
+    updated_quantity = fields.Float()
     frequency_of_refill = fields.Integer()
     threshold = fields.Integer()
     uom = fields.Char()
@@ -135,7 +135,7 @@ class SpsCustomerRequest(models.Model):
                                 # uom_flag=sps_customer_request['uom_flag'],
                                 partial_order=_setting_object.partial_ordering,
                                 # partial_uom=_setting_object.partial_UOM,
-                                # updated_quantity = sps_customer_request['updated_quantity'],
+                                updated_quantity = sps_customer_request['updated_quantity'],
                                 expiration_tolerance=_setting_object.expiration_tolerance,
                                 customer_request_logs=sps_customer_request.customer_request_logs)
                 return pr_model
