@@ -174,9 +174,29 @@ class DocumentProcessTransientModel(models.TransientModel):
                                 req.update(dict(product_id=product_id, status='Inprocess'))
                             else:
                                 req.update(dict(product_id=product_id, status='New'))
+
+                            # set uom flag, if uom_flag is false then check the partial_uom flag
+                            if 'uom' in req.keys():
+                                if req['uom'].lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
+                                    req.update(dict(uom_flag=True))
+                                else:
+                                    req.update(dict(uom_flag=False))
+                            else:
+                                _logger.info('Product UOM not mapped.')
+                                # Get Product UOM category id
+
+                                product_uom_categ = self.env['uom.category'].search([('name', 'in', ['Unit', 'Each'])])
+                                # get product
+                                product = self.env['product.template'].search([('id', '=', req['product_id'])])
+                                if product.manufacturer_uom.category_id.id in product_uom_categ.ids:
+                                    if product.manufacturer_uom.name.lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
+                                        req.update(dict(uom_flag=True))
+                                    else:
+                                        req.update(dict(uom_flag=False))
                             # calculate product quantity
-                            if req['required_quantity'] != 0:
-                                req.update(dict(updated_quantity=req['required_quantity']))
+                            updated_qty = self._get_updated_qty(req, template_type)
+                            if updated_qty != 0:
+                                req.update(dict(updated_quantity=updated_qty))
                         else:
                             req.update(dict(product_id=None, status='Voided'))
                         sps_customer_request = dict(document_id=document_id, customer_id=user_id, create_uid=1, create_date=today_date, write_uid=1, write_date=today_date)
@@ -199,6 +219,24 @@ class DocumentProcessTransientModel(models.TransientModel):
             _logger.info('file is not acceptable')
             response = dict(errorCode=2, message='Invalid File extension')
         return response
+
+    def _get_updated_qty(self, req, template_type):
+        _logger.info('_get_updated_qty, Template type from user : ')
+        _logger.info(template_type)
+        if template_type.lower().strip() == "requirement":
+            req_qty = req['required_quantity']
+            if req['uom_flag']:
+                return req_qty
+            else:
+                # get product
+                product = self.env['product.template'].search([('id', '=', req['product_id'])])
+                uom = self.env['uom.uom'].search([('name', 'ilike', 'Unit'), ('category_id.id', '=', 1)])
+                if len(uom) == 0:
+                    uom = self.env['uom.uom'].search([('name', 'ilike', 'Each'), ('category_id.id', '=', 1)])
+                updated_qty = product.manufacturer_uom._compute_quantity(float(req_qty), uom)
+                return updated_qty
+        else:
+            return 0
 
     @staticmethod
     def _get_column_mappings(mapping_field_list, templates_list, file_path, template_type_from_user):
