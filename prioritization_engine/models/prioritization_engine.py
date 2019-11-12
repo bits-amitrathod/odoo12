@@ -424,16 +424,18 @@ class PrioritizationEngine(models.TransientModel):
             current_processed_docs = sps_cust_uploaded_document.document_processed_count
             template = None
             sps_customer_requirements = self.env['sps.customer.requests'].search([('document_id', '=', sps_cust_uploaded_document.id),
-                 ('status', 'in', ('Partial', 'InCoolingPeriod', 'New', 'Inprocess', 'Incomplete', 'Unprocessed'))])
+                                    ('status', 'in', ('Partial', 'InCoolingPeriod', 'New', 'Inprocess', 'Incomplete', 'Unprocessed'))])
+            sps_customer_requirements_all = self.env['sps.customer.requests'].search([('document_id', '=', sps_cust_uploaded_document.id), ('status', 'not in', 'Voided')])
 
             if sps_cust_uploaded_document.template_type.lower().strip() == 'requirement':
                 if current_processed_docs >= current_cust_doc_fixed_count:
                     self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
-                    if len(sps_customer_requirements) > 0:
+                    if len(sps_customer_requirements) == len(sps_customer_requirements_all):
                         template = self.env.ref('customer-requests.final_email_response_on_uploaded_document').sudo()
                 else:
                     if len(sps_customer_requirements) > 0:
-                        template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
+                        if len(sps_customer_requirements) == len(sps_customer_requirements_all):
+                            template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
                         if sps_cust_uploaded_document.status != 'In Process':
                             self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'In Process')
                     else:
@@ -443,12 +445,13 @@ class PrioritizationEngine(models.TransientModel):
             elif sps_cust_uploaded_document.template_type.lower().strip() == 'inventory':
                 if int(current_processed_docs) >= int(current_cust_doc_fixed_count):
                     self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
-                    if len(sps_customer_requirements) > 0:
+                    if len(sps_customer_requirements) == len(sps_customer_requirements_all):
                         template = self.env.ref('customer-requests.final_email_response_on_uploaded_document').sudo()
                 else:
                     if int(current_processing_doc_id) == int(sps_cust_uploaded_document.id):
                         if len(sps_customer_requirements) > 0:
-                            template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
+                            if len(sps_customer_requirements) == len(sps_customer_requirements_all):
+                                template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
                             if sps_cust_uploaded_document.status != 'In Process':
                                 self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'In Process')
                         else:
