@@ -162,17 +162,51 @@ class PrioritizationEngine(models.TransientModel):
             if int(remaining_product_allocation_quantity) > 0 and int(product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity')) > 0:
                 if int(remaining_product_allocation_quantity) > int(product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity')):
                     if prioritization_engine_request['partial_order']:
-                        remaining_product_allocation_quantity = int(remaining_product_allocation_quantity) - int(product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'])
-                        product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity']) + int(product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'])
-                        product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'] = 0
+                        if prioritization_engine_request['uom_flag']:
+                            _logger.debug('product allocated from lot %r %r %r', product_lot.get(list(product_lot.keys()).pop(0), {}))
+
+                            remaining_product_allocation_quantity = int(remaining_product_allocation_quantity) - int(product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'])
+
+                            product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0),{})['reserved_quantity']) + int(product_lot.get(list(product_lot.keys()).pop(0),{})['available_quantity'])
+                            product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'] = 0
+                        else:
+                            if prioritization_engine_request['partial_uom']:
+                                remaining_product_allocation_quantity = int(remaining_product_allocation_quantity) - int(product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'])
+
+                                product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity']) + int(product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'])
+                                product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'] = 0
+                            else:
+                                allocate_qty_by_partial_uom = self._get_quantity_by_partial_uom(product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'], prioritization_engine_request)
+
+                                product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity']) + int(allocate_qty_by_partial_uom)
+                                product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity']) - int(allocate_qty_by_partial_uom)
+
+                                remaining_product_allocation_quantity = remaining_product_allocation_quantity - allocate_qty_by_partial_uom
 
                 elif int(remaining_product_allocation_quantity) <= int(product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity')):
                         _logger.debug('product allocated from lot %r', list(product_lot.keys()).pop(0))
 
-                        product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity']) + int(remaining_product_allocation_quantity)
-                        product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity']) - int(remaining_product_allocation_quantity)
-                        remaining_product_allocation_quantity = 0
-                        break
+                        if prioritization_engine_request['uom_flag']:
+                            product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0),{})['reserved_quantity']) + int(remaining_product_allocation_quantity)
+                            product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0),{})['available_quantity']) - int(remaining_product_allocation_quantity)
+
+                            remaining_product_allocation_quantity = 0
+                            break
+                        else:
+                            if prioritization_engine_request['partial_uom']:
+                                product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity']) + int(remaining_product_allocation_quantity)
+                                product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity']) - int(remaining_product_allocation_quantity)
+
+                                remaining_product_allocation_quantity = 0
+                                break
+                            else:
+                                allocate_qty_by_partial_uom = self._get_quantity_by_partial_uom(remaining_product_allocation_quantity, prioritization_engine_request)
+
+                                product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity']) + int(allocate_qty_by_partial_uom)
+                                product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity']) - int(allocate_qty_by_partial_uom)
+
+                                remaining_product_allocation_quantity = remaining_product_allocation_quantity - allocate_qty_by_partial_uom
+                                break
 
         if prioritization_engine_request['template_type'].lower().strip() == 'inventory':
             if remaining_product_allocation_quantity == allocate_inventory_product_quantity:
@@ -201,6 +235,7 @@ class PrioritizationEngine(models.TransientModel):
         elif remaining_product_allocation_quantity > 0 and remaining_product_allocation_quantity != required_quantity:
             _logger.debug(str(" Allocated Partial order product."))
 
+
             self.allocated_product_to_customer(prioritization_engine_request['customer_id'],
                                                prioritization_engine_request['req_no'],
                                                prioritization_engine_request['gl_account'],
@@ -222,27 +257,33 @@ class PrioritizationEngine(models.TransientModel):
         if prioritization_engine_request['partial_order']:
             prioritization_engine_request['customer_request_logs'] += 'Partial ordering flag is True.'
             _logger.debug('Partial ordering flag is True')
+            if prioritization_engine_request['partial_uom']:
+                prioritization_engine_request['customer_request_logs'] += 'Partial UOM flag is True.'
+                _logger.debug('Partial UOM is True')
+            else:
+                prioritization_engine_request['customer_request_logs'] += 'Partial UOM flag is False.'
+                _logger.debug('Partial UOM is False')
         else:
             prioritization_engine_request['customer_request_logs'] += 'Partial ordering flag is False.'
             _logger.debug('Partial ordering flag is False')
 
 
     #get quantitty by partial uom flag
-    # def _get_quantity_by_partial_uom(self, quantity, prioritization_engine_request):
-    #     product = self.env['product.template'].search([('id', '=', prioritization_engine_request['product_id'])])
-    #     uom = self.env['uom.uom'].search([('name', 'ilike', 'Unit'),('category_id.id', '=', 1)])
-    #     if len(uom) == 0:
-    #         uom = self.env['uom.uom'].search([('name', 'ilike', 'Each'),('category_id.id', '=', 1)])
-    #     if product.manufacturer_uom.uom_type == 'bigger':
-    #         uom_factor = product.manufacturer_uom.factor_inv
-    #     elif product.manufacturer_uom.uom_type == 'smaller':
-    #         uom_factor = product.manufacturer_uom.factor
-    #     else:
-    #         uom_factor = 1
-    #
-    #     ratio = int(quantity / uom_factor)
-    #     allocate_qty_by_partial_uom = int(product.manufacturer_uom._compute_quantity(float(ratio), uom))
-    #     return allocate_qty_by_partial_uom
+    def _get_quantity_by_partial_uom(self, quantity, prioritization_engine_request):
+        product = self.env['product.template'].search([('id', '=', prioritization_engine_request['product_id'])])
+        uom = self.env['uom.uom'].search([('name', 'ilike', 'Unit'),('category_id.id', '=', 1)])
+        if len(uom) == 0:
+            uom = self.env['uom.uom'].search([('name', 'ilike', 'Each'),('category_id.id', '=', 1)])
+        if product.manufacturer_uom.uom_type == 'bigger':
+            uom_factor = product.manufacturer_uom.factor_inv
+        elif product.manufacturer_uom.uom_type == 'smaller':
+            uom_factor = product.manufacturer_uom.factor
+        else:
+            uom_factor = 1
+
+        ratio = int(quantity / uom_factor)
+        allocate_qty_by_partial_uom = int(product.manufacturer_uom._compute_quantity(float(ratio), uom))
+        return allocate_qty_by_partial_uom
 
     # update customer status
     def update_customer_request_status(self,prioritization_engine_request,status):
@@ -303,6 +344,7 @@ class PrioritizationEngine(models.TransientModel):
             else:
                 new_customer_id_key = {customer_id: [allocated_product]}
                 self.allocated_product_dict.update(new_customer_id_key)
+
 
     # return duration in days
     def return_duration_in_days(self, duration):
@@ -388,20 +430,30 @@ class PrioritizationEngine(models.TransientModel):
                     count = count + available_production_lot.get(available).get('available_quantity')
         return count
 
-    def check_product_threshold(self, prioritization_engine_request):
-        min_threshold = prioritization_engine_request['min_threshold']
-        max_threshold = prioritization_engine_request['max_threshold']
-        inventory_quantity = prioritization_engine_request['quantity']
-
-        if prioritization_engine_request['status'].lower().strip() == 'partial':
-            sale_order_lines = self.env['sale.order.line'].search([('customer_request_id', '=', prioritization_engine_request['customer_request_id'])])
-            product_uom_qty = 0
-            for sale_order_line in sale_order_lines:
-                product_uom_qty = product_uom_qty + sale_order_line.product_uom_qty
+    def check_product_threshold(self,prioritization_engine_request):
+        if prioritization_engine_request['uom_flag']:
+            min_threshold = prioritization_engine_request['min_threshold']
+            max_threshold = prioritization_engine_request['max_threshold']
+            inventory_quantity = prioritization_engine_request['quantity']
+        else:
+            product = self.env['product.template'].search([('id', '=', prioritization_engine_request['product_id'])])
+            uom = self.env['uom.uom'].search([('name', 'ilike', 'Unit'),('category_id.id', '=', 1)])
+            if len(uom) == 0:
+                uom = self.env['uom.uom'].search([('name', 'ilike', 'Each'),('category_id.id', '=', 1)])
+            min_threshold = product.manufacturer_uom._compute_quantity(float(prioritization_engine_request['min_threshold']), uom)
+            max_threshold = product.manufacturer_uom._compute_quantity(float(prioritization_engine_request['max_threshold']), uom)
+            inventory_quantity = product.manufacturer_uom._compute_quantity(float(prioritization_engine_request['quantity']), uom)
+            if prioritization_engine_request['status'].lower().strip() == 'partial':
+                sale_order_lines = self.env['sale.order.line'].search([('customer_request_id', '=', prioritization_engine_request['customer_request_id'])])
+                product_uom_qty = 0
+                for sale_order_line in sale_order_lines:
+                    product_uom_qty = product_uom_qty + sale_order_line.product_uom_qty
                 _logger.debug('sale_order_line.product_uom_qty : %r', product_uom_qty)
                 inventory_quantity = inventory_quantity - product_uom_qty
                 _logger.debug('inventory_quantity : %r', inventory_quantity)
                 return True, inventory_quantity
+
+
 
         if int(inventory_quantity) < int(min_threshold):
             allocate_quantity = int(max_threshold) - int(inventory_quantity)
