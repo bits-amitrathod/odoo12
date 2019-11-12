@@ -449,13 +449,13 @@ class StockMove(models.Model):
                     lot_id = product_lot.get(list(product_lot.keys()).pop(0), {}).get('lot_id')
                     avi_qty = product_lot.get(list(product_lot.keys()).pop(0), {}).get('available_quantity')
                     use_date = product_lot.get(list(product_lot.keys()).pop(0), {}).get('use_date')
-                    dict1 = {'lot_id': lot_id, 'available_qty': avi_qty, 'use_date': use_date}
-
-                    if move.product_id.id in product_lot_qty_dict.keys():
-                        product_lot_qty_dict.get(move.product_id.id, {}).append(dict1)
-                    else:
-                        new_dict = {move.product_id.id: [dict1]}
-                        product_lot_qty_dict.update(new_dict)
+                    if avi_qty > 0:
+                        dict1 = {'lot_id': lot_id, 'available_qty': avi_qty, 'use_date': use_date}
+                        if move.product_id.id in product_lot_qty_dict.keys():
+                            product_lot_qty_dict.get(move.product_id.id, {}).append(dict1)
+                        else:
+                            new_dict = {move.product_id.id: [dict1]}
+                            product_lot_qty_dict.update(new_dict)
 
                 dict_by_product = product_lot_qty_dict.get(move.product_id.id, {})
                 dict_asc_by_use_date = sorted(dict_by_product, key=lambda i: i['use_date'])
