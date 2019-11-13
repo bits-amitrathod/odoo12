@@ -486,22 +486,25 @@ class PrioritizationEngine(models.TransientModel):
         sps_cust_uploaded_documents = self.env['sps.cust.uploaded.documents'].search([('status', 'in', ('draft', 'In Process'))])
 
         for sps_cust_uploaded_document in sps_cust_uploaded_documents:
-            _logger.info('Document Id :%r',sps_cust_uploaded_document.id)
+            _logger.info('Document Id :%r', sps_cust_uploaded_document.id)
 
             current_cust_doc_fixed_count = sps_cust_uploaded_document.customer_id['doc_process_count']
             current_processing_doc_id = sps_cust_uploaded_document.id
             current_processed_docs = sps_cust_uploaded_document.document_processed_count
             template = None
+            sps_customer_requirement = self.env['sps.customer.requests'].search([('document_id', '=', sps_cust_uploaded_document.id), ('status', 'in', ['Partial', 'InCoolingPeriod', 'New', 'Inprocess', 'Incomplete', 'Unprocessed'])])
+            sps_customer_requirements = self.env['sps.customer.requests'].search([('document_id', '=', sps_cust_uploaded_document.id), ('status', 'in', ['InCoolingPeriod', 'New', 'Inprocess', 'Incomplete', 'Unprocessed'])])
+            sps_customer_requirements_all = self.env['sps.customer.requests'].search([('document_id', '=', sps_cust_uploaded_document.id), ('status', 'not in', ['Voided'])])
 
             if sps_cust_uploaded_document.template_type.lower().strip() == 'requirement':
                 if current_processed_docs >= current_cust_doc_fixed_count:
                     self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
-                    template = self.env.ref('customer-requests.final_email_response_on_uploaded_document').sudo()
+                    if len(sps_customer_requirements) == len(sps_customer_requirements_all):
+                        template = self.env.ref('customer-requests.final_email_response_on_uploaded_document').sudo()
                 else:
-                    template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
-                    sps_customer_requirements = self.env['sps.customer.requests'].search([('document_id', '=', sps_cust_uploaded_document.id),
-                                                        ('status', 'in', ('Partial', 'InCoolingPeriod', 'New', 'Inprocess', 'Incomplete', 'Unprocessed'))])
-                    if len(sps_customer_requirements) > 0:
+                    if len(sps_customer_requirement) > 0:
+                        if len(sps_customer_requirements) == len(sps_customer_requirements_all):
+                            template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
                         if sps_cust_uploaded_document.status != 'In Process':
                             self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'In Process')
                     else:
@@ -509,15 +512,15 @@ class PrioritizationEngine(models.TransientModel):
                             self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
 
             elif sps_cust_uploaded_document.template_type.lower().strip() == 'inventory':
-                 if int(current_processed_docs) >= int(current_cust_doc_fixed_count):
-                     template = self.env.ref('customer-requests.final_email_response_on_uploaded_document').sudo()
-                     self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
-                 else:
-                    template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
+                if int(current_processed_docs) >= int(current_cust_doc_fixed_count):
+                    self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
+                    if len(sps_customer_requirements) == len(sps_customer_requirements_all):
+                        template = self.env.ref('customer-requests.final_email_response_on_uploaded_document').sudo()
+                else:
                     if int(current_processing_doc_id) == int(sps_cust_uploaded_document.id):
-                        sps_customer_requirements = self.env['sps.customer.requests'].search([('document_id', '=', sps_cust_uploaded_document.id),
-                                                            ('status', 'in', ('Partial', 'InCoolingPeriod', 'New', 'Inprocess', 'Incomplete', 'Unprocessed'))])
-                        if len(sps_customer_requirements) > 0:
+                        if len(sps_customer_requirement) > 0:
+                            if len(sps_customer_requirements) == len(sps_customer_requirements_all):
+                                template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
                             if sps_cust_uploaded_document.status != 'In Process':
                                 self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'In Process')
                         else:
@@ -525,12 +528,11 @@ class PrioritizationEngine(models.TransientModel):
                                 self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
                     else:
                         if sps_cust_uploaded_document.status != 'Completed':
-                            self._update_uploaded_document_status(sps_cust_uploaded_document.id,'Completed')
+                            self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
+
             # Send Email Notification to customer about the progress of uploaded or sent document
-            sps_customer_requests = self.env['sps.customer.requests'].search([('document_id', '=', sps_cust_uploaded_document.id),('status', 'in', ('Partial', 'Fulfilled'))])
-            if len(sps_customer_requests) == 0 and template is not None:
+            if template is not None:
                 # Send Email
-                print('Send final email')
                 self.send_mail(sps_cust_uploaded_document.customer_id.name, sps_cust_uploaded_document.customer_id.email, template)
 
     def _update_uploaded_document_status(self,document_id,status):
