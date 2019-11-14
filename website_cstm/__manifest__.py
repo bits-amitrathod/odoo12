@@ -34,10 +34,10 @@
         'views/purchase_product.xml',
         'views/vendor_list.xml',
         'views/seller.xml',
-        'views/equipment_service_request.xml'
-
-
+        'views/equipment_service_request.xml',
         'views/request_quote.xml',
+        'views/repair.xml',
+        'views/repair_service_request.xml',
         'views/career.xml'
     ],
 

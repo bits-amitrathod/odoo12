@@ -23,7 +23,7 @@ class WebsiteCstm(http.Controller):
         return http.request.render('website_cstm.repair_page')
 
     @http.route('/sell-form', type='http', auth="public", website=True)
-    def sell(self):
+    def seller(self):
         return http.request.render('website_cstm.seller_page')
 
     @http.route('/equipment', type='http', auth="public", website=True)
