@@ -17,6 +17,27 @@ class WebsiteCstm(http.Controller):
     def about(self):
         return http.request.render('website_cstm.about_page')
 
+
+    @http.route('/repair-1', type='http', auth="public", website=True)
+    def repair(self):
+        return http.request.render('website_cstm.repair_page')
+
+    @http.route('/sell-form', type='http', auth="public", website=True)
+    def sell(self):
+        return http.request.render('website_cstm.sell_page')
+
+    @http.route('/equipment', type='http', auth="public", website=True)
+    def equipment(self):
+        return http.request.render('website_cstm.equipment_page')
+
+    @http.route('/purchase-product', type='http', auth="public", website=True)
+    def purchase_product(self):
+        return http.request.render('website_cstm.purchase_product_page')
+
+    @http.route('/vendor-list', type='http', auth="public", website=True)
+    def vendor_list(self):
+        return http.request.render('website_cstm.vendor_list_page')
+
     @http.route('/faqs', type='http', auth="public", website=True)
     def faqs(self):
         return http.request.render('website_cstm.faqs_page')
