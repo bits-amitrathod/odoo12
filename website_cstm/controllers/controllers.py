@@ -24,7 +24,7 @@ class WebsiteCstm(http.Controller):
 
     @http.route('/sell-form', type='http', auth="public", website=True)
     def sell(self):
-        return http.request.render('website_cstm.sell_page')
+        return http.request.render('website_cstm.seller_page')
 
     @http.route('/equipment', type='http', auth="public", website=True)
     def equipment(self):

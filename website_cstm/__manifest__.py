@@ -33,6 +33,7 @@
         'views/equipment.xml',
         'views/purchase_product.xml',
         'views/vendor_list.xml',
+        'views/seller.xml',
         'views/equipment_service_request.xml'
 
 
