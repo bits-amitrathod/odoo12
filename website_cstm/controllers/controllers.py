@@ -13,7 +13,7 @@ class WebsiteCstm(http.Controller):
     def home(self, **kw):
         return http.request.render('website_cstm.home_page')
 
-    @http.route('/about', type='http', auth="public", website=True)
+    @http.route('/about-us', type='http', auth="public", website=True)
     def about(self):
         return http.request.render('website_cstm.about_page')
 
@@ -57,6 +57,22 @@ class WebsiteCstm(http.Controller):
     @http.route('/terms', type='http', auth="public", website=True)
     def terms(self):
         return http.request.render('website_cstm.terms')
+
+    @http.route('/stockhawk', type='http', auth="public", website=True)
+    def stockhawk(self):
+        return http.request.render('website_cstm.stockhawk_page')
+
+    @http.route('/sell-buy-back', type='http', auth="public", website=True)
+    def sell(self):
+        return http.request.render('website_cstm.sell_page')
+
+    @http.route('/request-a-quote', type='http', auth="public", website=True)
+    def request_a_quote(self):
+        return http.request.render('website_cstm.request_quote_page')
+
+    @http.route('/careers', type='http', auth="public", website=True)
+    def careers(self):
+        return http.request.render('website_cstm.careers_page')
 
     @http.route('/product_types', type='http', auth="public", website=True)
     def product_types_page(self):

@@ -1,116 +1,647 @@
 <odoo>
     <template id="faqs_page" name="Faqs Page">
-        <t t-name="website.faqs">
-            <t t-call="website.layout">
-                <div id="wrap" class="oe_structure oe_empty"/>
-                <section class="about-us-section">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-md-12 mb32">
-                                <div class="header-title">
-                                    <h1>FAQs</h1>
-                                </div>
-                                <div class="about-us-description">
-                                    <p>
-                                        <strong>How do I place an order?</strong>
-                                    </p>
-                                    <p> Simply browse through our inventory and add any items to your shopping cart and hit "checkout".
-                                        You will then be given a total including shipping charges. You may then pay using a credit card, PayPal,
-                                        or Purchase Order number if you are an approved customer.</p>
-                                    <p>
-                                        <strong>Where does your supply come from?</strong>
-                                    </p>
-                                    <p>At SPS, we typically purchase this product from hospitals and
-                                        large health systems that undergo conversions, trials, physician
-                                        departures and contract changes where they find a remaining balance of
-                                        unused, in-date surplus product. We purchase products from licensed facilities
-                                        within the United States with legitimate title ownership of the merchandise who
-                                        can confirm that safety, storage, and distribution procedures are being properly enforced.</p>
-                                    <p>
-                                        <strong>Do you sell expired or reprocessed / re-sterilized items?</strong>
-                                    </p>
-                                    <p>No, SPS does not sell items that are expired, however SPS does work with
-                                        reprocessed or re-sterilized items. Reprocessed items are indicated with "-RP"
-                                        added to the end of the product reference number.  Re-sterilized items are indicated
-                                        with "-R".  We mostly work with in-date and unused surgical disposables that are in
-                                        the original manufactures packaging.  Our expiration dates range from 6 months to 3+
-                                        years.  For some reason a product has less than 6 months in expiration, you will
-                                        be notified immediately by an SPS representative.</p>
-                                    <p>
-                                        <strong>How soon will my order ship?</strong>
-                                    </p>
-                                    <p>All FedEx Ground orders placed by 4:30pm EST are processed and
-                                        shipped the same day.  The cut-off time for FedEx Express orders is 3:30pm EST.
-                                        All orders after 4:30PM Eastern Standard Time will be shipped next day unless noted.
-                                        SPS is not responsible for delays in shipping due to orders arriving after 4:30PM
-                                        Eastern Standard Time.</p>
-                                    <p>
-                                        <strong>What are your shipping methods?</strong>
-                                    </p>
-                                    <p>All orders are shipped FedEx ground unless expedited shipment is requested.
-                                        FedEx Ground shipments are 2-5 day delivery.</p>
-                                    <p>
-                                        <strong>What are the shipping and handling costs?</strong>
-                                    </p>
-                                    <p>Shipping and handling costs are based on the items
-                                        purchased and range from $7.00 to $10.00 for standard ground
-                                        shipping with in the United States. Overnight shipping charges are dependent on your location and size/weight of the items.</p>
-                                    <p>For items shipping outside the United States, costs will vary
-                                        depending on your location.  If you are outside the United States &amp;amp;
-                                        would like a shipping quote, you can contact us directly.</p>
-                                    <p>
-                                        <strong>Do you ship outside the United States?</strong>
-                                    </p>
-                                    <p>Yes, we ship our products worldwide.  Shipping charges are
-                                        calculated at checkout or you can contact us for a shipping quote.</p>
-                                    <p>
-                                        <strong>What are your payment methods?</strong>
-                                    </p>
-                                    <p>We accept Visa, MasterCard, American Express &amp;amp; Discover
-                                        either online or over the phone. PayPal is accepted as well.
-                                        Purchase orders are also accepted from approved customers only.
-                                        If you would like to set up an account to be invoiced, please call us today.</p>
-                                    <p>
-                                        <strong>Is there a minimum order amount?</strong>
-                                    </p>
-                                    <p>There are no minimum order requirements.
-                                        The quantities listed next to each item are what
-                                        we currently have available for purchase as our website is real-time.</p>
-                                    <p>
-                                        <strong>Can I save my shipping and billing information so that I do not need to enter it every time?</strong>
-                                    </p>
-                                    <p>Yes.  You can register by clicking the "Create an account"
-                                        link located at the top of the home page.</p>
-                                    <p>
-                                        <strong>Do you offer any guarantee on your products?</strong>
-                                    </p>
-                                    <p>Customers are allowed to return items upon request,
-                                        including ordering errors. Any customer not satisfied with
-                                        any device upon receipt will have that device replaced at no
-                                        charge if within 15 days of order placement. Furthermore,
-                                        if that specific product is not available, SPS will give the customer equal
-                                        dollar credit towards any other device(s) in inventory.
-                                        Should any products sold reach its expiration date prior to receipt of that product,
-                                        SPS will replace the product at no charge and if that
-                                        specific product is not available,
-                                        equal dollar credit towards any other device(s) in inventory will be issued. </p>
-                                    <p>
-                                        <strong>Do I need to have a medical license to purchase from your website?</strong>
-                                    </p>
-                                    <p>Yes, you should be a licensed medical professional to purchase any of our items.</p>
-                                    <p>
-                                        <strong>How do I retrieve my login information?</strong>
-                                    </p>
-                                    <p>If you forgot your password, you can click the "forgot your password"
-                                        link in the Log-in section to have it emailed to you.
-                                        If you do not remember your user name or did not register an email,
-                                        give us a call and we will be happy to look it up for you.</p>
+        <t name="Faqs Page" t-name="website_cstm.faqs_page">
+            <t t-name="website.faqs">
+                <t t-call="website.layout">
+                    <div id="wrap" class="oe_structure oe_empty">
+                        <section class="pt32 pb32">
+                            <div class="container">
+                                <div class="row s_nb_column_fixed">
+                                    <div class="col-lg-12 s_title pt16 pb16" style="text-align: center;">
+                                        <h1 style="text-align: center; margin: 20px 0px; font-family: americangothicbold; font-weight: bold; line-height: 30px; color: rgb(33, 37, 41); font-size: 30px; clear: both;">
+                                            FAQs
+                                        </h1>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </section>
+                        <section class="s_faq_collapse pt48 pb32 bg-white oe_custom_bg" style="">
+                            <div class="container">
+                                <div class="row s_col_no_bgcolor">
+                                    <div class="col-lg-12 pt16 pb16">
+                                        <div id="myCollapse" class="accordion" role="tablist">
+                                            <div class="card bg-white">
+                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="true"
+                                                   class="card-header" data-parent="#myCollapse"
+                                                   data-target="#myCollapseTab1573497996797" data-original-title=""
+                                                   title="" aria-describedby="tooltip182829">How do I place an order?
+                                                </a>
+                                                <div class="collapse show" role="tabpanel"
+                                                     id="myCollapseTab1573497996797" style="">
+                                                    <div class="card-body">
+                                                        <p class="card-text">
+                                                            <span style="font-family: lato; font-size: 15.4px;">Simply
+                                                                browse through our inventory and add any items to your
+                                                                shopping cart and hit "checkout". You will then be given
+                                                                a total including shipping charges. You may then pay
+                                                                using a credit card, PayPal, or Purchase Order number if
+                                                                you are an approved customer.
+                                                            </span>
+                                                            <br/>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card bg-white">
+                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
+                                                   class="card-header collapsed" data-parent="#myCollapse"
+                                                   data-target="#myCollapseTab1573497996798" data-original-title=""
+                                                   title="" aria-describedby="tooltip732467">Where does your supply come
+                                                    from?
+                                                </a>
+                                                <div class="collapse" role="tabpanel" id="myCollapseTab1573497996798"
+                                                     style="">
+                                                    <div class="card-body">
+                                                        <p class="card-text">
+                                                            <span style="font-family: lato; font-size: 15.4px;">At SPS,
+                                                                we typically purchase this product from hospitals and
+                                                                large health systems that undergo conversions, trials,
+                                                                physician departures and contract changes where they
+                                                                find a remaining balance of unused, in-date surplus
+                                                                product. We purchase products from licensed facilities
+                                                                within the United States with legitimate title ownership
+                                                                of the merchandise who can confirm that safety, storage,
+                                                                and distribution procedures are being properly enforced.
+                                                            </span>
+                                                            <br/>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card bg-white">
+                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
+                                                   class="card-header collapsed" data-parent="#myCollapse"
+                                                   data-target="#myCollapseTab1573497996799" data-original-title=""
+                                                   title="">Do you sell expired or reprocessed / re-sterilized items?
+                                                </a>
+                                                <div class="collapse" role="tabpanel" id="myCollapseTab1573497996799"
+                                                     style="">
+                                                    <div class="card-body">
+                                                        <p class="card-text">
+                                                            <span style="font-family: lato; font-size: 15.4px;">No, SPS
+                                                                does not sell items that are expired, however SPS does
+                                                                work with reprocessed or re-sterilized items.
+                                                                Reprocessed items are indicated with "-RP" added to the
+                                                                end of the product reference number. Re-sterilized items
+                                                                are indicated with "-R". We mostly work with in-date and
+                                                                unused surgical disposables that are in the original
+                                                                manufactures packaging. Our expiration dates range from
+                                                                6 months to 3+ years. For some reason a product has less
+                                                                than 6 months in expiration, you will be notified
+                                                                immediately by an SPS representative.
+                                                            </span>
+                                                            <br/>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card bg-white">
+                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
+                                                   class="card-header collapsed" data-parent="#myCollapse"
+                                                   data-original-title="" title=""
+                                                   data-target="#myCollapseTab1573498087395">How soon will my order
+                                                    ship?
+                                                </a>
+                                                <div class="collapse" role="tabpanel" style=""
+                                                     id="myCollapseTab1573498087395">
+                                                    <div class="card-body">
+                                                        <p class="card-text">
+                                                            <span style="font-family: lato; font-size: 15.4px;">All
+                                                                FedEx Ground orders placed by 4:30pm EST are processed
+                                                                and shipped the same day. The cut-off time for FedEx
+                                                                Express orders is 3:30pm EST. All orders after 4:30PM
+                                                                Eastern Standard Time will be shipped next day unless
+                                                                noted. SPS is not responsible for delays in shipping due
+                                                                to orders arriving after 4:30PM Eastern Standard Time.
+                                                            </span>
+                                                            <br/>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card bg-white">
+                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
+                                                   class="card-header collapsed" data-parent="#myCollapse"
+                                                   data-original-title="" title=""
+                                                   data-target="#myCollapseTab1573498090927">What are your shipping
+                                                    methods?
+                                                </a>
+                                                <div class="collapse" role="tabpanel" style=""
+                                                     id="myCollapseTab1573498090927">
+                                                    <div class="card-body">
+                                                        <p class="card-text">
+                                                            <span style="font-family: lato; font-size: 15.4px;">All
+                                                                orders are shipped FedEx ground unless expedited
+                                                                shipment is requested. FedEx Ground shipments are 2-5
+                                                                day delivery.
+                                                            </span>
+                                                            <br/>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card bg-white">
+                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
+                                                   class="card-header collapsed" data-parent="#myCollapse"
+                                                   data-original-title="" title=""
+                                                   data-target="#myCollapseTab1573498090753">What are the shipping and
+                                                    handling costs?
+                                                </a>
+                                                <div class="collapse" role="tabpanel" style=""
+                                                     id="myCollapseTab1573498090753">
+                                                    <div class="card-body">
+                                                        <p style="margin-right: 0px; margin-bottom: 15px; margin-left: 0px; line-height: 1.7em; font-family: lato; font-size: 1.1em;">
+                                                            Shipping and handling costs are based on the items purchased
+                                                            and range from $7.00 to $10.00 for standard ground shipping
+                                                            with in the United States. Overnight shipping charges are
+                                                            dependent on your location and size/weight of the items.
+                                                        </p>
+                                                        <p style="margin-right: 0px; margin-bottom: 15px; margin-left: 0px; line-height: 1.7em; font-family: lato; font-size: 1.1em;">
+                                                            For items shipping outside the United States, costs will
+                                                            vary depending on your location. If you are outside the
+                                                            United States &amp;amp; would like a shipping quote, you can
+                                                            contact us directly
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card bg-white">
+                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
+                                                   class="card-header collapsed" data-parent="#myCollapse"
+                                                   data-original-title="" title=""
+                                                   data-target="#myCollapseTab1573498090587">Do you ship outside the
+                                                    United States?
+                                                </a>
+                                                <div class="collapse" role="tabpanel" style=""
+                                                     id="myCollapseTab1573498090587">
+                                                    <div class="card-body">
+                                                        <p class="card-text">
+                                                            <span style="font-family: lato; font-size: 15.4px;">Yes, we
+                                                                ship our products worldwide. Shipping charges are
+                                                                calculated at checkout or you can contact us for a
+                                                                shipping quote.
+                                                            </span>
+                                                            <br/>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card bg-white">
+                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
+                                                   class="card-header collapsed" data-parent="#myCollapse"
+                                                   data-original-title="" title=""
+                                                   data-target="#myCollapseTab1573498090196">What are your payment
+                                                    methods?
+                                                </a>
+                                                <div class="collapse" role="tabpanel" style=""
+                                                     id="myCollapseTab1573498090196">
+                                                    <div class="card-body">
+                                                        <p class="card-text">
+                                                            <span style="font-family: lato; font-size: 15.4px;">We
+                                                                accept Visa, MasterCard, American Express &amp;amp;
+                                                                Discover either online or over the phone. PayPal is
+                                                                accepted as well. Purchase orders are also accepted from
+                                                                approved customers only. If you would like to set up an
+                                                                account to be invoiced, please call us today.
+                                                            </span>
+                                                            <br/>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card bg-white">
+                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
+                                                   class="card-header collapsed" data-parent="#myCollapse"
+                                                   data-original-title="" title=""
+                                                   data-target="#myCollapseTab1573498087154">Is there a minimum order
+                                                    amount?
+                                                </a>
+                                                <div class="collapse" role="tabpanel" style=""
+                                                     id="myCollapseTab1573498087154">
+                                                    <div class="card-body">
+                                                        <p class="card-text">
+                                                            <span style="font-family: lato; font-size: 15.4px;">There
+                                                                are no minimum order requirements. The quantities listed
+                                                                next to each item are what we currently have available
+                                                                for purchase as our website is real-time.
+                                                            </span>
+                                                            <br/>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card bg-white">
+                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
+                                                   class="card-header collapsed" data-parent="#myCollapse"
+                                                   data-original-title="" title=""
+                                                   data-target="#myCollapseTab1573498086666">Can I save my shipping and
+                                                    billing information so that I do not need to enter it every time?
+                                                </a>
+                                                <div class="collapse" role="tabpanel" style=""
+                                                     id="myCollapseTab1573498086666">
+                                                    <div class="card-body">
+                                                        <p class="card-text">
+                                                            <span style="font-family: lato; font-size: 15.4px;">Yes. You
+                                                                can register by clicking the "Create an account" link
+                                                                located at the top of the home page.
+                                                            </span>
+                                                            <br/>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card bg-white">
+                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
+                                                   class="card-header collapsed" data-parent="#myCollapse"
+                                                   data-original-title="" title=""
+                                                   data-target="#myCollapseTab1573498085620">Do you offer any guarantee
+                                                    on your products?
+                                                </a>
+                                                <div class="collapse" role="tabpanel" style=""
+                                                     id="myCollapseTab1573498085620">
+                                                    <div class="card-body">
+                                                        <p class="card-text">
+                                                            <span style="font-family: lato; font-size: 15.4px;">
+                                                                Customers are allowed to return items upon request,
+                                                                including ordering errors. Any customer not satisfied
+                                                                with any device upon receipt will have that device
+                                                                replaced at no charge if within 15 days of order
+                                                                placement. Furthermore, if that specific product is not
+                                                                available, SPS will give the customer equal dollar
+                                                                credit towards any other device(s) in inventory. Should
+                                                                any products sold reach its expiration date prior to
+                                                                receipt of that product, SPS will replace the product at
+                                                                no charge and if that specific product is not available,
+                                                                equal dollar credit towards any other device(s) in
+                                                                inventory will be issued.
+                                                            </span>
+                                                            <br/>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card bg-white">
+                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
+                                                   class="card-header collapsed" data-parent="#myCollapse"
+                                                   data-original-title="" title=""
+                                                   data-target="#myCollapseTab1573498336132">Do I need to have a medical
+                                                    license to purchase from your website?
+                                                </a>
+                                                <div class="collapse" role="tabpanel" style=""
+                                                     id="myCollapseTab1573498336132">
+                                                    <div class="card-body">
+                                                        <p class="card-text">
+                                                            <span style="font-family: lato; font-size: 15.4px;">Yes, you
+                                                                should be a licensed medical professional to purchase
+                                                                any of our items.
+                                                            </span>
+                                                            <br/>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card bg-white">
+                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
+                                                   class="card-header collapsed" data-parent="#myCollapse"
+                                                   data-original-title="" title=""
+                                                   data-target="#myCollapseTab1573498335966">How do I retrieve my login
+                                                    information?
+                                                </a>
+                                                <div class="collapse" role="tabpanel" style=""
+                                                     id="myCollapseTab1573498335966">
+                                                    <div class="card-body">
+                                                        <p class="card-text">
+                                                            <span style="font-family: lato; font-size: 15.4px;">If you
+                                                                forgot your password, you can click the "forgot your
+                                                                password" link in the Log-in section to have it emailed
+                                                                to you. If you do not remember your user name or did not
+                                                                register an email, give us a call and we will be happy
+                                                                to look it up for you.
+                                                            </span>
+                                                            <br/>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card bg-white">
+                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
+                                                   class="card-header collapsed" data-parent="#myCollapse"
+                                                   data-original-title="" title=""
+                                                   data-target="#myCollapseTab1573498335801">What Is Surgical Product
+                                                    Solutions?
+                                                </a>
+                                                <div class="collapse" role="tabpanel" style=""
+                                                     id="myCollapseTab1573498335801">
+                                                    <div class="card-body">
+                                                        <p class="card-text">
+                                                            <span style="font-family: lato; font-size: 15.4px;">Surgical
+                                                                Product Solutions is a worldwide third party distributor
+                                                                for surgical disposables and capital equipment.
+                                                            </span>
+                                                            <span style="font-family: lato; font-size: 15.4px;">&amp;nbsp;</span>
+                                                            <br/>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card bg-white">
+                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
+                                                   class="card-header collapsed" data-parent="#myCollapse"
+                                                   data-original-title="" title=""
+                                                   data-target="#myCollapseTab1573498335618">&amp;nbsp;What products do
+                                                    you purchase?
+                                                </a>
+                                                <div class="collapse" role="tabpanel" style=""
+                                                     id="myCollapseTab1573498335618">
+                                                    <div class="card-body">
+                                                        <p style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; line-height: 26px;">
+                                                            SPS Purchases unused, in-date surgical disposables as well
+                                                            as capital equipment.
+                                                        </p>
+                                                        <p style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; line-height: 26px;">
+                                                            &amp;nbsp;
+                                                        </p>
+                                                        <p style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; line-height: 26px;">
+                                                            Surgical Disposables focus includes but not limited to:
+                                                        </p>
+                                                        <ul style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; list-style-position: inside; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;">
+                                                            <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                                                                General Surgery
+                                                            </li>
+                                                            <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                                                                Ob/Gyn
+                                                            </li>
+                                                            <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                                                                Orthopedic
+                                                            </li>
+                                                            <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                                                                Wound Care
+                                                            </li>
+                                                        </ul>
+                                                        <p style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; line-height: 26px;">
+                                                            &amp;nbsp;
+                                                        </p>
+                                                        <p style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; line-height: 26px;">
+                                                            See our&amp;nbsp;<a href="/vendor-list"
+                                                                                style="color: rgb(232, 19, 30); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; cursor: pointer;"
+                                                                                data-original-title="" title=""
+                                                                                aria-describedby="tooltip980666">Vendor
+                                                            List</a>&amp;nbsp;for our targeted products.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card bg-white">
+                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
+                                                   class="card-header collapsed" data-parent="#myCollapse"
+                                                   data-original-title="" title=""
+                                                   data-target="#myCollapseTab1573498335442">Do you purchase expired or
+                                                    reprocessed items?
+                                                </a>
+                                                <div class="collapse" role="tabpanel" style=""
+                                                     id="myCollapseTab1573498335442">
+                                                    <div class="card-body">
+                                                        <p style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; line-height: 26px;">
+                                                            We are unable to purchase expired disposables. However, we
+                                                            do purchase reprocessed items.
+                                                        </p>
+                                                        <p style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; line-height: 26px;">
+                                                            Feel free to submit your list of items&amp;nbsp;<a
+                                                                href="mailto:info@surgicalproductsolutions.com"
+                                                                style="color: rgb(232, 19, 30); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; cursor: pointer;">
+                                                            here</a>&amp;nbsp;for a quote.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card bg-white">
+                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
+                                                   class="card-header collapsed" data-parent="#myCollapse"
+                                                   data-original-title="" title=""
+                                                   data-target="#myCollapseTab1573498335255">How do I request a quote?
+                                                </a>
+                                                <div class="collapse" role="tabpanel" style=""
+                                                     id="myCollapseTab1573498335255">
+                                                    <div class="card-body">
+                                                        <p style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; line-height: 26px;">
+                                                            You can send item lists of surgical disposables and capital
+                                                            equipment to&amp;nbsp;<a
+                                                                href="mailto:info@surgicalproductsolutions.com"
+                                                                style="color: rgb(232, 19, 30); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; cursor: pointer;">
+                                                            info@surgicalproductsolutions.com</a>.
+                                                        </p>
+                                                        <p style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; line-height: 26px;">
+                                                            &amp;nbsp;
+                                                        </p>
+                                                        <p style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; line-height: 26px;">
+                                                            Download our optional&amp;nbsp;<a
+                                                                href="https://surgicalproductsolutions.com/wp-content/uploads/2016/07/SPS-Item-List-Template-2018-05.xlsx?_ga=2.16642047.850330218.1573484187-514259207.1573484187"
+                                                                style="color: rgb(232, 19, 30); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; cursor: pointer;"
+                                                                data-original-title="" title=""
+                                                                aria-describedby="tooltip75115">Item-List-Template</a>&amp;nbsp;to
+                                                            list your product or contact us for an on-site inventory.
+                                                        </p>
+                                                        <p style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; line-height: 26px;">
+                                                            &amp;nbsp;
+                                                        </p>
+                                                        <p style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; line-height: 26px;">
+                                                            Information needed for disposables:
+                                                        </p>
+                                                        <ul style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; list-style-position: inside; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;">
+                                                            <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                                                                Manufacturers Reference Number
+                                                            </li>
+                                                            <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                                                                Expiration Date
+                                                            </li>
+                                                            <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                                                                Quantity
+                                                            </li>
+                                                        </ul>
+                                                        <p style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; line-height: 26px;">
+                                                            &amp;nbsp;
+                                                        </p>
+                                                        <p style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; line-height: 26px;">
+                                                            Information needed for capital equipment:
+                                                        </p>
+                                                        <ul style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; list-style-position: inside; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;">
+                                                            <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                                                                Manufacturer
+                                                            </li>
+                                                            <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                                                                Model Number
+                                                            </li>
+                                                            <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                                                                Condition
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card bg-white">
+                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
+                                                   class="card-header collapsed" data-parent="#myCollapse"
+                                                   data-original-title="" title=""
+                                                   data-target="#myCollapseTab1573498334908">What percent return do you
+                                                    offer for surplus?
+                                                </a>
+                                                <div class="collapse" role="tabpanel" style=""
+                                                     id="myCollapseTab1573498334908">
+                                                    <div class="card-body">
+                                                        <p class="card-text">
+                                                            <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
+                                                                Fair market value is based upon a number of factors seen
+                                                                in the pie chart below.
+                                                            </span>
+                                                            <br/>
+                                                        </p>
+                                                        <p class="card-text">
+                                                            <img class="img-fluid o_we_custom_image"
+                                                                 src="/web/image/119914/chartFairMarketValue.png"/>
+                                                            <br/>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card bg-white">
+                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
+                                                   class="card-header collapsed" data-parent="#myCollapse"
+                                                   data-original-title="" title=""
+                                                   data-target="#myCollapseTab1573498334385">How do I view your
+                                                    inventory to find products to purchase?
+                                                </a>
+                                                <div class="collapse" role="tabpanel" style=""
+                                                     id="myCollapseTab1573498334385">
+                                                    <div class="card-body">
+                                                        <p class="card-text">
+                                                            <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
+                                                                You can download our&amp;nbsp;
+                                                            </span>
+                                                            <a href="https://www.shopsps.com/downloadCatalog"
+                                                               style="color: rgb(232, 19, 30); background: 0px 0px rgb(255, 255, 255); border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; cursor: pointer; font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
+                                                                product catalog
+                                                            </a>
+                                                            <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
+                                                                &amp;nbsp;which is broken down by manufacturer, outfit
+                                                                with all necessary product information. You can also
+                                                                access the&amp;nbsp;
+                                                            </span>
+                                                            <a href="https://shopsps.com/"
+                                                               style="color: rgb(232, 19, 30); background: 0px 0px rgb(255, 255, 255); border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; cursor: pointer; font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
+                                                                online store
+                                                            </a>
+                                                            <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
+                                                                , or speak with your Account Manager to search our
+                                                                inventory.
+                                                            </span>
+                                                            <br/>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card bg-white">
+                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
+                                                   class="card-header collapsed" data-parent="#myCollapse"
+                                                   data-original-title="" title=""
+                                                   data-target="#myCollapseTab1573498612671">Why are there additional
+                                                    letters on the manufacturer’s reference number?
+                                                </a>
+                                                <div class="collapse" role="tabpanel" style=""
+                                                     id="myCollapseTab1573498612671">
+                                                    <div class="card-body">
+                                                        <p style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; line-height: 26px;">
+                                                            We utilize the manufacturer reference numbers to align our
+                                                            inventory. However, on some items there are additional
+                                                            letters. Here is what they mean.
+                                                        </p>
+                                                        <p style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; line-height: 26px;">
+                                                            &amp;nbsp;
+                                                        </p>
+                                                        <ul style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; list-style-position: inside; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;">
+                                                            <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                                                                <strong style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                                                                    -E</strong>&amp;nbsp;Although we are an “each”
+                                                                company, if product checks in as a full box we keep it
+                                                                that way. The -E represents the “each” version, of
+                                                                product we also sell in a full box or case.
+                                                            </li>
+                                                            <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                                                                <strong style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                                                                    -R</strong>&amp;nbsp;Represents a product has been
+                                                                resterilized.
+                                                            </li>
+                                                            <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                                                                <strong style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                                                                    -RP</strong>&amp;nbsp;Indicates a product has been
+                                                                reprocessed.
+                                                            </li>
+                                                            <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                                                                <strong style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                                                                    -EQUIP</strong>&amp;nbsp;Product for sale from
+                                                                Equipment division.
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card bg-white">
+                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
+                                                   class="card-header collapsed" data-parent="#myCollapse"
+                                                   data-original-title="" title=""
+                                                   data-target="#myCollapseTab1573498887035">What if my order is
+                                                    damaged/incorrect? Do you have a return policy?
+                                                </a>
+                                                <div class="collapse" role="tabpanel" style=""
+                                                     id="myCollapseTab1573498887035">
+                                                    <div class="card-body">
+                                                        <p class="card-text">
+                                                            <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
+                                                                In the event there is an issue with your order, contact
+                                                                your Sales Representative immediately. Facilities can
+                                                                return items upon request. If you are not satisfied with
+                                                                any product upon receipt, we will replace the product or
+                                                                issue a credit reimbursement.
+                                                            </span>
+                                                            <br/>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card bg-white">
+                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
+                                                   class="card-header collapsed" data-parent="#myCollapse"
+                                                   data-original-title="" title=""
+                                                   data-target="#myCollapseTab1573498886059">What happens during a
+                                                    recall?
+                                                </a>
+                                                <div class="collapse" role="tabpanel" style=""
+                                                     id="myCollapseTab1573498886059">
+                                                    <div class="card-body">
+                                                        <p class="card-text">
+                                                            <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
+                                                                Our system allows for full transparency of recall
+                                                                affected LOT numbers that have been distributed from our
+                                                                warehouse. Appropriate measures will be taken when a
+                                                                recall alert is received, and you will be notified
+                                                                immediately if necessary.
+                                                            </span>
+                                                            <br/>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
                     </div>
-                </section>
+                    <section class="about-us-section" style="background:#ffffff;">
+
+                    </section>
+                </t>
             </t>
         </t>
+
     </template>
 </odoo>
