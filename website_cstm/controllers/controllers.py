@@ -74,6 +74,14 @@ class WebsiteCstm(http.Controller):
     def careers(self):
         return http.request.render('website_cstm.careers_page')
 
+    @http.route('/our-mission', type='http', auth="public", website=True)
+    def mission(self):
+        return http.request.render('website_cstm.mission_page')
+
+    @http.route('/testimonials', type='http', auth="public", website=True)
+    def testimonials(self):
+        return http.request.render('website_cstm.testimonials_page')
+
     @http.route('/product_types', type='http', auth="public", website=True)
     def product_types_page(self):
         values = {"categories": request.env['product.public.category'].search([('parent_id', '=', False)])}
