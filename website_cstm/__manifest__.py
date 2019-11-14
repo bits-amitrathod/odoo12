@@ -38,7 +38,7 @@
         'views/request_quote.xml',
         'views/repair.xml',
         'views/repair_service_request.xml',
-        'views/career.xml'
+        'views/career.xml',
         'views/mission.xml',
         'views/testimonials.xml'
 
