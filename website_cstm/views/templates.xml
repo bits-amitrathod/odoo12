@@ -67,9 +67,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
             </div>
         </xpath>
-        <xpath expr="//header//li[@class='nav-item dropdown']" position="attributes">
-            <attribute name="class">nav-item</attribute>
-        </xpath>
     </template>
 
     <!--
@@ -136,7 +133,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                         </ul>
                     </div>
                     <div class="col-md-2 col-sm-6">
-                        <h6>Footer</h6>
+                        <h6 style="visibility: hidden;">Additional Links</h6>
                         <ul class="footer_menu">
                             <li>
                                 <a href="/downloadCatalog"

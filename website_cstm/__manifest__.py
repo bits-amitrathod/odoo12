@@ -14,6 +14,7 @@
         'data/website_data.xml',
         'views/views.xml',
         'views/templates.xml',
+
         'views/home.xml',
         'views/contact.xml',
         'views/faqs.xml',
@@ -27,13 +28,10 @@
         'views/porduct_catalog.xml',
         'views/terms.xml',
         'views/in_stock_notification.xml',
-        'views/repair.xml',
+        'views/stockhawk.xml',
         'views/sell.xml',
-        'views/equipment.xml',
-        'views/purchase_product.xml',
-        'views/vendor_list.xml'
-
-
+        'views/request_quote.xml',
+        'views/career.xml'
     ],
 
     'images': [
