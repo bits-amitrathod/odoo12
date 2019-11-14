@@ -67,6 +67,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
             </div>
         </xpath>
+        <xpath expr="//header//li[@class='nav-item dropdown']" position="attributes">
+            <attribute name="class">nav-item</attribute>
+        </xpath>
     </template>
 
     <!--
