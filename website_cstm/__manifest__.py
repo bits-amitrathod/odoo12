@@ -31,7 +31,8 @@
         'views/sell.xml',
         'views/equipment.xml',
         'views/purchase_product.xml',
-        'views/vendor_list.xml'
+        'views/vendor_list.xml',
+        'views/equipment_service_request.xml'
 
 
     ],
