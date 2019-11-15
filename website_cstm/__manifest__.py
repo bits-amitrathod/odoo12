@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Website CSTM",
+    'name': " Website CSTM",
 
      'author': "Benchmark IT Solutions",
     'website': "http://www.benchmarkitsolutions.com",
