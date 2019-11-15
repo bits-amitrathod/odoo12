@@ -20,36 +20,82 @@
             <field name="favicon" type="base64" file="website_cstm/static/src/img/favicon.png"/>
         </record>
 
-        <record id="menu_featured" model="website.menu">
-            <field name="name">Featured Products</field>
-            <field name="url">/shop/featured</field>
+
+<!--        Changes After SEO-->
+
+         <record id="menu_mission" model="website.menu">
+            <field name="name">Mission</field>
+            <field name="url">/our-mission</field>
             <field name="parent_id" ref="website.main_menu"/>
-            <field name="sequence" type="int">21</field>
+            <field name="sequence" type="int">1</field>
             <field name="website_id" ref="default_website"/>
         </record>
 
-        <record id="menu_capital" model="website.menu">
-            <field name="name">Capital Equipment</field>
-            <field name="url">/shop/capital-equipment</field>
+        <record id="menu_our_story" model="website.menu">
+            <field name="name">Our Story</field>
+            <field name="url">/about-us</field>
             <field name="parent_id" ref="website.main_menu"/>
-            <field name="sequence" type="int">22</field>
+            <field name="sequence" type="int">2</field>
             <field name="website_id" ref="default_website"/>
         </record>
 
-        <record id="menu_about" model="website.menu">
-            <field name="name">About</field>
-            <field name="url">/about</field>
+        <record id="menu_testimonials" model="website.menu">
+            <field name="name">Testimonials</field>
+            <field name="url">/testimonials</field>
             <field name="parent_id" ref="website.main_menu"/>
-            <field name="sequence" type="int">23</field>
+            <field name="sequence" type="int">3</field>
             <field name="website_id" ref="default_website"/>
         </record>
+
+        <record id="menu_careers" model="website.menu">
+            <field name="name">Careers</field>
+            <field name="url">/careers</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">4</field>
+            <field name="website_id" ref="default_website"/>
+        </record>
+
         <record id="menu_faqs" model="website.menu">
             <field name="name">FAQs</field>
             <field name="url">/faqs</field>
             <field name="parent_id" ref="website.main_menu"/>
-            <field name="sequence" type="int">24</field>
+            <field name="sequence" type="int">5</field>
             <field name="website_id" ref="default_website"/>
         </record>
+
+        <record id="menu_sell" model="website.menu">
+            <field name="name">SELL</field>
+            <field name="url">/sell-buy-back</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">9</field>
+            <field name="website_id" ref="default_website"/>
+        </record>
+
+        <record id="menu_stockhawk" model="website.menu">
+            <field name="name">STOCKHAWK</field>
+            <field name="url">/stockhawk</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">14</field>
+            <field name="website_id" ref="default_website"/>
+        </record>
+
+        <record id="menu_contact_us" model="website.menu">
+            <field name="name">Contact us</field>
+            <field name="url">/contactus</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">15</field>
+            <field name="website_id" ref="default_website"/>
+        </record>
+
+        <record id="menu_request_a_quote" model="website.menu">
+            <field name="name">Request a Quote</field>
+            <field name="url">/request-a-quote</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">16</field>
+            <field name="website_id" ref="default_website"/>
+        </record>
+
+
 
         <!--<record id="menu_website_sale_brand" model="website.menu">-->
         <!--<field name="name">Featured Products</field>-->
