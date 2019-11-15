@@ -462,8 +462,14 @@ class StockMove(models.Model):
 
                 need = move.product_qty - move.reserved_availability
                 for prdt_lot_qty in dict_asc_by_use_date:
+                    # Reserve new quants and create move lines accordingly.
+                    available_quantity = prdt_lot_qty['available_qty']
+                    if available_quantity <= 0:
+                        continue
                     if need > 0:
                         taken_quantity = move._update_reserved_quantity(need, prdt_lot_qty['available_qty'], move.location_id, prdt_lot_qty['lot_id'], strict=False)
+                        if float_is_zero(taken_quantity, precision_rounding=move.product_id.uom_id.rounding):
+                            continue
                         _logger.info('taken_quantity : %r', taken_quantity)
                         need = need - taken_quantity
                     if need == taken_quantity:
