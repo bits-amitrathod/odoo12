@@ -51,7 +51,7 @@ except ImportError:
 from email.message import Message
 
 _logger = logging.getLogger(__name__)
-MAX_POP_MESSAGES = 50
+MAX_POP_MESSAGES = 1
 MAIL_TIMEOUT = 60
 
 poplib._MAXLINE = 65536
