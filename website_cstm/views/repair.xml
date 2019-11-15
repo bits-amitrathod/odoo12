@@ -1,0 +1,361 @@
+<odoo>
+
+    <template id="repair_page" name="Repair Page">
+<t t-name="website.repair-1">
+  <t t-call="website.layout">
+    <div id="wrap" class="oe_structure oe_empty">
+      <section class="pt32 pb32">
+        <div class="container">
+          <div class="row s_nb_column_fixed">
+            <div class="col-lg-12 s_title pt16 pb16" style="text-align: center;">
+              <h1 style="margin-right: 0px; margin-bottom: 0px; margin-left: 0px; font-family: AmericanGotURW-Bol; font-weight: 600; line-height: 60px; color: rgb(255, 255, 255); font-size: 34px; background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; padding: 0px; vertical-align: baseline; outline: 0px; text-transform: capitalize;">
+                <span style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                  <font style="color: rgb(0, 0, 0);">Equipment Repair &amp;amp; Service</font>
+                </span>
+              </h1>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="s_text_image pt32 pb32 bg-white oe_custom_bg" style="">
+        <div class="container">
+          <div class="row align-items-center">
+            <div class="pt16 pb16 col-lg-8">
+              <h3 style="text-transform: capitalize; letter-spacing: 0px; color: rgb(50, 61, 73); background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 28px; line-height: 1.30435em; font-family: AmericanGotURW-Bol; font-style: normal;">
+                <b>SPS Equipment Repair</b>
+              </h3>
+              <h2>
+                <div class="wpb_text_column wpb_content_element " style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin: 0px 0px 35px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;">
+                  <div class="wpb_wrapper" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;"/>
+                </div>
+                <div class="separator  small left  " style="background: 0px 0px rgb(50, 61, 73); border: 0px; margin: 12px 0px; padding: 0px; vertical-align: baseline; outline: 0px; position: relative; height: 2px; width: 30px; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;"/>
+                <div class="wpb_text_column wpb_content_element " style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin: 0px 0px 35px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;">
+                  <div class="wpb_wrapper" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                    <p class="p1" style="background: 0px 0px; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-family: &quot;Open Sans&quot;, sans-serif; line-height: 26px;">
+                      <span class="s1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">At SPS, we provide you with a repair service that allows you to save money without sacrificing quality. We are set on a course of continuous improvement for ourselves, for you, and for the patients at the end of every medical device that we repair.</span>
+                    </p>
+                    <p class="p2" style="background: 0px 0px; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-family: &quot;Open Sans&quot;, sans-serif; line-height: 26px;">
+                      <span class="s1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">SPS operates out of a world class, ISO13485:2016 certified laboratory and is dedicated to providing you cost-savings in the equipment repair market.</span>
+                    </p>
+                    <p style="background: 0px 0px; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-family: &quot;Open Sans&quot;, sans-serif; line-height: 26px;">&amp;nbsp;</p>
+                    <p class="p3" style="background: 0px 0px; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-family: &quot;Open Sans&quot;, sans-serif; line-height: 26px;">
+                      <span class="s1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                        <b style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">What does ISO Certified mean?</b>
+                      </span>
+                    </p>
+                    <p class="p3" style="background: 0px 0px; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-family: &quot;Open Sans&quot;, sans-serif; line-height: 26px;">
+                      <span class="s1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">It means that we consistently meet customer and applicable regulatory requirements.&amp;nbsp;We are set on a course of continuous improvement for ourselves, for you, and for the patients at the end of every medical device that we repair. In addition, the quality management system we use to inspect and repair your equipment is held to the highest standard.</span>
+                    </p>
+                  </div>
+                </div>
+              </h2>
+            </div>
+            <div class="pt16 pb16 col-lg-4">
+              <img src="/website_cstm/static/src/img/flexiscope.jpg" class="img img-fluid mx-auto" alt="Odoo • Text and Image" data-original-title="" title="" aria-describedby="tooltip84328"/>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="s_text_image pt32 pb32">
+        <div class="container">
+          <div class="row align-items-start">
+            <div class="pt16 pb16 col-lg-6">
+              <img src="/website_cstm/static/src/img/Stryker-Drill.png" class="img img-fluid mx-auto" alt="Odoo • Image and Text" data-original-title="" title="" aria-describedby="tooltip54086"/>
+            </div>
+            <div class="pt16 pb16 col-lg-6">
+              <h3 style="text-transform: capitalize; letter-spacing: 0px; color: rgb(50, 61, 73); background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 28px; line-height: 1.30435em; font-family: AmericanGotURW-Bol; font-style: normal; text-align: center;">
+                <span class="s1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                  <b>Why Choose SPS?</b>
+                </span>
+              </h3>
+              <h2>
+                <div class="wpb_text_column wpb_content_element " style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin: 0px 0px 35px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;">
+                  <div class="wpb_wrapper" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;"/>
+                </div>
+                <div class="separator  small center  " style="background: 0px 0px rgb(50, 61, 73); border: 0px; margin: 12px auto; padding: 0px; vertical-align: baseline; outline: 0px; position: relative; height: 2px; width: 30px; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;"/>
+                <div class="wpb_text_column wpb_content_element " style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin: 0px 0px 35px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;">
+                  <div class="wpb_wrapper" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                    <ul style="background: 0px 0px; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; list-style-position: inside;">
+                      <li class="p3" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; text-align: left;">
+                        <span class="s1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Our pricing is competitive and budget-friendly—no contracts needed!</span>
+                        <br/>
+                        <br/>
+                      </li>
+                      <li class="p3" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; text-align: left;">
+                        <span class="s1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">In order to bring your equipment to like-new condition, our highly-skilled technicians use a 35-point inspection process.</span>
+                        <br/>
+                        <br/>
+                      </li>
+                      <li class="p3" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; text-align: left;">
+                        <span class="s1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Enjoy an easy, streamlined process that makes repair quick, painless, and transparent.</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </h2>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="pb32 bg-white oe_custom_bg pt0" style="">
+        <div class="container">
+          <div class="row s_nb_column_fixed">
+            <div class="col-lg-12 s_title pb16 pt4" style="text-align: center;">
+              <h3 class="p1" style="text-transform: capitalize; color: rgb(50, 61, 73); background: 0px 0px rgb(255, 255, 255); border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 28px; line-height: 1.30435em; font-family: AmericanGotURW-Bol;">
+                <img class="img-fluid o_we_custom_image" src="/website_cstm/static/src/img/checks.jpg" data-original-title="" title="" aria-describedby="tooltip308049"/>
+                <br/>
+              </h3>
+              <h3 class="p1" style="margin-right: 0px; margin-bottom: 0px; margin-left: 0px; font-family: AmericanGotURW-Bol; line-height: 1.30435em; color: rgb(50, 61, 73); font-size: 28px; text-transform: capitalize; background: 0px 0px rgb(255, 255, 255); border: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                <font style="font-size: 48px;">Our EASY 3 Step Process</font>
+              </h3>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="s_features pb32 bg-white oe_custom_bg pt0">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-4 pt32 text-center pb0">
+              <h4 style="color: rgb(50, 61, 73); background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 20px; line-height: 38px; letter-spacing: 0px; text-transform: capitalize; font-family: AmericanGotURW-Bol; font-style: normal; text-align: center;">
+                <b>
+                  <font style="font-size: 36px;">Ship</font>
+                </b>
+              </h4>
+              <h3>
+                <div class="vc_custom_1541714699070 wpb_content_element wpb_text_column" style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin: 0px 0px 35px; padding-top: 0px; padding-right: 0px; padding-left: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px; text-align: left; padding-bottom: 12px !important;">
+                  <div class="wpb_wrapper" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;"/>
+                </div>
+                <span class="separator_with_icon" style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin: 0px auto; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); display: block; font-size: 18px; line-height: 21px; position: relative; width: 783px; max-width: 100%; font-family: Lato, sans-serif;">
+                  <span class="fa fa-share fa-3x" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;" data-original-title="" title="" aria-describedby="tooltip745745"/>
+                </span>
+                <div class="wpb_text_column wpb_content_element  vc_custom_1542061538965" style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin: 0px 0px 35px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px; text-align: left; padding-top: 18px !important;">
+                  <div class="wpb_wrapper" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                    <p style="background: 0px 0px; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-family: &quot;Open Sans&quot;, sans-serif; line-height: 26px; text-align: center;">
+                      <span class="s1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Fill out our customer&amp;nbsp;<a href="/slides/slide/repair-service-request-form-3" target="_blank" rel="noopener" style="color: rgb(232, 19, 30); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; cursor: pointer;" data-original-title="" title="" aria-describedby="tooltip275600">repair form</a></span>
+                      <span class="s1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">. Include the form with your shipment and fax a copy to:</span>
+                    </p>
+                    <p style="background: 0px 0px; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-family: &quot;Open Sans&quot;, sans-serif; line-height: 26px; text-align: center;">
+                      <span class="s1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">412-221-1096</span>
+                    </p>
+                  </div>
+                </div>
+              </h3>
+              <h4 style="color: rgb(50, 61, 73); background: 0px 0px; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 20px; line-height: 38px; letter-spacing: 0px; text-transform: capitalize; font-family: AmericanGotURW-Bol;">OR</h4>
+              <h3>
+                <div class="wpb_text_column wpb_content_element  vc_custom_1542061538965" style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin: 0px 0px 35px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px; text-align: left; padding-top: 18px !important;">
+                  <div class="wpb_wrapper" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                    <p style="background: 0px 0px; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-family: &quot;Open Sans&quot;, sans-serif; line-height: 26px; text-align: center;"><a href="/equipment-service-request-form" target="_blank" rel="noopener" style="color: rgb(232, 19, 30); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; cursor: pointer;" data-original-title="" title="" aria-describedby="tooltip351842">Submit an Online Repair Ticket</a>. Print the confirmation to include with your shipment.</p>
+                    <p style="background: 0px 0px; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-family: &quot;Open Sans&quot;, sans-serif; line-height: 26px; text-align: center;">
+                      <span class="s1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">If you need a loaner device, please contact your SPS Account Manager immediately.</span>
+                    </p>
+                  </div>
+                </div>
+              </h3>
+            </div>
+            <div class="col-lg-4 pt32 text-center pb0">
+              <h4 style="color: rgb(50, 61, 73); background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 20px; line-height: 38px; letter-spacing: 0px; text-transform: capitalize; font-family: AmericanGotURW-Bol; font-style: normal; text-align: center;">
+                <font style="font-size: 36px;">
+                  <b>Inspection &amp;amp; Repair</b>
+                </font>
+              </h4>
+              <h3>
+                <div class="wpb_text_column wpb_content_element  vc_custom_1541714693095" style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin: 0px 0px 35px; padding-top: 0px; padding-right: 0px; padding-left: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px; text-align: left; padding-bottom: 12px !important;">
+                  <div class="wpb_wrapper" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;"/>
+                </div>
+                <span class="separator_with_icon" style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin: 0px auto; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); display: block; font-size: 18px; line-height: 21px; position: relative; width: 783px; max-width: 100%; font-family: Lato, sans-serif;">
+                  <span class="fa fa-wrench fa-3x" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;" data-original-title="" title="" aria-describedby="tooltip652523"/>
+                </span>
+                <div class="wpb_text_column wpb_content_element  vc_custom_1541714628179" style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin: 0px 0px 35px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px; text-align: left; padding-top: 18px !important;">
+                  <div class="wpb_wrapper" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                    <p style="background: 0px 0px; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-family: &quot;Open Sans&quot;, sans-serif; line-height: 26px; text-align: center;">We perform an inspection of the equipment, and provide you with a quote and the estimated turnaround time. At this time, you will also be asked to authorize the repair unless you have provided a pre-authorized amount on the repair form.</p>
+                    <p style="background: 0px 0px; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-family: &quot;Open Sans&quot;, sans-serif; line-height: 26px; text-align: center;">
+                      <br/>
+                    </p>
+                    <p style="background: 0px 0px; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-family: &quot;Open Sans&quot;, sans-serif; line-height: 26px; text-align: center;">
+                      <a itemprop="url" href="/equipment-service-request-form" data-hover-background-color="#323d49" data-hover-border-color="#323d49" data-hover-color="#ffffff" class="qbutton center default btn btn-danger" style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 2px solid rgb(232, 19, 30); margin: 0px; padding: 0px 23px; vertical-align: baseline; cursor: pointer; transition: color 0.1s linear 0s, background-color 0.1s linear 0s, border-color 0.1s linear 0s; display: inline-block; font-weight: 900; font-family: Lato, sans-serif; text-transform: uppercase; white-space: nowrap; position: relative; width: auto; height: 39px; line-height: 39px; font-size: 14px; letter-spacing: 1px; border-radius: 4px; text-shadow: none; box-sizing: initial !important;" data-original-title="" title="" aria-describedby="tooltip629107">SUBMIT AN ONLINE REPAIR TICKET</a>
+                      <br/>
+                    </p>
+                    <p style="background: 0px 0px; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-family: &quot;Open Sans&quot;, sans-serif; line-height: 26px; text-align: center;">
+                      <br/>
+                    </p>
+                    <p style="background: 0px 0px; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-family: &quot;Open Sans&quot;, sans-serif; line-height: 26px; text-align: center;">OR</p>
+                    <div class="s_btn text-center pt16 pb16" data-name="Buttons">
+                      <b data-original-title="" title="" aria-describedby="tooltip169863">
+                        <a href="/slides/slide/repair-service-request-form-3" class="btn btn-danger" data-original-title="" title="" aria-describedby="tooltip266628">DOWNLOAD A PRINTABLE FORM</a>
+                      </b>
+                      <br/>
+                    </div>
+                  </div>
+                </div>
+              </h3>
+            </div>
+            <div class="col-lg-4 pt32 text-center pb0">
+              <h4 style="color: rgb(50, 61, 73); background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 20px; line-height: 38px; letter-spacing: 0px; text-transform: capitalize; font-family: AmericanGotURW-Bol; font-style: normal; text-align: center;">
+                <font style="font-size: 36px;">
+                  <b>Return</b>
+                </font>
+              </h4>
+              <h3>
+                <div class="wpb_text_column wpb_content_element  vc_custom_1541714684559" style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin: 0px 0px 35px; padding-top: 0px; padding-right: 0px; padding-left: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px; text-align: left; padding-bottom: 12px !important;">
+                  <div class="wpb_wrapper" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;"/>
+                </div>
+                <span class="separator_with_icon" style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin: 0px auto; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); display: block; font-size: 18px; line-height: 21px; position: relative; width: 783px; max-width: 100%; font-family: Lato, sans-serif;">
+                  <span class="fa fa-reply fa-3x" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;" data-original-title="" title="" aria-describedby="tooltip836732"/>
+                </span>
+                <div class="wpb_text_column wpb_content_element  vc_custom_1541714635717" style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin: 0px 0px 35px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px; text-align: left; padding-top: 18px !important;">
+                  <div class="wpb_wrapper" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                    <p style="background: 0px 0px; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-family: &quot;Open Sans&quot;, sans-serif; line-height: 26px; text-align: center;">Once repair is complete, your item is shipped and you will receive an invoice. Payment is due in accordance to the agreed upon terms.</p>
+                  </div>
+                </div>
+              </h3>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="s_text_image pt32 pb32">
+        <div class="container">
+          <div class="row align-items-start">
+            <div class="col-lg-6 pt16 pb16">
+              <h3 style="text-transform: capitalize; letter-spacing: 0px; font-weight: normal; color: rgb(50, 61, 73); background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 28px; line-height: 1.30435em; font-family: AmericanGotURW-Bol; font-style: normal;">Repair/Exchange Program</h3>
+              <h2>
+                <div class="wpb_text_column wpb_content_element " style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin: 0px 0px 35px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;">
+                  <div class="wpb_wrapper" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;"/>
+                </div>
+                <div class="separator  small left  " style="background: 0px 0px rgb(50, 61, 73); border: 0px; margin: 12px 0px; padding: 0px; vertical-align: baseline; outline: 0px; position: relative; height: 2px; width: 30px; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;"/>
+                <div class="wpb_text_column wpb_content_element " style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin: 0px 0px 35px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;">
+                  <div class="wpb_wrapper" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                    <p class="p1" style="background: 0px 0px; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-family: &quot;Open Sans&quot;, sans-serif; line-height: 26px;">Do you find yourself needing upgraded equipment, but you have budgetary constraints? Do you have equipment that has been repaired to the point that it needs to be retired? For your convenience, SPS offers an equipment Repair/Exchange program. Upon inspection, we’ll let you know whether repair is possible or replacement is appropriate for economic or safety reasons. We’ll contact you for a decision, and your repair/exchange will be on its way back to your facility</p>
+                  </div>
+                </div>
+              </h2>
+            </div>
+            <div class="col-lg-6 pt16 pb16">
+              <h3 style="text-transform: capitalize; letter-spacing: 0px; font-weight: normal; color: rgb(50, 61, 73); background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 28px; line-height: 1.30435em; font-family: AmericanGotURW-Bol; font-style: normal;">Loaner Program</h3>
+              <h2>
+                <div class="wpb_text_column wpb_content_element " style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin: 0px 0px 35px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;">
+                  <div class="wpb_wrapper" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;"/>
+                </div>
+                <div class="separator  small left  " style="background: 0px 0px rgb(50, 61, 73); border: 0px; margin: 12px 0px; padding: 0px; vertical-align: baseline; outline: 0px; position: relative; height: 2px; width: 30px; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;"/>
+                <div class="wpb_text_column wpb_content_element " style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin: 0px 0px 35px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;">
+                  <div class="wpb_wrapper" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                    <p class="p1" style="background: 0px 0px; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-family: &quot;Open Sans&quot;, sans-serif; line-height: 26px;">We offer loaner equipment service FREE of charge, subject to equipment availability.</p>
+                  </div>
+                </div>
+              </h2>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="pt32 bg-white oe_custom_bg pb0" style="">
+        <div class="container">
+          <div class="row s_nb_column_fixed">
+            <div class="col-lg-12 s_title pt16 pb16" style="text-align: center;">
+              <h3 class="p1" style="text-transform: capitalize; color: rgb(50, 61, 73); background: 0px 0px rgb(255, 255, 255); border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 28px; line-height: 1.30435em; font-family: AmericanGotURW-Bol;">
+                <img class="img-fluid o_we_custom_image" src="/website_cstm/static/src/img/rigid-300x96.jpg"/>
+                <br/>
+              </h3>
+              <h3 class="p1" style="text-transform: capitalize; color: rgb(50, 61, 73); background: 0px 0px rgb(255, 255, 255); border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 28px; line-height: 1.30435em; font-family: AmericanGotURW-Bol;">
+                <b>Types Of Equipment We Repair</b>
+              </h3>
+              <h3 class="p1" style="text-transform: capitalize; color: rgb(50, 61, 73); background: 0px 0px rgb(255, 255, 255); border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 28px; line-height: 1.30435em; font-family: AmericanGotURW-Bol;">
+                <br/>
+              </h3>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="s_features pb32 bg-white oe_custom_bg pt0" style="">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-4 pt32 pb32 text-center">
+              <h3>
+                <ul style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; list-style-position: inside; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px; text-align: left;">
+                  <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                    <strong style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Flexible Scopes</strong>
+                  </li>
+                  <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                    <strong style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Microscopes</strong>
+                  </li>
+                  <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                    <strong style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Rigid Scopes</strong>
+                  </li>
+                  <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                    <strong style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Semi-Rigid Scopes</strong>
+                  </li>
+                  <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                    <strong style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Cameras</strong>
+                  </li>
+                </ul>
+              </h3>
+            </div>
+            <div class="col-lg-4 pt32 pb32 text-center">
+              <h3>
+                <ul style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; list-style-position: inside; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px; text-align: left;">
+                  <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                    <strong style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Flexible Scopes</strong>
+                  </li>
+                  <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                    <strong style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Microscopes</strong>
+                  </li>
+                  <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                    <strong style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Rigid Scopes</strong>
+                  </li>
+                  <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                    <strong style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Semi-Rigid Scopes</strong>
+                  </li>
+                  <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                    <strong style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Cameras</strong>
+                  </li>
+                </ul>
+              </h3>
+            </div>
+            <div class="col-lg-4 pt32 pb32 text-center">
+              <h3>
+                <ul style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; list-style-position: inside; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px; text-align: left;">
+                  <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                    <strong style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Printers</strong>
+                  </li>
+                  <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                    <strong style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Power Tools + Attachments</strong>
+                  </li>
+                  <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                    <strong style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">ESU Generators</strong>
+                  </li>
+                  <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                    <strong style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Harmonic Scalpels</strong>
+                  </li>
+                  <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                    <strong style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Phaco Handpieces</strong>
+                  </li>
+                </ul>
+              </h3>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="pt32 pb32">
+        <div class="container">
+          <div class="row s_nb_column_fixed">
+            <div class="col-lg-12 s_title pt16 pb16" style="text-align: center;">
+              <h3 style="text-transform: capitalize; color: rgb(50, 61, 73); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 28px; line-height: 1.30435em; font-family: AmericanGotURW-Bol;">
+                <b>Contact Us</b>
+              </h3>
+              <h3 style="text-transform: capitalize; color: rgb(50, 61, 73); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 28px; line-height: 1.30435em; font-family: AmericanGotURW-Bol;">
+                <br/>
+              </h3>
+              <h3 style="text-transform: capitalize; color: rgb(50, 61, 73); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 28px; line-height: 1.30435em; font-family: AmericanGotURW-Bol;"/>
+              <p style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; line-height: 26px; text-transform: none;">
+                <strong style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">For further questions call&amp;nbsp;<a href="tel:1-412-281-4186" style="color: rgb(232, 19, 30); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; cursor: pointer;">(412)281-4186</a></strong>
+              </p>
+              <p style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; line-height: 26px; text-transform: none;">
+                <strong style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Or email:&amp;nbsp;<a href="mailto:repair@surgicalproductsolutions.com" style="color: rgb(232, 19, 30); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; cursor: pointer;">Repair@surgicalproductsolutions.com</a></strong>
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </t>
+</t>
+    </template>
+</odoo>

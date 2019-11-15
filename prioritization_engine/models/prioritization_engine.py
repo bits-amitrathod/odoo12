@@ -3,7 +3,9 @@ import logging
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
 import re
-from odoo import SUPERUSER_ID
+# from odoo import SUPERUSER_ID
+
+SUPERUSER_ID = 2
 
 _logger = logging.getLogger(__name__)
 
@@ -475,8 +477,8 @@ class PrioritizationEngine(models.TransientModel):
             current_processing_doc_id = sps_cust_uploaded_document.id
             current_processed_docs = sps_cust_uploaded_document.document_processed_count
             template = None
-            sps_customer_requirements = self.env['sps.customer.requests'].search([('document_id', '=', sps_cust_uploaded_document.id),
-                                    ('status', 'in', ['Partial', 'InCoolingPeriod', 'New', 'Inprocess', 'Incomplete', 'Unprocessed'])])
+            sps_customer_requirement = self.env['sps.customer.requests'].search([('document_id', '=', sps_cust_uploaded_document.id), ('status', 'in', ['Partial', 'InCoolingPeriod', 'New', 'Inprocess', 'Incomplete', 'Unprocessed'])])
+            sps_customer_requirements = self.env['sps.customer.requests'].search([('document_id', '=', sps_cust_uploaded_document.id), ('status', 'in', ['InCoolingPeriod', 'New', 'Inprocess', 'Incomplete', 'Unprocessed'])])
             sps_customer_requirements_all = self.env['sps.customer.requests'].search([('document_id', '=', sps_cust_uploaded_document.id), ('status', 'not in', ['Voided'])])
 
             if sps_cust_uploaded_document.template_type.lower().strip() == 'requirement':
@@ -485,7 +487,8 @@ class PrioritizationEngine(models.TransientModel):
                     if len(sps_customer_requirements) == len(sps_customer_requirements_all):
                         template = self.env.ref('customer-requests.final_email_response_on_uploaded_document').sudo()
                 else:
-                    if len(sps_customer_requirements) > 0:
+
+                    if len(sps_customer_requirement) > 0:
                         if len(sps_customer_requirements) == len(sps_customer_requirements_all):
                             template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
                         if sps_cust_uploaded_document.status != 'In Process':
@@ -501,7 +504,7 @@ class PrioritizationEngine(models.TransientModel):
                         template = self.env.ref('customer-requests.final_email_response_on_uploaded_document').sudo()
                 else:
                     if int(current_processing_doc_id) == int(sps_cust_uploaded_document.id):
-                        if len(sps_customer_requirements) > 0:
+                        if len(sps_customer_requirement) > 0:
                             if len(sps_customer_requirements) == len(sps_customer_requirements_all):
                                 template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
                             if sps_cust_uploaded_document.status != 'In Process':
