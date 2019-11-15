@@ -2,21 +2,46 @@
     <template id="testimonials_page" name="Testimonials">
         <t t-name="website.testimonials">
             <t t-call="website.layout">
-                <div id="wrap" class="oe_structure oe_empty">
-                    <section class="s_title">
+                <div id="wrap" class="oe_structure oe_empty" style="background: #ffffff;">
+                    <section class="pt32 pb32" style="background-color: #f6f6f6">
                         <div class="container">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <h1 class="text-center">Testimonials</h1>
-                                    <h3 class="text-center text-muted">TAKE THEIR WORD FOR IT. OUR CUSTOMERS SPEAK
-                                        VOLUMES ABOUT OUR SERVICES, HERE’S WHAT THEY HAVE TO SAY:
-                                    </h3>
+                            <div class="row s_nb_column_fixed">
+                                <div class="col-lg-12 s_title pt16 pb16" style="text-align: center;">
+                                    <h1 style="color: rgb(255, 255, 255); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 34px; line-height: 60px; text-transform: capitalize; font-family: AmericanGotURW-Bol; font-weight: 600;">
+                                        <span style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                                            <font style="color: rgb(0, 0, 0);">Testimonials</font>
+                                        </span>
+                                    </h1>
                                 </div>
                             </div>
                         </div>
                     </section>
-                    <div id="myCarousel1567380584379" class="carousel slide s_banner s_carousel s_carousel_default"
-                         data-interval="10000" style="">
+                    <section class="s_title bg-white oe_custom_bg" style="background-color: #f6f6f6">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-12 pt24">
+                                    <h5 class="large"
+                                        style="color: rgb(50, 61, 73); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; letter-spacing: 5px; text-transform: uppercase; font-size: 18px; line-height: 1.57143em; font-family: Lato, sans-serif; text-align: center;">
+                                        TAKE THEIR WORD FOR IT. OUR CUSTOMERS SPEAK VOLUMES ABOUT OUR SERVICES, HERE’S
+                                        WHAT THEY HAVE TO SAY:
+                                    </h5>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="pt0 pb0 bg-white oe_custom_bg" style="">
+                        <div class="container">
+                            <div class="row s_nb_column_fixed">
+                                <div class="col-lg-12 s_title pt16 pb16" style="text-align: center;">
+                                    <div class="s_hr text-left pt16 pb16">
+                                        <hr class="border-600 s_hr_solid w-100 mx-auto s_hr_3px"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <div id="myCarousel1567380584379" class="carousel s_banner s_carousel slide s_carousel_boxed"
+                         data-interval="5000" style="    min-height: 310px;">
                         <ol class="carousel-indicators">
                             <li data-target="#myCarousel1567380584379" data-slide-to="0" class="active"/>
                             <li data-target="#myCarousel1567380584379" data-slide-to="1"/>
@@ -24,163 +49,186 @@
                             <li data-target="#myCarousel1567380584379" data-slide-to="3"/>
                             <li data-target="#myCarousel1567380584379" data-slide-to="4"/>
                             <li data-target="#myCarousel1567380584379" data-slide-to="5"/>
-                            <li data-target="#myCarousel1567380584379" data-slide-to="6"/>
-                            <li data-target="#myCarousel1567380584379" data-slide-to="7"/>
-                            <li data-target="#myCarousel1567380584379" data-slide-to="8"/>
-                            <li data-target="#myCarousel1567380584379" data-slide-to="9"/>
+
                         </ol>
                         <div class="carousel-inner">
-                            <div class="active carousel-item oe_custom_bg oe_img_bg">
+                            <!--div class="carousel-item bg-white oe_custom_bg active" style="">
+                              <div class="container">
+                                <div class="row content">
+                                  <div class="carousel-content col-md-12 mt128 mb96" style="">
+                                    <h4/>
+                                    <p style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; line-height: 1.66667em; font-style: italic; text-align: center;">
+                                      <font style="font-size: 18px;">A career at SPS gave me the opportunity to progress not only professionally, but personally. The potential for growth here is uncapped, which allows us to set our goals high and reach them. We are immersed into such a motivating atmosphere that encourages us to constantly learn new things, and pushes us to exceed our own expectations.</font>
+                                    </p>
+                                    <p class="testimonial_author" style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin: 22px 0px 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(232, 19, 30); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; line-height: 1.66667em; text-align: center;">- Brittany Edwards, Sales Account Manager, 13 months</p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="carousel-item bg-white oe_custom_bg" style="">
+                              <div class="container">
+                                <div class="row content">
+                                  <div class="carousel-content col-md-12 mt128 mb96" style="">
+                                    <h4/>
+                                    <p style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; line-height: 1.66667em; font-style: italic; text-align: center;">
+                                      <font style="font-size: 18px;">I love working at SPS because of the opportunity for personal and professional growth. The work environment enhances the ability for both individual and team success. While the company’s culture provides opportunity for innovative career experiences.</font>
+                                    </p>
+                                    <p class="testimonial_author" style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin: 22px 0px 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(232, 19, 30); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; line-height: 1.66667em; text-align: center;">- Matt Zardecki, Acquisition Manager, 3 years at SPS</p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="carousel-item bg-white oe_custom_bg" style="">
+                              <div class="container">
+                                <div class="row content">
+                                  <div class="carousel-content col-md-12 mt128 mb96" style="">
+                                    <h4/>
+                                    <p style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; line-height: 1.66667em; font-style: italic; text-align: center;">
+                                      <font style="font-size: 18px;">One of the many reasons why I love SPS is the opportunity for growth and development. Working at SPS has allowed me to take my passion for medical device sales to the next level with the ongoing training and motivational coworkers it provides. The culture here makes it feel like a family, we all share the same core values and push each other to better ourselves every day. Its hands down one of the best places I have ever worked.</font>
+                                    </p>
+                                    <p class="testimonial_author" style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin: 22px 0px 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(232, 19, 30); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; line-height: 1.66667em; text-align: center;">- Chelsea Cernigliaro, Sales Manager, 3 years at SPS</p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="carousel-item bg-white oe_custom_bg" style="">
+                              <div class="container">
+                                <div class="row content">
+                                  <div class="carousel-content col-md-12 mt128 mb96" style="">
+                                    <h4/>
+                                    <p style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; line-height: 1.66667em; font-style: italic; text-align: center;">
+                                      <font style="font-size: 18px;">One of the many reasons why I love SPS is the opportunity for growth and development. Working at SPS has allowed me to take my passion for medical device sales to the next level with the ongoing training and motivational coworkers it provides. The culture here makes it feel like a family, we all share the same core values and push each other to better ourselves every day. Its hands down one of the best places I have ever worked.</font>
+                                    </p>
+                                    <p class="testimonial_author" style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin: 22px 0px 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(232, 19, 30); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; line-height: 1.66667em; text-align: center;">- Chelsea Cernigliaro, Sales Manager, 3 years at SPS</p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="carousel-item bg-white oe_custom_bg" style="">
+                              <div class="container">
+                                <div class="row content">
+                                  <div class="carousel-content col-md-12 mt128 mb96" style="">
+                                    <h2/>
+                                    <p style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 21px; line-height: 1.66667em; font-style: italic; text-align: center;">
+                                      <font style="font-size: 18px;">SPS is the type of place that you work if you want your personal and professional aspirations to go from dreams to reality. I work in a space that promotes growth and creativity—alongside leadership that is adaptive and responsive. I’ve been at SPS for about a year now, and I look forward to the future of my career here.</font>
+                                    </p>
+                                    <p class="testimonial_author" style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin: 22px 0px 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(232, 19, 30); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; line-height: 1.66667em; text-align: center;">- Whitney Rathfon, Capital Equipment Manager</p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div -->
+                            <div class="carousel-item bg-white oe_custom_bg active" style="">
                                 <div class="container">
                                     <div class="row content">
                                         <div class="carousel-content col-md-12 mt128 mb96" style="">
-                                            <h4>A career at SPS gave me the opportunity to progress not only
-                                                professionally, but personally. The potential for growth here is
-                                                uncapped, which allows us to set our goals high and reach them. We are
-                                                immersed into such a motivating atmosphere that encourages us to
-                                                constantly learn new things, and pushes us to exceed our own
-                                                expectations.
-                                            </h4>
-                                            <p>- Brittany Edwards, Sales Account Manager, 13 months</p>
+                                            <h4/>
+                                            <p style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; line-height: 1.66667em; font-style: italic; text-align: center;">
+                                                <font style="font-size: 18px;">[to Jenn] All I can say is that SPS, and
+                                                    especially you, are genuine, professional and extremely pleasant.
+                                                    You all will go above and beyond to help us out any way you can. It
+                                                    has been a true pleasure.
+                                                </font>
+                                            </p>
+                                            <p class="testimonial_author"
+                                               style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin: 22px 0px 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(232, 19, 30); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; line-height: 1.66667em; text-align: center;">
+                                                Marty G., North Eastern Regional Hospital, RN, CNOR
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="carousel-item oe_custom_bg oe_img_bg">
+                            <div class="carousel-item bg-white oe_custom_bg" style="">
                                 <div class="container">
                                     <div class="row content">
                                         <div class="carousel-content col-md-12 mt128 mb96" style="">
-                                            <h4>I love working at SPS because of the opportunity for personal and
-                                                professional growth. The work environment enhances the ability for both
-                                                individual and team success. While the company’s culture provides
-                                                opportunity for innovative career experiences.
-                                            </h4>
-                                            <p>- Matt Zardecki, Acquisition Manager, 3 years at SPS</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="carousel-item oe_custom_bg oe_img_bg">
-                                <div class="container">
-                                    <div class="row content">
-                                        <div class="carousel-content col-md-12 mt128 mb96" style="">
-                                            <h4>One of the many reasons why I love SPS is the opportunity for growth and
-                                                development. Working at SPS has allowed me to take my passion for
-                                                medical device sales to the next level with the ongoing training and
-                                                motivational coworkers it provides. The culture here makes it feel like
-                                                a family, we all share the same core values and push each other to
-                                                better ourselves every day. Its hands down one of the best places I have
-                                                ever worked.
-                                            </h4>
-                                            <p>- Chelsea Cernigliaro, Sales Manager, 3 years at SPS</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="carousel-item oe_custom_bg oe_img_bg">
-                                <div class="container">
-                                    <div class="row content">
-                                        <div class="carousel-content col-md-12 mt128 mb96" style="">
-                                            <h4>SPS is the type of place that you work if you want your personal and
-                                                professional aspirations to go from dreams to reality. I work in a space
-                                                that promotes growth and creativity—alongside leadership that is
-                                                adaptive and responsive. I’ve been at SPS for about a year now, and I
-                                                look forward to the future of my career here.
-                                            </h4>
-                                            <p>- Whitney Rathfon, Capital Equipment Manager</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="carousel-item oe_custom_bg oe_img_bg">
-                                <div class="container">
-                                    <div class="row content">
-                                        <div class="carousel-content col-md-12 mt128 mb96" style="">
-                                            <h2 class="o_default_snippet_text">Your Slide Title</h2>
-                                            <h4>[to Jenn] All I can say is that SPS, and especially you, are genuine,
-                                                professional and extremely pleasant. You all will go above and beyond to
-                                                help us out any way you can. It has been a true pleasure.
-                                            </h4>
-                                            <p>- Marty G., North Eastern Regional Hospital, RN, CNOR</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="carousel-item oe_custom_bg oe_img_bg">
-                                <div class="container">
-                                    <div class="row content">
-                                        <div class="carousel-content col-md-12 mt128 mb96" style="">
-                                            <h4>We have worked with Surgical Product Solutions for the past year &amp;amp;
-                                                a half. They have assisted us in purchasing our overstock items or items
-                                                no longer being used at our facility. As many hospitals know, the
-                                                original manufacturer is not always willing to "take back" product or
-                                                provide "credit", so it is great to have a third party vendor like
-                                                Surgical Product Solutions to help us out.
-                                            </h4>
-                                            <p>- Patty C., North Eastern Regional Hospital, Product Utilization/Resource
+                                            <h4/>
+                                            <p style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; line-height: 1.66667em; font-style: italic; text-align: center;">
+                                                <font style="font-size: 18px;">We have worked with Surgical Product
+                                                    Solutions for the past year &amp;amp; a half. They have assisted us
+                                                    in purchasing our overstock items or items no longer being used at
+                                                    our facility. As many hospitals know, the original manufacturer is
+                                                    not always willing to “take back” product or provide “credit”, so it
+                                                    is great to have a third party vendor like Surgical Product
+                                                    Solutions to help us out.
+                                                </font>
+                                            </p>
+                                            <p class="testimonial_author"
+                                               style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin: 22px 0px 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(232, 19, 30); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; line-height: 1.66667em; text-align: center;">
+                                                Patty C., North Eastern Regional Hospital, Product Utilization/Resource
                                                 Nurse
                                             </p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="carousel-item oe_custom_bg oe_img_bg">
+                            <div class="carousel-item bg-white oe_custom_bg" style="">
                                 <div class="container">
                                     <div class="row content">
                                         <div class="carousel-content col-md-12 mt128 mb96" style="">
-                                            <h4>We have been nothing but pleased with the products and service we have
-                                                received from Surgical Product Solutions. Customer service is prompt and
-                                                friendly!
-                                            </h4>
-                                            <p>- Lisa W., A Great Lakes Surgery Center, OR Buyer</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="carousel-item oe_custom_bg oe_img_bg">
-                                <div class="container">
-                                    <div class="row content">
-                                        <div class="carousel-content col-md-12 mt128 mb96" style="">
-                                            <h4>It is a pleasure working with Surgical Product Solutions. The
-                                                cost-savings is amazing!! 10 times out of 10 we receive an immediate
-                                                response to all of our Surgical needs.
-                                            </h4>
-                                            <p>- Kendra N., A South Central Region Surgery Center, Materials Manager</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="carousel-item oe_custom_bg oe_img_bg">
-                                <div class="container">
-                                    <div class="row content">
-                                        <div class="carousel-content col-md-12 mt128 mb96" style="">
-                                            <h4>Since our hospital has partnered up with SPS, we have saved a tremendous
-                                                amount of money! The customer service staff is always updating their
-                                                catalog and sending it to me so that we can continue saving money.
-                                                Thanks for all you do!
-                                            </h4>
-                                            <p>- Michelle W., A South Eastern Region Hospital, Inventory Control
-                                                Specialist
+                                            <h4/>
+                                            <p style="margin-right: 0px; margin-bottom: 0px; margin-left: 0px; font-size: 14px; background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; line-height: 1.66667em; font-style: italic; text-align: center;">
+                                                <font style="font-size: 18px;">It is a pleasure working with Surgical
+                                                    Product Solutions. The cost-savings is amazing!! 10 times out of 10
+                                                    we receive an immediate response to all of our Surgical needs.
+                                                </font>
+                                            </p>
+                                            <p class="testimonial_author"
+                                               style="margin: 22px 0px 0px; background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(232, 19, 30); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; line-height: 1.66667em; text-align: center;">
+                                                - Kendra N., A South Central Region Surgery Center, Materials Manager
+                                            </p>
+                                            <p>
+                                                <br/>
                                             </p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="carousel-item oe_custom_bg oe_img_bg">
+                            <div class="carousel-item bg-white oe_custom_bg" style="">
                                 <div class="container">
                                     <div class="row content">
                                         <div class="carousel-content col-md-12 mt128 mb96" style="">
-                                            <h4>SPS has allowed us to realize significant savings on our mesh needs,
-                                                while maintaining compliance with our GPO contract. Thank you!
-                                            </h4>
-                                            <p>- Matthew J., North Eastern Regional Hospital, Director of Materials
+                                            <h4/>
+                                            <p style="margin-right: 0px; margin-bottom: 0px; margin-left: 0px; font-size: 14px; background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; line-height: 1.66667em; font-style: italic; text-align: center;">
+                                                <font style="font-size: 18px;">Since our hospital has partnered up with
+                                                    SPS, we have saved a tremendous amount of money! The customer
+                                                    service staff is always updating their catalog and sending it to me
+                                                    so that we can continue saving money. Thanks for all you do!
+                                                </font>
+                                            </p>
+                                            <p class="testimonial_author"
+                                               style="margin: 22px 0px 0px; background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(232, 19, 30); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; line-height: 1.66667em; text-align: center;">
+                                                -&amp;nbsp;Michelle W., A South Eastern Region Hospital, Inventory
+                                                Control Specialist
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="carousel-item bg-white oe_custom_bg" style="">
+                                <div class="container">
+                                    <div class="row content">
+                                        <div class="carousel-content col-md-12 mt128 mb96" style="">
+                                            <h4/>
+                                            <p style="margin-right: 0px; margin-bottom: 0px; margin-left: 0px; font-size: 14px; background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; line-height: 1.66667em; font-style: italic; text-align: center;">
+                                                <font style="font-size: 18px;">SPS has allowed us to realize significant
+                                                    savings on our mesh needs, while maintaining compliance with our GPO
+                                                    contract. Thank you!
+                                                </font>
+                                            </p>
+                                            <p class="testimonial_author"
+                                               style="margin: 22px 0px 0px; background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(232, 19, 30); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; line-height: 1.66667em; text-align: center;">
+                                                - Matthew J., North Eastern Regional Hospital, Director of Materials
                                                 Management
+                                            </p>
+                                            <p>
+                                                <br/>
                                             </p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                         <div class="carousel-control-prev" data-label="Previous" data-slide="prev"
                              data-target="#myCarousel1567380584379" title="Previous" role="img">
                             <span class="carousel-control-prev-icon"/>
@@ -189,9 +237,38 @@
                         <div class="carousel-control-next" data-label="Next" data-slide="next"
                              data-target="#myCarousel1567380584379" title="Next" role="img">
                             <span class="carousel-control-next-icon"/>
-                            <span class="sr-only o_default_snippet_text">Next</span>
+                            <span class="sr-only">Next</span>
                         </div>
                     </div>
+                    <section class="bg-white oe_custom_bg pt0 pb0" style="">
+                        <div class="container">
+                            <div class="row s_nb_column_fixed">
+                                <div class="col-lg-12 s_title pb0 pt0" style="text-align: center;">
+                                    <div class="s_hr text-left pt32 pb32">
+                                        <hr class="border-600 s_hr_solid w-100 mx-auto s_hr_3px"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="s_text_block bg-white oe_custom_bg pt0 pb56" style="">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-10 offset-lg-1 pb0 pt0">
+                                    <p class="lead">
+                                        <a href="mailto:info@surgicalproductsolutions.com"
+                                           style="color: rgb(232, 19, 30); background: 0px 0px rgb(255, 255, 255); border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; cursor: pointer; font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
+                                            Contact us
+                                        </a>
+                                        <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
+                                            &amp;nbsp;to speak directly to a client in a facility similar to yours.
+                                        </span>
+                                        <br/>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
                 </div>
             </t>
         </t>
