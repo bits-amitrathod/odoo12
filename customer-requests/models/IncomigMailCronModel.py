@@ -111,6 +111,7 @@ class IncomingMailCronModel(models.Model):
                         _logger.info('total_size = %d', total_size)
                         _logger.info('num_messages = %d', num_messages)
                         pop_server.quit()
+                        pop_server = None
                         for num in range(1, min(MAX_POP_MESSAGES, num_messages) + 1):
                             pop_server = server.connect()
                             # (num_messages, total_size) = pop_server.stat()
@@ -307,10 +308,12 @@ class IncomingMailCronModel(models.Model):
                                 }).run()
                             self.env.cr.commit()
                             pop_server.quit()
+                            pop_server = None
                         _logger.info('num_messages = %d', num_messages)
                         if num_messages < MAX_POP_MESSAGES:
                             break
                         pop_server.quit()
+                        pop_server = None
                         _logger.info("Fetched %d email(s) on %s server %s; %d succeeded, %d failed.", num_messages,
                                      server.type, server.name, (num_messages - failed), failed)
                 except Exception:
