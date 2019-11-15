@@ -15,7 +15,9 @@ import time
 
 import werkzeug.local
 import werkzeug.wsgi
-from odoo import SUPERUSER_ID
+# from odoo import SUPERUSER_ID
+
+SUPERUSER_ID = 2
 
 #----------------------------------------------------------
 # RequestHandler

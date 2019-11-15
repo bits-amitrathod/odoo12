@@ -144,6 +144,7 @@ class DocumentProcessTransientModel(models.TransientModel):
                             if len(sps_product_priotization) >= 1:
                                 sps_product = sps_product_priotization[0]
                                 sps_customer_product_priority = sps_product.priority
+
                             else:
                                 sps_customer_product_priority = user_model.priority
                             if not sps_customer_product_priority:
@@ -184,8 +185,8 @@ class DocumentProcessTransientModel(models.TransientModel):
                 if len(high_priority_requests) == 0:
                     template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
                     self.env['prioritization.engine.model'].send_mail(user_model.name, user_model.email, template)
-                else:
-                    self.env['sps.customer.requests'].process_customer_requests(high_priority_requests)
+                # else:
+                #     self.env['sps.customer.requests'].process_customer_requests(high_priority_requests)
             else:
                 _logger.info('file is not acceptable')
                 response = dict(errorCode=12, message='Error saving document record')
@@ -408,7 +409,8 @@ class DocumentProcessTransientModel(models.TransientModel):
         _logger.info('product sku %r', product_sku)
         self.env.cr.execute("""select * from 
                                 (SELECT id, regexp_replace(TRIM(LEADING '0' FROM CAST(manufacturer_pref AS TEXT)) , '[^A-Za-z0-9.]', '','g') as manufacturer_pref, 
-                                regexp_replace(TRIM(LEADING '0' FROM CAST(sku_code AS TEXT)) , '[^A-Za-z0-9.]', '','g') as sku_code_cleaned FROM product_template)
+                                regexp_replace(TRIM(LEADING '0' FROM CAST(sku_code AS TEXT)) , '[^A-Za-z0-9.]', '','g') as sku_code_cleaned
+                                FROM product_template where tracking != 'none')
                                 as temp_data where lower(sku_code_cleaned) ='""" + product_sku.lower() + """' or lower(manufacturer_pref) = '""" + product_sku.lower() + """' """)
         query_result = self.env.cr.dictfetchone()
         product = False

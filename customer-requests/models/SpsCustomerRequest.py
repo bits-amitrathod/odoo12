@@ -38,20 +38,18 @@ class SpsCustomerRequest(models.Model):
     frequency_of_refill = fields.Integer()
     threshold = fields.Integer()
     uom = fields.Char()
+    priority = fields.Integer()
     uom_flag = fields.Boolean(help="if uom is each then set uom flag is 1(True)")
     product_description = fields.Char(string='Product Description')
     customer_request_logs = fields.Char(string='Customer Request Logs')
 
     document_id_set = set()
 
-
-
     # Get Customer Requests
     def get_customer_requests(self):
         _logger.info('In get_customer_requests')
 
-        sps_customer_requests = self.env['sps.customer.requests'].search(
-                [('document_id.status', 'in', ('In Process', 'draft')),
+        sps_customer_requests = self.env['sps.customer.requests'].search([('document_id.status', '=', 'In Process'),
                  ('status', 'in', ('Inprocess', 'Incomplete', 'Unprocessed', 'InCoolingPeriod', 'New', 'Partial'))])
         if len(sps_customer_requests)>0:
                 try:
