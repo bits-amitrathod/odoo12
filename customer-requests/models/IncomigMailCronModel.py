@@ -51,7 +51,7 @@ except ImportError:
 from email.message import Message
 
 _logger = logging.getLogger(__name__)
-MAX_POP_MESSAGES = 1
+MAX_POP_MESSAGES = 5
 MAIL_TIMEOUT = 60
 
 poplib._MAXLINE = 65536
@@ -106,13 +106,17 @@ class IncomingMailCronModel(models.Model):
                     while True:
                         pop_server = server.connect()
                         (num_messages, total_size) = pop_server.stat()
-                        pop_server.list()
+                        # pop_server.list()
                         _logger.info('Server tpye is POP inside while')
                         _logger.info('total_size = %d', total_size)
                         _logger.info('num_messages = %d', num_messages)
+                        pop_server.quit()
                         for num in range(1, min(MAX_POP_MESSAGES, num_messages) + 1):
+                            pop_server = server.connect()
+                            # (num_messages, total_size) = pop_server.stat()
+                            pop_server.list()
                             _logger.info('Server tpye is POP inside while INSIDE FOR')
-                            (header, messages, octets) = pop_server.retr(num)
+                            (header, messages, octets) = pop_server.retr(1)
                             message = (b'\n').join(messages)
                             res_id = None
                             response = {'message':'File Uploaded Successfully'}
@@ -302,6 +306,7 @@ class IncomingMailCronModel(models.Model):
                                     'active_model': self.env.context.get("thread_model", server.object_id.model)
                                 }).run()
                             self.env.cr.commit()
+                            pop_server.quit()
                         _logger.info('num_messages = %d', num_messages)
                         if num_messages < MAX_POP_MESSAGES:
                             break
