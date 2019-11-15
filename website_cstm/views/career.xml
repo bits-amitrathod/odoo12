@@ -1,0 +1,221 @@
+<odoo>
+    <template id="careers_page" name="Careers">
+        <t t-name="website.careers">
+  <t t-call="website.layout">
+    <div id="wrap" class="oe_structure oe_empty">
+      <section class="pt32 pb32">
+        <div class="container">
+          <div class="row s_nb_column_fixed">
+            <div class="col-lg-12 s_title pt16 pb16" style="text-align: center;">
+              <h2 style="text-transform: uppercase; letter-spacing: 1px; color: rgb(50, 61, 73); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 38px; line-height: 1.38462em; font-family: AmericanGotURW-Bol;">
+                <b>Careers</b>
+              </h2>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="s_text_image pt32 pb32 bg-white oe_custom_bg" style="">
+        <div class="container">
+          <div class="row align-items-center">
+            <div class="pt16 pb16 col-lg-5">
+              <img src="/website_cstm/static/src/img/JobListing-2x.jpg" class="img img-fluid mx-auto" alt="Odoo • Image and Text" data-original-title="" title="" aria-describedby="tooltip17167" style=""/>
+            </div>
+            <div class="pt16 pb16 col-lg-7">
+              <h2>
+                <br/>
+              </h2>
+              <h2>CURRENT JOB LISTINGS</h2>
+              <div class="s_hr text-left pb16 pt16">
+                <hr class="border-600 s_hr_2px s_hr_solid w-25 mr-auto"/>
+              </div>
+              <p>Click the links below to view our latest job listings on LinkedIn.</p>
+              <div class="wpb_text_column wpb_content_element  vc_custom_1557846988532" style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin: 0px 0px 35px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px; padding-top: 20px !important;">
+                <div class="wpb_wrapper" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                  <ul style="background: 0px 0px; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; list-style-position: inside;">
+                    <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; text-align: left;">
+                      <strong style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                        <a href="https://www.linkedin.com/company/surgical-product-solutions/" target="_blank" rel="noopener noreferrer" style="color: rgb(232, 19, 30); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; cursor: pointer;" data-original-title="" title="" aria-describedby="tooltip996910">Capital Equipment Account Manager – Inside Sales</a>
+                      </strong>
+                    </li>
+                    <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; text-align: left;">
+                      <strong style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                        <a href="https://www.linkedin.com/company/surgical-product-solutions/" target="_blank" rel="noopener noreferrer" style="color: rgb(232, 19, 30); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; cursor: pointer;">Medical Device Account Manager – Inside Sales</a>
+                      </strong>
+                    </li>
+                    <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; text-align: left;">
+                      <a href="https://www.linkedin.com/company/surgical-product-solutions/" target="_blank" rel="noopener noreferrer" style="color: rgb(232, 19, 30); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; cursor: pointer;">
+                        <strong style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Lead System/Network Administrator</strong>
+                      </a>
+                    </li>
+                    <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; text-align: left;">
+                      <a href="https://www.linkedin.com/company/surgical-product-solutions/" target="_blank" rel="noopener noreferrer" style="color: rgb(232, 19, 30); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; cursor: pointer;">
+                        <strong style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Business Analyst</strong>
+                      </a>
+                    </li>
+                    <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; text-align: left;">
+                      <a href="https://www.linkedin.com/company/surgical-product-solutions/" target="_blank" rel="noopener noreferrer" style="color: rgb(232, 19, 30); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; cursor: pointer;">
+                        <strong style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;" data-original-title="" title="" aria-describedby="tooltip347072">Staff Accountant</strong>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="pt32 pb0">
+        <div class="container">
+          <div class="row s_nb_column_fixed">
+            <div class="col-lg-12 s_title pt16 pb16" style="text-align: center;">
+              <h1 class="s_title_default">
+                <font style="font-size: 62px;"/>
+              </h1>
+              <h2 style="text-transform: uppercase; letter-spacing: 1px; color: rgb(50, 61, 73); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 38px; line-height: 1.38462em; font-family: AmericanGotURW-Bol;">OUR CULTURE</h2>
+              <div class="s_hr text-left pt32 pb32">
+                <hr class="border-600 s_hr_solid w-25 mx-auto s_hr_2px"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="s_text_block pb32 pt0">
+        <div class="container">
+          <div class="row">
+            <div class="pt32 pb32 col-lg-8">
+              <p class="lead">
+                <b>
+                  <font style="font-size: 18px;">A Description Of Culture And What To Expect If You Get A Job With SPS</font>
+                </b>
+              </p>
+              <p class="lead">
+                <span style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
+                  <b><span style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(232, 19, 30);"><b>GROWTH</b></span>&amp;nbsp;</b>
+                </span>
+                <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">– We have a results driven culture where personal and professional growth collide.</span>
+                <br style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;"/>
+                <strong style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;"><span style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(232, 19, 30);"><b>TEAMWORK</b></span>&amp;nbsp;</strong>
+                <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">– We acknowledge that we do more as a team than we do alone.</span>
+                <br style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;"/>
+                <strong style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;"><span style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(232, 19, 30);"><b>COMMUNICATION</b></span>&amp;nbsp;</strong>
+                <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">– We require direct and solution oriented communication.</span>
+                <br style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;"/>
+                <strong style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;"><span style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(232, 19, 30);"><b>INNOVATION</b></span>&amp;nbsp;</strong>
+                <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">– We believe the best has yet to be invented.</span>
+                <br style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;"/>
+                <span style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
+                  <b><span style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(232, 19, 30);"><b>TRUST</b></span>&amp;nbsp;</b>
+                </span>
+                <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">– We pride ourselves in upholding mutual respect, transparency, fairness, and integrity</span>
+                <br/>
+              </p>
+            </div>
+            <div class="pt32 pb32 col-lg-4 bg-white rounded">
+              <div class="wpb_text_column wpb_content_element " style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin: 0px 0px 35px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;">
+                <div class="wpb_wrapper" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                  <h4 style="color: rgb(50, 61, 73); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 20px; line-height: 38px; text-transform: capitalize; font-family: AmericanGotURW-Bol;">Additional Perks</h4>
+                </div>
+              </div>
+              <div class="separator  small left  " style="background: 0px 0px rgb(50, 61, 73); border: 0px; margin: 12px 0px; padding: 0px; vertical-align: baseline; outline: 0px; position: relative; height: 2px; width: 30px; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;"/>
+              <div class="wpb_text_column wpb_content_element " style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin: 0px 0px 35px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;">
+                <div class="wpb_wrapper" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                  <ul style="background: 0px 0px; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; list-style-position: inside;">
+                    <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Top Notch Sales Training Program</li>
+                    <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Fast-paced, exciting, and collaborative&amp;nbsp;culture</li>
+                    <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Centralized downtown location</li>
+                    <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Team building Activities</li>
+                    <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Parking Re-imbursements</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="s_text_image pt32 pb32 bg-white oe_custom_bg" style="">
+        <div class="container">
+          <div class="row align-items-center">
+            <div class="pt16 pb16 col-lg-3 rounded">
+              <img src="/website_cstm/static/src/img/Sarah-Doyle.jpg" class="img img-fluid mx-auto" alt="Odoo • Image and Text" data-original-title="" title="" aria-describedby="tooltip501964" style=""/>
+            </div>
+            <div class="pt16 pb16 col-lg-9">
+              <h3 style="text-transform: capitalize; color: rgb(50, 61, 73); background: 0px 0px rgb(255, 255, 255); border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 28px; line-height: 1.30435em; font-family: AmericanGotURW-Bol; text-align: center;">Our Employees Say It Best</h3>
+              <p style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; line-height: 26px;">“I like working for SPS because there is a great team environment. We are competitive in a way that pushes us to grow and improve, and there is always someone willing to lend a hand or share advice. This company is constantly evolving, and I like the fact that I have a say when it comes to improvements and new ideas. I get to help facilities save money every day while working with colleagues that quickly turned to friends. It is a unique work environment that I feel very lucky to be a part of.”</p>
+              <p style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; line-height: 26px;">&amp;nbsp;</p>
+              <p style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; line-height: 26px;">
+                <span style="background-attachment: initial; background-clip: initial; background-image: initial; background-origin: initial; background-position: 0px 0px; background-repeat: initial; background-size: initial; border: 0px; color: rgb(232, 19, 30); margin: 0px; outline: 0px; padding: 0px; vertical-align: baseline;">
+                  <strong style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">– Sarah Doyle, Acquisitions Account Manager, 1 year at SPS</strong>
+                </span>
+              </p>
+              <div class="s_btn text-left pt16 pb16">
+                <br/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="pt32 pb32">
+        <div class="container">
+          <div class="row s_nb_column_fixed">
+            <div class="col-lg-12 s_title pt16 pb16" style="text-align: center;">
+              <h2 style="text-transform: uppercase; letter-spacing: 1px; color: rgb(50, 61, 73); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 38px; line-height: 1.38462em; font-family: AmericanGotURW-Bol;">BENEFITS</h2>
+              <h2 style="text-transform: uppercase; letter-spacing: 1px; color: rgb(50, 61, 73); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 38px; line-height: 1.38462em; font-family: AmericanGotURW-Bol;">
+                <span style="font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; letter-spacing: normal; text-transform: none;">We offer the following benefits to our employees</span>
+                <br/>
+              </h2>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="s_features pb32 pt0 oe_custom_bg" style="">
+        <div class="container">
+          <div class="row">
+            <div class="pt32 pb32 text-center col-lg-2 offset-lg-1">
+              <span class="fa fa-3x  m-3 fa-stethoscope" style="" data-original-title="" title="" aria-describedby="tooltip691607"/>
+              <h3>Medical</h3>
+              <p>
+                <font color="#323d49" face="Open Sans, sans-serif">
+                  <span style="font-size: 15px;">UPMC Health Plan</span>
+                </font>
+                <br/>
+              </p>
+            </div>
+            <div class="pt32 pb32 text-center col-lg-2">
+              <span class="fa fa-3x  m-3 fa-eye" style="" data-original-title="" title="" aria-describedby="tooltip33214"/>
+              <h3>Vision </h3>
+              <p>
+                <br/>
+              </p>
+            </div>
+            <div class="pt32 pb32 text-center col-lg-2">
+              <span class="fa fa-3x m-3 fa-smile-o" style="" data-original-title="" title="" aria-describedby="tooltip287729"/>
+              <h3>Dental</h3>
+              <p>
+                <br/>
+              </p>
+            </div>
+            <div class="pb32 text-center col-lg-2 pt48">
+              <h3>
+                <span class="fa fa-money fa-2x" style=""/>
+                <br/>
+              </h3>
+              <h3>401K</h3>
+              <p>
+                <br/>
+              </p>
+            </div>
+            <div class="pt32 pb32 text-center col-lg-2">
+              <span class="fa fa-3x  m-3 fa-calendar" style="" data-original-title="" title="" aria-describedby="tooltip10168"/>
+              <h3>Vacation Days</h3>
+              <p>2 weeks’ vacation and 3 sick days in your first year! (Additional weeks added with tenure!)<br/></p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </t>
+</t>
+
+
+    </template>
+</odoo>

@@ -1,0 +1,250 @@
+<odoo>
+    <template id="sell_page" name="Buy Back">
+        <t t-name="website.buy-back">
+            <t t-call="website.layout">
+                <div id="wrap" class="oe_structure oe_empty">
+                    <section class="pt32 pb32">
+                        <div class="container">
+                            <div class="row s_nb_column_fixed">
+                                <div class="col-lg-12 s_title pt16 pb16" style="text-align: center;">
+                                    <h1 style="color: rgb(255, 255, 255); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 34px; line-height: 60px; text-transform: capitalize; font-family: AmericanGotURW-Bol; font-weight: 600;">
+                                        <span style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                                            <font style="color: rgb(0, 0, 0);">Sell - Buy Back</font>
+                                        </span>
+                                    </h1>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="pt32 pb32 bg-white oe_custom_bg" style="">
+                        <div class="container">
+                            <div class="row s_nb_column_fixed">
+                                <div class="col-lg-12 s_title pt16 pb16" style="text-align: center;">
+                                    <h3 style="text-transform: capitalize; color: rgb(50, 61, 73); background: 0px 0px rgb(255, 255, 255); border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 28px; line-height: 1.30435em; font-family: AmericanGotURW-Bol;">
+                                        The Buy Back Process Made Easy
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="s_text_image pt32 bg-white oe_custom_bg pb0" style="">
+                        <div class="container">
+                            <div class="row align-items-start">
+                                <div class="pt16 col-lg-3 pb0">
+                                    <div style="text-align: center;">
+                                        <span class="fa fa-line-chart fa-5x" style="" data-original-title="" title=""
+                                              aria-describedby="tooltip836405"/>
+                                        <br/>
+                                    </div>
+                                    <div style="text-align: center;">
+                                        <br/>
+                                        <a href="/why-you-need-us" class="btn btn-danger" data-original-title=""
+                                           title="" aria-describedby="tooltip216315"
+                                           style="border-color: rgb(189, 33, 48); font-size: 14px;">Why You Need Us
+                                        </a>
+                                        <br/>
+                                        <br/>
+                                        <br/>
+                                        <span class="fa fa-th-list fa-5x" style=""/>
+                                        <br/>
+                                        <br/>
+                                    </div>
+                                    <div style="text-align: center;">
+                                        <a href="/vendor-list" class="btn btn-danger" data-original-title="" title=""
+                                           aria-describedby="tooltip216315">Our Sub Specialty Focus
+                                        </a>
+                                        <br/>
+                                    </div>
+                                    <div style="text-align: center;">
+                                        <br/>
+                                        <br/>
+                                    </div>
+                                </div>
+                                <div class="s_faq_collapse pt16 pb16 col-lg-9">
+                                    <h4 style="font-family: -apple-system, system-ui, &quot;Segoe UI&quot;, Roboto, Noto, &quot;Helvetica Neue&quot;, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;, &quot;Noto Color Emoji&quot;; color: rgb(33, 37, 41); background: #ffffff;">
+                                        <span class="reason"><span style="color: rgb(232, 19, 30);">1.</span>&amp;nbsp;Identify
+                                            and Isolate Your Surplus Inventory
+                                        </span>
+                                    </h4>
+                                    <div id="myCollapse" class="accordion" role="tablist">
+                                        <div class="card bg-white">
+                                            <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
+                                               class="card-header collapsed" data-parent="#myCollapse"
+                                               data-target="#myCollapseTab1573219223134" data-original-title="" title=""
+                                               style="background: #ffffff;">TARGETED PRODUCTS
+                                            </a>
+                                            <div class="collapse" role="tabpanel" id="myCollapseTab1573219223134"
+                                                 style="">
+                                                <div class="card-body">
+                                                    <p style="background: #ffffff;">
+                                                        <span style="font-weight: bolder;">First Tier</span>
+                                                    </p>
+                                                    <ul style="background: #ffffff;">
+                                                        <li>Applied Medical (Endomechanicals)</li>
+                                                        <li>Arthrocare (Orthopedics, ENT)</li>
+                                                        <li>Atrium (Mesh)</li>
+                                                        <li>Arthrex (Arthroscopy, Orthopedics)</li>
+                                                        <li>Bard / Davol (Mesh, Fixation, Urology, Gynecology)</li>
+                                                        <li>Covidien (Mesh, Endomechanicals, Fixation, Energy)</li>
+                                                        <li>Ethicon (Mesh, Endomechanicals, Fixation, Energy,
+                                                            Gynecology, Wound Closure, Bariatrics)
+                                                        </li>
+                                                        <li>Genzyme (Soft Tissue)</li>
+                                                        <li>Hologic (Gynecology)</li>
+                                                        <li>Medtronic (Energy)</li>
+                                                        <li>Olympus (Energy)</li>
+                                                        <li>Smith &amp;amp; Nephew (Sports Medicine)</li>
+                                                    </ul>
+                                                    <p style="background: #ffffff;"/>
+                                                    <p style="background: #ffffff;">
+                                                        <span style="font-weight: bolder;">Second Tier</span>
+                                                    </p>
+                                                    <ul style="background: #ffffff;">
+                                                        <li>Acclarent (ENT)</li>
+                                                        <li>Allergan (Bariatrics)</li>
+                                                        <li>Boston Scientific (Urology, Stents)</li>
+                                                        <li>Conmed (Orthopedics)</li>
+                                                        <li>Cook (Urology)</li>
+                                                        <li>Covidien (Suture)</li>
+                                                        <li>Ethicon (Suture)</li>
+                                                        <li>Gyrus (ENT, Energy, Gynecology)</li>
+                                                        <li>Intuitive Surgical (Robotic Instruments, Stapling, Energy)
+                                                        </li>
+                                                        <li>Karl Storz (Urology)</li>
+                                                        <li>Medtronic (Orthopedics, Spine, Otolaryngology, ENT)</li>
+                                                        <li>Mitek (Orthopedics)</li>
+                                                        <li>Opus (Orthopedics – Blades)</li>
+                                                        <li>Olympus (Endoscopy, Gynecology, Urology)</li>
+                                                        <li>Smith &amp;amp; Nephew (Orthopedics)</li>
+                                                        <li>Stryker (Orthopedics)</li>
+                                                        <li>Synthes (Orthopedics – Trauma Implants)</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h4 style="margin-top: 30px; font-family: -apple-system, system-ui, &quot;Segoe UI&quot;, Roboto, Noto, &quot;Helvetica Neue&quot;, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;, &quot;Noto Color Emoji&quot;; color: rgb(33, 37, 41); background: #ffffff;">
+                                            <span class="reason"><span style="color: rgb(232, 19, 30);">2.</span>&amp;nbsp;Download,
+                                                Complete, And Return Item List Template
+                                            </span>
+                                        </h4>
+                                        <div class="card bg-white" style="border: 0;">
+                                            <div class="collapse show" role="tabpanel" style=""
+                                                 id="myCollapseTab1573220297489">
+                                                <div class="card-body">
+                                                    <p style="background: #ffffff;">
+                                                        <a href="https://surgicalproductsolutions.com/wp-content/uploads/2016/07/SPS-Item-List-Template-2018-05.xlsx?_ga=2.252554889.1044020520.1573065283-120006612.1572717783"
+                                                           data-original-title="" title=""
+                                                           aria-describedby="tooltip476149"
+                                                           style="background: #ffffff;">Item List Template
+                                                        </a>
+                                                        <br/>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h4 style="font-family: -apple-system, system-ui, &quot;Segoe UI&quot;, Roboto, Noto, &quot;Helvetica Neue&quot;, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;, &quot;Noto Color Emoji&quot;; color: rgb(33, 37, 41); background: #ffffff;">
+                                            <span class="reason"><span style="color: rgb(232, 19, 30);">3.</span>&amp;nbsp;Our
+                                                Appraiser Will Evaluate Your Product List. Then Your SPS Consultant Will
+                                                Deliver An Offer Within 48 – 72 Hours.
+                                            </span>
+                                        </h4>
+                                        <div class="card bg-white">
+                                            <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
+                                               class="card-header collapsed" data-parent="#myCollapse"
+                                               data-original-title="" title="" data-target="#myCollapseTab1573220237256"
+                                               style="background: #ffffff;">THE APPRAISAL PROCESS
+                                            </a>
+                                            <div class="collapse" role="tabpanel" style=""
+                                                 id="myCollapseTab1573220237256">
+                                                <div class="card-body">
+                                                    <p class="card-text">
+                                                        <span style="background: #ffffff;">By evaluating and comparing
+                                                            your surplus list to the product demand from our active
+                                                            customers, we can provide you a fast &amp;amp; easy solution
+                                                            to move those products out of your facility.&amp;nbsp;
+                                                        </span>
+                                                        <br class="Apple-interchange-newline"
+                                                            style="background: #ffffff;"/>
+                                                        <br style="background: #ffffff;"/>
+                                                        <br style="background: #ffffff;"/>
+                                                        <span style="background: #ffffff;">Within 72 hours, your SPS
+                                                            Account Manager will present you with an offer to buy back
+                                                            your surplus inventory. That offer will take into
+                                                            consideration the following factors:&amp;nbsp;
+                                                        </span>
+                                                        <br style="background: #ffffff;"/>
+                                                        <img class="img img-responsive"
+                                                             src="https://shopspsnew-pstaging-639408.dev.odoo.com/web/image/119914/chartFairMarketValue.png"
+                                                             alt="Odoo - Sample 1 for three columns"
+                                                             data-original-title="" title=""
+                                                             style="background: #ffffff;"/>
+                                                        <br style="background: #ffffff;"/>
+                                                        <span style="background: #ffffff;">Unfortunately, the surplus
+                                                            inventory you are selling does not have the same value it
+                                                            did when you originally purchased the inventory due to
+                                                            depreciation. These items devalue over time as they near
+                                                            expiration as seen in the graph below.&amp;nbsp;
+                                                        </span>
+                                                        <br style="background: #ffffff;"/>
+                                                        <br style="background: #ffffff;"/>
+                                                        <img class="img img-responsive"
+                                                             src="https://shopspsnew-pstaging-639408.dev.odoo.com/web/image/119916/chartDepracationOfValue.png"
+                                                             alt="Odoo - Sample 1 for three columns"
+                                                             data-original-title="" title=""
+                                                             style="background: #ffffff;"/>
+                                                        <br style="background: #ffffff;"/>
+                                                        <span style="background: #ffffff;">The earlier you can discover
+                                                            the surplus and notify us, the more value we can place on
+                                                            the inventory.&amp;nbsp;
+                                                        </span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="s_text_block pb32 bg-white oe_custom_bg pt0">
+                        <div class="container">
+                            <div class="row">
+                                <div class="pb32 pt0 col-lg-3">
+                                    <h4 style="font-family: -apple-system, system-ui, &quot;Segoe UI&quot;, Roboto, Noto, &quot;Helvetica Neue&quot;, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;, &quot;Noto Color Emoji&quot;; color: rgb(33, 37, 41);">
+                                        <span class="reason">
+                                            <span style="color: rgb(232, 19, 30);">
+                                                <br/>
+                                            </span>
+                                        </span>
+                                    </h4>
+                                </div>
+                                <div class="pb32 pt0 col-lg-9">
+                                    <h4 style="font-family: -apple-system, system-ui, &quot;Segoe UI&quot;, Roboto, Noto, &quot;Helvetica Neue&quot;, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;, &quot;Noto Color Emoji&quot;; color: rgb(33, 37, 41);">
+                                        <span class="reason"><span style="color: rgb(232, 19, 30);">4.</span>&amp;nbsp;After
+                                            The Offer Is Accepted, We Will Send Prepaid Shipping Labels. We Ship The
+                                            Product At No Cost To You.
+                                        </span>&amp;nbsp;
+                                        <br/>
+                                        <br/>
+                                    </h4>
+                                    <h4 style="font-family: -apple-system, system-ui, &quot;Segoe UI&quot;, Roboto, Noto, &quot;Helvetica Neue&quot;, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;, &quot;Noto Color Emoji&quot;; color: rgb(33, 37, 41);">
+                                        <span class="reason"><span style="color: rgb(232, 19, 30);">5.</span>&amp;nbsp;Our
+                                            Payment Terms Are Net 30 From When The Product Is Received In House And Has
+                                            Completed The Quality Control Process.
+                                        </span>
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="s_faq_collapse pt48 pb32" style="">
+                        <div class="container">
+                            <div class="row s_col_no_bgcolor"/>
+                        </div>
+                    </section>
+                </div>
+            </t>
+        </t>
+
+    </template>
+</odoo>

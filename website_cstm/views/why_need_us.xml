@@ -1,0 +1,149 @@
+<odoo>
+
+    <template id="need_page" name="Why you need us">
+<t t-name="website.why-you-need-us">
+  <t t-call="website.layout">
+    <div id="wrap" class="oe_structure oe_empty">
+      <section class="pt32 pb32">
+        <div class="container">
+          <div class="row s_nb_column_fixed">
+            <div class="col-lg-12 s_title pt16 pb16" style="text-align: center;">
+              <h1 style="color: rgb(255, 255, 255); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 34px; line-height: 60px; text-transform: capitalize; font-family: AmericanGotURW-Bol; font-weight: 600;">
+                <span style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                  <font style="color: rgb(0, 0, 0);">Why You Need Us</font>
+                </span>
+              </h1>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="s_text_image pb32 bg-white oe_custom_bg pt48" style="">
+        <div class="container">
+          <div class="row align-items-start">
+            <div class="wpb_column vc_column_container vc_col-sm-4 pb0 pt40" style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; width: 376.656px; position: relative; min-height: 1px; float: left; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px; text-align: center;">
+              <div class="vc_column-inner" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px 15px; vertical-align: baseline; outline: 0px; width: 376.656px;">
+                <div class="wpb_wrapper" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                  <div class="wpb_text_column wpb_content_element  vc_custom_1471302826332" style="background: 0px 0px; border: 0px; margin: 0px 0px 35px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                    <div class="wpb_wrapper" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                      <h4 style="color: rgb(50, 61, 73); background: 0px 0px; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 20px; line-height: 38px; letter-spacing: 0px; text-transform: capitalize; font-family: AmericanGotURW-Bol;">Shop Top Brands</h4>
+                    </div>
+                  </div>
+                  <div class="qode_carousels_holder clearfix" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                    <div class="qode_carousels" data-number-of-visible-items="" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; position: relative; zoom: 1;">
+                      <div class="caroufredsel_wrapper" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; cursor: move; float: none; position: relative; top: auto; right: auto; bottom: auto; left: auto; z-index: auto; width: 345px; overflow: hidden; height: 48px;">
+                        <ul class="slides" style="background: 0px 0px; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; list-style: none; opacity: 1; zoom: 1; text-align: left; float: none; position: absolute; top: 0px; right: auto; bottom: auto; left: 0px; width: 1955px; z-index: auto;">
+                          <li class="item" style="background: 0px 0px transparent; border: 0px; margin: 0px 2px 0px 0px; padding: 0px; vertical-align: baseline; outline: 0px; position: relative; float: left; width: 113px;">
+                            <div class="carousel_item_holder" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                              <a itemprop="url" href=""  style="color: rgb(232, 19, 30); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; cursor: pointer;">
+                                <span class="first_image_holder has_hover_image" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; display: block; position: relative; width: 113px; opacity: 1; transition: opacity 0.4s ease-in-out 0s; backface-visibility: hidden;">
+                                  <img itemprop="image" src="/website_cstm/static/src/img/Bard-blue.png" alt="carousel image" style="max-width: 100%; height: auto; border-width: initial; border-color: initial; border-image: initial; width: 113px; display: block;"/>
+                                </span>
+                                <span class="second_image_holder has_hover_image" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; display: block; position: absolute; width: 113px; opacity: 0; transition: opacity 0.4s ease-in-out 0s; backface-visibility: hidden; top: 0px; left: 0px;">
+                                  <img itemprop="image" src="/website_cstm/static/src/img/Bard-blue.png" alt="carousel image" style="max-width: 100%; height: auto; border-width: initial; border-color: initial; border-image: initial; width: 113px; display: block;" data-original-title="" title="" aria-describedby="tooltip983998" class="o_animate_preview"/>
+                                </span>
+                              </a>
+                            </div>
+                          </li>
+                          <li class="item" style="background: 0px 0px transparent; border: 0px; margin: 0px 2px 0px 0px; padding: 0px; vertical-align: baseline; outline: 0px; position: relative; float: left; width: 113px;">
+                            <div class="carousel_item_holder" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                              <span class="first_image_holder has_hover_image" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; display: block; position: relative; width: 113px; opacity: 1; transition: opacity 0.4s ease-in-out 0s; backface-visibility: hidden;">
+                                <img itemprop="image" src="/website_cstm/static/src/img/Covidien-blue.png" alt="carousel image" style="max-width: 100%; height: auto; width: 113px; display: block;"/>
+                              </span>
+                              <span class="second_image_holder has_hover_image" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; display: block; position: absolute; width: 113px; opacity: 0; transition: opacity 0.4s ease-in-out 0s; backface-visibility: hidden; top: 0px; left: 0px;">
+                                <a itemprop="url" href="" data-original-title="" title="" aria-describedby="tooltip663651" style="color: rgb(232, 19, 30); background: 0px 0px rgb(255, 255, 255); border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; cursor: pointer;"/>
+                                <a itemprop="url" href=""  data-original-title="" title="" aria-describedby="tooltip663651" style="color: rgb(232, 19, 30); background: 0px 0px rgb(255, 255, 255); border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; cursor: pointer;">
+                                  <img itemprop="image" src="/website_cstm/static/src/img/3M-blue.png" alt="carousel image" data-original-title="" title="" aria-describedby="tooltip61499" style="color: rgb(50, 61, 73); max-width: 100%; height: auto; width: 113px; display: block;"/>
+                                </a>
+                              </span>
+                            </div>
+                          </li>
+                          <li class="item" style="background: 0px 0px transparent; border: 0px; margin: 0px 2px 0px 0px; padding: 0px; vertical-align: baseline; outline: 0px; position: relative; float: left; width: 113px;">
+                            <div class="carousel_item_holder" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                              <a itemprop="url" href="" >
+                                </a>
+                              <span class="first_image_holder has_hover_image" style="color: rgb(232, 19, 30); background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; cursor: pointer; outline: 0px; display: block; position: relative; width: 113px; opacity: 1; transition: opacity 0.4s ease-in-out 0s; backface-visibility: hidden;">
+                                <a itemprop="url" href="" style="color: rgb(232, 19, 30); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; cursor: pointer;" data-original-title="" title="" aria-describedby="tooltip663651"/>
+                                <a itemprop="url" href="" data-original-title="" title="" aria-describedby="tooltip663651" style="color: rgb(232, 19, 30); background: 0px 0px rgb(255, 255, 255); border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; cursor: pointer;">
+                                  <img itemprop="image" src="/website_cstm/static/src/img/3M-blue.png" alt="carousel image" data-original-title="" title="" aria-describedby="tooltip61499" style="color: rgb(50, 61, 73); max-width: 100%; height: auto; width: 113px; display: block;"/>
+                                </a>
+                                <a itemprop="url" href="">
+                                </a>
+                              </span>
+                              <a itemprop="url" href="">
+                                <span class="second_image_holder has_hover_image" style="color: rgb(232, 19, 30); background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; cursor: pointer; outline: 0px; display: block; position: absolute; width: 113px; opacity: 0; transition: opacity 0.4s ease-in-out 0s; backface-visibility: hidden; top: 0px; left: 0px;" data-original-title="" title="" aria-describedby="tooltip138452"/>
+                              </a>
+                            </div>
+                          </li>
+                          <li class="item" style="background: 0px 0px transparent; border: 0px; margin: 0px 2px 0px 0px; padding: 0px; vertical-align: baseline; outline: 0px; position: relative; float: left; width: 113px;">
+                            <div class="carousel_item_holder" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                              <a itemprop="url" href="" style="color: rgb(232, 19, 30); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; cursor: pointer;">
+                                <span class="second_image_holder has_hover_image" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; display: block; position: absolute; width: 113px; opacity: 0; transition: opacity 0.4s ease-in-out 0s; backface-visibility: hidden; top: 0px; left: 0px;" data-original-title="" title="" aria-describedby="tooltip406514"/>
+                              </a>
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <a itemprop="url" href="/shop" class="qbutton default btn btn-danger" style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 2px solid rgb(232, 19, 30); margin: 24px 0px 0px; padding: 0px 23px; vertical-align: baseline; cursor: pointer; transition: color 0.1s linear 0s, background-color 0.1s linear 0s, border-color 0.1s linear 0s; display: inline-block; font-weight: 900; font-family: inherit; text-transform: uppercase; white-space: nowrap; position: relative; width: auto; height: 39px; line-height: 39px; font-size: 14px; text-align: left; letter-spacing: 1px; border-radius: 4px; text-shadow: none; box-sizing: initial !important;" data-original-title="" title="" aria-describedby="tooltip71427">SHOP SPS</a>
+                </div>
+              </div>
+            </div>
+            <div class="wpb_column vc_column_container vc_col-sm-8 vc_col-has-fill pt0" style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; width: 753.328px; position: relative; min-height: 1px; float: left; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px; text-align: center;">
+              <div class="vc_column-inner vc_custom_1469110485427" style="background: 0px 0px; border-top: 0px; border-right: 0px; border-bottom: 0px; border-image: initial; margin: 0px; padding: 35px 15px 0px; vertical-align: baseline; outline: 0px; width: 753.328px; border-left: 2px solid rgb(50, 61, 73) !important;">
+                <div class="wpb_wrapper" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                  <div class="wpb_text_column wpb_content_element " style="background: 0px 0px; border: 0px; margin: 0px 0px 35px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                    <div class="wpb_wrapper" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                      <p style="background: 0px 0px; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-family: &quot;Open Sans&quot;, sans-serif; line-height: 26px; text-align: left;">
+                        <b>Top 10 Reasons that consistently cause Surplus products in the medical device marketplace.</b>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="separator  normal   " style="background: 0px 0px rgb(50, 61, 73); border: 0px; margin: 24px 0px; padding: 0px; vertical-align: baseline; outline: 0px; position: relative; height: 2px;"/>
+                  <div class="wpb_text_column wpb_content_element  vc_custom_1471303636369" style="background: 0px 0px; border: 0px; margin: 0px 0px 35px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 18px !important; vertical-align: baseline; outline: 0px;">
+                    <div class="wpb_wrapper" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                      <ol style="background: 0px 0px; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                        <li class="differenceList" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; text-align: left;">
+                          <span class="reason" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Surgeons depart and leave their preferred products behind.</span>
+                        </li>
+                        <li class="differenceList" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; text-align: left;">
+                          <span class="reason" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Surgeons’ preferences change. Surgeons’ repeatedly change their preference for certain surgical products. More and more, the facilities are stuck with a remaining balance of un-used inventory.</span>
+                        </li>
+                        <li class="differenceList" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; text-align: left;">
+                          <span class="reason" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Group Purchasing Organization’s change and new contracts dictate changes in products and OEMs. Oftentimes, the previous OEM’s inventory is left behind in the conversion.</span>
+                        </li>
+                        <li class="differenceList" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; text-align: left;">
+                          <span class="reason" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">OEMs &amp;amp; distributors are making it more difficult to return products.</span>
+                        </li>
+                        <li class="differenceList" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; text-align: left;">
+                          <span class="reason" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Technology changes and improves. OEMs are constantly releasing new technologies that cause old technology to become obsolete.</span>
+                        </li>
+                        <li class="differenceList" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; text-align: left;">
+                          <span class="reason" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Your facility simply ceases to perform certain procedures.</span>
+                        </li>
+                        <li class="differenceList" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; text-align: left;">
+                          <span class="reason" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">When your hospital switches OEMs, typically all other facilities in your network are switching to the same OEM.</span>
+                        </li>
+                        <li class="differenceList" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; text-align: left;">
+                          <span class="reason" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">The Sales Reps for OEMs turnover and/or abandon the relationship.</span>
+                        </li>
+                        <li class="differenceList" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; text-align: left;">
+                          <span class="reason" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Poor Inventory management (First In, First Out) / Ordering errors. Product is spread over too many locations to keep track of it all. Besides the O.R. Core and main supply area, product can be spread throughout the operation rooms, labs, and surgical carts.</span>
+                        </li>
+                        <li class="differenceList" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; text-align: left;">
+                          <span class="reason" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Your staff does not have the time to continually deal with surplus inventory</span>
+                        </li>
+                      </ol>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </t>
+</t>
+    </template>
+</odoo>

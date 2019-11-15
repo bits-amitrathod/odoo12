@@ -1,0 +1,134 @@
+<odoo>
+    <template id="mission_page" name="Our Mission">
+        <t t-name="website.our-mission">
+            <t t-call="website.layout">
+                <div id="wrap" class="oe_structure oe_empty">
+                    <section class="s_title oe_custom_bg" style="">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-12 pt40">
+                                    <h1 style="color: rgb(255, 255, 255); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 34px; line-height: 60px; text-transform: capitalize; font-family: AmericanGotURW-Bol; text-align: center;">
+                                        <span style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                                            <b>
+                                                <font style="color: rgb(0, 0, 0);">Our Mission</font>
+                                            </b>
+                                        </span>
+                                    </h1>
+                                    <h3 class="text-center text-muted">&amp;nbsp;</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="s_text_image bg-white oe_custom_bg" style="">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-6 mt64 mb32 col-lg-8">
+                                    <h3 style="text-align: left;">
+                                    </h3>
+                                    <h5 style="color: rgb(50, 61, 73); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; letter-spacing: 5px; text-transform: uppercase; font-size: 18px; line-height: 1.57143em; font-family: Lato, sans-serif;">
+                                        <em style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                                            “OUR MISSION IS TO BRING REVENUE BACK TO HOSPITALS FOR THEIR SURPLUS, UNUSED
+                                            SURGICAL PRODUCTS WHILE OFFERING THEM DISCOUNTS ON HIGH-VOLUME PRODUCTS THEY
+                                            ARE CURRENTLY UTILIZING.”
+                                        </em>
+                                    </h5>
+                                </div>
+                                <div class="col-md-6 mt32 mb32 col-lg-4">
+                                    <img class="img img-responsive pull-left mb16" src="/website_cstm/static/src/img/savings-2.jpg"
+                                         alt="Odoo text and image block" data-original-title="" title=""/>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="s_three_columns  bg-white-50 oe_custom_bg" style="background:#f6f6f6">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-4 mt32 mb48" style="">
+                                    <p>
+                                        <span class="q_dropcap square"
+                                              style="background: 0px 0px rgb(232, 19, 30); border: 1px solid rgb(232, 19, 30); margin: 5px 20px 0px 0px; padding: 0px; vertical-align: baseline; outline: 0px; position: relative; display: inline-block; float: left; height: 48px; width: 48px; line-height: 48px; font-size: 42px; color: rgb(255, 255, 255); text-align: center; font-family: AmericanGotURW-Bol; border-radius: 4px;">
+                                            <b>1</b>
+                                        </span>
+                                        <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
+                                            At SPS, our focus is simple: helping our customers become higher quality
+                                            healthcare providers without compromise. We cater our solution to serve the
+                                            entire spectrum of healthcare facilities from large health systems to small
+                                            surgical centers. At each level, our services are personalized to fit our
+                                            customers’ needs.
+                                        </span>
+                                        <br/>
+                                    </p>
+                                </div>
+                                <div class="col-md-4 mt32 mb48">
+                                    <p>
+                                        <span class="q_dropcap square"
+                                              style="background: 0px 0px rgb(232, 19, 30); border: 1px solid rgb(232, 19, 30); margin: 5px 20px 0px 0px; padding: 0px; vertical-align: baseline; outline: 0px; position: relative; display: inline-block; float: left; height: 48px; width: 48px; line-height: 48px; font-size: 42px; color: rgb(255, 255, 255); text-align: center; font-family: AmericanGotURW-Bol; border-radius: 4px;">
+                                            <b>2</b>
+                                        </span>
+                                        <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; ">
+                                            SPS is a leading provider of cost-saving solutions for hospitals and surgery
+                                            centers across the United States who choose to save money without having to
+                                            sacrifice quality of care. Our business model allows our customers to save
+                                            money without interrupting surgeon preferences or hospital contracts. We
+                                            accomplish this by providing hospitals, not one, but two cost-savings
+                                            solutions for their high-volume surgical disposables.
+                                        </span>
+                                        <br/>
+                                    </p>
+                                </div>
+                                <div class="col-md-4 mt32 mb48">
+                                    <p>
+                                        <span class="q_dropcap square"
+                                              style="background: 0px 0px rgb(232, 19, 30); border: 1px solid rgb(232, 19, 30); margin: 5px 20px 0px 0px; padding: 0px; vertical-align: baseline; outline: 0px; position: relative; display: inline-block; float: left; height: 48px; width: 48px; line-height: 48px; font-size: 42px; color: rgb(255, 255, 255); text-align: center; font-family: AmericanGotURW-Bol; border-radius: 4px;">
+                                            <b>3</b>
+                                        </span>
+                                        <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; ">
+                                            At a time when cost-saving initiatives are becoming more important as a
+                                            national focus on improving the efficiencies of our healthcare system takes
+                                            center stage, our services are at the cornerstone of responsible hospital
+                                            behavior. Our two-solution model provides the means for both financial and
+                                            environmental benefit with no loss of quality or care.
+                                        </span>
+                                        <br/>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="s_image_text bg-white oe_custom_bg">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-6 mt32 mb32 col-lg-4">
+                                    <img class="img img-responsive center-block mb16" src="/website_cstm/static/src/img/Money.jpg"
+                                         alt="Odoo image and text block" data-original-title="" title=""
+                                         aria-describedby="tooltip574432"/>
+                                </div>
+                                <div class="col-md-6 mt64 mb32 col-lg-8">
+                                    <p>
+                                        <span class="q_dropcap square"
+                                              style="background: 0px 0px rgb(232, 19, 30); border: 1px solid rgb(232, 19, 30); margin: 5px 20px 0px 0px; padding: 0px; vertical-align: baseline; outline: 0px; position: relative; display: inline-block; float: left; height: 48px; width: 48px; line-height: 48px; font-size: 42px; color: rgb(255, 255, 255); text-align: center; font-family: AmericanGotURW-Bol; border-radius: 4px;">
+                                            <b>4</b>
+                                        </span>
+                                        <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
+                                            SPS prides itself on the significant cost-savings we are able to achieve for
+                                            our clients in addition to the role we play in helping them live up to their
+                                            patient and physician responsibilities as leaders in their local medical
+                                            community. Simply put, our service keeps valuable medical devices from
+                                            expiring on the shelf and turning into waste; allowing hospitals to redirect
+                                            resources towards increasing their quality of care. We are proud to say that
+                                            we successfully eliminated hundreds of thousands of dollars from our
+                                            customer’s costs by buying and selling the surgical surplus they would have
+                                            otherwise thrown away.
+                                        </span>
+                                        <br/>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </t>
+        </t>
+
+    </template>
+</odoo>
