@@ -42,6 +42,10 @@ class WebsiteCstm(http.Controller):
     def equipment_service_request(self):
         return http.request.render('website_cstm.equipment_service_page')
 
+    @http.route('/why-you-need-us', type='http', auth="public", website=True)
+    def need_us(self):
+        return http.request.render('website_cstm.need_page')
+
     @http.route('/faqs', type='http', auth="public", website=True)
     def faqs(self):
         return http.request.render('website_cstm.faqs_page')
