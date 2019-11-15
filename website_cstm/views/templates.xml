@@ -143,6 +143,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                             <li>
                                 <a href="/search" title="Search">Search</a>
                             </li>
+                             <li>
+                                <a href="/career" title="Search">Careers</a>
+                            </li>
                             <li>
                                 <a href="/about" title="About Us">About Us</a>
                             </li>
@@ -154,11 +157,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                                     Quality Assurance and Service Guarantee
                                 </a>
                             </li>
-                            <li>
+                    <!--        <li>
                                 <a href="http://www.surgicalproductsolutions.com/" title="SurgicalProductSolutions.com">
                                     SurgicalProductSolutions.com
                                 </a>
-                            </li>
+                            </li>-->
                             <li>
                                 <a href="/terms" title="Terms">Terms</a>
                             </li>
