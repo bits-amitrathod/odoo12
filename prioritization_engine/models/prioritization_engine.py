@@ -3,7 +3,9 @@ import logging
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
 import re
-from odoo import SUPERUSER_ID
+# from odoo import SUPERUSER_ID
+
+SUPERUSER_ID = 2
 
 _logger = logging.getLogger(__name__)
 
