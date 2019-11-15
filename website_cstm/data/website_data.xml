@@ -66,5 +66,62 @@
         <!--<field name="website_id" ref="default_website"/>-->
         <!--</record>-->
 
+        <record id="menu_shop_all" model="website.menu">
+            <field name="name">Shop all</field>
+            <field name="url">/shop</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">6</field>
+            <field name="website_id" ref="default_website"/>
+        </record>
+
+         <record id="menu_sale_items" model="website.menu">
+            <field name="name">Sale Items</field>
+            <field name="url">/shop/featured</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">7</field>
+            <field name="website_id" ref="default_website"/>
+        </record>
+
+          <record id="menu_purchase_product_info" model="website.menu">
+            <field name="name">Purchase Product Info</field>
+            <field name="url">/purchase-product</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">8</field>
+            <field name="website_id" ref="default_website"/>
+        </record>
+
+        <record id="menu_capital_equipment" model="website.menu">
+            <field name="name">About SPS Capital Equipment</field>
+            <field name="url">/equipment</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">10</field>
+            <field name="website_id" ref="default_website"/>
+        </record>
+
+          <record id="menu_buy" model="website.menu">
+            <field name="name">Buy</field>
+            <field name="url">/shop/capital-equipment</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">11</field>
+            <field name="website_id" ref="default_website"/>
+        </record>
+
+        <record id="menu_sell_form" model="website.menu">
+            <field name="name">Sell</field>
+            <field name="url">/sell-form</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">12</field>
+            <field name="website_id" ref="default_website"/>
+        </record>
+
+        <record id="menu_repair" model="website.menu">
+            <field name="name">Repair</field>
+            <field name="url">/repair-1</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">13</field>
+            <field name="website_id" ref="default_website"/>
+        </record>
+
+
     </data>
 </odoo>
