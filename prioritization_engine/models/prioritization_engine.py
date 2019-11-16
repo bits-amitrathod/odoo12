@@ -3,7 +3,9 @@ import logging
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
 import re
-from odoo import SUPERUSER_ID
+# from odoo import SUPERUSER_ID
+
+SUPERUSER_ID = 2
 
 _logger = logging.getLogger(__name__)
 
@@ -226,7 +228,7 @@ class PrioritizationEngine(models.TransientModel):
                                                required_quantity)
 
             prioritization_engine_request['customer_request_logs'] += 'Product allocated.'
-            self.update_customer_request_status(prioritization_engine_request,'Fulfilled')
+            self.update_customer_request_status(prioritization_engine_request, 'Fulfilled')
 
             # Update updated_quantity
             if prioritization_engine_request['template_type'].lower().strip() == 'requirement':
@@ -250,7 +252,7 @@ class PrioritizationEngine(models.TransientModel):
 
             # Update updated_quantity
             if prioritization_engine_request['template_type'].lower().strip() == 'requirement':
-                self.env['sps.customer.requests'].search([('id', '=', prioritization_engine_request['customer_request_id'])]).write({'updated_quantity':remaining_product_allocation_quantity})
+                self.env['sps.customer.requests'].search([('id', '=', prioritization_engine_request['customer_request_id'])]).write({'updated_quantity': remaining_product_allocation_quantity})
 
     # Update Prioritization Engine logs.
     def _update_logs(self, prioritization_engine_request):
@@ -384,16 +386,7 @@ class PrioritizationEngine(models.TransientModel):
             sale_order.action_confirm()
             print('**********After action_confirm************', sale_order.state)
             _logger.info('sale order id  : %r  sale order state : %r', sale_order.id, sale_order.state)
-
-            # picking = self.env['stock.picking'].search([('sale_id', '=', sale_order.id),('picking_type_id', '=', 1)])
-            # _logger.info('picking state   : %r', picking.state)
-            # picking.write({'state':'assigned'})
-            # stock_move = self.env['stock.move'].search([('picking_id', '=', picking.id)])
-            # stock_move.write({'state': 'assigned'})
-            # sale_order.write(dict(state='engine', confirmation_date=''))
-            # sale_order.force_quotation_send()
-            sale_order.write({'state':'sent', 'confirmation_date':None})
-
+            sale_order.write({'state':'sent', 'confirmation_date': None})
 
     # Generate sale order for gl account
     def generate_sale_order_for_gl_account(self):
@@ -421,15 +414,7 @@ class PrioritizationEngine(models.TransientModel):
             sale_order.force_quotation_send()
             sale_order.action_confirm()
             _logger.info('sale order id  : %r  sale order state : %r', sale_order.id, sale_order.state)
-
-            # picking = self.env['stock.picking'].search([('sale_id', '=', sale_order.id), ('picking_type_id', '=', 1)])
-            # _logger.info('picking before   : %r', picking.state)
-            # picking.write({'state':'assigned'})
-            # stock_move = self.env['stock.move'].search([('picking_id', '=', picking.id)])
-            # stock_move.write({'state': 'assigned'})
-            # sale_order.write(dict(state='engine', confirmation_date=''))
-            # sale_order.force_quotation_send()
-            sale_order.write({'state':'sent', 'confirmation_date':''})
+            sale_order.write({'state': 'sent', 'confirmation_date': None})
 
     # Change date format to calculate date difference (2018-06-25 23:08:15) to (2018, 6, 25, 23, 8, 15)
     def change_date_format(self, date):
@@ -474,11 +459,11 @@ class PrioritizationEngine(models.TransientModel):
 
         if int(inventory_quantity) < int(min_threshold):
             allocate_quantity = int(max_threshold) - int(inventory_quantity)
-            return True,allocate_quantity
+            return True, allocate_quantity
         else:
             self.update_customer_request_status(prioritization_engine_request, 'Inprocess')
             prioritization_engine_request['customer_request_logs'] += 'Unable to allocate product beacause stock is greater than minimum threshold, '
-            return False,0
+            return False, 0
 
     # Update uploaded document status
     def _check_uploaded_document_status(self):
@@ -502,6 +487,7 @@ class PrioritizationEngine(models.TransientModel):
                     if len(sps_customer_requirements) == len(sps_customer_requirements_all):
                         template = self.env.ref('customer-requests.final_email_response_on_uploaded_document').sudo()
                 else:
+
                     if len(sps_customer_requirement) > 0:
                         if len(sps_customer_requirements) == len(sps_customer_requirements_all):
                             template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
@@ -535,10 +521,10 @@ class PrioritizationEngine(models.TransientModel):
                 # Send Email
                 self.send_mail(sps_cust_uploaded_document.customer_id.name, sps_cust_uploaded_document.customer_id.email, template)
 
-    def _update_uploaded_document_status(self,document_id,status):
+    def _update_uploaded_document_status(self,document_id, status):
         try:
             self.env['sps.cust.uploaded.documents'].search([('id', '=', document_id)]).write({'status':status})
-        except Exception:
+        except:
             _logger.error("Unable to update document status")
 
     # Release reserved product quantity(Which sales order product not confirm within length of hold period)

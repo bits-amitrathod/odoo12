@@ -114,7 +114,7 @@ class maxinventorydurationpopup(models.TransientModel):
 class ReportInventoryMonitor(models.AbstractModel):
     _name = 'report.inventory_monitor.inventory_monitor_print'
     @api.model
-    def get_report_values(self, docids, data=None):
+    def _get_report_values(self, docids, data=None):
          _logger.info("print report called...")
          monitor=self.env['inventory.monitor'].browse(docids)
          return {'data': monitor}
@@ -131,7 +131,7 @@ class ProductTemplate(models.Model):
     inventory_percent_color=fields.Integer("Inv Percent Color", default="0")
     future_percent_color = fields.Integer("Inv Percent Color", default="0")
     qty_on_order = fields.Integer("Qty On Order")
-
+    percentage_field = fields.Percent()
     inventory_monitor=fields.Boolean("Can be Monitored")
     max_inventory_product_level_duration = fields.Integer(string="Max Inventory Level")
     product_tmpl_id = fields.Many2one('product.template', "Product Template")

@@ -15,7 +15,9 @@ import time
 
 import werkzeug.local
 import werkzeug.wsgi
-from odoo import SUPERUSER_ID
+# from odoo import SUPERUSER_ID
+
+SUPERUSER_ID = 2
 
 #----------------------------------------------------------
 # RequestHandler
@@ -49,7 +51,7 @@ except ImportError:
 from email.message import Message
 
 _logger = logging.getLogger(__name__)
-MAX_POP_MESSAGES = 50
+MAX_POP_MESSAGES = 5
 MAIL_TIMEOUT = 60
 
 poplib._MAXLINE = 65536
@@ -64,10 +66,6 @@ class IncomingMailCronModel(models.Model):
     @api.multi
     def fetch_mail(self):
         """ WARNING: meant for cron usage only - will commit() after each email! """
-        additionnal_context = {
-            'fetchmail_cron_running': True
-        }
-        MailThread = self.env['mail.thread']
         start_time = time.time()
         _logger.info('***********start time********')
         _logger.info(start_time)
@@ -75,6 +73,10 @@ class IncomingMailCronModel(models.Model):
             count, failed = 0, 0
             pop_server = None
             if server.type == 'imap':
+                additionnal_context = {
+                    'fetchmail_cron_running': True
+                }
+                MailThread = self.env['mail.thread']
                 try:
                     imap_server = server.connect()
                     imap_server.select()
@@ -104,13 +106,18 @@ class IncomingMailCronModel(models.Model):
                     while True:
                         pop_server = server.connect()
                         (num_messages, total_size) = pop_server.stat()
-                        pop_server.list()
+                        # pop_server.list()
                         _logger.info('Server tpye is POP inside while')
                         _logger.info('total_size = %d', total_size)
                         _logger.info('num_messages = %d', num_messages)
+                        pop_server.quit()
+                        pop_server = None
                         for num in range(1, min(MAX_POP_MESSAGES, num_messages) + 1):
+                            pop_server = server.connect()
+                            # (num_messages, total_size) = pop_server.stat()
+                            pop_server.list()
                             _logger.info('Server tpye is POP inside while INSIDE FOR')
-                            (header, messages, octets) = pop_server.retr(num)
+                            (header, messages, octets) = pop_server.retr(1)
                             message = (b'\n').join(messages)
                             res_id = None
                             response = {'message':'File Uploaded Successfully'}
@@ -152,7 +159,7 @@ class IncomingMailCronModel(models.Model):
                                     saleforce_ac = match1[0].split(':')[1]
                                     # find customer in res.partner
                                     if saleforce_ac and saleforce_ac is not None:
-                                        res_partner = self.env['res.partner'].search([("saleforce_ac", "=", saleforce_ac)])
+                                        res_partner = self.env['res.partner'].search([("saleforce_ac", "=", saleforce_ac), ('prioritization', '=', True)])
                                         if len(res_partner) == 1:
                                             # when new email in inbox, send email to admin
                                             self.send_mail_with_attachment(str(email_from), str(email_subject), str(res_partner.name), attachments)
@@ -165,8 +172,8 @@ class IncomingMailCronModel(models.Model):
                                             _logger.info('We have found Same Customer Id against multiple users. %r', str(saleforce_ac))
                                             response = dict(errorCode=106, message='We have found Same Customer Id against multiple customers.')
                                         else:
-                                            _logger.info('Customer Id is not found in customers : %r', str(saleforce_ac))
-                                            response = dict(errorCode=107, message='Customer Id is not found in customers.')
+                                            _logger.info('Customer Id is not found in customers or prioritization setting is off.: %r', str(saleforce_ac))
+                                            response = dict(errorCode=107, message='Customer Id is not found in customers  or prioritization setting is off.')
                                     else:
                                         _logger.info('Customer Id is not found in email subject.')
                                         response = dict(errorCode=108, message='Customer Id is not found in email subject.')
@@ -279,7 +286,7 @@ class IncomingMailCronModel(models.Model):
                                                 if customerName == "":
                                                     customerName = res_partner['name']
                                                 else:
-                                                    customerName = customerName + "  ,  " + res_partner['name']
+                                                    customerName = str(customerName) + "  ,  " + str(res_partner['name'])
 
                                         if len(res_partners) == 1:
                                             self.send_mail(str(email_from), str(email_subject), str(res_partners['name']), str(customer_email), str(response['message']), response['attachment'])
@@ -300,10 +307,13 @@ class IncomingMailCronModel(models.Model):
                                     'active_model': self.env.context.get("thread_model", server.object_id.model)
                                 }).run()
                             self.env.cr.commit()
+                            pop_server.quit()
+                            pop_server = None
                         _logger.info('num_messages = %d', num_messages)
                         if num_messages < MAX_POP_MESSAGES:
                             break
                         pop_server.quit()
+                        pop_server = None
                         _logger.info("Fetched %d email(s) on %s server %s; %d succeeded, %d failed.", num_messages,
                                      server.type, server.name, (num_messages - failed), failed)
                 except Exception:

@@ -437,6 +437,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                     product_list.extend(list(products.values()))
                     if customr.user_id.email:
                         email_list_cc.append(customr.user_id.email)
+                    if customr.account_manager_cust.email:
+                        email_list_cc.append(customr.account_manager_cust.email)
                     sort_col=True
                     self.process_email_in_stock_scheduler_template(super_user, customr, subject, descrption,
                                                                    product_list,
