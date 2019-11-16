@@ -7,7 +7,7 @@
     'sequence': 57,
     'category': 'Theme',
     'version': '0.1',
-    'depends': ['website_sales','website_product_brand','web_search','auth_signup','prioritization_engine','vendor_offer','website_crm','mass_mailing'],
+    'depends': ['website_sales','website_product_brand','web_search','auth_signup','prioritization_engine','vendor_offer','website_crm','mass_mailing','website_slides'],
 
     'data': [
         'security/ir.model.access.csv',
