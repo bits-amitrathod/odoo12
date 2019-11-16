@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': " STOCKHAWK",
+    'name': "STOCKHAWK",
     'author': "Benchmark IT Solutions (I) Pvt Ltd.",
     'website': "http://www.benchmarkitsolutions.com",
 
