@@ -149,9 +149,9 @@ class DocumentProcessTransientModel(models.TransientModel):
                                 sps_customer_product_priority = user_model.priority
                             if not sps_customer_product_priority:
                                 high_priority_product = True
-                                req.update(dict(product_id=product_id, status='Inprocess'))
+                                req.update(dict(product_id=product_id, status='Inprocess', priority=sps_customer_product_priority))
                             else:
-                                req.update(dict(product_id=product_id, status='New'))
+                                req.update(dict(product_id=product_id, status='New', priority=sps_customer_product_priority))
                             # set uom flag, if uom_flag is false then check the partial_uom flag
                             if 'uom' in req.keys():
                                 if req['uom'].lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
