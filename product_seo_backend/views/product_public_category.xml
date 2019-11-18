@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="product_public_category_form_view_seo_inherit" model="ir.ui.view">
+            <field name="name">product.public.category.inherit.form</field>
+            <field name="inherit_id" ref="website_sale.product_public_category_form_view"/>
+            <field name="model">product.public.category</field>
+            <field name="arch" type="xml">
+                <xpath expr="//div" position="after"> 
+                <group string="SEO Information" name="seo">
+                      <group>
+                        <field name="website_meta_title"/>
+                        <field name="website_meta_keywords"/>
+                      </group>
+                    </group>
+                    <group>
+                      <field name="website_meta_description" nolable="1"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

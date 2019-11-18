@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2015-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- "License URL : <https://store.webkul.com/license.html/>" -->
+
+<odoo>
+    <data>
+        <record id="inherit_website_redirect_form_view" model="ir.ui.view">
+            <field name="name">website.redirect.form</field>
+            <field name="model">website.redirect</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="website.website_redirect_form_view"/>
+            <field name="arch" type="xml">  
+                <field name="url_to" position="after">
+                    <field name="rewrite_val"/>
+                    <field name="record_id" attrs="{'invisible': [('rewrite_val','=', 'custom')]}"/>
+                </field>
+                <field name="active" position="after">
+                    <field name="create_type"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="inherit_website_redirect_tree_view" model="ir.ui.view">
+            <field name="name">website.redirect.tree</field>
+            <field name="model">website.redirect</field>
+            <field name="inherit_id" ref="website.website_redirect_tree_view" />
+            <field name="arch" type="xml">
+                <field name="url_to" position="after">
+                    <field name="rewrite_val"/>
+                </field>
+                <field name="active" position="after">
+                    <field name="create_type"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- Search View for Website Redirect -->
+        <record id="website_redirect_search" model="ir.ui.view">
+                <field name="name">website.redirect.search</field>
+                <field name="model">website.redirect</field>
+                <field name="arch" type="xml">
+				    <search string="SEO">
+                        <field name="url_to" filter_domain="['|',('url_to','ilike',self),('url_from','ilike',self)]"/>
+                        <field name="rewrite_val"/>
+                        <field name="create_type"/>
+                        <field name="type"/>
+                        <group expand="0" string="Group By">
+                            <filter string="Create URL Rewrite" name="filter_by_rewrite_val" domain="[]" context="{'group_by':'rewrite_val'}"/>
+                        </group>
+                    </search>
+                </field>
+        </record>
+
+        <record id="website.action_website_redirect_list" model="ir.actions.act_window">
+            <field name="name">Website Redirects</field>
+            <field name="res_model">website.redirect</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="website.website_redirect_tree_view"/>
+            <field name="target">current</field>
+            <field name="search_view_id" ref = "website_redirect_search"/>
+            <field name="context">{"search_default_filter_by_rewrite_val":1}</field>
+        </record>
+    </data>
+</odoo>
