@@ -144,14 +144,14 @@ class DocumentProcessTransientModel(models.TransientModel):
                             if len(sps_product_priotization) >= 1:
                                 sps_product = sps_product_priotization[0]
                                 sps_customer_product_priority = sps_product.priority
-
                             else:
                                 sps_customer_product_priority = user_model.priority
-                            if not sps_customer_product_priority:
-                                high_priority_product = True
-                                req.update(dict(product_id=product_id, status='Inprocess', priority=sps_customer_product_priority))
-                            else:
-                                req.update(dict(product_id=product_id, status='New', priority=sps_customer_product_priority))
+                            # if not sps_customer_product_priority:
+                            #     high_priority_product = True
+                            #     req.update(dict(product_id=product_id, status='Inprocess', priority=sps_customer_product_priority))
+                            # else:
+                            #     req.update(dict(product_id=product_id, status='New', priority=sps_customer_product_priority))
+                            req.update(dict(product_id=product_id, status='New', priority=sps_customer_product_priority))
                             # set uom flag, if uom_flag is false then check the partial_uom flag
                             if 'uom' in req.keys():
                                 if req['uom'].lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
@@ -182,9 +182,9 @@ class DocumentProcessTransientModel(models.TransientModel):
                         if high_priority_product:
                             high_priority_requests.append(saved_sps_customer_request)
                 # Send Email Notification to customer about the progress of uploaded or sent document
-                if len(high_priority_requests) == 0:
-                    template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
-                    self.env['prioritization.engine.model'].send_mail(user_model.name, user_model.email, template)
+                # if len(high_priority_requests) == 0:
+                #     template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
+                #     self.env['prioritization.engine.model'].send_mail(user_model.name, user_model.email, template)
                 # else:
                 #     self.env['sps.customer.requests'].process_customer_requests(high_priority_requests)
             else:
