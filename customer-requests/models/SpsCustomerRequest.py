@@ -34,24 +34,22 @@ class SpsCustomerRequest(models.Model):
     vendor_pricing = fields.Char()
     quantity = fields.Float()
     required_quantity = fields.Float()
-    # updated_quantity = fields.Float()
+    updated_quantity = fields.Float()
     frequency_of_refill = fields.Integer()
     threshold = fields.Integer()
     uom = fields.Char()
-    # uom_flag = fields.Boolean(help="if uom is each then set uom flag is 1(True)")
+    priority = fields.Integer()
+    uom_flag = fields.Boolean(help="if uom is each then set uom flag is 1(True)")
     product_description = fields.Char(string='Product Description')
     customer_request_logs = fields.Char(string='Customer Request Logs')
 
     document_id_set = set()
 
-
-
     # Get Customer Requests
     def get_customer_requests(self):
         _logger.info('In get_customer_requests')
 
-        sps_customer_requests = self.env['sps.customer.requests'].search(
-                [('document_id.status', 'in', ('In Process', 'draft')),
+        sps_customer_requests = self.env['sps.customer.requests'].search([('document_id.status', '=', 'In Process'),
                  ('status', 'in', ('Inprocess', 'Incomplete', 'Unprocessed', 'InCoolingPeriod', 'New', 'Partial'))])
         if len(sps_customer_requests)>0:
                 try:
@@ -89,7 +87,7 @@ class SpsCustomerRequest(models.Model):
                        self.env['sps.cust.uploaded.documents'].search([('id', '=', sps_customer_request.document_id.id)]).write({'status': 'Completed'})
 
             elif sps_customer_request.document_id.template_type.lower().strip() == 'requirement':
-                if sps_customer_request.required_quantity > 0:
+                if sps_customer_request.updated_quantity > 0:
                     if int(current_processed_docs) <= int(current_cust_doc_fixed_count):
                         pr_model = self.add_customer_request_data(sps_customer_request)
                         if pr_model:
@@ -124,7 +122,7 @@ class SpsCustomerRequest(models.Model):
                                 gl_account=sps_customer_request['gl_account'],
                                 product_id=sps_customer_request['product_id'].id,
                                 status=sps_customer_request['status'],
-                                required_quantity=sps_customer_request.required_quantity,
+                                required_quantity=sps_customer_request.updated_quantity,
                                 min_threshold=_setting_object.min_threshold,
                                 max_threshold=_setting_object.max_threshold,
                                 quantity=sps_customer_request.quantity,
@@ -132,10 +130,10 @@ class SpsCustomerRequest(models.Model):
                                 auto_allocate=_setting_object.auto_allocate,
                                 cooling_period=_setting_object.cooling_period,
                                 length_of_hold=_setting_object.length_of_hold,
-                                # uom_flag=sps_customer_request['uom_flag'],
+                                uom_flag=sps_customer_request['uom_flag'],
                                 partial_order=_setting_object.partial_ordering,
-                                # partial_uom=_setting_object.partial_UOM,
-                                # updated_quantity = sps_customer_request['updated_quantity'],
+                                partial_uom=_setting_object.partial_UOM,
+                                updated_quantity = sps_customer_request['updated_quantity'],
                                 expiration_tolerance=_setting_object.expiration_tolerance,
                                 customer_request_logs=sps_customer_request.customer_request_logs)
                 return pr_model

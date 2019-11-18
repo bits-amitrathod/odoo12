@@ -30,7 +30,7 @@ class Customer(models.Model):
     doc_process_count = fields.Integer("Document Processing Count", readonly=False, default='1')
     expiration_tolerance = fields.Integer("Expiration Tolerance in Months", readonly=False)
     partial_ordering = fields.Boolean("Allow Partial Ordering?", readonly=False)
-    # partial_UOM = fields.Boolean("Allow Partial UOM?", readonly=False)
+    partial_UOM = fields.Boolean("Allow Partial UOM?", readonly=False)
     order_ids = fields.One2many('sale.order', 'partner_id')
     gl_account = fields.One2many('gl.account', 'partner_id', string="GL Account")
     on_hold = fields.Boolean("On Hold")
@@ -104,7 +104,7 @@ class Customer(models.Model):
                                 'prioritization_ids': ml.prioritization_ids,
                                 'min_threshold': ml.min_threshold,
                                 'priority': ml.priority,
-                                # 'partial_UOM': ml.partial_UOM,
+                                'partial_UOM': ml.partial_UOM,
                                 'partial_ordering': ml.partial_ordering,
                                 'auto_allocate': ml.auto_allocate,
                                 'length_of_hold': ml.length_of_hold,
@@ -301,7 +301,7 @@ class Prioritization(models.Model):
     length_of_hold = fields.Integer("Length Of Hold in hours", readonly=False, default=1)
     expiration_tolerance = fields.Integer("Expiration Tolerance in months", readonly=False)
     partial_ordering = fields.Boolean("Allow Partial Ordering?", readonly=False)
-    # partial_UOM = fields.Boolean("Allow Partial UOM?", readonly=False)
+    partial_UOM = fields.Boolean("Allow Partial UOM?", readonly=False)
     customer_id = fields.Many2one('res.partner', string='GlobalPrioritization', required=True, ondelete="cascade")
     product_id = fields.Many2one('product.product', string='Product', required=True, ondelete="cascade")
     sales_channel = fields.Selection([('1', 'Manual'), ('2', 'Prioritization Engine')], String="Sales Channel",
@@ -377,7 +377,7 @@ class PrioritizationTransient(models.TransientModel):
     length_of_hold = fields.Integer("Length Of Hold in hours", default=1)
     expiration_tolerance = fields.Integer("Expiration Tolerance in months")
     partial_ordering = fields.Boolean("Allow Partial Ordering?")
-    # partial_UOM = fields.Boolean("Allow Partial UOM?")
+    partial_UOM = fields.Boolean("Allow Partial UOM?")
 
     def action_confirm(self, arg):
         for selected in arg["selected_ids"]:
@@ -386,7 +386,7 @@ class PrioritizationTransient(models.TransientModel):
                 {'min_threshold': self.min_threshold, 'max_threshold': self.max_threshold, 'priority': self.priority,
                  'cooling_period': self.cooling_period, 'auto_allocate': self.auto_allocate,
                  'expiration_tolerance': self.expiration_tolerance, 'partial_ordering': self.partial_ordering,
-                 # 'partial_UOM': self.partial_UOM,
+                 'partial_UOM': self.partial_UOM,
                  'length_of_hold': self.length_of_hold})
         return {
             'type': 'ir.actions.client',
@@ -403,21 +403,21 @@ class SalesChannelPrioritization(models.Model):
 
 class StockMove(models.Model):
     _inherit = "stock.move"
-    # partial_UOM = fields.Boolean("Allow Partial UOM?", compute="_get_partial_UOM", readonly=True)
+    partial_UOM = fields.Boolean("Allow Partial UOM?", compute="_get_partial_UOM", readonly=True)
     default_code = fields.Char("SKU", store=False, readonly=True, related='product_id.product_tmpl_id.default_code')
 
-    # @api.multi
-    # def _get_partial_UOM(self):
-    #     for stock_move in self:
-    #         _logger.info('partner id : %r, product id : %r', stock_move.partner_id.id, stock_move.product_id.id)
-    #         if stock_move.partner_id and stock_move.product_id:
-    #             setting = self.env['sps.customer.requests'].get_settings_object(stock_move.partner_id.id,
-    #                                                                             stock_move.product_id.id,
-    #                                                                             None, None)
-    #             if setting:
-    #                 if setting.partial_UOM and not setting.partial_UOM is None:
-    #                     _logger.info('partial UOM** : %r', setting.partial_UOM)
-    #                     stock_move.partial_UOM = setting.partial_UOM
+    @api.multi
+    def _get_partial_UOM(self):
+        for stock_move in self:
+            _logger.info('partner id : %r, product id : %r', stock_move.partner_id.id, stock_move.product_id.id)
+            if stock_move.partner_id and stock_move.product_id:
+                setting = self.env['sps.customer.requests'].get_settings_object(stock_move.partner_id.id,
+                                                                                stock_move.product_id.id,
+                                                                                None, None)
+                if setting:
+                    if setting.partial_UOM and not setting.partial_UOM is None:
+                        _logger.info('partial UOM** : %r', setting.partial_UOM)
+                        stock_move.partial_UOM = setting.partial_UOM
 
     def _action_assign(self):
         _logger.info('*****prioritization -> _action_assign()*********')
@@ -449,21 +449,27 @@ class StockMove(models.Model):
                     lot_id = product_lot.get(list(product_lot.keys()).pop(0), {}).get('lot_id')
                     avi_qty = product_lot.get(list(product_lot.keys()).pop(0), {}).get('available_quantity')
                     use_date = product_lot.get(list(product_lot.keys()).pop(0), {}).get('use_date')
-                    dict1 = {'lot_id': lot_id, 'available_qty': avi_qty, 'use_date': use_date}
-
-                    if move.product_id.id in product_lot_qty_dict.keys():
-                        product_lot_qty_dict.get(move.product_id.id, {}).append(dict1)
-                    else:
-                        new_dict = {move.product_id.id: [dict1]}
-                        product_lot_qty_dict.update(new_dict)
+                    if avi_qty > 0:
+                        dict1 = {'lot_id': lot_id, 'available_qty': avi_qty, 'use_date': use_date}
+                        if move.product_id.id in product_lot_qty_dict.keys():
+                            product_lot_qty_dict.get(move.product_id.id, {}).append(dict1)
+                        else:
+                            new_dict = {move.product_id.id: [dict1]}
+                            product_lot_qty_dict.update(new_dict)
 
                 dict_by_product = product_lot_qty_dict.get(move.product_id.id, {})
                 dict_asc_by_use_date = sorted(dict_by_product, key=lambda i: i['use_date'])
 
                 need = move.product_qty - move.reserved_availability
                 for prdt_lot_qty in dict_asc_by_use_date:
+                    # Reserve new quants and create move lines accordingly.
+                    available_quantity = prdt_lot_qty['available_qty']
+                    if available_quantity <= 0:
+                        continue
                     if need > 0:
                         taken_quantity = move._update_reserved_quantity(need, prdt_lot_qty['available_qty'], move.location_id, prdt_lot_qty['lot_id'], strict=False)
+                        if float_is_zero(taken_quantity, precision_rounding=move.product_id.uom_id.rounding):
+                            continue
                         _logger.info('taken_quantity : %r', taken_quantity)
                         need = need - taken_quantity
                     if need == taken_quantity:
