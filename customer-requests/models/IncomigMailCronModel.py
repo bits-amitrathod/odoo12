@@ -159,7 +159,7 @@ class IncomingMailCronModel(models.Model):
                                     saleforce_ac = match1[0].split(':')[1]
                                     # find customer in res.partner
                                     if saleforce_ac and saleforce_ac is not None:
-                                        res_partner = self.env['res.partner'].search([("saleforce_ac", "=", saleforce_ac), ('prioritization', '=', True)])
+                                        res_partner = self.env['res.partner'].search([("saleforce_ac", "=ilike", saleforce_ac), ('prioritization', '=', True)])
                                         if len(res_partner) == 1:
                                             # when new email in inbox, send email to admin
                                             self.send_mail_with_attachment(str(email_from), str(email_subject), str(res_partner.name), attachments)
@@ -213,7 +213,7 @@ class IncomingMailCronModel(models.Model):
                                         message_payload = plain_text.handle(tools.ustr(body, encoding, errors='replace'))
 
                                         if saleforce_ac is not None:
-                                            users_model = self.env['res.partner'].search([("saleforce_ac", "=", saleforce_ac)])
+                                            users_model = self.env['res.partner'].search([("saleforce_ac", "=ilike", saleforce_ac)])
                                             if users_model:
                                                 if len(users_model) == 1:
                                                     user_attachment_dir = ATTACHMENT_DIR + str(datetime.now().strftime("%d%m%Y")) + "/" + str(users_model.id) + "/"
@@ -279,7 +279,7 @@ class IncomingMailCronModel(models.Model):
                                 if "errorCode" in response:
                                     response.update({'attachment': attachments})
                                     if saleforce_ac is not None or customer_email is not None:
-                                        res_partners = self.env['res.partner'].search(['|', ("saleforce_ac", "=", saleforce_ac), ("email", "=ilike", customer_email)])
+                                        res_partners = self.env['res.partner'].search(['|', ("saleforce_ac", "=ilike", saleforce_ac), ("email", "=ilike", customer_email)])
                                         if len(res_partners) > 1:
                                             customerName = ""
                                             for res_partner in res_partners:
@@ -299,6 +299,9 @@ class IncomingMailCronModel(models.Model):
                             except Exception:
                                 _logger.info('Failed to process mail from %s server %s.', server.type, server.name, exc_info=True)
                                 failed += 1
+                                if pop_server:
+                                    pop_server.quit()
+                                    pop_server = None
 
                             if res_id and server.action_id:
                                 server.action_id.with_context({
@@ -312,8 +315,6 @@ class IncomingMailCronModel(models.Model):
                         _logger.info('num_messages = %d', num_messages)
                         if num_messages < MAX_POP_MESSAGES:
                             break
-                        pop_server.quit()
-                        pop_server = None
                         _logger.info("Fetched %d email(s) on %s server %s; %d succeeded, %d failed.", num_messages,
                                      server.type, server.name, (num_messages - failed), failed)
                 except Exception:
