@@ -182,6 +182,8 @@ class DocumentProcessTransientModel(models.TransientModel):
                 if len(sps_customer_requirement_all) == len(sps_customer_requirements_all_voided):
                     template = self.env.ref('customer-requests.final_email_response_on_uploaded_document').sudo()
                     self.env['prioritization.engine.model'].send_mail(user_model.name, user_model.email, template)
+                    file_uploaded_record.write({'document_processed_count': 1, 'status': 'Completed'})
+
             else:
                 _logger.info('file is not acceptable')
                 response = dict(errorCode=12, message='Error saving document record')
