@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+admin_oauth2_detail_manager,oauth2.detail Manager,model_oauth2_detail,base.group_erp_manager,1,1,1,1
+admin_field_mappning_line_manager,field.mappning.line Manager,model_field_mappning_line,base.group_erp_manager,1,1,1,1
+admin_field_mappning_manager,field.mappning Manager,model_field_mappning,base.group_erp_manager,1,1,1,1
+admin_google_fields_manager,google.fields Manager,model_google_fields,base.group_erp_manager,1,1,1,1
+admin_google_shop_manager,google.shop Manager,model_google_shop,base.group_erp_manager,1,1,1,1
+admin_oauth2_detail_manager,oauth2.detail Manager,model_oauth2_detail,base.group_erp_manager,1,1,1,1
+admin_product_mapping_manager,product.mapping Manager,model_product_mapping,base.group_erp_manager,1,1,1,1
