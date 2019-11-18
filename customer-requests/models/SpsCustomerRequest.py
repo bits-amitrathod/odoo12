@@ -51,13 +51,13 @@ class SpsCustomerRequest(models.Model):
 
         sps_customer_requests = self.env['sps.customer.requests'].search([('document_id.status', '=', 'In Process'),
                  ('status', 'in', ('Inprocess', 'Incomplete', 'Unprocessed', 'InCoolingPeriod', 'New', 'Partial'))])
-        if len(sps_customer_requests)>0:
-                try:
-                    self.process_customer_requests(sps_customer_requests)
-                except Exception as exc:
-                    _logger.error("Error processing requests %r", exc)
+        if len(sps_customer_requests) > 0:
+            try:
+                self.process_customer_requests(sps_customer_requests)
+            except Exception as exc:
+                _logger.error("Error processing requests %r", exc)
         else:
-                _logger.info('customer request count is 0.')
+            _logger.info('customer request count is 0.')
 
     def process_customer_requests(self, sps_customer_requests):
         _logger.info('In process_customer_requests')
@@ -99,8 +99,6 @@ class SpsCustomerRequest(models.Model):
             pr_models = sorted(pr_models, key=itemgetter('product_priority'))
             # Allocate Product by priority.
             self.env['prioritization.engine.model'].allocate_product_by_priority(pr_models)
-
-
 
     def add_customer_request_data(self,sps_customer_request):
         _logger.debug('customer request %r, %r', sps_customer_request['customer_id'].id,

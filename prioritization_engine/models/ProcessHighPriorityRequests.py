@@ -18,6 +18,7 @@ class ProcessHighPriorityRequests(models.Model):
         if len(high_priority_requests) > 0:
             try:
                 self.env['sps.customer.requests'].process_customer_requests(high_priority_requests)
+                self.env['prioritization.engine.model'].check_uploaded_document_status(document.id)
             except Exception as exc:
                 _logger.error("Error processing requests %r", exc)
         else:
