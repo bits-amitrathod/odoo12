@@ -143,7 +143,7 @@ class IncomingMailCronModel(models.Model):
                             tmpl_type = None
                             saleforce_ac = None
 
-                            attachments = self._get_attchments(message)
+                            attachments = self._get_attachments(message)
 
                             if email_from is not None:
                                 match = re.search(r'[\w\.-]+@[\w\.-]+', email_from)
@@ -221,7 +221,7 @@ class IncomingMailCronModel(models.Model):
                                                             raise
                                                 for attachment in attachments:
                                                     filename = getattr(attachment, 'fname')
-                                                    if not filename is None:
+                                                    if filename is not None:
                                                         try:
                                                             file_contents_bytes = getattr(attachment, 'content')
                                                             file_path = user_attachment_dir + str(filename)
@@ -327,7 +327,8 @@ class IncomingMailCronModel(models.Model):
     def random_string_generator(size=10, chars=string.ascii_lowercase + string.digits):
         return ''.join(random.choice(chars) for _ in range(size))
 
-    def _get_attchments(self, message):
+    @staticmethod
+    def _get_attachments(message):
         _Attachment = namedtuple('Attachment', ('fname', 'content', 'info'))
         attachments = []
         body = u''
@@ -385,14 +386,12 @@ class IncomingMailCronModel(models.Model):
                             print('file extension : ' + file_extension)
                         except Exception as e:
                             _logger.info(str(e))
-                    values = {}
-                    values['attachment_ids'] = [(0, 0, {'name': filename,
-                                                        'type': 'binary',
-                                                        'mimetype': 'application/' + file_extension,
-                                                        'datas_fname': filename,
-                                                        'datas': base64.b64encode(file_contents_bytes)})]
-                    values['model'] = None
-                    values['res_id'] = False
+                    values = {'attachment_ids': [(0, 0, {'name': filename,
+                                                         'type': 'binary',
+                                                         'mimetype': 'application/' + file_extension,
+                                                         'datas_fname': filename,
+                                                         'datas': base64.b64encode(file_contents_bytes)})],
+                              'model': None, 'res_id': False}
                     sent_email_template = template.with_context(local_context).sudo().send_mail(SUPERUSER_ID, raise_exception=True)
                     self.env['mail.mail'].sudo().browse(sent_email_template).write(values)
                 except:
@@ -418,14 +417,12 @@ class IncomingMailCronModel(models.Model):
                             print('file extension : '+file_extension)
                         except Exception as e:
                             _logger.info(str(e))
-                    values={}
-                    values['attachment_ids'] = [(0, 0, {'name': filename,
-                                                         'type': 'binary',
-                                                         'mimetype': 'application/'+file_extension,
-                                                         'datas_fname': filename,
-                                                         'datas': base64.b64encode(file_contents_bytes)})]
-                    values['model'] = None
-                    values['res_id'] = False
+                    values = {'attachment_ids': [(0, 0, {'name': filename,
+                                                        'type': 'binary',
+                                                        'mimetype': 'application/' + file_extension,
+                                                        'datas_fname': filename,
+                                                        'datas': base64.b64encode(file_contents_bytes)})],
+                             'model': None, 'res_id': False}
                     sent_email_template = template.with_context(local_context).sudo().send_mail(SUPERUSER_ID, raise_exception=True)
                     self.env['mail.mail'].sudo().browse(sent_email_template).write(values)
                 except:
