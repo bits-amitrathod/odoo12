@@ -18,12 +18,12 @@ except ImportError:
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, pycompat, misc
 from odoo import api, fields, models, tools, _
 _logger = logging.getLogger(__name__)
+
+
 class DocumentProcessTransientModel(models.TransientModel):
     _name = 'sps.document.process'
-    def process_document(self, user_model, uploaded_file_path, template_type_from_user, file_name, email_from,
-                         document_source='Api', ):
-        print('template_type_from_user')
-        print(template_type_from_user)
+
+    def process_document(self, user_model, uploaded_file_path, template_type_from_user, file_name, email_from, document_source='Api', ):
         if not user_model.prioritization:
             return dict(errorCode=6, message='Prioritization is Not Enabled')
         if not user_model.customer:
@@ -146,11 +146,6 @@ class DocumentProcessTransientModel(models.TransientModel):
                                 sps_customer_product_priority = sps_product.priority
                             else:
                                 sps_customer_product_priority = user_model.priority
-                            # if not sps_customer_product_priority:
-                            #     high_priority_product = True
-                            #     req.update(dict(product_id=product_id, status='Inprocess', priority=sps_customer_product_priority))
-                            # else:
-                            #     req.update(dict(product_id=product_id, status='New', priority=sps_customer_product_priority))
                             req.update(dict(product_id=product_id, status='New', priority=sps_customer_product_priority))
                             # set uom flag, if uom_flag is false then check the partial_uom flag
                             if 'uom' in req.keys():
@@ -181,12 +176,14 @@ class DocumentProcessTransientModel(models.TransientModel):
                         saved_sps_customer_request = self.env['sps.customer.requests'].create(sps_customer_request)
                         if high_priority_product:
                             high_priority_requests.append(saved_sps_customer_request)
-                # Send Email Notification to customer about the progress of uploaded or sent document
-                # if len(high_priority_requests) == 0:
-                #     template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
-                #     self.env['prioritization.engine.model'].send_mail(user_model.name, user_model.email, template)
-                # else:
-                #     self.env['sps.customer.requests'].process_customer_requests(high_priority_requests)
+                # if document has all voided products then Send Email Notification to customer.
+                sps_customer_requirement_all = self.env['sps.customer.requests'].search([('document_id', '=', document_id)])
+                sps_customer_requirements_all_voided = self.env['sps.customer.requests'].search([('document_id', '=', document_id), ('status', 'in', ['Voided'])])
+                if len(sps_customer_requirement_all) == len(sps_customer_requirements_all_voided):
+                    template = self.env.ref('customer-requests.final_email_response_on_uploaded_document').sudo()
+                    self.env['prioritization.engine.model'].send_mail(user_model.name, user_model.email, template)
+                    file_uploaded_record.write({'document_processed_count': 1, 'status': 'Completed'})
+
             else:
                 _logger.info('file is not acceptable')
                 response = dict(errorCode=12, message='Error saving document record')
@@ -194,6 +191,7 @@ class DocumentProcessTransientModel(models.TransientModel):
             _logger.info('file is not acceptable')
             response = dict(errorCode=2, message='Invalid File extension')
         return response
+
     def _get_updated_qty(self, req, template_type):
         _logger.info('_get_updated_qty, Template type from user : ')
         _logger.info(template_type)
@@ -211,6 +209,7 @@ class DocumentProcessTransientModel(models.TransientModel):
                 return updated_qty
         else:
             return 0
+
     @staticmethod
     def _get_column_mappings(mapping_field_list, templates_list, file_path, template_type_from_user):
         column_mappings = []
@@ -254,6 +253,7 @@ class DocumentProcessTransientModel(models.TransientModel):
         else:
             print('matched_template = 1')
         return column_mappings, non_selected_columns, template_type
+
     @staticmethod
     def _read_xls_book(book, read_data=False):
         sheet = book.sheet_by_index(0)
@@ -290,6 +290,7 @@ class DocumentProcessTransientModel(models.TransientModel):
             if not read_data:
                 break
         return data
+
     @staticmethod
     def _read_columns_from_csv(file_path):
         column_row = []
@@ -302,9 +303,11 @@ class DocumentProcessTransientModel(models.TransientModel):
         except UnicodeDecodeError as ue:
             _logger.info(str(ue))
         return column_row
+
     @staticmethod
     def random_string_generator(size=10, chars=string.ascii_lowercase + string.digits):
         return ''.join(random.choice(chars) for _ in range(size))
+
     @staticmethod
     def _parse_csv(uploaded_file_path, mappings, non_mapped_columns):
         file_acceptable = None
@@ -330,6 +333,7 @@ class DocumentProcessTransientModel(models.TransientModel):
             _logger.info(str(ue))
             file_acceptable = False
         return requests, file_acceptable
+
     @staticmethod
     def _parse_excel(uploaded_file_path, mappings, non_mapped_columns):
         file_acceptable = None
@@ -361,6 +365,7 @@ class DocumentProcessTransientModel(models.TransientModel):
             file_acceptable = False
             _logger.info(str(ue))
         return requests, file_acceptable
+
     def send_sps_customer_request_for_processing(self, customer_product_requests):
         # try:
         #     _logger.info('processing %r high priority products requests', str(len(customer_product_requests)))
@@ -369,6 +374,7 @@ class DocumentProcessTransientModel(models.TransientModel):
         #     _logger.info('Error Processing Hight Priority Requests')
         self.env['prioritization_engine.prioritization'].process_requests(customer_product_requests)
         return None
+
     def get_product_sku(self, user_model, sku_code):
         print('In get_product_sku()')
         customer_sku = sku_code
@@ -403,6 +409,7 @@ class DocumentProcessTransientModel(models.TransientModel):
             if sku_postconfig_flag:
                 product_sku = product_sku[:-len(user_model.sku_postconfig)]
         return product_sku
+
     def get_product(self, product_sku):
         print('In get_product()')
         product_sku = DocumentProcessTransientModel.cleaning_code(product_sku)
@@ -422,6 +429,7 @@ class DocumentProcessTransientModel(models.TransientModel):
                 product = False
         # return product object
         return product
+
     @staticmethod
     def cleaning_code(str):
         return re.sub(r'[^A-Za-z0-9.]', '', str.lstrip('0'))

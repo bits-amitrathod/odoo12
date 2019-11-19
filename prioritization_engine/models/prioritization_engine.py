@@ -26,6 +26,9 @@ class PrioritizationEngine(models.TransientModel):
         available_product_lot_dict = self.get_available_product_lot_dict()
         if len(available_product_lot_dict) > 0:
             for prioritization_engine_request in prioritization_engine_request_list:
+                # update product status 'In Process'
+                if prioritization_engine_request['status'].lower().strip() == 'new':
+                    self.update_customer_request_status(prioritization_engine_request, 'Inprocess')
                 # auto allocate True/False
                 if prioritization_engine_request['auto_allocate']:
                     prioritization_engine_request['customer_request_logs'] += 'Auto allocate is true, '
@@ -61,7 +64,6 @@ class PrioritizationEngine(models.TransientModel):
             if len(self.allocated_product_for_gl_account_dict) > 0:
                 self.generate_sale_order_for_gl_account()
             # self.env['available.product.dict'].update_production_lot_dict()
-            self._check_uploaded_document_status()
         else:
             _logger.debug('Available product lot list is zero')
         return self.allocated_product_dict
@@ -466,9 +468,12 @@ class PrioritizationEngine(models.TransientModel):
             return False, 0
 
     # Update uploaded document status
-    def _check_uploaded_document_status(self):
-        # get all document whose status is draft and In Process.
-        sps_cust_uploaded_documents = self.env['sps.cust.uploaded.documents'].search([('status', 'in', ('draft', 'In Process'))])
+    def check_uploaded_document_status(self, document_id):
+        if document_id is not None:
+            sps_cust_uploaded_documents = self.env['sps.cust.uploaded.documents'].search([('id', '=', document_id)])
+        else:
+            # get all document whose status is draft and In Process.
+            sps_cust_uploaded_documents = self.env['sps.cust.uploaded.documents'].search([('status', 'in', ('draft', 'In Process'))])
 
         for sps_cust_uploaded_document in sps_cust_uploaded_documents:
             _logger.info('Document Id :%r', sps_cust_uploaded_document.id)
@@ -494,8 +499,7 @@ class PrioritizationEngine(models.TransientModel):
                         if sps_cust_uploaded_document.status == 'draft' and len(high_priority_requests) == 0:
                             self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'In Process')
                     else:
-                        if sps_cust_uploaded_document.status != 'Completed':
-                            self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
+                        self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
 
             elif sps_cust_uploaded_document.template_type.lower().strip() == 'inventory':
                 if int(current_processed_docs) >= int(current_cust_doc_fixed_count):
@@ -510,21 +514,18 @@ class PrioritizationEngine(models.TransientModel):
                             if sps_cust_uploaded_document.status == 'draft' and len(high_priority_requests) == 0:
                                 self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'In Process')
                         else:
-                            if sps_cust_uploaded_document.status != 'Completed':
-                                self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
-                    else:
-                        if sps_cust_uploaded_document.status != 'Completed':
                             self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
+                    else:
+                        self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
 
             # Send Email Notification to customer about the progress of uploaded or sent document
             if template is not None:
                 # Send Email
                 self.send_mail(sps_cust_uploaded_document.customer_id.name, sps_cust_uploaded_document.customer_id.email, template)
 
-
     def _update_uploaded_document_status(self,document_id, status):
         try:
-            self.env['sps.cust.uploaded.documents'].search([('id', '=', document_id)]).write({'status':status})
+            self.env['sps.cust.uploaded.documents'].search([('id', '=', document_id)]).write({'status': status})
         except:
             _logger.error("Unable to update document status")
 
@@ -576,7 +577,6 @@ class PrioritizationEngine(models.TransientModel):
             _logger.info('sale order state before : %r', sale_order['state'])
             sale_order.action_cancel()
             _logger.info('sales order status after : %r', sale_order['state'])
-
 
     def send_mail(self, body):
         template = self.env.ref('prioritization_engine.set_log_gl_account_response').sudo()
