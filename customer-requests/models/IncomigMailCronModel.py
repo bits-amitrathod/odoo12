@@ -187,7 +187,7 @@ class IncomingMailCronModel(models.Model):
                                         else:
                                             _logger.info('Customer Email Id missing.')
                                             response = dict(errorCode=112, message='Customer Email Id missing.')
-                                        pop_server.dele(num)
+                                        # pop_server.dele(num)
                                     elif len(res_partner) > 1:
                                         _logger.info('We have found same Customer Email against multiple customers. %r', str(customer_email))
                                         response = dict(errorCode=109, message='We have found same Customer Email against multiple customers.')
