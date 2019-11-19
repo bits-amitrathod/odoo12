@@ -119,7 +119,7 @@ class IncomingMailCronModel(models.Model):
                         (header, messages, octets) = pop_server.retr(1)
                         message = (b'\n').join(messages)
                         res_id = None
-                        response = {'message':'File Uploaded Successfully'}
+                        response = {'message': 'File Uploaded Successfully'}
 
                         try:
                             if isinstance(message, xmlrpclib.Binary):
@@ -175,7 +175,7 @@ class IncomingMailCronModel(models.Model):
                                     response = dict(errorCode=108, message='Customer Id is not found in email subject.')
                             else:
                                 _logger.info("Customer Id not in email subject")
-                                #File process against who has sent email.
+                                # File process against who has sent email.
                                 # find customer in res.partner
                                 if email_from and email_from is not None:
                                     res_partner = self.env['res.partner'].search([("email", "=ilike", email_from)])
@@ -206,7 +206,7 @@ class IncomingMailCronModel(models.Model):
                                 if len(attachments) > 0:
                                     encoding = message.get_content_charset()
                                     plain_text = html2text.HTML2Text()
-                                    message_payload = plain_text.handle(tools.ustr(body, encoding, errors='replace'))
+                                    plain_text.handle(tools.ustr(body, encoding, errors='replace'))
 
                                     if saleforce_ac is not None:
                                         users_model = self.env['res.partner'].search([("saleforce_ac", "=ilike", saleforce_ac)])
@@ -273,25 +273,7 @@ class IncomingMailCronModel(models.Model):
                                     response = dict(errorCode=104, message='Customer has not attached requirement or inventory documnet.')
 
                             if "errorCode" in response:
-                                response.update({'attachment': attachments})
-                                if saleforce_ac is not None or customer_email is not None:
-                                    res_partners = self.env['res.partner'].search(['|', ("saleforce_ac", "=ilike", saleforce_ac), ("email", "=ilike", customer_email)])
-                                    if len(res_partners) > 1:
-                                        customerName = ""
-                                        for res_partner in res_partners:
-                                            if customerName == "":
-                                                customerName = res_partner['name']
-                                            else:
-                                                customerName = str(customerName) + "  ,  " + str(res_partner['name'])
-
-                                    if len(res_partners) == 1:
-                                        self.send_mail(str(email_from), str(email_subject), str(res_partners['name']), str(customer_email), str(response['message']), response['attachment'])
-                                    elif len(res_partners) > 1:
-                                        self.send_mail(str(email_from), str(email_subject), customerName, str(customer_email), str(response['message']), response['attachment'])
-                                    else:
-                                        self.send_mail(str(email_from), str(email_subject), '', str(customer_email), str(response['message']), response['attachment'])
-                                else:
-                                    self.send_mail(str(email_from), str(email_subject), '', '', str(response['message']), response['attachment'])
+                                self._error_code(response, saleforce_ac, attachments, customer_email, email_from, email_subject)
                         except Exception:
                             _logger.info('Failed to process mail from %s server %s.', server.type, server.name, exc_info=True)
                             failed += 1
@@ -322,6 +304,27 @@ class IncomingMailCronModel(models.Model):
         _logger.info('***********Required time for processing the documents...(In Seconds)********')
         _logger.info(end_time - start_time)
         return True
+
+    def _error_code(self, response, saleforce_ac, attachments, customer_email, email_from, email_subject):
+        response.update({'attachment': attachments})
+        if saleforce_ac is not None or customer_email is not None:
+            res_partners = self.env['res.partner'].search( ['|', ("saleforce_ac", "=ilike", saleforce_ac), ("email", "=ilike", customer_email)])
+            if len(res_partners) > 1:
+                customerName = ""
+                for res_partner in res_partners:
+                    if customerName == "":
+                        customerName = res_partner['name']
+                    else:
+                        customerName = str(customerName) + "  ,  " + str(res_partner['name'])
+
+            if len(res_partners) == 1:
+                self.send_mail(str(email_from), str(email_subject), str(res_partners['name']), str(customer_email), str(response['message']), response['attachment'])
+            elif len(res_partners) > 1:
+                self.send_mail(str(email_from), str(email_subject), customerName, str(customer_email), str(response['message']), response['attachment'])
+            else:
+                self.send_mail(str(email_from), str(email_subject), '', str(customer_email), str(response['message']), response['attachment'])
+        else:
+            self.send_mail(str(email_from), str(email_subject), '', '', str(response['message']), response['attachment'])
 
     @staticmethod
     def random_string_generator(size=10, chars=string.ascii_lowercase + string.digits):
