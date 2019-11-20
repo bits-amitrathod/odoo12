@@ -13,7 +13,7 @@ class ProcessHighPriorityRequests(models.Model):
 
         document = self.env['sps.cust.uploaded.documents'].search([('status', '=', 'draft')], limit=1, order="id asc")
 
-        high_priority_requests = self.env['sps.customer.requests'].search([('document_id', '=', document.id), ('status', '=', 'Inprocess'), ('priority', '=', 0)])
+        high_priority_requests = self.env['sps.customer.requests'].search([('document_id', '=', document.id), ('status', '=', 'New'), ('priority', '=', 0)])
 
         if len(high_priority_requests) > 0:
             try:
@@ -22,3 +22,8 @@ class ProcessHighPriorityRequests(models.Model):
                 _logger.error("Error processing requests %r", exc)
         else:
             _logger.info('customer request count is 0.')
+
+        try:
+            self.env['prioritization.engine.model'].check_uploaded_document_status(document.id)
+        except Exception as exc:
+            _logger.error("Error: updating document status %r", exc)

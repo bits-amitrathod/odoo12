@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<odoo>
+    <template id="categories_recursive_rewrite" inherit_id="website_sale.categories_recursive" name="Category list">
+        <xpath expr="//li/a" position="replace">
+            <t t-set='use_category_hierarchy' t-value="request.website.use_category_hierarchy"/>
+            <t t-if="use_category_hierarchy">
+                <t t-set='catUrl' t-value="request.env['website.redirect'].sudo().getCategoryUrl(c)"/>
+                <a t-att-href="keep('/shop/category/' + catUrl + slug(c), category=0)" t-field="c.name"></a>
+            </t>
+            <t t-if="not use_category_hierarchy">
+                <a t-att-href="keep('/shop/category/' + slug(c), category=0)" t-field="c.name"></a>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="option_collapse_categories_recursive_rewrite" inherit_id="website_sale.option_collapse_categories_recursive" name="Category list">
+        <xpath expr="//li/a[@t-field='categ.name']" position="replace">
+            <t t-set='use_category_hierarchy' t-value="request.website.use_category_hierarchy"/>
+            <t t-if="use_category_hierarchy">
+                <t t-set='catUrl' t-value="request.env['website.redirect'].sudo().getCategoryUrl(categ)"/>
+                <a t-att-href="keep('/shop/category/' + catUrl + slug(categ), category=0)" t-attf-class="nav-link#{' active' if categ.id == int(category or 0) else ''}" t-field="categ.name"></a>
+            </t>
+            <t t-if="not use_category_hierarchy">
+                <a t-att-href="keep('/shop/category/' + slug(categ), category=0)" t-attf-class="nav-link#{' active' if categ.id == int(category or 0) else ''}" t-field="categ.name"></a>
+            </t>
+        </xpath>
+    </template>
+</odoo>
