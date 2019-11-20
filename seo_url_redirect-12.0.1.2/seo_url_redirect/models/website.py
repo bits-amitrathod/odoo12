@@ -51,6 +51,8 @@ class WebsiteRedirect(models.Model):
         ])
         if redirectObjs:
             return redirectObjs[0]
+        if not vals.get('name'):
+            vals.update({"name": "Seo Url"})
         res = super(WebsiteRedirect, self).create(vals)
         return res
 
