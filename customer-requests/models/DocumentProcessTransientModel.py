@@ -148,22 +148,22 @@ class DocumentProcessTransientModel(models.TransientModel):
                                 sps_customer_product_priority = user_model.priority
                             req.update(dict(product_id=product_id, status='New', priority=sps_customer_product_priority))
                             # set uom flag, if uom_flag is false then check the partial_uom flag
-                            if 'uom' in req.keys():
-                                if req['uom'].lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
+                            # if 'uom' in req.keys():
+                            #     if req['uom'].lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
+                            #         req.update(dict(uom_flag=True))
+                            #     else:
+                            #         req.update(dict(uom_flag=False))
+                            # else:
+                            #     _logger.info('Product UOM not mapped.')
+                            # Get Product UOM category id
+                            product_uom_categ = self.env['uom.category'].search([('name', 'in', ['Unit', 'Each'])])
+                            # get product
+                            product = self.env['product.template'].search([('id', '=', req['product_id'])])
+                            if product.manufacturer_uom.category_id.id in product_uom_categ.ids:
+                                if product.uom_id.name.lower().strip() == product.manufacturer_uom.name.lower().strip():
                                     req.update(dict(uom_flag=True))
                                 else:
                                     req.update(dict(uom_flag=False))
-                            else:
-                                _logger.info('Product UOM not mapped.')
-                                # Get Product UOM category id
-                                product_uom_categ = self.env['uom.category'].search([('name', 'in', ['Unit', 'Each'])])
-                                # get product
-                                product = self.env['product.template'].search([('id', '=', req['product_id'])])
-                                if product.manufacturer_uom.category_id.id in product_uom_categ.ids:
-                                    if product.manufacturer_uom.name.lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
-                                        req.update(dict(uom_flag=True))
-                                    else:
-                                        req.update(dict(uom_flag=False))
                             # calculate product quantity
                             updated_qty = self._get_updated_qty(req, template_type)
                             if updated_qty != 0:
