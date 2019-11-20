@@ -157,7 +157,6 @@ class WebsiteRedirect(models.Model):
 
     def createUrlKey(self, modelObj, fieldsList):
         url_key = []
-        _logger.info("_________________________________________________%r", modelObj.id)
         for field in fieldsList:
             if hasattr(modelObj, field):
                 name = getattr(modelObj, field)
