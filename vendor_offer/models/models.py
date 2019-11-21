@@ -579,13 +579,21 @@ class VendorOffer(models.Model):
                         pick.arrival_date = values['arrival_date_grp']
             return record
 
+    def compute_access_url_offer(self):
+        for order in self:
+            access_url_vendor = '/my/vendor/%s' % (order.id)
+            return access_url_vendor
+
     def get_mail_url(self,redirect=False):
         self.ensure_one()
         params = {}
         if hasattr(self, 'partner_id') and self.partner_id:
             params.update(self.partner_id.signup_get_auth_param()[self.partner_id.id])
             # ' + str(self.id) + '
-        return '%s?%s' % ('/mail/view' if redirect else self.access_url, url_encode(params))
+        if (self.state == 'ven_draft' or self.state == 'ven_sent'):
+            return '%s?%s' % ('/mail/view' if redirect else self.compute_access_url_offer(), url_encode(params))
+        else:
+            return '%s?%s' % ('/mail/view' if redirect else self.access_url, url_encode(params))
 
 
 class VendorOfferProduct(models.Model):
