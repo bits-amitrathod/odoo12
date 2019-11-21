@@ -19,8 +19,8 @@ class PrioritizationEngine(models.TransientModel):
     allocated_product_for_gl_account_dict = {}
 
     def allocate_product_by_priority(self, prioritization_engine_request_list):
-        self.allocated_product_dict = {}
-        self.allocated_product_for_gl_account_dict = {}
+        self.allocated_product_dict.clear()
+        self.allocated_product_for_gl_account_dict.clear()
         _logger.debug('In product_allocation_by_priority')
         # get available production lot list.
         available_product_lot_dict = self.get_available_product_lot_dict()
@@ -44,7 +44,7 @@ class PrioritizationEngine(models.TransientModel):
                                 _logger.debug('Template type is Inventory.')
                                 flag, allocate_inventory_product_quantity = self.check_product_threshold(prioritization_engine_request)
                                 if flag:
-                                    #allocate product
+                                    # allocate product
                                     self.allocate_product(prioritization_engine_request, filter_available_product_lot_dict, allocate_inventory_product_quantity)
                             else:
                                 # allocate product
@@ -66,7 +66,7 @@ class PrioritizationEngine(models.TransientModel):
             # self.env['available.product.dict'].update_production_lot_dict()
         else:
             _logger.debug('Available product lot list is zero')
-        return self.allocated_product_dict
+        # return self.allocated_product_dict
 
     # get available production lot list, parameter product id.
     def get_available_product_lot_dict(self):
@@ -148,7 +148,8 @@ class PrioritizationEngine(models.TransientModel):
         return flag
 
     # get product expiration tolerance date, expiration tolerance in months(3/6/12)
-    def get_product_expiration_tolerance_date(self,expiration_tolerance):
+    @staticmethod
+    def get_product_expiration_tolerance_date(expiration_tolerance):
         expiration_tolerance_date = datetime.today() + relativedelta(months=+int(expiration_tolerance))
         return expiration_tolerance_date
 
@@ -239,7 +240,6 @@ class PrioritizationEngine(models.TransientModel):
         elif remaining_product_allocation_quantity > 0 and remaining_product_allocation_quantity != required_quantity:
             _logger.debug(str(" Allocated Partial order product."))
 
-
             self.allocated_product_to_customer(prioritization_engine_request['customer_id'],
                                                prioritization_engine_request['req_no'],
                                                prioritization_engine_request['gl_account'],
@@ -257,7 +257,8 @@ class PrioritizationEngine(models.TransientModel):
                 self.env['sps.customer.requests'].search([('id', '=', prioritization_engine_request['customer_request_id'])]).write({'updated_quantity': remaining_product_allocation_quantity})
 
     # Update Prioritization Engine logs.
-    def _update_logs(self, prioritization_engine_request):
+    @staticmethod
+    def _update_logs(prioritization_engine_request):
         if prioritization_engine_request['partial_order']:
             prioritization_engine_request['customer_request_logs'] += 'Partial ordering flag is True.'
             _logger.debug('Partial ordering flag is True')
@@ -271,8 +272,7 @@ class PrioritizationEngine(models.TransientModel):
             prioritization_engine_request['customer_request_logs'] += 'Partial ordering flag is False.'
             _logger.debug('Partial ordering flag is False')
 
-
-    #get quantitty by partial uom flag
+    # get quantity by partial uom flag
     def _get_quantity_by_partial_uom(self, quantity, prioritization_engine_request):
         product = self.env['product.template'].search([('id', '=', prioritization_engine_request['product_id'])])
         uom = self.env['uom.uom'].search([('name', 'ilike', 'Unit'),('category_id.id', '=', 1)])
@@ -318,11 +318,11 @@ class PrioritizationEngine(models.TransientModel):
             return None
 
     # allocated product to customer
-    def allocated_product_to_customer(self, customer_id,req_no, gl_account, customer_request_id, required_quantity, product_id, allocated_product_from_lot):
-        allocated_product = {'customer_request_id':customer_request_id,'req_no':req_no, 'customer_required_quantity':required_quantity,
-                                 'product_id':product_id, 'allocated_product_quantity':allocated_product_from_lot}
+    def allocated_product_to_customer(self, customer_id, req_no, gl_account, customer_request_id, required_quantity, product_id, allocated_product_from_lot):
+        allocated_product = {'customer_request_id': customer_request_id, 'req_no': req_no, 'customer_required_quantity': required_quantity,
+                                 'product_id': product_id, 'allocated_product_quantity': allocated_product_from_lot}
         # add data in allocated_product_for_gl_account_dict
-        if gl_account and not gl_account is None:
+        if gl_account and gl_account is not None:
             # match parent id and gl account
             res_partner = self.env['res.partner'].search([('gl_account', '=', gl_account),('parent_id', '=', customer_id)])
             if res_partner:
@@ -349,16 +349,17 @@ class PrioritizationEngine(models.TransientModel):
                 new_customer_id_key = {customer_id: [allocated_product]}
                 self.allocated_product_dict.update(new_customer_id_key)
 
-
     # return duration in days
-    def return_duration_in_days(self, duration):
+    @staticmethod
+    def return_duration_in_days(duration):
         duration_in_seconds = int(duration.total_seconds())
         duration_in_hours = duration_in_seconds / 3600
         duration_in_days = int(duration_in_hours) / 24
         return int(duration_in_days)
 
     # return duration in hours
-    def return_duration_in_hours(self,duration):
+    @staticmethod
+    def return_duration_in_hours(duration):
         duration_in_seconds = int(duration.total_seconds())
         duration_in_hours = duration_in_seconds / 3600
         return int(duration_in_hours)
@@ -366,7 +367,7 @@ class PrioritizationEngine(models.TransientModel):
     # Generate sale order
     def generate_sale_order(self):
         _logger.debug('In generate sale order %r', self.allocated_product_dict)
-        #get team id
+        # get team id
         crm_team = self.env['crm.team'].search([('team_type', '=', 'engine')])
 
         for partner_id_key in self.allocated_product_dict.keys():
@@ -419,7 +420,8 @@ class PrioritizationEngine(models.TransientModel):
             sale_order.write({'state': 'sent', 'confirmation_date': None})
 
     # Change date format to calculate date difference (2018-06-25 23:08:15) to (2018, 6, 25, 23, 8, 15)
-    def change_date_format(self, date):
+    @staticmethod
+    def change_date_format(date):
         formatted_date = str(date).split(".")[0].replace("-", ",").replace(" ", ",").replace(":", ",")
         return formatted_date
 
