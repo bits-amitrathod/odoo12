@@ -71,9 +71,7 @@ class DocumentProcessTransientModel(models.TransientModel):
             if document_id is not None or document_id:
                 ref = str(document_id) + "_" + file_uploaded_record.token
                 response = dict(message='File Uploaded Successfully', ref=ref)
-                high_priority_requests = []
                 for req in requests:
-                    high_priority_product = False
                     product_id = 0
                     if 'uom' in req.keys():
                         if req['uom'].lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
@@ -173,17 +171,10 @@ class DocumentProcessTransientModel(models.TransientModel):
                         sps_customer_request = dict(document_id=document_id, customer_id=user_id, create_uid=1, create_date=today_date, write_uid=1, write_date=today_date)
                         for key in req.keys():
                             sps_customer_request.update({key: req[key]})
-                        saved_sps_customer_request = self.env['sps.customer.requests'].create(sps_customer_request)
-                        if high_priority_product:
-                            high_priority_requests.append(saved_sps_customer_request)
-                # if document has all voided products then Send Email Notification to customer.
-                sps_customer_requirement_all = self.env['sps.customer.requests'].search([('document_id', '=', document_id)])
-                sps_customer_requirements_all_voided = self.env['sps.customer.requests'].search([('document_id', '=', document_id), ('status', 'in', ['Voided'])])
-                if len(sps_customer_requirement_all) == len(sps_customer_requirements_all_voided):
-                    template = self.env.ref('customer-requests.final_email_response_on_uploaded_document').sudo()
-                    self.env['prioritization.engine.model'].send_mail(user_model.name, user_model.email, template)
-                    file_uploaded_record.write({'document_processed_count': 1, 'status': 'Completed'})
+                        self.env['sps.customer.requests'].create(sps_customer_request)
 
+                # if document has all voided products then Send Email Notification to customer.
+                self._all_voided_products(document_id, user_model, file_uploaded_record)
             else:
                 _logger.info('file is not acceptable')
                 response = dict(errorCode=12, message='Error saving document record')
@@ -191,6 +182,14 @@ class DocumentProcessTransientModel(models.TransientModel):
             _logger.info('file is not acceptable')
             response = dict(errorCode=2, message='Invalid File extension')
         return response
+
+    def _all_voided_products(self, document_id, user_model, file_uploaded_record):
+        sps_customer_requirement_all = self.env['sps.customer.requests'].search([('document_id', '=', document_id)])
+        sps_customer_requirements_all_voided = self.env['sps.customer.requests'].search([('document_id', '=', document_id), ('status', 'in', ['Voided'])])
+        if len(sps_customer_requirement_all) == len(sps_customer_requirements_all_voided):
+            template = self.env.ref('customer-requests.final_email_response_on_uploaded_document').sudo()
+            self.env['prioritization.engine.model'].send_mail(user_model.name, user_model.email, template)
+            file_uploaded_record.write({'document_processed_count': 1, 'status': 'Completed'})
 
     def _get_updated_qty(self, req, template_type):
         _logger.info('_get_updated_qty, Template type from user : ')
@@ -366,16 +365,8 @@ class DocumentProcessTransientModel(models.TransientModel):
             _logger.info(str(ue))
         return requests, file_acceptable
 
-    def send_sps_customer_request_for_processing(self, customer_product_requests):
-        # try:
-        #     _logger.info('processing %r high priority products requests', str(len(customer_product_requests)))
-        #     self.env['prioritization_engine.prioritization'].process_requests(customer_product_requests)
-        # except:
-        #     _logger.info('Error Processing Hight Priority Requests')
-        self.env['prioritization_engine.prioritization'].process_requests(customer_product_requests)
-        return None
-
-    def get_product_sku(self, user_model, sku_code):
+    @staticmethod
+    def get_product_sku(user_model, sku_code):
         print('In get_product_sku()')
         customer_sku = sku_code
         product_sku = customer_sku
