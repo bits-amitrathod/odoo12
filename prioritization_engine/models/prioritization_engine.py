@@ -44,7 +44,7 @@ class PrioritizationEngine(models.TransientModel):
                                 _logger.debug('Template type is Inventory.')
                                 flag, allocate_inventory_product_quantity = self.check_product_threshold(prioritization_engine_request)
                                 if flag:
-                                    #allocate product
+                                    # allocate product
                                     self.allocate_product(prioritization_engine_request, filter_available_product_lot_dict, allocate_inventory_product_quantity)
                             else:
                                 # allocate product
@@ -420,7 +420,8 @@ class PrioritizationEngine(models.TransientModel):
             sale_order.write({'state': 'sent', 'confirmation_date': None})
 
     # Change date format to calculate date difference (2018-06-25 23:08:15) to (2018, 6, 25, 23, 8, 15)
-    def change_date_format(self, date):
+    @staticmethod
+    def change_date_format(date):
         formatted_date = str(date).split(".")[0].replace("-", ",").replace(" ", ",").replace(":", ",")
         return formatted_date
 
