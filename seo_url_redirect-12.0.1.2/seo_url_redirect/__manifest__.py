@@ -60,5 +60,5 @@
   "price"                :  45,
   "currency"             :  "EUR",
   "pre_init_hook"        :  "pre_init_check",
-  #"post_init_hook"       :  "_update_seo_url",
+  # "post_init_hook"       :  "_update_seo_url",
 }

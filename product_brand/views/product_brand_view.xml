@@ -199,6 +199,7 @@
         </field>
     </record>
 
+
     <record model="ir.actions.act_window" id="action_product_brand">
         <field name="name">Manufacture</field>
         <field name="res_model">product.brand</field>

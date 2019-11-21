@@ -75,6 +75,7 @@
             <field name="context">[status: 'purchase']</field>
             <field name="arch" type="xml">
 
+
                 <form string="Appraisal Tracker" class="o_sale_order vendor_offer_class" create="false" delete="false"
                       menu="false" print="false">
                     <header>

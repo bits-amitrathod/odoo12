@@ -62,7 +62,7 @@
                     <button string="Track Shipment"
                             type="object" class="btn-primary"
                             name="action_fedex_track_request"
-                            attrs="{'invisible': ['|',('carrier_id', '==', False),('status_ven', 'in', [False,'Declined'])]}"
+                            attrs="{'invisible': ['|','|',('carrier_id', '==', False),('shipping_number', '==', False),('status_ven', 'in', [False,'Declined'])]}"
                             groups="stock.group_stock_user"/>
                 </button>
             </field>

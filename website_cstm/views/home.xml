@@ -7,8 +7,9 @@
                     <div id="carouselExampleCaptions" class="carousel slide main-slider" data-ride="carousel">
                         <ol class="carousel-indicators">
                             <li data-target="#carouselExampleCaptions" data-slide-to="0"/>
-                            <li data-target="#carouselExampleCaptions" data-slide-to="1" class="active"/>
+                            <li data-target="#carouselExampleCaptions" data-slide-to="1" />
                             <li data-target="#carouselExampleCaptions" data-slide-to="2"/>
+                            <li data-target="#carouselExampleCaptions" data-slide-to="3"  class="active"/>
                         </ol>
                         <div class="carousel-inner">
                             <div class="carousel-item bg-alpha oe_img_bg oe_custom_bg"
@@ -31,7 +32,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="carousel-item bg-alpha oe_img_bg oe_custom_bg active"
+                            <div class="carousel-item bg-alpha oe_img_bg oe_custom_bg"
                                  style="background-image: url(&quot;/website_cstm/static/src/img/slideshow_1_2048x2048.jpg&quot;);">
                                 <div class="carousel-caption d-none d-md-block">
                                     <div class="row">
@@ -65,7 +66,29 @@
                                                 compromise.
                                             </p>
                                             <p class="text-left">
-                                                <a href="http://surgicalproductsolutions.com/"
+                                                <a href="/about-us"
+                                                   class="btn btn-warning btn-large o_default_snippet_text action_button">
+                                                    Learn More
+                                                </a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="carousel-item bg-alpha oe_img_bg oe_custom_bg active"
+                                 style="background-image: url(&quot;/website_cstm/static/src/img/slideshow_4_2048x2048.jpg&quot;);">
+                                <div class="container carousel-caption d-none d-md-block">
+                                    <div class="row">
+                                        <div class="col-md-5 ml-res-768 animated fadeInDown">
+                                            <h1 class="header text-left">
+                                                 <img class="img-fluid o_we_custom_image" src="/website_cstm/static/src/img/Stockhawk_Logo.png"/>
+                                             </h1>
+
+                                            <p class="o_default_snippet_text subtitle text-left">Your Inventory Savings
+                                                          <br/>  Search Engine ™
+                                            </p>
+                                            <p class="text-left">
+                                                <a href="/stockhawk"
                                                    class="btn btn-warning btn-large o_default_snippet_text action_button">
                                                     Learn More
                                                 </a>

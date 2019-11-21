@@ -3,7 +3,9 @@ import logging
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
 import re
-from odoo import SUPERUSER_ID
+# from odoo import SUPERUSER_ID
+
+SUPERUSER_ID = 2
 
 _logger = logging.getLogger(__name__)
 
@@ -17,13 +19,16 @@ class PrioritizationEngine(models.TransientModel):
     allocated_product_for_gl_account_dict = {}
 
     def allocate_product_by_priority(self, prioritization_engine_request_list):
-        self.allocated_product_dict = {}
-        self.allocated_product_for_gl_account_dict = {}
+        self.allocated_product_dict.clear()
+        self.allocated_product_for_gl_account_dict.clear()
         _logger.debug('In product_allocation_by_priority')
         # get available production lot list.
         available_product_lot_dict = self.get_available_product_lot_dict()
         if len(available_product_lot_dict) > 0:
             for prioritization_engine_request in prioritization_engine_request_list:
+                # update product status 'In Process'
+                if prioritization_engine_request['status'].lower().strip() == 'new':
+                    self.update_customer_request_status(prioritization_engine_request, 'Inprocess')
                 # auto allocate True/False
                 if prioritization_engine_request['auto_allocate']:
                     prioritization_engine_request['customer_request_logs'] += 'Auto allocate is true, '
@@ -39,7 +44,7 @@ class PrioritizationEngine(models.TransientModel):
                                 _logger.debug('Template type is Inventory.')
                                 flag, allocate_inventory_product_quantity = self.check_product_threshold(prioritization_engine_request)
                                 if flag:
-                                    #allocate product
+                                    # allocate product
                                     self.allocate_product(prioritization_engine_request, filter_available_product_lot_dict, allocate_inventory_product_quantity)
                             else:
                                 # allocate product
@@ -59,10 +64,9 @@ class PrioritizationEngine(models.TransientModel):
             if len(self.allocated_product_for_gl_account_dict) > 0:
                 self.generate_sale_order_for_gl_account()
             # self.env['available.product.dict'].update_production_lot_dict()
-            self._check_uploaded_document_status()
         else:
             _logger.debug('Available product lot list is zero')
-        return self.allocated_product_dict
+        # return self.allocated_product_dict
 
     # get available production lot list, parameter product id.
     def get_available_product_lot_dict(self):
@@ -144,7 +148,8 @@ class PrioritizationEngine(models.TransientModel):
         return flag
 
     # get product expiration tolerance date, expiration tolerance in months(3/6/12)
-    def get_product_expiration_tolerance_date(self,expiration_tolerance):
+    @staticmethod
+    def get_product_expiration_tolerance_date(expiration_tolerance):
         expiration_tolerance_date = datetime.today() + relativedelta(months=+int(expiration_tolerance))
         return expiration_tolerance_date
 
@@ -226,7 +231,7 @@ class PrioritizationEngine(models.TransientModel):
                                                required_quantity)
 
             prioritization_engine_request['customer_request_logs'] += 'Product allocated.'
-            self.update_customer_request_status(prioritization_engine_request,'Fulfilled')
+            self.update_customer_request_status(prioritization_engine_request, 'Fulfilled')
 
             # Update updated_quantity
             if prioritization_engine_request['template_type'].lower().strip() == 'requirement':
@@ -234,7 +239,6 @@ class PrioritizationEngine(models.TransientModel):
 
         elif remaining_product_allocation_quantity > 0 and remaining_product_allocation_quantity != required_quantity:
             _logger.debug(str(" Allocated Partial order product."))
-
 
             self.allocated_product_to_customer(prioritization_engine_request['customer_id'],
                                                prioritization_engine_request['req_no'],
@@ -250,10 +254,11 @@ class PrioritizationEngine(models.TransientModel):
 
             # Update updated_quantity
             if prioritization_engine_request['template_type'].lower().strip() == 'requirement':
-                self.env['sps.customer.requests'].search([('id', '=', prioritization_engine_request['customer_request_id'])]).write({'updated_quantity':remaining_product_allocation_quantity})
+                self.env['sps.customer.requests'].search([('id', '=', prioritization_engine_request['customer_request_id'])]).write({'updated_quantity': remaining_product_allocation_quantity})
 
     # Update Prioritization Engine logs.
-    def _update_logs(self, prioritization_engine_request):
+    @staticmethod
+    def _update_logs(prioritization_engine_request):
         if prioritization_engine_request['partial_order']:
             prioritization_engine_request['customer_request_logs'] += 'Partial ordering flag is True.'
             _logger.debug('Partial ordering flag is True')
@@ -267,8 +272,7 @@ class PrioritizationEngine(models.TransientModel):
             prioritization_engine_request['customer_request_logs'] += 'Partial ordering flag is False.'
             _logger.debug('Partial ordering flag is False')
 
-
-    #get quantitty by partial uom flag
+    # get quantity by partial uom flag
     def _get_quantity_by_partial_uom(self, quantity, prioritization_engine_request):
         product = self.env['product.template'].search([('id', '=', prioritization_engine_request['product_id'])])
         uom = self.env['uom.uom'].search([('name', 'ilike', 'Unit'),('category_id.id', '=', 1)])
@@ -314,11 +318,11 @@ class PrioritizationEngine(models.TransientModel):
             return None
 
     # allocated product to customer
-    def allocated_product_to_customer(self, customer_id,req_no, gl_account, customer_request_id, required_quantity, product_id, allocated_product_from_lot):
-        allocated_product = {'customer_request_id':customer_request_id,'req_no':req_no, 'customer_required_quantity':required_quantity,
-                                 'product_id':product_id, 'allocated_product_quantity':allocated_product_from_lot}
+    def allocated_product_to_customer(self, customer_id, req_no, gl_account, customer_request_id, required_quantity, product_id, allocated_product_from_lot):
+        allocated_product = {'customer_request_id': customer_request_id, 'req_no': req_no, 'customer_required_quantity': required_quantity,
+                                 'product_id': product_id, 'allocated_product_quantity': allocated_product_from_lot}
         # add data in allocated_product_for_gl_account_dict
-        if gl_account and not gl_account is None:
+        if gl_account and gl_account is not None:
             # match parent id and gl account
             res_partner = self.env['res.partner'].search([('gl_account', '=', gl_account),('parent_id', '=', customer_id)])
             if res_partner:
@@ -345,16 +349,17 @@ class PrioritizationEngine(models.TransientModel):
                 new_customer_id_key = {customer_id: [allocated_product]}
                 self.allocated_product_dict.update(new_customer_id_key)
 
-
     # return duration in days
-    def return_duration_in_days(self, duration):
+    @staticmethod
+    def return_duration_in_days(duration):
         duration_in_seconds = int(duration.total_seconds())
         duration_in_hours = duration_in_seconds / 3600
         duration_in_days = int(duration_in_hours) / 24
         return int(duration_in_days)
 
     # return duration in hours
-    def return_duration_in_hours(self,duration):
+    @staticmethod
+    def return_duration_in_hours(duration):
         duration_in_seconds = int(duration.total_seconds())
         duration_in_hours = duration_in_seconds / 3600
         return int(duration_in_hours)
@@ -362,7 +367,7 @@ class PrioritizationEngine(models.TransientModel):
     # Generate sale order
     def generate_sale_order(self):
         _logger.debug('In generate sale order %r', self.allocated_product_dict)
-        #get team id
+        # get team id
         crm_team = self.env['crm.team'].search([('team_type', '=', 'engine')])
 
         for partner_id_key in self.allocated_product_dict.keys():
@@ -384,16 +389,7 @@ class PrioritizationEngine(models.TransientModel):
             sale_order.action_confirm()
             print('**********After action_confirm************', sale_order.state)
             _logger.info('sale order id  : %r  sale order state : %r', sale_order.id, sale_order.state)
-
-            # picking = self.env['stock.picking'].search([('sale_id', '=', sale_order.id),('picking_type_id', '=', 1)])
-            # _logger.info('picking state   : %r', picking.state)
-            # picking.write({'state':'assigned'})
-            # stock_move = self.env['stock.move'].search([('picking_id', '=', picking.id)])
-            # stock_move.write({'state': 'assigned'})
-            # sale_order.write(dict(state='engine', confirmation_date=''))
-            # sale_order.force_quotation_send()
-            sale_order.write({'state':'sent', 'confirmation_date':None})
-
+            sale_order.write({'state':'sent', 'confirmation_date': None})
 
     # Generate sale order for gl account
     def generate_sale_order_for_gl_account(self):
@@ -421,18 +417,11 @@ class PrioritizationEngine(models.TransientModel):
             sale_order.force_quotation_send()
             sale_order.action_confirm()
             _logger.info('sale order id  : %r  sale order state : %r', sale_order.id, sale_order.state)
-
-            # picking = self.env['stock.picking'].search([('sale_id', '=', sale_order.id), ('picking_type_id', '=', 1)])
-            # _logger.info('picking before   : %r', picking.state)
-            # picking.write({'state':'assigned'})
-            # stock_move = self.env['stock.move'].search([('picking_id', '=', picking.id)])
-            # stock_move.write({'state': 'assigned'})
-            # sale_order.write(dict(state='engine', confirmation_date=''))
-            # sale_order.force_quotation_send()
-            sale_order.write({'state':'sent', 'confirmation_date':''})
+            sale_order.write({'state': 'sent', 'confirmation_date': None})
 
     # Change date format to calculate date difference (2018-06-25 23:08:15) to (2018, 6, 25, 23, 8, 15)
-    def change_date_format(self, date):
+    @staticmethod
+    def change_date_format(date):
         formatted_date = str(date).split(".")[0].replace("-", ",").replace(" ", ",").replace(":", ",")
         return formatted_date
 
@@ -474,69 +463,72 @@ class PrioritizationEngine(models.TransientModel):
 
         if int(inventory_quantity) < int(min_threshold):
             allocate_quantity = int(max_threshold) - int(inventory_quantity)
-            return True,allocate_quantity
+            return True, allocate_quantity
         else:
             self.update_customer_request_status(prioritization_engine_request, 'Inprocess')
             prioritization_engine_request['customer_request_logs'] += 'Unable to allocate product beacause stock is greater than minimum threshold, '
-            return False,0
+            return False, 0
 
     # Update uploaded document status
-    def _check_uploaded_document_status(self):
-        # get all document whose status is draft and In Process.
-        sps_cust_uploaded_documents = self.env['sps.cust.uploaded.documents'].search([('status', 'in', ('draft', 'In Process'))])
+    def check_uploaded_document_status(self, document_id):
+        if document_id is not None:
+            sps_cust_uploaded_documents = self.env['sps.cust.uploaded.documents'].search([('id', '=', document_id)])
+        else:
+            # get all document whose status is draft and In Process.
+            sps_cust_uploaded_documents = self.env['sps.cust.uploaded.documents'].search([('status', 'in', ('draft', 'In Process'))])
 
         for sps_cust_uploaded_document in sps_cust_uploaded_documents:
-            _logger.info('Document Id :%r',sps_cust_uploaded_document.id)
+            _logger.info('Document Id :%r', sps_cust_uploaded_document.id)
 
             current_cust_doc_fixed_count = sps_cust_uploaded_document.customer_id['doc_process_count']
             current_processing_doc_id = sps_cust_uploaded_document.id
             current_processed_docs = sps_cust_uploaded_document.document_processed_count
             template = None
+            sps_customer_requirement = self.env['sps.customer.requests'].search([('document_id', '=', sps_cust_uploaded_document.id), ('status', 'in', ['Partial', 'InCoolingPeriod', 'New', 'Inprocess', 'Incomplete', 'Unprocessed'])])
+            sps_customer_requirements = self.env['sps.customer.requests'].search([('document_id', '=', sps_cust_uploaded_document.id), ('status', 'in', ['InCoolingPeriod', 'New', 'Inprocess', 'Incomplete', 'Unprocessed'])])
+            sps_customer_requirements_all_non_voided = self.env['sps.customer.requests'].search([('document_id', '=', sps_cust_uploaded_document.id), ('status', 'not in', ['Voided'])])
+            high_priority_requests = self.env['sps.customer.requests'].search([('document_id', '=', sps_cust_uploaded_document.id), ('status', 'in', ['New']), ('priority', '=', 0)])
 
             if sps_cust_uploaded_document.template_type.lower().strip() == 'requirement':
                 if current_processed_docs >= current_cust_doc_fixed_count:
                     self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
-                    template = self.env.ref('customer-requests.final_email_response_on_uploaded_document').sudo()
+                    if len(sps_customer_requirements) == len(sps_customer_requirements_all_non_voided):
+                        template = self.env.ref('customer-requests.final_email_response_on_uploaded_document').sudo()
                 else:
-                    template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
-                    sps_customer_requirements = self.env['sps.customer.requests'].search([('document_id', '=', sps_cust_uploaded_document.id),
-                                                        ('status', 'in', ('Partial', 'InCoolingPeriod', 'New', 'Inprocess', 'Incomplete', 'Unprocessed'))])
-                    if len(sps_customer_requirements) > 0:
-                        if sps_cust_uploaded_document.status != 'In Process':
+                    if len(sps_customer_requirement) > 0:
+                        if sps_cust_uploaded_document.status == 'In Process' and len(sps_customer_requirements) == len(sps_customer_requirements_all_non_voided):
+                            template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
+                        if sps_cust_uploaded_document.status == 'draft' and len(high_priority_requests) == 0:
                             self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'In Process')
                     else:
-                        if sps_cust_uploaded_document.status != 'Completed':
-                            self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
+                        self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
 
             elif sps_cust_uploaded_document.template_type.lower().strip() == 'inventory':
-                 if int(current_processed_docs) >= int(current_cust_doc_fixed_count):
-                     template = self.env.ref('customer-requests.final_email_response_on_uploaded_document').sudo()
-                     self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
-                 else:
-                    template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
+                if int(current_processed_docs) >= int(current_cust_doc_fixed_count):
+                    self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
+                    if len(sps_customer_requirements) == len(sps_customer_requirements_all_non_voided):
+                        template = self.env.ref('customer-requests.final_email_response_on_uploaded_document').sudo()
+                else:
                     if int(current_processing_doc_id) == int(sps_cust_uploaded_document.id):
-                        sps_customer_requirements = self.env['sps.customer.requests'].search([('document_id', '=', sps_cust_uploaded_document.id),
-                                                            ('status', 'in', ('Partial', 'InCoolingPeriod', 'New', 'Inprocess', 'Incomplete', 'Unprocessed'))])
-                        if len(sps_customer_requirements) > 0:
-                            if sps_cust_uploaded_document.status != 'In Process':
+                        if len(sps_customer_requirement) > 0:
+                            if sps_cust_uploaded_document.status == 'In Process' and len(sps_customer_requirements) == len(sps_customer_requirements_all_non_voided):
+                                template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
+                            if sps_cust_uploaded_document.status == 'draft' and len(high_priority_requests) == 0:
                                 self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'In Process')
                         else:
-                            if sps_cust_uploaded_document.status != 'Completed':
-                                self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
+                            self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
                     else:
-                        if sps_cust_uploaded_document.status != 'Completed':
-                            self._update_uploaded_document_status(sps_cust_uploaded_document.id,'Completed')
+                        self._update_uploaded_document_status(sps_cust_uploaded_document.id, 'Completed')
+
             # Send Email Notification to customer about the progress of uploaded or sent document
-            sps_customer_requests = self.env['sps.customer.requests'].search([('document_id', '=', sps_cust_uploaded_document.id),('status', 'in', ('Partial', 'Fulfilled'))])
-            if len(sps_customer_requests) == 0 and template is not None:
+            if template is not None:
                 # Send Email
-                print('Send final email')
                 self.send_mail(sps_cust_uploaded_document.customer_id.name, sps_cust_uploaded_document.customer_id.email, template)
 
-    def _update_uploaded_document_status(self,document_id,status):
+    def _update_uploaded_document_status(self,document_id, status):
         try:
-            self.env['sps.cust.uploaded.documents'].search([('id', '=', document_id)]).write({'status':status})
-        except Exception:
+            self.env['sps.cust.uploaded.documents'].search([('id', '=', document_id)]).write({'status': status})
+        except:
             _logger.error("Unable to update document status")
 
     # Release reserved product quantity(Which sales order product not confirm within length of hold period)
@@ -587,7 +579,6 @@ class PrioritizationEngine(models.TransientModel):
             _logger.info('sale order state before : %r', sale_order['state'])
             sale_order.action_cancel()
             _logger.info('sales order status after : %r', sale_order['state'])
-
 
     def send_mail(self, body):
         template = self.env.ref('prioritization_engine.set_log_gl_account_response').sudo()

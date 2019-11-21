@@ -1,6 +1,7 @@
 <odoo>
   <data>
 
+
        <record id="view_partner_property_form" model="ir.ui.view">
             <field name="name">res.partner.account.manager.form.inherit</field>
             <field name="model">res.partner</field>
@@ -72,6 +73,15 @@
                       <div>
                           <field name="delivery_method_readonly_flag" invisible="1"/>
                           <field name="carrier_id" context="{'order_id': id}" class="oe_inline" options="{'no_create': True, 'no_open': True}" attrs="{'readonly':[('delivery_method_readonly_flag','=',0)]}"/> <i class="fa fa-check text-success" aria-hidden="true" attrs="{'invisible':['|','|',('carrier_id','=',False),('state','not in',('draft','sent')),('delivery_rating_success','=',False)]}"></i>
+                      </div>
+                  </xpath>
+                  <xpath expr="//div[@name='carrier_selection']/div[2]" position="replace">
+                      <div>
+                          <field name="delivery_method_readonly_flag" invisible="1"/>
+                          <field name='delivery_price' widget='monetary' class="oe_inline" options="{'currency_field': 'currency_id'}" nolabel="1" attrs="{'invisible': [('carrier_id','=', False)]}" force_save="1"/>
+                          <button name="get_delivery_price" type="object" class="oe_inline oe_link" attrs="{'invisible':['|','|',('carrier_id','=',False),('state','not in',('draft','sent','sale')),('delivery_method_readonly_flag','=',0)]}"><i class="fa fa-arrow-right"/> Get rate</button>
+                          <button name="set_delivery_line" type="object" class="oe_inline oe_link" attrs="{'invisible':['|','|','|',('carrier_id','=',False),('state','not in',('draft','sent','sale')),('delivery_rating_success','=',False),('delivery_method_readonly_flag','=',0)]}"><i class="fa fa-arrow-right"/> Add to order</button>
+                          <field name='delivery_rating_success' invisible="1" force_save="1"/>
                       </div>
                   </xpath>
                 </data>

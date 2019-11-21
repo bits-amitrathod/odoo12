@@ -79,20 +79,18 @@
                             </div>
                             <div class="col-md-6 col-sm-6 mb48 mt8">
                                 <p>
-                                    <strong>Jessica Kuna</strong>
-                                    <strong><span></span>–<span></span>Sales Specialist
-                                    </strong>
+                                    <strong>Brittany Edwards – Sales Specialist</strong>
                                 </p>
-                                <p>(412) 564-1279</p>
+                                <p>(412) 434-0214</p>
                                 <p>
                                     <a href="#">
-                                        <font style="color: rgb(255, 0, 0);">jkuna@surgicalproductsolutions.com
+                                        <font style="color: rgb(255, 0, 0);">brittany@surgicalproductsolutions.com
                                         </font>
                                     </a>
                                 </p>
                             </div>
                         </div>
-                        <div class="row">
+                       <!-- <div class="row">
                             <div class="col-md-6 col-sm-6 mb48 mt8">
                                 <p>
                                     <strong>Barrett Herzer – Sales Specialist</strong>
@@ -117,19 +115,8 @@
                                     </a>
                                 </p>
                             </div>
-                            <div class="col-md-6 col-sm-6 mb48 mt8">
-                                <p>
-                                    <strong>Brittany Edwards – Sales Specialist</strong>
-                                </p>
-                                <p>(412) 434-0214</p>
-                                <p>
-                                    <a href="#">
-                                        <font style="color: rgb(255, 0, 0);">brittany@surgicalproductsolutions.com
-                                        </font>
-                                    </a>
-                                </p>
-                            </div>
-                        </div>
+
+                        </div>-->
                         <div class="row contact-form">
                             <div class="col-md-8 mb48">
                                 <iframe width="100%" height="340" frameborder="0" scrolling="no" marginheight="0"

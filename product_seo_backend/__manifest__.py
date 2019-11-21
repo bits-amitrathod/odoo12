@@ -2,7 +2,9 @@
   
   # App information
    
-    'name': 'Manage Product&Category SEO',
+
+    'name': 'Manage Product & Category SEO',
+
     'version': '1.0',
     'category': 'website',
     'license': 'OPL-1',
