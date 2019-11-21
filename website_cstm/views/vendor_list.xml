@@ -1,0 +1,118 @@
+<odoo>
+    <template id="vendor_list_page" name="Vendor List Page">
+<t t-name="website.vendor-list">
+  <t t-call="website.layout">
+    <div id="wrap" class="oe_structure oe_empty">
+      <section class="pt32 pb32">
+        <div class="container">
+          <div class="row s_nb_column_fixed">
+            <div class="col-lg-12 s_title pt16 pb16" style="text-align: center;">
+              <h1 style="color: rgb(255, 255, 255); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 34px; line-height: 60px; text-transform: capitalize; font-family: AmericanGotURW-Bol; font-weight: 600;">
+                <span style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                  <font style="color: rgb(0, 0, 0);">Vendor List</font>
+                </span>
+              </h1>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="pt32 pb32 bg-white oe_custom_bg" style="">
+        <div class="container">
+          <div class="row s_nb_column_fixed">
+            <div class="col-lg-12 s_title pt16 pb16" style="text-align: center;">
+              <h3 style="text-transform: capitalize; color: rgb(50, 61, 73); background: 0px 0px rgb(255, 255, 255); border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 28px; line-height: 1.30435em; font-family: AmericanGotURW-Bol;">Sub Specialty / &amp;nbsp;Vendor List</h3>
+              <div class="s_hr text-left pt32 pb32">
+                <hr class="border-600 s_hr_solid w-100 mx-auto s_hr_2px"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="s_text_block pt32 pb32 bg-white oe_custom_bg" style="">
+        <div class="container">
+          <div class="row">
+            <div class="pt32 pb32 col-lg-6">
+              <h4 style="color: rgb(50, 61, 73); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 20px; line-height: 38px; text-transform: capitalize; font-family: AmericanGotURW-Bol;">ENDO / FIXATION</h4>
+              <ul style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; list-style-position: inside; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;">
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Auto Suture / Covidien</li>
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Ethicon</li>
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Applied Medical</li>
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Bard</li>
+              </ul>
+              <h4 style="color: rgb(50, 61, 73); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 20px; line-height: 38px; text-transform: capitalize; font-family: AmericanGotURW-Bol;">ORTHO</h4>
+              <ul style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; list-style-position: inside; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;">
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Arthrex</li>
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Arthrocare</li>
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Dyonics</li>
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Linvatec</li>
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Mitek</li>
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Smith &amp;amp; Nephew</li>
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Stryker</li>
+              </ul>
+              <h4 style="color: rgb(50, 61, 73); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 20px; line-height: 38px; text-transform: capitalize; font-family: AmericanGotURW-Bol;">ENERGY</h4>
+              <ul style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; list-style-position: inside; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;">
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Ethicon</li>
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Gyrus</li>
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Covidien (Valleylab)</li>
+              </ul>
+              <h4 style="color: rgb(50, 61, 73); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 20px; line-height: 38px; text-transform: capitalize; font-family: AmericanGotURW-Bol;">HERNIA</h4>
+              <ul style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; list-style-position: inside; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;">
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Atrium</li>
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Covidien / Parietex</li>
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Bard / Davol</li>
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Ethicon</li>
+              </ul>
+              <h4 style="color: rgb(50, 61, 73); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 20px; line-height: 38px; text-transform: capitalize; font-family: AmericanGotURW-Bol;">GASTRIC BANDS</h4>
+              <ul style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; list-style-position: inside; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;">
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Allergan Lapband</li>
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Ethicon Realize</li>
+              </ul>
+            </div>
+            <div class="pt32 pb32 col-lg-6">
+              <h4 style="color: rgb(50, 61, 73); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 20px; line-height: 38px; text-transform: capitalize; font-family: AmericanGotURW-Bol;">WOUND</h4>
+              <ul style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; list-style-position: inside; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;">
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Dermabond</li>
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Surgicel</li>
+              </ul>
+              <h4 style="color: rgb(50, 61, 73); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 20px; line-height: 38px; text-transform: capitalize; font-family: AmericanGotURW-Bol;">GYN / WOMEN’S HEALTH</h4>
+              <ul style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; list-style-position: inside; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;">
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Bard (Avaulta)</li>
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Ethicon (Gynecare)</li>
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Gyrus</li>
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Hologic (Novasure &amp;amp; Adiana)</li>
+              </ul>
+              <h4 style="color: rgb(50, 61, 73); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 20px; line-height: 38px; text-transform: capitalize; font-family: AmericanGotURW-Bol;">ENT</h4>
+              <ul style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; list-style-position: inside; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;">
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Acclarent</li>
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Arthrocare</li>
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Gyrus</li>
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Medtronic</li>
+              </ul>
+              <h4 style="color: rgb(50, 61, 73); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 20px; line-height: 38px; text-transform: capitalize; font-family: AmericanGotURW-Bol;">TRAUMA</h4>
+              <ul style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; list-style-position: inside; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;">
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Synthes</li>
+              </ul>
+              <h4 style="color: rgb(50, 61, 73); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 20px; line-height: 38px; text-transform: capitalize; font-family: AmericanGotURW-Bol;">POWERED INSTRUMENTATION</h4>
+              <ul style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; list-style-position: inside; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;">
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">3M</li>
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Dyonics</li>
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Linvatec</li>
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Stryker</li>
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Synthes</li>
+              </ul>
+              <h4 style="color: rgb(50, 61, 73); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 20px; line-height: 38px; text-transform: capitalize; font-family: AmericanGotURW-Bol;">UROLOGY</h4>
+              <ul style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; list-style-position: inside; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;">
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Boston Scientific</li>
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Cook</li>
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Karl Storz</li>
+                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Bard</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </t>
+</t>
+    </template>
+</odoo>

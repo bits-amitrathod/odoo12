@@ -45,7 +45,7 @@
                                     <th style="border: 1px solid black;text-align:  center !important; width:10%">
                                         Date Validated
                                     </th>
-                                    <th style="border: 1px solid black;text-align:  center !important; width:10%">
+                                    <th style="border: 1px solid black;text-align:  center !important; width:15%">
                                         UOM
                                     </th>
                                 </tr>
@@ -91,14 +91,10 @@
                                     </td>
 
                                     <td style="border: 1px solid black; text-align:  center ">
-                                        <b>
                                             <span t-esc="lot['qty_done']"/>
-                                        </b>
                                     </td>
                                     <td style="border: 1px solid black; text-align:  center ">
-                                        <b>
                                             <span t-esc="lot['date_done']" t-options='{"widget": "datetime"}'/>
-                                        </b>
                                     </td>
                                     <td style="border: 1px solid black; text-align:  center ">
                                         <span t-esc="lot['product_uom_id']"/>
@@ -211,13 +207,16 @@
                         <table class="tav  ble table-condensed" style="border: 1px solid black;width:100%;margin-bottom: 50px;">
                             <thead>
                                 <tr>
-                                    <th style="border: 1px solid black;text-align:  center !important; width:80%">
+                                    <th style="border: 1px solid black;text-align:  center !important; width:70%">
                                         Product Name
                                     </th>
                                     <th style="border: 1px solid black;text-align:  center !important; width:10%">
                                         Qty Received
                                     </th>
                                     <th style="border: 1px solid black;text-align:  center !important; width:10%">
+                                        Date Validated
+                                    </th>
+                                    <th style="border: 1px solid black;text-align:  center !important; width:15%">
                                         UOM
                                     </th>
                                 </tr>
@@ -249,6 +248,10 @@
                                     <td style="border-top: 1px solid black;">
 
                                     </td>
+                                     <td style="border-top: 1px solid black;">
+
+                                    </td>
+
                                 </tr>
                                 <tr t-foreach="receiving_item['lots']" t-as="lot">
                                     <td style="border: 1px solid black; text-align:  center ">
@@ -259,16 +262,20 @@
                                     </td>
 
                                     <td style="border: 1px solid black; text-align:  center ">
-                                        <b>
                                             <span t-esc="lot['qty_done']"/>
-                                        </b>
                                     </td>
-                                    <td style="border: 1px solid black; text-align:  center ">
+                                     <td style="border: 1px solid black; text-align:  center ">
+                                            <span t-esc="lot['date_done']" t-options='{"widget": "datetime"}'/>
+                                    </td>
+                                    <td style="border: 1px solid black; text-align:center">
                                         <span t-esc="lot['product_uom_id']"/>
                                     </td>
                                 </tr>
                                 <tr style="height: 25px;">
                                     <td style="border: 1px solid black;">
+
+                                    </td>
+                                     <td style="border: 1px solid black;">
 
                                     </td>
                                      <td style="border: 1px solid black;">

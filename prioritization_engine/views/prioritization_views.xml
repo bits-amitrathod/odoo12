@@ -4,9 +4,9 @@
         <record id="seq_sfnumber" model="ir.sequence">
             <field name="name">Sale Force</field>
             <field name="code">sale.force.no</field>
-            <field name="prefix">SF</field>
+<!--            <field name="prefix">SF</field>-->
             <field name="padding">5</field>
-<!--            <field name="number_next">50000</field>-->
+            <field name="number_next">11000</field>
             <field name="number_increment">1</field>
         </record>
 
@@ -486,7 +486,7 @@
         </record>
 
         <!-- Top menu item -->
-        <menuitem name="Priority Engine" id="prioritization_engine.menu_root"
+        <menuitem name="STOCKHAWK" id="prioritization_engine.menu_root"
                   web_icon="prioritization_engine,static/description/icon.png"/>
 
         <!-- menu categories -->

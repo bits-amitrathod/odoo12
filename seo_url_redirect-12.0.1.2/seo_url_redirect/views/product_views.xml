@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2015-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- "License URL : <https://store.webkul.com/license.html/>" -->
+
+<odoo>
+    <data>
+      <record id="product_public_category_form_seo_view" model="ir.ui.view">
+  			<field name="name">product.public.category.form.seo.view.inherit</field>
+  			<field name="model">product.public.category</field>
+  			<field name="inherit_id" ref="website_sale.product_public_category_form_view"/>
+  			<field name="arch" type="xml">
+  				<field name="parent_id" position="after">
+                    <field name="url_key"/>
+  				</field>
+  			</field>
+  		</record>
+    </data>
+</odoo>

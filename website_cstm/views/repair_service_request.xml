@@ -1,0 +1,280 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <template id="repair_service_page" name="Repair Service Page">
+<t name="Slide Detailed View" t-name="website_slides.slide_detail_view">
+    <t t-call="website.layout">
+        <t t-set="main_object" t-value="slide"/>
+        <div class="container mt16">
+            <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                    <div t-if="private" class="mb16">
+                        <h3 class="alert alert-danger" role="alert">
+                            <i class="fa fa-exclamation-triangle" role="img" aria-label="Attention" title="Attention"/> This <t t-esc="slide.slide_type"/> is private
+                        </h3>
+                        <t t-if="slide.channel_id.access_error_msg">
+                            <div t-field="slide.channel_id.access_error_msg" class="card card-body oe_no_empty"/>
+                        </t>
+                    </div>
+
+                    <div t-if="not private">
+                            <t t-if="slide.datas and slide.slide_type == 'infographic'">
+                                <img t-attf-src="/web/image/slide.slide/#{slide.id}/datas" class="img-fluid" style="width:100%" alt="Slide image"/>
+                            </t>
+                        <div t-if="slide.slide_type in ('presentation', 'document')" class="embed-responsive embed-responsive-4by3 embed-responsive-item mb8">
+                            <t t-raw="slide.embed_code"/>
+                        </div>
+                        <div t-if="slide.slide_type == 'video' and slide.document_id" class="embed-responsive embed-responsive-16by9 embed-responsive-item mb8">
+                            <t t-raw="slide.embed_code"/>
+                        </div>
+                        <div class="row">
+                            <h4 t-field="slide.name" class="col-lg-6"/>
+                            <div class="col-lg-6">
+                                <div clas="row">
+                                    <div class="col-lg-8" t-if="slide.tag_ids">
+                                        <t t-foreach="slide.tag_ids" t-as="slide_tag">
+                                            <a t-attf-href="/slides/#{slug(slide.channel_id)}/tag/#{slug(slide_tag)}" t-attf-class="badge badge-secondary ml4 mb4 float-right #{tag and tag.id == slide_tag.id and 'badge-primary' ''}" t-field="slide_tag.name"/>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--div class="row">
+                            <div class="col-md-8 col-12">
+                                <div class="float-left">
+                                    <a t-attf-href="/slides/#{slug(slide.channel_id)}" t-attf-title="Channel #{slide.channel_id.name}" t-attf-aria-label="Channel #{slide.channel_id.name}">
+                                        <i class="fa fa-circle-o fa-5x" style="color: #875A7B;font-weight: bold;"/>
+                                    </a>
+                                </div>
+                                <div style="margin-left: 80px">
+                                    <p>
+                                        <a t-attf-href="/slides/#{slug(slide.channel_id)}" t-esc="slide.channel_id.name"/>
+                                        <t t-if="slide and slide.category_id">
+                                            <span> / </span>
+                                            <a t-attf-href="/slides/#{slug(slide.channel_id)}/category/#{slug(slide.category_id)}" t-esc="slide.category_id.name"/>
+                                        </t>
+                                    </p>
+                                    <div>
+                                        <t t-call="website_mail.follow">
+                                            <t t-set="email" t-value="user.email"/>
+                                            <t t-set="object" t-value="slide.channel_id"/>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 d-none d-md-block">
+                                <div class="text-right">
+                                    <b class="h3 text-muted"><t t-esc="slide.total_views"/></b> <span class="text-muted small">views</span>
+                                </div>
+
+                                <div class="progress mb0" style="height: 2px;" t-if="slide.likes + slide.dislikes &gt; 0">
+                                    <div class="progress-bar" role="progressbar" t-attf-aria-valuenow="#{slide.likes}" aria-valuemin="0" t-attf-aria-valuemax="#{slide.likes + slide.dislikes}" t-attf-style="width: #{(slide.likes*100)/(slide.likes + slide.dislikes)}%;">
+                                        <span class="sr-only"><t t-esc="slide.likes"/> Likes</span>
+                                    </div>
+                                </div>
+                                <div class="progress mb0" style="height: 2px;" t-if="slide.likes + slide.dislikes == 0">
+                                    <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+                                        <span class="sr-only"><t t-esc="slide.likes"/> Likes</span>
+                                    </div>
+                                </div>
+
+                                <div class="text-muted mt4">
+                                    <div class="float-right mb16 text-right">
+                                        <span class="oe_slide_js_like" data-href="/slides/slide/like" t-att-data-user-id="user.id" t-att-data-public-user="is_public_user" t-att-data-slide-id="slide.id" tabindex="0" data-toggle="popover">
+                                            <i class="fa fa-thumbs-up fa-1x" role="img" aria-label="Likes" title="Likes"/>
+                                            <span class="o_wslides_like_dislike_count" t-esc="slide.likes"/>
+                                        </span>
+                                        <span class="oe_slide_js_unlike" data-href="/slides/slide/dislike" t-att-data-user-id="user.id" t-att-data-public-user="is_public_user" t-att-data-slide-id="slide.id" tabindex="0" data-toggle="popover">
+                                            <i class="fa fa-thumbs-down fa-1x" role="img" aria-label="Dislikes" title="Dislikes"/>
+                                            <span class="o_wslides_like_dislike_count" t-esc="slide.dislikes"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div-->
+                        <!--div class="mt8 mb32">
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li class="nav-item">
+                                    <a href="#about" aria-controls="about" t-attf-class="nav-link#{not comments and ' active' or ''}" role="tab" data-toggle="tab">
+                                        <i class="fa fa-home"/> About
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#share" aria-controls="share" class="nav-link" role="tab" data-toggle="tab">
+                                        <i class="fa fa-share-alt"/> Share
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#discuss" aria-controls="discuss" t-attf-class="nav-link#{comments and ' active' or ''}" role="tab" data-toggle="tab">
+                                        <i class="fa fa-comments-o"/> Comments
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#transcript" aria-controls="transcript" class="nav-link" role="tab" data-toggle="tab">
+                                        <i class="fa fa-align-justify"/> Transcript
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#statistic" aria-controls="statistic" class="nav-link" role="tab" data-toggle="tab">
+                                        <i class="fa fa-bar-chart"/> Statistics
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="tab-content" style="padding: 20px 5px 5px 5px; word-wrap: break-word;">
+                                <div role="tabpanel" t-att-class="not comments and 'tab-pane fade in show active' or 'tab-pane fade'" id="about">
+                                    <div t-field="slide.description"/>
+                                </div>
+                                <div role="tabpanel" class="tab-pane fade" t-if="slide.website_published" id="share">
+                                    <t t-call="website_slides.slide_social_media">
+                                        <t t-set="slide" t-value="slide"/>
+                                    </t>
+                                    <t t-call="website_slides.slide_social_email">
+                                        <t t-set="slide" t-value="slide"/>
+                                    </t>
+                                    <t t-if="not slide.document_id">
+                                        <t t-call="website_slides.slide_social_embed">
+                                            <t t-set="slide" t-value="slide"/>
+                                        </t>
+                                    </t>
+                                </div>
+                                <div role="tabpanel" class="tab-pane fade" t-if="not slide.website_published" id="share">
+                                    <h4><i class="fa fa-info-circle"/>
+                                        The social sharing module will be unlocked when a moderator will allow your publication.
+                                    </h4>
+                                </div>
+                                <div role="tabpanel" t-att-class="comments and 'tab-pane fade in show active' or 'tab-pane fade'" id="discuss">
+                                    <t t-call="portal.message_thread">
+                                        <t t-set="object" t-value="slide"/>
+                                    </t>
+                                </div>
+                                <div role="tabpanel" class="tab-pane fade oe_slides_transcript" id="transcript">
+                                    <t t-if="slide.index_content">
+                                        <t t-foreach="slide.index_content.split('\n')" t-as="line">
+                                            <p t-esc="line"/>
+                                        </t>
+                                    </t>
+                                </div>
+                                <div role="tabpanel" class="tab-pane fade" id="statistic" t-att-slide-url="slide.website_url">
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <h4 class="mt0 oe_slides_statistics_title">Views</h4>
+                                            <ul class="list-group">
+                                                <li class="list-group-item">
+                                                    <span class="badge badge-pill"><t t-esc="slide.total_views"/></span>
+                                                    <i class="fa fa-play"/> Total Views
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <span class="badge badge-pill"><t t-esc="slide.slide_views"/></span>
+                                                    <i class="fa fa-circle-o"/> Website Views
+                                                </li>
+                                                <li class="list-group-item" t-if="not slide.document_id">
+                                                    <span class="badge badge-pill"><t t-esc="slide.embed_views"/></span>
+                                                    <i class="fa fa-code"/> Embedded Views
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        <div class="col-lg-4">
+                                            <h4 class="mt0 oe_slides_statistics_title">Actions</h4>
+                                            <ul class="list-group">
+                                                <li class="list-group-item">
+                                                    <span class="badge badge-pill" id="total-share">0</span>
+                                                    <i class="fa fa-share-alt"/> Social Shares
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <span class="badge badge-pill"><t t-esc="slide.likes"/></span>
+                                                    <i class="fa fa-thumbs-up"/> Likes
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <span class="badge badge-pill"><t t-esc="slide.dislikes"/></span>
+                                                    <i class="fa fa-thumbs-down"/> Dislikes
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <span class="badge badge-pill"><t t-esc="len(slide.website_message_ids)"/></span>
+                                                    <i class="fa fa-comments-o"/> Comments
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        <div class="col-lg-4">
+                                            <h4 class="mt0 oe_slides_statistics_title">Share count</h4>
+                                            <ul class="list-group">
+                                                <li class="list-group-item">
+                                                    <span class="badge badge-pill" id="facebook-badge">0</span>
+                                                    <i class="fa fa-facebook-square"/> Facebook
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <span class="badge badge-pill" id="twitter-badge">0</span>
+                                                    <i class="fa fa-twitter-square"/> Twitter
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <span class="badge badge-pill" id="linkedin-badge">0</span>
+                                                    <i class="fa fa-linkedin-square"/> LinkedIn
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <span class="badge badge-pill" id="google-badge">0</span>
+                                                    <i class="fa fa-google-plus-square"/> Google+
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="row" t-if="not slide.document_id and slide.embedcount_ids">
+                                        <div class="col-lg-12">
+                                            <h4 class="mt0"> Embeds
+                                                <span class="badge badge-pill float-right">
+                                                    <t t-esc="len(slide.embedcount_ids)"/>
+                                                </span>
+                                            </h4>
+                                            <ul class="list-group" style="height: 150px;overflow: auto;">
+                                                <li class="list-group-item" t-foreach="slide.embedcount_ids" t-as="count">
+                                                    <span class="badge badge-pill"><t t-esc="count.count_views"/></span>
+                                                    <t t-esc="count.url"/>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div-->
+                    </div>
+                </div>
+                <!--div class="col-xl-4 col-lg-4 col-md-12 col-12">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item"><a aria-controls="related" href="#related" class="nav-link active" data-toggle="tab">Related</a></li>
+                        <li class="nav-item"><a aria-controls="most_viewed" href="#most_viewed" class="nav-link" data-toggle="tab">Most Viewed</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div role="tabpanel" id="related" class="tab-pane active mt4">
+                            <div class="card">
+                                <ul class="list-unstyled card-body">
+                                    <t t-set="related_slides_list" t-value="list(related_slides)"/>
+                                    <t t-if="not related_slides_list">
+                                        No presentation available.
+                                    </t>
+                                    <t t-foreach="related_slides_list" t-as="slide">
+                                        <t t-call="website_slides.related_slides"/>
+                                    </t>
+                                </ul>
+                            </div>
+                        </div>
+                        <div role="tabpanel" id="most_viewed" class="tab-pane  mt4">
+                            <div class="card">
+                                <ul class="list-unstyled card-body">
+                                    <t t-set="most_viewed_slides_list" t-value="list(most_viewed_slides)"/>
+                                    <t t-if="not list(most_viewed_slides_list)">
+                                        No presentation available.
+                                    </t>
+                                    <t t-foreach="most_viewed_slides_list" t-as="slide">
+                                        <t t-call="website_slides.related_slides"/>
+                                    </t>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div-->
+            </div>
+        </div>
+    </t>
+</t>
+    </template>
+</odoo>

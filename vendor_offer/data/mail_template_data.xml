@@ -67,12 +67,20 @@
                 % if object.origin:
                     (RFQ origin: ${object.origin})
                 % endif
-                amounting <strong>${format_amount(object.amount_total, object.currency_id)}</strong>
+
+                % if object.offer_type=='credit':
+                    amounting <strong>${format_amount(object.credit_amount_total, object.currency_id)}</strong>
+                % elif object.partner_ref=='cash':
+                    amounting <strong>${format_amount(object.cash_amount_total, object.currency_id)}</strong>
+                % else :
+                    amounting <strong>${format_amount(object.cash_amount_total, object.currency_id)}</strong>
+                % endif
+
                 from ${object.company_id.name}.
                 </p>
                 <br/><br/>
                 <center>
-                    <a href="${access_url}" style="background-color: #1abc9c; padding: 20px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">View order</a>
+                    <a href="${access_url}" style="background-color: #1abc9c; padding: 20px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">View Offer</a>
                     <br/><br/><br/>
                     <span style="color:#888888">(or view attached PDF)</span>
                 </center>
@@ -173,7 +181,7 @@
     <!-- HEADER -->
     <tr>
         <td align="center" style="min-width: 590px;">
-            <t t-set="access_action" t-value="record.with_context(force_website=True).get_access_action()"/>
+            <!--<t t-set="access_action" t-value="record.with_context(force_website=True).get_access_action()"/>-->
             <t t-set="is_online" t-value="access_action and access_action['type'] == 'ir.actions.act_url'"/>
             <t t-set="base_url" t-value="record.get_base_url()"/>
             <t t-set="share_url" t-value="record._get_share_url(redirect=True, signup_partner=True)"/>

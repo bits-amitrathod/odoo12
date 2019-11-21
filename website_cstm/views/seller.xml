@@ -1,0 +1,218 @@
+<odoo>
+
+    <template id="seller_page" name="Sell Page">
+<t t-name="website.sell">
+  <t t-call="website.layout">
+    <div id="wrap" class="oe_structure oe_empty">
+      <section class="pt32 pb32">
+        <div class="container">
+          <div class="row s_nb_column_fixed">
+            <div class="col-lg-12 s_title pt16 pb16" style="text-align: center;">
+              <h1 style="text-align: center; color: rgb(255, 255, 255); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 34px; line-height: 60px; text-transform: capitalize; font-family: AmericanGotURW-Bol; font-weight: 600;">
+                <span style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                  <font style="color: rgb(0, 0, 0);">Sell</font>
+                </span>
+              </h1>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="pt32 pb32 bg-white oe_custom_bg" style="">
+        <div class="container">
+          <div class="row s_nb_column_fixed">
+            <div class="col-lg-12 s_title pt16 pb16" style="text-align: center;">
+              <p style="text-align: center; background: 0px 0px rgb(255, 255, 255); border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; line-height: 26px;">Please fill out the form below in order to submit an item for valuation.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="s_text_block pt32 pb0" style="">
+        <div class="container">
+          <div class="row">
+            <div class="pt32 col-lg-4 pb0">
+              <div class="s_hr text-left pt32 pb32">
+                <hr class="border-600 s_hr_solid w-100 mx-auto s_hr_3px"/>
+              </div>
+            </div>
+            <div class="col-lg-4 pt48 pb0">
+              <p class="lead" style="text-align: center; ">
+                <font style="font-size: 24px;">
+                  <b>Seller Form</b>
+                </font>
+              </p>
+            </div>
+            <div class="pt32 col-lg-4 pb0">
+              <div class="s_hr text-left pt32 pb32">
+                <hr class="border-600 s_hr_solid w-100 mx-auto s_hr_3px"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <form action="/website_form/" method="post" class="s_website_form container-fluid mt32" enctype="multipart/form-data" data-model_name="mail.mail" data-success_page="">
+        <div class="container">
+          <div class="row form-group form-field o_website_form_custom o_website_form_required_custom">
+            <div class="col-md-12 text-md-right">
+              <div style="text-align: left;">
+                <span style="font-size: inherit; font-weight: 700; font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Noto, &quot;Helvetica Neue&quot;, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;, &quot;Noto Color Emoji&quot;;">Business Name&amp;nbsp;</span>
+              </div>
+              <input type="text" class="form-control o_website_form_input" name="" required=""/>
+            </div>
+          </div>
+          <div class="row form-group form-field o_website_form_custom o_website_form_required_custom">
+            <div class="col-md-6 text-md-right">
+              <div style="text-align: left;">
+                <span style="font-size: inherit; font-weight: 700; font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Noto, &quot;Helvetica Neue&quot;, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;, &quot;Noto Color Emoji&quot;;">Business Address&amp;nbsp;</span>
+              </div>
+              <input type="text" class="form-control o_website_form_input" name="" required=""/>
+            </div>
+            <div class="col-md-6 text-md-right">
+              <div style="text-align: left;">
+                <span style="font-size: inherit; font-weight: 700; font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Noto, &quot;Helvetica Neue&quot;, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;, &quot;Noto Color Emoji&quot;;">City&amp;nbsp;</span>
+              </div>
+              <input type="text" class="form-control o_website_form_input" name="" required=""/>
+            </div>
+          </div>
+          <div class="row form-group form-field o_website_form_custom o_website_form_required_custom">
+            <div class="col-md-6 text-md-right">
+              <div style="text-align: left;">
+                <span style="font-size: inherit; font-weight: 700; font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Noto, &quot;Helvetica Neue&quot;, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;, &quot;Noto Color Emoji&quot;;">State / Province&amp;nbsp;</span>
+              </div>
+              <input type="text" class="form-control o_website_form_input" name="" required=""/>
+            </div>
+            <div class="col-md-6 text-md-right">
+              <div style="text-align: left;">
+                <span style="font-size: inherit; font-weight: 700; font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Noto, &quot;Helvetica Neue&quot;, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;, &quot;Noto Color Emoji&quot;;">Zip Code&amp;nbsp;</span>
+              </div>
+              <input type="text" class="form-control o_website_form_input" name=""/>
+            </div>
+          </div>
+          <div class="row form-group form-field o_website_form_custom">
+            <div class="col-md-6 text-md-right">
+              <div style="text-align: left;">
+                <span style="font-size: inherit; font-weight: 700; font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Noto, &quot;Helvetica Neue&quot;, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;, &quot;Noto Color Emoji&quot;;">First Name</span>
+              </div>
+              <input type="text" class="form-control o_website_form_input" name=""/>
+            </div>
+            <div class="col-md-6 text-md-right">
+              <div style="text-align: left;">
+                <span style="font-size: inherit; font-weight: 700; font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Noto, &quot;Helvetica Neue&quot;, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;, &quot;Noto Color Emoji&quot;;">Last Name</span>
+              </div>
+              <input type="text" class="form-control o_website_form_input" name=""/>
+            </div>
+          </div>
+          <div class="row form-group form-field o_website_form_custom">
+            <div class="col-md-6 text-md-right">
+              <div style="text-align: left;">
+                <span style="font-size: inherit; font-weight: 700; font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Noto, &quot;Helvetica Neue&quot;, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;, &quot;Noto Color Emoji&quot;;">Phone&amp;nbsp;</span>
+              </div>
+              <input type="number" class="form-control o_website_form_input" name="" step="1"/>
+            </div>
+            <div class="col-md-6 text-md-right">
+              <div style="text-align: left;">
+                <span style="font-size: inherit; font-weight: 700; font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Noto, &quot;Helvetica Neue&quot;, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;, &quot;Noto Color Emoji&quot;;">Email&amp;nbsp;</span>
+              </div>
+              <input type="text" class="form-control o_website_form_input" name=""/>
+            </div>
+          </div>
+          <div class="row ">
+            <span style="text-align: left; font-weight: 700;">Contact Name(for final signature)&amp;nbsp;</span>
+          </div>
+          <div class="row form-group form-field o_website_form_custom">
+            <div class="col-md-6 text-md-right">
+              <div style="text-align: left;">
+                <span style="font-size: inherit; font-weight: 700; font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Noto, &quot;Helvetica Neue&quot;, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;, &quot;Noto Color Emoji&quot;;">First Name</span>
+              </div>
+              <input type="text" class="form-control o_website_form_input" name=""/>
+            </div>
+            <div class="col-md-6 text-md-right">
+              <div style="text-align: left;">
+                <span style="font-size: inherit; font-weight: 700; font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Noto, &quot;Helvetica Neue&quot;, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;, &quot;Noto Color Emoji&quot;;">Last Name&amp;nbsp;</span>
+              </div>
+              <input type="text" class="form-control o_website_form_input" name=""/>
+            </div>
+          </div>
+          <div class="row form-group form-field o_website_form_custom">
+            <div class="col-md-6 text-md-right">
+              <div style="text-align: left;">
+                <span style="font-size: inherit; font-weight: 700; font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Noto, &quot;Helvetica Neue&quot;, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;, &quot;Noto Color Emoji&quot;;">Manufacturer</span>
+              </div>
+              <input type="text" class="form-control o_website_form_input" name=""/>
+            </div>
+            <div class="col-md-6 text-md-right">
+              <div style="text-align: left;">
+                <span style="font-size: inherit; font-weight: 700; font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Noto, &quot;Helvetica Neue&quot;, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;, &quot;Noto Color Emoji&quot;;">Part Number</span>
+              </div>
+              <input type="text" class="form-control o_website_form_input" name=""/>
+            </div>
+          </div>
+          <div class="row form-group form-field o_website_form_custom">
+            <div class="col-md-12 text-md-right">
+              <div style="text-align: left;">
+                <span style="font-size: inherit; font-weight: 700; font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Noto, &quot;Helvetica Neue&quot;, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;, &quot;Noto Color Emoji&quot;;">Description</span>
+              </div>
+              <textarea class="form-control o_website_form_input" name=""/>
+            </div>
+          </div>
+          <div class="row form-group form-field o_website_form_custom">
+            <div class="col-md-4 text-md-right">
+              <div style="text-align: left;">
+                <span style="font-size: inherit; font-weight: 700; font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Noto, &quot;Helvetica Neue&quot;, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;, &quot;Noto Color Emoji&quot;;">Purchase Date&amp;nbsp;</span>
+              </div>
+              <div class="o_website_form_date input-group date" id="datepicker3" data-target-input="nearest">
+                <input type="text" class="form-control datetimepicker-input o_website_form_input" data-target="#datepicker3" name=""/>
+                <div class="input-group-append" data-target="#datepicker3" data-toggle="datetimepicker">
+                  <div class="input-group-text">
+                    <i class="fa fa-calendar" style="text-align: left;"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 text-md-right">
+              <div style="text-align: left;">
+                <span style="font-size: inherit; font-weight: 700; font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Noto, &quot;Helvetica Neue&quot;, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;, &quot;Noto Color Emoji&quot;;">Condition&amp;nbsp;</span>
+              </div>
+              <input type="text" class="form-control o_website_form_input" name=""/>
+            </div>
+          </div>
+          <div class="row form-group form-field o_website_form_custom">
+            <div class="col-md-4 text-md-right">
+              <div style="text-align: left;">
+                <span style="font-size: inherit; font-weight: 700; font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Noto, &quot;Helvetica Neue&quot;, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;, &quot;Noto Color Emoji&quot;;">Quantity(Ea)</span>
+              </div>
+              <input type="number" class="form-control o_website_form_input" name="" step="1"/>
+            </div>
+          </div>
+          <div class="row form-group form-field">
+            <div class="col-md-4 text-md-right" style="text-align: left;">
+              <label class="col-form-label" for="attachment_ids"> Item Picture Upload</label>
+            </div>
+            <div class="col-md-8">
+              <input type="file" class="form-control o_website_form_input" name="attachment_ids" multiple="1"/>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="offset-lg-3 offset-md-4 col-md-8 col-lg-9" style="text-align: left;">
+              <button class="btn btn-primary btn-lg o_website_form_send" data-original-title="" title="" aria-describedby="tooltip149706">Submit</button>
+              <span id="o_website_form_result" class="text-danger ml8"/>
+            </div>
+          </div>
+        </div>
+        <input class="form-field" type="hidden" name="email_to" value="nathan@redshiftdm.com"/>
+      </form>
+      <section class="pb32 pt0">
+        <div class="container">
+          <div class="row s_nb_column_fixed">
+            <div class="col-lg-12 s_title pt16 pb16" style="text-align: center;">
+              <div class="s_hr text-left pt32 pb32">
+                <hr class="border-600 s_hr_solid w-100 mx-auto s_hr_2px"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </t>
+</t>
+    </template>
+</odoo>

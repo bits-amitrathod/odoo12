@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2015-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- "License URL : <https://store.webkul.com/license.html/>" -->
+
+<odoo>
+    <data>
+        <record id="rewrite_product_tree_view" model="ir.ui.view">
+            <field name="name">product.template.tree</field>
+            <field name="model">product.template</field>
+            <field name="field_parent" eval="False"/>
+            <field name="arch" type="xml">
+                <tree string="Product URL Rewrite Management" editable="bottom">
+                    <field name="name"/>
+                    <field name="url_key"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="rewrite_category_tree_view" model="ir.ui.view">
+            <field name="name">product.public.category.tree</field>
+            <field name="model">product.public.category</field>
+            <field name="field_parent" eval="False"/>
+            <field name="arch" type="xml">
+                <tree string="Category URL Rewrite Management" editable="bottom">
+                    <field name="name"/>
+                    <field name="url_key"/>
+                </tree>
+            </field>
+        </record>
+
+		<record id="action_rewrite_category" model="ir.actions.act_window">
+            <field name="name">Category URL Rewrite Management</field>
+            <field name="res_model">product.public.category</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="rewrite_category_tree_view"/>
+        </record>
+
+		<record id="action_rewrite_product" model="ir.actions.act_window">
+            <field name="name">Product URL Rewrite Management</field>
+            <field name="res_model">product.template</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="rewrite_product_tree_view"/>
+        </record>
+
+    </data>
+</odoo>

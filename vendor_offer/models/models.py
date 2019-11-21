@@ -4,6 +4,7 @@ import datetime
 import io
 import logging
 import re
+import time
 from random import randint
 
 import math
@@ -144,7 +145,7 @@ class VendorOffer(models.Model):
         ('purchase', 'Purchase Order'),
         ('done', 'Locked'),
         ('cancel', 'Cancelled')
-    ], string='Status', readonly=True, index=True, copy=False, default='ven_draft', track_visibility='onchange',
+    ], string='Offer Type', readonly=True, index=True, copy=False, default='ven_draft', track_visibility='onchange',
         store=True)
 
     state = fields.Selection([
@@ -449,6 +450,12 @@ class VendorOffer(models.Model):
 
             # purchase = self.env['purchase.order'].search([('id', '=', self.id)])
             # print(purchase)
+
+            if self.offer_type:
+                if self.offer_type == 'credit':
+                    self.amount_untaxed = self.credit_amount_untaxed
+                    self.amount_total = self.credit_amount_total
+
             self.button_confirm()
             # self.write({'state': 'purchase'})
 
@@ -458,16 +465,18 @@ class VendorOffer(models.Model):
                 temp = int(self.revision) - 1
                 self.revision = str(temp)
 
-            if self.offer_type:
-                if self.offer_type == 'credit':
-                    self.amount_untaxed = self.credit_amount_untaxed
-                    self.amount_total = self.credit_amount_total
 
             self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
 
     @api.multi
     def action_button_confirm_api(self, product_id):
         # purchase = self.env['purchase.order'].search([('id', '=', product_id)])
+
+        if self.offer_type:
+            if self.offer_type == 'credit':
+                self.amount_untaxed = self.credit_amount_untaxed
+                self.amount_total = self.credit_amount_total
+
         self.button_confirm()
 
         self.write({
@@ -480,6 +489,10 @@ class VendorOffer(models.Model):
         if (int(self.revision) > 0):
             temp = int(self.revision) - 1
             self.revision = str(temp)
+
+
+
+        self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
 
     @api.multi
     def button_confirm(self):
@@ -551,9 +564,20 @@ class VendorOffer(models.Model):
                 values['revision'] = str(temp)
                 values['revision_date'] = fields.Datetime.now()
             record = super(VendorOffer, self).write(values)
+            if 'arrival_date_grp' in values:
+                for purchase in self:
+                    stock_pick = self.env['stock.picking'].search([('origin', '=', purchase.name)])
+                    for pick in stock_pick:
+                        pick.arrival_date = values['arrival_date_grp']
             return record
         else:
-            return super(VendorOffer, self).write(values)
+            record = super(VendorOffer, self).write(values)
+            if 'arrival_date_grp' in values:
+                for purchase in self:
+                    stock_pick = self.env['stock.picking'].search([('origin', '=', purchase.name)])
+                    for pick in stock_pick:
+                        pick.arrival_date = values['arrival_date_grp']
+            return record
 
     def get_mail_url(self,redirect=False):
         self.ensure_one()
@@ -1243,7 +1267,8 @@ class StockPicking(models.Model):
             for pick in self:
                 purchase_order = self.env['purchase.order'].search([('name', '=', pick.origin)])
                 for order in purchase_order:
-                    order.arrival_date_grp = vals['arrival_date']
+                    if order.arrival_date_grp and (order.arrival_date_grp != vals['arrival_date']):
+                        order.arrival_date_grp = vals['arrival_date']
         return record
 
 
@@ -1284,6 +1309,12 @@ class VendorPricingList(models.Model):
                             store=False)
     amount_total_ven_pri = fields.Monetary(string='SALES TOTAL', compute='onchange_product_id_vendor_offer_pricing',
                                            readonly=True, store=False)
+
+    inventory_scraped_yr = fields.Char(string='Inventory Scrapped', compute='onchange_product_id_vendor_offer_pricing',
+                                       readonly=True, store=False)
+
+    average_aging = fields.Char(string='Average Aging', compute='onchange_product_id_vendor_offer_pricing',
+                                    readonly=True, store=False)
 
     def onchange_product_id_vendor_offer_pricing(self):
         for line in self:
@@ -1355,6 +1386,59 @@ class VendorPricingList(models.Model):
             line.qty_in_stock = line.qty_available
             line.tier_name = line.tier.name
 
+            sql_query = """SELECT     Date(PUBLIC.stock_production_lot.create_date) AS create_date , 
+                                                   Sum(PUBLIC.stock_quant.quantity)              AS quantity 
+                                        FROM       PUBLIC.product_product 
+                                        INNER JOIN PUBLIC.product_template 
+                                        ON         ( 
+                                                              PUBLIC.product_product.product_tmpl_id = PUBLIC.product_template.id) 
+                                        INNER JOIN PUBLIC.stock_production_lot 
+                                        ON         ( 
+                                                              PUBLIC.stock_production_lot.product_id=PUBLIC.product_product.id ) 
+                                        INNER JOIN PUBLIC.stock_quant 
+                                        ON         ( 
+                                                              PUBLIC.stock_quant.lot_id=PUBLIC.stock_production_lot.id) 
+                                        INNER JOIN PUBLIC.stock_location 
+                                        ON         ( 
+                                                              PUBLIC.stock_location.id=PUBLIC.stock_quant.location_id) 
+                                        INNER JOIN PUBLIC.stock_warehouse 
+                                        ON         ( 
+                                                              PUBLIC.stock_location.id IN (PUBLIC.stock_warehouse.lot_stock_id, 
+                                                                                           PUBLIC.stock_warehouse.wh_output_stock_loc_id,
+                                                                                           wh_pack_stock_loc_id)) 
+                                        WHERE      PUBLIC.stock_quant.quantity>0 
+                                        AND        product_template.id = %s  AND stock_production_lot.use_date >= %s
+                                        GROUP BY   PUBLIC.stock_production_lot.create_date, 
+                                                   PUBLIC.product_template.id
+                                                   """
+            self._cr.execute(sql_query, (line.product_tmpl_id.id,today_date))
+            product_lot_list = self.env.cr.dictfetchall()
+            sum_qty_day = 0
+            total_quantity = 0
+            for obj in product_lot_list:
+                date_format = "%Y-%m-%d"
+                today = fields.date.today().strftime('%Y-%m-%d')
+                a = datetime.datetime.strptime(str(today), date_format)
+                b = datetime.datetime.strptime(str(obj['create_date']), date_format)
+                diff = a - b
+
+                total_quantity = total_quantity + obj['quantity']
+                sum_qty_day = sum_qty_day + (obj['quantity'] * diff.days)
+
+            if total_quantity > 0:
+                line.average_aging = int(round(sum_qty_day / total_quantity, 0))
+            else:
+                line.average_aging = 0
+
+            scrapped_list = self.env['stock.scrap'].search([('product_id', '=', line.id), ('state', '=', 'done')
+                                                               , ('date_expected', '>', last_yr),
+                                                            ('date_expected', '<', today_date)])
+            total_qty = 0
+            for obj in scrapped_list:
+                total_qty = total_qty + obj.scrap_qty
+
+            line.inventory_scraped_yr = int(total_qty)
+
     def expired_inventory_cal(self, line):
         expired_lot_count = 0
         test_id_list = self.env['stock.production.lot'].search([('product_id', '=', line.id)])
@@ -1395,111 +1479,277 @@ class VendorPricingExport(models.TransientModel):
         count = 0
         product_lines_export_pp.append((['ProductNumber', 'ProductDescription', 'Price', 'CFP-Manufacturer', 'TIER',
                                          'SALES COUNT', 'SALES COUNT YR', 'QTY IN STOCK', 'SALES TOTAL',
-                                         'PREMIUM', 'EXP INVENTORY', 'SALES COUNT 90']))
+                                         'PREMIUM', 'EXP INVENTORY', 'SALES COUNT 90', 'Quantity on Order',
+                                         'Average Aging', 'Inventory Scrapped']))
         cust_location_id = self.env['stock.location'].search([('name', '=', 'Customers')]).id
+        company = self.env['res.company'].search([], limit=1, order="id desc")
 
-        str_query = " select pt.sku_code,pt.name,pt.list_price ,pb.name as product_brand_id ,tt.name as tier," \
-                    " pt.premium ,pp.id,  " \
-                    " case when exp_evntory.name is NULL THEN '0' ELSE  exp_evntory.name END " \
-                    " as expired_lot_count, " \
-                    " case when all_sales.qty_done  is NULL THEN '0' ELSE all_sales.qty_done END  " \
-                    " as product_sales_count , " \
-                    " case when yr_sales.qty_done is NULL THEN '0' ELSE yr_sales.qty_done END  " \
-                    " as product_sales_count_yrs , " \
-                    " case when all_sales_amount.total_sales  is NULL THEN '0' ELSE all_sales_amount.total_sales END " \
-                    " as amount_total_ven_pri , " \
-                    " case when ninty_sales.qty_done  is NULL THEN '0' ELSE ninty_sales.qty_done END  " \
-                    " as product_sales_count_90 , " \
-                    " qty_available_count.qty_available " \
-                    " from product_product pp inner join product_template pt " \
-                    " on pp.product_tmpl_id=pt.id and pt.type='product' " \
-                    " left join tier_tier tt on   pt.tier=tt.id " \
-                    " left join product_brand pb on pt.product_brand_id = pb.id " \
-                    " left join " \
-                    "            ( " \
-                    "            select sum(sml.qty_done) as qty_done ,sml.product_id " \
-                    "            FROM sale_order_line AS sol " \
-                    "            LEFT JOIN stock_picking AS sp " \
-                    "            ON  sp.sale_id=sol.id " \
-                    "            LEFT JOIN stock_move_line AS sml " \
-                    "            ON sml.picking_id=sp.id " \
-                    "            WHERE sml.state='done' AND sml.location_dest_id =%s " \
-                    "            group by sml.product_id " \
-                    "            ) " \
-                    "            as all_sales " \
-                    "            on pp.id=all_sales.product_id " \
-                    " left join " \
-                    "        ( " \
-                    "          SELECT " \
-                    "        case when abs(sum(sol.price_total)) is NULL then 0 else  abs(sum(sol.price_total)) end  " \
-                    "        as total_sales,ppi.id " \
-                    "        from  product_product ppi " \
-                    "                          INNER JOIN sale_order_line sol ON sol.product_id=ppi.id " \
-                    "                          INNER JOIN product_template pt ON  pt.id=ppi.product_tmpl_id " \
-                    "                          INNER JOIN sale_order so ON so.id=sol.order_id " \
-                    "        where so.confirmation_date >= %s " \
-                    "        and so.state in ('sale')   group by ppi.id " \
-                    "         ) " \
-                    "         as all_sales_amount " \
-                    "         on all_sales_amount.id=pp.id  " \
-                    "  left join " \
-                    "         ( " \
-                    "         select sum(sml.qty_done) as qty_done,sml.product_id " \
-                    "         FROM sale_order_line AS sol " \
-                    "         LEFT JOIN stock_picking AS sp " \
-                    "         ON  sp.sale_id=sol.id " \
-                    "         LEFT JOIN stock_move_line AS sml " \
-                    "         ON sml.picking_id=sp.id " \
-                    "         WHERE sml.state='done' AND sml.location_dest_id =%s " \
-                    "        AND  sp.date_done >=  %s " \
-                    "         group by sml.product_id " \
-                    "         ) " \
-                    "         as yr_sales " \
-                    "         on pp.id=yr_sales.product_id "
+        # sql_fuction = """
+        #                         CREATE  OR REPLACE FUNCTION get_aging_days(product_template_param integer)  RETURNS integer AS $$
+        #                         DECLARE
+        #                             rec RECORD;
+        #                             query text;
+        #                             diff  integer;
+        #                             sum_qty_day integer;
+        #                             total_quantity integer;
+        #                             aging decimal;
+        #                         BEGIN
+        #                             total_quantity = 0;
+        #                             sum_qty_day= 0;
+        #                             aging = 0;
+        #
+        #                              query := 'SELECT    date_part(''day'', now() -   Date(PUBLIC.stock_production_lot.create_date) )as diff ,
+        #                                                Sum(PUBLIC.stock_quant.quantity)              AS quantity
+        #                                     FROM       PUBLIC.product_product
+        #                                     INNER JOIN PUBLIC.product_template
+        #                                     ON         (
+        #                                                           PUBLIC.product_product.product_tmpl_id = PUBLIC.product_template.id)
+        #                                     INNER JOIN PUBLIC.stock_production_lot
+        #                                     ON         (
+        #                                                           PUBLIC.stock_production_lot.product_id=PUBLIC.product_product.id )
+        #                                     INNER JOIN PUBLIC.stock_quant
+        #                                     ON         (
+        #                                                           PUBLIC.stock_quant.lot_id=PUBLIC.stock_production_lot.id)
+        #                                     INNER JOIN PUBLIC.stock_location
+        #                                     ON         (
+        #                                                           PUBLIC.stock_location.id=PUBLIC.stock_quant.location_id)
+        #                                     INNER JOIN PUBLIC.stock_warehouse
+        #                                     ON         (
+        #                                                           PUBLIC.stock_location.id IN (PUBLIC.stock_warehouse.lot_stock_id,
+        #                                                                                        PUBLIC.stock_warehouse.wh_output_stock_loc_id,
+        #                                                                                        wh_pack_stock_loc_id))
+        #                                     WHERE      PUBLIC.stock_quant.quantity>0
+        #                                     AND        product_template.id = ' || product_template_param || '
+        #                                     GROUP BY   PUBLIC.stock_production_lot.create_date,
+        #                                                PUBLIC.product_template.id';
+        #                             FOR rec IN EXECUTE query
+        #                             LOOP
+        #                                 total_quantity = total_quantity + rec.quantity;
+        #                                 sum_qty_day = sum_qty_day + (rec.quantity *  rec.diff);
+        #
+        #                             END LOOP;
+        #                             IF total_quantity > 0 THEN
+        #                                 aging = sum_qty_day::decimal / total_quantity;
+        #                             END IF;
+        #                             -- RAISE NOTICE '% - %', total_quantity, sum_qty_day;
+        #                             -- RAISE NOTICE '- % -',  aging;
+        #                             RETURN aging;
+        #                         END;
+        #                         $$ LANGUAGE plpgsql;
+        #                                 """
 
-        str_query_join = "  left join " \
-                         "         ( " \
-                         "          select sum(sml.qty_done) as qty_done,sml.product_id " \
-                         "          FROM sale_order_line AS sol LEFT JOIN stock_picking AS sp " \
-                         "          ON  sp.sale_id=sol.id " \
-                         "          LEFT JOIN stock_move_line AS sml " \
-                         "          ON sml.picking_id=sp.id " \
-                         "          WHERE sml.state='done' AND sml.location_dest_id =%s " \
-                         "         AND  sp.date_done >= %s " \
-                         "          group by sml.product_id " \
-                         "          ) " \
-                         "         as ninty_sales " \
-                         "         on pp.id=ninty_sales.product_id " \
-                         "  left join " \
-                         "         ( " \
-                         "          select count(spl.name) as name,spl.product_id from stock_production_lot spl " \
-                         "          where spl.use_date < %s  group by spl.product_id " \
-                         "          ) " \
-                         "          as exp_evntory " \
-                         "          on pp.id=exp_evntory.product_id " \
-                         "  left join " \
-                         "          ( " \
-                         "           SELECT sum(sq.quantity) as qty_available,spl.product_id FROM stock_quant sq " \
-                         "           INNER JOIN stock_production_lot as spl    ON  sq.lot_id = spl.id " \
-                         "           INNER JOIN stock_location as sl ON  sq.location_id = sl.id " \
-                         "           WHERE sl.usage in ('internal', 'transit') " \
-                         "           group by spl.product_id " \
-                         "          ) " \
-                         "           as qty_available_count " \
-                         "           on pp.id=qty_available_count.product_id " \
-                         "                        where  pp.active=True "
+        str_query = """
+                        SELECT pt.sku_code, 
+                           pt.name, 
+                           pt.list_price, 
+                           pb.name AS product_brand_id, 
+                           tt.name AS tier, 
+                           pt.premium, 
+                           pp.id, 
+                           pp.product_tmpl_id ,
+                           CASE 
+                             WHEN exp_evntory.name IS NULL THEN '0' 
+                             ELSE exp_evntory.name 
+                           END     AS expired_lot_count, 
+                           CASE 
+                             WHEN all_sales.qty_done IS NULL THEN '0' 
+                             ELSE all_sales.qty_done 
+                           END     AS product_sales_count, 
+                           CASE 
+                             WHEN yr_sales.qty_done IS NULL THEN '0' 
+                             ELSE yr_sales.qty_done 
+                           END     AS product_sales_count_yrs, 
+                           CASE 
+                             WHEN all_sales_amount.total_sales IS NULL THEN '0' 
+                             ELSE all_sales_amount.total_sales 
+                           END     AS amount_total_ven_pri, 
+                           CASE 
+                             WHEN ninty_sales.qty_done IS NULL THEN '0' 
+                             ELSE ninty_sales.qty_done 
+                           END     AS product_sales_count_90,
+                           CASE
+                           when pt.actual_quantity IS NULL THEN '0' 
+                           ELSE pt.actual_quantity end as actual_quantity,
+                           CASE 
+                             WHEN qty_on_order.product_qty IS NULL THEN '0' 
+                             ELSE qty_on_order.product_qty 
+                           END     AS qty_on_order,
+                           CASE 
+                             WHEN inventory_scrapped.scrap_qty IS NULL THEN '0' 
+                             ELSE inventory_scrapped.scrap_qty 
+                           END     AS scrap_qty ,
+                           CASE 
+                             WHEN aging.aging_days IS NULL THEN '0' 
+                             ELSE aging.aging_days 
+                           END     AS aging_days 
+                          
+                    FROM   product_product pp 
+                           inner join product_template pt 
+                                   ON pp.product_tmpl_id = pt.id 
+                                      AND pt.TYPE = 'product' 
+                           left join tier_tier tt 
+                                  ON pt.tier = tt.id 
+                           left join product_brand pb 
+                                  ON pt.product_brand_id = pb.id 
+                           left join (SELECT SUM(sml.qty_done) AS qty_done, 
+                                             sml.product_id 
+                                      FROM   sale_order_line AS sol 
+                                             left join stock_picking AS sp 
+                                                    ON sp.sale_id = sol.id 
+                                             left join stock_move_line AS sml 
+                                                    ON sml.picking_id = sp.id 
+                                      WHERE  sml.state = 'done' 
+                                             AND sml.location_dest_id =%s 
+                                      GROUP  BY sml.product_id) AS all_sales 
+                                  ON pp.id = all_sales.product_id 
+                           left join (SELECT CASE 
+                                               WHEN Abs(SUM(sol.price_total)) IS NULL THEN 0 
+                                               ELSE Abs(SUM(sol.price_total)) 
+                                             END AS total_sales, 
+                                             ppi.id 
+                                      FROM   product_product ppi 
+                                             inner join sale_order_line sol 
+                                                     ON sol.product_id = ppi.id 
+                                             inner join product_template pt 
+                                                     ON pt.id = ppi.product_tmpl_id 
+                                             inner join sale_order so 
+                                                     ON so.id = sol.order_id 
+                                      WHERE  so.confirmation_date >= %s 
+                                             AND so.state IN ( 'sale' ) 
+                                      GROUP  BY ppi.id) AS all_sales_amount 
+                                  ON all_sales_amount.id = pp.id 
+                           left join (SELECT SUM(sml.qty_done) AS qty_done, 
+                                             sml.product_id 
+                                      FROM   sale_order_line AS sol 
+                                             left join stock_picking AS sp 
+                                                    ON sp.sale_id = sol.id 
+                                             left join stock_move_line AS sml 
+                                                    ON sml.picking_id = sp.id 
+                                      WHERE  sml.state = 'done' 
+                                             AND sml.location_dest_id =%s 
+                                             AND sp.date_done >= %s 
+                                      GROUP  BY sml.product_id) AS yr_sales 
+                                  ON pp.id = yr_sales.product_id 
+                                  
+                                  
+                          LEFT JOIN ( 
+                         select  case when sum(quantity) = 0 then 0 else round(cast (sum(sum_qty_day)/sum(quantity) as numeric),0) end   as aging_days,pt_id as pt_id  from
+									( SELECT     date_part('day', now() -  Date(PUBLIC.stock_production_lot.create_date)) as diff, 
+                                                       Sum(PUBLIC.stock_quant.quantity)              AS quantity ,
+										Sum(PUBLIC.stock_quant.quantity)  * date_part('day', now() -  Date(PUBLIC.stock_production_lot.create_date)) as sum_qty_day,
+																	PUBLIC.product_template.id	as pt_id						   
+                                            FROM       PUBLIC.product_product 
+                                            INNER JOIN PUBLIC.product_template 
+                                            ON         ( 
+                                                                  PUBLIC.product_product.product_tmpl_id = PUBLIC.product_template.id) 
+                                            INNER JOIN PUBLIC.stock_production_lot 
+                                            ON         ( 
+                                                                  PUBLIC.stock_production_lot.product_id=PUBLIC.product_product.id ) 
+                                            INNER JOIN PUBLIC.stock_quant 
+                                            ON         ( 
+                                                                  PUBLIC.stock_quant.lot_id=PUBLIC.stock_production_lot.id) 
+                                            INNER JOIN PUBLIC.stock_location 
+                                            ON         ( 
+                                                                  PUBLIC.stock_location.id=PUBLIC.stock_quant.location_id) 
+                                            INNER JOIN PUBLIC.stock_warehouse 
+                                            ON         ( 
+                                                                  PUBLIC.stock_location.id IN (PUBLIC.stock_warehouse.lot_stock_id, 
+                                                                                               PUBLIC.stock_warehouse.wh_output_stock_loc_id,
+                                                                                               wh_pack_stock_loc_id)) 
+                                            WHERE      PUBLIC.stock_quant.quantity>0 AND PUBLIC.stock_production_lot.use_date >= %s
+                                        
+                                            GROUP BY   PUBLIC.stock_production_lot.create_date, 
+                                                       PUBLIC.product_template.id ) as all_rec
+												
+												 GROUP BY pt_id 
+								) as aging  on aging.pt_id = pp.product_tmpl_id 
+								
+								"""
 
-        self.env.cr.execute(str_query + str_query_join, (cust_location_id, last_yr, cust_location_id, last_yr,
-                                                         cust_location_id, last_3_months, today_date))
+        str_query_join = """  
+
+                        LEFT JOIN 
+                ( 
+                          SELECT    sum(sml.qty_done) AS qty_done, 
+                                    sml.product_id 
+                          FROM      sale_order_line AS sol 
+                          LEFT JOIN stock_picking   AS sp 
+                          ON        sp.sale_id=sol.id 
+                          LEFT JOIN stock_move_line AS sml 
+                          ON        sml.picking_id=sp.id 
+                          WHERE     sml.state='done' 
+                          AND       sml.location_dest_id =%s 
+                          AND       sp.date_done >= %s 
+                          GROUP BY  sml.product_id ) AS ninty_sales ON pp.id=ninty_sales.product_id LEFT JOIN 
+                ( 
+                         SELECT   count(spl.NAME) AS NAME, 
+                                  spl.product_id 
+                         FROM     stock_production_lot spl 
+                         WHERE    spl.use_date < %s 
+                         GROUP BY spl.product_id ) AS exp_evntory ON pp.id=exp_evntory.product_id LEFT JOIN 
+                ( 
+                           SELECT     sum(sq.quantity) AS qty_available, 
+                                      spl.product_id 
+                           FROM       stock_quant sq 
+                           INNER JOIN stock_production_lot AS spl 
+                           ON         sq.lot_id = spl.id 
+                           INNER JOIN stock_location AS sl 
+                           ON         sq.location_id = sl.id 
+                           WHERE      sl.usage IN ('internal', 
+                                                   'transit') 
+                           GROUP BY   spl.product_id ) AS qty_available_count ON pp.id=qty_available_count.product_id LEFT JOIN
+                ( 
+                         SELECT   "stock_move"."product_id"       AS "product_id", 
+                                  sum("stock_move"."product_qty") AS "product_qty" 
+                         FROM     "stock_location"                AS "stock_move__location_dest_id", 
+                                  "stock_location"                AS "stock_move__location_id", 
+                                  "stock_move" 
+                         WHERE    ( 
+                                           "stock_move"."location_id" = "stock_move__location_id"."id" 
+                                  AND      "stock_move"."location_dest_id" = "stock_move__location_dest_id"."id")
+                         AND      (((( 
+                                                                      "stock_move"."state" IN('waiting', 
+                                                                                              'confirmed', 
+                                                                                              'assigned', 
+                                                                                              'partially_available')) )
+                                           AND      ( 
+                                                             "stock_move__location_dest_id"."parent_path" :: text LIKE '1/11/%%' ))
+                                  AND      ( 
+                                                    NOT(( 
+                                                                      "stock_move__location_id"."parent_path" :: text LIKE '1/11/%%' )) ))
+                         AND      ( 
+                                           "stock_move"."company_id" IS NULL 
+                                  OR       ( 
+                                                    "stock_move"."company_id" IN(""" + str(company.id) + """))) 
+                         GROUP BY "stock_move"."product_id" ) AS qty_on_order ON pp.id=qty_on_order.product_id LEFT JOIN
+                ( 
+                         SELECT   sum(sts.scrap_qty) AS scrap_qty, 
+                                  sts.product_id 
+                         FROM     stock_scrap sts 
+                         WHERE    sts.state ='done' 
+                         AND      sts.date_expected < %s 
+                         AND      sts.date_expected > %s 
+                         GROUP BY sts.product_id ) AS inventory_scrapped ON pp.id=inventory_scrapped.product_id WHERE pp.active=true"""
+
+        start_time = time.time()
+        #self.env.cr.execute(sql_fuction)
+        self.env.cr.execute(str_query + str_query_join, (cust_location_id, last_yr, cust_location_id, last_yr,today_date,
+                                                         cust_location_id, last_3_months, today_date,
+                                                         today_date, last_yr))
         new_list = self.env.cr.dictfetchall()
 
         for line in new_list:
-            count = count + 1  # for printing count if needed
+            #count = count + 1  # for printing count if needed
+            # self.env.cr.execute("select get_aging_days(" + str(line['product_tmpl_id']) + ")")
+            # aging_days = self.env.cr.fetchone()
             product_lines_export_pp.append(
                 ([line['sku_code'], line['name'], line['list_price'], line['product_brand_id'],
                   line['tier'], line['product_sales_count'], line['product_sales_count_yrs'],
-                  line['qty_available'], line['amount_total_ven_pri'], line['premium'],
-                  line['expired_lot_count'], line['product_sales_count_90']]))
+                  line['actual_quantity'], line['amount_total_ven_pri'], line['premium'],
+                  line['expired_lot_count'], line['product_sales_count_90'], line['qty_on_order'],
+                  line['aging_days'], line['scrap_qty']]))
+
+        print("--- %s seconds ---" % (time.time() - start_time))
 
         ''' code for writing csv file in default location in odoo 
 

@@ -1,0 +1,466 @@
+<odoo>
+    <template id="equipment_service_page" name="Equipment Service Page">
+<t t-name="website.equipment-service-request-form">
+  <t t-call="website.layout">
+    <div id="wrap" class="oe_structure oe_empty">
+      <section class="pt32 pb32">
+        <div class="container">
+          <div class="row s_nb_column_fixed">
+            <div class="col-lg-12 s_title pt16 pb16" style="text-align: center;">
+              <h1 style="color: rgb(255, 255, 255); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 34px; line-height: 60px; text-transform: capitalize; font-family: AmericanGotURW-Bol; font-weight: 600;">
+                <span style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                  <font style="color: rgb(0, 0, 0);">Equipment Service Request </font>
+                </span>
+              </h1>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="s_text_block pt32 bg-white oe_custom_bg pb24">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-10 offset-lg-1 pt32 pb32">
+              <p class="lead">
+                <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; background-color: rgb(255, 255, 255);">Complete&amp;nbsp;</span>
+                <b style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">ENTIRE FORM&amp;nbsp;</b>
+                <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; background-color: rgb(255, 255, 255);">below.&amp;nbsp;We will contact you with a quote and an estimated turnaround time. To expedite service, pre-authorize your repairs up to a specified dollar amount. For assistance, please contact us at&amp;nbsp;</span>
+                <a href="tel:1-412-281-4186" style="color: rgb(232, 19, 30); background: 0px 0px rgb(255, 255, 255); border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; cursor: pointer; font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">(412)281-4186</a>
+                <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; background-color: rgb(255, 255, 255);">&amp;nbsp;or via email:&amp;nbsp;</span>
+                <a href="mailto:repair@surgicalproductsolutions.com" style="color: rgb(232, 19, 30); background: 0px 0px rgb(255, 255, 255); border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; cursor: pointer; font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;" data-original-title="" title="">Repair@surgicalproductsolutions.com</a>
+                <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; background-color: rgb(255, 255, 255);">.&amp;nbsp;</span>
+                <i style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">We are unable to initiate a repair without a Purchase Order number. If a return shipping account number is not provided on this form, the cost of shipping will be added to your final invoice. Payment is NET 30 unless otherwise specified.</i>
+                <br/>
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="pt32 pb0">
+        <div class="container">
+          <div class="row s_nb_column_fixed">
+            <div class="col-lg-12 s_title pt16 pb16" style="text-align: center;">
+              <h1 style="margin-right: 0px; margin-bottom: 0px; margin-left: 0px; font-family: AmericanGotURW-Bol; font-weight: 600; line-height: 60px; color: rgb(255, 255, 255); font-size: 34px; background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; padding: 0px; vertical-align: baseline; outline: 0px; text-transform: capitalize;">
+                <span style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                  <font style="color: rgb(0, 0, 0);">Service Request Form</font>
+                </span>
+              </h1>
+            </div>
+          </div>
+        </div>
+      </section>
+      <form action="/website_form/" method="post" class="s_website_form container-fluid mt32" enctype="multipart/form-data" data-model_name="mail.mail" data-success_page="">
+        <div class="container">
+          <div class="row form-group form-field o_website_form_custom o_website_form_required_custom">
+            <div class="col-md-4 text-md-right o_animate_preview col-lg-4" style="">
+              <label class="col-form-label" for="Service Type"> Service Type </label>
+            </div>
+            <div class="col-md-8" style="">
+              <div class="o_website_form_flex">
+                <div class="checkbox o_website_form_flex_item">
+                  <label><input type="checkbox" class="o_website_form_input" name="Service Type" value="Large Diameter Scope" required=""/>&amp;nbsp;<span>Large Diameter Scope&amp;nbsp;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;&amp;nbsp;</span></label>
+                </div>
+                <div class="checkbox o_website_form_flex_item">
+                  <label><input type="checkbox" class="o_website_form_input" name="Service Type" value="Small Diameter Scope" required=""/>&amp;nbsp;<span>Small Diameter Scope&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;</span></label>
+                </div>
+                <div class="checkbox o_website_form_flex_item">
+                  <label><input type="checkbox" class="o_website_form_input" name="Service Type" value="Rigid Scope" required=""/>&amp;nbsp;<span>Rigid Scope&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;</span></label>
+                </div>
+                <div class="checkbox o_website_form_flex_item">
+                  <label><input type="checkbox" class="o_website_form_input" name="Service Type" value="Power" required=""/>&amp;nbsp;<span>Power&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;</span></label>
+                </div>
+                <div class="checkbox o_website_form_flex_item">
+                  <label><input type="checkbox" class="o_website_form_input" name="Service Type" value="Electronics" required=""/>&amp;nbsp;<span>Electronics&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row form-group form-field o_website_form_custom o_website_form_required_custom">
+            <div class="col-md-4 text-md-right">
+              <label class="col-form-label" for="Purchase Order Number"> Purchase Order Number</label>
+            </div>
+            <div class="col-md-8">
+              <input type="text" class="form-control o_website_form_input" name="Purchase Order Number" required=""/>
+            </div>
+          </div>
+          <div class="row form-group form-field o_website_form_custom o_website_form_required_custom">
+            <div class="col-md-4 text-md-right">
+              <label class="col-form-label" for="Model Number"> Model Number</label>
+            </div>
+            <div class="col-md-8">
+              <input type="text" class="form-control o_website_form_input" name="Model Number" required=""/>
+            </div>
+          </div>
+          <div class="row form-group form-field o_website_form_custom o_website_form_required_custom">
+            <div class="col-md-4 text-md-right">
+              <label class="col-form-label" for="Serial Number"> Serial Number</label>
+            </div>
+            <div class="col-md-8">
+              <input type="text" class="form-control o_website_form_input" name="Serial Number" required=""/>
+            </div>
+          </div>
+          <div class="row form-group form-field o_website_form_custom o_website_form_required_custom">
+            <div class="col-md-4 text-md-right">
+              <label class="col-form-label" for="Date Shipped"> Date Shipped</label>
+            </div>
+            <div class="col-md-8">
+              <div class="o_website_form_date input-group date" id="datepicker13" data-target-input="nearest">
+                <input type="text" class="form-control datetimepicker-input o_website_form_input" data-target="#datepicker13" name="Date Shipped" required=""/>
+                <div class="input-group-append" data-target="#datepicker13" data-toggle="datetimepicker">
+                  <div class="input-group-text">
+                    <i class="fa fa-calendar"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row form-group form-field o_website_form_custom o_website_form_required_custom">
+            <div class="col-md-4 text-md-right">
+              <label class="col-form-label" for="Return Shipping Account Number"> Return Shipping Account Number</label>
+            </div>
+            <div class="col-md-8">
+              <input type="text" class="form-control o_website_form_input" name="Return Shipping Account Number" required=""/>
+            </div>
+          </div>
+          <div class="row form-group form-field o_website_form_custom o_website_form_required_custom">
+            <div class="col-md-4 text-md-right">
+              <label class="col-form-label" for="Loaner Requested?"> Loaner Requested?</label>
+            </div>
+            <div class="col-md-8" style="">
+              <div class="o_website_form_flex">
+                <div class="radio o_website_form_flex_item">
+                  <label>
+                    <input type="radio" class="o_website_form_input" name="Loaner Requested?" value="Yes" required=""/>
+                    <span> Yes&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;</span>
+                  </label>
+                </div>
+                <div class="radio o_website_form_flex_item">
+                  <label>
+                    <input type="radio" class="o_website_form_input" name="Loaner Requested?" value="No" required=""/>
+                    <span> No&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row form-group form-field o_website_form_custom o_website_form_required_custom">
+            <div class="col-md-4 text-md-right">
+              <label class="col-form-label" for="Damage Waiver"> Damage Waiver</label>
+            </div>
+            <div class="col-md-8">
+              <div class="o_website_form_flex">
+                <div class="radio o_website_form_flex_item">
+                  <label>
+                    <input type="radio" class="o_website_form_input" name="Damage Waiver" value="Opt-In" required=""/>
+                    <span> Opt-In&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;</span>
+                  </label>
+                </div>
+                <div class="radio o_website_form_flex_item">
+                  <label>
+                    <input type="radio" class="o_website_form_input" name="Damage Waiver" value="Opt-Out" required=""/>
+                    <span> Opt-Out&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row form-group form-field o_website_form_custom o_website_form_required_custom">
+            <div class="col-md-4 text-md-right">
+              <label class="col-form-label" for="Reprocessing"> Reprocessing</label>
+            </div>
+            <div class="col-md-8"> Medical Equipment that comes into contact with potentially infectious materials must be decontaminated (cleaned, disinfected, or sterilized, as appropriate) before being sent to Surgical Product Solutions. Customers are responsible for complying with applicable federal, state, and local laws and regulations regarding decontamination of medical equipment. If the equipment has not been decontaminated, an $150 charge will be added to the final repair invoice.<br/><br/><input type="checkbox" value="Yes" class="o_website_form_input" name="Reprocessing" required=""/>&amp;nbsp;<b>By checking this box, you agree the equipment has been decontaminated before shipment. </b></div>
+          </div>
+          <div class="row form-group form-field o_website_form_custom">
+            <div class="col-md-4 text-md-right">
+              <label class="col-form-label" for=""> </label>
+              <br/>
+              <label class="col-form-label" for="Problem Description">Problem Description&amp;nbsp;</label>
+            </div>
+            <div class="col-md-8 pt4">
+              <br/>
+              <span style="text-align: right;">Please be specific:</span>
+              <br/>
+              <textarea class="form-control o_website_form_input" name="" style="margin-top: 0px; margin-bottom: 0px; height: 98px;"/>
+            </div>
+          </div>
+          <div class="row form-group form-field o_website_form_custom">
+            <div class="col-md-4 text-md-right">
+              <b>
+                <br/>
+              </b>
+              <br/>
+              <br/>
+              <b>
+                <br/>
+              </b>
+              <b>Title</b>
+            </div>
+            <div class="col-md-8">
+              <span style="font-weight: bolder; text-align: right;">
+                <font style="font-size: 24px;">Ship To:</font>
+              </span>
+              <br/>
+              <span style="text-align: right;">(Contact Person Regarding Repair)</span>
+              <br/>
+              <br/>
+              <input type="text" class="form-control o_website_form_input" name=""/>
+            </div>
+          </div>
+          <div class="row form-group form-field o_website_form_custom o_website_form_required_custom">
+            <div class="col-md-4 text-md-right">
+              <label class="col-form-label" for="First Name"> First Name</label>
+            </div>
+            <div class="col-md-8">
+              <input type="text" class="form-control o_website_form_input" name="First Name" required=""/>
+            </div>
+          </div>
+          <div class="row form-group form-field o_website_form_custom o_website_form_required_custom">
+            <div class="col-md-4 text-md-right">
+              <label class="col-form-label" for="Last Name"> Last Name</label>
+            </div>
+            <div class="col-md-8 o_animate_preview" style="">
+              <input type="text" class="form-control o_website_form_input" name="Last Name" required=""/>
+            </div>
+          </div>
+          <div class="row form-group form-field o_website_form_custom o_website_form_required_custom">
+            <div class="col-md-4 text-md-right">
+              <label class="col-form-label" for="Direct Line">Direct Line&amp;nbsp;</label>
+            </div>
+            <div class="col-md-8">
+              <input type="number" class="form-control o_website_form_input" name="Direct Line" step="1" required=""/>
+            </div>
+          </div>
+          <div class="row form-group form-field o_website_form_custom o_website_form_required_custom">
+            <div class="col-md-4 text-md-right">
+              <label class="col-form-label" for="Email">Email</label>
+            </div>
+            <div class="col-md-8 o_animate_preview" style="">
+              <input type="text" class="form-control o_website_form_input" name="Email" required=""/>
+            </div>
+          </div>
+          <div class="row form-group form-field o_website_form_custom o_website_form_required_custom">
+            <div class="col-md-4 text-md-right">
+              <br/>
+              <br/>
+              <br/>
+              <label class="col-form-label" for="Facility Name">Facility Name</label>
+            </div>
+            <div class="col-md-8 pt8">
+              <span style="font-size: 24px; font-weight: 700; text-align: right;">Bill To:</span>
+              <br/>
+              <br/>
+              <input type="text" class="form-control o_website_form_input" name="Facility Name" required=""/>
+            </div>
+          </div>
+          <div class="row form-group form-field o_website_form_custom o_website_form_required_custom">
+            <div class="col-md-4 text-md-right">
+              <label class="col-form-label" for="Address">Address</label>
+            </div>
+            <div class="col-md-8">
+              <input type="text" class="form-control o_website_form_input" name="Address" required=""/>
+            </div>
+          </div>
+          <div class="row form-group form-field o_website_form_custom">
+            <div class="col-md-4 text-md-right">
+              <label class="col-form-label" for="City">City</label>
+            </div>
+            <div class="col-md-8">
+              <input type="text" class="form-control o_website_form_input" name="City"/>
+            </div>
+          </div>
+          <div class="row form-group form-field o_website_form_custom">
+            <div class="col-md-4 text-md-right">
+              <label class="col-form-label" for="State">State</label>
+            </div>
+            <div class="col-md-8">
+              <input type="text" class="form-control o_website_form_input" name="State"/>
+            </div>
+          </div>
+          <div class="row form-group form-field o_website_form_custom">
+            <div class="col-md-4 text-md-right">
+              <label class="col-form-label" for="Zip Code">Zip Code&amp;nbsp;</label>
+            </div>
+            <div class="col-md-8">
+              <input type="number" class="form-control o_website_form_input" name="Zip Code" step="1"/>
+            </div>
+          </div>
+          <div class="row form-group form-field o_website_form_custom o_website_form_required_custom">
+            <div class="col-md-4 text-md-right o_animate_preview col-lg-4" style="">
+              <label class="col-form-label" for="Pre-Approval (SPS is authorized to complete your repair up to and including the amount indicated:)">Pre-Approval <span style="font-weight: normal;">(SPS is authorized to complete your repair up to and including the amount indicated:)</span><br/></label>
+            </div>
+            <div class="col-md-8" style="">
+              <div class="o_website_form_flex">
+                <div class="radio o_website_form_flex_item">
+                  <label>
+                    <input type="radio" class="o_website_form_input" name="Pre-Approval (SPS is authorized to complete your repair up to and including the amount indicated:)" value="$500" required=""/>
+                    <span> $500&amp;nbsp;</span>
+                  </label>
+                </div>
+                <div class="radio o_website_form_flex_item">
+                  <label>
+                    <input type="radio" class="o_website_form_input" name="Pre-Approval (SPS is authorized to complete your repair up to and including the amount indicated:)" value="$1000" required=""/>
+                    <span>&amp;nbsp;$1000</span>
+                  </label>
+                </div>
+                <div class="radio o_website_form_flex_item">
+                  <label>
+                    <input type="radio" class="o_website_form_input" name="Pre-Approval (SPS is authorized to complete your repair up to and including the amount indicated:)" value="$1500" required=""/>
+                    <span> $1500&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;</span>
+                  </label>
+                </div>
+                <div class="radio o_website_form_flex_item">
+                  <label>
+                    <input type="radio" class="o_website_form_input" name="Pre-Approval (SPS is authorized to complete your repair up to and including the amount indicated:)" value="$2500" required=""/>
+                    <span> $2500&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;</span>
+                  </label>
+                </div>
+                <div class="radio o_website_form_flex_item">
+                  <label>
+                    <input type="radio" class="o_website_form_input" name="Pre-Approval (SPS is authorized to complete your repair up to and including the amount indicated:)" value="$4000" required=""/>
+                    <span> $4000&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;&amp;nbsp;</span>
+                  </label>
+                </div>
+                <div class="radio o_website_form_flex_item">
+                  <label>
+                    <input type="radio" class="o_website_form_input" name="Pre-Approval (SPS is authorized to complete your repair up to and including the amount indicated:)" value="$5000" required=""/>
+                    <span> $5000&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;</span>
+                  </label>
+                </div>
+                <div class="radio o_website_form_flex_item">
+                  <label>
+                    <input type="radio" class="o_website_form_input" name="Pre-Approval (SPS is authorized to complete your repair up to and including the amount indicated:)" value="Other" required=""/>
+                    <span> Other&amp;nbsp;</span>
+                  </label>
+                  <b>Pre-Approved Amount</b>
+                  <b>
+                    <br/>
+                  </b>
+                  <span style="font-weight: 700; font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Noto, &quot;Helvetica Neue&quot;, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;, &quot;Noto Color Emoji&quot;; font-size: 0.875rem;">&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;( Enter Below )</span>
+                  <span style="font-weight: 700; font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Noto, &quot;Helvetica Neue&quot;, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;, &quot;Noto Color Emoji&quot;; font-size: 0.875rem;"/>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row form-group form-field o_website_form_custom">
+            <div class="col-md-4 text-md-right">
+              <label class="col-form-label" for="Other Amount">Other Amount&amp;nbsp;</label>
+            </div>
+            <div class="col-md-8">
+              <input type="number" class="form-control o_website_form_input" name="Other Amount" step="1"/>
+            </div>
+          </div>
+          <div class="row form-group form-field o_website_form_custom">
+            <div class="col-md-4 text-md-right" style="">
+              <label class="col-form-label" for=""> </label>
+              <br/>
+              <br/>
+              <br/>
+              <br/>
+              <label class="col-form-label" for="Title">Your Title</label>
+            </div>
+            <div class="col-md-8 pt4">
+              <br/>
+              <span style="font-size: 24px; font-weight: 700; text-align: right;">Your Contact Information :</span>
+              <br/>
+              <br/>
+              <input type="text" class="form-control o_website_form_input" name=""/>
+            </div>
+          </div>
+          <div class="row form-group form-field o_website_form_custom o_website_form_required_custom">
+            <div class="col-md-4 text-md-right">
+              <label class="col-form-label" for="Your Name">
+                    Your Name</label>
+            </div>
+            <div class="col-md-8">
+              <input type="text" class="form-control o_website_form_input" name="Your Name" required=""/>
+            </div>
+          </div>
+          <div class="row form-group form-field o_website_form_custom o_website_form_required_custom">
+            <div class="col-md-4 text-md-right">
+              <label class="col-form-label" for="Direct Line"> Direct Line</label>
+            </div>
+            <div class="col-md-8" style="">
+              <input type="number" class="form-control o_website_form_input" name="Direct Line" step="1" required=""/>
+            </div>
+          </div>
+          <div class="row form-group form-field o_website_form_custom o_website_form_required_custom">
+            <div class="col-md-4 text-md-right">
+              <label class="col-form-label" for="Email"> Email</label>
+            </div>
+            <div class="col-md-8" style="">
+              <input type="text" class="form-control o_website_form_input" name="Email" required=""/>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="offset-lg-3 offset-md-4 col-md-8 col-lg-7">
+              <button class="btn btn-primary btn-lg o_website_form_send" data-original-title="" title="" aria-describedby="tooltip939865">Submit</button>
+              <span id="o_website_form_result" class="text-danger ml8"/>
+            </div>
+          </div>
+        </div>
+        <input class="form-field" type="hidden" name="email_to" value="nathan@redshiftdm.com"/>
+      </form>
+      <section class="pt32 pb32">
+        <div class="container">
+          <div class="row s_nb_column_fixed">
+            <div class="col-lg-12 s_title pt16 pb0" style="text-align: center;">
+              <div class="s_hr text-left pt32 pb32">
+                <hr class="s_hr_1px s_hr_solid border-600 w-100 mx-auto"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="pt32 pb32 bg-800 oe_custom_bg" style="">
+        <div class="container">
+          <div class="row s_nb_column_fixed">
+            <div class="col-lg-12 s_title pt16 pb16" style="text-align: center;">
+              <h1 class="s_title_default">
+                <strong style="background: 0px 0px rgb(50, 61, 73); border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(255, 255, 255); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
+                  <font style="font-size: 24px;">REMINDER: PURCHASE ORDER NUMBER MUST BE PROVIDED WITH THIS FORM</font>
+                </strong>
+                <br/>
+              </h1>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="s_text_block pt32 pb32 bg-white oe_custom_bg" style="">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-10 offset-lg-1 pt32 pb32">
+              <div class="wpb_text_column wpb_content_element  vc_custom_1541803172154" style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin: 0px 0px 35px; padding-top: 0px; padding-right: 0px; padding-left: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px; padding-bottom: 18px !important;">
+                <div class="wpb_wrapper" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                  <p style="background: 0px 0px; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-family: &quot;Open Sans&quot;, sans-serif; line-height: 26px; text-align: center;">
+                    <strong style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Ship Equipment Including Form To:</strong>
+                  </p>
+                  <p style="background: 0px 0px; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-family: &quot;Open Sans&quot;, sans-serif; line-height: 26px; text-align: center;">
+                    <strong style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">SPS Repair 2340 Stock Creek Blvd. Rockford, TN 37853</strong>
+                  </p>
+                  <p style="background: 0px 0px; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-family: &quot;Open Sans&quot;, sans-serif; line-height: 26px; text-align: center;">
+                    <strong style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Phone:&amp;nbsp;412-281-4186 Fax: 412-774-2345</strong>
+                  </p>
+                  <p style="background: 0px 0px; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-family: &quot;Open Sans&quot;, sans-serif; line-height: 26px; text-align: center;">
+                    <strong style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">repair@surgicalproductsolutions.com</strong>
+                  </p>
+                  <div class="s_btn text-center pb0 pt40" data-name="Buttons">
+                    <a href="/slides/slide/repair-service-request-form-3" class="btn btn-danger" data-original-title="" title="" aria-describedby="tooltip745399">Downloadable Form ( Fax/Scan )</a>
+                  </div>
+                </div>
+              </div>
+              <div class="separator  small center  " style="background: 0px 0px rgb(50, 61, 73); border: 0px; margin: 12px auto; padding: 0px; vertical-align: baseline; outline: 0px; position: relative; height: 2px; width: 30px; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;"/>
+              <div class="wpb_text_column wpb_content_element  vc_custom_1541803093127" style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin: 0px 0px 35px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px; padding-top: 18px !important;">
+                <div class="wpb_wrapper" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                  <p style="background: 0px 0px; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-family: &quot;Open Sans&quot;, sans-serif; line-height: 26px; text-align: center;">
+                    <strong style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Thank you for choosing Surgical Product Solutions. Ask us about our Repair/Exchange Program!</strong>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </t>
+</t>
+    </template>
+</odoo>

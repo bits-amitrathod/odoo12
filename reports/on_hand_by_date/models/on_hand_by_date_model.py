@@ -110,7 +110,7 @@ class OnHandByDate(models.Model):
                 stock_picking.state = 'done' 
                 """
 
-        sql_query = "CREATE VIEW " + res_model + " AS ( " + default_query + from_query + " )"
+        sql_query = "CREATE VIEW " + res_model + " AS ( " + cost_columns + from_query + " )"
         self._cr.execute(sql_query)
 
         sql_query = "CREATE VIEW " + res_model_cost + " AS ( " + cost_columns + from_query + " )"

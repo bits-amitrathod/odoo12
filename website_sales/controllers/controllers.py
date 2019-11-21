@@ -14,8 +14,13 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         '/shop/category/<model("product.public.category"):category>/page/<int:page>'
     ], type='http', auth="public", website=True)
     def shop(self, page=0, category=None, search='', ppg=False, **post):
+        product_template = request.env['product.template'].search([('actual_quantity', '=', False)])
+        if len(product_template)>0:
+            for product in product_template:
+                product.update({'actual_quantity':0})
+
         if not 'order' in post:
-            post.update({'order': 'name asc'})
+            post.update({'order': 'actual_quantity desc'})
 
         if request.httprequest.path == "/shop/featured":
             result = request.env['product.public.category'].search([('name', 'ilike', 'featured')], limit=1)
@@ -112,16 +117,14 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         order = responce.qcontext['order']
         order.workflow_process_id = 1
 
-        template = request.env.ref('website_sales.common_mail_template').sudo()
-        template.send_mail(order.id, force_send=True)
-        msg = "Quotation Email Sent to: " + order.user_id.login
-        order.message_post(body=msg)
+        template = request.env.ref('website_sales.website_order_placed').sudo()
 
         if request.env.user.user_id.id and not request.env.user.user_id.id == order.user_id.id:
             order.user_id = request.env.user.user_id
-            template.send_mail(order.id, force_send=True)
-            msg = "Quotation Email Sent to: " + order.user_id.login
-            order.message_post(body=msg)
+
+        template.send_mail(order.id, force_send=True)
+        msg = "Quotation Email Sent to: " + order.user_id.login
+        order.message_post(body=msg)
 
 
         return responce
