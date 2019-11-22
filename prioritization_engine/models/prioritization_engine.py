@@ -33,7 +33,7 @@ class PrioritizationEngine(models.TransientModel):
                 if prioritization_engine_request['auto_allocate']:
                     prioritization_engine_request['customer_request_logs'] += 'Auto allocate is true, '
                     _logger.debug('Auto allocate is true....')
-                    filter_available_product_lot_dict = self.filter_available_product_lot_dict(available_product_lot_dict, prioritization_engine_request['product_id'],prioritization_engine_request['expiration_tolerance'])
+                    filter_available_product_lot_dict = self.filter_available_product_lot_dict(available_product_lot_dict, prioritization_engine_request['product_id'].id, prioritization_engine_request['expiration_tolerance'])
                     if len(filter_available_product_lot_dict) >= 1:
                         # check cooling period- method return True/False
                         if self.check_cooling_period(prioritization_engine_request):
@@ -161,7 +161,7 @@ class PrioritizationEngine(models.TransientModel):
         else:
             required_quantity = prioritization_engine_request['updated_quantity']
             remaining_product_allocation_quantity = prioritization_engine_request['updated_quantity']
-        for product_lot in filter_available_product_lot_dict.get(prioritization_engine_request['product_id'],{}):
+        for product_lot in filter_available_product_lot_dict.get(prioritization_engine_request['product_id'].id, {}):
             _logger.debug('**** %r',product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity'))
 
             if int(remaining_product_allocation_quantity) > 0 and int(product_lot.get(list(product_lot.keys()).pop(0),{}).get('available_quantity')) > 0:
@@ -227,7 +227,7 @@ class PrioritizationEngine(models.TransientModel):
                                                prioritization_engine_request['gl_account'],
                                                prioritization_engine_request['customer_request_id'],
                                                required_quantity,
-                                               prioritization_engine_request['product_id'],
+                                               prioritization_engine_request['product_id'].id,
                                                required_quantity)
 
             prioritization_engine_request['customer_request_logs'] += 'Product allocated.'
@@ -245,7 +245,7 @@ class PrioritizationEngine(models.TransientModel):
                                                prioritization_engine_request['gl_account'],
                                                prioritization_engine_request['customer_request_id'],
                                                required_quantity,
-                                               prioritization_engine_request['product_id'],
+                                               prioritization_engine_request['product_id'].id,
                                                required_quantity - remaining_product_allocation_quantity)
 
             self._update_logs(prioritization_engine_request)
@@ -274,7 +274,7 @@ class PrioritizationEngine(models.TransientModel):
 
     # get quantity by partial uom flag
     def _get_quantity_by_partial_uom(self, quantity, prioritization_engine_request):
-        product = self.env['product.template'].search([('id', '=', prioritization_engine_request['product_id'])])
+        product = self.env['product.template'].search([('id', '=', prioritization_engine_request['product_id'].product_tmpl_id.id)])
         uom = self.env['uom.uom'].search([('name', 'ilike', 'Unit'),('category_id.id', '=', 1)])
         if len(uom) == 0:
             uom = self.env['uom.uom'].search([('name', 'ilike', 'Each'),('category_id.id', '=', 1)])
@@ -305,7 +305,7 @@ class PrioritizationEngine(models.TransientModel):
             " INNER JOIN public.crm_team crmteam ON crmteam.id = saleorder.team_id"
             " WHERE saleorderline.order_partner_id IN (SELECT distinct unnest(array[id, parent_id]) from public.res_partner WHERE parent_id = " +
             str(prioritization_engine_request['customer_id']) + " or id = " + str(prioritization_engine_request['customer_id']) + " ) " +
-            " and saleorderline.product_id = " + str(prioritization_engine_request['product_id']) +
+            " and saleorderline.product_id = " + str(prioritization_engine_request['product_id'].id) +
             " and ((saleorder.state in ('engine','sent','cancel')) or (saleorder.state in ('sent','sale') and saleorderline.product_uom_qty = 0))" +
             " and crmteam.team_type = 'engine'")
 
@@ -442,7 +442,7 @@ class PrioritizationEngine(models.TransientModel):
             max_threshold = prioritization_engine_request['max_threshold']
             inventory_quantity = prioritization_engine_request['quantity']
         else:
-            product = self.env['product.template'].search([('id', '=', prioritization_engine_request['product_id'])])
+            product = self.env['product.template'].search([('id', '=', prioritization_engine_request['product_id'].product_tmpl_id.id)])
             uom = self.env['uom.uom'].search([('name', 'ilike', 'Unit'),('category_id.id', '=', 1)])
             if len(uom) == 0:
                 uom = self.env['uom.uom'].search([('name', 'ilike', 'Each'),('category_id.id', '=', 1)])
@@ -458,9 +458,6 @@ class PrioritizationEngine(models.TransientModel):
                 inventory_quantity = inventory_quantity - product_uom_qty
                 _logger.debug('inventory_quantity : %r', inventory_quantity)
                 return True, inventory_quantity
-
-
-
         if int(inventory_quantity) < int(min_threshold):
             allocate_quantity = int(max_threshold) - int(inventory_quantity)
             return True, allocate_quantity
