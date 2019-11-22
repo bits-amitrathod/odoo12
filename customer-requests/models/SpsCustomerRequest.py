@@ -118,7 +118,7 @@ class SpsCustomerRequest(models.Model):
                                 template_type=sps_customer_request.document_id.template_type,
                                 customer_id=sps_customer_request['customer_id'].id,
                                 gl_account=sps_customer_request['gl_account'],
-                                product_id=sps_customer_request['product_id'].id,
+                                product_id=sps_customer_request['product_id'],
                                 status=sps_customer_request['status'],
                                 required_quantity=sps_customer_request.updated_quantity,
                                 min_threshold=_setting_object.min_threshold,
