@@ -155,7 +155,7 @@ class IncomingMailCronModel(models.Model):
                                 saleforce_ac = match1[0].split(':')[1]
                                 # find customer in res.partner
                                 if saleforce_ac and saleforce_ac is not None:
-                                    res_partner = self.env['res.partner'].search([("saleforce_ac", "=ilike", saleforce_ac), ('prioritization', '=', True)])
+                                    res_partner = self.env['res.partner'].search([("saleforce_ac", "=ilike", saleforce_ac), ('prioritization', '=', True), ('on_hold', '=', False)])
                                     if len(res_partner) == 1:
                                         # when new email in inbox, send email to admin
                                         self.send_mail_with_attachment(str(email_from), str(email_subject), str(res_partner.name), attachments)
@@ -168,8 +168,8 @@ class IncomingMailCronModel(models.Model):
                                         _logger.info('We have found Same Customer Id against multiple users. %r', str(saleforce_ac))
                                         response = dict(errorCode=106, message='We have found Same Customer Id against multiple customers.')
                                     else:
-                                        _logger.info('Customer Id is not found in customers or prioritization setting is off.: %r', str(saleforce_ac))
-                                        response = dict(errorCode=107, message='Customer Id is not found in customers  or prioritization setting is off.')
+                                        _logger.info('Customer Id is not found in customers or prioritization setting is off  or Customer is on hold.: %r', str(saleforce_ac))
+                                        response = dict(errorCode=107, message='Customer Id is not found in customers  or prioritization setting is off or Customer is on hold.')
                                 else:
                                     _logger.info('Customer Id is not found in email subject.')
                                     response = dict(errorCode=108, message='Customer Id is not found in email subject.')
@@ -178,7 +178,7 @@ class IncomingMailCronModel(models.Model):
                                 # File process against who has sent email.
                                 # find customer in res.partner
                                 if email_from and email_from is not None:
-                                    res_partner = self.env['res.partner'].search([("email", "=ilike", email_from)])
+                                    res_partner = self.env['res.partner'].search([("email", "=ilike", email_from), ('prioritization', '=', True), ('on_hold', '=', False)])
                                     if len(res_partner) == 1:
                                         # when new email in inbox, send email to admin
                                         self.send_mail_with_attachment(str(email_from), str(email_subject), str(res_partner.name), attachments)
@@ -192,8 +192,8 @@ class IncomingMailCronModel(models.Model):
                                         _logger.info('We have found same Customer Email against multiple customers. %r', str(customer_email))
                                         response = dict(errorCode=109, message='We have found same Customer Email against multiple customers.')
                                     else:
-                                        _logger.info('Customer (Email) is not found in customers : %r', str(email_from))
-                                        response = dict(errorCode=110, message='Customer (Email) is not found in customers.')
+                                        _logger.info('Customer (Email) is not found in customers or prioritization setting is off or Customer is on hold: %r', str(email_from))
+                                        response = dict(errorCode=110, message='Customer (Email) is not found in customers or prioritization setting is off or Customer is on hold.')
                                 else:
                                     _logger.info('Customer (Email) is not found in Customers.')
                                     response = dict(errorCode=111, message='Customer (Email) is not found in customers.')
@@ -249,8 +249,6 @@ class IncomingMailCronModel(models.Model):
                                                         if exc.errno != errno.EEXIST:
                                                             raise
                                                 for attachment in attachments:
-                                                    # when new email in inbox, send email to admin
-                                                    # self.send_mail_with_attachment(str(email_from), str(email_subject), str(res_partner.name), attachment)
                                                     filename = getattr(attachment, 'fname')
                                                     if not filename is None:
                                                         try:
