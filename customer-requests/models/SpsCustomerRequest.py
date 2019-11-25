@@ -43,6 +43,15 @@ class SpsCustomerRequest(models.Model):
     product_description = fields.Char(string='Product Description')
     customer_request_logs = fields.Char(string='Customer Request Logs')
 
+    auto_allocate = fields.Boolean("Allow Auto Allocation")
+    min_threshold = fields.Integer("Min Threshold")
+    max_threshold = fields.Integer("Max Threshold")
+    cooling_period = fields.Integer("Cooling Period in days")
+    length_of_hold = fields.Integer("Length Of Hold in hours")
+    expiration_tolerance = fields.Integer("Expiration Tolerance in months")
+    partial_ordering = fields.Boolean("Allow Partial Ordering")
+    partial_UOM = fields.Boolean("Allow Partial UOM")
+
     document_id_set = set()
 
     # Get Customer Requests
@@ -100,18 +109,18 @@ class SpsCustomerRequest(models.Model):
             # Allocate Product by priority.
             self.env['prioritization.engine.model'].allocate_product_by_priority(pr_models)
 
-    def add_customer_request_data(self,sps_customer_request):
+    def add_customer_request_data(self, sps_customer_request):
         _logger.debug('customer request %r, %r', sps_customer_request['customer_id'].id,
                       sps_customer_request['product_id'].id)
         if sps_customer_request['product_id'].id and not sps_customer_request['product_id'].id is False:
             self.update_document_processed_count(sps_customer_request['document_id'].id,
                                                  sps_customer_request['document_id'].document_processed_count)
-            _setting_object = self.get_settings_object(sps_customer_request['customer_id'].id,
-                                                       sps_customer_request['product_id'].id,
-                                                       sps_customer_request['id'], sps_customer_request['status'])
+            # _setting_object = self.get_settings_object(sps_customer_request['customer_id'].id,
+            #                                            sps_customer_request['product_id'].id,
+            #                                            sps_customer_request['id'], sps_customer_request['status'])
 
-            _logger.info('gl account value : %r',sps_customer_request['gl_account'])
-            if _setting_object:
+            _logger.info('gl account value : %r', sps_customer_request['gl_account'])
+            if sps_customer_request:
                 sps_customer_request.write({'customer_request_logs': 'Customer prioritization setting is True, '})
                 pr_model = dict(customer_request_id=sps_customer_request.id,
                                 req_no=sps_customer_request.req_no,
@@ -121,18 +130,18 @@ class SpsCustomerRequest(models.Model):
                                 product_id=sps_customer_request['product_id'],
                                 status=sps_customer_request['status'],
                                 required_quantity=sps_customer_request.updated_quantity,
-                                min_threshold=_setting_object.min_threshold,
-                                max_threshold=_setting_object.max_threshold,
+                                min_threshold=sps_customer_request.min_threshold,
+                                max_threshold=sps_customer_request.max_threshold,
                                 quantity=sps_customer_request.quantity,
-                                product_priority=_setting_object.priority,
-                                auto_allocate=_setting_object.auto_allocate,
-                                cooling_period=_setting_object.cooling_period,
-                                length_of_hold=_setting_object.length_of_hold,
+                                product_priority=sps_customer_request.priority,
+                                auto_allocate=sps_customer_request.auto_allocate,
+                                cooling_period=sps_customer_request.cooling_period,
+                                length_of_hold=sps_customer_request.length_of_hold,
                                 uom_flag=sps_customer_request['uom_flag'],
-                                partial_order=_setting_object.partial_ordering,
-                                partial_uom=_setting_object.partial_UOM,
-                                updated_quantity = sps_customer_request['updated_quantity'],
-                                expiration_tolerance=_setting_object.expiration_tolerance,
+                                partial_order=sps_customer_request.partial_ordering,
+                                partial_uom=sps_customer_request.partial_UOM,
+                                updated_quantity=sps_customer_request['updated_quantity'],
+                                expiration_tolerance=sps_customer_request.expiration_tolerance,
                                 customer_request_logs=sps_customer_request.customer_request_logs)
                 return pr_model
         return False

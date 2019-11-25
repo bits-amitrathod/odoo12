@@ -89,13 +89,7 @@ class DocumentProcessTransientModel(models.TransientModel):
                             product_id = product[0].id
                             product_template_id = product[0].product_tmpl_id.id
                     if product_id != 0 and product_template_id != 0:
-                        sps_product_priotization = self.env['prioritization_engine.prioritization'].search([['customer_id', '=', user_id], ['product_id', '=', product_id]])
-                        if len(sps_product_priotization) >= 1:
-                            sps_product = sps_product_priotization[0]
-                            sps_customer_product_priority = sps_product.priority
-                        else:
-                            sps_customer_product_priority = user_model.priority
-                        req.update(dict(product_id=product_id, status='New', priority=sps_customer_product_priority))
+                        req = self._get_product_level_setting(req, user_id, product_id, user_model)
                         # set uom flag, if uom_flag is false then check the partial_uom flag
                         if 'uom' in req.keys():
                             if req['uom'].lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
@@ -132,6 +126,34 @@ class DocumentProcessTransientModel(models.TransientModel):
             _logger.info('file is not acceptable')
             response = dict(errorCode=2, message='Invalid File extension')
         return response
+
+    def _get_product_level_setting(self, req, user_id, product_id, user_model):
+        sps_product_setting = self.env['prioritization_engine.prioritization'].search([('customer_id', '=', user_id), ('product_id', '=', product_id), ('priority', '>=', 0)])
+        if len(sps_product_setting) >= 1:
+            sps_product = sps_product_setting[0]
+            sps_customer_product_priority = sps_product.priority
+            auto_allocate = sps_product.auto_allocate
+            min_threshold = sps_product.min_threshold
+            max_threshold = sps_product.max_threshold
+            cooling_period = sps_product.cooling_period
+            length_of_hold = sps_product.length_of_hold
+            expiration_tolerance = sps_product.expiration_tolerance
+            partial_ordering = sps_product.partial_ordering
+            partial_uom = sps_product.partial_UOM
+        else:
+            sps_customer_product_priority = user_model.priority
+            auto_allocate = user_model.auto_allocate
+            min_threshold = user_model.min_threshold
+            max_threshold = user_model.max_threshold
+            cooling_period = user_model.cooling_period
+            length_of_hold = user_model.length_of_hold
+            expiration_tolerance = user_model.expiration_tolerance
+            partial_ordering = user_model.partial_ordering
+            partial_uom = user_model.partial_UOM
+        req.update(dict(product_id=product_id, status='New', priority=sps_customer_product_priority, auto_allocate=auto_allocate,
+                        min_threshold=min_threshold, max_threshold=max_threshold, cooling_period=cooling_period, length_of_hold=length_of_hold,
+                        expiration_tolerance=expiration_tolerance, partial_ordering=partial_ordering, partial_UOM=partial_uom))
+        return req
 
     def _all_voided_products(self, document_id, user_model, file_uploaded_record):
         sps_customer_requirement_all = self.env['sps.customer.requests'].search([('document_id', '=', document_id)])
