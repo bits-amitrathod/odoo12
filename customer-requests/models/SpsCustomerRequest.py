@@ -51,7 +51,7 @@ class SpsCustomerRequest(models.Model):
     expiration_tolerance = fields.Integer("Expiration Tolerance in months")
     partial_ordering = fields.Boolean("Allow Partial Ordering")
     partial_UOM = fields.Boolean("Allow Partial UOM")
-
+    available_qty = fields.Integer("Available Quantity")
     document_id_set = set()
 
     # Get Customer Requests
@@ -78,13 +78,11 @@ class SpsCustomerRequest(models.Model):
             current_cust_doc_fixed_count=sps_customer_request.customer_id['doc_process_count']
             current_processed_docs=sps_customer_request.document_id.document_processed_count
 
-            self.env.cr.execute("SELECT max(id) document_id FROM public.sps_cust_uploaded_documents WHERE customer_id=" +
-                                                                                str(sps_customer_request['customer_id'].id))
-            query_result = self.env.cr.dictfetchone()
-            max_doc_id=int(query_result['document_id'])
-
             # For Inventory Template
             if sps_customer_request.document_id.template_type.lower().strip() == 'inventory':
+                self.env.cr.execute("SELECT max(id) document_id FROM public.sps_cust_uploaded_documents WHERE customer_id=" + str(sps_customer_request['customer_id'].id))
+                query_result = self.env.cr.dictfetchone()
+                max_doc_id = int(query_result['document_id'])
                 # following condition use for process only latest uploaded document.
                 if int(max_doc_id) == int(sps_customer_request.document_id.id):
                     if sps_customer_request.quantity > 0:
@@ -94,7 +92,6 @@ class SpsCustomerRequest(models.Model):
                 else:
                     if sps_customer_request.document_id.status != 'Completed':
                        self.env['sps.cust.uploaded.documents'].search([('id', '=', sps_customer_request.document_id.id)]).write({'status': 'Completed'})
-
             elif sps_customer_request.document_id.template_type.lower().strip() == 'requirement':
                 if sps_customer_request.updated_quantity > 0:
                     if int(current_processed_docs) <= int(current_cust_doc_fixed_count):
@@ -102,7 +99,7 @@ class SpsCustomerRequest(models.Model):
                         if pr_model:
                             pr_models.append(pr_model)
 
-        #_logger.debug('Length **** %r', str(len(pr_models)))
+        # _logger.debug('Length **** %r', str(len(pr_models)))
         if len(pr_models) > 0:
             # Sort list by product priority
             pr_models = sorted(pr_models, key=itemgetter('product_priority'))

@@ -75,3 +75,18 @@ class AvailableProductDict(models.TransientModel):
         # sort list by latest expiry date(use date)
         # available_production_lot_list_to_be_returned = sorted(self.available_production_lot_list_to_be_returned, key=itemgetter('use_date'))
         return self.available_production_lot_dict
+
+    def get_available_product_qty(self, customer_id, product_id, expiration_tolerance):
+        all_available_quantity = 0
+        # get expiration tolerance date
+        expiration_tolerance_date = (date.today() + relativedelta(months=+int(expiration_tolerance)))
+
+        production_lot_list = self.env['stock.quant'].search(
+            [('product_id', '=', int(product_id)), ('quantity', '>', 0), ('location_id.usage', '=', 'internal'), ('location_id.active', '=', 'true'), ('lot_id.use_date', '>', str(expiration_tolerance_date))])
+
+        for production_lot in production_lot_list:
+            if production_lot.quantity and production_lot.lot_id.use_date:
+                available_quantity = production_lot.quantity - production_lot.reserved_quantity
+                if available_quantity > 0:
+                    all_available_quantity = all_available_quantity + available_quantity
+        return int(all_available_quantity)

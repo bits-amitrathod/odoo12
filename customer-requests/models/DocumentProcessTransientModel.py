@@ -150,9 +150,12 @@ class DocumentProcessTransientModel(models.TransientModel):
             expiration_tolerance = user_model.expiration_tolerance
             partial_ordering = user_model.partial_ordering
             partial_uom = user_model.partial_UOM
+
+        available_qty = self.env['available.product.dict'].get_available_product_qty(user_id, product_id, expiration_tolerance)
+
         req.update(dict(product_id=product_id, status='New', priority=sps_customer_product_priority, auto_allocate=auto_allocate,
                         min_threshold=min_threshold, max_threshold=max_threshold, cooling_period=cooling_period, length_of_hold=length_of_hold,
-                        expiration_tolerance=expiration_tolerance, partial_ordering=partial_ordering, partial_UOM=partial_uom))
+                        expiration_tolerance=expiration_tolerance, partial_ordering=partial_ordering, partial_UOM=partial_uom, available_qty=available_qty))
         return req
 
     def _all_voided_products(self, document_id, user_model, file_uploaded_record):
