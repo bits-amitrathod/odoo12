@@ -484,7 +484,7 @@ class PrioritizationEngine(models.TransientModel):
             sps_customer_requirement = self.env['sps.customer.requests'].search([('document_id', '=', sps_cust_uploaded_document.id), ('status', 'in', ['Partial', 'InCoolingPeriod', 'New', 'Inprocess', 'Incomplete', 'Unprocessed'])])
             sps_customer_requirements = self.env['sps.customer.requests'].search([('document_id', '=', sps_cust_uploaded_document.id), ('status', 'in', ['InCoolingPeriod', 'New', 'Inprocess', 'Incomplete', 'Unprocessed'])])
             sps_customer_requirements_all_non_voided = self.env['sps.customer.requests'].search([('document_id', '=', sps_cust_uploaded_document.id), ('status', 'not in', ['Voided'])])
-            high_priority_requests = self.env['sps.customer.requests'].search([('document_id', '=', sps_cust_uploaded_document.id), ('status', 'in', ['New']), ('priority', '=', 0)])
+            high_priority_requests = self.env['sps.customer.requests'].search([('document_id', '=', sps_cust_uploaded_document.id), ('status', 'in', ['New']), ('priority', '=', 0), ('available_qty', '>', 0)])
 
             if sps_cust_uploaded_document.template_type.lower().strip() == 'requirement':
                 if current_processed_docs >= current_cust_doc_fixed_count:
