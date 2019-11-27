@@ -371,25 +371,28 @@ class PrioritizationEngine(models.TransientModel):
         crm_team = self.env['crm.team'].search([('team_type', '=', 'engine')])
 
         for partner_id_key in self.allocated_product_dict.keys():
-            sale_order_dict = {'partner_id': partner_id_key, 'state': 'engine', 'team_id' : crm_team['id']}
+            sale_order_dict = {'partner_id': partner_id_key, 'state': 'engine', 'team_id': crm_team['id']}
+            try:
+                self.env.cr.savepoint()
+                sale_order = self.env['sale.order'].create(dict(sale_order_dict))
+                _logger.debug('sale order : %r ', sale_order['id'])
+                for allocated_product in self.allocated_product_dict.get(partner_id_key, {}):
+                    _logger.info('customer_request_id  :  %r  ', allocated_product['customer_request_id'])
 
-            sale_order = self.env['sale.order'].create(dict(sale_order_dict))
-            _logger.debug('sale order : %r ',sale_order['id'])
+                    sale_order_line_dict = {'customer_request_id': allocated_product['customer_request_id'],'req_no': allocated_product['req_no'], 'order_id': sale_order['id'], 'product_id': allocated_product['product_id'],
+                                            'order_partner_id' : partner_id_key, 'product_uom_qty' : allocated_product['allocated_product_quantity']}
 
-            for allocated_product in self.allocated_product_dict.get(partner_id_key, {}):
-                _logger.info('customer_request_id  :  %r  ', allocated_product['customer_request_id'])
-
-                sale_order_line_dict = {'customer_request_id': allocated_product['customer_request_id'],'req_no': allocated_product['req_no'], 'order_id': sale_order['id'], 'product_id': allocated_product['product_id'],
-                                        'order_partner_id' : partner_id_key, 'product_uom_qty' : allocated_product['allocated_product_quantity']}
-
-                self.env['sale.order.line'].create(dict(sale_order_line_dict))
-
-            sale_order.force_quotation_send()
-            print('**********Before action_confirm************', sale_order.state)
-            sale_order.action_confirm()
-            print('**********After action_confirm************', sale_order.state)
-            _logger.info('sale order id  : %r  sale order state : %r', sale_order.id, sale_order.state)
-            sale_order.write({'state':'sent', 'confirmation_date': None})
+                    self.env['sale.order.line'].create(dict(sale_order_line_dict))
+                    self.env.cr.commit()
+                sale_order.force_quotation_send()
+                _logger.info('**********Before action_confirm************', sale_order.state)
+                sale_order.action_confirm()
+                _logger.info('**********After action_confirm************', sale_order.state)
+                _logger.info('sale order id  : %r  sale order state : %r', sale_order.id, sale_order.state)
+                sale_order.write({'state':'sent', 'confirmation_date': None})
+            except Exception as exc:
+                _logger.error("getting error while creation of sales order : ", exc)
+                self.env.cr.rollback()
 
     # Generate sale order for gl account
     def generate_sale_order_for_gl_account(self):
@@ -398,26 +401,29 @@ class PrioritizationEngine(models.TransientModel):
         crm_team = self.env['crm.team'].search([('team_type', '=', 'engine')])
 
         for partner_id_key in self.allocated_product_for_gl_account_dict.keys():
-            _logger.info('partner id key : %r', partner_id_key)
-
-            _logger.debug('res_partner : %r',partner_id_key)
             sale_order_dict = {'partner_id': partner_id_key, 'state': 'engine', 'team_id': crm_team['id']}
+            try:
+                self.env.cr.savepoint()
+                sale_order = self.env['sale.order'].create(dict(sale_order_dict))
+                _logger.debug('sale order : %r ', sale_order['id'])
 
-            sale_order = self.env['sale.order'].create(dict(sale_order_dict))
-            _logger.debug('sale order : %r ', sale_order['id'])
+                for allocated_product in self.allocated_product_for_gl_account_dict.get(partner_id_key, {}):
+                    sale_order_line_dict = {
+                        'customer_request_id': allocated_product['customer_request_id'],'req_no': allocated_product['req_no'], 'order_id': sale_order['id'],
+                        'product_id': allocated_product['product_id'],'order_partner_id': partner_id_key,
+                        'product_uom_qty': allocated_product['allocated_product_quantity']}
 
-            for allocated_product in self.allocated_product_for_gl_account_dict.get(partner_id_key, {}):
-                sale_order_line_dict = {
-                    'customer_request_id': allocated_product['customer_request_id'],'req_no': allocated_product['req_no'], 'order_id': sale_order['id'],
-                    'product_id': allocated_product['product_id'],'order_partner_id': partner_id_key,
-                    'product_uom_qty': allocated_product['allocated_product_quantity']}
-
-                self.env['sale.order.line'].create(dict(sale_order_line_dict))
-
-            sale_order.force_quotation_send()
-            sale_order.action_confirm()
-            _logger.info('sale order id  : %r  sale order state : %r', sale_order.id, sale_order.state)
-            sale_order.write({'state': 'sent', 'confirmation_date': None})
+                    self.env['sale.order.line'].create(dict(sale_order_line_dict))
+                    self.env.cr.commit()
+                sale_order.force_quotation_send()
+                _logger.info('**********Before action_confirm************', sale_order.state)
+                sale_order.action_confirm()
+                _logger.info('**********After action_confirm************', sale_order.state)
+                _logger.info('sale order id  : %r  sale order state : %r', sale_order.id, sale_order.state)
+                sale_order.write({'state': 'sent', 'confirmation_date': None})
+            except Exception as exc:
+                _logger.error("getting error while creation of sales order : ", exc)
+                self.env.cr.rollback()
 
     # Change date format to calculate date difference (2018-06-25 23:08:15) to (2018, 6, 25, 23, 8, 15)
     @staticmethod

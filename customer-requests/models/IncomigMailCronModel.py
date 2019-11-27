@@ -288,9 +288,10 @@ class IncomingMailCronModel(models.Model):
                     _logger.info('num_messages = %d', num_messages)
                     _logger.info("Fetched %d email(s) on %s server %s; %d succeeded, %d failed.", num_messages,
                                  server.type, server.name, (num_messages - failed), failed)
-                except Exception:
+                except Exception as exc:
                     _logger.info("General failure when trying to fetch mail from %s server %s.", server.type,
                                  server.name, exc_info=True)
+                    _logger.error('Incoming email : %r', exc)
                 finally:
                     _logger.info('Server tpye is POP inside finally')
                     if pop_server:
