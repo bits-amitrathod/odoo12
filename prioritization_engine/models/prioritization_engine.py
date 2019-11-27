@@ -540,12 +540,12 @@ class PrioritizationEngine(models.TransientModel):
         # get team id
         crm_team = self.env['crm.team'].search([('team_type', '=', 'engine')])
 
-        sale_orders = self.env['sale.order'].search([('state', 'in', ('engine', 'sent', 'void')), ('team_id', '=', crm_team['id'])])
+        sale_orders = self.env['sale.order'].search([('state', 'in', ('engine', 'sent', 'void')), ('team_id', '=', crm_team['id'])], order="id asc")
 
         for sale_order in sale_orders:
             _logger.info('sale order name : %r, partner_id : %r, create_date: %r', sale_order['name'], sale_order['partner_id'].id, sale_order['create_date'])
 
-            stock_picking = self.env['stock.picking'].search([('sale_id.id', '=', sale_order['id'])])
+            stock_picking = self.env['stock.picking'].search([('sale_id.id', '=', sale_order['id']), ('state', '=', 'assigned')])
 
             for stock_pick in stock_picking:
                 stock_moves = self.env['stock.move'].search([('picking_id.id', '=', stock_pick['id'])])
@@ -574,14 +574,15 @@ class PrioritizationEngine(models.TransientModel):
     # change sale order state: 'cancel' when length of hold of all products in sale order is finished.
     def change_sale_order_state(self,sale_order):
         _logger.info('In change_sale_order_state()')
-        stock_picking = self.env['stock.picking'].search([('sale_id.id', '=', sale_order['id']),('picking_type_id', '=', 1)])
-        _logger.info('stock picking id : %r ',stock_picking['id'])
-        stock_move_lines = self.env['stock.move.line'].search([('picking_id.id', '=', stock_picking['id'])])
-        _logger.info('stock_move_lines length : %r ', len(stock_move_lines))
-        if len(stock_move_lines) == 0:
-            _logger.info('sale order state before : %r', sale_order['state'])
-            sale_order.action_cancel()
-            _logger.info('sales order status after : %r', sale_order['state'])
+        stock_picking = self.env['stock.picking'].search([('sale_id.id', '=', sale_order['id']), ('picking_type_id', '=', 1)])
+        if stock_picking and stock_picking['id']:
+            _logger.info('stock picking id : %r ', stock_picking['id'])
+            stock_move_lines = self.env['stock.move.line'].search([('picking_id.id', '=', stock_picking['id'])])
+            _logger.info('stock_move_lines length : %r ', len(stock_move_lines))
+            if len(stock_move_lines) == 0:
+                _logger.info('sale order state before : %r', sale_order['state'])
+                sale_order.action_cancel()
+                _logger.info('sales order status after : %r', sale_order['state'])
 
     def send_mail(self, body):
         template = self.env.ref('prioritization_engine.set_log_gl_account_response').sudo()
