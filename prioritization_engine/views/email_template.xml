@@ -1,0 +1,47 @@
+<odoo>
+    <data>
+        <record id="on_hold_doc_response" model="mail.template">
+            <field name="name">On Hold Document Response</field>
+            <field name="model_id" ref="base.model_res_users"/>
+            <field name="email_from"><![CDATA["${object.company_id.name|safe}" <${(object.company_id.email or user.email)|safe}>]]></field>
+            <field name="email_to">${object.email|safe}</field>
+            <field name="subject"><![CDATA[Email response <${(object.company_id.email or user.email)|safe}>]]></field>
+            <field name="body_html">${ctx['body']}</field>
+            <field name="body_html"><![CDATA[
+                <p>
+                    Hi Administrator,
+                </p>
+                <p style="text-align: left; margin-top: 10px;">
+                    An error has occurred. Please see the below listing for customer / document information:
+                </p>
+                <table style="width:100%;border:1px solid black;border-collapse:collapse;">
+                    <tr>
+                        <th style="border:1px solid black;border-collapse:collapse;">Email From</th>
+                        <th style="border:1px solid black;border-collapse:collapse;">Customer Name</th>
+                        <th style="border:1px solid black;border-collapse:collapse;">Customer Email</th>
+                        <th style="border:1px solid black;border-collapse:collapse;">Document Name</th>
+                        <th style="border:1px solid black;border-collapse:collapse;">Document Status</th>
+                        <th style="border:1px solid black;border-collapse:collapse;">Upload Type</th>
+                        <th style="border:1px solid black;border-collapse:collapse;">Date</th>
+                        <th style="border:1px solid black;border-collapse:collapse;">Reason</th>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['emailFrom']}</td>
+                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['customerName']}</td>
+                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['email']}</td>
+                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['documentName']}</td>
+                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['documentStatus']}</td>
+                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['source']}</td>
+                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['date']}</td>
+                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['reason']}</td>
+                    </tr>
+                </table>
+                <p>
+                    Thanks & Regards,<br/>
+                    ODOO
+                </p>
+
+            ]]></field>
+            <field name="user_signature" eval="False"/>
+        </record>
+
