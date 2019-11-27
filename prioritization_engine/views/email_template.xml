@@ -44,4 +44,6 @@
             ]]></field>
             <field name="user_signature" eval="False"/>
         </record>
+    </data>
+</odoo>
 
