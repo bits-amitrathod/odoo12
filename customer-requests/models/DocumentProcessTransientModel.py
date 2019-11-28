@@ -90,32 +90,34 @@ class DocumentProcessTransientModel(models.TransientModel):
                             product_template_id = product[0].product_tmpl_id.id
                     if product_id != 0 and product_template_id != 0:
                         req = self._get_product_level_setting(req, user_id, product_id, user_model)
-                        # set uom flag, if uom_flag is false then check the partial_uom flag
-                        if 'uom' in req.keys():
-                            if req['uom'].lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
-                                req.update(dict(uom_flag=True))
-                            else:
-                                req.update(dict(uom_flag=False))
-                        else:
-                            # Get Product UOM category id
-                            product_uom_categ = self.env['uom.category'].search([('name', 'in', ['Unit', 'Each'])])
-                            # get product
-                            product = self.env['product.template'].search([('id', '=', product_template_id)])
-                            if product.manufacturer_uom.category_id.id in product_uom_categ.ids:
-                                if product.manufacturer_uom.name.lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
+                        if req:
+                            # set uom flag, if uom_flag is false then check the partial_uom flag
+                            if 'uom' in req.keys():
+                                if req['uom'].lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
                                     req.update(dict(uom_flag=True))
                                 else:
                                     req.update(dict(uom_flag=False))
-                        # calculate product quantity
-                        updated_qty = self._get_updated_qty(req, template_type, product_template_id)
-                        if updated_qty != 0:
-                            req.update(dict(updated_quantity=updated_qty))
+                            else:
+                                # Get Product UOM category id
+                                product_uom_categ = self.env['uom.category'].search([('name', 'in', ['Unit', 'Each'])])
+                                # get product
+                                product = self.env['product.template'].search([('id', '=', product_template_id)])
+                                if product.manufacturer_uom.category_id.id in product_uom_categ.ids:
+                                    if product.manufacturer_uom.name.lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
+                                        req.update(dict(uom_flag=True))
+                                    else:
+                                        req.update(dict(uom_flag=False))
+                            # calculate product quantity
+                            updated_qty = self._get_updated_qty(req, template_type, product_template_id)
+                            if updated_qty != 0:
+                                req.update(dict(updated_quantity=updated_qty))
+
+                            sps_customer_request = dict(document_id=document_id, customer_id=user_id, create_uid=1, create_date=today_date, write_uid=1, write_date=today_date)
+                            for key in req.keys():
+                                sps_customer_request.update({key: req[key]})
+                            self.env['sps.customer.requests'].create(sps_customer_request)
                     else:
                         req.update(dict(product_id=None, status='Voided'))
-                    sps_customer_request = dict(document_id=document_id, customer_id=user_id, create_uid=1, create_date=today_date, write_uid=1, write_date=today_date)
-                    for key in req.keys():
-                        sps_customer_request.update({key: req[key]})
-                    self.env['sps.customer.requests'].create(sps_customer_request)
 
                 # if document has all voided products then Send Email Notification to customer.
                 self._all_voided_products(document_id, user_model, file_uploaded_record)
@@ -128,35 +130,39 @@ class DocumentProcessTransientModel(models.TransientModel):
         return response
 
     def _get_product_level_setting(self, req, user_id, product_id, user_model):
-        sps_product_setting = self.env['prioritization_engine.prioritization'].search([('customer_id', '=', user_id), ('product_id', '=', product_id), ('priority', '>=', 0)])
+        sps_product_setting = self.env['prioritization_engine.prioritization'].search([('customer_id', '=', user_id), ('product_id', '=', product_id)])
         if len(sps_product_setting) >= 1:
             sps_product = sps_product_setting[0]
             sps_customer_product_priority = sps_product.priority
-            auto_allocate = sps_product.auto_allocate
-            min_threshold = sps_product.min_threshold
-            max_threshold = sps_product.max_threshold
-            cooling_period = sps_product.cooling_period
-            length_of_hold = sps_product.length_of_hold
-            expiration_tolerance = sps_product.expiration_tolerance
-            partial_ordering = sps_product.partial_ordering
-            partial_uom = sps_product.partial_UOM
+            if sps_customer_product_priority >= 0:
+                auto_allocate = sps_product.auto_allocate
+                min_threshold = sps_product.min_threshold
+                max_threshold = sps_product.max_threshold
+                cooling_period = sps_product.cooling_period
+                length_of_hold = sps_product.length_of_hold
+                expiration_tolerance = sps_product.expiration_tolerance
+                partial_ordering = sps_product.partial_ordering
+                partial_uom = sps_product.partial_UOM
         else:
             sps_customer_product_priority = user_model.priority
-            auto_allocate = user_model.auto_allocate
-            min_threshold = user_model.min_threshold
-            max_threshold = user_model.max_threshold
-            cooling_period = user_model.cooling_period
-            length_of_hold = user_model.length_of_hold
-            expiration_tolerance = user_model.expiration_tolerance
-            partial_ordering = user_model.partial_ordering
-            partial_uom = user_model.partial_UOM
+            if sps_customer_product_priority >= 0:
+                auto_allocate = user_model.auto_allocate
+                min_threshold = user_model.min_threshold
+                max_threshold = user_model.max_threshold
+                cooling_period = user_model.cooling_period
+                length_of_hold = user_model.length_of_hold
+                expiration_tolerance = user_model.expiration_tolerance
+                partial_ordering = user_model.partial_ordering
+                partial_uom = user_model.partial_UOM
 
-        available_qty = self.env['available.product.dict'].get_available_product_qty(user_id, product_id, expiration_tolerance)
-
-        req.update(dict(product_id=product_id, status='New', priority=sps_customer_product_priority, auto_allocate=auto_allocate,
-                        min_threshold=min_threshold, max_threshold=max_threshold, cooling_period=cooling_period, length_of_hold=length_of_hold,
-                        expiration_tolerance=expiration_tolerance, partial_ordering=partial_ordering, partial_UOM=partial_uom, available_qty=available_qty))
-        return req
+        if sps_customer_product_priority >= 0:
+            available_qty = self.env['available.product.dict'].get_available_product_qty(user_id, product_id, expiration_tolerance)
+            req.update(dict(product_id=product_id, status='New', priority=sps_customer_product_priority, auto_allocate=auto_allocate,
+                            min_threshold=min_threshold, max_threshold=max_threshold, cooling_period=cooling_period, length_of_hold=length_of_hold,
+                            expiration_tolerance=expiration_tolerance, partial_ordering=partial_ordering, partial_UOM=partial_uom, available_qty=available_qty))
+            return req
+        else:
+            return False
 
     def _all_voided_products(self, document_id, user_model, file_uploaded_record):
         sps_customer_requirement_all = self.env['sps.customer.requests'].search([('document_id', '=', document_id)])
