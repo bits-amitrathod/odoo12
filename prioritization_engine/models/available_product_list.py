@@ -54,7 +54,8 @@ class AvailableProductDict(models.TransientModel):
         expiration_tolerance_date = (date.today() + relativedelta(months=+int(prioritization_engine_request['expiration_tolerance'])))
 
         production_lot_list = self.env['stock.quant'].search(
-            [('product_id', '=', int(product_id)), ('quantity', '>', 0), ('location_id.usage', '=', 'internal'), ('location_id.active', '=', 'true'), ('lot_id.use_date', '>', str(expiration_tolerance_date))])
+            [('product_id', '=', int(product_id)), ('quantity', '>', 0), ('location_id.usage', '=', 'internal'), ('location_id.active', '=', 'true'),
+             ('lot_id.use_date', '>', str(expiration_tolerance_date))])
 
         for production_lot in production_lot_list:
             if production_lot.id and production_lot.lot_id and production_lot.product_id and production_lot.quantity and production_lot.lot_id.use_date:
@@ -72,8 +73,6 @@ class AvailableProductDict(models.TransientModel):
                         dict = {production_lot.product_id.id: [available_product]}
                         self.available_production_lot_dict.update(dict)
 
-        # sort list by latest expiry date(use date)
-        # available_production_lot_list_to_be_returned = sorted(self.available_production_lot_list_to_be_returned, key=itemgetter('use_date'))
         return self.available_production_lot_dict
 
     def get_available_product_qty(self, customer_id, product_id, expiration_tolerance):
