@@ -26,6 +26,7 @@ class ProcessHighPriorityRequests(models.Model):
                 self.env.cr.commit()
                 if high_priority_doc_pro_count <= 2:
                     self.env['sps.customer.requests'].process_customer_requests(high_priority_requests)
+                    document.write({'document_processed_count': document.document_processed_count + 1})
                 else:
                     document.write({'status': 'On Hold'})
                     self.env.cr.commit()

@@ -72,6 +72,7 @@ class DocumentProcessTransientModel(models.TransientModel):
                 ref = str(document_id) + "_" + file_uploaded_record.token
                 response = dict(message='File Uploaded Successfully', ref=ref)
                 for req in requests:
+                    insert_data_flag = True
                     product_id = 0
                     product_template_id = 0
                     if 'customer_sku' in req.keys():
@@ -89,7 +90,7 @@ class DocumentProcessTransientModel(models.TransientModel):
                             product_id = product[0].id
                             product_template_id = product[0].product_tmpl_id.id
                     if product_id != 0 and product_template_id != 0:
-                        req = self._get_product_level_setting(req, user_id, product_id, user_model)
+                        insert_data_flag = self._get_product_level_setting(req, user_id, product_id, user_model)
                         if req:
                             # set uom flag, if uom_flag is false then check the partial_uom flag
                             if 'uom' in req.keys():
@@ -111,13 +112,13 @@ class DocumentProcessTransientModel(models.TransientModel):
                             updated_qty = self._get_updated_qty(req, template_type, product_template_id)
                             if updated_qty != 0:
                                 req.update(dict(updated_quantity=updated_qty))
-
-                            sps_customer_request = dict(document_id=document_id, customer_id=user_id, create_uid=1, create_date=today_date, write_uid=1, write_date=today_date)
-                            for key in req.keys():
-                                sps_customer_request.update({key: req[key]})
-                            self.env['sps.customer.requests'].create(sps_customer_request)
                     else:
                         req.update(dict(product_id=None, status='Voided'))
+                    if insert_data_flag:
+                        sps_customer_request = dict(document_id=document_id, customer_id=user_id, create_uid=1, create_date=today_date, write_uid=1, write_date=today_date)
+                        for key in req.keys():
+                            sps_customer_request.update({key: req[key]})
+                        self.env['sps.customer.requests'].create(sps_customer_request)
 
                 # if document has all voided products then Send Email Notification to customer.
                 self._all_voided_products(document_id, user_model, file_uploaded_record)
@@ -160,7 +161,7 @@ class DocumentProcessTransientModel(models.TransientModel):
             req.update(dict(product_id=product_id, status='New', priority=sps_customer_product_priority, auto_allocate=auto_allocate,
                             min_threshold=min_threshold, max_threshold=max_threshold, cooling_period=cooling_period, length_of_hold=length_of_hold,
                             expiration_tolerance=expiration_tolerance, partial_ordering=partial_ordering, partial_UOM=partial_uom, available_qty=available_qty))
-            return req
+            return True
         else:
             return False
 
