@@ -23,7 +23,7 @@ _logger = logging.getLogger(__name__)
 class DocumentProcessTransientModel(models.TransientModel):
     _name = 'sps.document.process'
 
-    def process_document(self, user_model, uploaded_file_path, template_type_from_user, file_name, email_from, document_source='Api', ):
+    def process_document(self, user_model, uploaded_file_path, template_type_from_user, file_name, email_from, document_source='Api'):
         if not user_model.prioritization:
             return dict(errorCode=6, message='Prioritization is Not Enabled')
         if not user_model.customer:
@@ -46,7 +46,7 @@ class DocumentProcessTransientModel(models.TransientModel):
         mappings, non_mapped_columns, template_type = DocumentProcessTransientModel._get_column_mappings(
             mapping_field_list,
             templates_list,
-            uploaded_file_path, template_type_from_user)
+            uploaded_file_path, template_type_from_user,file_name)
         if len(mappings) == 0:
             if not template_type:
                 _logger.info('-------Template mismatch------------')
@@ -205,7 +205,9 @@ class DocumentProcessTransientModel(models.TransientModel):
             return 0
 
     @staticmethod
-    def _get_column_mappings(mapping_field_list, templates_list, file_path, template_type_from_user):
+    def _get_column_mappings(mapping_field_list, templates_list, file_path, template_type_from_user,file_name):
+
+        # irattachment_obj = self.env['ir.attachment']
         column_mappings = []
         template_type = None
         non_selected_columns = []
@@ -220,10 +222,12 @@ class DocumentProcessTransientModel(models.TransientModel):
                         dict(template_field=customer_template[mapping_field], mapping_field=mapping_field))
             selected_columns = [mapped_column['template_field'] for mapped_column in mapped_columns]
             template_column_list = non_selected_columns + selected_columns
-            file_extension = file_path[file_path.rindex('.') + 1:]
+
+            file_extension = file_name[file_name.rindex('.') + 1:]
             if file_extension == 'xls' or file_extension == 'xlsx':
-                book = xlrd.open_workbook(file_path)
-                columns = DocumentProcessTransientModel._read_xls_book(book)[0]
+                    book = xlrd.open_workbook(file_path)
+                    columns = DocumentProcessTransientModel._read_xls_book(book)[0]
+
             elif file_extension == 'csv':
                 columns = DocumentProcessTransientModel._read_columns_from_csv(file_path)
             compare = lambda x, y: collections.Counter(x) == collections.Counter(y)
