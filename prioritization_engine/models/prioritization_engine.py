@@ -495,7 +495,7 @@ class PrioritizationEngine(models.TransientModel):
             high_priority_requests = self.env['sps.customer.requests'].search([('document_id', '=', sps_cust_uploaded_document.id), ('status', 'in', ['New']), ('priority', '=', 0), ('available_qty', '>', 0)])
 
             if sps_cust_uploaded_document.template_type.lower().strip() == 'requirement':
-                if current_processed_docs >= current_cust_doc_fixed_count:
+                if int(current_processed_docs) >= int(current_cust_doc_fixed_count):
                     sps_cust_uploaded_document.write({'status': 'Completed'})
                     if len(sps_customer_requirements) == len(sps_customer_requirements_all_non_voided):
                         template = self.env.ref('customer-requests.final_email_response_on_uploaded_document').sudo()
