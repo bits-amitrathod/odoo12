@@ -96,7 +96,7 @@ class ReportQuotationExport(http.Controller):
             left join product_template pt on pp.product_tmpl_id = pt.id
             left join res_partner rp on so.partner_id = rp.id
             left join uom_uom um on um.id = sol.product_uom          
-            where so.state in ('draft','draft') and sol.price_unit > 0         
+            where so.state in ('draft','draft') and sol.price_unit >= 0         
             and sol.product_uom_qty > 0
                             
         """
