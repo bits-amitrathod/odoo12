@@ -46,6 +46,7 @@
                         <field name="product_id"/>
                         <field name="customer_id"/>
                         <field name="status"/>
+                        <field name="create_date" string="Date"/>
                     </group>
                     <group>
                         <field name="product_description" string="Customer Product Description"/>
