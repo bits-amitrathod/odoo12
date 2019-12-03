@@ -78,7 +78,7 @@ class SpsCustomerRequest(models.Model):
                     if document.status != 'Completed':
                         document.write({'status': 'Completed'})
             elif document.template_type.lower().strip() == 'requirement':
-                if int(document_processed_count) <= int(doc_process_fixed_count):
+                if int(document_processed_count) < int(doc_process_fixed_count):
                     self.documents.add(document.id)
                     document.write({'document_processed_count': document.document_processed_count+1})
 
