@@ -415,7 +415,7 @@ class StockMove(models.Model):
                                                                                 stock_move.product_id.id,
                                                                                 None, None)
                 if setting:
-                    if setting.partial_UOM and not setting.partial_UOM is None:
+                    if setting.partial_UOM and setting.partial_UOM is not None:
                         _logger.info('partial UOM** : %r', setting.partial_UOM)
                         stock_move.partial_UOM = setting.partial_UOM
 
@@ -436,26 +436,20 @@ class StockMove(models.Model):
 
             if (move.picking_id and move.picking_id.sale_id) and (move.picking_id.sale_id.team_id.team_type.lower().strip() == 'engine' and move.picking_id.sale_id.state.lower().strip() in (
                     'sale')):
-                available_production_lot_dict = self.env['available.product.dict'].get_available_production_lot_dict()
 
-                # get expiration tolerance
-                _setting_object = self.env['sps.customer.requests'].get_settings_object(move.partner_id.id, move.product_id.id, None, None)
-
-                # Search lot Id as per partner product expiration tolerance
-                filter_available_product_lot_dict = self.env[
-                    'prioritization.engine.model'].filter_available_product_lot_dict(available_production_lot_dict, move.product_id.id, _setting_object.expiration_tolerance)
-
-                for product_lot in filter_available_product_lot_dict.get(move.product_id.id, {}):
-                    lot_id = product_lot.get(list(product_lot.keys()).pop(0), {}).get('lot_id')
-                    avi_qty = product_lot.get(list(product_lot.keys()).pop(0), {}).get('available_quantity')
-                    use_date = product_lot.get(list(product_lot.keys()).pop(0), {}).get('use_date')
-                    if avi_qty > 0:
-                        dict1 = {'lot_id': lot_id, 'available_qty': avi_qty, 'use_date': use_date}
-                        if move.product_id.id in product_lot_qty_dict.keys():
-                            product_lot_qty_dict.get(move.product_id.id, {}).append(dict1)
-                        else:
-                            new_dict = {move.product_id.id: [dict1]}
-                            product_lot_qty_dict.update(new_dict)
+                available_production_lot_dict = self.env['available.product.dict'].get_available_production_lot(move.partner_id.id, move.product_id.id)
+                if available_production_lot_dict.get(int(move.product_id.id)) is not None:
+                    for product_lot in available_production_lot_dict.get(int(move.product_id.id)):
+                        lot_id = product_lot.get(list(product_lot.keys()).pop(0), {}).get('lot_id')
+                        avi_qty = product_lot.get(list(product_lot.keys()).pop(0), {}).get('available_quantity')
+                        use_date = product_lot.get(list(product_lot.keys()).pop(0), {}).get('use_date')
+                        if avi_qty > 0:
+                            dict1 = {'lot_id': lot_id, 'available_qty': avi_qty, 'use_date': use_date}
+                            if move.product_id.id in product_lot_qty_dict.keys():
+                                product_lot_qty_dict.get(move.product_id.id, {}).append(dict1)
+                            else:
+                                new_dict = {move.product_id.id: [dict1]}
+                                product_lot_qty_dict.update(new_dict)
 
                 dict_by_product = product_lot_qty_dict.get(move.product_id.id, {})
                 dict_asc_by_use_date = sorted(dict_by_product, key=lambda i: i['use_date'])
@@ -616,4 +610,3 @@ class GLAccount(models.Model):
     ]
     name = fields.Char(string='GL Account', required=True, translate=True)
     partner_id = fields.Many2one('res.partner', string='Partner')
-

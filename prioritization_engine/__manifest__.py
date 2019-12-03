@@ -18,6 +18,7 @@
     'data': [
         'security/res_user_prioritization.xml',
         'security/ir.model.access.csv',
+        'views/email_template.xml',
         'views/res_config_setting_view.xml',
         'views/saleorder_views.xml',
         'views/report_invoice.xml',

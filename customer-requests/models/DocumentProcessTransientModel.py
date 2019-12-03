@@ -72,102 +72,49 @@ class DocumentProcessTransientModel(models.TransientModel):
                 ref = str(document_id) + "_" + file_uploaded_record.token
                 response = dict(message='File Uploaded Successfully', ref=ref)
                 for req in requests:
+                    insert_data_flag = True
                     product_id = 0
-                    if 'uom' in req.keys():
-                        if req['uom'].lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
-                            if 'customer_sku' in req.keys():
-                                customer_sku = req['customer_sku']
-                                product_sku = self.get_product_sku(user_model, customer_sku)
-                                product = self.get_product(product_sku)
-                                if product:
-                                    product_sales_uom = product[0].product_tmpl_id.uom_id.name
-                                    if product_sales_uom.lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
-                                        _logger.info('Products Sales uom is each')
-                                        product_id = product[0].id
-                                if product_id == 0:
-                                    _logger.info('append "-E" to product sku and check product is available or not')
-                                    # append '-E' to product sku and check product is available or not
-                                    product_sku = product_sku + '-E'
-                                    product = self.get_product(product_sku)
-                                    if product:
-                                        req.update(dict(customer_sku=product_sku))
-                                        product_sales_uom = product[0].product_tmpl_id.uom_id.name
-                                        if product_sales_uom.lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
-                                            _logger.info('Product Sales uom is each')
-                                            product_id = product[0].id
-                                        else:
-                                            _logger.info('product not available')
-                                    else:
-                                        _logger.info('product not available')
-                            elif 'mfr_catalog_no' in req.keys():
-                                mfr_catalog_no = req['mfr_catalog_no']
-                                product_sku = self.get_product_sku(user_model, mfr_catalog_no)
-                                product = self.get_product(product_sku)
-                                if product:
-                                    product_sales_uom = product[0].product_tmpl_id.uom_id.name
-                                    if product_sales_uom.lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
-                                        _logger.info('Products Sales uom is each')
-                                        product_id = product[0].id
-                                if product_id == 0:
-                                    _logger.info('append "-E" to product sku and check product is available or not')
-                                    # append '-E' to product sku and check product is available or not
-                                    product_sku = product_sku + '-E'
-                                    product = self.get_product(product_sku)
-                                    if product:
-                                        req.update(dict(mfr_catalog_no=product_sku))
-                                        product_sales_uom = product[0].product_tmpl_id.uom_id.name
-                                        if product_sales_uom.lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
-                                            _logger.info('Product Sales uom is each')
-                                            product_id = product[0].id
-                                        else:
-                                            _logger.info('product not available')
-                                    else:
-                                        _logger.info('product not available')
-                        else:
-                            _logger.info('Product uom is not each')
-                            if 'customer_sku' in req.keys():
-                                customer_sku = req['customer_sku']
-                                product_sku = self.get_product_sku(user_model, customer_sku)
-                                product = self.get_product(product_sku)
-                                if product:
-                                    product_id = product[0].id
-                            elif 'mfr_catalog_no' in req.keys():
-                                mfr_catalog_no = req['mfr_catalog_no']
-                                product_sku = self.get_product_sku(user_model, mfr_catalog_no)
-                                product = self.get_product(product_sku)
-                                if product:
-                                    product_id = product[0].id
-                        if product_id != 0:
-                            sps_product_priotization = self.env['prioritization_engine.prioritization'].search([['customer_id', '=', user_id], ['product_id', '=', product_id]])
-                            if len(sps_product_priotization) >= 1:
-                                sps_product = sps_product_priotization[0]
-                                sps_customer_product_priority = sps_product.priority
-                            else:
-                                sps_customer_product_priority = user_model.priority
-                            req.update(dict(product_id=product_id, status='New', priority=sps_customer_product_priority))
+                    product_template_id = 0
+                    if 'customer_sku' in req.keys():
+                        customer_sku = req['customer_sku']
+                        product_sku = self.get_product_sku(user_model, customer_sku)
+                        product = self.get_product(product_sku)
+                        if product:
+                            product_id = product[0].id
+                            product_template_id = product[0].product_tmpl_id.id
+                    elif 'mfr_catalog_no' in req.keys():
+                        mfr_catalog_no = req['mfr_catalog_no']
+                        product_sku = self.get_product_sku(user_model, mfr_catalog_no)
+                        product = self.get_product(product_sku)
+                        if product:
+                            product_id = product[0].id
+                            product_template_id = product[0].product_tmpl_id.id
+                    if product_id != 0 and product_template_id != 0:
+                        insert_data_flag = self._get_product_level_setting(req, user_id, product_id, user_model)
+                        if req:
                             # set uom flag, if uom_flag is false then check the partial_uom flag
-                            # if 'uom' in req.keys():
-                            #     if req['uom'].lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
-                            #         req.update(dict(uom_flag=True))
-                            #     else:
-                            #         req.update(dict(uom_flag=False))
-                            # else:
-                            #     _logger.info('Product UOM not mapped.')
-                            # Get Product UOM category id
-                            product_uom_categ = self.env['uom.category'].search([('name', 'in', ['Unit', 'Each'])])
-                            # get product
-                            product = self.env['product.template'].search([('id', '=', req['product_id'])])
-                            if product.manufacturer_uom.category_id.id in product_uom_categ.ids:
-                                if product.uom_id.name.lower().strip() == product.manufacturer_uom.name.lower().strip():
+                            if 'uom' in req.keys():
+                                if req['uom'].lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
                                     req.update(dict(uom_flag=True))
                                 else:
                                     req.update(dict(uom_flag=False))
+                            else:
+                                # Get Product UOM category id
+                                product_uom_categ = self.env['uom.category'].search([('name', 'in', ['Unit', 'Each'])])
+                                # get product
+                                product = self.env['product.template'].search([('id', '=', product_template_id)])
+                                if product.manufacturer_uom.category_id.id in product_uom_categ.ids:
+                                    if product.manufacturer_uom.name.lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
+                                        req.update(dict(uom_flag=True))
+                                    else:
+                                        req.update(dict(uom_flag=False))
                             # calculate product quantity
-                            updated_qty = self._get_updated_qty(req, template_type)
+                            updated_qty = self._get_updated_qty(req, template_type, product_template_id)
                             if updated_qty != 0:
                                 req.update(dict(updated_quantity=updated_qty))
-                        else:
-                            req.update(dict(product_id=None, status='Voided'))
+                    else:
+                        req.update(dict(product_id=None, status='Voided'))
+                    if insert_data_flag:
                         sps_customer_request = dict(document_id=document_id, customer_id=user_id, create_uid=1, create_date=today_date, write_uid=1, write_date=today_date)
                         for key in req.keys():
                             sps_customer_request.update({key: req[key]})
@@ -183,6 +130,41 @@ class DocumentProcessTransientModel(models.TransientModel):
             response = dict(errorCode=2, message='Invalid File extension')
         return response
 
+    def _get_product_level_setting(self, req, user_id, product_id, user_model):
+        sps_product_setting = self.env['prioritization_engine.prioritization'].search([('customer_id', '=', user_id), ('product_id', '=', product_id)])
+        if len(sps_product_setting) >= 1:
+            sps_product = sps_product_setting[0]
+            sps_customer_product_priority = sps_product.priority
+            if sps_customer_product_priority >= 0:
+                auto_allocate = sps_product.auto_allocate
+                min_threshold = sps_product.min_threshold
+                max_threshold = sps_product.max_threshold
+                cooling_period = sps_product.cooling_period
+                length_of_hold = sps_product.length_of_hold
+                expiration_tolerance = sps_product.expiration_tolerance
+                partial_ordering = sps_product.partial_ordering
+                partial_uom = sps_product.partial_UOM
+        else:
+            sps_customer_product_priority = user_model.priority
+            if sps_customer_product_priority >= 0:
+                auto_allocate = user_model.auto_allocate
+                min_threshold = user_model.min_threshold
+                max_threshold = user_model.max_threshold
+                cooling_period = user_model.cooling_period
+                length_of_hold = user_model.length_of_hold
+                expiration_tolerance = user_model.expiration_tolerance
+                partial_ordering = user_model.partial_ordering
+                partial_uom = user_model.partial_UOM
+
+        if sps_customer_product_priority >= 0:
+            available_qty = self.env['available.product.dict'].get_available_product_qty(user_id, product_id, expiration_tolerance)
+            req.update(dict(product_id=product_id, status='New', priority=sps_customer_product_priority, auto_allocate=auto_allocate,
+                            min_threshold=min_threshold, max_threshold=max_threshold, cooling_period=cooling_period, length_of_hold=length_of_hold,
+                            expiration_tolerance=expiration_tolerance, partial_ordering=partial_ordering, partial_UOM=partial_uom, available_qty=available_qty))
+            return True
+        else:
+            return False
+
     def _all_voided_products(self, document_id, user_model, file_uploaded_record):
         sps_customer_requirement_all = self.env['sps.customer.requests'].search([('document_id', '=', document_id)])
         sps_customer_requirements_all_voided = self.env['sps.customer.requests'].search([('document_id', '=', document_id), ('status', 'in', ['Voided'])])
@@ -191,7 +173,7 @@ class DocumentProcessTransientModel(models.TransientModel):
             self.env['prioritization.engine.model'].send_mail(user_model.name, user_model.email, template)
             file_uploaded_record.write({'document_processed_count': 1, 'status': 'Completed'})
 
-    def _get_updated_qty(self, req, template_type):
+    def _get_updated_qty(self, req, template_type, product_template_id):
         _logger.info('_get_updated_qty, Template type from user : ')
         _logger.info(template_type)
         if template_type.lower().strip() == "requirement":
@@ -200,7 +182,7 @@ class DocumentProcessTransientModel(models.TransientModel):
                 return req_qty
             else:
                 # get product
-                product = self.env['product.template'].search([('id', '=', req['product_id'])])
+                product = self.env['product.template'].search([('id', '=', product_template_id)])
                 uom = self.env['uom.uom'].search([('name', 'ilike', 'Unit'), ('category_id.id', '=', 1)])
                 if len(uom) == 0:
                     uom = self.env['uom.uom'].search([('name', 'ilike', 'Each'), ('category_id.id', '=', 1)])
