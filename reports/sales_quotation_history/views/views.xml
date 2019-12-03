@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="sale_quotation_export_list_view">
+              <field name="name">product.sale.quotation.view.list</field>
+              <field name="model">sale.order.line</field>
+              <field name="priority">22</field>
+
+              <field name="arch" type="xml">
+                <tree create="false" edit="false" delete="false">
+
+                    <field name="qe_product_sku_ref" string="Product SKU"/>
+                    <field name="qe_customer_name" string="Customer Name"/>
+                    <field name="qe_account_manager_cust_name" />
+                    <field name="order_id" string="Sales Order#"/>
+                    <field name="product_id" string="Product Name"/>
+                    <field name="create_date" string="Ordered Date"/>
+                    <field name="product_uom_qty" string="Ordered Qty"/>
+                    <field name="qe_product_uom_converted" string="UOM"/>
+                    <field name="qe_unit_price_converted" widget="monetary" string="Unit Price" />
+                    <field name="qe_total_price_converted" widget="monetary" string="Total" sum="Total"/>
+                    <field name="currency_id"  invisible="1" />
+                </tree>
+              </field>
+        </record>
+
+          <record model="ir.ui.view" id="sale_quotation_export_form_view">
+              <field name="name">sale.quotation.history.form</field>
+              <field name="model">sale.order</field>
+              <field name="priority">22</field>
+              <field name="arch" type="xml">
+                <form>
+            <field name="id" string="Sales Order#"/>
+                </form>
+              </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_sale_quotation_export_list_wizard">
+            <field name="name">Sales Quotation History</field>
+            <field name="res_model">sale.order.line</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+        (0, 0, {'view_mode': 'tree', 'view_id': ref('sale_quotation_export_list_view')},),
+        (0, 0, {'view_mode': 'form', 'view_id': ref('sale_quotation_export_form_view')})
+        ]"/>
+
+        </record>
+
+
+        <record id="sr_sale_quotation_export_form_view" model="ir.ui.view">
+            <field name="name">sale.purchase.history.report.form.view</field>
+            <field name="model">sale.purchase.history.report</field>
+            <field name="arch" type="xml">
+                <form string="Sales Quotation History">
+                    <group>
+                        <group>
+                            <field name="start_date"/>
+                            <field name="product_id" widget="many2many_tags"/>
+                            <field name="order_partner_id" operator="child_of"/>
+                        </group>
+                        <group>
+                            <field name="end_date"/>
+                            <field name="contract_id" operator="child_of" />
+                            <field name="order_account_manager_cust" operator="child_of" />
+                        </group>
+                    </group>
+
+                    <footer>
+                        <button name="open_table" string="VIEW REPORT" class="btn-primary" type="object"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_sale_quotation_export_wizard" model="ir.actions.act_window">
+            <field name="name">Sales Quotation History</field>
+            <field name="res_model">sale.quotation.history</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="sr_sale_quotation_export_form_view"/>
+            <field name="target">new</field>
+            <field name="context">{'valuation': True}</field>
+        </record>
+
+
+        <record id="view_sales_quotation_export_cstm" model="ir.ui.view">
+            <field name="name">sale.order.line.view</field>
+            <field name="model">sale.order.line</field>
+            <field name="arch" type="xml">
+                <form create="false" edit="false" delete="false">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="order_id"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="product_id"/>
+                                <field name="qe_product_sku_ref"/>
+                                <field name="qe_customer_name"/>
+                            </group>
+                            <group>
+                                <!--<field name="qty_delivered_converted" string="Required Quantity"/>-->
+                                <!--<field name="qty_delivered_converted" string="Delivered Quantity"/>-->
+                                 <field name="product_uom_qty" string="Ordered Qty"/>
+                                <field name="qe_unit_price_converted" widget="monetary"/>
+                                <field name="qe_total_price_converted" string="Total Price" widget="monetary" sum="Total"/>
+                                <field name="create_date" string="Ordered Date"/>
+                                <field name="currency_id"  invisible="1" />
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="sale_quotation_export_popup" model="ir.ui.view">
+            <field name="name">salequotationexport.export.popup</field>
+            <field name="model">salequotationexport.export</field>
+            <field name="arch" type="xml">
+                <form string="Export Sales Quotation History">
+                    <group>
+                        <div>Click On ' Export To File ' button to export Sales Quotation file</div>
+                    </group>
+                    <footer>
+                        <button name="download_excel_sale_quotation_export" string="Export To File" type="object"
+                                class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <act_window name="Export Sales Quotation History "
+                    res_model="salequotationexport.export"
+                    src_model="sale.order.line"
+                    view_mode="form"
+                    target="new"
+                    key2="client_action_multi"
+                    id="sale_quotation_export_act_window"/>
+
+        <menuitem id="menu_sale_quotation_export_list_view_wizard" name="Sales Quotation History" action="action_sale_quotation_export_wizard"
+           parent="sale.menu_sale_report" sequence="1"/>
+    </data>
+</odoo>
+
+
