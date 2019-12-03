@@ -29,7 +29,7 @@ poplib._MAXLINE = 65536
 class DumpDiscuss(models.Model):
     _inherit = 'mail.message'
 
-#Read/Unread Flag for incoming email
+# Read/Unread Flag for incoming email
     is_read = fields.Boolean(Default=False)
 
     @api.model
@@ -37,6 +37,7 @@ class DumpDiscuss(models.Model):
         in_emails = self.env['mail.message'].sudo().search(
             [('model', '=', 'mail.channel'), ('is_read', '=', False), ('record_name', '=', 'general'),
              ('is_read', '!=', None)], limit=1, order='id asc')
+        in_emails.write({'is_read': True})
 
         for message in in_emails:
 
@@ -53,9 +54,10 @@ class DumpDiscuss(models.Model):
                 tmpl_type = None
                 saleforce_ac = None
                 attachments = None
+                file_extension = None
 
-                filename = message.attachment_ids[0].name
-                if filename is not None:
+                filename = message.attachment_ids.name
+                if filename and filename != False:
                         file_extension = filename[filename.rindex('.') + 1:]
 
                 if file_extension == 'xls' or file_extension == 'xlsx' or file_extension == 'csv':
@@ -139,7 +141,7 @@ class DumpDiscuss(models.Model):
                                 [("saleforce_ac", "=ilike", saleforce_ac)])
                             if users_model:
                                 if len(users_model) == 1:
-                                    filename = message.attachment_ids[0].name
+                                    # filename = message.attachment_ids[0].name
                                     if filename:
                                         try:
                                             self.env.cr.savepoint()
@@ -153,7 +155,6 @@ class DumpDiscuss(models.Model):
                                                                                          email_from,
                                                                                          'Email'
                                                                                          )
-                                            in_emails.write({'is_read': True})
                                             self.env.cr.commit()
 
                                         except Exception as e:
@@ -173,14 +174,13 @@ class DumpDiscuss(models.Model):
                                 [("email", "=ilike", customer_email)])
                             if users_model:
                                 if len(users_model) == 1:
-                                    filename = message.attachment_ids[0].name
+                                    # filename = message.attachment_ids[0].name
                                     # when new email in inbox, send email to admin
                                     self.send_mail_with_attachment(str(email_from), str(email_subject), str(res_partner.name), attachments,in_emails)
 
                                     if not filename is None:
                                         try:
                                             self.env.cr.savepoint()
-                                            # datas = message.attachment_ids.datas
                                             checksum = message.attachment_ids[0].checksum
                                             file_path = message.attachment_ids[0]._get_path(attachments, checksum)[1]
                                             response = self.env[
@@ -191,7 +191,6 @@ class DumpDiscuss(models.Model):
                                                                                          email_from,
                                                                                          'Email',
                                                                                          )
-                                            in_emails.write({'is_read': True})
                                             self.env.cr.commit()
                                         except Exception as e:
                                             _logger.info(str(e))
