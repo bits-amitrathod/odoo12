@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report
+                id="action_sales_quotation_history"
+                string="Sales Quotation History"
+                model="sale.order.line"
+                report_type="qweb-html"
+                file="sales_quotation_history.salesquotationexport_temp"
+                name="sales_quotation_history.salesquotationexport_temp"
+        />
+    </data>
+</odoo>

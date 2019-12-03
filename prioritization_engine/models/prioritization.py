@@ -436,14 +436,7 @@ class StockMove(models.Model):
 
             if (move.picking_id and move.picking_id.sale_id) and (move.picking_id.sale_id.team_id.team_type.lower().strip() == 'engine' and move.picking_id.sale_id.state.lower().strip() in (
                     'sale')):
-                # available_production_lot_dict = self.env['available.product.dict'].get_available_production_lot_dict()
 
-                # get expiration tolerance
-                # _setting_object = self.env['sps.customer.requests'].get_settings_object(move.partner_id.id, move.product_id.id, None, None)
-
-                # Search lot Id as per partner product expiration tolerance
-                # filter_available_product_lot_dict = self.env[
-                # 'prioritization.engine.model'].filter_available_product_lot_dict(available_production_lot_dict, move.product_id.id, _setting_object.expiration_tolerance)
                 available_production_lot_dict = self.env['available.product.dict'].get_available_production_lot(move.partner_id.id, move.product_id.id)
                 if available_production_lot_dict.get(int(move.product_id.id)) is not None:
                     for product_lot in available_production_lot_dict.get(int(move.product_id.id)):
@@ -617,4 +610,3 @@ class GLAccount(models.Model):
     ]
     name = fields.Char(string='GL Account', required=True, translate=True)
     partner_id = fields.Many2one('res.partner', string='Partner')
-
