@@ -82,6 +82,13 @@ class DocumentProcessTransientModel(models.TransientModel):
                         if product:
                             product_id = product[0].id
                             product_template_id = product[0].product_tmpl_id.id
+                        else:
+                            # Check product with -E
+                            product_sku = self.get_product_sku(user_model, mfr_catalog_no)
+                            product = self.get_product(product_sku+'-E', req)
+                            if product:
+                                product_id = product[0].id
+                                product_template_id = product[0].product_tmpl_id.id
                     elif 'mfr_catalog_no' in req.keys():
                         mfr_catalog_no = req['mfr_catalog_no']
                         product_sku = self.get_product_sku(user_model, mfr_catalog_no)
@@ -89,6 +96,13 @@ class DocumentProcessTransientModel(models.TransientModel):
                         if product:
                             product_id = product[0].id
                             product_template_id = product[0].product_tmpl_id.id
+                        else:
+                            # Check product with -E
+                            product_sku = self.get_product_sku(user_model, mfr_catalog_no)
+                            product = self.get_product(product_sku+'-E', req)
+                            if product:
+                                product_id = product[0].id
+                                product_template_id = product[0].product_tmpl_id.id
                     if product_id != 0 and product_template_id != 0:
                         insert_data_flag = self._get_product_level_setting(req, user_id, product_id, user_model)
                         if req:
@@ -397,9 +411,11 @@ class DocumentProcessTransientModel(models.TransientModel):
         elif len(query_result) == 1:
             product = self.env['product.product'].search([('product_tmpl_id', '=', query_result[0]['id'])])
             if len(product) == 1:
-                product = product
-            else:
-                product = False
+                if req['uom'].lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
+                    if product.uom_id.name in ['each', 'unit']:
+                        product = product
+                else:
+                    product = product
         # return product object
         return product
 
