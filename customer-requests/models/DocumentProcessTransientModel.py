@@ -78,14 +78,14 @@ class DocumentProcessTransientModel(models.TransientModel):
                     if 'customer_sku' in req.keys():
                         customer_sku = req['customer_sku']
                         product_sku = self.get_product_sku(user_model, customer_sku)
-                        product = self.get_product(product_sku)
+                        product = self.get_product(product_sku, req)
                         if product:
                             product_id = product[0].id
                             product_template_id = product[0].product_tmpl_id.id
                     elif 'mfr_catalog_no' in req.keys():
                         mfr_catalog_no = req['mfr_catalog_no']
                         product_sku = self.get_product_sku(user_model, mfr_catalog_no)
-                        product = self.get_product(product_sku)
+                        product = self.get_product(product_sku, req)
                         if product:
                             product_id = product[0].id
                             product_template_id = product[0].product_tmpl_id.id
@@ -382,7 +382,7 @@ class DocumentProcessTransientModel(models.TransientModel):
                 product_sku = product_sku[:-len(user_model.sku_postconfig)]
         return product_sku
 
-    def get_product(self, product_sku):
+    def get_product(self, product_sku, req):
         product_sku = DocumentProcessTransientModel.cleaning_code(product_sku)
         _logger.info('product sku %r', product_sku)
         self.env.cr.execute("""select * from 
@@ -390,11 +390,13 @@ class DocumentProcessTransientModel(models.TransientModel):
                                 regexp_replace(REPLACE(RTRIM(LTRIM(REPLACE(sku_code,'0',' '))),' ','0'), '[^A-Za-z0-9.]', '','g') as sku_code_cleaned
                                 FROM product_template where tracking != 'none' and active = true)
                                 as temp_data where lower(sku_code_cleaned) ='""" + product_sku.lower() + """' or lower(manufacturer_pref_cleaned) = '""" + product_sku.lower() + """' """)
-        query_result = self.env.cr.dictfetchone()
+        query_result = self.env.cr.dictfetchall()
         product = False
-        if query_result:
-            product = self.env['product.product'].search([['product_tmpl_id', '=', query_result['id']]])
-            if len(product) > 0:
+        if len(query_result) > 1:
+            req.update(dict(customer_request_logs='Duplicate product'))
+        elif len(query_result) == 1:
+            product = self.env['product.product'].search([('product_tmpl_id', '=', query_result[0]['id'])])
+            if len(product) == 1:
                 product = product
             else:
                 product = False
