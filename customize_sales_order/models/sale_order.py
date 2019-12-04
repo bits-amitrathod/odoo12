@@ -12,6 +12,13 @@ class CustomerContract(models.Model):
                                                                                          ",('share','=',False)]")
 
 
+class CustomerContract(models.Model):
+    _inherit = "res.partner"
+
+    account_manager_cust = fields.Many2one('res.users', string="Account Manager", domain="[('active', '=', True)"
+                                                                                         ",('share','=',False)]")
+
+
 class sale_order(models.Model):
     _inherit = 'sale.order'
 
