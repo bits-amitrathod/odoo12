@@ -438,39 +438,28 @@ class StockMove(models.Model):
                     'sale')):
 
                 available_production_lot_dict = self.env['available.product.dict'].get_available_production_lot(move.partner_id.id, move.product_id.id)
-                if available_production_lot_dict.get(int(move.product_id.id)) is not None:
-                    for product_lot in available_production_lot_dict.get(int(move.product_id.id)):
-                        lot_id = product_lot.get(list(product_lot.keys()).pop(0), {}).get('lot_id')
-                        avi_qty = product_lot.get(list(product_lot.keys()).pop(0), {}).get('available_quantity')
-                        use_date = product_lot.get(list(product_lot.keys()).pop(0), {}).get('use_date')
-                        if avi_qty > 0:
-                            dict1 = {'lot_id': lot_id, 'available_qty': avi_qty, 'use_date': use_date}
-                            if move.product_id.id in product_lot_qty_dict.keys():
-                                product_lot_qty_dict.get(move.product_id.id, {}).append(dict1)
-                            else:
-                                new_dict = {move.product_id.id: [dict1]}
-                                product_lot_qty_dict.update(new_dict)
-
-                dict_by_product = product_lot_qty_dict.get(move.product_id.id, {})
-                dict_asc_by_use_date = sorted(dict_by_product, key=lambda i: i['use_date'])
 
                 need = move.product_qty - move.reserved_availability
-                for prdt_lot_qty in dict_asc_by_use_date:
-                    # Reserve new quants and create move lines accordingly.
-                    available_quantity = prdt_lot_qty['available_qty']
-                    if available_quantity <= 0:
-                        continue
-                    if need > 0:
-                        taken_quantity = move._update_reserved_quantity(need, prdt_lot_qty['available_qty'], move.location_id, prdt_lot_qty['lot_id'], strict=False)
-                        if float_is_zero(taken_quantity, precision_rounding=move.product_id.uom_id.rounding):
+                if available_production_lot_dict.get(int(move.product_id.id)) is not None:
+                    for product_lot in available_production_lot_dict.get(int(move.product_id.id)):
+                        lot_id = int(product_lot.get(list(product_lot.keys()).pop(0), {}).get('lot_id'))
+                        lot_object = self.env['stock.production.lot'].search([('id', '=', lot_id)])
+                        available_quantity = product_lot.get(list(product_lot.keys()).pop(0), {}).get('available_quantity')
+
+                        # Reserve new quants and create move lines accordingly.
+                        if available_quantity <= 0:
                             continue
-                        _logger.info('taken_quantity : %r', taken_quantity)
-                        need = need - taken_quantity
-                    if need == taken_quantity:
-                        assigned_moves |= move
-                    elif need == 0.0:
-                        assigned_moves |= move
-                        break
+                        if need > 0:
+                            taken_quantity = move._update_reserved_quantity(need, available_quantity, move.location_id, lot_object, strict=False)
+                            if float_is_zero(taken_quantity, precision_rounding=move.product_id.uom_id.rounding):
+                                continue
+                            _logger.info('taken_quantity : %r', taken_quantity)
+                            need = need - taken_quantity
+                        if need == taken_quantity:
+                            assigned_moves |= move
+                        elif need == 0.0:
+                            assigned_moves |= move
+                            break
             else:
                 if move.location_id.should_bypass_reservation() \
                         or move.product_id.type == 'consu':

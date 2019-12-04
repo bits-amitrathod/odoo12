@@ -35,7 +35,7 @@ class PrioritizationEngine(models.TransientModel):
                     customer_request.write({'customer_request_logs': 'Auto allocate is true, '})
                     _logger.debug('Auto allocate is true.')
                     filter_available_product_lot_dict = self.filter_available_product_lot_dict(available_product_lot_dict, customer_request.product_id.id, customer_request.expiration_tolerance)
-                    if len(filter_available_product_lot_dict) >= 1:
+                    if len(filter_available_product_lot_dict) > 0:
                         # check cooling period- method return True/False
                         if self.check_cooling_period(customer_request):
                             customer_request.write({'customer_request_logs': str(customer_request.customer_request_logs) + 'success cooling period, '})
@@ -75,7 +75,7 @@ class PrioritizationEngine(models.TransientModel):
     def filter_available_product_lot_dict(self, available_production_lot_dict, product_id, expiration_tolerance):
         filtered_production_lot_dict_to_be_returned = {}
         filtered_production_lot_dict_to_be_returned.clear()
-        for available_production_lot in available_production_lot_dict.get(product_id,{}):
+        for available_production_lot in available_production_lot_dict.get(product_id, {}):
             if datetime.strptime(str(available_production_lot.get(list(available_production_lot.keys()).pop(0), {}).get('use_date')),
                     '%Y-%m-%d %H:%M:%S') >= self.get_product_expiration_tolerance_date(expiration_tolerance):
 
