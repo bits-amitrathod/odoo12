@@ -84,7 +84,8 @@ class DocumentProcessTransientModel(models.TransientModel):
                             product_template_id = product[0].product_tmpl_id.id
                         else:
                             # Check product with -E
-                            product_sku = self.get_product_sku(user_model, mfr_catalog_no)
+                            product_sku = self.get_product_sku(user_model, customer_sku)
+                            _logger.info('Find product sku with -E : ' + str(product_sku))
                             product = self.get_product(product_sku+'-E', req)
                             if product:
                                 product_id = product[0].id
@@ -99,6 +100,7 @@ class DocumentProcessTransientModel(models.TransientModel):
                         else:
                             # Check product with -E
                             product_sku = self.get_product_sku(user_model, mfr_catalog_no)
+                            _logger.info('Find product sku with -E : ' + str(product_sku))
                             product = self.get_product(product_sku+'-E', req)
                             if product:
                                 product_id = product[0].id
