@@ -15,33 +15,34 @@ class ProcessHighPriorityRequests(models.Model):
         _logger.info('process high priority requests.')
 
         documents = self.env['sps.cust.uploaded.documents'].search([('status', '=', 'draft')], limit=1, order="id asc")
-        # Avoid “RuntimeError: dictionary changed size during iteration” error
-        document = documents[0]
+        if len(documents) == 1:
+            # Avoid “RuntimeError: dictionary changed size during iteration” error
+            document = documents[0]
 
-        high_priority_requests = self.env['sps.customer.requests'].search([('document_id', '=', document.id), ('status', '=', 'New'), ('priority', '=', 0), ('available_qty', '>', 0)])
+            high_priority_requests = self.env['sps.customer.requests'].search([('document_id', '=', document.id), ('status', '=', 'New'), ('priority', '=', 0), ('available_qty', '>', 0)])
 
-        if len(high_priority_requests) > 0:
-            try:
-                self.env.cr.savepoint()
-                high_priority_doc_pro_count = document.high_priority_doc_pro_count + 1
-                document.write({'high_priority_doc_pro_count': high_priority_doc_pro_count})
-                self.env.cr.commit()
-                if high_priority_doc_pro_count <= 2:
-                    self.env['sps.customer.requests'].process_customer_requests(high_priority_requests)
-                    document.write({'document_processed_count': document.document_processed_count + 1})
-                else:
-                    document.write({'status': 'On Hold'})
+            if len(high_priority_requests) > 0:
+                try:
+                    self.env.cr.savepoint()
+                    high_priority_doc_pro_count = document.high_priority_doc_pro_count + 1
+                    document.write({'high_priority_doc_pro_count': high_priority_doc_pro_count})
                     self.env.cr.commit()
-                    self.send_on_hold_doc_mail(document.email_from, document.customer_id.name, document.customer_id.email, document.document_name, document.status, document.source, 'Unable to process file. May be file is too large.')
-            except Exception as exc:
-                _logger.error("Error processing requests %r", exc)
-        else:
-            _logger.info('customer request count is 0.')
+                    if high_priority_doc_pro_count <= 2:
+                        self.env['sps.customer.requests'].process_customer_requests(high_priority_requests)
+                        document.write({'document_processed_count': document.document_processed_count + 1})
+                    else:
+                        document.write({'status': 'On Hold'})
+                        self.env.cr.commit()
+                        self.send_on_hold_doc_mail(document.email_from, document.customer_id.name, document.customer_id.email, document.document_name, document.status, document.source, 'Unable to process file. May be file is too large.')
+                except Exception as exc:
+                    _logger.error("Error processing requests %r", exc)
+            else:
+                _logger.info('customer request count is 0.')
 
-        try:
-            self.env['prioritization.engine.model'].check_uploaded_document_status(document.id)
-        except Exception as exc:
-            _logger.error("Error: updating document status %r", exc)
+            try:
+                self.env['prioritization.engine.model'].check_uploaded_document_status(document.id)
+            except Exception as exc:
+                _logger.error("Error: updating document status %r", exc)
 
     def send_on_hold_doc_mail(self, email_from, customer_name, customer_email, document_name, document_status, source, reason):
         today_date = datetime.today().strftime('%m/%d/%Y')
