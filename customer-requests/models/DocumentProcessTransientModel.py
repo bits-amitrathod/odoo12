@@ -159,7 +159,7 @@ class DocumentProcessTransientModel(models.TransientModel):
         if sps_customer_product_priority >= 0:
             available_qty = self.env['available.product.dict'].get_available_product_qty(user_id, product_id, expiration_tolerance)
             customer_request_logs = ''
-            if available_qty and int(available_qty) == 0:
+            if available_qty <= 0:
                 customer_request_logs = 'As per requested expiration tolerance product lot not available.'
             req.update(dict(product_id=product_id, status='New', priority=sps_customer_product_priority, auto_allocate=auto_allocate,
                             min_threshold=min_threshold, max_threshold=max_threshold, cooling_period=cooling_period, length_of_hold=length_of_hold,
