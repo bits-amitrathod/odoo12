@@ -96,6 +96,7 @@ class maxinventorydurationpopup(models.TransientModel):
 
     @api.model
     def _defaultvalue(self):
+
          sql_query = "select max_inventory_level_duration  from res_config_settings order by id desc  LIMIT 1 "
          self._cr.execute(sql_query)
          view_ref_res = self._cr.fetchone()
@@ -103,6 +104,7 @@ class maxinventorydurationpopup(models.TransientModel):
              return view_ref_res[0]
          else:
              return 90
+
 
 
     max_inventory_level_duration = fields.Integer(string="Duration" , default = _defaultvalue)

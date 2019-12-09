@@ -62,31 +62,32 @@ class SpsCustomerRequest(models.Model):
         get_all_in_process_doc = self.env['sps.cust.uploaded.documents'].search([('status', '=', 'In Process')])
 
         self.documents.clear()
-        for document in get_all_in_process_doc:
-            doc_process_fixed_count = document.customer_id.doc_process_count
-            document_processed_count = document.document_processed_count
+        if len(get_all_in_process_doc) > 0:
+            for document in get_all_in_process_doc:
+                doc_process_fixed_count = document.customer_id.doc_process_count
+                document_processed_count = document.document_processed_count
 
-            if document.template_type.lower().strip() == 'inventory':
-                self.env.cr.execute("SELECT max(id) document_id FROM public.sps_cust_uploaded_documents WHERE customer_id=" + str(document.customer_id.id))
-                query_result = self.env.cr.dictfetchone()
-                max_doc_id = int(query_result['document_id'])
-                # following condition use for process only latest uploaded document.
-                if int(max_doc_id) == int(document.id):
-                    self.documents.add(document.id)
-                    document.write({'document_processed_count': document.document_processed_count+1})
-                else:
-                    if document.status != 'Completed':
-                        document.write({'status': 'Completed'})
-            elif document.template_type.lower().strip() == 'requirement':
-                if int(document_processed_count) <= int(doc_process_fixed_count):
-                    self.documents.add(document.id)
-                    document.write({'document_processed_count': document.document_processed_count+1})
+                if document.template_type.lower().strip() == 'inventory':
+                    self.env.cr.execute("SELECT max(id) document_id FROM public.sps_cust_uploaded_documents WHERE customer_id=" + str(document.customer_id.id))
+                    query_result = self.env.cr.dictfetchone()
+                    max_doc_id = int(query_result['document_id'])
+                    # following condition use for process only latest uploaded document.
+                    if int(max_doc_id) == int(document.id):
+                        self.documents.add(document.id)
+                        document.write({'document_processed_count': document.document_processed_count+1})
+                    else:
+                        if document.status != 'Completed':
+                            document.write({'status': 'Completed'})
+                elif document.template_type.lower().strip() == 'requirement':
+                    if int(document_processed_count) < int(doc_process_fixed_count):
+                        self.documents.add(document.id)
+                        document.write({'document_processed_count': document.document_processed_count+1})
 
-        sps_customer_requests = self.env['sps.customer.requests'].search([('document_id.id', 'in', self.documents),
-                                                                          ('status', 'in', ('Inprocess', 'Incomplete', 'Unprocessed','InCoolingPeriod', 'New', 'Partial'))],
-                                                                         order="priority asc")
+            sps_customer_requests = self.env['sps.customer.requests'].search([('document_id.id', 'in', list(self.documents)),
+                                                                              ('status', 'in', ('Inprocess', 'Incomplete', 'Unprocessed','InCoolingPeriod', 'New', 'Partial'))],
+                                                                             order="priority asc")
 
-        self.process_customer_requests(sps_customer_requests)
+            self.process_customer_requests(sps_customer_requests)
 
     def process_customer_requests(self, sps_customer_requests):
         _logger.info('In process_customer_requests')

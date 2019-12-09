@@ -16,7 +16,7 @@ class PurchaseHistory(models.Model):
 
     sku = fields.Char("Product SKU", store=False, compute="_calculateSKU1")
     vendor = fields.Char("Vendor Name", store=False)
-    qty = fields.Integer("Delivered Qty", store=False)
+    qty = fields.Integer("Received Qty", store=False)
     manufacturer_rep = fields.Char("Manufacturer", store=False)
     product_name=fields.Char("Product Name", store=False)
     minExpDate = fields.Date("Min Expiration Date", store=False, compute="_calculateDate1")
@@ -25,6 +25,8 @@ class PurchaseHistory(models.Model):
     retail_price = fields.Monetary("Retail Price", store=False)
     order_name = fields.Char("Po Name", store=False , compute="_calculateSKU1")
     date_done = fields.Datetime("Date Done", store=False, compute="_calculateSKU1")
+
+
 
 
     @api.multi
@@ -36,12 +38,11 @@ class PurchaseHistory(models.Model):
                 order.manufacturer_rep = p.partner_id.name
                 order.product_name = p.product_id.product_tmpl_id.name
                 order.qty = p.qty_received
-                order.unit_price = (float_repr(p.price_unit, precision_digits=2))
-                order.retail_price = (float_repr(p.product_unit_price, precision_digits=2))
+                #order.unit_price = (float_repr(p.price_unit, precision_digits=2))
                 order.order_name = order.order_id.name
-                stock_picking = self.env['stock.picking'].search([('origin','like',order.order_id.name),
-                                                                  ('state','=','done')], limit=1)
-                order.date_done = stock_picking.date_done
+                # stock_picking = self.env['stock.picking'].search([('origin','like',order.order_id.name),
+                #                                                   ('state','=','done')], limit=1)
+                # order.date_done = stock_picking.date_done
 
 
 
