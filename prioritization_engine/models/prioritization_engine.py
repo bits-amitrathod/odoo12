@@ -506,6 +506,8 @@ class PrioritizationEngine(models.TransientModel):
                                 template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
                             if sps_cust_uploaded_document.status == 'draft' and len(high_priority_requests) == 0:
                                 sps_cust_uploaded_document.write({'status': 'In Process'})
+                                if len(sps_customer_requirements) == len(sps_customer_requirements_all_non_voided):
+                                    template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
                         else:
                             sps_cust_uploaded_document.write({'status': 'Completed'})
 
@@ -521,6 +523,8 @@ class PrioritizationEngine(models.TransientModel):
                                     template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
                                 if sps_cust_uploaded_document.status == 'draft' and len(high_priority_requests) == 0:
                                     sps_cust_uploaded_document.write({'status': 'In Process'})
+                                    if len(sps_customer_requirements) == len(sps_customer_requirements_all_non_voided):
+                                        template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
                             else:
                                 sps_cust_uploaded_document.write({'status': 'Completed'})
                         else:
