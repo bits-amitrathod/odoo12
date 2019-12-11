@@ -506,6 +506,8 @@ class PrioritizationEngine(models.TransientModel):
                                 template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
                             if sps_cust_uploaded_document.status == 'draft' and len(high_priority_requests) == 0:
                                 sps_cust_uploaded_document.write({'status': 'In Process'})
+                                if len(sps_customer_requirements) == len(sps_customer_requirements_all_non_voided):
+                                    template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
                         else:
                             sps_cust_uploaded_document.write({'status': 'Completed'})
 
@@ -521,6 +523,8 @@ class PrioritizationEngine(models.TransientModel):
                                     template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
                                 if sps_cust_uploaded_document.status == 'draft' and len(high_priority_requests) == 0:
                                     sps_cust_uploaded_document.write({'status': 'In Process'})
+                                    if len(sps_customer_requirements) == len(sps_customer_requirements_all_non_voided):
+                                        template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
                             else:
                                 sps_cust_uploaded_document.write({'status': 'Completed'})
                         else:
@@ -529,7 +533,10 @@ class PrioritizationEngine(models.TransientModel):
                 # Send Email Notification to customer about the progress of uploaded or sent document
                 if template is not None:
                     # Send Email
-                    self.send_mail(sps_cust_uploaded_document.customer_id.name, sps_cust_uploaded_document.customer_id.email, template)
+                    if sps_cust_uploaded_document.customer_id.user_id and sps_cust_uploaded_document.customer_id.user_id.partner_id and sps_cust_uploaded_document.customer_id.user_id.partner_id.email:
+                        self.send_mail(sps_cust_uploaded_document.customer_id.name, sps_cust_uploaded_document.customer_id.email, sps_cust_uploaded_document.customer_id.user_id.partner_id.email, template)
+                    else:
+                        self.send_mail(sps_cust_uploaded_document.customer_id.name, sps_cust_uploaded_document.customer_id.email, None, template)
 
     # Release reserved product quantity(Which sales order product not confirm within length of hold period)
     def release_reserved_product_quantity(self):
@@ -590,8 +597,8 @@ class PrioritizationEngine(models.TransientModel):
             _logger.error("getting error while creation of sales order : %r", exc)
             response = {'message': 'Unable to connect to SMTP Server'}
 
-    def send_mail(self, customerName, customerEmail, template):
-        local_context = {'customerName': customerName, 'customerEmail': customerEmail}
+    def send_mail(self, customerName, customerEmail, salespersonEmail, template):
+        local_context = {'customerName': customerName, 'customerEmail': customerEmail, 'salespersonEmail': salespersonEmail}
         try:
             template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True, )
         except Exception as exc:
