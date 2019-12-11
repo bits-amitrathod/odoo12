@@ -533,7 +533,10 @@ class PrioritizationEngine(models.TransientModel):
                 # Send Email Notification to customer about the progress of uploaded or sent document
                 if template is not None:
                     # Send Email
-                    self.send_mail(sps_cust_uploaded_document.customer_id.name, sps_cust_uploaded_document.customer_id.email, sps_cust_uploaded_document.customer_id.user_id.partner_id.email, template)
+                    if sps_cust_uploaded_document.customer_id.user_id and sps_cust_uploaded_document.customer_id.user_id.partner_id and sps_cust_uploaded_document.customer_id.user_id.partner_id.email:
+                        self.send_mail(sps_cust_uploaded_document.customer_id.name, sps_cust_uploaded_document.customer_id.email, sps_cust_uploaded_document.customer_id.user_id.partner_id.email, template)
+                    else:
+                        self.send_mail(sps_cust_uploaded_document.customer_id.name, sps_cust_uploaded_document.customer_id.email, None, template)
 
     # Release reserved product quantity(Which sales order product not confirm within length of hold period)
     def release_reserved_product_quantity(self):
