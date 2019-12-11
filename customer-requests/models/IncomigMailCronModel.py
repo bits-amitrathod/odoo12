@@ -229,8 +229,8 @@ class IncomingMailCronModel(models.Model):
                                                             file_ref.write(file_contents_bytes)
                                                             file_ref.close()
                                                             response = self.env['sps.document.process'].process_document(users_model, file_path, tmpl_type, filename, email_from, 'Email')
-                                                        except Exception as e:
-                                                            _logger.info(str(e))
+                                                        except Exception as exc:
+                                                            _logger.error("getting error while processing document : %r", exc)
                                             else:
                                                 _logger.error('We have found same Customer Id against multiple Customer.')
                                                 response = dict(errorCode=101, message='We have found same Customer Id against multiple Customer.')
