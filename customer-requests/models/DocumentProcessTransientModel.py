@@ -171,7 +171,7 @@ class DocumentProcessTransientModel(models.TransientModel):
         sps_customer_requirements_all_voided = self.env['sps.customer.requests'].search([('document_id', '=', document_id), ('status', 'in', ['Voided'])])
         if len(sps_customer_requirement_all) == len(sps_customer_requirements_all_voided):
             template = self.env.ref('customer-requests.final_email_response_on_uploaded_document').sudo()
-            self.env['prioritization.engine.model'].send_mail(user_model.name, user_model.email, template)
+            self.env['prioritization.engine.model'].send_mail(user_model.name, user_model.email, user_model.user_id.partner_id.email, template)
             file_uploaded_record.write({'document_processed_count': 1, 'status': 'Completed'})
 
     def _get_updated_qty(self, req, template_type, product_template_id):
