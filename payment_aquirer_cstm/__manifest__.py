@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': " Purchase order Payment acquirer ",
+    'name': " Purchase order Payment acquirer",
     'description': """
         Purchase order Payment acquirer 
     """,
