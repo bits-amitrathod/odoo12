@@ -94,7 +94,6 @@ class DocumentProcessTransientModel(models.TransientModel):
     def _create_customer_request(self, req, user_id, document_id, user_model, products, template_type, today_date):
         if len(products) > 0:
             for product in products:
-                print(product)
                 product_details = self.env['product.product'].search([('product_tmpl_id', '=', product.get('id'))])
                 if len(product_details) == 1:
                     product_id = product_details.id
