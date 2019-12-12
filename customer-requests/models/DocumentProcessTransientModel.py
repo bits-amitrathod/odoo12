@@ -72,54 +72,15 @@ class DocumentProcessTransientModel(models.TransientModel):
                 ref = str(document_id) + "_" + file_uploaded_record.token
                 response = dict(message='File Uploaded Successfully', ref=ref)
                 for req in requests:
-                    insert_data_flag = True
-                    product_id = 0
-                    product_template_id = 0
                     if 'customer_sku' in req.keys():
                         customer_sku = req['customer_sku']
                         product_sku = self.get_product_sku(user_model, customer_sku)
-                        product = self.get_product(product_sku, req)
-                        if product:
-                            product_id = product[0].id
-                            product_template_id = product[0].product_tmpl_id.id
+                        products = self.get_product(product_sku, req)
                     elif 'mfr_catalog_no' in req.keys():
                         mfr_catalog_no = req['mfr_catalog_no']
                         product_sku = self.get_product_sku(user_model, mfr_catalog_no)
-                        product = self.get_product(product_sku, req)
-                        if product:
-                            product_id = product[0].id
-                            product_template_id = product[0].product_tmpl_id.id
-                    if product_id != 0 and product_template_id != 0:
-                        insert_data_flag = self._get_product_level_setting(req, user_id, product_id, user_model)
-                        if req:
-                            # set uom flag, if uom_flag is false then check the partial_uom flag
-                            if 'uom' in req.keys():
-                                if req['uom'].lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
-                                    req.update(dict(uom_flag=True))
-                                else:
-                                    req.update(dict(uom_flag=False))
-                            else:
-                                # Get Product UOM category id
-                                product_uom_categ = self.env['uom.category'].search([('name', 'in', ['Unit', 'Each'])])
-                                # get product
-                                product = self.env['product.template'].search([('id', '=', product_template_id)])
-                                if product.manufacturer_uom.category_id.id in product_uom_categ.ids:
-                                    if product.manufacturer_uom.name.lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
-                                        req.update(dict(uom_flag=True))
-                                    else:
-                                        req.update(dict(uom_flag=False))
-                            # calculate product quantity
-                            updated_qty = self._get_updated_qty(req, template_type, product_template_id)
-                            if updated_qty != 0:
-                                req.update(dict(updated_quantity=updated_qty))
-                    else:
-                        req.update(dict(product_id=None, status='Voided'))
-                    if insert_data_flag:
-                        sps_customer_request = dict(document_id=document_id, customer_id=user_id, create_uid=1, create_date=today_date, write_uid=1, write_date=today_date)
-                        for key in req.keys():
-                            sps_customer_request.update({key: req[key]})
-                        self.env['sps.customer.requests'].create(sps_customer_request)
-
+                        products = self.get_product(product_sku, req)
+                    self._create_customer_request(req, user_id, document_id, user_model, products, template_type, today_date)
                 # if document has all voided products then Send Email Notification to customer.
                 self._all_voided_products(document_id, user_model, file_uploaded_record)
             else:
@@ -129,6 +90,54 @@ class DocumentProcessTransientModel(models.TransientModel):
             _logger.info('file is not acceptable')
             response = dict(errorCode=2, message='Invalid File extension')
         return response
+
+    def _create_customer_request(self, req, user_id, document_id, user_model, products, template_type, today_date):
+        if len(products) > 0:
+            for product in products:
+                print(product)
+                product_details = self.env['product.product'].search([('product_tmpl_id', '=', product.get('id'))])
+                if len(product_details) == 1:
+                    product_id = product_details.id
+                    product_template_id = product_details.product_tmpl_id.id
+
+                    if product_id != 0 and product_template_id != 0:
+                        insert_data_flag = self._get_product_level_setting(req, user_id, product_id, user_model)
+                        if req:
+                            # set uom flag, if uom_flag is false then check the partial_uom flag
+                            if 'uom' in req.keys():
+                                if req['uom'].lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit',
+                                                                  'unit(s)']:
+                                    req.update(dict(uom_flag=True))
+                                else:
+                                    req.update(dict(uom_flag=False))
+                            else:
+                                # Get Product UOM category id
+                                product_uom_categ = self.env['uom.category'].search([('name', 'in', ['Unit', 'Each'])])
+                                # get product
+                                product = self.env['product.template'].search([('id', '=', product_template_id)])
+                                if product.manufacturer_uom.category_id.id in product_uom_categ.ids:
+                                    if product.manufacturer_uom.name.lower().strip() in ['e', 'ea', 'eac', 'each', 'u',
+                                                                                         'un', 'unit', 'unit(s)']:
+                                        req.update(dict(uom_flag=True))
+                                    else:
+                                        req.update(dict(uom_flag=False))
+                            # calculate product quantity
+                            updated_qty = self._get_updated_qty(req, template_type, product_template_id)
+                            if updated_qty != 0:
+                                req.update(dict(updated_quantity=updated_qty))
+                            if insert_data_flag:
+                                sps_customer_request = dict(document_id=document_id, customer_id=user_id, create_uid=1,
+                                                            create_date=today_date, write_uid=1, write_date=today_date)
+                                for key in req.keys():
+                                    sps_customer_request.update({key: req[key]})
+                                self.env['sps.customer.requests'].create(sps_customer_request)
+        else:
+            req.update(dict(product_id=None, status='Voided'))
+            sps_customer_request = dict(document_id=document_id, customer_id=user_id, create_uid=1,
+                                        create_date=today_date, write_uid=1, write_date=today_date)
+            for key in req.keys():
+                sps_customer_request.update({key: req[key]})
+            self.env['sps.customer.requests'].create(sps_customer_request)
 
     def _get_product_level_setting(self, req, user_id, product_id, user_model):
         sps_product_setting = self.env['prioritization_engine.prioritization'].search([('customer_id', '=', user_id), ('product_id', '=', product_id)])
@@ -391,18 +400,9 @@ class DocumentProcessTransientModel(models.TransientModel):
                                 regexp_replace(REPLACE(RTRIM(LTRIM(REPLACE(sku_code,'0',' '))),' ','0'), '[^A-Za-z0-9.]', '','g') as sku_code_cleaned
                                 FROM product_template where tracking != 'none' and active = true)
                                 as temp_data where lower(sku_code_cleaned) ='""" + product_sku.lower() + """' or lower(manufacturer_pref_cleaned) = '""" + product_sku.lower() + """' """)
-        query_result = self.env.cr.dictfetchall()
-        product = False
-        if len(query_result) > 1:
-            req.update(dict(customer_request_logs='Duplicate product'))
-        elif len(query_result) == 1:
-            product = self.env['product.product'].search([('product_tmpl_id', '=', query_result[0]['id'])])
-            if len(product) == 1:
-                product = product
-            else:
-                product = False
+        products = self.env.cr.dictfetchall()
         # return product object
-        return product
+        return products
 
     @staticmethod
     def cleaning_code(product_sku):

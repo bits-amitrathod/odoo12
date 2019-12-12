@@ -14,11 +14,8 @@ class ProcessHighPriorityRequests(models.Model):
     def process_high_priority_requests(self):
         _logger.info('process high priority requests.')
 
-        documents = self.env['sps.cust.uploaded.documents'].search([('status', '=', 'draft')], limit=1, order="id asc")
-        if len(documents) == 1:
-            # Avoid “RuntimeError: dictionary changed size during iteration” error
-            document = documents[0]
-
+        document = self.env['sps.cust.uploaded.documents'].search([('status', '=', 'draft')], limit=1, order="id asc")
+        if len(document) == 1:
             high_priority_requests = self.env['sps.customer.requests'].search([('document_id', '=', document.id), ('status', '=', 'New'), ('priority', '=', 0), ('available_qty', '>', 0)])
 
             if len(high_priority_requests) > 0:
