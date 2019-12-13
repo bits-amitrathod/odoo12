@@ -84,7 +84,6 @@ class DocumentProcessTransientModel(models.TransientModel):
                             product_template_id = product[0].product_tmpl_id.id
                         else:
                             # Check product with -E
-                            product_sku = self.get_product_sku(user_model, customer_sku)
                             _logger.info('Find product sku with -E : ' + str(product_sku))
                             product = self.get_product(product_sku+'-E', req)
                             if product:
@@ -99,7 +98,6 @@ class DocumentProcessTransientModel(models.TransientModel):
                             product_template_id = product[0].product_tmpl_id.id
                         else:
                             # Check product with -E
-                            product_sku = self.get_product_sku(user_model, mfr_catalog_no)
                             _logger.info('Find product sku with -E : ' + str(product_sku))
                             product = self.get_product(product_sku+'-E', req)
                             if product:
@@ -203,10 +201,7 @@ class DocumentProcessTransientModel(models.TransientModel):
             else:
                 # get product
                 product = self.env['product.template'].search([('id', '=', product_template_id)])
-                uom = self.env['uom.uom'].search([('name', 'ilike', 'Unit'), ('category_id.id', '=', 1)])
-                if len(uom) == 0:
-                    uom = self.env['uom.uom'].search([('name', 'ilike', 'Each'), ('category_id.id', '=', 1)])
-                updated_qty = product.manufacturer_uom._compute_quantity(float(req_qty), uom)
+                updated_qty = product.manufacturer_uom._compute_quantity(float(req_qty), product.uom_id)
                 return updated_qty
         else:
             return 0
@@ -405,23 +400,32 @@ class DocumentProcessTransientModel(models.TransientModel):
     def get_product(self, product_sku, req):
         product_sku = DocumentProcessTransientModel.cleaning_code(product_sku)
         _logger.info('product sku %r', product_sku)
-        self.env.cr.execute("""select * from 
-                                (SELECT id, regexp_replace(REPLACE(RTRIM(LTRIM(REPLACE(manufacturer_pref,'0',' '))),' ','0'), '[^A-Za-z0-9.]', '','g') as manufacturer_pref_cleaned, 
-                                regexp_replace(REPLACE(RTRIM(LTRIM(REPLACE(sku_code,'0',' '))),' ','0'), '[^A-Za-z0-9.]', '','g') as sku_code_cleaned
-                                FROM product_template where tracking != 'none' and active = true)
-                                as temp_data where lower(sku_code_cleaned) ='""" + product_sku.lower() + """' or lower(manufacturer_pref_cleaned) = '""" + product_sku.lower() + """' """)
+
+        sql_query = """ select * from  (SELECT pt.id, regexp_replace(REPLACE(RTRIM(LTRIM(REPLACE(pt.manufacturer_pref,'0',' '))),' ','0'), '[^A-Za-z0-9.]', '','g') as manufacturer_pref_cleaned, 
+                                regexp_replace(REPLACE(RTRIM(LTRIM(REPLACE(pt.sku_code,'0',' '))),' ','0'), '[^A-Za-z0-9.]', '','g') as sku_code_cleaned
+                                FROM product_template pt """
+
+        if req['uom'].lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
+            sql_query = sql_query + """ INNER JOIN uom_uom uu ON pt.uom_id = uu.id """
+
+        sql_query = sql_query + """ where pt.tracking != 'none' and pt.active = true """
+
+        if req['uom'].lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
+            sql_query = sql_query + """ and uu.name in ('Each', 'Unit') """
+
+        sql_query = sql_query + """ ) as temp_data where lower(sku_code_cleaned) ='""" + product_sku.lower() + """' or lower(manufacturer_pref_cleaned) = '""" + product_sku.lower() + """' """
+
+        self.env.cr.execute(sql_query)
+
         query_result = self.env.cr.dictfetchall()
+
         product = False
         if len(query_result) > 1:
             req.update(dict(customer_request_logs='Duplicate product'))
         elif len(query_result) == 1:
             product = self.env['product.product'].search([('product_tmpl_id', '=', query_result[0]['id'])])
             if len(product) == 1:
-                if req['uom'].lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
-                    if product.uom_id.name in ['each', 'unit']:
-                        product = product
-                else:
-                    product = product
+                product = product
         # return product object
         return product
 
