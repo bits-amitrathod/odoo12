@@ -202,8 +202,10 @@ class PrioritizationEngine(models.TransientModel):
                                 remaining_product_allocation_quantity = 0
                                 break
                             else:
-                                allocate_qty_by_partial_uom = self._get_quantity_by_partial_uom(remaining_product_allocation_quantity, customer_request)
-
+                                if customer_request.product_id.product_tmpl_id.uom_id.name in ['Each', 'Unit']:
+                                    allocate_qty_by_partial_uom = self._get_quantity_by_partial_uom(remaining_product_allocation_quantity, customer_request)
+                                else:
+                                    allocate_qty_by_partial_uom = remaining_product_allocation_quantity
                                 product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity']) + int(allocate_qty_by_partial_uom)
                                 product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity']) - int(allocate_qty_by_partial_uom)
 
@@ -269,9 +271,7 @@ class PrioritizationEngine(models.TransientModel):
     # get quantity by partial uom flag
     def _get_quantity_by_partial_uom(self, quantity, customer_request):
         product = self.env['product.template'].search([('id', '=', customer_request.product_id.product_tmpl_id.id)])
-        uom = self.env['uom.uom'].search([('name', 'ilike', 'Unit'), ('category_id.id', '=', 1)])
-        if len(uom) == 0:
-            uom = self.env['uom.uom'].search([('name', 'ilike', 'Each'),('category_id.id', '=', 1)])
+
         if product.manufacturer_uom.uom_type == 'bigger':
             uom_factor = product.manufacturer_uom.factor_inv
         elif product.manufacturer_uom.uom_type == 'smaller':
@@ -280,7 +280,7 @@ class PrioritizationEngine(models.TransientModel):
             uom_factor = 1
 
         ratio = int(quantity / uom_factor)
-        allocate_qty_by_partial_uom = int(product.manufacturer_uom._compute_quantity(float(ratio), uom))
+        allocate_qty_by_partial_uom = int(product.manufacturer_uom._compute_quantity(float(ratio), product.uom_id))
         return allocate_qty_by_partial_uom
 
     # update customer status
@@ -452,12 +452,10 @@ class PrioritizationEngine(models.TransientModel):
             inventory_quantity = customer_request.quantity
         else:
             product = self.env['product.template'].search([('id', '=', customer_request.product_id.product_tmpl_id.id)])
-            uom = self.env['uom.uom'].search([('name', 'ilike', 'Unit'), ('category_id.id', '=', 1)])
-            if len(uom) == 0:
-                uom = self.env['uom.uom'].search([('name', 'ilike', 'Each'),('category_id.id', '=', 1)])
-            min_threshold = product.manufacturer_uom._compute_quantity(float(customer_request.min_threshold), uom)
-            max_threshold = product.manufacturer_uom._compute_quantity(float(customer_request.max_threshold), uom)
-            inventory_quantity = product.manufacturer_uom._compute_quantity(float(customer_request.quantity), uom)
+
+            min_threshold = product.manufacturer_uom._compute_quantity(float(customer_request.min_threshold), product.uom_id)
+            max_threshold = product.manufacturer_uom._compute_quantity(float(customer_request.max_threshold), product.uom_id)
+            inventory_quantity = product.manufacturer_uom._compute_quantity(float(customer_request.quantity), product.uom_id)
             if customer_request.status.lower().strip() == 'partial':
                 sale_order_lines = self.env['sale.order.line'].search([('customer_request_id', '=', customer_request.id)])
                 product_uom_qty = 0
