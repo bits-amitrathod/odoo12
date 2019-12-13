@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api
-from datetime import datetime, timedelta
 
 class VendorBillDate(models.Model):
     _inherit ='account.invoice'
@@ -21,10 +20,7 @@ class VendorBillDate(models.Model):
 
         if stock_picking_obj:
             max_po_id = max(stock_picking_obj)
-            if self.type == "out_invoice" :
-                self.date_invoice = str((max_po_id.date_done +  timedelta(hours=5)).date())
-            else:
-                self.date_invoice = str(max_po_id.date_done.date())
+            self.date_invoice = str(max_po_id.date_done.date())
 
         if self.payment_term_id:
             pterm = self.payment_term_id
