@@ -58,6 +58,18 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
         responce = super(WebsiteSalesPaymentAquirerCstm, self).payment(**post)
 
         ctx = responce.qcontext
+
+        if 'acquirers' not in ctx:
+            ctx['showShippingNote'] = False
+            ctx['expedited_shipping'] = 'expedited_shipping' in request.session and request.session[
+                'expedited_shipping'] or ""
+            for x in ctx['deliveries']:
+                if x.delivery_type == "fixed" and x.fixed_price == 0:
+                    ctx['showShippingNote'] = True
+                    ctx['freeShipingLabel'] = "delivery_" + str(x.id)
+                break
+            return responce
+
         if 'order' in ctx:
             if not ctx['order'].partner_id.allow_purchase:
                 for x in ctx['acquirers']:

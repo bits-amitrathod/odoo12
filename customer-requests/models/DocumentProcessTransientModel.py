@@ -160,7 +160,8 @@ class DocumentProcessTransientModel(models.TransientModel):
             available_qty = self.env['available.product.dict'].get_available_product_qty(user_id, product_id, expiration_tolerance)
             req.update(dict(product_id=product_id, status='New', priority=sps_customer_product_priority, auto_allocate=auto_allocate,
                             min_threshold=min_threshold, max_threshold=max_threshold, cooling_period=cooling_period, length_of_hold=length_of_hold,
-                            expiration_tolerance=expiration_tolerance, partial_ordering=partial_ordering, partial_UOM=partial_uom, available_qty=available_qty))
+                            expiration_tolerance=expiration_tolerance, partial_ordering=partial_ordering, partial_UOM=partial_uom,
+                            available_qty=available_qty))
             return True
         else:
             return False
