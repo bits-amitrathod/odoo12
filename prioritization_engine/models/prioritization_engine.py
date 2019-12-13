@@ -600,7 +600,7 @@ class PrioritizationEngine(models.TransientModel):
     def send_mail(self, customerName, customerEmail, salespersonEmail, template):
         local_context = {'customerName': customerName, 'customerEmail': customerEmail, 'salespersonEmail': salespersonEmail}
         try:
-            template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True, )
+            template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True)
         except Exception as exc:
             _logger.error("getting error while creation of sales order : %r", exc)
             response = {'message': 'Unable to connect to SMTP Server'}
