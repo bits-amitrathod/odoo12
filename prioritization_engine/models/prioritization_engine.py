@@ -35,7 +35,7 @@ class PrioritizationEngine(models.TransientModel):
                     customer_request.write({'customer_request_logs': 'Auto allocate is true, '})
                     _logger.debug('Auto allocate is true.')
                     filter_available_product_lot_dict = self.filter_available_product_lot_dict(available_product_lot_dict, customer_request.product_id.id, customer_request.expiration_tolerance)
-                    if len(filter_available_product_lot_dict) >= 1:
+                    if len(filter_available_product_lot_dict) > 0:
                         # check cooling period- method return True/False
                         if self.check_cooling_period(customer_request):
                             customer_request.write({'customer_request_logs': str(customer_request.customer_request_logs) + 'success cooling period, '})
@@ -75,7 +75,7 @@ class PrioritizationEngine(models.TransientModel):
     def filter_available_product_lot_dict(self, available_production_lot_dict, product_id, expiration_tolerance):
         filtered_production_lot_dict_to_be_returned = {}
         filtered_production_lot_dict_to_be_returned.clear()
-        for available_production_lot in available_production_lot_dict.get(product_id,{}):
+        for available_production_lot in available_production_lot_dict.get(product_id, {}):
             if datetime.strptime(str(available_production_lot.get(list(available_production_lot.keys()).pop(0), {}).get('use_date')),
                     '%Y-%m-%d %H:%M:%S') >= self.get_product_expiration_tolerance_date(expiration_tolerance):
 
@@ -202,8 +202,10 @@ class PrioritizationEngine(models.TransientModel):
                                 remaining_product_allocation_quantity = 0
                                 break
                             else:
-                                allocate_qty_by_partial_uom = self._get_quantity_by_partial_uom(remaining_product_allocation_quantity, customer_request)
-
+                                if customer_request.product_id.product_tmpl_id.uom_id.name in ['Each', 'Unit']:
+                                    allocate_qty_by_partial_uom = self._get_quantity_by_partial_uom(remaining_product_allocation_quantity, customer_request)
+                                else:
+                                    allocate_qty_by_partial_uom = remaining_product_allocation_quantity
                                 product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0), {})['reserved_quantity']) + int(allocate_qty_by_partial_uom)
                                 product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity'] = int(product_lot.get(list(product_lot.keys()).pop(0), {})['available_quantity']) - int(allocate_qty_by_partial_uom)
 
@@ -269,9 +271,7 @@ class PrioritizationEngine(models.TransientModel):
     # get quantity by partial uom flag
     def _get_quantity_by_partial_uom(self, quantity, customer_request):
         product = self.env['product.template'].search([('id', '=', customer_request.product_id.product_tmpl_id.id)])
-        uom = self.env['uom.uom'].search([('name', 'ilike', 'Unit'), ('category_id.id', '=', 1)])
-        if len(uom) == 0:
-            uom = self.env['uom.uom'].search([('name', 'ilike', 'Each'),('category_id.id', '=', 1)])
+
         if product.manufacturer_uom.uom_type == 'bigger':
             uom_factor = product.manufacturer_uom.factor_inv
         elif product.manufacturer_uom.uom_type == 'smaller':
@@ -280,7 +280,7 @@ class PrioritizationEngine(models.TransientModel):
             uom_factor = 1
 
         ratio = int(quantity / uom_factor)
-        allocate_qty_by_partial_uom = int(product.manufacturer_uom._compute_quantity(float(ratio), uom))
+        allocate_qty_by_partial_uom = int(product.manufacturer_uom._compute_quantity(float(ratio), product.uom_id))
         return allocate_qty_by_partial_uom
 
     # update customer status
@@ -452,12 +452,10 @@ class PrioritizationEngine(models.TransientModel):
             inventory_quantity = customer_request.quantity
         else:
             product = self.env['product.template'].search([('id', '=', customer_request.product_id.product_tmpl_id.id)])
-            uom = self.env['uom.uom'].search([('name', 'ilike', 'Unit'), ('category_id.id', '=', 1)])
-            if len(uom) == 0:
-                uom = self.env['uom.uom'].search([('name', 'ilike', 'Each'),('category_id.id', '=', 1)])
-            min_threshold = product.manufacturer_uom._compute_quantity(float(customer_request.min_threshold), uom)
-            max_threshold = product.manufacturer_uom._compute_quantity(float(customer_request.max_threshold), uom)
-            inventory_quantity = product.manufacturer_uom._compute_quantity(float(customer_request.quantity), uom)
+
+            min_threshold = product.manufacturer_uom._compute_quantity(float(customer_request.min_threshold), product.uom_id)
+            max_threshold = product.manufacturer_uom._compute_quantity(float(customer_request.max_threshold), product.uom_id)
+            inventory_quantity = product.manufacturer_uom._compute_quantity(float(customer_request.quantity), product.uom_id)
             if customer_request.status.lower().strip() == 'partial':
                 sale_order_lines = self.env['sale.order.line'].search([('customer_request_id', '=', customer_request.id)])
                 product_uom_qty = 0
@@ -506,6 +504,8 @@ class PrioritizationEngine(models.TransientModel):
                                 template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
                             if sps_cust_uploaded_document.status == 'draft' and len(high_priority_requests) == 0:
                                 sps_cust_uploaded_document.write({'status': 'In Process'})
+                                if len(sps_customer_requirements) == len(sps_customer_requirements_all_non_voided):
+                                    template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
                         else:
                             sps_cust_uploaded_document.write({'status': 'Completed'})
 
@@ -521,6 +521,8 @@ class PrioritizationEngine(models.TransientModel):
                                     template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
                                 if sps_cust_uploaded_document.status == 'draft' and len(high_priority_requests) == 0:
                                     sps_cust_uploaded_document.write({'status': 'In Process'})
+                                    if len(sps_customer_requirements) == len(sps_customer_requirements_all_non_voided):
+                                        template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
                             else:
                                 sps_cust_uploaded_document.write({'status': 'Completed'})
                         else:
@@ -529,7 +531,10 @@ class PrioritizationEngine(models.TransientModel):
                 # Send Email Notification to customer about the progress of uploaded or sent document
                 if template is not None:
                     # Send Email
-                    self.send_mail(sps_cust_uploaded_document.customer_id.name, sps_cust_uploaded_document.customer_id.email, template)
+                    if sps_cust_uploaded_document.customer_id.user_id and sps_cust_uploaded_document.customer_id.user_id.partner_id and sps_cust_uploaded_document.customer_id.user_id.partner_id.email:
+                        self.send_mail(sps_cust_uploaded_document.customer_id.name, sps_cust_uploaded_document.customer_id.email, sps_cust_uploaded_document.customer_id.user_id.partner_id.email, template)
+                    else:
+                        self.send_mail(sps_cust_uploaded_document.customer_id.name, sps_cust_uploaded_document.customer_id.email, None, template)
 
     # Release reserved product quantity(Which sales order product not confirm within length of hold period)
     def release_reserved_product_quantity(self):
@@ -590,10 +595,10 @@ class PrioritizationEngine(models.TransientModel):
             _logger.error("getting error while creation of sales order : %r", exc)
             response = {'message': 'Unable to connect to SMTP Server'}
 
-    def send_mail(self, customerName, customerEmail, template):
-        local_context = {'customerName': customerName, 'customerEmail': customerEmail}
+    def send_mail(self, customerName, customerEmail, salespersonEmail, template):
+        local_context = {'customerName': customerName, 'customerEmail': customerEmail, 'salespersonEmail': salespersonEmail}
         try:
-            template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True, )
+            template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True)
         except Exception as exc:
             _logger.error("getting error while creation of sales order : %r", exc)
             response = {'message': 'Unable to connect to SMTP Server'}
