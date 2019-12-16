@@ -94,7 +94,7 @@ class AvailableProductDict(models.TransientModel):
         # get expiration tolerance date
         expiration_tolerance_date = (date.today() + relativedelta(months=+int(expiration_tolerance)))
 
-        self.env.cr.execute("Select sum(sq.quantity) as count from public.stock_quant sq "
+        self.env.cr.execute("Select sum(sq.quantity-sq.reserved_quantity) as count from public.stock_quant sq "
                             "Inner Join public.stock_location sl on sl.id = sq.location_id "
                             "Inner Join public.stock_production_lot spl on sq.lot_id = spl.id "
                             "where sq.product_id = " + str(product_id) + " and sq.quantity > 0 "

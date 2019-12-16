@@ -72,37 +72,40 @@ class DocumentProcessTransientModel(models.TransientModel):
                 ref = str(document_id) + "_" + file_uploaded_record.token
                 response = dict(message='File Uploaded Successfully', ref=ref)
                 for req in requests:
-                    insert_data_flag = True
-                    product_id = 0
-                    product_template_id = 0
                     if 'customer_sku' in req.keys():
                         customer_sku = req['customer_sku']
                         product_sku = self.get_product_sku(user_model, customer_sku)
-                        product = self.get_product(product_sku, req)
-                        if product:
-                            product_id = product[0].id
-                            product_template_id = product[0].product_tmpl_id.id
-                        else:
+                        products = self.get_product(product_sku, req)
+                        if len(products) == 0:
                             # Check product with -E
                             _logger.info('Find product sku with -E : ' + str(product_sku))
-                            product = self.get_product(product_sku+'-E', req)
-                            if product:
-                                product_id = product[0].id
-                                product_template_id = product[0].product_tmpl_id.id
+                            products = self.get_product(product_sku + '-E', req)
                     elif 'mfr_catalog_no' in req.keys():
                         mfr_catalog_no = req['mfr_catalog_no']
                         product_sku = self.get_product_sku(user_model, mfr_catalog_no)
-                        product = self.get_product(product_sku, req)
-                        if product:
-                            product_id = product[0].id
-                            product_template_id = product[0].product_tmpl_id.id
-                        else:
+                        products = self.get_product(product_sku, req)
+                        if len(products) == 0:
                             # Check product with -E
                             _logger.info('Find product sku with -E : ' + str(product_sku))
-                            product = self.get_product(product_sku+'-E', req)
-                            if product:
-                                product_id = product[0].id
-                                product_template_id = product[0].product_tmpl_id.id
+                            products = self.get_product(product_sku + '-E', req)
+                    self._create_customer_request(req, user_id, document_id, user_model, products, template_type, today_date)
+                # if document has all voided products then Send Email Notification to customer.
+                self._all_voided_products(document_id, user_model, file_uploaded_record)
+            else:
+                _logger.info('file is not acceptable')
+                response = dict(errorCode=12, message='Error saving document record')
+        else:
+            _logger.info('file is not acceptable')
+            response = dict(errorCode=2, message='Invalid File extension')
+        return response
+
+    def _create_customer_request(self, req, user_id, document_id, user_model, products, template_type, today_date):
+        if len(products) > 0:
+            for product in products:
+                product_details = self.env['product.product'].search([('product_tmpl_id', '=', product.get('id'))])
+                if len(product_details) == 1:
+                    product_id = product_details.id
+                    product_template_id = product_details.product_tmpl_id.id
                     if product_id != 0 and product_template_id != 0:
                         insert_data_flag = self._get_product_level_setting(req, user_id, product_id, user_model)
                         if req:
@@ -126,23 +129,17 @@ class DocumentProcessTransientModel(models.TransientModel):
                             updated_qty = self._get_updated_qty(req, template_type, product_template_id)
                             if updated_qty != 0:
                                 req.update(dict(updated_quantity=updated_qty))
-                    else:
-                        req.update(dict(product_id=None, status='Voided'))
-                    if insert_data_flag:
-                        sps_customer_request = dict(document_id=document_id, customer_id=user_id, create_uid=1, create_date=today_date, write_uid=1, write_date=today_date)
-                        for key in req.keys():
-                            sps_customer_request.update({key: req[key]})
-                        self.env['sps.customer.requests'].create(sps_customer_request)
-
-                # if document has all voided products then Send Email Notification to customer.
-                self._all_voided_products(document_id, user_model, file_uploaded_record)
-            else:
-                _logger.info('file is not acceptable')
-                response = dict(errorCode=12, message='Error saving document record')
+                            if insert_data_flag:
+                                sps_customer_request = dict(document_id=document_id, customer_id=user_id, create_uid=1, create_date=today_date, write_uid=1, write_date=today_date)
+                                for key in req.keys():
+                                    sps_customer_request.update({key: req[key]})
+                                self.env['sps.customer.requests'].create(sps_customer_request)
         else:
-            _logger.info('file is not acceptable')
-            response = dict(errorCode=2, message='Invalid File extension')
-        return response
+            req.update(dict(product_id=None, status='Voided'))
+            sps_customer_request = dict(document_id=document_id, customer_id=user_id, create_uid=1, create_date=today_date, write_uid=1, write_date=today_date)
+            for key in req.keys():
+                sps_customer_request.update({key: req[key]})
+            self.env['sps.customer.requests'].create(sps_customer_request)
 
     def _get_product_level_setting(self, req, user_id, product_id, user_model):
         sps_product_setting = self.env['prioritization_engine.prioritization'].search([('customer_id', '=', user_id), ('product_id', '=', product_id)])
@@ -169,12 +166,12 @@ class DocumentProcessTransientModel(models.TransientModel):
                 expiration_tolerance = user_model.expiration_tolerance
                 partial_ordering = user_model.partial_ordering
                 partial_uom = user_model.partial_UOM
-
         if sps_customer_product_priority >= 0:
             available_qty = self.env['available.product.dict'].get_available_product_qty(user_id, product_id, expiration_tolerance)
             req.update(dict(product_id=product_id, status='New', priority=sps_customer_product_priority, auto_allocate=auto_allocate,
                             min_threshold=min_threshold, max_threshold=max_threshold, cooling_period=cooling_period, length_of_hold=length_of_hold,
-                            expiration_tolerance=expiration_tolerance, partial_ordering=partial_ordering, partial_UOM=partial_uom, available_qty=available_qty))
+                            expiration_tolerance=expiration_tolerance, partial_ordering=partial_ordering, partial_UOM=partial_uom,
+                            available_qty=available_qty))
             return True
         else:
             return False
@@ -184,7 +181,10 @@ class DocumentProcessTransientModel(models.TransientModel):
         sps_customer_requirements_all_voided = self.env['sps.customer.requests'].search([('document_id', '=', document_id), ('status', 'in', ['Voided'])])
         if len(sps_customer_requirement_all) == len(sps_customer_requirements_all_voided):
             template = self.env.ref('customer-requests.final_email_response_on_uploaded_document').sudo()
-            self.env['prioritization.engine.model'].send_mail(user_model.name, user_model.email, template)
+            if user_model.user_id and user_model.user_id.partner_id and user_model.user_id.partner_id.email:
+                self.env['prioritization.engine.model'].send_mail(user_model.name, user_model.email, user_model.user_id.partner_id.email, template)
+            else:
+                self.env['prioritization.engine.model'].send_mail(user_model.name, user_model.email, None, template)
             file_uploaded_record.write({'document_processed_count': 1, 'status': 'Completed'})
 
     def _get_updated_qty(self, req, template_type, product_template_id):
@@ -396,34 +396,19 @@ class DocumentProcessTransientModel(models.TransientModel):
     def get_product(self, product_sku, req):
         product_sku = DocumentProcessTransientModel.cleaning_code(product_sku)
         _logger.info('product sku %r', product_sku)
-
         sql_query = """ select * from  (SELECT pt.id, regexp_replace(REPLACE(RTRIM(LTRIM(REPLACE(pt.manufacturer_pref,'0',' '))),' ','0'), '[^A-Za-z0-9.]', '','g') as manufacturer_pref_cleaned, 
                                 regexp_replace(REPLACE(RTRIM(LTRIM(REPLACE(pt.sku_code,'0',' '))),' ','0'), '[^A-Za-z0-9.]', '','g') as sku_code_cleaned
                                 FROM product_template pt """
-
         if req['uom'].lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
             sql_query = sql_query + """ INNER JOIN uom_uom uu ON pt.uom_id = uu.id """
-
         sql_query = sql_query + """ where pt.tracking != 'none' and pt.active = true """
-
         if req['uom'].lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
             sql_query = sql_query + """ and uu.name in ('Each', 'Unit') """
-
         sql_query = sql_query + """ ) as temp_data where lower(sku_code_cleaned) ='""" + product_sku.lower() + """' or lower(manufacturer_pref_cleaned) = '""" + product_sku.lower() + """' """
-
         self.env.cr.execute(sql_query)
-
-        query_result = self.env.cr.dictfetchall()
-
-        product = False
-        if len(query_result) > 1:
-            req.update(dict(customer_request_logs='Duplicate product'))
-        elif len(query_result) == 1:
-            product = self.env['product.product'].search([('product_tmpl_id', '=', query_result[0]['id'])])
-            if len(product) == 1:
-                product = product
+        products = self.env.cr.dictfetchall()
         # return product object
-        return product
+        return products
 
     @staticmethod
     def cleaning_code(product_sku):
