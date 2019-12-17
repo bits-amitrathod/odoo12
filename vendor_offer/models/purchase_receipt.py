@@ -15,7 +15,7 @@ class StockMoveOfferPrice(models.Model):
     def _set_offer_price_re(self):
         for line in self:
             line.currency_id = line.product_id.currency_id.id
-            po_num = line.picking_id.origin
+            po_num = line.origin
             if po_num:
                 po_order = self.env['purchase.order'].search(
                     [('name', '=', po_num),('state', '=', 'purchase')])
