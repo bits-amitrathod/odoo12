@@ -469,14 +469,10 @@ class VendorOffer(models.Model):
             self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
 
     @api.multi
-    def action_button_confirm_api(self, product_id):
+    def action_button_confirm_api_cash(self, product_id):
         # purchase = self.env['purchase.order'].search([('id', '=', product_id)])
-
-        if self.offer_type:
-            if self.offer_type == 'credit':
-                self.amount_untaxed = self.credit_amount_untaxed
-                self.amount_total = self.credit_amount_total
-
+        self.amount_untaxed = math.floor(round(self.cash_amount_untaxed, 2))
+        self.amount_total = math.floor(round(self.cash_amount_total, 2))
         self.button_confirm()
 
         self.write({
@@ -490,7 +486,27 @@ class VendorOffer(models.Model):
             temp = int(self.revision) - 1
             self.revision = str(temp)
 
+        self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
 
+    @api.multi
+    def action_button_confirm_api_credit(self, product_id):
+        # purchase = self.env['purchase.order'].search([('id', '=', product_id)])
+
+        self.amount_untaxed = math.floor(round(self.credit_amount_untaxed, 2))
+        self.amount_total = math.floor(round(self.credit_amount_total, 2))
+
+        self.button_confirm()
+
+        self.write({
+            'status': 'purchase',
+            'state': 'purchase',
+            'status_ven': 'Accepted',
+            'accepted_date': fields.date.today()
+        })
+
+        if (int(self.revision) > 0):
+            temp = int(self.revision) - 1
+            self.revision = str(temp)
 
         self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
 
