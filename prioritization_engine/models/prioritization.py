@@ -258,8 +258,8 @@ class ProductTemplateSku(models.Model):
     premium = fields.Boolean("Premium")
     sku_code = fields.Char('SKU / Catalog No')
     manufacturer_pref = fields.Char(string='Manuf. Catalog No')
-    manufacturer_uom = fields.Many2one('uom.uom', 'Manuf. UOM', default=_get_default_uom_id,
-                                       required=True)
+    manufacturer_uom = fields.Many2one('uom.uom', 'Manuf. UOM', default=_get_default_uom_id, required=True)
+    actual_uom = fields.Many2one('uom.uom', 'Actual UOM', default=_get_default_uom_id, required=True)
 
     @api.model
     def create(self, vals):
