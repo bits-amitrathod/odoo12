@@ -150,9 +150,10 @@ class IncomingMailCronModel(models.Model):
                                 email_from = str(match.group(0))
                                 _logger.info('Email From : %r', email_from)
 
-                            if '{customerid:' in subject:
-                                match1 = re.findall(r'{[\w\.-]+:[\w\.-]+', subject)
-                                saleforce_ac = match1[0].split(':')[1]
+                            if re.search('#(.*)#', subject):
+                                match1 = re.search('#(.*)#', subject)
+                                saleforce_ac = match1.group(1)
+                                _logger.info('saleforce_ac: %r', str(saleforce_ac))
                                 # find customer in res.partner
                                 if saleforce_ac and saleforce_ac is not None:
                                     res_partner = self.env['res.partner'].search([("saleforce_ac", "=ilike", saleforce_ac), ('prioritization', '=', True), ('on_hold', '=', False)])
