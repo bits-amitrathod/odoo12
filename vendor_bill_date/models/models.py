@@ -10,20 +10,20 @@ class VendorBillDate(models.Model):
     def _onchange_payment_term_date_invoice(self):
         # super(VendorBillDate,self). _onchange_payment_term_date_invoice()
         stock_picking_obj = False
-        add_hrs = None
+        # add_hrs = None
 
         if self.origin:
             if self.type == "in_invoice":
                 # Populates Bill_Date on pageload (onchange()) at the time of creating bill of purchase_order in Purchase module
                 stock_picking_obj = self.env['stock.picking'].search([('origin', '=', self.origin), ('state', '=', 'done')])
-                add_hrs = 6
+                # add_hrs = 6
 
             elif self.type == "out_invoice":
                 # Populates Invoice_Date on pageload (onchange()) at the time of creating invoice of sale_order in Sale module
                 stock_picking_obj = self.env['stock.picking'].search( [('origin', '=', self.origin), ('state', '=', 'done'), ('picking_type_id', '=', 5)])
-                add_hrs = 5
+                # add_hrs = 5
 
-        self.date_invoice = str((max(stock_picking_obj).date_done + timedelta(hours=add_hrs)).date()) if stock_picking_obj else None
+        self.date_invoice = str((max(stock_picking_obj).date_done)) if stock_picking_obj else None      # + timedelta(hours=add_hrs)).date(
 
         # Setting due_date according to current(updated) invoice_date (not according to current date)
         if self.payment_term_id:
