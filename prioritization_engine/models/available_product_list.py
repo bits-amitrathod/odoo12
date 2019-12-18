@@ -58,7 +58,7 @@ class AvailableProductDict(models.TransientModel):
     def get_available_production_lot(self, customer_id, product_id):
         self.available_production_lot_dict.clear()
         # get expiration tolerance
-        prioritization_engine_request = self.env['sps.customer.requests'].get_settings_object(int(customer_id), int(product_id), None, None)
+        prioritization_engine_request = self.env['sps.customer.requests'].get_settings_object(customer_id, product_id)
         expiration_tolerance_date = (date.today() + relativedelta(months=+int(prioritization_engine_request['expiration_tolerance'])))
 
         self.env.cr.execute("Select sq.id, sq.product_id, sq.lot_id, sq.reserved_quantity, spl.use_date, "
