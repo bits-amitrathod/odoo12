@@ -283,6 +283,7 @@
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet/notebook/page/group/group/field[@name='uom_po_id']" position="after">
                     <field name="manufacturer_uom" groups="uom.group_uom" options="{'no_create': True}"/>
+                    <field name="actual_uom" groups="uom.group_uom" options="{'no_create': True}"/>
                 </xpath>
             </field>
         </record>
