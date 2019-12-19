@@ -29,7 +29,8 @@ poplib._MAXLINE = 65536
 class DumpDiscuss(models.Model):
     _inherit = 'mail.message'
 
-# Read/Unread Flag for incoming email
+    # Read/Unread Flag for incoming email from mail.channel
+    # Only set is_read=True if file data is successfully dumped from 'mail.message' table to 'sps.customer.requests' table otherwise rollback
     is_read = fields.Boolean(Default=False)
 
     @api.model
@@ -38,7 +39,7 @@ class DumpDiscuss(models.Model):
             [('model', '=', 'mail.channel'), ('is_read', '=', False), ('record_name', '=', 'general'),
              ('is_read', '!=', None)], limit=1, order='id asc')
         in_emails.write({'is_read': True})
-
+        # No need for loop here as we are processing only one customer request at a time but in future CR might come to fetch multiple requests at a time hence used loop here
         for message in in_emails:
 
             try:
@@ -55,13 +56,13 @@ class DumpDiscuss(models.Model):
                 saleforce_ac = None
                 attachments = None
                 file_extension = None
-
-                filename = message.attachment_ids.name
+                # Need to fetch attachment filename here to handle 'keep original mail' setting in Incoming_mail_cron -> advance tab'
+                # If setting is on there will be one extra attachment of original mail with the incoming mail otherwise customer attached attachments only
+                filename = message.attachment_ids[0].name
                 if filename and filename != False:
                         file_extension = filename[filename.rindex('.') + 1:]
-
-                if file_extension == 'xls' or file_extension == 'xlsx' or file_extension == 'csv':
-                        attachments = message.attachment_ids[0].datas
+                        if file_extension == 'xls' or file_extension == 'xlsx' or file_extension == 'csv':
+                            attachments = message.attachment_ids[0].datas # Reading the contents of customer attachment (Binary format) if there is any
 
                 if email_from is not None:
                     match = re.search(r'[\w\.-]+@[\w\.-]+', email_from)
@@ -145,7 +146,7 @@ class DumpDiscuss(models.Model):
                                     if filename:
                                         try:
                                             self.env.cr.savepoint()
-                                            checksum = message.attachment_ids[0].checksum
+                                            checksum = message.attachment_ids[0].checksum # checksum neeed only to pass to function in order to get absolute path of file
                                             file_path = message.attachment_ids[0]._get_path(attachments, checksum)[1]
                                             response = self.env[
                                                 'sps.document.process'].process_document(users_model,
@@ -155,11 +156,11 @@ class DumpDiscuss(models.Model):
                                                                                          email_from,
                                                                                          'Email'
                                                                                          )
-                                            self.env.cr.commit()
+                                            self.env.cr.commit() # Commit if attachment contents are properly written in sps_customer_requests table
 
                                         except Exception as e:
                                             _logger.info(str(e))
-                                            self.env.cr.rollback()
+                                            self.env.cr.rollback() # Rollback if attachment contents are not properly written in sps_customer_requests table
 
                                 else:
                                     _logger.error(
@@ -214,15 +215,15 @@ class DumpDiscuss(models.Model):
             except Exception as ex:
                 print(ex)
 
-
+# This function is specific to update admin(via email) if there is any new customer request
     def send_mail_with_attachment(self, email_from, email_subject, customer_name, attachments,email_obj):
         today_date = datetime.today().strftime('%m/%d/%Y')
         template = self.env.ref('customer-requests.new_email_in_inbox').sudo()
         local_context = {'emailFrom': email_from, 'emailSubject': email_subject, 'date': today_date, 'customerName': customer_name}
         if attachments:
-            for attachment in email_obj.attachment_ids[0]:
+            for attachment in email_obj.attachment_ids[0]: # No need for loop here as we are processing only one attachment at a time but in future CR might come to process multiple attachments at a time hence used loop here
                 try:
-                    filename = email_obj.attachment_ids[0].name
+                    filename = email_obj.attachment_ids[0].name # we can also get filename in parameter list from the calling function
                     if filename is not None:
                         try:
                             file_contents_bytes = attachments
@@ -260,26 +261,26 @@ class DumpDiscuss(models.Model):
                         customerName = str(customerName) + "  ,  " + str(res_partner['name'])
 
             if len(res_partners) == 1:
-                self.send_mail(str(email_from), str(email_subject), str(res_partners['name']), response['attachment'],email_obj)
+                self.send_mail(str(email_from), str(email_subject), str(res_partners['name']), response,email_obj)
             elif len(res_partners) > 1:
-                self.send_mail(str(email_from), str(email_subject), customerName, response['attachment'],email_obj)
+                self.send_mail(str(email_from), str(email_subject), customerName, response,email_obj)
             else:
-                self.send_mail(str(email_from), str(email_subject), '', response['attachment'],email_obj)
+                self.send_mail(str(email_from), str(email_subject), '', response,email_obj)
         else:
-            self.send_mail(str(email_from), str(email_subject),response['attachment'],email_obj)
+            self.send_mail(str(email_from), str(email_subject),'',response,email_obj)
 
-
-    def send_mail(self, email_from, email_subject, customer_name, attachments,email_obj):
+# This method is called from '_error_code' method to send mail to admin if there is any error in request processing
+    def send_mail(self, email_from, email_subject, customer_name, response,email_obj):
         today_date = datetime.today().strftime('%m/%d/%Y')
-        template = self.env.ref('customer-requests.new_email_in_inbox').sudo()
-        local_context = {'emailFrom': email_from, 'emailSubject': email_subject, 'date': today_date, 'customerName': customer_name}
-        if attachments:
+        template = self.env.ref('customer-requests.set_log_email_response').sudo()
+        local_context = {'emailFrom': email_from, 'emailSubject': email_subject, 'date': today_date, 'customerName': customer_name, 'reason' : response['message']}
+        if response['attachment']:
             for attachment in email_obj.attachment_ids[0]:
                 try:
-                    filename = email_obj.attachment_ids[0].name
+                    filename = email_obj.attachment_ids[0].name # we can also get filename in parameter list from the calling function (Optimisation)
                     if filename is not None:
                         try:
-                            file_contents_bytes = email_obj.attachment_ids[0].datas
+                            file_contents_bytes = email_obj.attachment_ids[0].datas # we can also get file-contents in parameter list from the calling function (Optimisation)
                             file_extension = filename[filename.rindex('.') + 1:]
                             print('file extension in send_mail : ' + file_extension)
                         except Exception as e:
@@ -300,6 +301,8 @@ class DumpDiscuss(models.Model):
             except:
                 response = {'message': 'Unable to connect to SMTP Server'}
 
+
+# This function is never used in this particular module
     @staticmethod
     def random_string_generator(size=10, chars=string.ascii_lowercase + string.digits):
         return ''.join(random.choice(chars) for _ in range(size))

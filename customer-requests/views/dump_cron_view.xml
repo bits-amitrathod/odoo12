@@ -10,7 +10,7 @@
             <field name="state">code</field>
             <field name="code">model.process_dump_discuss_scheduler()</field>
             <field name="numbercall">-1</field>
-            <field name="active" eval="True"/>
+            <field name="active" eval="False"/>
             <field name="doall" eval="False"/>
         </record>
     </data>
