@@ -400,7 +400,7 @@ class DocumentProcessTransientModel(models.TransientModel):
                                 regexp_replace(REPLACE(RTRIM(LTRIM(REPLACE(pt.sku_code,'0',' '))),' ','0'), '[^A-Za-z0-9.]', '','g') as sku_code_cleaned
                                 FROM product_template pt """
         if req['uom'].lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
-            sql_query = sql_query + """ INNER JOIN uom_uom uu ON pt.uom_id = uu.id """
+            sql_query = sql_query + """ INNER JOIN uom_uom uu ON pt.actual_uom = uu.id """
         sql_query = sql_query + """ where pt.tracking != 'none' and pt.active = true """
         if req['uom'].lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
             sql_query = sql_query + """ and uu.name in ('Each', 'Unit') """
