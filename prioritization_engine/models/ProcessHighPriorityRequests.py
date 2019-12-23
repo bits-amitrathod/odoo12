@@ -9,10 +9,13 @@ _logger = logging.getLogger(__name__)
 class ProcessHighPriorityRequests(models.Model):
     _name = 'process.high.priority.requests'
 
+    documents = set()
+
     @api.model
     @api.multi
     def process_high_priority_requests(self):
         _logger.info('process high priority requests.')
+        self.documents.clear()
 
         document = self.env['sps.cust.uploaded.documents'].search([('status', '=', 'draft')], limit=1, order="id asc")
         if len(document) == 1:
@@ -25,7 +28,8 @@ class ProcessHighPriorityRequests(models.Model):
                     document.write({'high_priority_doc_pro_count': high_priority_doc_pro_count})
                     self.env.cr.commit()
                     if high_priority_doc_pro_count <= 2:
-                        self.env['sps.customer.requests'].process_customer_requests(high_priority_requests)
+                        self.documents.add(document.id)
+                        self.env['sps.customer.requests'].process_customer_requests(high_priority_requests, tuple(self.documents))
                         document.write({'document_processed_count': document.document_processed_count + 1})
                     else:
                         document.write({'status': 'On Hold'})

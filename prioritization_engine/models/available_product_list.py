@@ -13,18 +13,28 @@ class AvailableProductDict(models.TransientModel):
     available_production_lot_dict = {}
 
     # get available production lot list, parameter product id.
-    def get_available_production_lot_dict(self):
+    def get_available_production_lot_dict(self, document_ids):
         self.available_production_lot_dict_to_be_returned.clear()
 
-        self.env.cr.execute("Select sq.id, sq.product_id, sq.lot_id, sq.reserved_quantity, spl.use_date, "
-                            "sum(sq.quantity-sq.reserved_quantity) as available_qty from public.stock_quant sq "
-                            "Inner Join public.stock_location sl on sl.id = sq.location_id "
-                            "Inner Join public.stock_production_lot spl on sq.lot_id = spl.id "
-                            "where sq.quantity > 0 and spl.use_date is not null "
-                            "and sl.usage = 'internal' and sl.active = true and spl.use_date >='"
-                            + str(date.today()) + "' group by sq.id, spl.use_date "
-                            "having sum(sq.quantity-sq.reserved_quantity) > 0 order by spl.use_date asc")
+        sql_query = """Select sq.id, sq.product_id, sq.lot_id, sq.reserved_quantity, spl.use_date,  
+                            sum(sq.quantity-sq.reserved_quantity) as available_qty from public.stock_quant sq 
+                            Inner Join public.stock_location sl on sl.id = sq.location_id 
+                            Inner Join public.stock_production_lot spl on sq.lot_id = spl.id 
+                            where sq.product_id IN (Select distinct product_id 
+                            from public.sps_customer_requests where document_id
+                            """
+        if len(document_ids) > 1:
+            sql_query = sql_query + """  IN """ + str(document_ids)
+        else:
+            sql_query = sql_query + """ = """ + str(document_ids[0])
 
+        sql_query = sql_query + """ ) and sq.quantity > 0 and spl.use_date is not null 
+                        and sl.usage = 'internal' and sl.active = true and spl.use_date >= '""" + str(
+            date.today()) + """'"""
+        sql_query = sql_query + """ group by sq.id, spl.use_date, sq.product_id 
+                        having sum(sq.quantity-sq.reserved_quantity) > 0 order by spl.use_date asc """
+
+        self.env.cr.execute(sql_query)
         query_results = self.env.cr.dictfetchall()
 
         for query_result in query_results:
