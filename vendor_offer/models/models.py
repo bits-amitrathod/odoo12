@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-"Hello - needed salary slip for last 3 month for Loan purpose."
+# -*- coding: utf-8 -*-
 
 import datetime
 import io

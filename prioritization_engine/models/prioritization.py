@@ -258,8 +258,8 @@ class ProductTemplateSku(models.Model):
     premium = fields.Boolean("Premium")
     sku_code = fields.Char('SKU / Catalog No')
     manufacturer_pref = fields.Char(string='Manuf. Catalog No')
-    manufacturer_uom = fields.Many2one('uom.uom', 'Manuf. UOM', default=_get_default_uom_id,
-                                       required=True)
+    manufacturer_uom = fields.Many2one('uom.uom', 'Manuf. UOM', default=_get_default_uom_id, required=True)
+    actual_uom = fields.Many2one('uom.uom', 'Actual UOM', default=_get_default_uom_id, required=True)
 
     @api.model
     def create(self, vals):
@@ -412,8 +412,7 @@ class StockMove(models.Model):
             _logger.info('partner id : %r, product id : %r', stock_move.partner_id.id, stock_move.product_id.id)
             if stock_move.partner_id and stock_move.product_id:
                 setting = self.env['sps.customer.requests'].get_settings_object(stock_move.partner_id.id,
-                                                                                stock_move.product_id.id,
-                                                                                None, None)
+                                                                                stock_move.product_id.id)
                 if setting:
                     if setting.partial_UOM and setting.partial_UOM is not None:
                         _logger.info('partial UOM** : %r', setting.partial_UOM)
