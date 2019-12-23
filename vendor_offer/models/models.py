@@ -67,6 +67,7 @@ except ImportError:
 
 all_field_import = 'all_field_import'
 
+SUPERUSER_ID_INFO = 2
 
 class VendorOffer(models.Model):
     _description = "Vendor Offer"
@@ -161,6 +162,15 @@ class VendorOffer(models.Model):
 
     import_type_ven = fields.Char(string='Import Type')
     arrival_date_grp = fields.Datetime(string="Arrival Date")
+
+    super_user_email = fields.Char(compute='_email_info_user')
+
+    @api.onchange('super_user_email')
+    @api.depends('super_user_email')
+    def _email_info_user(self):
+        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
+        temp = self.offer_type
+        self.super_user_email = super_user.email
 
     @api.multi
     def _compute_show_validate(self):
@@ -362,6 +372,7 @@ class VendorOffer(models.Model):
         This function opens a window to compose an email, with the edi purchase template message loaded by default
         '''
         temp_payment_term = self.payment_term_id.name
+        test = self.super_user_email
         if (temp_payment_term == False):
             temp_payment_term = '0 Days '
         self.ensure_one()
@@ -469,14 +480,11 @@ class VendorOffer(models.Model):
             self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
 
     @api.multi
-    def action_button_confirm_api(self, product_id):
+    def action_button_confirm_api_cash(self, product_id):
         # purchase = self.env['purchase.order'].search([('id', '=', product_id)])
-
-        if self.offer_type:
-            if self.offer_type == 'credit':
-                self.amount_untaxed = self.credit_amount_untaxed
-                self.amount_total = self.credit_amount_total
-
+        self.amount_untaxed = math.floor(round(self.cash_amount_untaxed, 2))
+        self.amount_total = math.floor(round(self.cash_amount_total, 2))
+        self.offer_type = 'cash'
         self.button_confirm()
 
         self.write({
@@ -490,7 +498,27 @@ class VendorOffer(models.Model):
             temp = int(self.revision) - 1
             self.revision = str(temp)
 
+        self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
 
+    @api.multi
+    def action_button_confirm_api_credit(self, product_id):
+        # purchase = self.env['purchase.order'].search([('id', '=', product_id)])
+
+        self.amount_untaxed = math.floor(round(self.credit_amount_untaxed, 2))
+        self.amount_total = math.floor(round(self.credit_amount_total, 2))
+        self.offer_type = 'credit'
+        self.button_confirm()
+
+        self.write({
+            'status': 'purchase',
+            'state': 'purchase',
+            'status_ven': 'Accepted',
+            'accepted_date': fields.date.today()
+        })
+
+        if (int(self.revision) > 0):
+            temp = int(self.revision) - 1
+            self.revision = str(temp)
 
         self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
 
@@ -581,6 +609,8 @@ class VendorOffer(models.Model):
 
     def compute_access_url_offer(self):
         for order in self:
+            auth_param = url_encode(self.partner_id.signup_get_auth_param()[self.partner_id.id])
+            temp = self.get_portal_url(query_string='&%s' % auth_param)
             access_url_vendor = '/my/vendor/%s' % (order.id)
             return access_url_vendor
 
