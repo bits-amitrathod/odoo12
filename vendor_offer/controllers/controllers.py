@@ -22,7 +22,7 @@ class VendorOffer(http.Controller):
             'object': obj
         })
 
-    @http.route('/vendor_offer/accept/',  type='json', auth="public", website=True, csrf=False)
+    @http.route('/vendor_offer/accept',  type='json', auth="public", website=True, csrf=False)
     def vendor_offer_accept(self, res_id, order_id=None, partner_name=None, signature=None,access_token=None):
         order = request.env['purchase.order'].search([('id', '=', res_id)])
         if order.state == 'purchase':
@@ -42,7 +42,7 @@ class VendorOffer(http.Controller):
             res_id=order_sudo.id,
             message=_('Order signed by %s') % (partner_name,),
             attachments=[('signature.png', base64.b64decode(signature))] if signature else [],
-            **({'token': access_token} if access_token else {}))
+            **({'token': order.access_token} if order.access_token else {}))
         return {
             'success': _('Your Order has been confirmed.'),
             'redirect_url': '/my/home',
@@ -68,7 +68,7 @@ class VendorOffer(http.Controller):
             res_id=order_sudo.id,
             message=_('Order signed by %s') % (partner_name,),
             attachments=[('signature.png', base64.b64decode(signature))] if signature else [],
-            **({'token': access_token} if access_token else {}))
+            **({'token': order.access_token} if order.access_token else {}))
         return {
             'success': _('Your Order has been confirmed.'),
             'redirect_url': '/my/home',
@@ -95,7 +95,7 @@ class VendorOffer(http.Controller):
             res_id=order_sudo.id,
             message=_('Order rejected by %s') % (partner_name,),
             attachments=[('signature.png', base64.b64decode(signature))] if signature else [],
-            **({'token': access_token} if access_token else {}))
+            **({'token': order.access_token} if order.access_token else {}))
         return {
             'success': _('Your Order has been rejected.'),
             'redirect_url': '/my/home',
