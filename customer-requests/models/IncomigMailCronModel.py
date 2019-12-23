@@ -35,9 +35,13 @@ class DumpDiscuss(models.Model):
 
     @api.model
     def DumpData(self):
+        # Fetching channel name (record name) for particular email-id to receive email to
+        rec_mail_id_channel = self.env['mail.channel'].sudo().search([('alias_name', '=', 'prioritytest0')]).name
+        # Fetching received email's object one at a time
         in_emails = self.env['mail.message'].sudo().search(
-            [('model', '=', 'mail.channel'), ('is_read', '=', False), ('record_name', '=', 'general'),
+            [('model', '=', 'mail.channel'), ('is_read', '=', False), ('message_type', '=', 'email'), ('record_name', '=', rec_mail_id_channel),
              ('is_read', '!=', None)], limit=1, order='id asc')
+        self.env.cr.savepoint()
         in_emails.write({'is_read': True})
         # No need for loop here as we are processing only one customer request at a time but in future CR might come to fetch multiple requests at a time hence used loop here
         for message in in_emails:
@@ -145,7 +149,6 @@ class DumpDiscuss(models.Model):
                                     # filename = message.attachment_ids[0].name
                                     if filename:
                                         try:
-                                            self.env.cr.savepoint()
                                             checksum = message.attachment_ids[0].checksum # checksum neeed only to pass to function in order to get absolute path of file
                                             file_path = message.attachment_ids[0]._get_path(attachments, checksum)[1]
                                             response = self.env[
@@ -181,7 +184,6 @@ class DumpDiscuss(models.Model):
 
                                     if not filename is None:
                                         try:
-                                            self.env.cr.savepoint()
                                             checksum = message.attachment_ids[0].checksum
                                             file_path = message.attachment_ids[0]._get_path(attachments, checksum)[1]
                                             response = self.env[
@@ -213,6 +215,7 @@ class DumpDiscuss(models.Model):
                     self._error_code(response, saleforce_ac, attachments, customer_email, email_from, email_subject,in_emails)
 
             except Exception as ex:
+                self.env.cr.rollback()  # Rollback if attachment contents are not properly written in sps_customer_requests table
                 print(ex)
 
 # This function is specific to update admin(via email) if there is any new customer request

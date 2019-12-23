@@ -205,7 +205,7 @@ class DocumentProcessTransientModel(models.TransientModel):
             return 0
 
     @staticmethod
-    def _get_column_mappings(mapping_field_list, templates_list, file_path, template_type_from_user,file_name):
+    def _get_column_mappings(mapping_field_list, templates_list, file_path, template_type_from_user,file_name=None):
 
         # irattachment_obj = self.env['ir.attachment']
         column_mappings = []
@@ -222,14 +222,14 @@ class DocumentProcessTransientModel(models.TransientModel):
                         dict(template_field=customer_template[mapping_field], mapping_field=mapping_field))
             selected_columns = [mapped_column['template_field'] for mapped_column in mapped_columns]
             template_column_list = non_selected_columns + selected_columns
-
-            file_extension = file_name[file_name.rindex('.') + 1:]
-            if file_extension == 'xls' or file_extension == 'xlsx':
+            if file_name:
+                file_extension = file_name[file_name.rindex('.') + 1:]
+                if file_extension == 'xls' or file_extension == 'xlsx':
                     book = xlrd.open_workbook(file_path)
                     columns = DocumentProcessTransientModel._read_xls_book(book)[0]
 
-            elif file_extension == 'csv':
-                columns = DocumentProcessTransientModel._read_columns_from_csv(file_path)
+                elif file_extension == 'csv':
+                    columns = DocumentProcessTransientModel._read_columns_from_csv(file_path)
             compare = lambda x, y: collections.Counter(x) == collections.Counter(y)
             try:
                 if compare(template_column_list, columns):
