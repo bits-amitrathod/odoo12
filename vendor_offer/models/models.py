@@ -1324,6 +1324,10 @@ class VendorPricingList(models.Model):
     average_aging = fields.Char(string='Average Aging', compute='onchange_product_id_vendor_offer_pricing',
                                     readonly=True, store=False)
 
+    quotations_per_code = fields.Integer(string='Open Quotations Per Code',
+                                         compute='onchange_product_id_vendor_offer_pricing',
+                                         readonly=True, store=False)
+
     def onchange_product_id_vendor_offer_pricing(self):
         for line in self:
             line.product_tier = line.product_tmpl_id.tier
@@ -1339,6 +1343,9 @@ class VendorPricingList(models.Model):
             last_month = fields.Date.to_string(today_date - datetime.timedelta(days=30))
             last_yr = fields.Date.to_string(today_date - datetime.timedelta(days=365))
             cust_location_id = self.env['stock.location'].search([('name', '=', 'Customers')]).id
+            sale_order_line = self.env['sale.order.line'].search([('product_id', '=', line.id),('state', 'in',('draft', 'sent'))])
+            line.quotations_per_code = len(sale_order_line)
+
             str_query_cm = "SELECT sum(sml.qty_done) FROM sale_order_line AS sol LEFT JOIN stock_picking AS sp ON " \
                            "sp.sale_id=sol.id " \
                            " LEFT JOIN stock_move_line AS sml ON sml.picking_id=sp.id WHERE sml.state='done' AND " \
@@ -1485,7 +1492,7 @@ class VendorPricingExport(models.TransientModel):
         last_yr = fields.Date.to_string(today_date - datetime.timedelta(days=365))
         last_3_months = fields.Date.to_string(today_date - datetime.timedelta(days=90))
         count = 0
-        product_lines_export_pp.append((['ProductNumber', 'ProductDescription', 'Price', 'CFP-Manufacturer', 'TIER',
+        product_lines_export_pp.append((['ProductNumber', 'ProductDescription', 'Price', 'CFP-Manufacturer', 'TIER','Open Quotations Per Code',
                                          'SALES COUNT', 'SALES COUNT YR', 'QTY IN STOCK', 'SALES TOTAL',
                                          'PREMIUM', 'EXP INVENTORY', 'SALES COUNT 90', 'Quantity on Order',
                                          'Average Aging', 'Inventory Scrapped']))
@@ -1589,7 +1596,11 @@ class VendorPricingExport(models.TransientModel):
                            CASE 
                              WHEN aging.aging_days IS NULL THEN '0' 
                              ELSE aging.aging_days 
-                           END     AS aging_days 
+                           END     AS aging_days ,
+                             CASE 
+                             WHEN quotations_per_code.quotation_count IS NULL THEN '0' 
+                             ELSE quotations_per_code.quotation_count
+                           END     AS quotations_per_code
                           
                     FROM   product_product pp 
                            inner join product_template pt 
@@ -1639,6 +1650,14 @@ class VendorPricingExport(models.TransientModel):
                                       GROUP  BY sml.product_id) AS yr_sales 
                                   ON pp.id = yr_sales.product_id 
                                   
+                             left join(SELECT ppc.id,count(ppc.id) as quotation_count 
+                                    from  product_product ppc   
+                                       INNER JOIN sale_order_line soli ON soli.product_id=ppc.id 
+                                       INNER JOIN product_template pti ON  pti.id=ppc.product_tmpl_id 
+                                       INNER JOIN sale_order sor ON sor.id=soli.order_id   
+                                        where sor.state in ('draft','sent')   
+                                           GROUP  BY ppc.id) AS quotations_per_code
+                                           on pp.id =  quotations_per_code.id
                                   
                           LEFT JOIN ( 
                          select  case when sum(quantity) = 0 then 0 else round(cast (sum(sum_qty_day)/sum(quantity) as numeric),0) end   as aging_days,pt_id as pt_id  from
@@ -1752,7 +1771,7 @@ class VendorPricingExport(models.TransientModel):
             # aging_days = self.env.cr.fetchone()
             product_lines_export_pp.append(
                 ([line['sku_code'], line['name'], line['list_price'], line['product_brand_id'],
-                  line['tier'], line['product_sales_count'], line['product_sales_count_yrs'],
+                  line['tier'],line['quotations_per_code'],line['product_sales_count'], line['product_sales_count_yrs'],
                   line['actual_quantity'], line['amount_total_ven_pri'], line['premium'],
                   line['expired_lot_count'], line['product_sales_count_90'], line['qty_on_order'],
                   line['aging_days'], line['scrap_qty']]))
