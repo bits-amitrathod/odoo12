@@ -43,7 +43,7 @@ class DocumentProcessTransientModel(models.TransientModel):
             [['customer_id', '=', user_id], ['template_status', '=', 'Active']])
         if len(templates_list) <= 0:
             return dict(errorCode=5, message='Template Not Found')
-        mappings, non_mapped_columns, template_type = DocumentProcessTransientModel._get_column_mappings(
+        mappings, template_type = DocumentProcessTransientModel._get_column_mappings(
             mapping_field_list,
             templates_list,
             uploaded_file_path, template_type_from_user)
@@ -52,11 +52,9 @@ class DocumentProcessTransientModel(models.TransientModel):
                 _logger.info('-------Template mismatch------------')
                 return dict(errorCode=9, message='Template mismatch')
             return dict(errorCode=4, message='Mappings Not Found')
-        requests, file_acceptable = DocumentProcessTransientModel._parse_csv(uploaded_file_path, mappings,
-                                                                             non_mapped_columns)
+        requests, file_acceptable = DocumentProcessTransientModel._parse_csv(uploaded_file_path, mappings)
         if file_acceptable is not None:
-            requests, file_acceptable = DocumentProcessTransientModel._parse_excel(uploaded_file_path, mappings,
-                                                                                   non_mapped_columns)
+            requests, file_acceptable = DocumentProcessTransientModel._parse_excel(uploaded_file_path, mappings)
         if file_acceptable is None and len(requests) > 0:
             today_date = datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
             file_upload_record = dict(token=DocumentProcessTransientModel.random_string_generator(30),
@@ -208,33 +206,29 @@ class DocumentProcessTransientModel(models.TransientModel):
     def _get_column_mappings(mapping_field_list, templates_list, file_path, template_type_from_user):
         column_mappings = []
         template_type = None
-        non_selected_columns = []
         matched_templates = {}
         for customer_template in templates_list:
-            if customer_template.non_selected_columns:
-                non_selected_columns = customer_template.non_selected_columns.split(',')
             mapped_columns = []
             for mapping_field in mapping_field_list:
                 if customer_template[mapping_field]:
                     mapped_columns.append(
                         dict(template_field=customer_template[mapping_field], mapping_field=mapping_field))
             selected_columns = [mapped_column['template_field'] for mapped_column in mapped_columns]
-            template_column_list = non_selected_columns + selected_columns
+            template_column_list = selected_columns  # + non_selected_columns
             file_extension = file_path[file_path.rindex('.') + 1:]
             if file_extension == 'xls' or file_extension == 'xlsx':
                 book = xlrd.open_workbook(file_path)
                 columns = DocumentProcessTransientModel._read_xls_book(book)[0]
             elif file_extension == 'csv':
                 columns = DocumentProcessTransientModel._read_columns_from_csv(file_path)
-            compare = lambda x, y: collections.Counter(x) == collections.Counter(y)
             try:
-                if compare(template_column_list, columns):
+                if all(elem in columns for elem in template_column_list):
                     column_mappings = mapped_columns
                     template_type = customer_template.template_type
                     print('template_type *')
                     print(template_type)
-                    matched_templates.update({template_type: [column_mappings, non_selected_columns, template_type]})
-            except  UnboundLocalError as ue:
+                    matched_templates.update({template_type: [column_mappings, template_type]})
+            except UnboundLocalError as ue:
                 if ue:
                     _logger.info("raise error :%r", ue)
         _logger.info('template_type_from_user: %r', template_type_from_user)
@@ -246,7 +240,7 @@ class DocumentProcessTransientModel(models.TransientModel):
             return matched_template[0], matched_template[1], matched_template[2]
         else:
             print('matched_template = 1')
-        return column_mappings, non_selected_columns, template_type
+        return column_mappings, template_type
 
     @staticmethod
     def _read_xls_book(book, read_data=False):
@@ -303,19 +297,14 @@ class DocumentProcessTransientModel(models.TransientModel):
         return ''.join(random.choice(chars) for _ in range(size))
 
     @staticmethod
-    def _parse_csv(uploaded_file_path, mappings, non_mapped_columns):
+    def _parse_csv(uploaded_file_path, mappings):
         file_acceptable = None
         requests = []
         try:
             with open(uploaded_file_path) as csvfile:
                 reader = csv.DictReader(csvfile)
                 for record in reader:
-                    un_mapped_data = {}
-                    for non_mapped_column in non_mapped_columns:
-                        if record[non_mapped_column]:
-                            un_mapped_data.update(
-                                {non_mapped_column: record[non_mapped_column]})
-                    x = {'un_mapped_data': json.dumps(un_mapped_data)}
+                    x = {}
                     for mapping in mappings:
                         mapping_field = str(mapping['mapping_field'])
                         if mapping_field.startswith('mf_'):
@@ -329,7 +318,7 @@ class DocumentProcessTransientModel(models.TransientModel):
         return requests, file_acceptable
 
     @staticmethod
-    def _parse_excel(uploaded_file_path, mappings, non_mapped_columns):
+    def _parse_excel(uploaded_file_path, mappings):
         file_acceptable = None
         requests = []
         try:
@@ -340,12 +329,7 @@ class DocumentProcessTransientModel(models.TransientModel):
                                    range(1, len(excel_data_rows_with_columns))]
                 excel_columns = excel_data_rows_with_columns[0]
                 for excel_data_row in excel_data_rows:
-                    un_mapped_data = {}
-                    for non_mapped_column in non_mapped_columns:
-                        if excel_columns.index(non_mapped_column) >= 0:
-                            un_mapped_data.update(
-                                {non_mapped_column: excel_data_row[excel_columns.index(non_mapped_column)]})
-                    x = {'un_mapped_data': json.dumps(un_mapped_data)}
+                    x = {}
                     for mapping in mappings:
                         mapping_field = str(mapping['mapping_field'])
                         if mapping_field.startswith('mf_'):
