@@ -704,6 +704,7 @@
                     <field name="list_price" string="Price"/>
                     <field name="product_brand_id" string="CFP-Manufacturer"/>
                     <field name="tier" string="TIER"/>
+                    <field name="quotations_per_code"/>
                     <field name="product_sales_count"/>
                     <field name="product_sales_count_yrs"/>
                     <field name="actual_quantity"/>

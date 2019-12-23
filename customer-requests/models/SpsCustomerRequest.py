@@ -94,9 +94,9 @@ class SpsCustomerRequest(models.Model):
         self.env['prioritization.engine.model'].allocate_product_by_priority(sps_customer_requests)
 
     # check customer level or global level setting for product.
-    def get_settings_object(self, customer_id,product_id,sps_customer_request_id,status):
+    def get_settings_object(self, customer_id, product_id):
         customer_level_setting = self.env['prioritization_engine.prioritization'].sudo().search(
-            [('customer_id', '=', customer_id),('product_id', '=', product_id), ('priority', '>=', 0)])
+            [('customer_id', '=', int(customer_id)), ('product_id', '=', int(product_id)), ('priority', '>=', 0)])
         _logger.info("Inside get_settings_object"+str(customer_id)+" -"+str(product_id))
         _logger.info(len(customer_level_setting))
         if len(customer_level_setting) == 1:
@@ -104,33 +104,23 @@ class SpsCustomerRequest(models.Model):
             if customer_level_setting.customer_id.prioritization and customer_level_setting.customer_id.on_hold is False:
                 if customer_level_setting.length_of_hold > 0:
                     return customer_level_setting
-                elif sps_customer_request_id is not None and status is not None:
-                    self.update_customer_status(sps_customer_request_id, status, "Product length of hold is 0. It should be minimum 1 hour")
-                    return False
                 else:
                     return False
             else:
                 _logger.info('Customer prioritization setting is False or customer is On Hold. Customer id is :%r',
                              str(customer_level_setting.customer_id.id))
-                if sps_customer_request_id is not None and status is not None:
-                    self.update_customer_status(sps_customer_request_id, status, "Customer prioritization setting is False or customer is On Hold.")
                 return False
         else:
             _logger.info("Inside get_settings_object else block")
-            global_level_setting = self.env['res.partner'].sudo().search([('id', '=', customer_id), ('priority', '>=', 0)])
+            global_level_setting = self.env['res.partner'].sudo().search([('id', '=', int(customer_id)), ('priority', '>=', 0)])
             _logger.info(global_level_setting)
             if len(global_level_setting) == 1:
                 if global_level_setting.prioritization and global_level_setting.on_hold is False:
-                    if global_level_setting.length_of_hold != 0:
+                    if global_level_setting.length_of_hold > 0:
                         return global_level_setting
-                    else:
-                        self.update_customer_status(sps_customer_request_id, status, "Product length of hold is 0. It should be minimum 1 hour")
-                        return False
                 else:
                     _logger.info('Customer prioritization setting is False or customer is On Hold. Customer id is :%r',
                                  str(global_level_setting.id))
-                    if sps_customer_request_id is not None and status is not None:
-                        self.update_customer_status(sps_customer_request_id, status, "Customer prioritization setting is False or customer is On Hold.")
                     return False
 
     def update_customer_status(self,sps_customer_request_id, status, log):
