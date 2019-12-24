@@ -19,12 +19,12 @@ class PrioritizationEngine(models.TransientModel):
     allocated_product_dict = {}
     allocated_product_for_gl_account_dict = {}
 
-    def allocate_product_by_priority(self, customer_request_list):
+    def allocate_product_by_priority(self, customer_request_list, document_ids):
         self.allocated_product_dict.clear()
         self.allocated_product_for_gl_account_dict.clear()
         _logger.debug('In product_allocation_by_priority')
         # get available production lot list.
-        available_product_lot_dict = self.get_available_product_lot_dict()
+        available_product_lot_dict = self.get_available_product_lot_dict(document_ids)
         if len(available_product_lot_dict) > 0:
             for customer_request in customer_request_list:
                 # update product status 'In Process'
@@ -68,8 +68,8 @@ class PrioritizationEngine(models.TransientModel):
             _logger.debug('Available product lot list is zero')
 
     # get available production lot list, parameter product id.
-    def get_available_product_lot_dict(self):
-        production_lot_dict = self.env['available.product.dict'].get_available_production_lot_dict()
+    def get_available_product_lot_dict(self, document_ids):
+        production_lot_dict = self.env['available.product.dict'].get_available_production_lot_dict(document_ids)
         return production_lot_dict
 
     def filter_available_product_lot_dict(self, available_production_lot_dict, product_id, expiration_tolerance):
