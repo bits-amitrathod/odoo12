@@ -100,8 +100,8 @@ class PrioritizationEngine(models.TransientModel):
                 create_date = datetime.strptime(self.change_date_format(create_date), '%Y,%m,%d,%H,%M,%S')
                 # convert cooling period days into hours
                 cooling_period_in_hours = int(customer_request.cooling_period) * 24
-                length_of_hold_in_hours = int(customer_request.length_of_hold)
-                total_hours = cooling_period_in_hours + length_of_hold_in_hours
+                # length_of_hold_in_hours = int(customer_request.length_of_hold)
+                total_hours = cooling_period_in_hours  # + length_of_hold_in_hours
                 # calculate datetime difference.
                 duration = current_datetime - create_date  # For build-in functions
                 duration_in_hours = self.return_duration_in_hours(duration)
@@ -125,7 +125,7 @@ class PrioritizationEngine(models.TransientModel):
     def check_length_of_hold(self, customer_request):
         flag = True
         # get previous sales order create date
-        create_date = self.get_product_create_date(customer_request)
+        create_date = self._get_product_create_date(customer_request)
         if create_date is not None:
             # get current datetime
             current_datetime = datetime.now()
@@ -298,6 +298,26 @@ class PrioritizationEngine(models.TransientModel):
             str(customer_request.customer_id.id) + " or id = " + str(customer_request.customer_id.id) + " ) " +
             " and saleorderline.product_id = " + str(customer_request.product_id.id) +
             " and ((saleorder.state in ('engine','sent','cancel')) or (saleorder.state in ('sent','sale') and saleorderline.product_uom_qty = 0))" +
+            " and crmteam.team_type = 'engine'")
+
+        query_result = self.env.cr.dictfetchone()
+
+        if query_result['create_date'] != None:
+            _logger.debug('create date : %r', query_result['create_date'])
+            return query_result['create_date']
+        else:
+            return None
+
+    # get product create date for to calculate length of hold.
+    def _get_product_create_date(self, customer_request):
+        self.env.cr.execute(
+            "SELECT max(saleorder.create_date) as create_date FROM public.sale_order_line saleorderline "
+            " INNER JOIN public.sale_order saleorder ON saleorder.id = saleorderline.order_id "
+            " INNER JOIN public.crm_team crmteam ON crmteam.id = saleorder.team_id"
+            " WHERE saleorderline.order_partner_id IN (SELECT distinct unnest(array[id, parent_id]) from public.res_partner WHERE parent_id = " +
+            str(customer_request.customer_id.id) + " or id = " + str(customer_request.customer_id.id) + " ) " +
+            " and saleorderline.product_id = " + str(customer_request.product_id.id) +
+            " and ((saleorder.state in ('engine','sent')) or (saleorder.state in ('sent','sale') and saleorderline.product_uom_qty = 0))" +
             " and crmteam.team_type = 'engine'")
 
         query_result = self.env.cr.dictfetchone()
@@ -542,35 +562,32 @@ class PrioritizationEngine(models.TransientModel):
         # get team id
         crm_team = self.env['crm.team'].search([('team_type', '=', 'engine')])
 
-        sale_orders = self.env['sale.order'].search([('state', 'in', ('engine', 'sent', 'void')), ('team_id', '=', crm_team['id'])], order="id asc")
+        sale_orders = self.env['sale.order'].search([('state', 'in', ('engine', 'sent', 'void')), ('team_id', '=', int(crm_team['id']))], order="id asc")
 
         for sale_order in sale_orders:
             _logger.info('sale order name : %r, partner_id : %r, create_date: %r', sale_order['name'], sale_order['partner_id'].id, sale_order['create_date'])
 
-            stock_picking = self.env['stock.picking'].search([('sale_id.id', '=', sale_order['id']), ('state', '=', 'assigned')])
+            stock_picking = self.env['stock.picking'].search([('sale_id.id', '=', int(sale_order['id'])), ('state', '=', 'assigned')])
 
             for stock_pick in stock_picking:
-                stock_moves = self.env['stock.move'].search([('picking_id.id', '=', stock_pick['id'])])
+                stock_moves = self.env['stock.move'].search([('picking_id.id', '=', int(stock_pick['id']))])
                 if stock_moves and len(stock_moves)>0:
                     for stock_move in stock_moves:
-
                         # get length of hold
-                        _setting_object = self.env['sps.customer.requests'].get_settings_object(sale_order['partner_id'].id, stock_move['product_id'].id, None, None)
-
-                        _logger.info('length of hold %r', _setting_object.length_of_hold)
-
-                        # get current datetime
-                        current_datetime = datetime.now()
-
-                        create_date = datetime.strptime(self.change_date_format(sale_order['create_date']), '%Y,%m,%d,%H,%M,%S')
-                        # calculate datetime difference.
-                        duration = current_datetime - create_date  # For build-in functions
-                        duration_in_hours = self.return_duration_in_hours(duration)
-                        if _setting_object and int(_setting_object.length_of_hold) <= int(duration_in_hours):
-                            _logger.info('call stock_move._do_unreserve()')
-                            stock_move._do_unreserve()
-                        else:
-                            _logger.info('Product is in length of hold, unable to release quantity.')
+                        _setting_object = self.env['sps.customer.requests'].get_settings_object(sale_order['partner_id'].id, stock_move['product_id'].id)
+                        if _setting_object and _setting_object is not None:
+                            _logger.info('length of hold %r', _setting_object.length_of_hold)
+                            # get current datetime
+                            current_datetime = datetime.now()
+                            create_date = datetime.strptime(self.change_date_format(sale_order['create_date']), '%Y,%m,%d,%H,%M,%S')
+                            # calculate datetime difference.
+                            duration = current_datetime - create_date  # For build-in functions
+                            duration_in_hours = self.return_duration_in_hours(duration)
+                            if _setting_object and int(_setting_object.length_of_hold) <= int(duration_in_hours):
+                                _logger.info('call stock_move._do_unreserve()')
+                                stock_move._do_unreserve()
+                            else:
+                                _logger.info('Product is in length of hold, unable to release quantity.')
             self.change_sale_order_state(sale_order)
 
     # change sale order state: 'cancel' when length of hold of all products in sale order is finished.

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Customer Requests",
+    'name': "Customer Requests ",
 
 
     'author': "Benchmark IT Solutions (I) Pvt Ltd.",

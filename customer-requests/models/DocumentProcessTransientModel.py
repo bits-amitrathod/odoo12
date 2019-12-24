@@ -168,6 +168,8 @@ class DocumentProcessTransientModel(models.TransientModel):
                 partial_uom = user_model.partial_UOM
         if sps_customer_product_priority >= 0:
             available_qty = self.env['available.product.dict'].get_available_product_qty(user_id, product_id, expiration_tolerance)
+            if available_qty is None or (available_qty is not None and int(available_qty) <= 0):
+                req.update(dict(customer_request_logs='As per requested expiration tolerance product lot not available.'))
             req.update(dict(product_id=product_id, status='New', priority=sps_customer_product_priority, auto_allocate=auto_allocate,
                             min_threshold=min_threshold, max_threshold=max_threshold, cooling_period=cooling_period, length_of_hold=length_of_hold,
                             expiration_tolerance=expiration_tolerance, partial_ordering=partial_ordering, partial_UOM=partial_uom,
@@ -400,7 +402,7 @@ class DocumentProcessTransientModel(models.TransientModel):
                                 regexp_replace(REPLACE(RTRIM(LTRIM(REPLACE(pt.sku_code,'0',' '))),' ','0'), '[^A-Za-z0-9.]', '','g') as sku_code_cleaned
                                 FROM product_template pt """
         if req['uom'].lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
-            sql_query = sql_query + """ INNER JOIN uom_uom uu ON pt.uom_id = uu.id """
+            sql_query = sql_query + """ INNER JOIN uom_uom uu ON pt.actual_uom = uu.id """
         sql_query = sql_query + """ where pt.tracking != 'none' and pt.active = true """
         if req['uom'].lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
             sql_query = sql_query + """ and uu.name in ('Each', 'Unit') """
