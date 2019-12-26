@@ -1,15 +1,15 @@
 <odoo>
-    <data>
-
+    <data  noupdate="1">
         <record id="seq_sfnumber" model="ir.sequence">
             <field name="name">Sale Force</field>
             <field name="code">sale.force.no</field>
-<!--            <field name="prefix">SF</field>-->
+            <!--<field name="prefix">SF</field>-->
             <field name="padding">5</field>
-            <field name="number_next">11000</field>
+            <field name="number_next">12000</field>
             <field name="number_increment">1</field>
         </record>
-
+    </data>
+    <data>
         <record id="view_form_prioritization_customer" model="ir.ui.view">
             <field name="name">Prioritization customer form</field>
             <field name="model">res.partner</field>
@@ -283,6 +283,7 @@
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet/notebook/page/group/group/field[@name='uom_po_id']" position="after">
                     <field name="manufacturer_uom" groups="uom.group_uom" options="{'no_create': True}"/>
+                    <field name="actual_uom" groups="uom.group_uom" options="{'no_create': True}"/>
                 </xpath>
             </field>
         </record>
