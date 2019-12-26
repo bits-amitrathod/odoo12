@@ -23,7 +23,7 @@ _logger = logging.getLogger(__name__)
 class DocumentProcessTransientModel(models.TransientModel):
     _name = 'sps.document.process'
 
-    def process_document(self, user_model, uploaded_file_path, template_type_from_user, file_name, email_from, document_source='Api', ):
+    def process_document(self, user_model, uploaded_file_path, template_type_from_user, file_name, email_from, document_source='Api'):
         if not user_model.prioritization:
             return dict(errorCode=6, message='Prioritization is Not Enabled')
         if not user_model.customer:
@@ -46,7 +46,7 @@ class DocumentProcessTransientModel(models.TransientModel):
         mappings, template_type = DocumentProcessTransientModel._get_column_mappings(
             mapping_field_list,
             templates_list,
-            uploaded_file_path, template_type_from_user)
+            uploaded_file_path, template_type_from_user,file_name)
         if len(mappings) == 0:
             if not template_type:
                 _logger.info('-------Template mismatch------------')
@@ -203,7 +203,9 @@ class DocumentProcessTransientModel(models.TransientModel):
             return 0
 
     @staticmethod
-    def _get_column_mappings(mapping_field_list, templates_list, file_path, template_type_from_user):
+    def _get_column_mappings(mapping_field_list, templates_list, file_path, template_type_from_user,file_name=None):
+
+        # irattachment_obj = self.env['ir.attachment']
         column_mappings = []
         template_type = None
         matched_templates = {}
