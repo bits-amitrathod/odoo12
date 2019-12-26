@@ -212,6 +212,7 @@ class DocumentProcessTransientModel(models.TransientModel):
         template_type = None
         non_selected_columns = []
         matched_templates = {}
+        columns = None
         for customer_template in templates_list:
             if customer_template.non_selected_columns:
                 non_selected_columns = customer_template.non_selected_columns.split(',')

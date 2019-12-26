@@ -66,6 +66,7 @@ class DumpDiscuss(models.Model):
                     saleforce_ac = None
                     attachments = None
                     file_extension = None
+                    response = None
                     # Need to fetch attachment filename here to handle 'keep original mail' setting in Incoming_mail_cron -> advance tab'
                     # If setting is on there will be one extra attachment of original mail with the incoming mail otherwise customer attached attachments only
                     filename = message.attachment_ids[0].name
