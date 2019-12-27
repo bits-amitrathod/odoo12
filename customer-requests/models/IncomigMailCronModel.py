@@ -243,9 +243,9 @@ class DumpDiscuss(models.Model):
                     if filename is not None:
                         try:
                             file_contents_bytes = attachments
+                            _logger.info('file contents in send_mail_with_attachment : %r', str(file_contents_bytes))
                             file_extension = filename[filename.rindex('.') + 1:]
                             _logger.info('file extension in send_mail_with_attachment : %r', str(file_extension))
-                            print('file extension in send_mail_with_attachment : '+file_extension)
                         except Exception as e:
                             _logger.info(str(e))
                     values = {'attachment_ids': [(0, 0, {'name': filename,
