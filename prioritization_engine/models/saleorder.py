@@ -130,6 +130,7 @@ class SaleOrder(models.Model):
             return self.get_portal_url(query_string='&%s' % auth_param)
         return super(SaleOrder, self)._get_share_url(redirect, signup_partner, pid)
 
+
 class SaleOrderLinePrioritization(models.Model):
     _inherit = "sale.order.line"
     # customer_request_count = fields.Boolean(string='Request count', compute="_get_customer_request_count")
@@ -350,7 +351,6 @@ class SaleOrderReport(models.Model):
     req_no = fields.Char(string='Requisition Number')
 
 
-
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
@@ -402,24 +402,28 @@ class SaleOrderLine(models.Model):
                 procurement_uom = quant_uom
 
             try:
-                if line.order_id.team_id.team_type == 'engine' :
-                    if line.order_id.picking_ids :
-                        if location :
+                if line.order_id.team_id.team_type == 'engine':
+                    if line.order_id.picking_ids:
+                        if location:
                             if location.id != 41 and location.location_id.id:
                                 location = self.env['stock.location'].search([('id', '=', location.id)])
                                 route_id = self.env['stock.location.route'].search([('id', '=', 8)])
-                        else :
-                            location = self.env['stock.location'].search([('id', '=', 9)])
-                            route_id = self.env['stock.location.route'].search([('id', '=', 8)])
-                    else :
+                        else:
+                            if line.order_id.picking_ids[len(line.order_id.picking_ids)-1].state == 'cancel':
+                                location = self.env['stock.location'].search([('id', '=', 41)])
+                                route_id = self.env['stock.location.route'].search([('id', '=', 7)])
+                            else:
+                                location = self.env['stock.location'].search([('id', '=', 9)])
+                                route_id = self.env['stock.location.route'].search([('id', '=', 8)])
+                    else:
                         location = self.env['stock.location'].search([('id', '=', 41)])
                         route_id = self.env['stock.location.route'].search([('id', '=', 7)])
 
-                    if route_id :
+                    if route_id:
                         values['route_ids'] = route_id
                         self.env['procurement.group'].run(line.product_id, product_qty, procurement_uom, location,
                                                       line.name, line.order_id.name, values)
-                else :
+                else:
                     self.env['procurement.group'].run(line.product_id, product_qty, procurement_uom,
                                                        line.order_id.partner_shipping_id.property_stock_customer,
                                                        line.name, line.order_id.name, values)
