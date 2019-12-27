@@ -23,7 +23,7 @@ _logger = logging.getLogger(__name__)
 class DocumentProcessTransientModel(models.TransientModel):
     _name = 'sps.document.process'
 
-    def process_document(self, user_model, uploaded_file_path, template_type_from_user, file_name, email_from, document_source='Api'):
+    def process_document(self, user_model, uploaded_file_path, template_type_from_user, file_name, email_from, document_source='Api', ):
         if not user_model.prioritization:
             return dict(errorCode=6, message='Prioritization is Not Enabled')
         if not user_model.customer:
@@ -209,6 +209,7 @@ class DocumentProcessTransientModel(models.TransientModel):
         column_mappings = []
         template_type = None
         matched_templates = {}
+        columns = None
         for customer_template in templates_list:
             mapped_columns = []
             for mapping_field in mapping_field_list:
@@ -218,11 +219,14 @@ class DocumentProcessTransientModel(models.TransientModel):
             selected_columns = [mapped_column['template_field'] for mapped_column in mapped_columns]
             template_column_list = selected_columns  # + non_selected_columns
             file_extension = file_path[file_path.rindex('.') + 1:]
-            if file_extension == 'xls' or file_extension == 'xlsx':
-                book = xlrd.open_workbook(file_path)
-                columns = DocumentProcessTransientModel._read_xls_book(book)[0]
-            elif file_extension == 'csv':
-                columns = DocumentProcessTransientModel._read_columns_from_csv(file_path)
+            if file_name:
+                file_extension = file_name[file_name.rindex('.') + 1:]
+                if file_extension == 'xls' or file_extension == 'xlsx':
+                    book = xlrd.open_workbook(file_path)
+                    columns = DocumentProcessTransientModel._read_xls_book(book)[0]
+
+                elif file_extension == 'csv':
+                    columns = DocumentProcessTransientModel._read_columns_from_csv(file_path)
             try:
                 if all(elem in columns for elem in template_column_list):
                     column_mappings = mapped_columns
