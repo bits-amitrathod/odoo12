@@ -1019,58 +1019,60 @@
                                     </td>
                                     <td>
                                         <t t-if="order.state != 'cancel'">
-                                            <t t-if="order.offer_type=='cash'">
+                                            <!--<t t-if="order.offer_type=='cash'">-->
                                             <span t-field="order.cash_amount_total"
                                                   t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
-                                            </t>
-                                            <t t-if="order.offer_type=='credit'">
-                                            <span > - </span>
-                                            </t>
-                                            <t t-if="not (order.offer_type=='cash' or order.offer_type=='credit') ">
-                                            <span t-field="order.cash_amount_total"
-                                                  t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
-                                            </t>
+                                            <!--</t>-->
+                                            <!--<t t-if="order.offer_type=='credit'">-->
+                                            <!--<span > - </span>-->
+                                            <!--</t>-->
+                                            <!--<t t-if="not (order.offer_type=='cash' or order.offer_type=='credit') ">-->
+                                            <!--<span t-field="order.cash_amount_total"-->
+                                                  <!--t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>-->
+                                            <!--</t>-->
                                         </t>
                                         <t t-if="order.state == 'cancel'">
-                                             <t t-if="order.offer_type=='cash'">
-                                            <span t-field="order.amount_total"
-                                                  t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
-                                            </t>
-                                            <t t-if="order.offer_type=='credit'">
                                             <span > - </span>
-                                            </t>
-                                            <t t-if="not (order.offer_type=='cash' or order.offer_type=='credit') ">
-                                            <span t-field="order.amount_total"
-                                                  t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
-                                            </t>
+                                             <!--<t t-if="order.offer_type=='cash'">-->
+                                            <!--<span t-field="order.amount_total"-->
+                                                  <!--t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>-->
+                                            <!--</t>-->
+                                            <!--<t t-if="order.offer_type=='credit'">-->
+                                            <!--<span > - </span>-->
+                                            <!--</t>-->
+                                            <!--<t t-if="not (order.offer_type=='cash' or order.offer_type=='credit') ">-->
+                                            <!--<span t-field="order.amount_total"-->
+                                                  <!--t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>-->
+                                            <!--</t>-->
                                         </t>
                                     </td>
                                     <td>
                                          <t t-if="order.state != 'cancel'">
-                                            <t t-if="order.offer_type=='credit'">
+                                            <!--<t t-if="order.offer_type=='credit'">-->
                                             <span t-field="order.credit_amount_total"
                                                   t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
-                                            </t>
-                                            <t t-if="order.offer_type=='cash'">
-                                            <span > - </span>
+                                            <!--</t>-->
+                                            <!--<t t-if="order.offer_type=='cash'">-->
+                                            <!--<span > - </span>-->
 
-                                             <t t-if="not (order.offer_type=='cash' or order.offer_type=='credit') ">
-                                               <span > - </span>
-                                            </t>
-                                            </t>
+                                             <!--<t t-if="not (order.offer_type=='cash' or order.offer_type=='credit') ">-->
+                                               <!--<span > - </span>-->
+                                            <!--</t>-->
+                                            <!--</t>-->
                                          </t>
                                         <t t-if="order.state == 'cancel'">
-                                            <t t-if="order.offer_type=='credit'">
-                                            <span t-field="order.amount_total"
-                                                  t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
-                                            </t>
-                                            <t t-if="order.offer_type=='cash'">
-                                            <span > - </span>
+                                             <span > - </span>
+                                            <!--<t t-if="order.offer_type=='credit'">-->
+                                            <!--<span t-field="order.amount_total"-->
+                                                  <!--t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>-->
+                                            <!--</t>-->
+                                            <!--<t t-if="order.offer_type=='cash'">-->
+                                            <!--<span > - </span>-->
 
-                                             <t t-if="not (order.offer_type=='cash' or order.offer_type=='credit') ">
-                                               <span > - </span>
-                                            </t>
-                                            </t>
+                                             <!--<t t-if="not (order.offer_type=='cash' or order.offer_type=='credit') ">-->
+                                               <!--<span > - </span>-->
+                                            <!--</t>-->
+                                            <!--</t>-->
                                         </t>
 
                                     </td>
@@ -1152,31 +1154,33 @@
                             <hr/>
 
                             <div class="row">
-                                <div class="col-md-12 text-right" t-if="order.offer_type=='cash'">
+                                 <div class="col-md-12" style="display:inline-flex;     margin-left: -18px;">
+
+                                <div class="col-md-6 text-right" >
                                     <t t-if="order.state != 'cancel'">
                                         <div class="row">
-                                            <div class="col-md-10 text-right">
+                                            <div class="col-md-9 text-right">
                                                 Untaxed Cash Amount:
                                             </div>
-                                            <div class="col-md-2 text-right">
+                                            <div class="col-md-3 text-right">
                                                 <span t-field="order.cash_amount_untaxed"
                                                       t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-md-10 text-right">
+                                            <div class="col-md-9 text-right">
                                                 Taxes:
                                             </div>
-                                            <div class="col-md-2 text-right">
+                                            <div class="col-md-3 text-right">
                                                 <span t-field="order.amount_tax"
                                                       t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-md-10 text-right">
+                                            <div class="col-md-9 text-right">
                                                 <strong>Cash Total:</strong>
                                             </div>
-                                            <div class="col-md-2 text-right">
+                                            <div class="col-md-3 text-right">
                                                 <strong>
                                                     <span t-field="order.cash_amount_total"
                                                           t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
@@ -1184,64 +1188,64 @@
                                             </div>
                                         </div>
                                     </t>
-                                     <t t-if="order.state == 'cancel'">
-                                         <div class="row">
-                                            <div class="col-md-10 text-right">
-                                                Untaxed Cash Amount:
-                                            </div>
-                                            <div class="col-md-2 text-right">
-                                                <span t-field="order.amount_untaxed"
-                                                      t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-10 text-right">
-                                                Taxes:
-                                            </div>
-                                            <div class="col-md-2 text-right">
-                                                <span t-field="order.amount_tax"
-                                                      t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-10 text-right">
-                                                <strong>Cash Total:</strong>
-                                            </div>
-                                            <div class="col-md-2 text-right">
-                                                <strong>
-                                                    <span t-field="order.amount_total"
-                                                          t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
-                                                </strong>
-                                            </div>
-                                        </div>
-                                     </t>
+                                     <!--<t t-if="order.state == 'cancel'">-->
+                                         <!--<div class="row">-->
+                                            <!--<div class="col-md-10 text-right">-->
+                                                <!--Untaxed Cash Amount:-->
+                                            <!--</div>-->
+                                            <!--<div class="col-md-2 text-right">-->
+                                                <!--<span t-field="order.amount_untaxed"-->
+                                                      <!--t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>-->
+                                            <!--</div>-->
+                                        <!--</div>-->
+                                        <!--<div class="row">-->
+                                            <!--<div class="col-md-10 text-right">-->
+                                                <!--Taxes:-->
+                                            <!--</div>-->
+                                            <!--<div class="col-md-2 text-right">-->
+                                                <!--<span t-field="order.amount_tax"-->
+                                                      <!--t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>-->
+                                            <!--</div>-->
+                                        <!--</div>-->
+                                        <!--<div class="row">-->
+                                            <!--<div class="col-md-10 text-right">-->
+                                                <!--<strong>Cash Total:</strong>-->
+                                            <!--</div>-->
+                                            <!--<div class="col-md-2 text-right">-->
+                                                <!--<strong>-->
+                                                    <!--<span t-field="order.amount_total"-->
+                                                          <!--t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>-->
+                                                <!--</strong>-->
+                                            <!--</div>-->
+                                        <!--</div>-->
+                                     <!--</t>-->
 
                                 </div>
-                                <div class="col-md-12" t-if="order.offer_type=='credit'">
+                                <div class="col-md-6">
                                     <t t-if="order.state != 'cancel'">
                                         <div class="row">
-                                            <div class="col-md-10 text-right">
+                                            <div class="col-md-9 text-right">
                                                 Untaxed Credit Amount:
                                             </div>
-                                            <div class="col-md-2 text-right">
+                                            <div class="col-md-3 text-right">
                                                 <span t-field="order.credit_amount_untaxed"
                                                       t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-md-10 text-right">
+                                            <div class="col-md-9 text-right">
                                                 Taxes:
                                             </div>
-                                            <div class="col-md-2 text-right">
+                                            <div class="col-md-3 text-right">
                                                 <span t-field="order.amount_tax"
                                                       t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-md-10 text-right">
+                                            <div class="col-md-9 text-right">
                                                 <strong>Credit Total:</strong>
                                             </div>
-                                            <div class="col-md-2 text-right">
+                                            <div class="col-md-3 text-right">
                                                 <strong>
                                                     <span t-field="order.credit_amount_total"
                                                           t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
@@ -1251,28 +1255,28 @@
                                     </t>
                                     <t t-if="order.state == 'cancel'">
                                         <div class="row">
-                                            <div class="col-md-10 text-right">
-                                                Untaxed Credit Amount:
+                                            <div class="col-md-9 text-right">
+                                                Untaxed Amount:
                                             </div>
-                                            <div class="col-md-2 text-right">
+                                            <div class="col-md-3 text-right">
                                                 <span t-field="order.amount_untaxed"
                                                       t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-md-10 text-right">
+                                            <div class="col-md-9 text-right">
                                                 Taxes:
                                             </div>
-                                            <div class="col-md-2 text-right">
+                                            <div class="col-md-3 text-right">
                                                 <span t-field="order.amount_tax"
                                                       t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-md-10 text-right">
-                                                <strong>Credit Total:</strong>
+                                            <div class="col-md-9 text-right">
+                                                <strong>Total:</strong>
                                             </div>
-                                            <div class="col-md-2 text-right">
+                                            <div class="col-md-3 text-right">
                                                 <strong>
                                                     <span t-field="order.amount_total"
                                                           t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
@@ -1281,92 +1285,97 @@
                                         </div>
                                     </t>
                                 </div>
-                                <div class="col-md-12" t-if="not (order.offer_type=='credit' or order.offer_type=='cash')">
-                                    <t t-if="order.state != 'cancel'">
-                                        <div class="row">
-                                            <div class="col-md-10 text-right">
-                                                Untaxed Cash Amount:
-                                            </div>
-                                            <div class="col-md-2 text-right">
-                                                <span t-field="order.cash_amount_untaxed"
-                                                      t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-10 text-right">
-                                                Taxes:
-                                            </div>
-                                            <div class="col-md-2 text-right">
-                                                <span t-field="order.amount_tax"
-                                                      t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-10 text-right">
-                                                <strong>Cash Total:</strong>
-                                            </div>
-                                            <div class="col-md-2 text-right">
-                                                <strong>
-                                                    <span t-field="order.cash_amount_total"
-                                                          t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
-                                                </strong>
-                                            </div>
-                                        </div>
-                                    </t>
-                                    <t t-if="order.state == 'cancel'">
-                                        <div class="row">
-                                            <div class="col-md-10 text-right">
-                                                Untaxed Cash Amount:
-                                            </div>
-                                            <div class="col-md-2 text-right">
-                                                <span t-field="order.amount_untaxed"
-                                                      t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-10 text-right">
-                                                Taxes:
-                                            </div>
-                                            <div class="col-md-2 text-right">
-                                                <span t-field="order.amount_tax"
-                                                      t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-10 text-right">
-                                                <strong>Cash Total:</strong>
-                                            </div>
-                                            <div class="col-md-2 text-right">
-                                                <strong>
-                                                    <span t-field="order.amount_total"
-                                                          t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
-                                                </strong>
-                                            </div>
-                                        </div>
-                                    </t>
-                                </div>
+                                <!--<div class="col-md-12" t-if="not (order.offer_type=='credit' or order.offer_type=='cash')">-->
+                                    <!--<t t-if="order.state != 'cancel'">-->
+                                        <!--<div class="row">-->
+                                            <!--<div class="col-md-10 text-right">-->
+                                                <!--Untaxed Cash Amount:-->
+                                            <!--</div>-->
+                                            <!--<div class="col-md-2 text-right">-->
+                                                <!--<span t-field="order.cash_amount_untaxed"-->
+                                                      <!--t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>-->
+                                            <!--</div>-->
+                                        <!--</div>-->
+                                        <!--<div class="row">-->
+                                            <!--<div class="col-md-10 text-right">-->
+                                                <!--Taxes:-->
+                                            <!--</div>-->
+                                            <!--<div class="col-md-2 text-right">-->
+                                                <!--<span t-field="order.amount_tax"-->
+                                                      <!--t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>-->
+                                            <!--</div>-->
+                                        <!--</div>-->
+                                        <!--<div class="row">-->
+                                            <!--<div class="col-md-10 text-right">-->
+                                                <!--<strong>Cash Total:</strong>-->
+                                            <!--</div>-->
+                                            <!--<div class="col-md-2 text-right">-->
+                                                <!--<strong>-->
+                                                    <!--<span t-field="order.cash_amount_total"-->
+                                                          <!--t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>-->
+                                                <!--</strong>-->
+                                            <!--</div>-->
+                                        <!--</div>-->
+                                    <!--</t>-->
+                                    <!--<t t-if="order.state == 'cancel'">-->
+                                        <!--<div class="row">-->
+                                            <!--<div class="col-md-10 text-right">-->
+                                                <!--Untaxed Cash Amount:-->
+                                            <!--</div>-->
+                                            <!--<div class="col-md-2 text-right">-->
+                                                <!--<span t-field="order.amount_untaxed"-->
+                                                      <!--t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>-->
+                                            <!--</div>-->
+                                        <!--</div>-->
+                                        <!--<div class="row">-->
+                                            <!--<div class="col-md-10 text-right">-->
+                                                <!--Taxes:-->
+                                            <!--</div>-->
+                                            <!--<div class="col-md-2 text-right">-->
+                                                <!--<span t-field="order.amount_tax"-->
+                                                      <!--t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>-->
+                                            <!--</div>-->
+                                        <!--</div>-->
+                                        <!--<div class="row">-->
+                                            <!--<div class="col-md-10 text-right">-->
+                                                <!--<strong>Cash Total:</strong>-->
+                                            <!--</div>-->
+                                            <!--<div class="col-md-2 text-right">-->
+                                                <!--<strong>-->
+                                                    <!--<span t-field="order.amount_total"-->
+                                                          <!--t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>-->
+                                                <!--</strong>-->
+                                            <!--</div>-->
+                                        <!--</div>-->
+                                    <!--</t>-->
+                                <!--</div>-->
                             </div>
+                                   </div>
                         </div>
                     </div>
-                    <div t-if="order.state != 'cancel'" class="text-center hidden-print mt16 mb16"
+                    <div t-if="order.state not in ('cancel','purchase')" class="text-center hidden-print mt16 mb16"
                          id="quotation_toolbar">
-                        <a class="btn btn-success" data-target="#modalaccept" data-toggle="modal">
+                        <a class="btn btn-success" data-target="#modalacceptcash" data-toggle="modal">
                             <i class="fa fa-check"></i>
-                            Accept
+                            Accept Cash Offer
+                        </a>
+                         <a class="btn btn-success" data-target="#modalacceptcredit" data-toggle="modal">
+                            <i class="fa fa-check"></i>
+                            Accept Credit Offer
                         </a>
                         <a class="btn btn-danger" data-target="#modaldecline" data-toggle="modal">
 
                             Reject
                         </a>
                     </div>
-                    <div class="modal fade" id="modalaccept" role="dialog" aria-hidden="true">
+                    <div class="modal fade" id="modalacceptcash" role="dialog" aria-hidden="true">
                         <div class="modal-dialog">
                             <form id="accept" method="POST" t-att-data-order-id="order.id"
                                   class="js_accept_json modal-content js_website_submit_form">
                                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&amp;times;</button>
-                                    <h4 class="modal-title">Validate Order</h4>
+                                    <h4 class="modal-title">Validate Cash Order</h4>
                                 </div>
                                 <div class="modal-body" id="sign-dialog">
 
@@ -1374,6 +1383,27 @@
                                         <t t-set="object" t-value="order"/>
                                         <t t-set="partner_name" t-value="order.partner_id.name"/>
                                         <t t-set="callUrl" t-value="'/vendor_offer/accept/'"/>
+                                        <t t-set="order_id" t-value="order.id"/>
+                                    </t>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                     <div class="modal fade" id="modalacceptcredit" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <form id="acceptcredit" method="POST" t-att-data-order-id="order.id"
+                                  class="js_accept_json modal-content js_website_submit_form">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&amp;times;</button>
+                                    <h4 class="modal-title">Validate Credit Order</h4>
+                                </div>
+                                <div class="modal-body" id="sign-dialog">
+
+                                    <t t-call="portal.portal_signature">
+                                        <t t-set="object" t-value="order"/>
+                                        <t t-set="partner_name" t-value="order.partner_id.name"/>
+                                        <t t-set="callUrl" t-value="'/vendor_offer/acceptcredit/'"/>
                                         <t t-set="order_id" t-value="order.id"/>
                                     </t>
                                 </div>
