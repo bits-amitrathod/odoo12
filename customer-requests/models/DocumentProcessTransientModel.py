@@ -208,6 +208,7 @@ class DocumentProcessTransientModel(models.TransientModel):
         # irattachment_obj = self.env['ir.attachment']
         column_mappings = []
         template_type = None
+        columns = None
         matched_templates = {}
         columns = None
         for customer_template in templates_list:
