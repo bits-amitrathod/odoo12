@@ -221,7 +221,9 @@ class DocumentProcessTransientModel(models.TransientModel):
             template_column_list = selected_columns  # + non_selected_columns
             file_extension = file_path[file_path.rindex('.') + 1:]
             if file_name:
+                _logger.info('File name : %r', file_name)
                 file_extension = file_name[file_name.rindex('.') + 1:]
+                _logger.info('File extension : %r', file_extension)
                 if file_extension == 'xls' or file_extension == 'xlsx':
                     book = xlrd.open_workbook(file_path)
                     columns = DocumentProcessTransientModel._read_xls_book(book)[0]

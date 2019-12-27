@@ -67,13 +67,15 @@ class DumpDiscuss(models.Model):
                     attachments = None
                     file_extension = None
                     response = None
+                    filename = None
                     # Need to fetch attachment filename here to handle 'keep original mail' setting in Incoming_mail_cron -> advance tab'
                     # If setting is on there will be one extra attachment of original mail with the incoming mail otherwise customer attached attachments only
-                    filename = message.attachment_ids[0].name
-                    if filename and filename != False:
-                        file_extension = filename[filename.rindex('.') + 1:]
-                        if file_extension == 'xls' or file_extension == 'xlsx' or file_extension == 'csv':
-                            attachments = message.attachment_ids[0].datas  # Reading the contents of customer attachment (Binary format) if there is any
+                    if message.attachment_ids:
+                        filename = message.attachment_ids[0].name
+                        if filename and filename != False:
+                            file_extension = filename[filename.rindex('.') + 1:]
+                            if file_extension == 'xls' or file_extension == 'xlsx' or file_extension == 'csv':
+                                attachments = message.attachment_ids[0].datas  # Reading the contents of customer attachment (Binary format) if there is any
 
                     if email_from is not None:
                         match = re.search(r'[\w\.-]+@[\w\.-]+', email_from)
@@ -158,6 +160,7 @@ class DumpDiscuss(models.Model):
                                             try:
                                                 checksum = message.attachment_ids[0].checksum  # checksum neeed only to pass to function in order to get absolute path of file
                                                 file_path = message.attachment_ids[0]._get_path(attachments, checksum)[1]
+                                                _logger.info('File_path: %r', str(file_path))
                                                 response = self.env[
                                                     'sps.document.process'].process_document(users_model,
                                                                                              file_path,
@@ -194,6 +197,7 @@ class DumpDiscuss(models.Model):
                                             try:
                                                 checksum = message.attachment_ids[0].checksum
                                                 file_path = message.attachment_ids[0]._get_path(attachments, checksum)[1]
+                                                _logger.info('File_path: %r', str(file_path))
                                                 response = self.env[
                                                     'sps.document.process'].process_document(users_model,
                                                                                              file_path,
