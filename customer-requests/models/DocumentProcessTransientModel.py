@@ -222,7 +222,9 @@ class DocumentProcessTransientModel(models.TransientModel):
             selected_columns = [mapped_column['template_field'] for mapped_column in mapped_columns]
             template_column_list = selected_columns  # + non_selected_columns
             _logger.info('Before File Extension -----')
-            file_extension = file_path[file_path.rindex('.') + 1:]
+            _logger.info('File_name : %r,',file_name)
+
+            file_extension = file_name[file_name.rindex('.') + 1:]
             _logger.info('File Extension : %r', file_extension)
             if file_name:
                 _logger.info('File name : %r', file_name)
