@@ -43,7 +43,6 @@ class DocumentProcessTransientModel(models.TransientModel):
             [['customer_id', '=', user_id], ['template_status', '=', 'Active']])
         if len(templates_list) <= 0:
             return dict(errorCode=5, message='Template Not Found')
-        _logger.info(' Calling "_get_column_mappings" method')
         mappings, template_type = DocumentProcessTransientModel._get_column_mappings(
             mapping_field_list,
             templates_list,
@@ -212,7 +211,6 @@ class DocumentProcessTransientModel(models.TransientModel):
         columns = None
         matched_templates = {}
         columns = None
-        _logger.info(' Inside "_get_column_mappings" method')
         for customer_template in templates_list:
             mapped_columns = []
             for mapping_field in mapping_field_list:
@@ -221,15 +219,10 @@ class DocumentProcessTransientModel(models.TransientModel):
                         dict(template_field=customer_template[mapping_field], mapping_field=mapping_field))
             selected_columns = [mapped_column['template_field'] for mapped_column in mapped_columns]
             template_column_list = selected_columns  # + non_selected_columns
-            _logger.info('Before File Extension -----')
-            _logger.info('File_name : %r,',file_name)
-
             file_extension = file_name[file_name.rindex('.') + 1:]
             _logger.info('File Extension : %r', file_extension)
             if file_name:
-                _logger.info('File name : %r', file_name)
                 file_extension = file_name[file_name.rindex('.') + 1:]
-                _logger.info('File extension : %r', file_extension)
                 if file_extension == 'xls' or file_extension == 'xlsx':
                     book = xlrd.open_workbook(file_path)
                     columns = DocumentProcessTransientModel._read_xls_book(book)[0]

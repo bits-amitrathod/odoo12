@@ -60,7 +60,9 @@ class DumpDiscuss(models.Model):
                     body = u''
                     email_from = message.email_from
                     email_subject = message.subject
-                    subject = email_subject.replace(' ', '').lower()
+                    subject = None
+                    if email_subject:
+                        subject = email_subject.replace(' ', '').lower()
                     customer_email = None
                     tmpl_type = None
                     saleforce_ac = None
@@ -82,7 +84,7 @@ class DumpDiscuss(models.Model):
                         email_from = str(match.group(0))
                         _logger.info('Email From : %r', email_from)
 
-                    if re.search('#(.*)#', subject):
+                    if subject and re.search('#(.*)#', subject):
                         match1 = re.search('#(.*)#', subject)
                         saleforce_ac = match1.group(1)
                         _logger.info('saleforce_ac: %r', str(saleforce_ac))
@@ -92,7 +94,6 @@ class DumpDiscuss(models.Model):
                                 [("saleforce_ac", "=ilike", saleforce_ac), ('prioritization', '=', True)])
                             if len(res_partner) == 1:
                                 # when new email in inbox, send email to admin
-                                _logger.info(' Calling "send_mail_with_attachment" method')
                                 self.send_mail_with_attachment(str(email_from), str(email_subject),
                                                                str(res_partner.name), attachments, in_emails)
                                 if res_partner.email:
@@ -234,7 +235,6 @@ class DumpDiscuss(models.Model):
 
 # This function is specific to update admin(via email) if there is any new customer request
     def send_mail_with_attachment(self, email_from, email_subject, customer_name, attachments,email_obj):
-        _logger.info(' Inside "send_mail_with_attachment" method')
         today_date = datetime.today().strftime('%m/%d/%Y')
         template = self.env.ref('customer-requests.new_email_in_inbox').sudo()
         local_context = {'emailFrom': email_from, 'emailSubject': email_subject, 'date': today_date, 'customerName': customer_name}
@@ -245,9 +245,7 @@ class DumpDiscuss(models.Model):
                     if filename is not None:
                         try:
                             file_contents_bytes = attachments
-                            _logger.info('file contents in send_mail_with_attachment : %r', str(file_contents_bytes))
                             file_extension = filename[filename.rindex('.') + 1:]
-                            _logger.info('file extension in send_mail_with_attachment : %r', str(file_extension))
                         except Exception as e:
                             _logger.info(str(e))
                     values = {'attachment_ids': [(0, 0, {'name': filename,
@@ -290,7 +288,6 @@ class DumpDiscuss(models.Model):
 
 # This method is called from '_error_code' method to send mail to admin if there is any error in request processing
     def send_mail(self, email_from, email_subject, customer_name, response,email_obj):
-        _logger.info('Inside "send_mail" method')
         today_date = datetime.today().strftime('%m/%d/%Y')
         template = self.env.ref('customer-requests.set_log_email_response').sudo()
         local_context = {'emailFrom': email_from, 'emailSubject': email_subject, 'date': today_date, 'customerName': customer_name, 'reason' : response['message']}
