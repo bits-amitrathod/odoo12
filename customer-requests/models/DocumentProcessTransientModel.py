@@ -208,6 +208,7 @@ class DocumentProcessTransientModel(models.TransientModel):
         # irattachment_obj = self.env['ir.attachment']
         column_mappings = []
         template_type = None
+        columns = None
         matched_templates = {}
         columns = None
         for customer_template in templates_list:
@@ -218,7 +219,8 @@ class DocumentProcessTransientModel(models.TransientModel):
                         dict(template_field=customer_template[mapping_field], mapping_field=mapping_field))
             selected_columns = [mapped_column['template_field'] for mapped_column in mapped_columns]
             template_column_list = selected_columns  # + non_selected_columns
-            file_extension = file_path[file_path.rindex('.') + 1:]
+            file_extension = file_name[file_name.rindex('.') + 1:]
+            _logger.info('File Extension : %r', file_extension)
             if file_name:
                 file_extension = file_name[file_name.rindex('.') + 1:]
                 if file_extension == 'xls' or file_extension == 'xlsx':
