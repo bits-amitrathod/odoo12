@@ -91,11 +91,12 @@ class DumpDiscuss(models.Model):
                         # find customer in res.partner
                         if saleforce_ac and saleforce_ac is not None:
                             res_partner = self.env['res.partner'].search(
-                                [("saleforce_ac", "=ilike", saleforce_ac), ('prioritization', '=', True)])
+                                [("saleforce_ac", "=ilike", saleforce_ac), ('prioritization', '=', True),
+                                 ('on_hold', '=', False)])
                             if len(res_partner) == 1:
                                 # when new email in inbox, send email to admin
                                 self.send_mail_with_attachment(str(email_from), str(email_subject),
-                                                               str(res_partner.name), attachments, in_emails)
+                                                               str(res_partner.name), attachments)
                                 if res_partner.email:
                                     customer_email = res_partner.email
                                 else:
@@ -108,10 +109,10 @@ class DumpDiscuss(models.Model):
                                                 message='We have found Same Customer Id against multiple customers.')
                             else:
                                 _logger.info(
-                                    'Customer Id is not found in customers or prioritization setting is off.: %r',
+                                    'Customer Id is not found in customers or prioritization setting is off  or Customer is on hold.: %r',
                                     str(saleforce_ac))
                                 response = dict(errorCode=107,
-                                                message='Customer Id is not found in customers  or prioritization setting is off.')
+                                                message='Customer Id is not found in customers  or prioritization setting is off or Customer is on hold.')
                         else:
                             _logger.info('Customer Id is not found in email subject.')
                             response = dict(errorCode=108, message='Customer Id is not found in email subject.')
@@ -121,11 +122,13 @@ class DumpDiscuss(models.Model):
 
                         # find customer in res.partner
                         if email_from and email_from is not None:
-                            res_partner = self.env['res.partner'].search([("email", "=ilike", email_from)])
+                            res_partner = self.env['res.partner'].search(
+                                [("email", "=ilike", email_from), ('prioritization', '=', True),
+                                 ('on_hold', '=', False)])
                             if len(res_partner) == 1:
                                 # when new email in inbox, send email to admin
                                 self.send_mail_with_attachment(str(email_from), str(email_subject),
-                                                               str(res_partner.name), attachments, in_emails)
+                                                               str(res_partner.name), attachments)
                                 if res_partner.email:
                                     customer_email = res_partner.email
                                 else:
@@ -138,13 +141,14 @@ class DumpDiscuss(models.Model):
                                 response = dict(errorCode=109,
                                                 message='We have found same Customer Email against multiple customers.')
                             else:
-                                _logger.info('Customer (Email) is not found in customers : %r', str(email_from))
+                                _logger.info(
+                                    'Customer (Email) is not found in customers or prioritization setting is off or Customer is on hold: %r',
+                                    str(email_from))
                                 response = dict(errorCode=110,
-                                                message='Customer (Email) is not found in customers.')
+                                                message='Customer (Email) is not found in customers or prioritization setting is off or Customer is on hold.')
                         else:
                             _logger.info('Customer (Email) is not found in Customers.')
-                            response = dict(errorCode=111,
-                                            message='Customer (Email) is not found in customers.')
+                            response = dict(errorCode=111, message='Customer (Email) is not found in customers.')
 
                     if customer_email is not None:
                         match = re.search(r'[\w\.-]+@[\w\.-]+', customer_email)
