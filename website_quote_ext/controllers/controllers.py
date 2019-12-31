@@ -345,7 +345,7 @@ class CustomerPortal(CustomerPortal):
         })
         return request.render("website_quote_ext.portal_my_vendor_offers", values)
 
-    @http.route(['/my/vendor/<int:order_id>'], type='http', auth="user", website=True)
+    @http.route(['/my/vendor/<int:order_id>'], type='http', auth="public", website=True)
     def portal_my_vendor_offer(self, order_id=None, **kw):
         order = request.env['purchase.order'].browse(order_id)
         try:
@@ -358,4 +358,7 @@ class CustomerPortal(CustomerPortal):
             'order': order.sudo(),
         }
         #values.update(get_records_pager(history, order))
-        return request.render("website_quote_ext.portal_my_vendor_offer", values)
+        if order.state == 'purchase':
+            return request.redirect('/my')
+        else:
+            return request.render("website_quote_ext.portal_my_vendor_offer", values)
