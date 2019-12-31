@@ -393,7 +393,11 @@ class PrioritizationEngine(models.TransientModel):
                     sale_order_line_dict = {'customer_request_id': allocated_product['customer_request_id'],'req_no': allocated_product['req_no'], 'order_id': sale_order['id'], 'product_id': allocated_product['product_id'],
                                             'order_partner_id' : partner_id_key, 'product_uom_qty' : allocated_product['allocated_product_quantity']}
 
-                    self.env['sale.order.line'].create(dict(sale_order_line_dict))
+                    sale_order_line = self.env['sale.order.line'].create(dict(sale_order_line_dict))
+                    discount = sale_order_line.get_discount()
+
+                    if discount and discount > 0.0:
+                        sale_order_line.write({'discount': discount})
 
                     if allocated_product['cust_req_status'] == 'Fulfilled':
                         self.update_customer_request_status(allocated_product['customer_request_id'], 'Fulfilled', 'Product allocated.')
@@ -430,7 +434,11 @@ class PrioritizationEngine(models.TransientModel):
                         'product_id': allocated_product['product_id'],'order_partner_id': partner_id_key,
                         'product_uom_qty': allocated_product['allocated_product_quantity']}
 
-                    self.env['sale.order.line'].create(dict(sale_order_line_dict))
+                    sale_order_line = self.env['sale.order.line'].create(dict(sale_order_line_dict))
+                    discount = sale_order_line.get_discount()
+
+                    if discount and discount > 0.0:
+                        sale_order_line.write({'discount': discount})
 
                     if allocated_product['cust_req_status'] == 'Fulfilled':
                         self.update_customer_request_status(allocated_product['customer_request_id'], 'Fulfilled', 'Product allocated.')
