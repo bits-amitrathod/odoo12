@@ -17,9 +17,9 @@ class PickTicketReport(models.TransientModel):
     def upgrade(self):
         print("Upgrade Lot")
         xl_workbook = xlrd.open_workbook("D:/tushar/sps_project/sps/reports/po_lot_upgrade/poLotsheet.xlsx")
-        self._cr.execute('update stock_picking set note = \'\' where note is null')
-        sheet = xl_workbook.sheet_by_name(xl_workbook.sheet_names()[0])
-        for i in range(sheet.nrows):
-            SQL = 'update stock_picking  set note= note || \''+ sheet.cell_value(i, 1) + '\'  WHERE origin = \''+ sheet.cell_value(i, 0).strip()+ '\''
-            print(SQL)
-            self._cr.execute(SQL)
+        # self._cr.execute('update stock_picking set note = \'\' where note is null')
+        # sheet = xl_workbook.sheet_by_name(xl_workbook.sheet_names()[0])
+        # for i in range(sheet.nrows):
+        #     SQL = 'update stock_picking  set note= note || \''+ sheet.cell_value(i, 1) + '\'  WHERE origin = \''+ sheet.cell_value(i, 0).strip()+ '\''
+        #     print(SQL)
+        #     self._cr.execute(SQL)
