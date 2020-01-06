@@ -11,9 +11,9 @@
 
 
 
-     <menuitem id="sr_po_lot1"
-                  name="PO lot Upgrade "
-                  action="action_po_lot_upgrade"
-                  parent="stock.menu_warehouse_report"
-                  sequence="6"/>
+     <!--<menuitem id="sr_po_lot1"-->
+                  <!--name="PO lot Upgrade "-->
+                  <!--action="action_po_lot_upgrade"-->
+                  <!--parent="stock.menu_warehouse_report"-->
+                  <!--sequence="6"/>-->
 </odoo>
