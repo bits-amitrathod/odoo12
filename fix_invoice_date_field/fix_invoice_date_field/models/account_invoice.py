@@ -3,9 +3,8 @@
 
 from odoo import fields, models, api
 
-
 class AccountAccount(models.Model):
 	_inherit = 'account.invoice'
 	
-	date_invoice = fields.Date(readonly=False)
+	date_invoice = fields.Date('Invoice Date', readonly=False)
 	
