@@ -90,6 +90,10 @@ class WebsiteCstm(http.Controller):
     def testimonials(self):
         return http.request.render('website_cstm.thank-you')
 
+    @http.route('/contactus', type='http', auth="public", website=True)
+    def contactus(self):
+        return http.request.render('website_cstm.contactus_form')
+
     @http.route('/product_types', type='http', auth="public", website=True)
     def product_types_page(self):
         values = {"categories": request.env['product.public.category'].search([('parent_id', '=', False)])}
