@@ -63,6 +63,8 @@ class DumpDiscuss(models.Model):
                     subject = None
                     if email_subject:
                         subject = email_subject.replace(' ', '').lower()
+                    else:
+                        email_subject = ''
                     customer_email = None
                     tmpl_type = None
                     saleforce_ac = None
