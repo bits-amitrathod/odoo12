@@ -964,17 +964,14 @@ class ProductTemplateTire(models.Model):
                  'product_variant_ids.stock_move_ids.remaining_qty')
     def _compute_qty_available(self):
         for template in self:
-
             stock_quant = self.env['stock.quant'].search([('product_tmpl_id', '=', template.id)])
             reserved_quantity = 0
             if len(stock_quant) > 0:
                 for lot in stock_quant:
-                    reserved_quantity += lot.reserved_quantity
+                    if lot.location_id.name.strip() not in ('reserve_product', 'stockhawk :Pick', 'stockHawk :Output'):
+                        reserved_quantity += lot.reserved_quantity
 
             template.update({'actual_quantity': template.qty_available - reserved_quantity})
-            # print("---------------template -------------------------")
-            # print(template)
-            # print(template.actual_quantity)
 
     @api.model
     def create(self, vals):
