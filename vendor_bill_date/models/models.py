@@ -32,7 +32,8 @@ class VendorBillDate(models.Model):
             if self.date_invoice > self.date_due:
                 self.date_due = self.date_invoice
         
-        self.date_invoice = date_invoice
+        if self.date_invoice:
+            self.date_invoice = self.date_invoice
 
     # Populates Due_Date at the time of Saving bill of purchase order in Purchase module when click on 'Save' button
     @api.model
