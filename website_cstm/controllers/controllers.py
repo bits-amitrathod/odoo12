@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 import base64
 import werkzeug.wrappers
+import os
 # from addons.auth_signup.controllers.main import AuthSignupHome
 
 from odoo import fields, http, modules, SUPERUSER_ID
 from odoo.http import request
 from odoo.addons.web.controllers.main import binary_content
+from odoo.addons.portal.controllers.web import Home
+from odoo.addons.http_routing.models.ir_http import slug, _guess_mimetype
 
 
 class WebsiteCstm(http.Controller):
@@ -138,3 +141,27 @@ class WebsiteCstm(http.Controller):
 #     def web_auth_signup(self, *args, **kw):
 #         responce = super(AuthSignupHome, self).shop(*args, **kw)
 #         return responce
+
+
+class Website(Home):
+
+    @http.route(['/website/add/', '/website/add/<path:path>'], type='http', auth="user", website=True)
+    def pagenew(self, path="", noredirect=False, add_menu=False, template=False, **kwargs):
+        # for supported mimetype, get correct default template
+        _, ext = os.path.splitext(path)
+        ext_special_case = ext and ext in _guess_mimetype() and ext != '.html'
+
+        if not template and ext_special_case:
+            default_templ = 'website.default_%s' % ext.lstrip('.')
+            if request.env.ref(default_templ, False):
+                template = default_templ
+
+        template = template and dict(template=template) or {}
+        page = request.env['website'].new_page_test(path, add_menu=add_menu, **template)
+        url = page['url']
+        if noredirect:
+            return werkzeug.wrappers.Response(url, mimetype='text/plain')
+
+        if ext_special_case:  # redirect non html pages to backend to edit
+            return werkzeug.utils.redirect('/web#id=' + str(page.get('view_id')) + '&view_type=form&model=ir.ui.view')
+        return werkzeug.utils.redirect(url + "?enable_editor=1")
