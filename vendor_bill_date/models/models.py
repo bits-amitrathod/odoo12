@@ -21,7 +21,7 @@ class VendorBillDate(models.Model):
                 stock_picking_obj = self.env['stock.picking'].search( [('origin', '=', self.origin), ('state', '=', 'done'), ('picking_type_id', '=', 5)])
                 # add_hrs = 5
 
-        self.date_invoice = str((max(stock_picking_obj).date_done)) if stock_picking_obj else None      # + timedelta(hours=add_hrs)).date(
+            self.date_invoice = str((max(stock_picking_obj).date_done)) if stock_picking_obj else None      # + timedelta(hours=add_hrs)).date(
 
         # Setting due_date according to current(updated) invoice_date (not according to current date)
         if self.payment_term_id:
