@@ -45,6 +45,7 @@ class VendorOffer(http.Controller):
             **({'token': order.access_token} if order.access_token else {}))
         return {
             'success': _('Your Order has been confirmed.'),
+            'force_refresh': True,
             'redirect_url': '/my/home',
         }
 
@@ -71,6 +72,7 @@ class VendorOffer(http.Controller):
             **({'token': order.access_token} if order.access_token else {}))
         return {
             'success': _('Your Order has been confirmed.'),
+            'force_refresh': True,
             'redirect_url': '/my/home',
         }
 
@@ -98,5 +100,6 @@ class VendorOffer(http.Controller):
             **({'token': order.access_token} if order.access_token else {}))
         return {
             'success': _('Your Order has been rejected.'),
+            'force_refresh': True,
             'redirect_url': '/my/home',
         }
