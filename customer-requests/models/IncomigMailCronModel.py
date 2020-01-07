@@ -32,7 +32,7 @@ class DumpDiscuss(models.Model):
     # Read/Unread Flag for incoming email from mail.channel
     # Only set is_read=True if file data is successfully dumped from 'mail.message' table to 'sps.customer.requests' table otherwise rollback
     is_read = fields.Boolean(Default=False)
-    processing_count = fields.Integer(Default=0)
+    processing_count = fields.Integer(Default= '0')
 
     @api.model
     def DumpData(self):
@@ -48,206 +48,225 @@ class DumpDiscuss(models.Model):
                 [('model', '=', 'mail.channel'), ('is_read', '=', False), ('message_type', '=', 'email'),
                  ('record_name', '=', rec_mail_id_channel),
                  ('is_read', '!=', None)], limit=1, order='id asc')
+            if in_emails:
 
-            in_emails.write({'processing_count' : self.processing_count+1})
-            self.env.cr.savepoint()
-            in_emails.write({'is_read': True})
-            # No need for loop here as we are processing only one customer request at a time but in future CR might come to fetch multiple requests at a time hence used loop here
-            if self.processing_count and self.processing_count <= 2 :
-                for message in in_emails:
-
-                    try:
-                        email_to = message.reply_to
-                        match = re.search(r'[\w\.-]+@[\w\.-]+', email_to)
-                        email_to = str(match.group(0))
-                        _logger.info('Email to %r', email_to)
-                        body = u''
-                        email_from = message.email_from
-                        email_subject = message.subject
-                        subject = None
-                        if email_subject:
-                            subject = email_subject.replace(' ', '').lower()
-                        else:
-                            email_subject = ''
-                        customer_email = None
-                        tmpl_type = None
-                        saleforce_ac = None
-                        attachments = None
-                        file_extension = None
-                        response = None
-                        filename = None
-                        # Need to fetch attachment filename here to handle 'keep original mail' setting in Incoming_mail_cron -> advance tab'
-                        # If setting is on there will be one extra attachment of original mail with the incoming mail otherwise customer attached attachments only
-                        if message.attachment_ids:
-                            filename = message.attachment_ids[0].name
-                            if filename and filename != False:
-                                file_extension = filename[filename.rindex('.') + 1:]
-                                if file_extension == 'xls' or file_extension == 'xlsx' or file_extension == 'csv':
-                                    attachments = message.attachment_ids[0].datas  # Reading the contents of customer attachment (Binary format) if there is any
-
-                        if email_from is not None:
-                            match = re.search(r'[\w\.-]+@[\w\.-]+', email_from)
-                            email_from = str(match.group(0))
-                            _logger.info('Email From : %r', email_from)
-
-                        if subject and re.search('#(.*)#', subject):
-                            match1 = re.search('#(.*)#', subject)
-                            saleforce_ac = match1.group(1)
-                            _logger.info('saleforce_ac: %r', str(saleforce_ac))
-                            # find customer in res.partner
-                            if saleforce_ac and saleforce_ac is not None:
-                                res_partner = self.env['res.partner'].search(
-                                    [("saleforce_ac", "=ilike", saleforce_ac), ('prioritization', '=', True),
-                                     ('on_hold', '=', False)])
-                                if len(res_partner) == 1:
-                                    # when new email in inbox, send email to admin
-                                    self.send_mail_with_attachment(str(email_from), str(email_subject),
-                                                                   str(res_partner.name), attachments)
-                                    if res_partner.email:
-                                        customer_email = res_partner.email
-                                    else:
-                                        _logger.info('Customer Email Id missing.')
-                                        response = dict(errorCode=112, message='Customer Email Id missing.')
-                                elif len(res_partner) > 1:
-                                    _logger.info('We have found Same Customer Id against multiple users. %r',
-                                                 str(saleforce_ac))
-                                    response = dict(errorCode=106,
-                                                    message='We have found Same Customer Id against multiple customers.')
-                                else:
-                                    _logger.info(
-                                        'Customer Id is not found in customers or prioritization setting is off  or Customer is on hold.: %r',
-                                        str(saleforce_ac))
-                                    response = dict(errorCode=107,
-                                                    message='Customer Id is not found in customers  or prioritization setting is off or Customer is on hold.')
-                            else:
-                                _logger.info('Customer Id is not found in email subject.')
-                                response = dict(errorCode=108, message='Customer Id is not found in email subject.')
-                        else:
-                            _logger.info("Customer Id not in email subject")
-                            # File process against who has sent email.
-
-                            # find customer in res.partner
-                            if email_from and email_from is not None:
-                                res_partner = self.env['res.partner'].search(
-                                    [("email", "=ilike", email_from), ('prioritization', '=', True),
-                                     ('on_hold', '=', False)])
-                                if len(res_partner) == 1:
-                                    # when new email in inbox, send email to admin
-                                    self.send_mail_with_attachment(str(email_from), str(email_subject),
-                                                                   str(res_partner.name), attachments)
-                                    if res_partner.email:
-                                        customer_email = res_partner.email
-                                    else:
-                                        _logger.info('Customer Email Id missing.')
-                                        response = dict(errorCode=112, message='Customer Email Id missing.')
-                                    # pop_server.dele(num)
-                                elif len(res_partner) > 1:
-                                    _logger.info('We have found same Customer Email against multiple customers. %r',
-                                                 str(customer_email))
-                                    response = dict(errorCode=109,
-                                                    message='We have found same Customer Email against multiple customers.')
-                                else:
-                                    _logger.info(
-                                        'Customer (Email) is not found in customers or prioritization setting is off or Customer is on hold: %r',
-                                        str(email_from))
-                                    response = dict(errorCode=110,
-                                                    message='Customer (Email) is not found in customers or prioritization setting is off or Customer is on hold.')
-                            else:
-                                _logger.info('Customer (Email) is not found in Customers.')
-                                response = dict(errorCode=111, message='Customer (Email) is not found in customers.')
-
-                        if customer_email is not None:
-                            match = re.search(r'[\w\.-]+@[\w\.-]+', customer_email)
-                            customer_email = str(match.group(0))
-                            _logger.info('Customer Email Id %r', customer_email)
-
-                            if attachments:
-                                if saleforce_ac is not None:
-                                    users_model = self.env['res.partner'].search(
-                                        [("saleforce_ac", "=ilike", saleforce_ac)])
-                                    if users_model:
-                                        if len(users_model) == 1:
-                                            # filename = message.attachment_ids[0].name
-                                            if filename:
-                                                try:
-                                                    checksum = message.attachment_ids[0].checksum  # checksum neeed only to pass to function in order to get absolute path of file
-                                                    file_path = message.attachment_ids[0]._get_path(attachments, checksum)[1]
-                                                    _logger.info('File_path: %r', str(file_path))
-                                                    response = self.env[
-                                                        'sps.document.process'].process_document(users_model,
-                                                                                                 file_path,
-                                                                                                 tmpl_type,
-                                                                                                 filename,
-                                                                                                 email_from,
-                                                                                                 'Email'
-                                                                                                 )
-                                                    self.env.cr.commit()  # Commit if attachment contents are properly written in sps_customer_requests table
-
-                                                except Exception as e:
-                                                    _logger.info(str(e))
-                                                    self.env.cr.rollback()  # Rollback if attachment contents are not properly written in sps_customer_requests table
-
-                                        else:
-                                            _logger.error(
-                                                'We have found same Customer Id against multiple Customer.')
-                                            response = dict(errorCode=101,
-                                                            message='We have found same Customer Id against multiple Customer.')
-                                    else:
-                                        _logger.info('Customer not found in customers.')
-                                        response = dict(errorCode=102, message='Customer not found in customers.')
-                                else:
-                                    users_model = self.env['res.partner'].search(
-                                        [("email", "=ilike", customer_email)])
-                                    if users_model:
-                                        if len(users_model) == 1:
-                                            # filename = message.attachment_ids[0].name
-                                            # when new email in inbox, send email to admin
-                                            self.send_mail_with_attachment(str(email_from), str(email_subject),
-                                                                           str(res_partner.name), attachments, in_emails)
-
-                                            if not filename is None:
-                                                try:
-                                                    checksum = message.attachment_ids[0].checksum
-                                                    file_path = message.attachment_ids[0]._get_path(attachments, checksum)[1]
-                                                    _logger.info('File_path: %r', str(file_path))
-                                                    response = self.env[
-                                                        'sps.document.process'].process_document(users_model,
-                                                                                                 file_path,
-                                                                                                 tmpl_type,
-                                                                                                 filename,
-                                                                                                 email_from,
-                                                                                                 'Email',
-                                                                                                 )
-                                                    self.env.cr.commit()
-                                                except Exception as e:
-                                                    _logger.info(str(e))
-                                                    self.env.cr.rollback()
-                                        else:
-                                            _logger.error(
-                                                'We have found same Customer Email against multiple Customer.')
-                                            response = dict(errorCode=101,
-                                                            message='We have found same Customer Email against multiple Customer.')
-                                    else:
-                                        _logger.info('Customer not found in customers.')
-                                        response = dict(errorCode=102, message='Customer not found in customers.')
-                            else:
-                                _logger.info("Customer has not attached requirement or inventory document.")
-                                response = dict(errorCode=104,
-                                                message='Customer has not attached requirement or inventory document.')
-
-                        if "errorCode" in response:
-                            self._error_code(response, saleforce_ac, attachments, customer_email, email_from, email_subject,
-                                             in_emails)
-
-                    except Exception as ex:
-                        self.env.cr.rollback()  # Rollback if attachment contents are not properly written in sps_customer_requests table
-                        print(ex)
-
-            else:
+                in_emails.write({'processing_count' : in_emails.processing_count+1})
+                self.env.cr.commit()
+                self.env.cr.savepoint()
                 in_emails.write({'is_read': True})
+                # No need for loop here as we are processing only one customer request at a time but in future CR might come to fetch multiple requests at a time hence used loop here
+                if in_emails.processing_count and in_emails.processing_count <= 1 :
+                    for message in in_emails:
+
+                        try:
+                            email_to = message.reply_to
+                            match = re.search(r'[\w\.-]+@[\w\.-]+', email_to)
+                            email_to = str(match.group(0))
+                            _logger.info('Email to %r', email_to)
+                            body = u''
+                            email_from = message.email_from
+                            email_subject = message.subject
+                            subject = None
+                            if email_subject:
+                                subject = email_subject.replace(' ', '').lower()
+                            else:
+                                email_subject = ''
+                            customer_email = None
+                            tmpl_type = None
+                            saleforce_ac = None
+                            attachments = None
+                            file_extension = None
+                            response = None
+                            filename = None
+                            # Need to fetch attachment filename here to handle 'keep original mail' setting in Incoming_mail_cron -> advance tab'
+                            # If setting is on there will be one extra attachment of original mail with the incoming mail otherwise customer attached attachments only
+                            if message.attachment_ids:
+                                filename = message.attachment_ids[0].name
+                                if filename and filename != False:
+                                    file_extension = filename[filename.rindex('.') + 1:]
+                                    if file_extension == 'xls' or file_extension == 'xlsx' or file_extension == 'csv':
+                                        attachments = message.attachment_ids[0].datas  # Reading the contents of customer attachment (Binary format) if there is any
+
+                            if email_from is not None:
+                                match = re.search(r'[\w\.-]+@[\w\.-]+', email_from)
+                                email_from = str(match.group(0))
+                                _logger.info('Email From : %r', email_from)
+
+                            if subject and re.search('#(.*)#', subject):
+                                match1 = re.search('#(.*)#', subject)
+                                saleforce_ac = match1.group(1)
+                                _logger.info('saleforce_ac: %r', str(saleforce_ac))
+                                # find customer in res.partner
+                                if saleforce_ac and saleforce_ac is not None:
+                                    res_partner = self.env['res.partner'].search(
+                                        [("saleforce_ac", "=ilike", saleforce_ac), ('prioritization', '=', True),
+                                         ('on_hold', '=', False)])
+                                    if len(res_partner) == 1:
+                                        # when new email in inbox, send email to admin
+                                        self.send_mail_with_attachment(str(email_from), str(email_subject),
+                                                                       str(res_partner.name), attachments, in_emails)
+                                        if res_partner.email:
+                                            customer_email = res_partner.email
+                                        else:
+                                            _logger.info('Customer Email Id missing.')
+                                            response = dict(errorCode=112, message='Customer Email Id missing.')
+                                    elif len(res_partner) > 1:
+                                        _logger.info('We have found Same Customer Id against multiple users. %r',
+                                                     str(saleforce_ac))
+                                        response = dict(errorCode=106,
+                                                        message='We have found Same Customer Id against multiple customers.')
+                                    else:
+                                        _logger.info(
+                                            'Customer Id is not found in customers or prioritization setting is off  or Customer is on hold.: %r',
+                                            str(saleforce_ac))
+                                        response = dict(errorCode=107,
+                                                        message='Customer Id is not found in customers  or prioritization setting is off or Customer is on hold.')
+                                else:
+                                    _logger.info('Customer Id is not found in email subject.')
+                                    response = dict(errorCode=108, message='Customer Id is not found in email subject.')
+                            else:
+                                _logger.info("Customer Id not in email subject")
+                                # File process against who has sent email.
+
+                                # find customer in res.partner
+                                if email_from and email_from is not None:
+                                    res_partner = self.env['res.partner'].search(
+                                        [("email", "=ilike", email_from), ('prioritization', '=', True),
+                                         ('on_hold', '=', False)])
+                                    if len(res_partner) == 1:
+                                        # when new email in inbox, send email to admin
+                                        self.send_mail_with_attachment(str(email_from), str(email_subject),
+                                                                       str(res_partner.name), attachments, in_emails)
+                                        if res_partner.email:
+                                            customer_email = res_partner.email
+                                        else:
+                                            _logger.info('Customer Email Id missing.')
+                                            response = dict(errorCode=112, message='Customer Email Id missing.')
+                                        # pop_server.dele(num)
+                                    elif len(res_partner) > 1:
+                                        _logger.info('We have found same Customer Email against multiple customers. %r',
+                                                     str(customer_email))
+                                        response = dict(errorCode=109,
+                                                        message='We have found same Customer Email against multiple customers.')
+                                    else:
+                                        _logger.info(
+                                            'Customer (Email) is not found in customers or prioritization setting is off or Customer is on hold: %r',
+                                            str(email_from))
+                                        response = dict(errorCode=110,
+                                                        message='Customer (Email) is not found in customers or prioritization setting is off or Customer is on hold.')
+                                else:
+                                    _logger.info('Customer (Email) is not found in Customers.')
+                                    response = dict(errorCode=111, message='Customer (Email) is not found in customers.')
+
+                            if customer_email is not None:
+                                match = re.search(r'[\w\.-]+@[\w\.-]+', customer_email)
+                                customer_email = str(match.group(0))
+                                _logger.info('Customer Email Id %r', customer_email)
+
+                                if attachments:
+                                    if saleforce_ac is not None:
+                                        users_model = self.env['res.partner'].search(
+                                            [("saleforce_ac", "=ilike", saleforce_ac)])
+                                        if users_model:
+                                            if len(users_model) == 1:
+                                                # filename = message.attachment_ids[0].name
+                                                if filename:
+                                                    try:
+                                                        checksum = message.attachment_ids[0].checksum  # checksum neeed only to pass to function in order to get absolute path of file
+                                                        file_path = message.attachment_ids[0]._get_path(attachments, checksum)[1]
+                                                        _logger.info('File_path: %r', str(file_path))
+                                                        response = self.env[
+                                                            'sps.document.process'].process_document(users_model,
+                                                                                                     file_path,
+                                                                                                     tmpl_type,
+                                                                                                     filename,
+                                                                                                     email_from,
+                                                                                                     'Email'
+                                                                                                     )
+                                                        self.env.cr.commit()  # Commit if attachment contents are properly written in sps_customer_requests table
+                                                    except Exception as e:
+                                                        _logger.info(str(e))
+                                                        self.env.cr.rollback()  # Rollback if attachment contents are not properly written in sps_customer_requests table
+                                            else:
+                                                _logger.error(
+                                                    'We have found same Customer Id against multiple Customer.')
+                                                response = dict(errorCode=101,
+                                                                message='We have found same Customer Id against multiple Customer.')
+                                        else:
+                                            _logger.info('Customer not found in customers.')
+                                            response = dict(errorCode=102, message='Customer not found in customers.')
+                                    else:
+                                        users_model = self.env['res.partner'].search(
+                                            [("email", "=ilike", customer_email)])
+                                        if users_model:
+                                            if len(users_model) == 1:
+                                                # filename = message.attachment_ids[0].name
+                                                if not filename is None:
+                                                    try:
+                                                        checksum = message.attachment_ids[0].checksum
+                                                        file_path = message.attachment_ids[0]._get_path(attachments, checksum)[1]
+                                                        _logger.info('File_path: %r', str(file_path))
+                                                        response = self.env[
+                                                            'sps.document.process'].process_document(users_model,
+                                                                                                     file_path,
+                                                                                                     tmpl_type,
+                                                                                                     filename,
+                                                                                                     email_from,
+                                                                                                     'Email',
+                                                                                                     )
+                                                        self.env.cr.commit()
+                                                    except Exception as e:
+                                                        _logger.info(str(e))
+                                                        self.env.cr.rollback()
+                                            else:
+                                                _logger.error(
+                                                    'We have found same Customer Email against multiple Customer.')
+                                                response = dict(errorCode=101,
+                                                                message='We have found same Customer Email against multiple Customer.')
+                                        else:
+                                            _logger.info('Customer not found in customers.')
+                                            response = dict(errorCode=102, message='Customer not found in customers.')
+                                else:
+                                    _logger.info("Customer has not attached requirement or inventory document.")
+                                    response = dict(errorCode=104,
+                                                    message='Customer has not attached requirement or inventory document.')
+
+                            if "errorCode" in response:
+                                self._error_code(response, attachments, customer_email, email_from, email_subject,
+                                                 saleforce_ac, in_emails)
+
+                        except Exception as ex:
+                            self.env.cr.rollback()  # Rollback if attachment contents are not properly written in sps_customer_requests table
+                            _logger.info('Error in First Try block %r',ex)
+
+                else:
+                    in_emails.write({'is_read': True})
+                    response = dict(errorCode=105,
+                                    message='File is too large to process!')
+                    saleforce_ac = None
+                    if in_emails.subject and re.search('#(.*)#', in_emails.subject):
+                        re.search('#(.*)#', in_emails.subject)
+                        match1 = re.search('#(.*)#', in_emails.subject)
+                        saleforce_ac = match1.group(1)
+                    else :
+                        in_emails.subject = ''
+
+                    if saleforce_ac and saleforce_ac is not None:
+                        res_partner = self.env['res.partner'].search(
+                            [("saleforce_ac", "=ilike", saleforce_ac), ('prioritization', '=', True),
+                             ('on_hold', '=', False)])
+                        if len(res_partner) == 1:
+                            # when new email in inbox, send email to admin
+                            if res_partner.email:
+                                customer_email = res_partner.email
+                            else:
+                                customer_email = ''
+
+                    self._error_code(response, in_emails.attachment_ids.datas, customer_email, in_emails.email_from, in_emails.subject,
+                                      saleforce_ac, in_emails)
 
 # This function is specific to update admin(via email) if there is any new customer request
-    def send_mail_with_attachment(self, email_from, email_subject, customer_name, attachments,email_obj):
+    def send_mail_with_attachment(self, email_from, email_subject, customer_name, attachments,email_obj=None):
         today_date = datetime.today().strftime('%m/%d/%Y')
         template = self.env.ref('customer-requests.new_email_in_inbox').sudo()
         local_context = {'emailFrom': email_from, 'emailSubject': email_subject, 'date': today_date, 'customerName': customer_name}
@@ -278,7 +297,7 @@ class DumpDiscuss(models.Model):
                 response = {'message': 'Unable to connect to SMTP Server'}
 
 
-    def _error_code(self, response, saleforce_ac, attachments, customer_email, email_from, email_subject,email_obj):
+    def _error_code(self, response, attachments, customer_email, email_from, email_subject, saleforce_ac=None, email_obj=None):
         response.update({'attachment': attachments})
         if saleforce_ac is not None or customer_email is not None:
             res_partners = self.env['res.partner'].search( ['|', ("saleforce_ac", "=ilike", saleforce_ac), ("email", "=ilike", customer_email)])
@@ -291,19 +310,19 @@ class DumpDiscuss(models.Model):
                         customerName = str(customerName) + "  ,  " + str(res_partner['name'])
 
             if len(res_partners) == 1:
-                self.send_mail(str(email_from), str(email_subject), str(res_partners['name']), response,email_obj)
+                self.send_mail(str(email_from), str(email_subject), str(res_partners['name']), str(customer_email), response, email_obj)
             elif len(res_partners) > 1:
-                self.send_mail(str(email_from), str(email_subject), customerName, response,email_obj)
+                self.send_mail(str(email_from), str(email_subject), customerName, str(customer_email), response, email_obj)
             else:
-                self.send_mail(str(email_from), str(email_subject), '', response,email_obj)
+                self.send_mail(str(email_from), str(email_subject), '', str(customer_email) ,response, email_obj)
         else:
             self.send_mail(str(email_from), str(email_subject),'',response,email_obj)
 
 # This method is called from '_error_code' method to send mail to admin if there is any error in request processing
-    def send_mail(self, email_from, email_subject, customer_name, response,email_obj):
+    def send_mail(self, email_from, email_subject, customer_name, customerEmail, response,email_obj=None):
         today_date = datetime.today().strftime('%m/%d/%Y')
         template = self.env.ref('customer-requests.set_log_email_response').sudo()
-        local_context = {'emailFrom': email_from, 'emailSubject': email_subject, 'date': today_date, 'customerName': customer_name, 'reason' : response['message']}
+        local_context = {'emailFrom': email_from, 'emailSubject': email_subject, 'date': today_date, 'customerName': customer_name, 'email': customerEmail,  'reason' : response['message']}
         if response['attachment']:
             for attachment in email_obj.attachment_ids[0]:
                 try:
