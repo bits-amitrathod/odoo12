@@ -43,9 +43,12 @@
             </xpath>
 
             <xpath expr="//div[2]/div" position="inside">
-                <label t-if="sale_order.partner_id.gl_account.name" class="col-sm-4 col-xs-4 text-right">GL Account:</label>
+                <label t-if="sale_order.partner_id.gl_account" class="col-sm-4 col-xs-4 text-right">GL Account:</label>
                 <div class="col-sm-8 col-xs-8">
-                    <div t-if="sale_order.partner_id.gl_account.name" t-field="sale_order.partner_id.gl_account.name"/>
+                    <div t-if="sale_order.partner_id.gl_account"/>
+                    <t t-foreach="sale_order.partner_id.gl_account" t-as="gl_account">
+                        <b t-field="gl_account.name"/>
+                    </t>
                 </div>
             </xpath>
         </template>
