@@ -165,7 +165,7 @@ class DumpDiscuss(models.Model):
                                     _logger.info('Customer (Email) is not found in Customers.')
                                     response = dict(errorCode=111, message='Customer (Email) is not found in customers.')
 
-                            if customer_email and res_partner.prioritization == 'True':
+                            if customer_email and res_partner.prioritization and res_partner.on_hold == False:
                                 match = re.search(r'[\w\.-]+@[\w\.-]+', customer_email)
                                 customer_email = str(match.group(0))
                                 _logger.info('Customer Email Id %r', customer_email)
