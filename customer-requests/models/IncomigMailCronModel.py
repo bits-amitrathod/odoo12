@@ -71,13 +71,14 @@ class DumpDiscuss(models.Model):
                                 subject = email_subject.replace(' ', '').lower()
                             else:
                                 email_subject = ''
-                            customer_email = None
+                            customer_email = ''
                             tmpl_type = None
                             saleforce_ac = None
                             attachments = None
                             file_extension = None
                             response = None
                             filename = None
+                            res_partner = None
                             # Need to fetch attachment filename here to handle 'keep original mail' setting in Incoming_mail_cron -> advance tab'
                             # If setting is on there will be one extra attachment of original mail with the incoming mail otherwise customer attached attachments only
                             if message.attachment_ids:
@@ -116,6 +117,9 @@ class DumpDiscuss(models.Model):
                                         response = dict(errorCode=106,
                                                         message='We have found Same Customer Id against multiple customers.')
                                     else:
+                                        res_partner = self.env['res.partner'].search([("saleforce_ac", "=ilike", saleforce_ac)])
+                                        if res_partner and res_partner.email:
+                                            customer_email = res_partner.email
                                         _logger.info(
                                             'Customer Id is not found in customers or prioritization setting is off  or Customer is on hold.: %r',
                                             str(saleforce_ac))
@@ -149,6 +153,9 @@ class DumpDiscuss(models.Model):
                                         response = dict(errorCode=109,
                                                         message='We have found same Customer Email against multiple customers.')
                                     else:
+                                        res_partner = self.env['res.partner'].search([("email", "=ilike", email_from)])
+                                        if res_partner and res_partner.email:
+                                            customer_email = res_partner.email
                                         _logger.info(
                                             'Customer (Email) is not found in customers or prioritization setting is off or Customer is on hold: %r',
                                             str(email_from))
@@ -158,7 +165,7 @@ class DumpDiscuss(models.Model):
                                     _logger.info('Customer (Email) is not found in Customers.')
                                     response = dict(errorCode=111, message='Customer (Email) is not found in customers.')
 
-                            if customer_email is not None:
+                            if customer_email and res_partner.prioritization == 'True':
                                 match = re.search(r'[\w\.-]+@[\w\.-]+', customer_email)
                                 customer_email = str(match.group(0))
                                 _logger.info('Customer Email Id %r', customer_email)
@@ -262,7 +269,7 @@ class DumpDiscuss(models.Model):
                             else:
                                 customer_email = ''
 
-                    self._error_code(response, in_emails.attachment_ids.datas, customer_email, in_emails.email_from, in_emails.subject,
+                    self._error_code(response, in_emails.attachment_ids[0].datas, customer_email, in_emails.email_from, in_emails.subject,
                                       saleforce_ac, in_emails)
 
 # This function is specific to update admin(via email) if there is any new customer request
@@ -316,7 +323,7 @@ class DumpDiscuss(models.Model):
             else:
                 self.send_mail(str(email_from), str(email_subject), '', str(customer_email) ,response, email_obj)
         else:
-            self.send_mail(str(email_from), str(email_subject),'',response,email_obj)
+            self.send_mail(str(email_from), str(email_subject),'','',response,email_obj)
 
 # This method is called from '_error_code' method to send mail to admin if there is any error in request processing
     def send_mail(self, email_from, email_subject, customer_name, customerEmail, response,email_obj=None):
