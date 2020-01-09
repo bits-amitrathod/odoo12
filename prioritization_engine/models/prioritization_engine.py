@@ -485,6 +485,7 @@ class PrioritizationEngine(models.TransientModel):
                 if sps_cust_uploaded_document.template_type.lower().strip() == 'requirement':
                     if int(current_processed_docs) >= int(current_cust_doc_fixed_count):
                         sps_cust_uploaded_document.write({'status': 'Completed'})
+                        self._update_all_request_status(sps_cust_uploaded_document)
                         if len(sps_customer_requirements) == len(sps_customer_requirements_all_non_voided):
                             template = self.env.ref('customer-requests.final_email_response_on_uploaded_document').sudo()
                     else:
@@ -501,6 +502,7 @@ class PrioritizationEngine(models.TransientModel):
                 elif sps_cust_uploaded_document.template_type.lower().strip() == 'inventory':
                     if int(current_processed_docs) >= int(current_cust_doc_fixed_count):
                         sps_cust_uploaded_document.write({'status': 'Completed'})
+                        self._update_all_request_status(sps_cust_uploaded_document)
                         if len(sps_customer_requirements) == len(sps_customer_requirements_all_non_voided):
                             template = self.env.ref('customer-requests.final_email_response_on_uploaded_document').sudo()
                     else:
@@ -516,6 +518,7 @@ class PrioritizationEngine(models.TransientModel):
                                 sps_cust_uploaded_document.write({'status': 'Completed'})
                         else:
                             sps_cust_uploaded_document.write({'status': 'Completed'})
+                            self._update_all_request_status(sps_cust_uploaded_document)
 
                 # Send Email Notification to customer about the progress of uploaded or sent document
                 if template is not None:
@@ -524,6 +527,12 @@ class PrioritizationEngine(models.TransientModel):
                         self.send_mail(sps_cust_uploaded_document.customer_id.name, sps_cust_uploaded_document.customer_id.email, sps_cust_uploaded_document.customer_id.user_id.partner_id.email, template)
                     else:
                         self.send_mail(sps_cust_uploaded_document.customer_id.name, sps_cust_uploaded_document.customer_id.email, None, template)
+
+    @staticmethod
+    def _update_all_request_status(sps_cust_uploaded_document):
+        for request in sps_cust_uploaded_document.request_ids:
+            if request.status not in ('Fulfilled', 'Partial'):
+                request.write({'status': 'Unprocessed'})
 
     # Release reserved product quantity(Which sales order product not confirm within length of hold period)
     def release_reserved_product_quantity(self):
