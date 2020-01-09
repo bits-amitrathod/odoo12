@@ -123,7 +123,7 @@ class sale_order(models.Model):
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
-    note_readonly_flag = fields.Integer('Delivery method readonly flag', default=0)
+    note_readonly_flag = fields.Integer('Delivery Note readonly flag', default=0)
     # note = fields.Text('Notes', compute='_get_note')
     #
     # def _get_note(self):
@@ -147,8 +147,8 @@ class StockPicking(models.Model):
                     if delivery.picking_type_id.name == 'Delivery Orders':
                         delivery.note = self.note
                         self.add_note_in_log_section()
-                elif self.picking_type_id.name == 'Delivery Orders':
-                    self.note_readonly_flag = 1
+                elif delivery.picking_type_id.name == 'Delivery Orders':
+                    delivery.note_readonly_flag = 1
                     self.add_note_in_log_section()
 
         if self.picking_type_id.code == "outgoing":
