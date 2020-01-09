@@ -389,7 +389,7 @@
 
         <record id="prioritization_run_scheduler_views" model="ir.ui.view">
             <field name="name">Run Schedulers Manually</field>
-            <field name="model">prioritization.cron.scheduler</field>
+            <field name="model">prioritization.cron.schedular</field>
             <field name="arch" type="xml">
                 <form string="Parameters">
                     <p>
@@ -408,7 +408,7 @@
 
         <record id="prioritization_run_scheduler" model="ir.actions.act_window">
             <field name="name">Run Scheduler</field>
-            <field name="res_model">prioritization.cron.scheduler</field>
+            <field name="res_model">prioritization.cron.schedular</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
