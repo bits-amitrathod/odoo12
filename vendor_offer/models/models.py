@@ -344,15 +344,23 @@ class VendorOffer(models.Model):
                 amount_untaxed = amount_tax = price_total = 0.0
                 rt_price_tax = product_retail = rt_price_total = 0.0
                 billed_retail_untaxed = billed_offer_untaxed = 0.0
-
+                cash_amount_untaxed = 0.0
                 for line in order.order_line:
                     amount_tax += line.price_tax
                     rt_price_tax += line.rt_price_tax
                     rt_price_total += line.rt_price_total
                     product_retail += line.product_retail
+                    amount_untaxed += line.price_subtotal
+                    cash_amount_untaxed += line.price_subtotal
                     billed_retail_untaxed += line.billed_product_retail_price
                     billed_offer_untaxed += line.billed_product_offer_price
-
+                    credit_amount_untaxed = 0
+                    credit_amount_total = 0
+                    if product_retail > 0:
+                        per_val = round((amount_untaxed / product_retail) * 100, 2)
+                        per_val = per_val + 10
+                        credit_amount_untaxed = product_retail * (per_val / 100)
+                        credit_amount_total = credit_amount_untaxed + amount_tax
                     order.update({
                         'amount_tax': amount_tax,
                         'rt_price_subtotal_amt': product_retail,
@@ -361,7 +369,11 @@ class VendorOffer(models.Model):
                         'billed_retail_untaxed': billed_retail_untaxed,
                         'billed_offer_untaxed': billed_offer_untaxed,
                         'billed_retail_total': billed_retail_untaxed + amount_tax,
-                        'billed_offer_total': billed_offer_untaxed + amount_tax
+                        'billed_offer_total': billed_offer_untaxed + amount_tax,
+                        'credit_amount_untaxed': math.floor(round(credit_amount_untaxed, 2)),
+                        'credit_amount_total': math.floor(round(credit_amount_total, 2)),
+                        'cash_amount_untaxed': cash_amount_untaxed,
+                        'cash_amount_total': cash_amount_untaxed + amount_tax,
                     })
 
                 super(VendorOffer, self)._amount_all()
@@ -624,6 +636,15 @@ class VendorOffer(models.Model):
             return '%s?%s' % ('/mail/view' if redirect else self.compute_access_url_offer(), url_encode(params))
         else:
             return '%s?%s' % ('/mail/view' if redirect else self.access_url, url_encode(params))
+
+    @api.multi
+    def _get_share_url(self, redirect=False, signup_partner=False, pid=None):
+
+        self.ensure_one()
+        if self.state not in ['purchase', 'done']:
+            auth_param = url_encode(self.partner_id.signup_get_auth_param()[self.partner_id.id])
+            return self.get_portal_url(query_string='&%s' % auth_param)
+        return super(VendorOffer, self)._get_share_url(redirect, signup_partner, pid)
 
 
 class VendorOfferProduct(models.Model):

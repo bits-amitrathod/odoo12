@@ -159,6 +159,7 @@ class LoginCaseInsensitive(models.Model):
                 self._create_user_from_template(values)
         else:
             # no token, sign up an external user
+            values['saleforce_ac'] = self.env['ir.sequence'].next_by_code('sale.force.no') or _('New')
             values['email'] = values.get('email') or values.get('login')
             self._create_user_from_template(values)
 
@@ -525,6 +526,7 @@ class WebsiteSale(http.Controller):
     def _checkout_form_save(self, mode, checkout, all_values):
         Partner = request.env['res.partner']
         if mode[0] == 'new':
+            checkout['saleforce_ac'] = Partner.sudo().env['ir.sequence'].next_by_code('sale.force.no') or _('New')
             partner_id = Partner.sudo().create(checkout).id
         elif mode[0] == 'edit':
             partner_id = int(all_values.get('partner_id', 0))

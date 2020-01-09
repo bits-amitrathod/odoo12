@@ -723,6 +723,7 @@
         <record id="vendor_offer.action_vendor_pricing" model="ir.actions.act_window">
             <field name="name">Vendor Pricing</field>
             <field name="key">action</field>
+            <field name="domain">[('type','=','product')]</field>
             <field name="type">ir.actions.act_window</field>
             <field name="limit" eval="10"/>
             <field name="res_model">product.product</field>
