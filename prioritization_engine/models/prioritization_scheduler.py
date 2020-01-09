@@ -8,7 +8,7 @@ _logger = logging.getLogger(__name__)
 
 
 class PrioritizationScheduler(models.Model):
-    _name = 'prioritization.cron.schedular'
+    _name = 'prioritization.cron.scheduler'
 
     @api.model
     @api.multi
