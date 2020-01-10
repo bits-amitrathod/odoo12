@@ -135,21 +135,23 @@ class StockPicking(models.Model):
     def button_validate(self):
         action = super(StockPicking, self).button_validate()
 
-        if self.note:
-            for delivery in self.sale_id.picking_ids:
-                if self.picking_type_id.name == 'Pick':
-                    self.note_readonly_flag = 1
-                    if delivery.picking_type_id.name == 'Pull':
-                        delivery.note = self.note
-                        self.add_note_in_log_section()
-                elif self.picking_type_id.name == 'Pull':
-                    self.note_readonly_flag = 1
-                    if delivery.picking_type_id.name == 'Delivery Orders':
-                        delivery.note = self.note
-                        self.add_note_in_log_section()
-                elif delivery.picking_type_id.name == 'Delivery Orders':
-                    delivery.note_readonly_flag = 1
-                    self.add_note_in_log_section()
+        # Note Section code
+        if self.sale_id:
+            if self.picking_type_id.name == "Pick" and self.state == "done":
+                self.note_readonly_flag = 1
+                self.add_note_in_log_section()
+                for picking_id in self.sale_id.picking_ids:
+                    if picking_id.state != 'cancel' and picking_id.picking_type_id.name == 'Pull' and picking_id.state == 'assigned':
+                        picking_id.note = self.note
+            elif self.picking_type_id.name == "Pull" and self.state == "done":
+                self.note_readonly_flag = 1
+                self.add_note_in_log_section()
+                for picking_id in self.sale_id.picking_ids:
+                    if picking_id.state != 'cancel' and picking_id.picking_type_id.name == 'Delivery Orders' and picking_id.state == 'assigned':
+                        picking_id.note = self.note
+            elif self.picking_type_id.name == "Delivery Orders" and self.state == "done":
+                self.note_readonly_flag = 1
+                self.add_note_in_log_section()
 
         if self.picking_type_id.code == "outgoing":
             if self.state == 'done' and self.carrier_id and self.carrier_tracking_ref:
