@@ -20,6 +20,7 @@
                     <field name="qe_product_uom_converted" string="UOM"/>
                     <field name="qe_unit_price_converted" widget="monetary" string="Unit Price" />
                     <field name="qe_total_price_converted" widget="monetary" string="Total" sum="Total"/>
+                    <field name="qe_quotations_per_code"   />
                     <field name="currency_id"  invisible="1" />
                 </tree>
               </field>
@@ -101,6 +102,7 @@
                                 <field name="product_id"/>
                                 <field name="qe_product_sku_ref"/>
                                 <field name="qe_customer_name"/>
+                                <field name="qe_quotations_per_code"   />
                             </group>
                             <group>
                                 <!--<field name="qty_delivered_converted" string="Required Quantity"/>-->
