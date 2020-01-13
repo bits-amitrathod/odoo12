@@ -33,13 +33,13 @@ class StockBackorder(models.TransientModel):
                     picking.note_readonly_flag = 1
                     picking.add_note_in_log_section()
                     for picking_id in picking.sale_id.picking_ids:
-                        if picking_id.state != 'cancel' and picking_id.picking_type_id.name == 'Pull' and picking_id.state == 'assigned':
+                        if picking_id.state != 'cancel' and (picking_id.picking_type_id.name == 'Pull' and picking_id.state == 'assigned'):
                             picking_id.note = picking.note
                 elif picking.picking_type_id.name == "Pull" and picking.state == "done":
                     picking.note_readonly_flag = 1
                     picking.add_note_in_log_section()
                     for picking_id in picking.sale_id.picking_ids:
-                        if picking_id.state != 'cancel' and picking_id.picking_type_id.name == 'Delivery Orders' and picking_id.state == 'assigned':
+                        if picking_id.state != 'cancel' and (picking_id.picking_type_id.name == 'Delivery Orders' and picking_id.state == 'assigned'):
                             picking_id.note = picking.note
                 elif picking.picking_type_id.name == "Delivery Orders" and picking.state == "done":
                     picking.note_readonly_flag = 1
