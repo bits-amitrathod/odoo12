@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <data >
+
+    <!-- Loaction -->
+        <record id="stock_location_locations_virtual" model="stock.location">
+            <field name="name">Virtual Locations1</field>
+            <field name="usage">view</field>
+            <field name="posz">1</field>
+            <field name="company_id"></field>
+        </record>
+
+        <record id="stock_location_reserve_product" model="stock.location">
+            <field name="name">reserve_product</field>
+            <field name="location_id" ref="stock_location_locations_virtual"/>
+            <field name="scrap_location">True</field>
+            <field name="return_location">True</field>
+            <field name="usage">internal</field>
+            <field name="company_id"></field>
+        </record>
+
+        <record id="stock_location_stockhawk_output" model="stock.location">
+            <field name="name">stockHawk :Output</field>
+            <field name="location_id" ref="stock_location_reserve_product"/>
+            <field name="scrap_location">True</field>
+            <field name="return_location">True</field>
+            <field name="usage">internal</field>
+            <field name="company_id"></field>
+        </record>
+
+        <record id="stock_location_stockhawk__pick" model="stock.location">
+            <field name="name">stockhawk :Pick</field>
+            <field name="location_id" ref="stock_location_reserve_product"/>
+            <field name="scrap_location">True</field>
+            <field name="return_location">True</field>
+            <field name="usage">internal</field>
+            <field name="company_id"></field>
+        </record>
+
+    <!--Routes -->
+        <record id="route_warehouse0_stkh" model='stock.location.route'>
+            <field name="name">StockHawk : Deliver in 3 steps (pick + pack + ship)</field>
+            <field name="company_id">1</field>
+            <field name="sequence">10</field>
+            <field name="product_categ_selectable">True</field>
+            <field name="warehouse_selectable">True</field>
+            <field name="warehouse_ids"> </field>
+        </record>
+
+        <record id="route_warehouse0_reserve" model='stock.location.route'>
+            <field name="name">StockHawk : Reserve Product</field>
+            <field name="company_id">1</field>
+            <field name="sequence">15</field>
+            <field name="product_categ_selectable">True</field>
+            <field name="warehouse_selectable">True</field>
+            <field name="warehouse_ids"> </field>
+        </record>
+
+    <!--Operation Types -->
+    <record id="picking_type_sthk_pick" model="stock.picking.type">
+            <field name="name">StockHawk : Pick </field>
+            <field name="sequence_id">1</field>
+            <field name="warehouse_id" >1</field>
+            <field name="code">internal</field>
+            <field name="show_reserved">True</field>
+            <field name="use_existing_lots">True</field>
+            <field name="default_location_src_id" ref="stock_location_reserve_product"/>
+            <field name="default_location_dest_id" ref="stock_location_stockhawk__pick"/>
+        </record>
+
+    <record id="picking_type_sthk_pull" model="stock.picking.type">
+            <field name="name">	stockhawk : Pull</field>
+            <field name="sequence_id">1</field>
+            <field name="warehouse_id" >1</field>
+            <field name="code">internal</field>
+            <field name="show_reserved">True</field>
+            <field name="use_existing_lots">True</field>
+            <field name="default_location_src_id" ref="stock_location_stockhawk__pick"/>
+            <field name="default_location_dest_id" ref="stock_location_stockhawk_output"/>
+        </record>
+
+    <record id="picking_type_sthk_delevery" model="stock.picking.type">
+            <field name="name">	stockhawk : Delivery Ordery</field>
+            <field name="sequence_id">1</field>
+            <field name="warehouse_id" >1</field>
+            <field name="code">internal</field>
+            <field name="show_reserved">True</field>
+            <field name="use_existing_lots">True</field>
+            <field name="default_location_src_id" ref="stock_location_stockhawk_output"/>
+            <field name="default_location_dest_id"> 9 </field>
+        </record>
+
+    <record id="picking_type_product_reserve" model="stock.picking.type">
+            <field name="name">product_reserve</field>
+            <field name="sequence_id">1</field>
+            <field name="warehouse_id" >1</field>
+            <field name="code">internal</field>
+            <field name="show_reserved">True</field>
+            <field name="use_existing_lots">True</field>
+            <field name="default_location_src_id" >14</field>
+            <field name="default_location_dest_id" ref="stock_location_reserve_product"/>
+        </record>
+
+    <!-- Rules -->
+    <record id="rule_product_reserve" model="stock.rule">
+            <field name="name">reserve_product</field>
+            <field name="picking_type_id" ref="picking_type_product_reserve"/>
+            <field name="procure_method">make_to_stock</field>
+            <field name="route_id" ref="route_warehouse0_reserve" />
+            <field name="company_id">1</field>
+            <field name="location_src_id">14</field>
+            <field name="location_id" ref ="stock_location_reserve_product"/>
+            <field name="sequence">25</field>
+            <field name="delay">0</field>
+            <field name="group_propagation_potion">propagate</field>
+            <field name="propagate">True</field>
+            <field name="action">pull</field>
+        </record>
+
+    <record id="rule_product_Pick" model="stock.rule">
+            <field name="name">Main: StockHawk stock -> Packing Zone</field>
+            <field name="picking_type_id" ref="picking_type_sthk_pick"/>
+            <field name="procure_method">make_to_stock</field>
+            <field name="route_id" ref="route_warehouse0_stkh" />
+            <field name="company_id">1</field>
+            <field name="location_src_id" ref="stock_location_locations_virtual"/>
+            <field name="location_id" ref ="stock_location_stockhawk__pick"/>
+            <field name="sequence">25</field>
+            <field name="delay">0</field>
+            <field name="group_propagation_potion">propagate</field>
+            <field name="propagate">True</field>
+            <field name="action">pull</field>
+        </record>
+
+    <record id="rule_product_Pull" model="stock.rule">
+            <field name="name">Main: Packing Zone -> Output</field>
+            <field name="picking_type_id" ref="picking_type_sthk_pull"/>
+            <field name="procure_method">make_to_order</field>
+            <field name="route_id" ref="route_warehouse0_stkh" />
+            <field name="company_id">1</field>
+            <field name="location_src_id" ref="stock_location_stockhawk__pick"/>
+            <field name="location_id" ref ="stock_location_stockhawk_output"/>
+            <field name="sequence">25</field>
+            <field name="delay">0</field>
+            <field name="group_propagation_potion">propagate</field>
+            <field name="propagate">True</field>
+            <field name="action">pull</field>
+        </record>
+
+    <record id="rule_product_Out" model="stock.rule">
+            <field name="name">Main: Output -> Customers</field>
+            <field name="picking_type_id" ref="picking_type_sthk_delevery"/>
+            <field name="procure_method">make_to_order</field>
+            <field name="route_id" ref="route_warehouse0_stkh" />
+            <field name="company_id">1</field>
+            <field name="location_src_id" ref="stock_location_stockhawk_output"/>
+            <field name="location_id">9</field>
+            <field name="sequence">25</field>
+            <field name="delay">0</field>
+            <field name="group_propagation_potion">propagate</field>
+            <field name="propagate">True</field>
+            <field name="action">pull</field>
+        </record>
+
+    </data>

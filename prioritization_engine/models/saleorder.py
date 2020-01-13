@@ -405,19 +405,19 @@ class SaleOrderLine(models.Model):
                 if line.order_id.team_id.team_type == 'engine':
                     if line.order_id.picking_ids:
                         if location:
-                            if location.id != 41 and location.location_id.id:
+                            if location.name != 'Virtual Locations1' and location.location_id.id:
                                 location = self.env['stock.location'].search([('id', '=', location.id)])
-                                route_id = self.env['stock.location.route'].search([('id', '=', 8)])
+                                route_id = self.env['stock.location.route'].search([('name', 'ilike', 'StockHawk : Reserve Product')])
                         else:
                             if line.order_id.picking_ids[len(line.order_id.picking_ids)-1].state == 'cancel':
-                                location = self.env['stock.location'].search([('id', '=', 41)])
-                                route_id = self.env['stock.location.route'].search([('id', '=', 7)])
+                                location = self.env['stock.location'].search([('name', 'ilike', 'Virtual Locations1')])
+                                route_id = self.env['stock.location.route'].search([('name', 'ilike', 'StockHawk : Deliver in 3 steps (pick + pack + ship)')])
                             else:
-                                location = self.env['stock.location'].search([('id', '=', 9)])
-                                route_id = self.env['stock.location.route'].search([('id', '=', 8)])
+                                location = self.env['stock.location'].search([('name', 'ilike', 'Customers')])
+                                route_id = self.env['stock.location.route'].search([('name', 'ilike', 'StockHawk : Reserve Product')])
                     else:
-                        location = self.env['stock.location'].search([('id', '=', 41)])
-                        route_id = self.env['stock.location.route'].search([('id', '=', 7)])
+                        location = self.env['stock.location'].search([('name', 'ilike', 'Virtual Locations1')])
+                        route_id = self.env['stock.location.route'].search([('name', 'ilike', 'StockHawk : Deliver in 3 steps (pick + pack + ship)')])
 
                     if route_id:
                         values['route_ids'] = route_id
