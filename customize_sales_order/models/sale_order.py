@@ -141,13 +141,13 @@ class StockPicking(models.Model):
                 self.note_readonly_flag = 1
                 self.add_note_in_log_section()
                 for picking_id in self.sale_id.picking_ids:
-                    if picking_id.state != 'cancel' and picking_id.picking_type_id.name == 'Pull' and picking_id.state == 'assigned':
+                    if picking_id.state != 'cancel' and (picking_id.picking_type_id.name == 'Pull' and picking_id.state == 'assigned'):
                         picking_id.note = self.note
             elif self.picking_type_id.name == "Pull" and self.state == "done":
                 self.note_readonly_flag = 1
                 self.add_note_in_log_section()
                 for picking_id in self.sale_id.picking_ids:
-                    if picking_id.state != 'cancel' and picking_id.picking_type_id.name == 'Delivery Orders' and picking_id.state == 'assigned':
+                    if picking_id.state != 'cancel' and (picking_id.picking_type_id.name == 'Delivery Orders' and picking_id.state == 'assigned'):
                         picking_id.note = self.note
             elif self.picking_type_id.name == "Delivery Orders" and self.state == "done":
                 self.note_readonly_flag = 1
