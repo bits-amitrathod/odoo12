@@ -1095,6 +1095,10 @@
                 <t t-set="vendor_offer" t-value="order"/>
                 <div id="optional_placeholder"></div>
                 <div class="container">
+                    <div t-if="order.state == 'cancel'" class="alert alert-danger alert-dismissable d-print-none" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="close">&amp;times;</button>
+                        <strong>     This order has been Rejected </strong>
+                    </div>
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <div class="row">
@@ -1103,6 +1107,12 @@
                                         <t t-call='portal.record_pager'/>
                                         Vendor Offer
                                         <span t-esc="order.name"/>
+                                        <t t-if=" order.state == 'cancel'">
+                                             <span style="font-size:1rem;vertical-align: top;" class="label label-default">
+                                                 <i class="fa fa-fw fa-remove"/>
+                                                 Rejected
+                                             </span>
+                                        </t>
                                     </h4>
                                 </div>
                             </div>

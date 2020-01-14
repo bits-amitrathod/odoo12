@@ -67,13 +67,14 @@ class ProductTemplate(models.Model):
     def action_view_sales(self):
         tree_view_id = self.env.ref('report_sale_orders_groupby_product.report_sale_orders_group_by_product_tree').id
         pivote_view_id = self.env.ref('report_sale_orders_groupby_product.view_sold_level_pivot').id
+        product = self.env['product.product'].search([('product_tmpl_id', 'in', self.ids)])
         action = {
             'name': 'Sales by Channel',
             'type': 'ir.actions.act_window',
             'view_mode': 'tree,pivot',
             'views': [(tree_view_id, 'tree'),(pivote_view_id, 'pivot')],
             'res_model': 'sale.order.line',
-            'domain': [('product_id', '=', self.id)]
+            'domain': [('product_id', 'in', product.ids)]
         }
         return action
 
@@ -81,13 +82,14 @@ class ProductTemplate(models.Model):
     def action_view_po(self):
         tree_view_id = self.env.ref('purchase.purchase_order_line_tree').id
         pivote_view_id = self.env.ref('report_sale_orders_groupby_product.view_prchase_level_pivot').id
+        product = self.env['product.product'].search([('product_tmpl_id', 'in', self.ids)])
         action = {
             'name': 'Purchase by Channel',
             'type': 'ir.actions.act_window',
             'view_mode': 'tree,pivot',
             'views': [(tree_view_id, 'tree'),(pivote_view_id, 'pivot')],
             'res_model': 'purchase.order.line',
-            'domain': [('product_id', '=', self.id)]
+            'domain': [('product_id', 'in', product.ids)]
         }
         return action
 
@@ -105,7 +107,7 @@ class ProductProduct(models.Model):
                 'view_mode': 'tree,pivot',
                 'views': [(tree_view_id, 'tree'), (pivote_view_id, 'pivot')],
                 'res_model': 'sale.order.line',
-                'domain': [('product_id', '=', self.product_tmpl_id.id)]
+                'domain': [('product_id', 'in', self.ids)]
         }
         return action
 
@@ -119,6 +121,6 @@ class ProductProduct(models.Model):
                 'view_mode': 'tree,pivot',
                 'views': [(tree_view_id, 'tree'), (pivote_view_id, 'pivot')],
                 'res_model': 'purchase.order.line',
-                'domain': [('product_id', '=', self.product_tmpl_id.id)]
+                'domain': [('product_id', 'in', self.ids)]
             }
         return action
