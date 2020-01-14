@@ -14,7 +14,7 @@
 # If not, see <https://store.webkul.com/license.html/>
 #################################################################################
 {
-  "name"                 :  " Google Shop",
+  "name"                 :  "Google Shop",
   "summary"              :  "Google Shop facilitates you to integrate Google Merchant Account with Odoo. It allows you to send the products of Odoo into google shop.",
   "category"             :  "Website",
   "version"              :  "1.1.0",
