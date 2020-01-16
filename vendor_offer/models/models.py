@@ -1543,10 +1543,10 @@ class VendorPricingExport(models.TransientModel):
         last_yr = fields.Date.to_string(today_date - datetime.timedelta(days=365))
         last_3_months = fields.Date.to_string(today_date - datetime.timedelta(days=90))
         count = 0
-        product_lines_export_pp.append((['ProductNumber', 'ProductDescription', 'Price', 'CFP-Manufacturer', 'TIER','Open Quotations Per Code',
+        product_lines_export_pp.append((['ProductNumber', 'ProductDescription', 'Price', 'CFP-Manufacturer', 'TIER',
                                          'SALES COUNT', 'SALES COUNT YR', 'QTY IN STOCK', 'SALES TOTAL',
                                          'PREMIUM', 'EXP INVENTORY', 'SALES COUNT 90', 'Quantity on Order',
-                                         'Average Aging', 'Inventory Scrapped']))
+                                         'Average Aging', 'Inventory Scrapped','Open Quotations Per Code']))
         cust_location_id = self.env['stock.location'].search([('name', '=', 'Customers')]).id
         company = self.env['res.company'].search([], limit=1, order="id desc")
 
@@ -1822,10 +1822,10 @@ class VendorPricingExport(models.TransientModel):
             # aging_days = self.env.cr.fetchone()
             product_lines_export_pp.append(
                 ([line['sku_code'], line['name'], line['list_price'], line['product_brand_id'],
-                  line['tier'],line['quotations_per_code'],line['product_sales_count'], line['product_sales_count_yrs'],
+                  line['tier'],line['product_sales_count'], line['product_sales_count_yrs'],
                   line['actual_quantity'], line['amount_total_ven_pri'], line['premium'],
                   line['expired_lot_count'], line['product_sales_count_90'], line['qty_on_order'],
-                  line['aging_days'], line['scrap_qty']]))
+                  line['aging_days'], line['scrap_qty'],line['quotations_per_code']]))
 
         print("--- %s seconds ---" % (time.time() - start_time))
 
