@@ -46,6 +46,7 @@
 
                     <field name="product_sku_ref" string="Product SKU"/>
                     <field name="customer_name" string="Customer Name"/>
+                    <field name="account_manager_cust_name" />
                     <field name="order_id" string="Sales Order#"/>
                     <field name="product_id" string="Product Name"/>
                     <field name="delivered_date" string="Delivered Date"/>
@@ -77,6 +78,7 @@
                                 <field name="unit_price_converted"/>
                                 <field name="customer_name"/>
                                 <field name="quotations_per_code"  />
+                                <field name="account_manager_cust_name" />
                             </group>
                             <group>
                                 <field name="qty_delivered_converted" string="Required Quantity"/>

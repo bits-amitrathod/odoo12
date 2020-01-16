@@ -103,6 +103,7 @@
                                 <field name="qe_product_sku_ref"/>
                                 <field name="qe_customer_name"/>
                                 <field name="qe_quotations_per_code"   />
+                                <field name="qe_account_manager_cust_name" />
                             </group>
                             <group>
                                 <!--<field name="qty_delivered_converted" string="Required Quantity"/>-->
