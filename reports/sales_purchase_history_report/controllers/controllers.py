@@ -9,7 +9,7 @@ from odoo.http import request
 from odoo.tools import pycompat, io, re, xlwt
 
 
-class ReportQuotationExport(http.Controller):
+class ReportPrintSalesPurchaseHistory(http.Controller):
 
     def from_data(self, field, rows):
         split_data = []
@@ -34,7 +34,7 @@ class ReportQuotationExport(http.Controller):
 
             for i, fieldname in enumerate(field):
                 worksheet.write(0, i, fieldname)
-                if i == 4:
+                if i == 3:
                     worksheet.col(i).width = 15500  #
                 elif i == 1:
                     worksheet.col(i).width = 10000  #
@@ -77,19 +77,16 @@ class ReportQuotationExport(http.Controller):
         fp.close()
         return data
 
-    @http.route('/web/export/sale_quotation_export_xl', type='http', auth="public")
+    @http.route('/web/export/sale_purchase_history_export', type='http', auth="public")
     @serialize_exception
     def download_document_xl(self,token=1, debug=1):
 
-        str_functions = """	 
+        str_functions_old = """	 
           
-              select pp.default_code as sku,rp.name cust_name,so.name so,pt.name prod_name,so.create_date,
-            round( sol.product_uom_qty, 2) as qty ,um.name as uom,
-            round( sol.price_unit, 2) as price_unit ,round((sol.product_uom_qty * sol.price_unit),2) as total,
-            (select resa.name from res_users rus join res_partner rps on rus.id=rps.account_manager_cust 
-			left join res_partner resa on rus.partner_id = resa.id
-			where rus.id=rp.account_manager_cust limit 1 ) as account_mang,
-			 CASE   WHEN quotations_per_code.quotation_count IS NULL THEN '0' 
+            select pp.default_code as sku,rp.name cust_name,so.name so,pt.name prod_name,sp.date_done,
+            round( sm.product_uom_qty, 2) as qty ,um.name as uom,
+            round( sol.price_unit, 2) as price_unit ,round((sm.product_uom_qty * sol.price_unit),2) as total,
+            CASE   WHEN quotations_per_code.quotation_count IS NULL THEN '0' 
                              ELSE quotations_per_code.quotation_count
                            END     AS quotation_count
             from sale_order_line  sol 
@@ -98,7 +95,10 @@ class ReportQuotationExport(http.Controller):
             left join product_product pp on sol.product_id = pp.id
             left join product_template pt on pp.product_tmpl_id = pt.id
             left join res_partner rp on so.partner_id = rp.id
-            left join uom_uom um on um.id = sol.product_uom        
+            left join stock_picking sp on sp.sale_id=so.id 
+            left join stock_move sm on sm.picking_id=sp.id and  sm.product_id = pp.id
+            left join uom_uom um on um.id = sm.product_uom
+            
             left join (SELECT ppc.id,count(ppc.id) as quotation_count 
                                     from  product_product ppc   
                                        INNER JOIN sale_order_line soli ON soli.product_id=ppc.id 
@@ -107,10 +107,47 @@ class ReportQuotationExport(http.Controller):
                                         where sor.state in ('draft','sent')   
                                            GROUP  BY ppc.id) AS quotations_per_code
                                            on pp.id =  quotations_per_code.id  
-            where so.state in ('draft','draft') and sol.price_unit >= 0         
-            and sol.product_uom_qty > 0
+            
+            where so.state not in ('cancel','void') and sol.price_unit > 0 and sp.state ='done' 
+            and sp.location_dest_id in  (select id from stock_location where name='Customers' order by id desc  limit 1)
+            and sm.product_uom_qty > 0
                             
         """
+
+        str_functions = """	 
+
+                    select pp.default_code as sku,rp.name cust_name,so.name so,pt.name prod_name,sp.date_done,
+                    round( sol.qty_delivered, 2) as qty ,um.name as uom,
+                    round( sol.price_unit, 2) as price_unit ,round((sol.qty_delivered * sol.price_unit),2) as total,
+                    CASE   WHEN quotations_per_code.quotation_count IS NULL THEN '0' 
+                                     ELSE quotations_per_code.quotation_count
+                                   END     AS quotation_count
+                    from sale_order_line  sol 
+                    left join sale_order so on sol.order_id = so.id 
+                    
+                    left join product_product pp on sol.product_id = pp.id
+                    left join product_template pt on pp.product_tmpl_id = pt.id
+                    left join res_partner rp on so.partner_id = rp.id
+                    left join stock_picking sp on sp.sale_id=so.id 
+                  
+                    left join uom_uom um on um.id = sol.product_uom
+                    
+                    left join (SELECT ppc.id,count(ppc.id) as quotation_count 
+                                            from  product_product ppc   
+                                               INNER JOIN sale_order_line soli ON soli.product_id=ppc.id 
+                                               INNER JOIN product_template pti ON  pti.id=ppc.product_tmpl_id 
+                                               INNER JOIN sale_order sor ON sor.id=soli.order_id   
+                                                where sor.state in ('draft','sent')   
+                                                   GROUP  BY ppc.id) AS quotations_per_code
+                                                   on pp.id =  quotations_per_code.id  
+                    
+                    where so.state not in ('cancel','void') and sol.price_unit >= 0 and sp.state ='done' 
+                    and sp.location_dest_id in  (select id from stock_location where name='Customers' order by id desc  limit 1)
+                    and sol.qty_delivered > 0
+
+                """
+
+
         request.env.cr.execute(str_functions)
         order_lines = request.env.cr.dictfetchall()
 
@@ -118,15 +155,15 @@ class ReportQuotationExport(http.Controller):
 
         for line in order_lines:
 
-            records.append([line['sku'], line['cust_name'],  line['account_mang'], line['so'], line['prod_name'],
-                            line['create_date'], line['qty'], line['uom'],line['price_unit'],
+            records.append([line['sku'], line['cust_name'], line['so'], line['prod_name'],
+                            line['date_done'], line['qty'], line['uom'],line['price_unit'],
                             line['total'],line['quotation_count']])
 
         res = request.make_response(
-            self.from_data(["Product SKU", "Customer Name","Account Manager ", "Sales Order#", "Product Name", "Ordered Date"
-                               , "Ordered Qty", "UOM", "Unit Price", "Total","Open Quotations Per Code"],
+            self.from_data(["Product SKU", "Customer Name", "Sales Order#", "Product Name", "Delivered Date"
+                               , "Delivered Qty", "UOM", "Unit Price", "Total","Open Quotations Per Code"],
                            records),
-            headers=[('Content-Disposition', content_disposition('sale_quotation_export' + '.xls')),
+            headers=[('Content-Disposition', content_disposition('sale_purchase_history' + '.xls')),
                      ('Content-Type', 'application/vnd.ms-excel')],
         )
 
