@@ -127,6 +127,9 @@ class DocumentProcessTransientModel(models.TransientModel):
                             updated_qty = self._get_updated_qty(req, template_type, product_template_id)
                             if updated_qty != 0:
                                 req.update(dict(updated_quantity=updated_qty))
+                            # Check Duplicate Product
+                            if len(products) > 1:
+                                req.update(dict(duplicate_product=True))
                             if insert_data_flag:
                                 sps_customer_request = dict(document_id=document_id, customer_id=user_id, create_uid=1, create_date=today_date, write_uid=1, write_date=today_date)
                                 for key in req.keys():
