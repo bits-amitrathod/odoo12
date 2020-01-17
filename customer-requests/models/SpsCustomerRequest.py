@@ -52,6 +52,7 @@ class SpsCustomerRequest(models.Model):
     partial_ordering = fields.Boolean("Allow Partial Ordering")
     partial_UOM = fields.Boolean("Allow Partial UOM")
     available_qty = fields.Integer("Available Quantity")
+    duplicate_product = fields.Boolean('Duplicate Product')
     documents = set()
 
     # Get Customer Requests
