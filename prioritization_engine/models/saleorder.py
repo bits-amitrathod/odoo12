@@ -67,7 +67,8 @@ class SaleOrder(models.Model):
 
     @api.multi
     def action_quotation_send(self):
-        print('saleorder -> action_quotation_send()')
+        _logger.info('saleorder -> action_quotation_send()')
+        _logger.info(self.order_line[0].customer_request_id.document_id.email_from)
         """
         This function opens a window to compose an email, with the edi sale template message loaded by default
         """
@@ -92,6 +93,12 @@ class SaleOrder(models.Model):
             'proforma': self.env.context.get('proforma', False),
             'force_email': True
         }
+        if self.order_line[0] and self.order_line[0].customer_request_id and self.order_line[0].customer_request_id.\
+                document_id and self.order_line[0].customer_request_id.document_id.email_from:
+            ctx['email_from'] = self.order_line[0].customer_request_id.document_id.email_from
+        else:
+            ctx['email_from'] = None
+
         return {
             'type': 'ir.actions.act_window',
             'view_type': 'form',
