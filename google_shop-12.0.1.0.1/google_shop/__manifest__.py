@@ -17,7 +17,7 @@
   "name"                 :  "Google Shop",
   "summary"              :  "Google Shop facilitates you to integrate Google Merchant Account with Odoo. It allows you to send the products of Odoo into google shop.",
   "category"             :  "Website",
-  "version"              :  "1.1.0",
+  "version"              :  "1.0.1",
   "sequence"             :  1,
   "author"               :  "Webkul Software Pvt. Ltd.",
   "license"              :  "Other proprietary",
@@ -28,7 +28,7 @@ Odoo Google Shop
 Google Shop in Odoo
 Google Shop
 Google Merchant Center Integration
-Google Shopping Ads
+Google Shopping Ads 
 Google Shopping Feeds
 Google
 Google Integration with Odoo
@@ -40,7 +40,6 @@ Google Integration""",
                              'website_sale',
                             ],
   "data"                 :  [
-                             'security/google_shop_security.xml',
                              'security/ir.model.access.csv',
                              'views/templates.xml',
                              'views/google_shop_view.xml',

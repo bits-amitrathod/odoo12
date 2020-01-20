@@ -12,7 +12,7 @@
                 <header>
                 <button name="button_authorize_merchant" class="btn-info" type="object" string="Validate Merchant" attrs="{'invisible': [('shop_status', 'in', ['validate','done'])]}"/>
                 <button name="button_export_product" class="btn-info" type="object" string="Export All New Product" attrs="{'invisible': [('shop_status', 'in', ['new'])]}"/>
-                <button name="button_update_product" class="btn-info" type="object" string="Update Existing Product" attrs="{'invisible': [('shop_status', '=', 'new')]}"/>
+                <button name="button_update_product" class="btn-info" type="object" string="Update Exsisting Product" attrs="{'invisible': [('shop_status', '=', 'new')]}"/>
                 <button name="button_delete_product_link" class="btn-danger" type="object" string="Delete All products" attrs="{'invisible': [('shop_status', '!=', 'done')]}"/>
                 <field name="shop_status" widget="statusbar" statusbar_visible="new,validate,done"/>
                 </header>

@@ -23,7 +23,7 @@ class VendorBillDate(models.Model):
             if not self.date_invoice:
                 self.date_invoice = str((max(stock_picking_obj).date_done)) if stock_picking_obj else None      # + timedelta(hours=add_hrs)).date(
 
-        # Setting due_date according to current(updated) invoice_date (not according to current date)
+        # Setting due_date according to current(updated) invoice_date (not according to current date) in Sale module
         if self.payment_term_id:
             pterm = self.payment_term_id
             pterm_list = pterm.with_context(currency_id=self.company_id.currency_id.id).compute(value=1, date_ref=self.date_invoice)[0]

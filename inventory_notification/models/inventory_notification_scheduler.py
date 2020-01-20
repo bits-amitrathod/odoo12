@@ -136,6 +136,7 @@ class InventoryNotificationScheduler(models.TransientModel):
             'subject': "Pick Done For Sale Order # " + picking.sale_id.name,
             'description': "Hi Shipping Team, <br/><br/> " +
                            "<div style=\"text-align: center;width: 100%;\"><strong>The PICK has been completed!</strong></div><br/>" +
+                           "<strong> Salesperson: </strong>" + (sale_order_ref.partner_id.user_id.name or "N/A") + "<br/>" + \
                            "<strong> Please proceed with the pulling and shipping of Sales Order: </strong>" + sale_order_ref.name + "<br/>" + \
                            "<strong> Customer PO #:  </strong>" + (sale_order_ref.client_order_ref or "N/A") + "<br/>" + \
                            "<strong> Carrier Info:  </strong>" + (sale_order_ref.carrier_info or "N/A") + "<br/>" + \

@@ -17,7 +17,7 @@ class ProductMapping(models.Model):
     _name = 'product.mapping'
 
     google_shop_id = fields.Many2one(comodel_name='google.shop',string="Shop Name",required = True)
-    product_id = fields.Many2one(comodel_name='product.product',string="Product Name",required = True)
+    product_id = fields.Many2one(comodel_name='product.template',string="Product Name",required = True)
     update_status = fields.Boolean(string="Updated",default=True)
     product_status = fields.Selection([('updated','Done'),('error','Error')])
     google_product_id = fields.Char(string="Google Product Id")
