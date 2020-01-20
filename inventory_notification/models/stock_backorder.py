@@ -24,7 +24,7 @@ class StockBackorder(models.TransientModel):
                     inv_notification.out_notification_for_sale(picking)
                     _logger.info(" Delivery Orders ********low Stock ***** Start ********")
                     product_ids = self.unique(self.env['stock.move.line'].search([('picking_id', '=', picking.id)]))
-                    inv_notification.process_notify_low_stock_products(product_ids)
+                    # inv_notification.process_notify_low_stock_products(product_ids)
                     _logger.info(" Delivery Orders ********low Stock ***** End ********")
                     _logger.info(" Delivery Orders ******** backorder ***** End ********")
 
@@ -68,7 +68,7 @@ class StockBackorder(models.TransientModel):
                     inv_notification.out_notification_for_sale(picking)
                     _logger.info(" Delivery Orders ********low Stock ***** Start ********")
                     product_ids = self.unique(self.env['stock.move.line'].search([('picking_id', '=', picking.id)]))
-                    inv_notification.process_notify_low_stock_products(product_ids)
+                    # inv_notification.process_notify_low_stock_products(product_ids)
                     _logger.info(" Delivery Orders ********low Stock ***** End ********")
                     _logger.info(" Delivery Orders ******** cancel_backorder ***** End********")
             # elif picking.purchase_id:

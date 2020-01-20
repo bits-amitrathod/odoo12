@@ -2,6 +2,10 @@
 from typing import Dict, Any
 
 from odoo import models, fields, api
+import logging
+from odoo.addons.http_routing.models.ir_http import slugify, _guess_mimetype
+
+_logger = logging.getLogger(__name__)
 
 class website_cstm(models.Model):
     _name = 'website_cstm.product_instock_notify'
@@ -52,3 +56,80 @@ class website_product_download_catelog_cstm(models.Model):
         if vals['status'] == 'active':
             self.env.cr.execute(
                 "UPDATE website_cstm_product_download_catelog SET  status='inactive' WHERE status ='active'")
+
+
+
+class Website(models.Model):
+    _inherit = "website"
+
+    @api.model
+    def new_page_test(self, name=False, add_menu=False, template='website.default_page', ispage=True, namespace=None):
+        """ Create a new website page, and assign it a xmlid based on the given one
+            :param name : the name of the page
+            :param template : potential xml_id of the page to create
+            :param namespace : module part of the xml_id if none, the template module name is used
+        """
+        if namespace:
+            template_module = namespace
+        else:
+            template_module, _ = template.split('.')
+        page_url = '/' + slugify(name, max_length=1024, path=True)
+        page_url = self.get_unique_path(page_url)
+        page_key = slugify(name)
+        result = dict({'url': page_url, 'view_id': False})
+
+        if not name:
+            name = 'Home'
+            page_key = 'home'
+
+        template_record = self.env.ref(template)
+        website_id = self._context.get('website_id')
+        key = self.get_unique_key(page_key, template_module)
+        view = template_record.copy({'website_id': website_id, 'key': key})
+
+        view.with_context(lang=None).write({
+            'arch': template_record.arch.replace(template, key),
+            'name': name,
+        })
+
+        if view.arch_fs:
+            view.arch_fs = False
+
+        website = self.get_current_website()
+        if ispage:
+            page = self.env['website.page'].create({
+                'url': page_url,
+                'website_id': website.id,  # remove it if only one webiste or not?
+                'view_id': view.id,
+            })
+            result['view_id'] = view.id
+
+        _logger.info('------- start -----------')
+        _logger.info('template_record :')
+        _logger.info(template_record.id)
+        _logger.info('-----------------')
+        _logger.info('name :')
+        _logger.info(name)
+        _logger.info('-----------------')
+        _logger.info('key :')
+        _logger.info(key)
+        _logger.info('-----------------')
+        _logger.info('website_id :')
+        _logger.info(website_id)
+        _logger.info('-----------------')
+        _logger.info('view :')
+        _logger.info(view.id)
+        _logger.info('-----------------')
+        _logger.info('result :')
+        _logger.info(result)
+
+        print('------- end  -----------')
+        if add_menu:
+            self.env['website.menu'].create({
+                'name': name,
+                'url': page_url,
+                'parent_id': website.menu_id.id,
+                'page_id': page.id,
+                'website_id': website.id,
+            })
+        return result
