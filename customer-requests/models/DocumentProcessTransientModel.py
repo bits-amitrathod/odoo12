@@ -46,7 +46,7 @@ class DocumentProcessTransientModel(models.TransientModel):
         mappings, template_type = DocumentProcessTransientModel._get_column_mappings(
             mapping_field_list,
             templates_list,
-            uploaded_file_path, template_type_from_user)
+            uploaded_file_path, template_type_from_user,file_name)
         if len(mappings) == 0:
             if not template_type:
                 _logger.info('-------Template mismatch------------')
@@ -127,6 +127,9 @@ class DocumentProcessTransientModel(models.TransientModel):
                             updated_qty = self._get_updated_qty(req, template_type, product_template_id)
                             if updated_qty != 0:
                                 req.update(dict(updated_quantity=updated_qty))
+                            # Check Duplicate Product
+                            if len(products) > 1:
+                                req.update(dict(duplicate_product=True))
                             if insert_data_flag:
                                 sps_customer_request = dict(document_id=document_id, customer_id=user_id, create_uid=1, create_date=today_date, write_uid=1, write_date=today_date)
                                 for key in req.keys():
@@ -203,10 +206,14 @@ class DocumentProcessTransientModel(models.TransientModel):
             return 0
 
     @staticmethod
-    def _get_column_mappings(mapping_field_list, templates_list, file_path, template_type_from_user):
+    def _get_column_mappings(mapping_field_list, templates_list, file_path, template_type_from_user,file_name=None):
+
+        # irattachment_obj = self.env['ir.attachment']
         column_mappings = []
         template_type = None
+        columns = None
         matched_templates = {}
+        columns = None
         for customer_template in templates_list:
             mapped_columns = []
             for mapping_field in mapping_field_list:
@@ -215,12 +222,16 @@ class DocumentProcessTransientModel(models.TransientModel):
                         dict(template_field=customer_template[mapping_field], mapping_field=mapping_field))
             selected_columns = [mapped_column['template_field'] for mapped_column in mapped_columns]
             template_column_list = selected_columns  # + non_selected_columns
-            file_extension = file_path[file_path.rindex('.') + 1:]
-            if file_extension == 'xls' or file_extension == 'xlsx':
-                book = xlrd.open_workbook(file_path)
-                columns = DocumentProcessTransientModel._read_xls_book(book)[0]
-            elif file_extension == 'csv':
-                columns = DocumentProcessTransientModel._read_columns_from_csv(file_path)
+            file_extension = file_name[file_name.rindex('.') + 1:]
+            _logger.info('File Extension : %r', file_extension)
+            if file_name:
+                file_extension = file_name[file_name.rindex('.') + 1:]
+                if file_extension == 'xls' or file_extension == 'xlsx':
+                    book = xlrd.open_workbook(file_path)
+                    columns = DocumentProcessTransientModel._read_xls_book(book)[0]
+
+                elif file_extension == 'csv':
+                    columns = DocumentProcessTransientModel._read_columns_from_csv(file_path)
             try:
                 if all(elem in columns for elem in template_column_list):
                     column_mappings = mapped_columns

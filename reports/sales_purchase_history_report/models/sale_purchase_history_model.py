@@ -21,6 +21,9 @@ class SalePurchaseHistory(models.Model):
     total_price_converted = fields.Monetary("Total", currency_field='currency_id', store=False)
     product_uom_converted = fields.Many2one('uom.uom', 'Unit of Measure', currency_field='currency_id', store=False)
     account_manager_cust_name = fields.Char(string="Account Manager", compute='_compare_data', store=False)
+    quotations_per_code = fields.Integer(string='Open Quotations Per Code',
+                                         compute='_compare_data',
+                                         readonly=True, store=False)
     # user_id = fields.Many2one('res.users', string='User', store=False)
     # currency_id = fields.Many2one("res.currency", string="Currency",readonly=True)
     # product_uom = fields.Char(string='UOM', store=False)
@@ -31,6 +34,9 @@ class SalePurchaseHistory(models.Model):
             sale_order_line.customer_name=sale_order_line.order_id.partner_id.name
             sale_order_line.account_manager_cust_name = sale_order_line.order_id.partner_id.account_manager_cust.name
             sale_order_line.product_sku_ref=sale_order_line.product_id.product_tmpl_id.sku_code
+            sale_order_line_list = self.env['sale.order.line'].search(
+                [('product_id', '=', sale_order_line.product_id.id), ('state', 'in', ('draft', 'sent'))])
+            sale_order_line.quotations_per_code = len(sale_order_line_list)
             if sale_order_line.order_id.state != 'cancel':
                 stock_location=self.env['stock.location'].search([('name', '=', 'Customers')])
                 if stock_location:
@@ -39,9 +45,10 @@ class SalePurchaseHistory(models.Model):
                         for picking in stock_picking:
                             for move_line in picking.move_lines:
                                 if move_line.product_id.id == sale_order_line.product_id.id:
-                                    sale_order_line.qty_delivered_converted += move_line.product_uom_qty
+                                    #sale_order_line.qty_delivered_converted += move_line.product_uom_qty
+                                    sale_order_line.qty_delivered_converted = sale_order_line.qty_delivered
                                     sale_order_line.unit_price_converted = sale_order_line.price_unit
-                                    sale_order_line.total_price_converted += (sale_order_line.price_unit * move_line.product_uom_qty)
+                                    sale_order_line.total_price_converted = (sale_order_line.price_unit * sale_order_line.qty_delivered)
                                     sale_order_line.product_uom_converted = move_line.product_uom
                             if picking.date_done:
                                sale_order_line.delivered_date = picking.date_done
@@ -49,3 +56,16 @@ class SalePurchaseHistory(models.Model):
                                 sale_order_line.delivered_date = None
                     else:
                         sale_order_line.delivered_date = None
+
+
+class SalePurchaseHistoryExport(models.TransientModel):
+    _name = 'salepuchasehistory.export'
+    _description = 'salepuchasehistory export'
+
+    def download_excel_sale_puchase_history(self):
+
+        return {
+            'type': 'ir.actions.act_url',
+            'url': '/web/export/sale_purchase_history_export',
+            'target': 'new'
+        }

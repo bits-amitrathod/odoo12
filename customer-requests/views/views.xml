@@ -25,7 +25,8 @@
             <field name="mode">primary</field>
             <field name="arch" type="xml">
                 <tree create="false">
-                    <field name="product_id"/>
+                    <field name="duplicate_product" invisible="1"/>
+                    <field name="product_id" options='{"fg_color": "red:duplicate_product==True"}'/>
                     <field name="customer_sku" string="SKU / Catalog No"/>
                     <field name="qty_to_show" string="Quantity"/>
                     <!--<field name="required_quantity"/>-->
@@ -58,6 +59,7 @@
                     </group>
                     <group>
                         <field name="customer_request_logs"/>
+                        <field name="duplicate_product" attrs="{'invisible':[('duplicate_product', '==', False)]}"/>
                     </group>
                 </form>
             </field>
