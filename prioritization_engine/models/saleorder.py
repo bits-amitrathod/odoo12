@@ -1,7 +1,6 @@
 import logging
 
 import odoo
-from decorator import append
 from odoo import models, fields,  SUPERUSER_ID,api, _
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools.float_utils import float_compare, float_is_zero
@@ -67,8 +66,7 @@ class SaleOrder(models.Model):
 
     @api.multi
     def action_quotation_send(self):
-        _logger.info('saleorder -> action_quotation_send()')
-        _logger.info(self.order_line[0].customer_request_id.document_id.email_from)
+        print('saleorder -> action_quotation_send()')
         """
         This function opens a window to compose an email, with the edi sale template message loaded by default
         """
@@ -93,12 +91,6 @@ class SaleOrder(models.Model):
             'proforma': self.env.context.get('proforma', False),
             'force_email': True
         }
-        if self.order_line[0] and self.order_line[0].customer_request_id and self.order_line[0].customer_request_id.\
-                document_id and self.order_line[0].customer_request_id.document_id.email_from:
-            ctx['email_from'] = self.order_line[0].customer_request_id.document_id.email_from
-        else:
-            ctx['email_from'] = None
-
         return {
             'type': 'ir.actions.act_window',
             'view_type': 'form',
@@ -136,7 +128,6 @@ class SaleOrder(models.Model):
             auth_param = url_encode(self.partner_id.signup_get_auth_param()[self.partner_id.id])
             return self.get_portal_url(query_string='&%s' % auth_param)
         return super(SaleOrder, self)._get_share_url(redirect, signup_partner, pid)
-
 
 class SaleOrderLinePrioritization(models.Model):
     _inherit = "sale.order.line"
@@ -394,87 +385,3 @@ class SaleOrderReport(models.Model):
     _inherit = "sale.report"
 
     req_no = fields.Char(string='Requisition Number')
-
-
-class SaleOrderLine(models.Model):
-    _inherit = 'sale.order.line'
-
-    @api.multi
-    def _action_launch_stock_rule(self):
-        """
-        Launch procurement group run method with required/custom fields genrated by a
-        sale order line. procurement group will launch '_run_pull', '_run_buy' or '_run_manufacture'
-        depending on the sale order line product rule.
-        """
-        precision = self.env['decimal.precision'].precision_get('Product Unit of Measure')
-        errors = []
-        location = None
-        route_id = None
-        for line in self:
-            if line.state != 'sale' or not line.product_id.type in ('consu', 'product'):
-                continue
-            qty = line._get_qty_procurement()
-            if float_compare(qty, line.product_uom_qty, precision_digits=precision) >= 0:
-                continue
-
-            group_id = line.order_id.procurement_group_id
-            if not group_id:
-                group_id = self.env['procurement.group'].create({
-                    'name': line.order_id.name, 'move_type': line.order_id.picking_policy,
-                    'sale_id': line.order_id.id,
-                    'partner_id': line.order_id.partner_shipping_id.id,
-                })
-                line.order_id.procurement_group_id = group_id
-            else:
-                # In case the procurement group is already created and the order was
-                # cancelled, we need to update certain values of the group.
-                updated_vals = {}
-                if group_id.partner_id != line.order_id.partner_shipping_id:
-                    updated_vals.update({'partner_id': line.order_id.partner_shipping_id.id})
-                if group_id.move_type != line.order_id.picking_policy:
-                    updated_vals.update({'move_type': line.order_id.picking_policy})
-                if updated_vals:
-                    group_id.write(updated_vals)
-
-            values = line._prepare_procurement_values(group_id=group_id)
-            product_qty = line.product_uom_qty - qty
-
-            procurement_uom = line.product_uom
-            quant_uom = line.product_id.uom_id
-            get_param = self.env['ir.config_parameter'].sudo().get_param
-            if procurement_uom.id != quant_uom.id and get_param('stock.propagate_uom') != '1':
-                product_qty = line.product_uom._compute_quantity(product_qty, quant_uom, rounding_method='HALF-UP')
-                procurement_uom = quant_uom
-
-            try:
-                if line.order_id.team_id.team_type == 'engine':
-                    if line.order_id.picking_ids:
-                        if location:
-                            if location.id != 41 and location.location_id.id:
-                                location = self.env['stock.location'].search([('id', '=', location.id)])
-                                route_id = self.env['stock.location.route'].search([('id', '=', 8)])
-                        else:
-                            if line.order_id.picking_ids[len(line.order_id.picking_ids)-1].state == 'cancel':
-                                location = self.env['stock.location'].search([('id', '=', 41)])
-                                route_id = self.env['stock.location.route'].search([('id', '=', 7)])
-                            else:
-                                location = self.env['stock.location'].search([('id', '=', 9)])
-                                route_id = self.env['stock.location.route'].search([('id', '=', 8)])
-                    else:
-                        location = self.env['stock.location'].search([('id', '=', 41)])
-                        route_id = self.env['stock.location.route'].search([('id', '=', 7)])
-
-                    if route_id:
-                        values['route_ids'] = route_id
-                        self.env['procurement.group'].run(line.product_id, product_qty, procurement_uom, location,
-                                                      line.name, line.order_id.name, values)
-                else:
-                    self.env['procurement.group'].run(line.product_id, product_qty, procurement_uom,
-                                                       line.order_id.partner_shipping_id.property_stock_customer,
-                                                       line.name, line.order_id.name, values)
-
-            except UserError as error:
-                errors.append(error.name)
-        if errors:
-            raise UserError('\n'.join(errors))
-        return True
