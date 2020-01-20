@@ -4,7 +4,7 @@
 <!-- License URL : https://store.webkul.com/license.html/ -->
 <odoo>
     <record model="ir.ui.view" id="field_mappning_form">
-        <field name="name">Field Mapping Form</field>
+        <field name="name">Field Mappning Form</field>
         <field name="model">field.mappning</field>
         <field name="type">form</field>
         <field name="arch" type="xml">
@@ -41,7 +41,7 @@
     </record>
 
     <record model="ir.ui.view" id="field_mappning_tree">
-        <field name="name">Field Mapping Tree</field>
+        <field name="name">Field Mappning Tree</field>
         <field name="model">field.mappning</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
@@ -53,7 +53,7 @@
     </record>
 
     <record model="ir.actions.act_window" id="field_mappning_action">
-        <field name="name">Field Mapping</field>
+        <field name="name">Field Mappning</field>
         <field name="res_model">field.mappning</field>
         <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
