@@ -20,17 +20,23 @@ class VendorBillDate(models.Model):
                 # Populates Invoice_Date on pageload (onchange()) at the time of creating invoice of sale_order in Sale module
                 stock_picking_obj = self.env['stock.picking'].search( [('origin', '=', self.origin), ('state', '=', 'done'), ('picking_type_id', '=', 5)])
                 # add_hrs = 5
-            if not self.date_invoice:
-                self.date_invoice = str((max(stock_picking_obj).date_done)) if stock_picking_obj else None      # + timedelta(hours=add_hrs)).date(
 
-        # Setting due_date according to current(updated) invoice_date (not according to current date) in Sale module
+            
+            if not self.date_invoice:
+                self.date_invoice = str((max(stock_picking_obj).date_done)) if stock_picking_obj else None # + timedelta(hours=add_hrs)).date(
+
+        # Setting due_date according to current(updated) invoice_date (not according to current date)
+
         if self.payment_term_id:
             pterm = self.payment_term_id
             pterm_list = pterm.with_context(currency_id=self.company_id.currency_id.id).compute(value=1, date_ref=self.date_invoice)[0]
             self.date_due = max(line[0] for line in pterm_list)
-        elif self.date_due: # and (self.date_invoice > self.date_due)
+
+        elif self.date_due: #and (self.date_invoice > self.date_due):
             if self.date_invoice > self.date_due:
                 self.date_due = self.date_invoice
+
+
 
     # Populates Due_Date at the time of Saving bill of purchase order in Purchase module when click on 'Save' button
     @api.model
