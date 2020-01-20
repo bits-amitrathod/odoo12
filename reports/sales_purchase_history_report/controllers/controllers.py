@@ -34,7 +34,7 @@ class ReportPrintSalesPurchaseHistory(http.Controller):
 
             for i, fieldname in enumerate(field):
                 worksheet.write(0, i, fieldname)
-                if i == 3:
+                if i == 4:
                     worksheet.col(i).width = 15500  #
                 elif i == 1:
                     worksheet.col(i).width = 10000  #
@@ -121,7 +121,10 @@ class ReportPrintSalesPurchaseHistory(http.Controller):
                     round( sol.price_unit, 2) as price_unit ,round((sol.qty_delivered * sol.price_unit),2) as total,
                     CASE   WHEN quotations_per_code.quotation_count IS NULL THEN '0' 
                                      ELSE quotations_per_code.quotation_count
-                                   END     AS quotation_count
+                                   END     AS quotation_count,
+                     (select resa.name from res_users rus join res_partner rps on rus.id=rps.account_manager_cust 
+			left join res_partner resa on rus.partner_id = resa.id
+			where rus.id=rp.account_manager_cust limit 1 ) as account_mang
                     from sale_order_line  sol 
                     left join sale_order so on sol.order_id = so.id 
                     
@@ -142,8 +145,8 @@ class ReportPrintSalesPurchaseHistory(http.Controller):
                                                    on pp.id =  quotations_per_code.id  
                     
                     where so.state not in ('cancel','void') and sol.price_unit >= 0 and sp.state ='done' 
-                    and sp.location_dest_id in  (select id from stock_location where name='Customers' order by id desc  limit 1)
-                    and sol.qty_delivered > 0
+                    and sp.location_dest_id in  (select id from stock_location where name='Customers' and active =true
+                     order by id desc )   and sol.qty_delivered > 0 and pp.active =true and pt.active =true
 
                 """
 
@@ -155,12 +158,12 @@ class ReportPrintSalesPurchaseHistory(http.Controller):
 
         for line in order_lines:
 
-            records.append([line['sku'], line['cust_name'], line['so'], line['prod_name'],
+            records.append([line['sku'], line['cust_name'],line['account_mang'], line['so'], line['prod_name'],
                             line['date_done'], line['qty'], line['uom'],line['price_unit'],
                             line['total'],line['quotation_count']])
 
         res = request.make_response(
-            self.from_data(["Product SKU", "Customer Name", "Sales Order#", "Product Name", "Delivered Date"
+            self.from_data(["Product SKU", "Customer Name","Account Manager ", "Sales Order#", "Product Name", "Delivered Date"
                                , "Delivered Qty", "UOM", "Unit Price", "Total","Open Quotations Per Code"],
                            records),
             headers=[('Content-Disposition', content_disposition('sale_purchase_history' + '.xls')),
