@@ -399,9 +399,7 @@ class PrioritizationEngine(models.TransientModel):
                     discount = sale_order_line.get_discount()
 
                     if discount and discount > 0.0:
-                        sale_order_line.write({'discount': discount + 5.0})
-                    else:
-                        sale_order_line.write({'discount': 5.0})
+                        sale_order_line.write({'discount': discount})
 
                     if allocated_product['cust_req_status'] == 'Fulfilled':
                         self.update_customer_request_status(allocated_product['customer_request_id'], 'Fulfilled', 'Product allocated.')
