@@ -39,7 +39,8 @@ class sale_order(models.Model):
             for line in order.order_line:
                 amount_untaxed += line.price_subtotal
                 amount_tax += line.price_tax
-            if self.team_id.team_type == 'engine':
+
+            if order.team_id.team_type == 'engine':
                 stockhawk_discount = (amount_untaxed * stockhawk_additional_discount) / 100
                 amount_untaxed_with_discount = amount_untaxed - stockhawk_discount
 
