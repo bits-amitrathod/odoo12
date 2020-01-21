@@ -47,7 +47,7 @@ class GoogleMerchantShop(models.Model):
     target_country = fields.Many2one(string="Target Country",comodel_name="res.country",required=True,help="Select the country in which you want to sell the products")
     product_pricelist_id = fields.Many2one(comodel_name="product.pricelist",string="Product Pricelist",required=True,help="select the pricelist according to which your product price will get selected",default=_default_pricelist)
     field_mapping_id = fields.Many2one(comodel_name="field.mappning",string="Field Mapping",domain=[('active','=',True)],required=True)
-    product_ids_rel = fields.Many2many(comodel_name='product.template', relation='merchant_shop_product_rel', column1='google_id', column2='product_id',domain=[("sale_ok", "=", True),("website_published","=",True)], string="Products")
+    product_ids_rel = fields.Many2many(comodel_name='product.product', relation='merchant_shop_product_rel', column1='google_id', column2='product_id',domain=[("sale_ok", "=", True),("website_published","=",True)], string="Products")
     shop_url=fields.Char(name="Shop URL",help="Write your domain name of your website",related="oauth_id.domain_uri",readonly=True)
     mapping_count=fields.Integer(srting="Total Mappings",compute="_mapping_count")
 
@@ -80,7 +80,7 @@ class GoogleMerchantShop(models.Model):
                 if limit == 0:
                     product_ids = []
                 else:
-                    product_ids = self.env["product.template"].search(final_domain,limit=limit).ids
+                    product_ids = self.env["product.product"].search(final_domain,limit=limit).ids
             except:
                 return self.env['wk.wizard.message'].genrated_message("Enter Domain Properly",name='Message')
         else:
@@ -100,6 +100,7 @@ class GoogleMerchantShop(models.Model):
 
         # base_url=self.env['ir.config_parameter'].search_read([('key','=','web.base.url')],['value'])[0].get('value')
         base_url=self.shop_url
+        base_url=base_url and base_url.endswith("/") and base_url[:-1] or base_url
 
 
 
@@ -165,6 +166,7 @@ class GoogleMerchantShop(models.Model):
         updated_product_detail =self.with_context(context).get_product_detail(field_mapping_lines.ids,ids=updated_products_product_ids)
         updated_product_shop_link = [(x[0],y) for x in updated_products_mapped_ids for y in updated_product_detail if (x[1] == y.get('id'))]
         base_url=self.shop_url
+        base_url=base_url and base_url.endswith("/") and base_url[:-1] or base_url
 
 
         for i in updated_product_shop_link:
@@ -217,7 +219,7 @@ class GoogleMerchantShop(models.Model):
         old_session= self.env['website'].get_current_pricelist().id
         _logger.info("__________PL__________%r",old_session)
         request.session['website_sale_current_pl'] = self.product_pricelist_id.id
-        product_detail=self.env['product.template'].with_context(context).search_read([('id','in',ids)],field_mapping_model_name)
+        product_detail=self.env['product.product'].with_context(context).search_read([('id','in',ids)],field_mapping_model_name)
         request.session['website_sale_current_pl'] = old_session
         return product_detail
 
@@ -287,11 +289,12 @@ class GoogleMerchantShop(models.Model):
     def get_mapped_set(self,product_detail,field_mapping_lines,base_url="http://localhost"):
         # pass
 
-        prod_temp_ref=self.env['product.template']
+        prod_temp_ref=self.env['product.product']
         d={}
         d['ID'] = str(product_detail.get('id'))
+        d['template_id'] = str(product_detail.get('product_tmpl_id')[0])
         d['BASE_URL'] = base_url
-        d['SLUG'] = slug(prod_temp_ref.search([('id','=',product_detail.get('id'))],limit=1))
+        d['SLUG'] = slug(prod_temp_ref.search([('id','=',d['template_id'])],limit=1))
         d['CURRENCY'] = self.currency_id.name
         d['targetCountry'] = self.target_country.code
         d['channel'] = self.channel
@@ -329,7 +332,7 @@ class GoogleMerchantShop(models.Model):
 
             return product_url
         elif (key == 'imageLink'):
-            image_url = d.get('BASE_URL')+"/web/image/product.template/"+d.get('ID')+"/image"
+            image_url = d.get('BASE_URL')+"/web/image/product.product/"+d.get('ID')+"/image"
 
             return image_url
         elif (key == 'salePrice'):
