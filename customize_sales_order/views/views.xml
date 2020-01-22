@@ -87,5 +87,20 @@
                 </data>
             </field>
       </record>
+      <record id="view_picking_form_mark_all_button" model="ir.ui.view">
+            <field name="name">stock.picking.form.mark.all.button</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="/form/sheet/notebook/page[@name='note']" position="replace">
+                        <page string="Note" name="note">
+                            <field name="note_readonly_flag" invisible="1"/>
+                            <field name="note" string="Note" placeholder="Add an internal note that will be printed on the Picking Operations sheet" attrs="{'readonly':[('note_readonly_flag','=',1)]}"/>
+                        </page>
+                    </xpath>
+                </data>
+            </field>
+        </record>
   </data>
 </odoo>

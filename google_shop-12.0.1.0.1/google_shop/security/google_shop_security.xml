@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+  <data >
+      <record id="google_shop_category" model="ir.module.category">
+        <field name="name">Google Shop</field>
+      </record>
+      <record id="google_shop_user_group" model="res.groups">
+        <field name="name">User</field>
+        <field name="category_id" ref="google_shop_category"/>
+      </record>
+      <record id="google_shop_manager_group" model="res.groups">
+        <field name="name">Manager</field>
+        <field name="category_id" ref="google_shop_category" />
+        <field name="implied_ids" eval="[(4,ref('google_shop_user_group'))]" />
+        <field name="users" eval="[(4,ref('base.user_root')),(4,ref('base.user_admin'))]" />
+      </record>
+    </data>
+</odoo>

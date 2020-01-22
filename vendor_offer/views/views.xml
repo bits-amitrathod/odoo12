@@ -704,7 +704,6 @@
                     <field name="list_price" string="Price"/>
                     <field name="product_brand_id" string="CFP-Manufacturer"/>
                     <field name="tier" string="TIER"/>
-                    <field name="quotations_per_code"/>
                     <field name="product_sales_count"/>
                     <field name="product_sales_count_yrs"/>
                     <field name="actual_quantity"/>
@@ -716,6 +715,7 @@
                     <field name="incoming_qty" string="Quantity On Order"/>
                     <field name="average_aging"/>
                     <field name="inventory_scraped_yr"/>
+                    <field name="quotations_per_code"/>
                 </tree>
             </field>
         </record>
@@ -723,6 +723,7 @@
         <record id="vendor_offer.action_vendor_pricing" model="ir.actions.act_window">
             <field name="name">Vendor Pricing</field>
             <field name="key">action</field>
+            <field name="domain">[('type','=','product')]</field>
             <field name="type">ir.actions.act_window</field>
             <field name="limit" eval="10"/>
             <field name="res_model">product.product</field>

@@ -50,7 +50,7 @@
         <field name="model">product.mapping</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-            <tree decoration-danger="product_status=='error'" decoration-info="product_status=='updated'" create="false" edit="false">
+            <tree decoration-danger="product_status=='error'" decoration-info="product_status=='updated'">
                 <field name="product_status" invisible="1"/>
                 <field name="google_shop_id" />
                 <field name="product_id" />

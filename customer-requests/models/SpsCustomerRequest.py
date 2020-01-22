@@ -52,7 +52,7 @@ class SpsCustomerRequest(models.Model):
     partial_ordering = fields.Boolean("Allow Partial Ordering")
     partial_UOM = fields.Boolean("Allow Partial UOM")
     available_qty = fields.Integer("Available Quantity")
-    document_id_set = set()
+    duplicate_product = fields.Boolean('Duplicate Product')
     documents = set()
 
     # Get Customer Requests
@@ -87,11 +87,11 @@ class SpsCustomerRequest(models.Model):
                                                                               ('status', 'in', ('Inprocess', 'Incomplete', 'Unprocessed','InCoolingPeriod', 'New', 'Partial'))],
                                                                              order="priority asc")
 
-            self.process_customer_requests(sps_customer_requests)
+            self.process_customer_requests(sps_customer_requests, tuple(self.documents))
 
-    def process_customer_requests(self, sps_customer_requests):
+    def process_customer_requests(self, sps_customer_requests, document_ids):
         _logger.info('In process_customer_requests')
-        self.env['prioritization.engine.model'].allocate_product_by_priority(sps_customer_requests)
+        self.env['prioritization.engine.model'].allocate_product_by_priority(sps_customer_requests, document_ids)
 
     # check customer level or global level setting for product.
     def get_settings_object(self, customer_id, product_id):

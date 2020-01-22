@@ -125,7 +125,6 @@ class WebsiteSale(http.Controller):
 
         return request.render("website_quote_ext.portal_order_page_ex", values)
 
-
     @http.route(['/my/orders/<int:order_id>/accepts'], type='http', auth="public", methods=['POST'], website=True)
     def accepts(self, order_id, access_token=None, **post):
         try:
@@ -155,13 +154,13 @@ class WebsiteSale(http.Controller):
             Order.action_cancel()
             Order.action_draft()
             Order.action_confirm()
-            picking = request.env['stock.picking'].sudo().search([('sale_id', '=', Order.id), ('picking_type_id', '=', 8), ('state', '=', 'assigned')])
+            picking = request.env['stock.picking'].sudo().search([('sale_id', '=', Order.id), ('picking_type_id.name', '=', 'product_reserve'), ('state', '=', 'assigned')])
             if picking:
                 picking.action_button_mark_all_done()
                 picking.button_validate()
                 Order.action_confirm()
         else:
-            picking = request.env['stock.picking'].sudo().search([('sale_id', '=', Order.id), ('picking_type_id', '=', 8), ('state', '=', 'assigned')])
+            picking = request.env['stock.picking'].sudo().search([('sale_id', '=', Order.id), ('picking_type_id.name', '=', 'product_reserve'), ('state', '=', 'assigned')])
             if picking:
                 picking.action_button_mark_all_done()
                 picking.button_validate()
@@ -194,7 +193,6 @@ class WebsiteSale(http.Controller):
                 request.env['mail.message'].sudo().create(values)
 
         return request.redirect(order_sudo.get_portal_url(query_string=query_string))
-
 
     @http.route(['/my/orders/<int:order_id>/declines'], type='http', auth="public", methods=['POST'], website=True)
     def decline(self, order_id, access_token=None, **post):
@@ -345,7 +343,7 @@ class CustomerPortal(CustomerPortal):
         })
         return request.render("website_quote_ext.portal_my_vendor_offers", values)
 
-    @http.route(['/my/vendor/<int:order_id>'], type='http', auth="user", website=True)
+    @http.route(['/my/vendor/<int:order_id>'], type='http', auth="public", website=True)
     def portal_my_vendor_offer(self, order_id=None, **kw):
         order = request.env['purchase.order'].browse(order_id)
         try:
@@ -358,4 +356,7 @@ class CustomerPortal(CustomerPortal):
             'order': order.sudo(),
         }
         #values.update(get_records_pager(history, order))
-        return request.render("website_quote_ext.portal_my_vendor_offer", values)
+        if order.state == 'purchase':
+            return request.redirect('/my')
+        else:
+            return request.render("website_quote_ext.portal_my_vendor_offer", values)

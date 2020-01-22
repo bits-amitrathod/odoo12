@@ -67,6 +67,7 @@ except ImportError:
 
 all_field_import = 'all_field_import'
 
+SUPERUSER_ID_INFO = 2
 
 class VendorOffer(models.Model):
     _description = "Vendor Offer"
@@ -161,6 +162,15 @@ class VendorOffer(models.Model):
 
     import_type_ven = fields.Char(string='Import Type')
     arrival_date_grp = fields.Datetime(string="Arrival Date")
+
+    super_user_email = fields.Char(compute='_email_info_user')
+
+    @api.onchange('super_user_email')
+    @api.depends('super_user_email')
+    def _email_info_user(self):
+        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
+        temp = self.offer_type
+        self.super_user_email = super_user.email
 
     @api.multi
     def _compute_show_validate(self):
@@ -334,15 +344,23 @@ class VendorOffer(models.Model):
                 amount_untaxed = amount_tax = price_total = 0.0
                 rt_price_tax = product_retail = rt_price_total = 0.0
                 billed_retail_untaxed = billed_offer_untaxed = 0.0
-
+                cash_amount_untaxed = 0.0
                 for line in order.order_line:
                     amount_tax += line.price_tax
                     rt_price_tax += line.rt_price_tax
                     rt_price_total += line.rt_price_total
                     product_retail += line.product_retail
+                    amount_untaxed += line.price_subtotal
+                    cash_amount_untaxed += line.price_subtotal
                     billed_retail_untaxed += line.billed_product_retail_price
                     billed_offer_untaxed += line.billed_product_offer_price
-
+                    credit_amount_untaxed = 0
+                    credit_amount_total = 0
+                    if product_retail > 0:
+                        per_val = round((amount_untaxed / product_retail) * 100, 2)
+                        per_val = per_val + 10
+                        credit_amount_untaxed = product_retail * (per_val / 100)
+                        credit_amount_total = credit_amount_untaxed + amount_tax
                     order.update({
                         'amount_tax': amount_tax,
                         'rt_price_subtotal_amt': product_retail,
@@ -351,7 +369,11 @@ class VendorOffer(models.Model):
                         'billed_retail_untaxed': billed_retail_untaxed,
                         'billed_offer_untaxed': billed_offer_untaxed,
                         'billed_retail_total': billed_retail_untaxed + amount_tax,
-                        'billed_offer_total': billed_offer_untaxed + amount_tax
+                        'billed_offer_total': billed_offer_untaxed + amount_tax,
+                        'credit_amount_untaxed': math.floor(round(credit_amount_untaxed, 2)),
+                        'credit_amount_total': math.floor(round(credit_amount_total, 2)),
+                        'cash_amount_untaxed': cash_amount_untaxed,
+                        'cash_amount_total': cash_amount_untaxed + amount_tax,
                     })
 
                 super(VendorOffer, self)._amount_all()
@@ -362,6 +384,7 @@ class VendorOffer(models.Model):
         This function opens a window to compose an email, with the edi purchase template message loaded by default
         '''
         temp_payment_term = self.payment_term_id.name
+        test = self.super_user_email
         if (temp_payment_term == False):
             temp_payment_term = '0 Days '
         self.ensure_one()
@@ -469,14 +492,11 @@ class VendorOffer(models.Model):
             self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
 
     @api.multi
-    def action_button_confirm_api(self, product_id):
+    def action_button_confirm_api_cash(self, product_id):
         # purchase = self.env['purchase.order'].search([('id', '=', product_id)])
-
-        if self.offer_type:
-            if self.offer_type == 'credit':
-                self.amount_untaxed = self.credit_amount_untaxed
-                self.amount_total = self.credit_amount_total
-
+        self.amount_untaxed = math.floor(round(self.cash_amount_untaxed, 2))
+        self.amount_total = math.floor(round(self.cash_amount_total, 2))
+        self.offer_type = 'cash'
         self.button_confirm()
 
         self.write({
@@ -490,7 +510,27 @@ class VendorOffer(models.Model):
             temp = int(self.revision) - 1
             self.revision = str(temp)
 
+        self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
 
+    @api.multi
+    def action_button_confirm_api_credit(self, product_id):
+        # purchase = self.env['purchase.order'].search([('id', '=', product_id)])
+
+        self.amount_untaxed = math.floor(round(self.credit_amount_untaxed, 2))
+        self.amount_total = math.floor(round(self.credit_amount_total, 2))
+        self.offer_type = 'credit'
+        self.button_confirm()
+
+        self.write({
+            'status': 'purchase',
+            'state': 'purchase',
+            'status_ven': 'Accepted',
+            'accepted_date': fields.date.today()
+        })
+
+        if (int(self.revision) > 0):
+            temp = int(self.revision) - 1
+            self.revision = str(temp)
 
         self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
 
@@ -581,6 +621,8 @@ class VendorOffer(models.Model):
 
     def compute_access_url_offer(self):
         for order in self:
+            auth_param = url_encode(self.partner_id.signup_get_auth_param()[self.partner_id.id])
+            temp = self.get_portal_url(query_string='&%s' % auth_param)
             access_url_vendor = '/my/vendor/%s' % (order.id)
             return access_url_vendor
 
@@ -594,6 +636,15 @@ class VendorOffer(models.Model):
             return '%s?%s' % ('/mail/view' if redirect else self.compute_access_url_offer(), url_encode(params))
         else:
             return '%s?%s' % ('/mail/view' if redirect else self.access_url, url_encode(params))
+
+    @api.multi
+    def _get_share_url(self, redirect=False, signup_partner=False, pid=None):
+
+        self.ensure_one()
+        if self.state not in ['purchase', 'done']:
+            auth_param = url_encode(self.partner_id.signup_get_auth_param()[self.partner_id.id])
+            return self.get_portal_url(query_string='&%s' % auth_param)
+        return super(VendorOffer, self)._get_share_url(redirect, signup_partner, pid)
 
 
 class VendorOfferProduct(models.Model):
@@ -1489,10 +1540,10 @@ class VendorPricingExport(models.TransientModel):
         last_yr = fields.Date.to_string(today_date - datetime.timedelta(days=365))
         last_3_months = fields.Date.to_string(today_date - datetime.timedelta(days=90))
         count = 0
-        product_lines_export_pp.append((['ProductNumber', 'ProductDescription', 'Price', 'CFP-Manufacturer', 'TIER','Open Quotations Per Code',
+        product_lines_export_pp.append((['ProductNumber', 'ProductDescription', 'Price', 'CFP-Manufacturer', 'TIER',
                                          'SALES COUNT', 'SALES COUNT YR', 'QTY IN STOCK', 'SALES TOTAL',
                                          'PREMIUM', 'EXP INVENTORY', 'SALES COUNT 90', 'Quantity on Order',
-                                         'Average Aging', 'Inventory Scrapped']))
+                                         'Average Aging', 'Inventory Scrapped','Open Quotations Per Code']))
         cust_location_id = self.env['stock.location'].search([('name', '=', 'Customers')]).id
         company = self.env['res.company'].search([], limit=1, order="id desc")
 
@@ -1768,10 +1819,10 @@ class VendorPricingExport(models.TransientModel):
             # aging_days = self.env.cr.fetchone()
             product_lines_export_pp.append(
                 ([line['sku_code'], line['name'], line['list_price'], line['product_brand_id'],
-                  line['tier'],line['quotations_per_code'],line['product_sales_count'], line['product_sales_count_yrs'],
+                  line['tier'],line['product_sales_count'], line['product_sales_count_yrs'],
                   line['actual_quantity'], line['amount_total_ven_pri'], line['premium'],
                   line['expired_lot_count'], line['product_sales_count_90'], line['qty_on_order'],
-                  line['aging_days'], line['scrap_qty']]))
+                  line['aging_days'], line['scrap_qty'],line['quotations_per_code']]))
 
         print("--- %s seconds ---" % (time.time() - start_time))
 

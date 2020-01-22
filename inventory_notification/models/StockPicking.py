@@ -28,7 +28,7 @@ class StockPicking(models.Model):
                     _logger.info(" Delivery Orders ******** Delivery Done ***** End********")
                     _logger.info(" Delivery Orders ********low Stock ***** Start ********")
                     product_ids = self.unique(self.env['stock.move.line'].search([('picking_id', '=', self.id)]))
-                    inv_notification.process_notify_low_stock_products(product_ids)
+                    # inv_notification.process_notify_low_stock_products(product_ids)
                     _logger.info(" Delivery Orders ********low Stock ***** End ********")
                     _logger.info(" Delivery Orders ************* End********")
             # elif picking.purchase_id:
