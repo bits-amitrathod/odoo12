@@ -32,6 +32,7 @@ class DumpDiscuss(models.Model):
     # Read/Unread Flag for incoming email from mail.channel
     # Only set is_read=True if file data is successfully dumped from 'mail.message' table to 'sps.customer.requests' table otherwise rollback
     is_read = fields.Boolean(Default=False)
+    #To keep the count that how many times a particular document is processed
     processing_count = fields.Integer(Default= '0')
 
     @api.model
