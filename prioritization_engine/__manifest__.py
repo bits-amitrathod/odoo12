@@ -29,6 +29,7 @@
         'views/release_product_quantity_scheduler_views.xml',
         'views/process_high_priority_requests.xml',
         'data/sales_team_data_prioritization.xml',
+        'data/route_data.xml',
     ],
 
     # only loaded in demonstration mode

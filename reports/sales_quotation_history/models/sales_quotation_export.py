@@ -15,12 +15,17 @@ class SalesQuotationExport(models.Model):
     qe_total_price_converted = fields.Monetary("Total", currency_field='currency_id', store=False)
     qe_product_uom_converted = fields.Many2one('uom.uom', 'Unit of Measure', currency_field='currency_id', store=False)
     qe_account_manager_cust_name = fields.Char(string="Account Manager", compute='_compare_data_exp', store=False)
-
+    qe_quotations_per_code = fields.Integer(string='Open Quotations Per Code',
+                                         compute='_compare_data_exp',
+                                         readonly=True, store=False)
 
     @api.multi
     def _compare_data_exp(self):
         for sale_order_line in self:
             sale_order_line.qe_customer_name = sale_order_line.order_id.partner_id.name
+            sale_order_line_list_qe = self.env['sale.order.line'].search(
+                [('product_id', '=', sale_order_line.product_id.id), ('state', 'in', ('draft', 'sent'))])
+            sale_order_line.qe_quotations_per_code = len(sale_order_line_list_qe)
             sale_order_line.qe_account_manager_cust_name = sale_order_line.order_id.partner_id.account_manager_cust.name
             sale_order_line.qe_product_sku_ref = sale_order_line.product_id.product_tmpl_id.sku_code
             sale_order_line.qe_unit_price_converted = sale_order_line.price_unit

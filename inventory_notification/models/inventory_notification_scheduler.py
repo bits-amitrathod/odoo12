@@ -92,9 +92,9 @@ class InventoryNotificationScheduler(models.TransientModel):
             'header': ['Catalog number', 'Description', 'Quantity'],
             'columnProps': ['sku', 'Product', 'qty'],
             'closing_content': 'Thanks & Regards,<br/> Warehouse Team',
-            'description':"Hi " + final_user.display_name + \
-                              ", <br/><br/> Please find detail Of Sale Order: " + picking.sale_id.name+ "<br/>"+\
-                             "" ,
+            'description': "Hi " + final_user.display_name +
+                        ", <br/><br/> Please find detail Of Sale Order: " + picking.sale_id.name + "<br/><br/>" +
+                        "<strong> Notes :  </strong>" + (picking.note or "N/A") + "" ,
         }
         # < strong > Notes: < / strong > " + (str(picking.sale_id.sale_note) if picking.sale_id.sale_note else "
         # N / A
@@ -103,8 +103,6 @@ class InventoryNotificationScheduler(models.TransientModel):
                               ", <br/><br/> Please find detail Of Sale Order: " + picking.sale_id.name+ "<br/>"+\
                              '''
 
-        print("Inside Pull")
-        print(final_user.sudo().email)
         self.process_common_email_notification_template(super_user, final_user, vals['subject'], vals['description'],
                                                         vals['sale_order_lines'], vals['header'],
                                                         vals['columnProps'], vals['closing_content'])
@@ -138,6 +136,7 @@ class InventoryNotificationScheduler(models.TransientModel):
             'subject': "Pick Done For Sale Order # " + picking.sale_id.name,
             'description': "Hi Shipping Team, <br/><br/> " +
                            "<div style=\"text-align: center;width: 100%;\"><strong>The PICK has been completed!</strong></div><br/>" +
+                           "<strong> Salesperson: </strong>" + (sale_order_ref.partner_id.user_id.name or "N/A") + "<br/>" + \
                            "<strong> Please proceed with the pulling and shipping of Sales Order: </strong>" + sale_order_ref.name + "<br/>" + \
                            "<strong> Customer PO #:  </strong>" + (sale_order_ref.client_order_ref or "N/A") + "<br/>" + \
                            "<strong> Carrier Info:  </strong>" + (sale_order_ref.carrier_info or "N/A") + "<br/>" + \
@@ -152,7 +151,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                            "<strong> Shipping Address: </strong> " + (address_ref.street or "") + \
                            (address_ref.city or "") + (address_ref.state_id.name or "") + (address_ref.zip or "") + \
                            (address_ref.country_id.name or "") + "<br/>"+ \
-                           "<strong> Notes :  </strong>" + (sale_order_ref.sale_note or "N/A"),
+                           "<strong> Notes :  </strong>" + (picking.note or "N/A"),
 
             'header': ['Catalog number', 'Description', 'Initial Quantity', 'Lot', 'Expiration Date', 'Quantity Done'],
             'columnProps': ['sku', 'Product', 'qty', 'lot_name', 'lot_expired_date', 'qty_done'],
@@ -277,8 +276,6 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                         vals['columnProps'], vals['closing_content'],
                                                         self.all_email, picking)
 
-
-
     def out_notification_for_sale(self, picking):
         Stock_Moves = self.env['stock.move'].search([('picking_id', '=', picking.id)])
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
@@ -303,7 +300,9 @@ class InventoryNotificationScheduler(models.TransientModel):
         vals = {
             'sale_order_lines': sales_order,
             'subject': "Sale Order # " + picking.sale_id.name + " is Out for Delivery for customer " + partner_name,
-            'description': "Hi " + picking.sale_id.user_id.display_name + ",<br> Please find detail Of Sale Order: " + picking.sale_id.name + " and their tracking is " + tracking,
+            'description': "Hi " + picking.sale_id.user_id.display_name + ",<br><br> Please find detail Of Sale Order: "
+                           + picking.sale_id.name + " and their tracking is " + tracking +
+                            "<br><br> <strong> Notes : </strong>" + (picking.note or "N/A") + "",
             'header': ['Catalog number', 'Description', 'Quantity'],
             'columnProps': ['sku', 'Product', 'qty'],
             'closing_content': 'Thanks & Regards, <br/> Warehouse Team'
@@ -754,6 +753,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         self.process_common_email_notification_template(from_user, to_user, subject,
                                                         description, products, header, columnProps, closing_content,
                                                         self.acquisitions_email)
+
     def process_notify_low_product(self, products, to_user, from_user,max_inventory_level_duration):
         subject = "Products which are in Low Stock"
         description = "Hi Team, <br><br/>Please find a listing below of products whose inventory level status is now Color(Red) : <br/><br/> <b>On Basis of Max Inventory Level Duration </b>  : " + str(max_inventory_level_duration) + " Days"
@@ -1034,7 +1034,6 @@ class InventoryNotificationScheduler(models.TransientModel):
         except:
             error_msg = "mail sending fail for email id: %r" + email + " sending error report to admin"
             _logger.info(error_msg)
-
 
     def process_email_in_stock_scheduler_template(self, email_from_user, email_to_user, subject, descrption, products,
                                                   header, columnProps, closing_content, email_to_team, email_list_cc,sort_col=False,

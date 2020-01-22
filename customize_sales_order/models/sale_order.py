@@ -31,39 +31,29 @@ class sale_order(models.Model):
     def write(self, val):
         super(sale_order, self).write(val)
 
+        # Add note in pick delivery
+        if self.sale_note and self.state in 'sale':
+            for pick in self.picking_ids:
+                if pick.picking_type_id.name == 'Pick':
+                    pick.note = self.sale_note
+
         if self.carrier_id and self.state in 'sale':
             self.env['stock.picking'].search([('sale_id', '=', self.id), ('picking_type_id', '=', 5)]).write({'carrier_id':self.carrier_id.id})
 
-        '''if self.sale_note:
-            self.write({'sale_note':False})'''
-
         # if 'sale_note' in val or self.sale_note:
         if self.sale_note and self.team_id.team_type != 'engine':
-                # body = _(val['sale_note'])
-                body = self.sale_note
-                # body = self.sale_note
-                # sale_order_val = {
-                #     'body': body,
-                #     'model': 'sale.order',
-                #     'message_type': 'notification',
-                #     'no_auto_thread': False,
-                #     'subtype_id': self.env['ir.model.data'].xmlid_to_res_id('mail.mt_note'),
-                #     'res_id': self.id,
-                #     'author_id': self.env.user.partner_id.id,
-                # }
-                # self.env['mail.message'].sudo().create(sale_order_val)
-                stock_picking = self.env['stock.picking'].search([('sale_id', '=', self.id)])
-                for stk_picking in stock_picking:
-                    stock_picking_val = {
-                        'body': body,
-                        'model': 'stock.picking',
-                        'message_type': 'notification',
-                        'no_auto_thread': False,
-                        'subtype_id': self.env['ir.model.data'].xmlid_to_res_id('mail.mt_note'),
-                        'res_id': stk_picking.id,
-                        'author_id': self.env.user.partner_id.id,
-                    }
-                    self.env['mail.message'].sudo().create(stock_picking_val)
+            body = self.sale_note
+            for stk_picking in self.picking_ids:
+                stock_picking_val = {
+                    'body': body,
+                    'model': 'stock.picking',
+                    'message_type': 'notification',
+                    'no_auto_thread': False,
+                    'subtype_id': self.env['ir.model.data'].xmlid_to_res_id('mail.mt_note'),
+                    'res_id': stk_picking.id,
+                    'author_id': self.env.user.partner_id.id,
+                }
+                self.env['mail.message'].sudo().create(stock_picking_val)
 
     @api.one
     def _get_carrier_tracking_ref(self):
@@ -129,9 +119,11 @@ class sale_order(models.Model):
                 order.delivery_price = 0.0
                 order.delivery_message = res['error_message']
 
+
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
+    note_readonly_flag = fields.Integer('Delivery Note readonly flag', default=0)
     # note = fields.Text('Notes', compute='_get_note')
     #
     # def _get_note(self):
@@ -141,8 +133,25 @@ class StockPicking(models.Model):
 
     @api.multi
     def button_validate(self):
-
         action = super(StockPicking, self).button_validate()
+
+        # Note Section code
+        if self.sale_id:
+            if self.picking_type_id.name == "Pick" and self.state == "done":
+                self.note_readonly_flag = 1
+                self.add_note_in_log_section()
+                for picking_id in self.sale_id.picking_ids:
+                    if picking_id.state != 'cancel' and (picking_id.picking_type_id.name == 'Pull' and picking_id.state == 'assigned'):
+                        picking_id.note = self.note
+            elif self.picking_type_id.name == "Pull" and self.state == "done":
+                self.note_readonly_flag = 1
+                self.add_note_in_log_section()
+                for picking_id in self.sale_id.picking_ids:
+                    if picking_id.state != 'cancel' and (picking_id.picking_type_id.name == 'Delivery Orders' and picking_id.state == 'assigned'):
+                        picking_id.note = self.note
+            elif self.picking_type_id.name == "Delivery Orders" and self.state == "done":
+                self.note_readonly_flag = 1
+                self.add_note_in_log_section()
 
         if self.picking_type_id.code == "outgoing":
             if self.state == 'done' and self.carrier_id and self.carrier_tracking_ref:
@@ -192,3 +201,18 @@ class StockPicking(models.Model):
 
             # Update the sales order line
             sale_order_line.write({'name': so_description, 'price_unit':price_unit,'product_uom': carrier.product_id.uom_id.id, 'product_id': carrier.product_id.id, 'tax_id': [(6, 0, taxes_ids)]})
+
+    def add_note_in_log_section(self):
+        if self.note:
+            body = self.note
+            for stk_picking in self.sale_id.picking_ids:
+                stock_picking_val = {
+                    'body': body,
+                    'model': 'stock.picking',
+                    'message_type': 'notification',
+                    'no_auto_thread': False,
+                    'subtype_id': self.env['ir.model.data'].xmlid_to_res_id('mail.mt_note'),
+                    'res_id': stk_picking.id,
+                    'author_id': self.env.user.partner_id.id,
+                }
+                self.env['mail.message'].sudo().create(stock_picking_val)

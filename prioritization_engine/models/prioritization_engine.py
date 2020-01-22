@@ -28,8 +28,8 @@ class PrioritizationEngine(models.TransientModel):
         if len(available_product_lot_dict) > 0:
             for customer_request in customer_request_list:
                 # update product status 'In Process'
-                if customer_request.status.lower().strip() == 'new':
-                    customer_request.write({'status': 'Inprocess'})
+                # if customer_request.status.lower().strip() == 'new':
+                #     customer_request.write({'status': 'Inprocess'})
                 # auto allocate True/False
                 if customer_request.auto_allocate:
                     customer_request.write({'customer_request_logs': 'Auto allocate is true, '})
@@ -55,14 +55,16 @@ class PrioritizationEngine(models.TransientModel):
                             _logger.debug('Cooling period false.....')
                     else:
                         customer_request.write({'customer_request_logs': str(customer_request.customer_request_logs) + 'As per requested expiration tolerance product lot not available.'})
+                        if customer_request.status.lower().strip() != 'Inprocess' and customer_request.status.lower().strip() != 'partial':
+                            customer_request.write({'status': 'Inprocess'})
                         _logger.debug('As per requested expiration tolerance product lot not available.')
                 else:
                     customer_request.write({'customer_request_logs': str(customer_request.customer_request_logs) + 'Auto allocate is false.'})
                     _logger.debug('Auto allocate is false.')
             if len(self.allocated_product_dict) > 0:
-                self.generate_sale_order()
+                self.generate_sale_order(self.allocated_product_dict)
             if len(self.allocated_product_for_gl_account_dict) > 0:
-                self.generate_sale_order_for_gl_account()
+                self.generate_sale_order(self.allocated_product_for_gl_account_dict)
             # self.env['available.product.dict'].update_production_lot_dict()
         else:
             _logger.debug('Available product lot list is zero')
@@ -376,61 +378,28 @@ class PrioritizationEngine(models.TransientModel):
         return int(duration_in_hours)
 
     # Generate sale order
-    def generate_sale_order(self):
-        _logger.debug('In generate sale order %r', self.allocated_product_dict)
+    def generate_sale_order(self, allocated_products_dict):
+        _logger.debug('In generate sale order %r', allocated_products_dict)
         # get team id
         crm_team = self.env['crm.team'].search([('team_type', '=', 'engine')])
 
-        for partner_id_key in self.allocated_product_dict.keys():
+        for partner_id_key in allocated_products_dict.keys():
             sale_order_dict = {'partner_id': partner_id_key, 'state': 'engine', 'team_id': crm_team['id']}
             try:
                 self.env.cr.savepoint()
                 sale_order = self.env['sale.order'].create(dict(sale_order_dict))
                 _logger.debug('sale order : %r ', sale_order['id'])
-                for allocated_product in self.allocated_product_dict.get(partner_id_key, {}):
+                for allocated_product in allocated_products_dict.get(partner_id_key, {}):
                     _logger.info('customer_request_id  :  %r  ', allocated_product['customer_request_id'])
 
                     sale_order_line_dict = {'customer_request_id': allocated_product['customer_request_id'],'req_no': allocated_product['req_no'], 'order_id': sale_order['id'], 'product_id': allocated_product['product_id'],
                                             'order_partner_id' : partner_id_key, 'product_uom_qty' : allocated_product['allocated_product_quantity']}
 
-                    self.env['sale.order.line'].create(dict(sale_order_line_dict))
+                    sale_order_line = self.env['sale.order.line'].create(dict(sale_order_line_dict))
+                    discount = sale_order_line.get_discount()
 
-                    if allocated_product['cust_req_status'] == 'Fulfilled':
-                        self.update_customer_request_status(allocated_product['customer_request_id'], 'Fulfilled', 'Product allocated.')
-                    elif allocated_product['cust_req_status'] == 'Partial':
-                        self.update_customer_request_status(allocated_product['customer_request_id'], 'Partial', ' Allocated Partial order product.')
-
-                _logger.info('**********Before action_confirm************  :  %r', sale_order.state)
-                sale_order.action_confirm()
-                _logger.info('**********After action_confirm************')
-                _logger.info('sale order name  : %r  sale order state : %r', sale_order.name, sale_order.state)
-                sale_order.force_quotation_send()
-                sale_order.write({'state': 'sent', 'confirmation_date': None})
-                self.env.cr.commit()
-            except Exception as exc:
-                _logger.error("getting error while creation of sales order : %r", exc)
-                self.env.cr.rollback()
-
-    # Generate sale order for gl account
-    def generate_sale_order_for_gl_account(self):
-        _logger.info('In generate sale order for gl account %r', self.allocated_product_for_gl_account_dict)
-        # get team id
-        crm_team = self.env['crm.team'].search([('team_type', '=', 'engine')])
-
-        for partner_id_key in self.allocated_product_for_gl_account_dict.keys():
-            sale_order_dict = {'partner_id': partner_id_key, 'state': 'engine', 'team_id': crm_team['id']}
-            try:
-                self.env.cr.savepoint()
-                sale_order = self.env['sale.order'].create(dict(sale_order_dict))
-                _logger.debug('sale order : %r ', sale_order['id'])
-
-                for allocated_product in self.allocated_product_for_gl_account_dict.get(partner_id_key, {}):
-                    sale_order_line_dict = {
-                        'customer_request_id': allocated_product['customer_request_id'],'req_no': allocated_product['req_no'], 'order_id': sale_order['id'],
-                        'product_id': allocated_product['product_id'],'order_partner_id': partner_id_key,
-                        'product_uom_qty': allocated_product['allocated_product_quantity']}
-
-                    self.env['sale.order.line'].create(dict(sale_order_line_dict))
+                    if discount and discount > 0.0:
+                        sale_order_line.write({'discount': discount})
 
                     if allocated_product['cust_req_status'] == 'Fulfilled':
                         self.update_customer_request_status(allocated_product['customer_request_id'], 'Fulfilled', 'Product allocated.')
@@ -516,6 +485,7 @@ class PrioritizationEngine(models.TransientModel):
                 if sps_cust_uploaded_document.template_type.lower().strip() == 'requirement':
                     if int(current_processed_docs) >= int(current_cust_doc_fixed_count):
                         sps_cust_uploaded_document.write({'status': 'Completed'})
+                        self._update_all_request_status(sps_cust_uploaded_document)
                         if len(sps_customer_requirements) == len(sps_customer_requirements_all_non_voided):
                             template = self.env.ref('customer-requests.final_email_response_on_uploaded_document').sudo()
                     else:
@@ -532,6 +502,7 @@ class PrioritizationEngine(models.TransientModel):
                 elif sps_cust_uploaded_document.template_type.lower().strip() == 'inventory':
                     if int(current_processed_docs) >= int(current_cust_doc_fixed_count):
                         sps_cust_uploaded_document.write({'status': 'Completed'})
+                        self._update_all_request_status(sps_cust_uploaded_document)
                         if len(sps_customer_requirements) == len(sps_customer_requirements_all_non_voided):
                             template = self.env.ref('customer-requests.final_email_response_on_uploaded_document').sudo()
                     else:
@@ -547,6 +518,7 @@ class PrioritizationEngine(models.TransientModel):
                                 sps_cust_uploaded_document.write({'status': 'Completed'})
                         else:
                             sps_cust_uploaded_document.write({'status': 'Completed'})
+                            self._update_all_request_status(sps_cust_uploaded_document)
 
                 # Send Email Notification to customer about the progress of uploaded or sent document
                 if template is not None:
@@ -556,52 +528,52 @@ class PrioritizationEngine(models.TransientModel):
                     else:
                         self.send_mail(sps_cust_uploaded_document.customer_id.name, sps_cust_uploaded_document.customer_id.email, None, template)
 
+    @staticmethod
+    def _update_all_request_status(sps_cust_uploaded_document):
+        for request in sps_cust_uploaded_document.request_ids:
+            if request.status not in ('Fulfilled', 'Partial'):
+                request.write({'status': 'Unprocessed'})
+
     # Release reserved product quantity(Which sales order product not confirm within length of hold period)
     def release_reserved_product_quantity(self):
         _logger.info('release reserved product quantity....')
-        # get team id
-        crm_team = self.env['crm.team'].search([('team_type', '=', 'engine')])
 
-        sale_orders = self.env['sale.order'].search([('state', 'in', ('engine', 'sent', 'void')), ('team_id', '=', int(crm_team['id']))], order="id asc")
+        sale_orders = self.env['sale.order'].search([('state', 'in', ('engine', 'sent', 'void')), ('team_id.team_type', '=', 'engine')], order="id asc")
 
         for sale_order in sale_orders:
             _logger.info('sale order name : %r, partner_id : %r, create_date: %r', sale_order['name'], sale_order['partner_id'].id, sale_order['create_date'])
 
-            stock_picking = self.env['stock.picking'].search([('sale_id.id', '=', int(sale_order['id'])), ('state', '=', 'assigned')])
-
-            for stock_pick in stock_picking:
-                stock_moves = self.env['stock.move'].search([('picking_id.id', '=', int(stock_pick['id']))])
-                if stock_moves and len(stock_moves)>0:
-                    for stock_move in stock_moves:
-                        # get length of hold
-                        _setting_object = self.env['sps.customer.requests'].get_settings_object(sale_order['partner_id'].id, stock_move['product_id'].id)
-                        if _setting_object and _setting_object is not None:
-                            _logger.info('length of hold %r', _setting_object.length_of_hold)
-                            # get current datetime
-                            current_datetime = datetime.now()
-                            create_date = datetime.strptime(self.change_date_format(sale_order['create_date']), '%Y,%m,%d,%H,%M,%S')
-                            # calculate datetime difference.
-                            duration = current_datetime - create_date  # For build-in functions
-                            duration_in_hours = self.return_duration_in_hours(duration)
-                            if _setting_object and int(_setting_object.length_of_hold) <= int(duration_in_hours):
-                                _logger.info('call stock_move._do_unreserve()')
-                                stock_move._do_unreserve()
-                            else:
-                                _logger.info('Product is in length of hold, unable to release quantity.')
+            for stock_pick in sale_order.picking_ids:
+                if stock_pick.state == 'assigned':
+                    if stock_pick.move_lines and len(stock_pick.move_lines) > 0:
+                        for stock_move in stock_pick.move_lines:
+                            # get length of hold
+                            _setting_object = self.env['sps.customer.requests'].get_settings_object(sale_order['partner_id'].id, stock_move['product_id'].id)
+                            if _setting_object and _setting_object is not None:
+                                _logger.info('length of hold %r', _setting_object.length_of_hold)
+                                # get current datetime
+                                current_datetime = datetime.now()
+                                create_date = datetime.strptime(self.change_date_format(sale_order['create_date']), '%Y,%m,%d,%H,%M,%S')
+                                # calculate datetime difference.
+                                duration = current_datetime - create_date  # For build-in functions
+                                duration_in_hours = self.return_duration_in_hours(duration)
+                                if _setting_object and int(_setting_object.length_of_hold) <= int(duration_in_hours):
+                                    _logger.info('call stock_move._do_unreserve()')
+                                    stock_move._do_unreserve()
+                                else:
+                                    _logger.info('Product is in length of hold, unable to release quantity.')
             self.change_sale_order_state(sale_order)
 
     # change sale order state: 'cancel' when length of hold of all products in sale order is finished.
-    def change_sale_order_state(self, sale_order):
-        _logger.info('In change_sale_order_state()')
-        stock_picking = self.env['stock.picking'].search([('sale_id.id', '=', sale_order['id']), ('picking_type_id', '=', 1)])
-        if stock_picking and stock_picking['id']:
-            _logger.info('stock picking id : %r ', stock_picking['id'])
-            stock_move_lines = self.env['stock.move.line'].search([('picking_id.id', '=', stock_picking['id'])])
-            _logger.info('stock_move_lines length : %r ', len(stock_move_lines))
-            if len(stock_move_lines) == 0:
-                _logger.info('sale order state before : %r', sale_order['state'])
-                sale_order.action_cancel()
-                _logger.info('sales order status after : %r', sale_order['state'])
+    @staticmethod
+    def change_sale_order_state(sale_order):
+        for stock_pick in sale_order.picking_ids:
+            if stock_pick.picking_type_id.name == 'Pick':
+                _logger.info('stock picking id : %r ', stock_pick.picking_type_id.id)
+                if len(stock_pick.move_line_ids) == 0:
+                    _logger.info('sale order state before : %r', sale_order['state'])
+                    sale_order.action_cancel()
+                    _logger.info('sales order status after : %r', sale_order['state'])
 
     def send_mail(self, body):
         template = self.env.ref('prioritization_engine.set_log_gl_account_response').sudo()
@@ -609,7 +581,7 @@ class PrioritizationEngine(models.TransientModel):
         try:
             template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True, )
         except Exception as exc:
-            _logger.error("getting error while creation of sales order : %r", exc)
+            _logger.error("getting error while sending email of sales order : %r", exc)
             response = {'message': 'Unable to connect to SMTP Server'}
 
     def send_mail(self, customerName, customerEmail, salespersonEmail, template):
@@ -617,5 +589,5 @@ class PrioritizationEngine(models.TransientModel):
         try:
             template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True)
         except Exception as exc:
-            _logger.error("getting error while creation of sales order : %r", exc)
+            _logger.error("getting error while sending email of sales order : %r", exc)
             response = {'message': 'Unable to connect to SMTP Server'}
