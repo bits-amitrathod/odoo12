@@ -70,23 +70,24 @@ class DocumentProcessTransientModel(models.TransientModel):
                 ref = str(document_id) + "_" + file_uploaded_record.token
                 response = dict(message='File Uploaded Successfully', ref=ref)
                 for req in requests:
-                    if 'customer_sku' in req.keys():
-                        customer_sku = req['customer_sku']
-                        product_sku = self.get_product_sku(user_model, customer_sku)
-                        products = self.get_product(product_sku, req)
-                        if len(products) == 0:
-                            # Check product with -E
-                            _logger.info('Find product sku with -E : ' + str(product_sku))
-                            products = self.get_product(product_sku + '-E', req)
-                    elif 'mfr_catalog_no' in req.keys():
-                        mfr_catalog_no = req['mfr_catalog_no']
-                        product_sku = self.get_product_sku(user_model, mfr_catalog_no)
-                        products = self.get_product(product_sku, req)
-                        if len(products) == 0:
-                            # Check product with -E
-                            _logger.info('Find product sku with -E : ' + str(product_sku))
-                            products = self.get_product(product_sku + '-E', req)
-                    self._create_customer_request(req, user_id, document_id, user_model, products, template_type, today_date)
+                    if ('required_quantity' in req and req['required_quantity'].strip() != '') or ('quantity' in req and req['quantity'].strip() != ''):
+                        if 'customer_sku' in req.keys():
+                            customer_sku = req['customer_sku']
+                            product_sku = self.get_product_sku(user_model, customer_sku)
+                            products = self.get_product(product_sku, req)
+                            if len(products) == 0:
+                                # Check product with -E
+                                _logger.info('Find product sku with -E : ' + str(product_sku))
+                                products = self.get_product(product_sku + '-E', req)
+                        elif 'mfr_catalog_no' in req.keys():
+                            mfr_catalog_no = req['mfr_catalog_no']
+                            product_sku = self.get_product_sku(user_model, mfr_catalog_no)
+                            products = self.get_product(product_sku, req)
+                            if len(products) == 0:
+                                # Check product with -E
+                                _logger.info('Find product sku with -E : ' + str(product_sku))
+                                products = self.get_product(product_sku + '-E', req)
+                        self._create_customer_request(req, user_id, document_id, user_model, products, template_type, today_date)
                 # if document has all voided products then Send Email Notification to customer.
                 self._all_voided_products(document_id, user_model, file_uploaded_record)
             else:
