@@ -84,7 +84,8 @@ class SpsCustomerRequest(models.Model):
                         document.write({'document_processed_count': document.document_processed_count+1})
 
             sps_customer_requests = self.env['sps.customer.requests'].search([('document_id.id', 'in', list(self.documents)),
-                                                                              ('status', 'in', ('Inprocess', 'Incomplete', 'Unprocessed','InCoolingPeriod', 'New', 'Partial'))],
+                                                                              ('status', 'in', ('Inprocess', 'Incomplete', 'Unprocessed','InCoolingPeriod', 'New', 'Partial')),
+                                                                              '|', ('required_quantity', '>', 0), ('quantity', '>', 0)],
                                                                              order="priority asc")
 
             self.process_customer_requests(sps_customer_requests, tuple(self.documents))
