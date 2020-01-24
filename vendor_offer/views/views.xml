@@ -221,7 +221,7 @@
                         <button name="action_send_offer_email" string="Send" type="object" context="{'send_rfq':True}"
                                 class="btn-primary" attrs="{'invisible':[('state', 'in', ('purchase','cancel'))]}"/>
                         <button name="action_print_vendor_offer" string="Print" type="object" class="btn-primary"
-                                attrs="{'invisible':[('state', 'in', ('purchase'))]}"/>
+                                attrs="{'invisible':[('state', 'in', ('purchase','cancel'))]}"/>
                         <button name="%(vendor_offer.action_purchase_order_edit_note)d" type="action"
                                 context="{'isFooterInvisible':False}"
                                 string="Add Note"/>

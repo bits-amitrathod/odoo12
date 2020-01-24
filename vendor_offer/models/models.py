@@ -116,7 +116,8 @@ class VendorOffer(models.Model):
 
     offer_type = fields.Selection([
         ('cash', 'Cash'),
-        ('credit', 'Credit')
+        ('credit', 'Credit'),
+        ('cashcredit', 'Cash/Credit')
     ], string='Offer Type')
 
     shipping_date = fields.Datetime(string="Shipping Date")
