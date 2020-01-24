@@ -27,9 +27,6 @@ class PrioritizationEngine(models.TransientModel):
         available_product_lot_dict = self.get_available_product_lot_dict(document_ids)
         if len(available_product_lot_dict) > 0:
             for customer_request in customer_request_list:
-                # update product status 'In Process'
-                # if customer_request.status.lower().strip() == 'new':
-                #     customer_request.write({'status': 'Inprocess'})
                 # auto allocate True/False
                 if customer_request.auto_allocate:
                     customer_request.write({'customer_request_logs': 'Auto allocate is true, '})
@@ -38,7 +35,7 @@ class PrioritizationEngine(models.TransientModel):
                     if len(filter_available_product_lot_dict) > 0:
                         # check cooling period- method return True/False
                         if self.check_cooling_period(customer_request):
-                            customer_request.write({'customer_request_logs': str(customer_request.customer_request_logs) + 'success cooling period, '})
+                            # customer_request.write({'customer_request_logs': str(customer_request.customer_request_logs) + 'success cooling period, '})
                             _logger.debug('success cooling period')
                             if customer_request.document_id.template_type.lower().strip() == 'inventory':
                                 # check min-max threshold
@@ -258,10 +255,10 @@ class PrioritizationEngine(models.TransientModel):
     @staticmethod
     def _update_logs(customer_request):
         if customer_request.partial_ordering:
-            customer_request.write({'customer_request_logs': str(customer_request.customer_request_logs) + 'Partial ordering flag is True.'})
+            # customer_request.write({'customer_request_logs': str(customer_request.customer_request_logs) + 'Partial ordering flag is True.'})
             _logger.debug('Partial ordering flag is True')
             if customer_request.partial_UOM:
-                customer_request.write({'customer_request_logs': str(customer_request.customer_request_logs) + 'Partial UOM flag is True.'})
+                # customer_request.write({'customer_request_logs': str(customer_request.customer_request_logs) + 'Partial UOM flag is True.'})
                 _logger.debug('Partial UOM is True')
             else:
                 customer_request.write({'customer_request_logs': str(customer_request.customer_request_logs) + 'Partial UOM flag is False.'})
@@ -531,7 +528,7 @@ class PrioritizationEngine(models.TransientModel):
     @staticmethod
     def _update_all_request_status(sps_cust_uploaded_document):
         for request in sps_cust_uploaded_document.request_ids:
-            if request.status not in ('Fulfilled', 'Partial'):
+            if request.status not in ('Fulfilled', 'Partial', 'Voided'):
                 request.write({'status': 'Unprocessed'})
 
     # Release reserved product quantity(Which sales order product not confirm within length of hold period)
