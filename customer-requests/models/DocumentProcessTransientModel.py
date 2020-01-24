@@ -75,7 +75,7 @@ class DocumentProcessTransientModel(models.TransientModel):
                     elif 'quantity' in req.keys() and not req['quantity'].strip().isnumeric():
                         req['quantity'] = '0'
 
-                    if 'customer_sku' in req.keys() and req['customer_sku'].strip() != '':
+                    if 'customer_sku' in req.keys():
                         customer_sku = req['customer_sku']
                         product_sku = self.get_product_sku(user_model, customer_sku)
                         products = self.get_product(product_sku, req)
@@ -84,7 +84,7 @@ class DocumentProcessTransientModel(models.TransientModel):
                             _logger.info('Find product sku with -E : ' + str(product_sku))
                             products = self.get_product(product_sku + '-E', req)
                         self._create_customer_request(req, user_id, document_id, user_model, products, template_type, today_date)
-                    elif 'mfr_catalog_no' in req.keys() and req['mfr_catalog_no'].strip() != '':
+                    elif 'mfr_catalog_no' in req.keys():
                         mfr_catalog_no = req['mfr_catalog_no']
                         product_sku = self.get_product_sku(user_model, mfr_catalog_no)
                         products = self.get_product(product_sku, req)
