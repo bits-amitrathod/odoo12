@@ -70,7 +70,7 @@ class DocumentProcessTransientModel(models.TransientModel):
                 ref = str(document_id) + "_" + file_uploaded_record.token
                 response = dict(message='File Uploaded Successfully', ref=ref)
                 for req in requests:
-                    if ('required_quantity' in req.keys() and req['required_quantity'].strip() != '') or ('quantity' in req.keys() and req['quantity'].strip() != ''):
+                    if ('required_quantity' in req.keys() and req['required_quantity'].strip().isnumeric()) or ('quantity' in req.keys() and req['quantity'].strip().isnumeric()):
                         if 'customer_sku' in req.keys() and req['customer_sku'].strip() != '':
                             customer_sku = req['customer_sku']
                             product_sku = self.get_product_sku(user_model, customer_sku)
