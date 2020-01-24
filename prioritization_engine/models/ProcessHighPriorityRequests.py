@@ -19,7 +19,8 @@ class ProcessHighPriorityRequests(models.Model):
 
         document = self.env['sps.cust.uploaded.documents'].search([('status', '=', 'draft')], limit=1, order="id asc")
         if len(document) == 1:
-            high_priority_requests = self.env['sps.customer.requests'].search([('document_id', '=', document.id), ('status', '=', 'New'), ('priority', '=', 0), ('available_qty', '>', 0)])
+            high_priority_requests = self.env['sps.customer.requests'].search([('document_id', '=', document.id), ('status', '=', 'New'), ('priority', '=', 0), ('available_qty', '>', 0),
+                                                                               '|', ('required_quantity', '>', 0), ('quantity', '>', 0)])
 
             if len(high_priority_requests) > 0:
                 try:
