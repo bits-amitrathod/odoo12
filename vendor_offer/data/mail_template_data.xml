@@ -69,11 +69,17 @@
                 % if object.origin:
                     (RFQ origin: ${object.origin})
                 % endif
-
-
-                    Credit amounting <strong>${format_amount(object.credit_amount_total, object.currency_id)}</strong>
-
+                 % if object.offer_type=='cash':
                     Cash amounting <strong>${format_amount(object.cash_amount_total, object.currency_id)}</strong>
+
+                % elif object.offer_type=='credit':
+                    Credit amounting <strong>${format_amount(object.credit_amount_total, object.currency_id)}</strong>
+                 % elif object.offer_type=='cashcredit':
+                    Credit amounting <strong>${format_amount(object.credit_amount_total, object.currency_id)}</strong>
+                    Cash amounting <strong>${format_amount(object.cash_amount_total, object.currency_id)}</strong>
+                  % else:
+                     Cash amounting <strong>${format_amount(object.cash_amount_total, object.currency_id)}</strong>
+                 % endif
 
                 from ${object.company_id.name}.
                 </p>
