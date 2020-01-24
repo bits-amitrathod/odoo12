@@ -148,8 +148,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                                '%m/%d/%Y')) if picking.scheduled_date else "N/A") + \
                            "<br/><strong> Customer Name:  </strong>" + (
                                    sale_order_ref.partner_id.name or "") + "<br/>" + \
-                           "<strong> Shipping Address: </strong> " + (address_ref.street or "") + \
-                           (address_ref.city or "") + (address_ref.state_id.name or "") + (address_ref.zip or "") + \
+                           "<strong> Shipping Address: </strong> <br/>" + (address_ref.street+'<br/>' or "") + \
+                           (address_ref.city+'<br/>' or "") + (address_ref.state_id.name+', ' or "") + (address_ref.zip+'<br/>' or "") + \
                            (address_ref.country_id.name or "") + "<br/>"+ \
                            "<strong> Notes :  </strong>" + (picking.note or "N/A"),
 
