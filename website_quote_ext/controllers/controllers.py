@@ -125,7 +125,6 @@ class WebsiteSale(http.Controller):
 
         return request.render("website_quote_ext.portal_order_page_ex", values)
 
-
     @http.route(['/my/orders/<int:order_id>/accepts'], type='http', auth="public", methods=['POST'], website=True)
     def accepts(self, order_id, access_token=None, **post):
         try:
@@ -136,7 +135,7 @@ class WebsiteSale(http.Controller):
         message = post.get('accept_message')
 
         flag = False
-        query_string=False
+        query_string = False
         Order = request.env['sale.order'].sudo().browse(order_id)
         SaleOrderLines = request.env['sale.order.line'].sudo().search([('order_id', '=', Order.id)])
         for SaleOrderLine in SaleOrderLines:
@@ -155,13 +154,18 @@ class WebsiteSale(http.Controller):
             Order.action_cancel()
             Order.action_draft()
             Order.action_confirm()
-            # picking = request.env['stock.picking'].sudo().search([('sale_id', '=', Order.id), ('picking_type_id', '=', 1), ('state', 'not in', ['draft', 'cancel'])])
-            # picking.write({'state': 'assigned'})
-            # stock_move = request.env['stock.move'].sudo().search([('picking_id', '=', picking.id)])
-            # stock_move.write({'state': 'assigned'})
+            picking = request.env['stock.picking'].sudo().search([('sale_id', '=', Order.id), ('picking_type_id.name', '=', 'product_reserve'), ('state', '=', 'assigned')])
+            if picking:
+                picking.action_button_mark_all_done()
+                picking.button_validate()
+                Order.action_confirm()
         else:
-            Order.write({'state': 'sale', 'confirmation_date': datetime.now()})
-
+            picking = request.env['stock.picking'].sudo().search([('sale_id', '=', Order.id), ('picking_type_id.name', '=', 'product_reserve'), ('state', '=', 'assigned')])
+            if picking:
+                picking.action_button_mark_all_done()
+                picking.button_validate()
+                Order.action_confirm()
+            # Order.write({'state': 'sale', 'confirmation_date': datetime.now()})
 
         client_order_ref = post.get('client_order_ref')
         if client_order_ref:
@@ -189,7 +193,6 @@ class WebsiteSale(http.Controller):
                 request.env['mail.message'].sudo().create(values)
 
         return request.redirect(order_sudo.get_portal_url(query_string=query_string))
-
 
     @http.route(['/my/orders/<int:order_id>/declines'], type='http', auth="public", methods=['POST'], website=True)
     def decline(self, order_id, access_token=None, **post):
