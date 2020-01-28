@@ -120,6 +120,11 @@ class VendorOffer(models.Model):
         ('cashcredit', 'Cash/Credit')
     ], string='Offer Type')
 
+    offer_type_popup = fields.Selection([
+        ('cash', 'Cash'),
+        ('credit', 'Credit')
+    ], string='Offer Type', default='cash')
+
     shipping_date = fields.Datetime(string="Shipping Date")
     delivered_date = fields.Datetime(string="Delivered Date")
     expected_date = fields.Datetime(string="Expected Date")
@@ -474,11 +479,15 @@ class VendorOffer(models.Model):
 
             # purchase = self.env['purchase.order'].search([('id', '=', self.id)])
             # print(purchase)
-
+            if self.offer_type is False:
+                self.offer_type = 'cash'
             if self.offer_type:
                 if self.offer_type == 'credit':
-                    self.amount_untaxed = self.credit_amount_untaxed
-                    self.amount_total = self.credit_amount_total
+                    self.amount_untaxed = math.floor(round(self.credit_amount_untaxed, 2))
+                    self.amount_total = math.floor(round(self.credit_amount_total, 2))
+                if self.offer_type == 'cash':
+                    self.amount_untaxed = math.floor(round(self.cash_amount_untaxed, 2))
+                    self.amount_total = math.floor(round(self.cash_amount_total, 2))
 
             self.button_confirm()
             # self.write({'state': 'purchase'})
@@ -551,6 +560,45 @@ class VendorOffer(models.Model):
             else:
                 order.write({'state': 'to approve'})
         return True
+
+    @api.multi
+    def action_confirm_offer_both(self):
+
+        # if self.offer_type == 'cashcredit':
+        #     if self.offer_type not in ('cash','credit'):
+        #         #raise ValidationError(_('Offer Type must be either "Cash" or "Credit" to Accept '))
+        #         raise UserError(_('Offer Type must be either "Cash" or "Credit" not both to Accept'))
+
+
+        if self.offer_type == 'cashcredit':
+            self.offer_type_popup = 'cash'
+            form_view_id = self.env.ref('vendor_offer.vendor_offer_accept_popup').id
+            action = {
+                'type': 'ir.actions.act_window',
+                'views': [(form_view_id, 'form')],
+                'view_mode': 'tree,form',
+                'name': _('Offer Accept'),
+                'res_model': 'purchase.order',
+                'res_id': self.id,
+                'domain': [('id', '=', self.id)],
+                'target': 'new'
+            }
+
+            return action
+
+
+        else:
+            self.action_button_confirm()
+
+    @api.multi
+    def popup_confirm_vendor_offer(self):
+
+        if self.offer_type_popup is False:
+            self.offer_type_popup = 'cash'
+        if self.offer_type_popup == 'cash':
+            self.action_button_confirm_api_cash(1)
+        else:
+            self.action_button_confirm_api_credit(1)
 
     @api.multi
     def action_cancel_vendor_offer(self):

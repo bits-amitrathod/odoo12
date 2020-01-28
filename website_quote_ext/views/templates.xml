@@ -1353,7 +1353,7 @@
                             <tr>
                               <td><a t-attf-href="/my/purchase/#{order.id}?#{keep_query()}"><t t-esc="order.name"/></a></td>
                               <td><span t-field="order.date_order"/></td>
-                                <td><span t-field="order.offer_type"/> <span t-if="(not order.offer_type) or order.offer_type=='False' ">Cash</span> </td>
+                                <td><span t-field="order.offer_type"/> <span t-if="((not order.offer_type) or order.offer_type=='False' ) and order.vendor_offer_data == True ">Cash</span> </td>
                               <td>
                                 <t t-if="order.invoice_status == 'to invoice'">
                                   <span class="badge badge-info"><i class="fa fa-fw fa-file-text"/> Waiting for Bill</span>
@@ -1398,7 +1398,7 @@
                                   <strong>Date:</strong> <span t-field="order.date_order" t-options='{"widget": "date"}'/>
                               </div>
                                  <div class="mb8">
-                                  <strong>Offer type:</strong> <span t-field="order.offer_type"/> <span t-if="(not order.offer_type) or order.offer_type=='False' ">Cash</span>
+                                  <strong>Offer type:</strong> <span t-field="order.offer_type"/> <span t-if="((not order.offer_type) or order.offer_type=='False' ) and order.vendor_offer_data == True">Cash</span>
                               </div>
                               <div class="row">
                                 <div class="col-lg-6">
