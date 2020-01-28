@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="salesquotationexport_temp">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <page>
+                    <div class="oe_structure"/>
+                    <div>
+                    <center>
+                        <b>
+                            <h2>Surgical Product Solutions</h2>
+                            <h4>Sales Quotation History</h4>
+                        </b>
+                        <h4 t-if="date">
+                            <span t-esc="date"/>
+                        </h4>
+                    </center>
+                    </div>
+                    <br/>
+                        <t t-set="total_price" t-value="0"/>
+                        <table class="table table-sm" style="border: 1px solid black;">
+                            <thead>
+                                <tr style="border: 1px solid black;">
+                                    <th style="border: 1px solid black;">Product SKU</th>
+                                    <th style="border: 1px solid black;">Customer Name</th>
+                                    <th style="border: 1px solid black;">Account Manager</th>
+                                    <th style="border: 1px solid black;">Sales Order</th>
+                                    <th style="border: 1px solid black;">Product Name</th>
+                                    <th style="border: 1px solid black;">Ordered Date</th>
+                                    <th style="border: 1px solid black;">Ordered Qty</th>
+                                    <th style="border: 1px solid black;">UOM</th>
+                                    <th style="border: 1px solid black;">Unit Price</th>
+                                     <th style="border: 1px solid black;">Total</th>
+                                    <th style="border: 1px solid black;">Open Quotations Per Code</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="data" t-as="order">
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="order.qe_product_sku_ref"/>
+                                    </td>
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="order.qe_customer_name"/>
+                                    </td>
+                                     <td style="border: 1px solid black;">
+                                        <span t-esc="order.qe_account_manager_cust_name"/>
+                                    </td>
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="order.order_id.name"/>
+                                    </td>
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="order.product_id.name"/>
+                                    </td>
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="order.create_date" t-options="{'widget':'date'}"/>
+                                    </td>
+                                    <td style="border: 1px solid black;" align="center">
+                                        <span t-field="order.product_uom_qty"/>
+                                    </td>
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="order.qe_product_uom_converted.name"/>
+                                    </td>
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="order.qe_unit_price_converted" t-options='{"widget": "monetary","display_currency": order.currency_id}' />
+                                    </td>
+
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="order.qe_total_price_converted" t-options='{"widget": "monetary","display_currency": order.currency_id}'/>
+                                        <t t-set="total_price" t-value="total_price + order.price_total" />
+                                    </td>
+                                     <td style="border: 1px solid black;">
+                                        <span t-esc="order.qe_quotations_per_code"/>
+                                    </td>
+                                </tr>
+                                <tr  t-if="len(data) &gt; 0">
+                                    <td colspan="9" style="border: 1px solid black; text-align: right;">
+                                        <b>Total</b>
+                                    </td>
+                                    <td style="border: 1px solid black; text-align: right;">
+                                         <span t-esc="total_price" t-options='{"widget": "monetary","display_currency": data[0].currency_id}'/>
+                                    </td>
+                                     <td  style="border: 1px solid black; text-align: right;">
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                </page>
+            </t>
+        </t>
+    </template>
+</odoo>

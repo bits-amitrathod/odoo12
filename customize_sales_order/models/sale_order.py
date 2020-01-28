@@ -2,50 +2,87 @@
 
 from odoo import models, fields, api
 from odoo import _
+from odoo.exceptions import UserError
+
+
+class CustomerContract(models.Model):
+    _inherit = "res.partner"
+
+    account_manager_cust = fields.Many2one('res.users', string="Account Manager", domain="[('active', '=', True)"
+                                                                                         ",('share','=',False)]")
+
+
+class CustomerContract(models.Model):
+    _inherit = "res.partner"
+
+    account_manager_cust = fields.Many2one('res.users', string="Account Manager", domain="[('active', '=', True)"
+                                                                                         ",('share','=',False)]")
 
 
 class sale_order(models.Model):
     _inherit = 'sale.order'
 
     sale_note = fields.Text('Sale Notes')
-
     carrier_track_ref = fields.Char('Tracking Reference', store=True, readonly=True, compute='_get_carrier_tracking_ref')
-
     delivery_method_readonly_flag = fields.Integer('Delivery method readonly flag', default=1, compute='_get_delivery_method_readonly_flag')
+    stockhawk_discount = fields.Monetary(string='Stockhawk Discount 5%', store=True, readonly=True, compute='_amount_all')
+
+    @api.depends('order_line.price_total')
+    def _amount_all(self):
+        """
+        Compute the total amounts of the SO.
+        """
+        for order in self:
+            amount_untaxed = amount_tax = 0.0
+            stockhawk_additional_discount = 5  # In Percent(5%)
+
+            for line in order.order_line:
+                amount_untaxed += line.price_subtotal
+                amount_tax += line.price_tax
+
+            if order.team_id.team_type == 'engine':
+                stockhawk_discount = (amount_untaxed * stockhawk_additional_discount) / 100
+                amount_untaxed_with_discount = amount_untaxed - stockhawk_discount
+
+                order.update({
+                    'amount_untaxed': amount_untaxed,
+                    'stockhawk_discount': stockhawk_discount,
+                    'amount_tax': amount_tax,
+                    'amount_total': amount_untaxed_with_discount + amount_tax,
+                })
+            else:
+                order.update({
+                    'amount_untaxed': amount_untaxed,
+                    'amount_tax': amount_tax,
+                    'amount_total': amount_untaxed + amount_tax,
+                })
 
     def write(self, val):
         super(sale_order, self).write(val)
 
-        '''if self.sale_note:
-            self.write({'sale_note':False})'''
+        # Add note in pick delivery
+        if self.sale_note and self.state in 'sale':
+            for pick in self.picking_ids:
+                if pick.picking_type_id.name == 'Pick':
+                    pick.note = self.sale_note
+
+        if self.carrier_id and self.state in 'sale':
+            self.env['stock.picking'].search([('sale_id', '=', self.id), ('picking_type_id', '=', 5)]).write({'carrier_id':self.carrier_id.id})
 
         # if 'sale_note' in val or self.sale_note:
         if self.sale_note and self.team_id.team_type != 'engine':
-                # body = _(val['sale_note'])
-                body = self.sale_note
-                # body = self.sale_note
-                # sale_order_val = {
-                #     'body': body,
-                #     'model': 'sale.order',
-                #     'message_type': 'notification',
-                #     'no_auto_thread': False,
-                #     'subtype_id': self.env['ir.model.data'].xmlid_to_res_id('mail.mt_note'),
-                #     'res_id': self.id,
-                #     'author_id': self.env.user.partner_id.id,
-                # }
-                # self.env['mail.message'].sudo().create(sale_order_val)
-                stock_picking = self.env['stock.picking'].search([('sale_id', '=', self.id)])
-                for stk_picking in stock_picking:
-                    stock_picking_val = {
-                        'body': body,
-                        'model': 'stock.picking',
-                        'message_type': 'notification',
-                        'no_auto_thread': False,
-                        'subtype_id': self.env['ir.model.data'].xmlid_to_res_id('mail.mt_note'),
-                        'res_id': stk_picking.id,
-                        'author_id': self.env.user.partner_id.id,
-                    }
-                    self.env['mail.message'].sudo().create(stock_picking_val)
+            body = self.sale_note
+            for stk_picking in self.picking_ids:
+                stock_picking_val = {
+                    'body': body,
+                    'model': 'stock.picking',
+                    'message_type': 'notification',
+                    'no_auto_thread': False,
+                    'subtype_id': self.env['ir.model.data'].xmlid_to_res_id('mail.mt_note'),
+                    'res_id': stk_picking.id,
+                    'author_id': self.env.user.partner_id.id,
+                }
+                self.env['mail.message'].sudo().create(stock_picking_val)
 
     @api.one
     def _get_carrier_tracking_ref(self):
@@ -69,12 +106,53 @@ class sale_order(models.Model):
                     if stock_picking.state == 'assigned':
                         sale_ordr.delivery_method_readonly_flag = 1
 
+    @api.onchange('carrier_id')
+    def onchange_carrier_id(self):
+        if self.state in ('draft', 'sent', 'sale'):
+            self.delivery_price = 0.0
+            self.delivery_rating_success = False
+            self.delivery_message = False
 
+    @api.multi
+    def set_delivery_line(self):
+        # Remove delivery products from the sales order
+        self._remove_delivery_line()
+
+        for order in self:
+            if order.state not in ('draft', 'sent', 'sale'):
+                raise UserError(_('You can add delivery price only on unconfirmed quotations.'))
+            elif not order.carrier_id:
+                raise UserError(_('No carrier set for this order.'))
+            elif not order.delivery_rating_success:
+                raise UserError(_('Please use "Check price" in order to compute a shipping price for this quotation.'))
+            else:
+                price_unit = order.carrier_id.rate_shipment(order)['price']
+                # TODO check whether it is safe to use delivery_price here
+                order._create_delivery_line(order.carrier_id, price_unit)
+            if order.carrier_id and order.state in 'sale':
+                self.env['stock.picking'].search([('sale_id', '=', order.id), ('picking_type_id', '=', 5)]).write({'carrier_id':order.carrier_id.id})
+        return True
+
+    def get_delivery_price(self):
+        for order in self.filtered(lambda o: o.state in ('draft', 'sent', 'sale') and len(o.order_line) > 0):
+            # We do not want to recompute the shipping price of an already validated/done SO
+            # or on an SO that has no lines yet
+            order.delivery_rating_success = False
+            res = order.carrier_id.rate_shipment(order)
+            if res['success']:
+                order.delivery_rating_success = True
+                order.delivery_price = res['price']
+                order.delivery_message = res['warning_message']
+            else:
+                order.delivery_rating_success = False
+                order.delivery_price = 0.0
+                order.delivery_message = res['error_message']
 
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
+    note_readonly_flag = fields.Integer('Delivery Note readonly flag', default=0)
     # note = fields.Text('Notes', compute='_get_note')
     #
     # def _get_note(self):
@@ -84,8 +162,25 @@ class StockPicking(models.Model):
 
     @api.multi
     def button_validate(self):
-
         action = super(StockPicking, self).button_validate()
+
+        # Note Section code
+        if self.sale_id:
+            if self.picking_type_id.name == "Pick" and self.state == "done":
+                self.note_readonly_flag = 1
+                self.add_note_in_log_section()
+                for picking_id in self.sale_id.picking_ids:
+                    if picking_id.state != 'cancel' and (picking_id.picking_type_id.name == 'Pull' and picking_id.state == 'assigned'):
+                        picking_id.note = self.note
+            elif self.picking_type_id.name == "Pull" and self.state == "done":
+                self.note_readonly_flag = 1
+                self.add_note_in_log_section()
+                for picking_id in self.sale_id.picking_ids:
+                    if picking_id.state != 'cancel' and (picking_id.picking_type_id.name == 'Delivery Orders' and picking_id.state == 'assigned'):
+                        picking_id.note = self.note
+            elif self.picking_type_id.name == "Delivery Orders" and self.state == "done":
+                self.note_readonly_flag = 1
+                self.add_note_in_log_section()
 
         if self.picking_type_id.code == "outgoing":
             if self.state == 'done' and self.carrier_id and self.carrier_tracking_ref:
@@ -135,3 +230,18 @@ class StockPicking(models.Model):
 
             # Update the sales order line
             sale_order_line.write({'name': so_description, 'price_unit':price_unit,'product_uom': carrier.product_id.uom_id.id, 'product_id': carrier.product_id.id, 'tax_id': [(6, 0, taxes_ids)]})
+
+    def add_note_in_log_section(self):
+        if self.note:
+            body = self.note
+            for stk_picking in self.sale_id.picking_ids:
+                stock_picking_val = {
+                    'body': body,
+                    'model': 'stock.picking',
+                    'message_type': 'notification',
+                    'no_auto_thread': False,
+                    'subtype_id': self.env['ir.model.data'].xmlid_to_res_id('mail.mt_note'),
+                    'res_id': stk_picking.id,
+                    'author_id': self.env.user.partner_id.id,
+                }
+                self.env['mail.message'].sudo().create(stock_picking_val)

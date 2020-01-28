@@ -66,7 +66,7 @@ class SaleOrder(models.Model):
 
     @api.multi
     def action_quotation_send(self):
-        print('saleorder -> action_quotation_send()')
+        _logger.info('saleorder -> action_quotation_send()')
         """
         This function opens a window to compose an email, with the edi sale template message loaded by default
         """
@@ -91,6 +91,13 @@ class SaleOrder(models.Model):
             'proforma': self.env.context.get('proforma', False),
             'force_email': True
         }
+
+        if self.order_line[0] and self.order_line[0].customer_request_id and self.order_line[0].customer_request_id. \
+                document_id and self.order_line[0].customer_request_id.document_id.email_from:
+            ctx['email_from'] = self.order_line[0].customer_request_id.document_id.email_from
+        else:
+            ctx['email_from'] = None
+
         return {
             'type': 'ir.actions.act_window',
             'view_type': 'form',
@@ -109,16 +116,11 @@ class SaleOrder(models.Model):
             user = None
             current_user = self.env['res.users'].browse(self._context.get('uid'))
             sale_order_customer = self.partner_id
-            super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID), ])
+            super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID)])
             user_sale_person = current_user.user_id
-
-            if self.team_id.team_type == 'sales':
-                user = current_user
-            else :
-                user = sale_order_customer.user_id if sale_order_customer.user_id else super_user
-
-            self.update({'order_processor' : user})
-        return  res
+            user = sale_order_customer.user_id if sale_order_customer.user_id else super_user
+            self.update({'user_id': user.id})
+        return res
 
     @api.multi
     def get_share_url(self, redirect=False, signup_partner=False, pid=None):
@@ -214,6 +216,44 @@ class SaleOrderLinePrioritization(models.Model):
         self.update(vals)
 
         return result
+
+    def get_discount(self):
+        if not (self.product_id and self.product_uom and
+                self.order_id.partner_id and self.order_id.pricelist_id and
+                self.order_id.pricelist_id.discount_policy == 'without_discount' and
+                self.env.user.has_group('sale.group_discount_per_so_line')):
+            return
+
+        product = self.product_id.with_context(
+            lang=self.order_id.partner_id.lang,
+            partner=self.order_id.partner_id,
+            quantity=self.product_uom_qty,
+            date=self.order_id.date_order,
+            pricelist=self.order_id.pricelist_id.id,
+            uom=self.product_uom.id,
+            fiscal_position=self.env.context.get('fiscal_position')
+        )
+
+        product_context = dict(self.env.context, partner_id=self.order_id.partner_id.id, date=self.order_id.date_order,
+                               uom=self.product_uom.id)
+
+        price, rule_id = self.order_id.pricelist_id.with_context(product_context).get_product_price_rule(
+            self.product_id, self.product_uom_qty or 1.0, self.order_id.partner_id)
+        new_list_price, currency = self.with_context(product_context)._get_real_price_currency(product, rule_id,
+                                                                                               self.product_uom_qty,
+                                                                                               self.product_uom,
+                                                                                               self.order_id.pricelist_id.id)
+
+        if new_list_price != 0:
+            if self.order_id.pricelist_id.currency_id != currency:
+                # we need new_list_price in the same currency as price, which is in the SO's pricelist's currency
+                new_list_price = currency._convert(
+                    new_list_price, self.order_id.pricelist_id.currency_id,
+                    self.order_id.company_id or self.env.user.company_id,
+                    self.order_id.date_order or fields.Date.today())
+            discount = (new_list_price - price) / new_list_price * 100
+            if (discount > 0 and new_list_price > 0) or (discount < 0 and new_list_price < 0):
+                return discount
 
 
 class StockPicking(models.Model):

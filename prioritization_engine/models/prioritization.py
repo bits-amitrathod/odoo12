@@ -258,8 +258,8 @@ class ProductTemplateSku(models.Model):
     premium = fields.Boolean("Premium")
     sku_code = fields.Char('SKU / Catalog No')
     manufacturer_pref = fields.Char(string='Manuf. Catalog No')
-    manufacturer_uom = fields.Many2one('uom.uom', 'Manuf. UOM', default=_get_default_uom_id,
-                                       required=True)
+    manufacturer_uom = fields.Many2one('uom.uom', 'Manuf. UOM', default=_get_default_uom_id, required=True)
+    actual_uom = fields.Many2one('uom.uom', 'Actual UOM', default=_get_default_uom_id, required=True)
 
     @api.model
     def create(self, vals):
@@ -374,7 +374,7 @@ class PrioritizationTransient(models.TransientModel):
     priority = fields.Integer("Priority")
     cooling_period = fields.Integer("Cooling Period in days")
     auto_allocate = fields.Boolean("Allow Auto Allocation?")
-    length_of_hold = fields.Integer("Length Of Hold in hours")
+    length_of_hold = fields.Integer("Length Of Hold in hours", default=1)
     expiration_tolerance = fields.Integer("Expiration Tolerance in months")
     partial_ordering = fields.Boolean("Allow Partial Ordering?")
     partial_UOM = fields.Boolean("Allow Partial UOM?")
@@ -412,10 +412,9 @@ class StockMove(models.Model):
             _logger.info('partner id : %r, product id : %r', stock_move.partner_id.id, stock_move.product_id.id)
             if stock_move.partner_id and stock_move.product_id:
                 setting = self.env['sps.customer.requests'].get_settings_object(stock_move.partner_id.id,
-                                                                                stock_move.product_id.id,
-                                                                                None, None)
+                                                                                stock_move.product_id.id)
                 if setting:
-                    if setting.partial_UOM and not setting.partial_UOM is None:
+                    if setting.partial_UOM and setting.partial_UOM is not None:
                         _logger.info('partial UOM** : %r', setting.partial_UOM)
                         stock_move.partial_UOM = setting.partial_UOM
 
@@ -436,41 +435,30 @@ class StockMove(models.Model):
 
             if (move.picking_id and move.picking_id.sale_id) and (move.picking_id.sale_id.team_id.team_type.lower().strip() == 'engine' and move.picking_id.sale_id.state.lower().strip() in (
                     'sale')):
-                available_production_lot_dict = self.env['available.product.dict'].get_available_production_lot_dict()
 
-                # get expiration tolerance
-                _setting_object = self.env['sps.customer.requests'].get_settings_object(move.partner_id.id, move.product_id.id, None, None)
-
-                # Search lot Id as per partner product expiration tolerance
-                filter_available_product_lot_dict = self.env[
-                    'prioritization.engine.model'].filter_available_product_lot_dict(available_production_lot_dict, move.product_id.id, _setting_object.expiration_tolerance)
-
-                for product_lot in filter_available_product_lot_dict.get(move.product_id.id, {}):
-                    lot_id = product_lot.get(list(product_lot.keys()).pop(0), {}).get('lot_id')
-                    avi_qty = product_lot.get(list(product_lot.keys()).pop(0), {}).get('available_quantity')
-                    use_date = product_lot.get(list(product_lot.keys()).pop(0), {}).get('use_date')
-                    dict1 = {'lot_id': lot_id, 'available_qty': avi_qty, 'use_date': use_date}
-
-                    if move.product_id.id in product_lot_qty_dict.keys():
-                        product_lot_qty_dict.get(move.product_id.id, {}).append(dict1)
-                    else:
-                        new_dict = {move.product_id.id: [dict1]}
-                        product_lot_qty_dict.update(new_dict)
-
-                dict_by_product = product_lot_qty_dict.get(move.product_id.id, {})
-                dict_asc_by_use_date = sorted(dict_by_product, key=lambda i: i['use_date'])
+                available_production_lot_dict = self.env['available.product.dict'].get_available_production_lot(move.partner_id.id, move.product_id.id)
 
                 need = move.product_qty - move.reserved_availability
-                for prdt_lot_qty in dict_asc_by_use_date:
-                    if need > 0:
-                        taken_quantity = move._update_reserved_quantity(need, prdt_lot_qty['available_qty'], move.location_id, prdt_lot_qty['lot_id'], strict=False)
-                        _logger.info('taken_quantity : %r', taken_quantity)
-                        need = need - taken_quantity
-                    if need == taken_quantity:
-                        assigned_moves |= move
-                    elif need == 0.0:
-                        assigned_moves |= move
-                        break
+                if available_production_lot_dict.get(int(move.product_id.id)) is not None:
+                    for product_lot in available_production_lot_dict.get(int(move.product_id.id)):
+                        lot_id = int(product_lot.get(list(product_lot.keys()).pop(0), {}).get('lot_id'))
+                        lot_object = self.env['stock.production.lot'].search([('id', '=', lot_id)])
+                        available_quantity = product_lot.get(list(product_lot.keys()).pop(0), {}).get('available_quantity')
+
+                        # Reserve new quants and create move lines accordingly.
+                        if available_quantity <= 0:
+                            continue
+                        if need > 0:
+                            taken_quantity = move._update_reserved_quantity(need, available_quantity, move.location_id, lot_object, strict=False)
+                            if float_is_zero(taken_quantity, precision_rounding=move.product_id.uom_id.rounding):
+                                continue
+                            _logger.info('taken_quantity : %r', taken_quantity)
+                            need = need - taken_quantity
+                        if need == taken_quantity:
+                            assigned_moves |= move
+                        elif need == 0.0:
+                            assigned_moves |= move
+                            break
             else:
                 if move.location_id.should_bypass_reservation() \
                         or move.product_id.type == 'consu':
@@ -610,4 +598,3 @@ class GLAccount(models.Model):
     ]
     name = fields.Char(string='GL Account', required=True, translate=True)
     partner_id = fields.Many2one('res.partner', string='Partner')
-

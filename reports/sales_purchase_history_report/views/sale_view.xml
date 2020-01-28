@@ -15,6 +15,7 @@
                         <group>
                             <field name="end_date"/>
                             <field name="contract_id" operator="child_of" />
+                            <field name="order_account_manager_cust" operator="child_of" />
                         </group>
                     </group>
 
@@ -45,6 +46,7 @@
 
                     <field name="product_sku_ref" string="Product SKU"/>
                     <field name="customer_name" string="Customer Name"/>
+                    <field name="account_manager_cust_name" />
                     <field name="order_id" string="Sales Order#"/>
                     <field name="product_id" string="Product Name"/>
                     <field name="delivered_date" string="Delivered Date"/>
@@ -53,6 +55,8 @@
                     <field name="unit_price_converted" widget="monetary" string="Unit Price" />
                     <field name="total_price_converted" widget="monetary" string="Total" sum="Total"/>
                     <field name="currency_id"  invisible="1" />
+                    <field name="quotations_per_code"  />
+
                 </tree>
               </field>
         </record>
@@ -73,6 +77,8 @@
                                 <field name="product_sku_ref"/>
                                 <field name="unit_price_converted"/>
                                 <field name="customer_name"/>
+                                <field name="quotations_per_code"  />
+                                <field name="account_manager_cust_name" />
                             </group>
                             <group>
                                 <field name="qty_delivered_converted" string="Required Quantity"/>
@@ -87,6 +93,31 @@
                 </form>
             </field>
         </record>
+
+        <record id="sale_purchase_history_popup" model="ir.ui.view">
+            <field name="name">salepuchasehistory.export.popup</field>
+            <field name="model">salepuchasehistory.export</field>
+            <field name="arch" type="xml">
+                <form string="Export Sales Purchase History">
+                    <group>
+                        <div>Click On ' Export To File ' button to export Sales Purchase History file</div>
+                    </group>
+                    <footer>
+                        <button name="download_excel_sale_puchase_history" string="Export To File" type="object"
+                                class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <act_window name="Export Sales Purchase History"
+                    res_model="salepuchasehistory.export"
+                    src_model="sale.order.line"
+                    view_mode="form"
+                    target="new"
+                    key2="client_action_multi"
+                    id="sale_purchase_history_act_window"/>
 
         <menuitem id="menu_sale_report_purchase_wizard" name="Sales Purchase History" action="action_sale_report_purchase_wizard" parent="sale.menu_sale_report" sequence="1"/>
     </data>

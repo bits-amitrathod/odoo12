@@ -92,9 +92,9 @@ class InventoryNotificationScheduler(models.TransientModel):
             'header': ['Catalog number', 'Description', 'Quantity'],
             'columnProps': ['sku', 'Product', 'qty'],
             'closing_content': 'Thanks & Regards,<br/> Warehouse Team',
-            'description':"Hi " + final_user.display_name + \
-                              ", <br/><br/> Please find detail Of Sale Order: " + picking.sale_id.name+ "<br/>"+\
-                             "" ,
+            'description': "Hi " + final_user.display_name +
+                        ", <br/><br/> Please find detail Of Sale Order: " + picking.sale_id.name + "<br/><br/>" +
+                        "<strong> Notes :  </strong>" + (picking.note or "N/A") + "" ,
         }
         # < strong > Notes: < / strong > " + (str(picking.sale_id.sale_note) if picking.sale_id.sale_note else "
         # N / A
@@ -103,8 +103,6 @@ class InventoryNotificationScheduler(models.TransientModel):
                               ", <br/><br/> Please find detail Of Sale Order: " + picking.sale_id.name+ "<br/>"+\
                              '''
 
-        print("Inside Pull")
-        print(final_user.sudo().email)
         self.process_common_email_notification_template(super_user, final_user, vals['subject'], vals['description'],
                                                         vals['sale_order_lines'], vals['header'],
                                                         vals['columnProps'], vals['closing_content'])
@@ -138,6 +136,8 @@ class InventoryNotificationScheduler(models.TransientModel):
             'subject': "Pick Done For Sale Order # " + picking.sale_id.name,
             'description': "Hi Shipping Team, <br/><br/> " +
                            "<div style=\"text-align: center;width: 100%;\"><strong>The PICK has been completed!</strong></div><br/>" +
+                           "<strong> Salesperson: </strong>" + (sale_order_ref.user_id.partner_id.name or "N/A") + "<br/>" + \
+                           "<strong> Order Processor: </strong>" + (sale_order_ref.order_processor.partner_id.name or "N/A") + "<br/>" + \
                            "<strong> Please proceed with the pulling and shipping of Sales Order: </strong>" + sale_order_ref.name + "<br/>" + \
                            "<strong> Customer PO #:  </strong>" + (sale_order_ref.client_order_ref or "N/A") + "<br/>" + \
                            "<strong> Carrier Info:  </strong>" + (sale_order_ref.carrier_info or "N/A") + "<br/>" + \
@@ -149,10 +149,10 @@ class InventoryNotificationScheduler(models.TransientModel):
                                '%m/%d/%Y')) if picking.scheduled_date else "N/A") + \
                            "<br/><strong> Customer Name:  </strong>" + (
                                    sale_order_ref.partner_id.name or "") + "<br/>" + \
-                           "<strong> Shipping Address: </strong> " + (address_ref.street or "") + \
-                           (address_ref.city or "") + (address_ref.state_id.name or "") + (address_ref.zip or "") + \
+                           "<strong> Shipping Address: </strong> <br/>" + (address_ref.street+'<br/>' or "") + \
+                           (address_ref.city+'<br/>' or "") + (address_ref.state_id.name+', ' or "") + (address_ref.zip+'<br/>' or "") + \
                            (address_ref.country_id.name or "") + "<br/>"+ \
-                           "<strong> Notes :  </strong>" + (sale_order_ref.sale_note or "N/A"),
+                           "<strong> Notes :  </strong>" + (picking.note or "N/A"),
 
             'header': ['Catalog number', 'Description', 'Initial Quantity', 'Lot', 'Expiration Date', 'Quantity Done'],
             'columnProps': ['sku', 'Product', 'qty', 'lot_name', 'lot_expired_date', 'qty_done'],
@@ -277,8 +277,6 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                         vals['columnProps'], vals['closing_content'],
                                                         self.all_email, picking)
 
-
-
     def out_notification_for_sale(self, picking):
         Stock_Moves = self.env['stock.move'].search([('picking_id', '=', picking.id)])
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
@@ -303,7 +301,9 @@ class InventoryNotificationScheduler(models.TransientModel):
         vals = {
             'sale_order_lines': sales_order,
             'subject': "Sale Order # " + picking.sale_id.name + " is Out for Delivery for customer " + partner_name,
-            'description': "Hi " + picking.sale_id.user_id.display_name + ",<br> Please find detail Of Sale Order: " + picking.sale_id.name + " and their tracking is " + tracking,
+            'description': "Hi " + picking.sale_id.user_id.display_name + ",<br><br> Please find detail Of Sale Order: "
+                           + picking.sale_id.name + " and their tracking is " + tracking +
+                            "<br><br> <strong> Notes : </strong>" + (picking.note or "N/A") + "",
             'header': ['Catalog number', 'Description', 'Quantity'],
             'columnProps': ['sku', 'Product', 'qty'],
             'closing_content': 'Thanks & Regards, <br/> Warehouse Team'
@@ -403,40 +403,81 @@ class InventoryNotificationScheduler(models.TransientModel):
                 descrption = "<strong>Good morning " + customr.name + "</strong>" \
                                                                       "<br/> <br/> Below are items you have previously requested that are currently in stock. " \
                                                                       "In addition, below is the link to download full product catalog. Please let us know what" \
-                                                                      " ordering needs we can help provide savings on this week! <br/> <a href='/downloadCatalog'>Click Here to Download SPS Product Catalog </a>"
+                                                                      " ordering needs we can help provide savings on this week! <br/> <a href='https://www.shopsps.com/downloadCatalog'>Click Here to Download SPS Product Catalog </a>"
                 header = ['Manufacturer','Catalog number', 'Description', 'Sales Price', 'Quantity On Hand',
                           'Min Exp. Date',
                           'Max Exp. Date', 'Unit Of Measure']
                 columnProps = ['product_brand_id.name','sku_code', 'name', 'customer_price_list', 'actual_quantity', 'minExDate',
                                'maxExDate', 'uom_id.name']
-                closing_content = "Please reply to this email or contact your Account Manager to hold product or place an order. " \
-                                  "<br/>Many Thanks,		" \
-                                  "<br/>SPS Customer Care" \
-                                  "<br/>" \
-                                  "<br/><strong>Nick Zanetta</strong>" \
-                                  "<br/>412-745-0329	" \
-                                  "<br/>" \
-                                  "<br/><strong>Matt Cochran</strong>" \
-                                  "<br/>412-564-9011	" \
-                                  "<br/>" \
-                                  "<br/><strong>Joe Lamb</strong>	" \
-                                  "<br/>412-745-1327	" \
-                                  "<br/>" \
-                                  "<br/><strong>Brittany Edwards</strong>	" \
-                                  "<br/>412-434-0214	" \
-                                  "<br/>" \
-                                  "<br/><strong>Gabriella Thomas</strong>	" \
-                                  "<br/>412-745-0324" \
-                                  "<br/>" \
-                                  "<br/><strong>Kacie Colteryahn</strong>" \
-                                  "<br/>412-745-1325	" \
-                                  "<br/>" \
-                                  "<br/><strong>Summer Weinberg</strong>" \
-                                  "<br/>412-745-0328			"
+                closing_content = """
+                                    Please reply to this email or contact your Account Manager to hold product or place an order. 
+                                    <br/> Many Thanks, 
+                                    <br/> SPS Customer Care <br/>
+                                    <table style="height: 96px; width: 601px; float: left;" border="0">
+                                    <tbody>
+                                    <tr style="height: 78px;">
+                                    <td style="width: 156px; height: 78px;">
+                                    <p style="text-align: left;"><strong>Brittany Edwards</strong></p>
+                                    <p style="text-align: left;">412-434-0214</p>
+                                    </td>
+                                    <td style="width: 154px; height: 78px;">
+                                    <p><strong>Gabriella Thomas</strong></p>
+                                    <p>412-745-0324&nbsp;</p>
+                                    </td>
+                                    <td style="width: 157px; height: 78px;">
+                                    <p style="text-align: left;"><strong>Kacie Gerboc</strong></p>
+                                    <p style="text-align: left;">412-745-1325</p>
+                                    </td>
+                                    <td style="width: 123px; height: 78px;">&nbsp;</td>
+                                    </tr>
+                                    <tr style="height: 76px;">
+                                    <td style="width: 156px; height: 76px;">
+                                    <p><strong>Matt Cochran</strong></p>
+                                    <p>412-564-9011</p>
+                                    </td>
+                                    <td style="width: 154px; height: 76px;">
+                                    <p style="text-align: left;"><strong>Nick Zanetta</strong></p>
+                                    <p style="text-align: left;">412-745-0329&nbsp;</p>
+                                    </td>
+                                    <td style="width: 157px; height: 76px;">
+                                    <p style="text-align: left;"><strong>Andrew Marnoch&nbsp;</strong></p>
+                                    <p style="text-align: left;">412-745-2331&nbsp;&nbsp;</p>
+                                    </td>
+                                    <td style="width: 123px; height: 76px;">
+                                    <p style="text-align: left;"><strong>Nikki Testa</strong></p>
+                                    <p style="text-align: left;">412-248-1284</p>
+                                    </td>
+                                    </tr>
+                                    <tr style="height: 92px;">
+                                    <td style="width: 156px; height: 92px;">
+                                    <p><strong>Tyler Pusateri</strong></p>
+                                    <p>412-745-0338&nbsp;</p>
+                                    </td>
+                                    <td style="width: 154px; height: 92px;">
+                                    <p style="text-align: left;"><strong>Garret Bigley</strong></p>
+                                    <p style="text-align: left;">412-745-1327</p>
+                                    </td>
+                                    <td style="width: 157px; height: 92px;">
+                                    <p style="text-align: left;"><strong>Rachel Buck&nbsp;</strong></p>
+                                    <p style="text-align: left;">412-745-2343</p>
+                                    </td>
+                                    <td style="width: 123px; height: 92px;">
+                                    <p style="text-align: left;"><strong>Laura Herald</strong></p>
+                                    <p style="text-align: left;">412-745-2344</p>
+                                    </td>
+                                    </tr>
+                                    </tbody>
+                                    </table>
+                                    <p style="text-align: left;">&nbsp;</p>
+                                    <p style="font-weight: 400; text-align: center;">&nbsp;</p>
+
+                                    """
                 if products:
                     product_list.extend(list(products.values()))
                     if customr.user_id.email:
                         email_list_cc.append(customr.user_id.email)
+                    if customr.account_manager_cust.email:
+                        email_list_cc.append(customr.account_manager_cust.email)
                     sort_col=True
                     self.process_email_in_stock_scheduler_template(super_user, customr, subject, descrption,
                                                                    product_list,
@@ -602,8 +643,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                 red_product.append(vals)
         if yellow_products:
             self.process_notify_yellow_product(yellow_products, None, super_user)
-        if red_product:
-            self.process_notify_red_product(red_product, None, super_user)
+        # if red_product:
+        #     self.process_notify_red_product(red_product, None, super_user)
 
         '''for user in users:
             has_group = user.has_group('purchase.group_purchase_manager') or user.has_group(
@@ -703,16 +744,18 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                         self.acquisitions_email)
 
     def process_notify_red_product(self, products, to_user, from_user):
-        subject = "Products which are in red status"
-        description = "Hi Team, <br><br/>Please find a listing below of products whose inventory level status is now Color(Red):"
-        header = ['Catalog #', 'Product Description', 'Sales Price', 'Cost', 'Product Type',
-                  'Qty On Hand', 'Forecasted Quantity', 'Unit Of Measure']
-        columnProps = ['sku_code', 'product_name', 'sale_price', 'standard_price', 'product_type',
-                       'qty_on_hand', 'forecasted_qty', 'unit_of_measure']
-        closing_content = "Thanks & Regards,<br/> Admin Team"
-        self.process_common_email_notification_template(from_user, to_user, subject,
-                                                        description, products, header, columnProps, closing_content,
-                                                        self.acquisitions_email)
+        pass
+        # subject = "Products which are in red status"
+        # description = "Hi Team, <br><br/>Please find a listing below of products whose inventory level status is now Color(Red):"
+        # header = ['Catalog #', 'Product Description', 'Sales Price', 'Cost', 'Product Type',
+        #           'Qty On Hand', 'Forecasted Quantity', 'Unit Of Measure']
+        # columnProps = ['sku_code', 'product_name', 'sale_price', 'standard_price', 'product_type',
+        #                'qty_on_hand', 'forecasted_qty', 'unit_of_measure']
+        # closing_content = "Thanks & Regards,<br/> Admin Team"
+        # self.process_common_email_notification_template(from_user, to_user, subject,
+        #                                                 description, products, header, columnProps, closing_content,
+        #                                                 self.acquisitions_email)
+
     def process_notify_low_product(self, products, to_user, from_user,max_inventory_level_duration):
         subject = "Products which are in Low Stock"
         description = "Hi Team, <br><br/>Please find a listing below of products whose inventory level status is now Color(Red) : <br/><br/> <b>On Basis of Max Inventory Level Duration </b>  : " + str(max_inventory_level_duration) + " Days"
@@ -721,6 +764,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         columnProps = ['sku_code', 'product_name', 'sale_price', 'standard_price', 'product_type',
                        'qty_on_hand', 'forecasted_qty', 'unit_of_measure','current_inventory_percent','max_inventory_level','suggested_order_qty','price_range']
         closing_content = "Thanks & Regards,<br/> Admin Team"
+        _logger.info(" ********low Stock ***** email send **** after prepareing sub,hear etc...... ********")
         self.process_common_email_notification_template(from_user, to_user, subject,
                                                         description, products, header, columnProps, closing_content,
                                                         self.acquisitions_email)
@@ -802,7 +846,9 @@ class InventoryNotificationScheduler(models.TransientModel):
             if inventory_percent_color <= 75:
                 red_product.append(vals)
         if red_product:
+            _logger.info(" ********low Stock ***** email send **** after red product fount ******** 1")
             self.process_notify_low_product(red_product, None, super_user,max_inventory_level_duration)
+            _logger.info(" ********low Stock ***** email send **** after red product fount ******** 2")
 
     def process_notify_available(self):
         today_date = date.today()
@@ -969,9 +1015,12 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                                                             raise_exception=True)
                 # File Attachment Code
                 if not picking is None:
+                    # stock_picking_type = self.env['stock.picking.type'].search([('name', '=', 'Delivery Orders')])
+                    # stock_out = self.env['stock.picking'].search([('sale_id', '=', picking.sale_id.id), ('picking_type_id', '=', stock_picking_type.id)])
+
                     docids = self.env['sale.packing_list_popup'].get_packing_report(picking.sale_id)
                     data = None
-                    pdf = self.env.ref('packing_list.action_report_inventory_packing_list_pdf').render_qweb_pdf(docids,data=data)[0]
+                    pdf = self.env.ref('packing_list.action_report_inventory_packing_list_pdf').render_qweb_pdf(docids, data=data)[0]
                     values1 = {}
                     values1['attachment_ids'] = [(0, 0, {'name': picking.origin,
                                                       'type': 'binary',
@@ -987,7 +1036,6 @@ class InventoryNotificationScheduler(models.TransientModel):
         except:
             error_msg = "mail sending fail for email id: %r" + email + " sending error report to admin"
             _logger.info(error_msg)
-
 
     def process_email_in_stock_scheduler_template(self, email_from_user, email_to_user, subject, descrption, products,
                                                   header, columnProps, closing_content, email_to_team, email_list_cc,sort_col=False,
@@ -1348,10 +1396,10 @@ class InventoryNotificationScheduler(models.TransientModel):
             if purchase_order.shipping_number:
                 ship_label = self.env['ir.attachment'].search(
                     [('res_model', '=', 'purchase.order'), ('res_name', '=', purchase_order.name),
-                     ('mimetype', '=', 'application/pdf')])[0]
+                     ('mimetype', '=', 'application/pdf'),('datas_fname','like','%FedEx_Label%')],order="id desc")[0]
 
             data = None
-            pdf = self.env.ref('vendor_offer.action_report_vendor_offer').render_qweb_pdf(purchase_order_id, data=data)[
+            pdf = self.env.ref('vendor_offer.action_report_vendor_offer_accepted').render_qweb_pdf(purchase_order_id, data=data)[
                 0]
             values1 = {}
             values1['attachment_ids'] = [(0, 0, {'name': purchase_order.name,

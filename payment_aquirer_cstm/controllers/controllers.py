@@ -3,6 +3,9 @@ import odoo
 from odoo import http
 from odoo.http import request
 from odoo.addons.portal.controllers.mail import _message_post_helper
+from odoo.exceptions import AccessError, MissingError
+from odoo.tools import consteq
+from odoo import api, fields, models, _
 
 
 class PaymentAquirerCstm(http.Controller):
@@ -16,7 +19,7 @@ class PaymentAquirerCstm(http.Controller):
                 kwargs['purchase_order'] = order.client_order_ref
 
             if 'purchase_order' in kwargs and kwargs['purchase_order'] != '':
-                tx_id = request.session.get('sale_transaction_id')
+                tx_id = request.session.get('__website_sale_last_tx_id')
                 if tx_id:
                     transaction = request.env['payment.transaction'].sudo().browse(tx_id)
                     transaction.state = 'pending'
@@ -28,6 +31,7 @@ class PaymentAquirerCstm(http.Controller):
                     request.redirect('/shop')
             if 'return_url' not in kwargs:
                 vals = {'error': "Please enter Purchase order"}
+        # request.session.set('sale_transaction_id', request.session.get('__website_sale_last_tx_id'))
         return http.request.render('payment_aquirer_cstm.purchase_order_page', vals)
 
     @http.route(['/shop/cart/updatePurchaseOrderNumber'], type='json', auth="public", methods=['POST'], website=True,
@@ -54,6 +58,18 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
         responce = super(WebsiteSalesPaymentAquirerCstm, self).payment(**post)
 
         ctx = responce.qcontext
+
+        if 'acquirers' not in ctx:
+            ctx['showShippingNote'] = False
+            ctx['expedited_shipping'] = 'expedited_shipping' in request.session and request.session[
+                'expedited_shipping'] or ""
+            for x in ctx['deliveries']:
+                if x.delivery_type == "fixed" and x.fixed_price == 0:
+                    ctx['showShippingNote'] = True
+                    ctx['freeShipingLabel'] = "delivery_" + str(x.id)
+                break
+            return responce
+
         if 'order' in ctx:
             if not ctx['order'].partner_id.allow_purchase:
                 for x in ctx['acquirers']:
@@ -83,12 +99,15 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
         if 'expedited_shipping' in request.session:
             expedited_shipping = request.session['expedited_shipping']
             if expedited_shipping:
-                order.write({'sale_note': expedited_shipping})
-                _message_post_helper(res_model='sale.order', res_id=order.id,
-                                     message="<strong>Expedited Shipping:</strong> " + expedited_shipping,
-                                     token=order.access_token,
-                                     message_type='notification', subtype="mail.mt_note",
-                                     partner_ids=order.user_id.sudo().partner_id.ids)
+                order.sudo().write({'sale_note': expedited_shipping})
+                #order_sudo = self._document_check_access('sale.order', order.id, access_token=order.access_token)
+                # _message_post_helper(res_model='sale.order', res_id=order.id,
+                #                      message="<strong>Expedited Shipping:</strong> " + expedited_shipping,
+                #                      token=order.access_token,
+                #                      message_type='notification', subtype="mail.mt_note",
+                #                      partner_ids=order.user_id.sudo().partner_id.ids)
                 request.session['expedited_shipping'] = ""
 
         return responce
+
+

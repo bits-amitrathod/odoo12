@@ -63,7 +63,7 @@ class TrendingReportListPopUp(models.TransientModel):
             'views': [(tree_view_id, 'tree')],
             'name': _('Packing List'),
             'res_model': x_res_model,
-            'domain': [('id', 'in', picking_ids),('picking_type_id.code', '=', 'outgoing')],
+            'domain': [('id', 'in', picking_ids),('picking_type_id.name', '=', 'Delivery Orders')],
             'target': 'main'
         }
         # action.update({'target': 'main'})

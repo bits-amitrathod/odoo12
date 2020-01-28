@@ -160,3 +160,14 @@ class account_register_payments(models.TransientModel):
         }
 
         return values
+
+class hide_state_code(models.Model):
+    _inherit = 'res.country.state'
+
+    @api.multi
+    def name_get(self):
+        # super(hide_state_code,self).name_get()
+        result = []
+        for record in self:
+            result.append((record.id, "{}".format(record.name)))
+        return result

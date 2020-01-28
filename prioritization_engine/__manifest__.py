@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Priority Engine",
+    'name': "STOCKHAWK ",
     'author': "Benchmark IT Solutions (I) Pvt Ltd.",
     'website': "http://www.benchmarkitsolutions.com",
 
@@ -18,6 +18,7 @@
     'data': [
         'security/res_user_prioritization.xml',
         'security/ir.model.access.csv',
+        'views/email_template.xml',
         'views/res_config_setting_view.xml',
         'views/saleorder_views.xml',
         'views/report_invoice.xml',
@@ -26,6 +27,7 @@
         'views/templates.xml',
         'views/prioritization_schedular_views.xml',
         'views/release_product_quantity_scheduler_views.xml',
+        'views/process_high_priority_requests.xml',
         'data/sales_team_data_prioritization.xml',
     ],
 

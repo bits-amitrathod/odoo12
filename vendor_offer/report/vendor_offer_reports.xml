@@ -12,5 +12,17 @@
                 ('Vendor Offer- %s' % (object.name))"
         />
 
+        <report
+            string="Vendor Offer"
+            id="action_report_vendor_offer_accepted"
+            model="purchase.order"
+            report_type="qweb-pdf"
+            name="vendor_offer.report_vendorofferdraft_accepted"
+            file="vendor_offer.report_vendorofferdraft_accepted"
+            print_report_name="
+                ('Vendor Offer- %s' % (object.name))"
+            menu="False"
+        />
+
     </data>
 </odoo>

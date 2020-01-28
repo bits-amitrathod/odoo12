@@ -1,15 +1,15 @@
 <odoo>
-    <data>
-
+    <data  noupdate="1">
         <record id="seq_sfnumber" model="ir.sequence">
             <field name="name">Sale Force</field>
             <field name="code">sale.force.no</field>
-            <field name="prefix">SF</field>
+            <!--<field name="prefix">SF</field>-->
             <field name="padding">5</field>
-<!--            <field name="number_next">50000</field>-->
+            <field name="number_next">12000</field>
             <field name="number_increment">1</field>
         </record>
-
+    </data>
+    <data>
         <record id="view_form_prioritization_customer" model="ir.ui.view">
             <field name="name">Prioritization customer form</field>
             <field name="model">res.partner</field>
@@ -265,6 +265,17 @@
             </field>
         </record>
 
+        <record id="view_template_property_form_for_update_cost" model="ir.ui.view">
+            <field name="name">Product Update Cost</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="stock_account.view_template_property_form"/>
+            <field name="arch" type="xml">
+                <xpath expr ="//div[@class='col-lg-2']" position="attributes">
+                    <attribute name="class">o_row</attribute>
+                </xpath>
+            </field>
+        </record>
+
         <record id="product_form_for_mfg_uom" model="ir.ui.view">
             <field name="name">product.product.form_for_mfg_uom</field>
             <field name="model">product.template</field>
@@ -272,6 +283,7 @@
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet/notebook/page/group/group/field[@name='uom_po_id']" position="after">
                     <field name="manufacturer_uom" groups="uom.group_uom" options="{'no_create': True}"/>
+                    <field name="actual_uom" groups="uom.group_uom" options="{'no_create': True}"/>
                 </xpath>
             </field>
         </record>
@@ -475,7 +487,7 @@
         </record>
 
         <!-- Top menu item -->
-        <menuitem name="Priority Engine" id="prioritization_engine.menu_root"
+        <menuitem name="STOCKHAWK" id="prioritization_engine.menu_root"
                   web_icon="prioritization_engine,static/description/icon.png"/>
 
         <!-- menu categories -->

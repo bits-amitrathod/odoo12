@@ -155,11 +155,10 @@ class WebsiteSale(http.Controller):
             Order.action_cancel()
             Order.action_draft()
             Order.action_confirm()
-            picking = request.env['stock.picking'].sudo().search(
-                [('sale_id', '=', Order.id), ('picking_type_id', '=', 1), ('state', 'not in', ['draft', 'cancel'])])
-            picking.write({'state': 'assigned'})
-            stock_move = request.env['stock.move'].sudo().search([('picking_id', '=', picking.id)])
-            stock_move.write({'state': 'assigned'})
+            # picking = request.env['stock.picking'].sudo().search([('sale_id', '=', Order.id), ('picking_type_id', '=', 1), ('state', 'not in', ['draft', 'cancel'])])
+            # picking.write({'state': 'assigned'})
+            # stock_move = request.env['stock.move'].sudo().search([('picking_id', '=', picking.id)])
+            # stock_move.write({'state': 'assigned'})
         else:
             Order.write({'state': 'sale', 'confirmation_date': datetime.now()})
 
@@ -194,7 +193,6 @@ class WebsiteSale(http.Controller):
 
     @http.route(['/my/orders/<int:order_id>/declines'], type='http', auth="public", methods=['POST'], website=True)
     def decline(self, order_id, access_token=None, **post):
-        print ("Inside SPS Controller....")
         try:
             order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
         except (AccessError, MissingError):
@@ -342,7 +340,7 @@ class CustomerPortal(CustomerPortal):
         })
         return request.render("website_quote_ext.portal_my_vendor_offers", values)
 
-    @http.route(['/my/vendor/<int:order_id>'], type='http', auth="user", website=True)
+    @http.route(['/my/vendor/<int:order_id>'], type='http', auth="public", website=True)
     def portal_my_vendor_offer(self, order_id=None, **kw):
         order = request.env['purchase.order'].browse(order_id)
         try:
@@ -355,4 +353,7 @@ class CustomerPortal(CustomerPortal):
             'order': order.sudo(),
         }
         #values.update(get_records_pager(history, order))
-        return request.render("website_quote_ext.portal_my_vendor_offer", values)
+        if order.state == 'purchase':
+            return request.redirect('/my')
+        else:
+            return request.render("website_quote_ext.portal_my_vendor_offer", values)

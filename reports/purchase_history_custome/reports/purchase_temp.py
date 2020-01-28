@@ -13,10 +13,11 @@ class ReportPurchaseSalespersonWise(models.AbstractModel):
 
         popup = self.env['popup.view.model.purchase.history'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
 
-
-        date = datetime.strptime(str(popup.start_date), '%Y-%m-%d').strftime('%m/%d/%Y') + " - " + datetime.strptime(
+        if popup.start_date and popup.end_date:
+            date = datetime.strptime(str(popup.start_date), '%Y-%m-%d').strftime('%m/%d/%Y') + " - " + datetime.strptime(
             str(popup.end_date), '%Y-%m-%d').strftime('%m/%d/%Y')
-
+        else:
+            date = False
 
         return {
             'doc_ids': data.get('ids'),
