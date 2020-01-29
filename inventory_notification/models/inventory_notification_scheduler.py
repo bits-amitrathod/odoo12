@@ -130,6 +130,19 @@ class InventoryNotificationScheduler(models.TransientModel):
                 sales_order.append(sale_order)
         sale_order_ref = picking.sale_id
         address_ref = sale_order_ref.partner_shipping_id
+        shipping_adrs = ""
+        if address_ref.street:
+            shipping_adrs = address_ref.street+'<br/>'
+        if address_ref.street2:
+            shipping_adrs += address_ref.street2 + '<br/>'
+        if address_ref.city:
+            shipping_adrs += address_ref.city+'<br/>'
+        if address_ref.state_id.name:
+            shipping_adrs += address_ref.state_id.name + ', '
+        if address_ref.zip:
+            shipping_adrs += address_ref.zip + '<br/>'
+        if address_ref.country_id.name:
+            shipping_adrs += address_ref.country_id.name
 
         vals = {
             'sale_order_lines': sales_order,
@@ -149,9 +162,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                                '%m/%d/%Y')) if picking.scheduled_date else "N/A") + \
                            "<br/><strong> Customer Name:  </strong>" + (
                                    sale_order_ref.partner_id.name or "") + "<br/>" + \
-                           "<strong> Shipping Address: </strong> " + (address_ref.street or "") + \
-                           (address_ref.city or "") + (address_ref.state_id.name or "") + (address_ref.zip or "") + \
-                           (address_ref.country_id.name or "") + "<br/>"+ \
+                           "<strong> Shipping Address: </strong> <br/>" + shipping_adrs + "<br/>"+ \
                            "<strong> Notes :  </strong>" + (picking.note or "N/A"),
 
             'header': ['Catalog number', 'Description', 'Initial Quantity', 'Lot', 'Expiration Date', 'Quantity Done'],

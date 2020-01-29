@@ -23,10 +23,39 @@ class sale_order(models.Model):
     _inherit = 'sale.order'
 
     sale_note = fields.Text('Sale Notes')
-
     carrier_track_ref = fields.Char('Tracking Reference', store=True, readonly=True, compute='_get_carrier_tracking_ref')
-
     delivery_method_readonly_flag = fields.Integer('Delivery method readonly flag', default=1, compute='_get_delivery_method_readonly_flag')
+    stockhawk_discount = fields.Monetary(string='Stockhawk Discount 5%', store=True, readonly=True, compute='_amount_all')
+
+    @api.depends('order_line.price_total')
+    def _amount_all(self):
+        """
+        Compute the total amounts of the SO.
+        """
+        for order in self:
+            amount_untaxed = amount_tax = 0.0
+            stockhawk_additional_discount = 5  # In Percent(5%)
+
+            for line in order.order_line:
+                amount_untaxed += line.price_subtotal
+                amount_tax += line.price_tax
+
+            if order.team_id.team_type == 'engine':
+                stockhawk_discount = (amount_untaxed * stockhawk_additional_discount) / 100
+                amount_untaxed_with_discount = amount_untaxed - stockhawk_discount
+
+                order.update({
+                    'amount_untaxed': amount_untaxed,
+                    'stockhawk_discount': stockhawk_discount,
+                    'amount_tax': amount_tax,
+                    'amount_total': amount_untaxed_with_discount + amount_tax,
+                })
+            else:
+                order.update({
+                    'amount_untaxed': amount_untaxed,
+                    'amount_tax': amount_tax,
+                    'amount_total': amount_untaxed + amount_tax,
+                })
 
     def write(self, val):
         super(sale_order, self).write(val)
