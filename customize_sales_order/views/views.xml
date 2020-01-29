@@ -23,10 +23,6 @@
                       <field name="sale_note" string="Note" placeholder="Add an internal note that will be printed on the Stock Operations sheet"/>
                   </page>
                 </xpath>
-                <xpath expr="/form/sheet/notebook/page/group[@name='sale_total']/field[@name='amount_untaxed']" position="after">
-                    <field name="team_id" invisible="1"/>
-                    <field name="stockhawk_discount" widget='monetary' options="{'currency_field': 'currency_id'}" attrs="{'invisible':[('team_id', '!=', 6)]}"/>
-                </xpath>
             </field>
     </record>
 
