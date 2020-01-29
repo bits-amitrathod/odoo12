@@ -50,8 +50,8 @@
             <field name="name">Vendor Offer - Send by Email</field>
             <field name="model_id" ref="purchase.model_purchase_order"/>
             <field name="subject">${object.company_id.name} Order (Ref ${object.name or 'n/a' })</field>
-            <field name="email_from">${object.super_user_email}</field>
-             <!--<field name="email_from">${object.sudo().create_uid.email_formatted | safe}</field>-->
+            <!--<field name="email_from">${object.super_user_email}</field>-->
+             <field name="email_from">${object.sudo().create_uid.email_formatted | safe}</field>
             <field name="partner_to">${object.partner_id.id}</field>
              <field name="body_html"><![CDATA[
                 % set access_url = object.get_mail_url() or ''
@@ -69,11 +69,17 @@
                 % if object.origin:
                     (RFQ origin: ${object.origin})
                 % endif
-
-
-                    Credit amounting <strong>${format_amount(object.credit_amount_total, object.currency_id)}</strong>
-
+                 % if object.offer_type=='cash':
                     Cash amounting <strong>${format_amount(object.cash_amount_total, object.currency_id)}</strong>
+
+                % elif object.offer_type=='credit':
+                    Credit amounting <strong>${format_amount(object.credit_amount_total, object.currency_id)}</strong>
+                 % elif object.offer_type=='cashcredit':
+                    Credit amounting <strong>${format_amount(object.credit_amount_total, object.currency_id)}</strong>
+                    Cash amounting <strong>${format_amount(object.cash_amount_total, object.currency_id)}</strong>
+                  % else:
+                     Cash amounting <strong>${format_amount(object.cash_amount_total, object.currency_id)}</strong>
+                 % endif
 
                 from ${object.company_id.name}.
                 </p>
