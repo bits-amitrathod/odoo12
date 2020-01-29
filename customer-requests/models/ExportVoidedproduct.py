@@ -93,16 +93,27 @@ class VoidedProductXL(http.Controller):
                     quantity = line.required_quantity
                 else:
                     quantity = line.quantity
+
+                mfr_catalog_no = False
+                if line.mfr_catalog_no:
+                    mfr_catalog_no = line.mfr_catalog_no
+                else:
+                    if line.un_mapped_data:
+                        un_mapped_dict = line.un_mapped_data.lower()
+                        if 'mfr.catalog' in json.loads(un_mapped_dict):
+                            mfr_catalog_no = json.loads(un_mapped_dict).get('mfr.catalog')
+
                 price = False
                 if line.un_mapped_data:
                     un_mapped_dict = line.un_mapped_data.lower()
                     if 'cost' in json.loads(un_mapped_dict):
                         price = json.loads(un_mapped_dict).get('cost')
-                records.append([line.customer_id.name, line.document_id.document_name, line.product_description,
-                                line.customer_sku, quantity, price, line.status])
+
+                records.append([line.customer_id.name, line.document_id.document_name, mfr_catalog_no, line.product_description,
+                                line.customer_sku, quantity, price])
             res = request.make_response(
-                self.from_data(["Customer Name", "Document Name", "Product Description", "Customer SKU",
-                                "Quantity Requested", "Price", "Status"], records),
+                self.from_data(["Customer Name", "Document Name", "Product OEM", "Product Description", "Customer SKU",
+                                "Quantity Requested", "Price"], records),
                 headers=[('Content-Disposition', content_disposition('voided_products' + '.xls')),
                          ('Content-Type', 'application/vnd.ms-excel')],)
             records.clear()
