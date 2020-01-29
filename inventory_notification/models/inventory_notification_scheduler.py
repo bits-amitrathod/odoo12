@@ -130,6 +130,19 @@ class InventoryNotificationScheduler(models.TransientModel):
                 sales_order.append(sale_order)
         sale_order_ref = picking.sale_id
         address_ref = sale_order_ref.partner_shipping_id
+        shipping_adrs = ""
+        if address_ref.street:
+            shipping_adrs = address_ref.street+'<br/>'
+        if address_ref.street2:
+            shipping_adrs += address_ref.street2 + '<br/>'
+        if address_ref.city:
+            shipping_adrs += address_ref.city+'<br/>'
+        if address_ref.state_id.name:
+            shipping_adrs += address_ref.state_id.name + ', '
+        if address_ref.zip:
+            shipping_adrs += address_ref.zip + '<br/>'
+        if address_ref.country_id.name:
+            shipping_adrs += address_ref.country_id.name
 
         vals = {
             'sale_order_lines': sales_order,
@@ -149,9 +162,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                                '%m/%d/%Y')) if picking.scheduled_date else "N/A") + \
                            "<br/><strong> Customer Name:  </strong>" + (
                                    sale_order_ref.partner_id.name or "") + "<br/>" + \
-                           "<strong> Shipping Address: </strong> " + (address_ref.street or "") + \
-                           (address_ref.city or "") + (address_ref.state_id.name or "") + (address_ref.zip or "") + \
-                           (address_ref.country_id.name or "") + "<br/>"+ \
+                           "<strong> Shipping Address: </strong> <br/>" + shipping_adrs + "<br/>"+ \
                            "<strong> Notes :  </strong>" + (picking.note or "N/A"),
 
             'header': ['Catalog number', 'Description', 'Initial Quantity', 'Lot', 'Expiration Date', 'Quantity Done'],
@@ -643,8 +654,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                 red_product.append(vals)
         if yellow_products:
             self.process_notify_yellow_product(yellow_products, None, super_user)
-        if red_product:
-            self.process_notify_red_product(red_product, None, super_user)
+        # if red_product:
+        #     self.process_notify_red_product(red_product, None, super_user)
 
         '''for user in users:
             has_group = user.has_group('purchase.group_purchase_manager') or user.has_group(
@@ -744,16 +755,17 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                         self.acquisitions_email)
 
     def process_notify_red_product(self, products, to_user, from_user):
-        subject = "Products which are in red status"
-        description = "Hi Team, <br><br/>Please find a listing below of products whose inventory level status is now Color(Red):"
-        header = ['Catalog #', 'Product Description', 'Sales Price', 'Cost', 'Product Type',
-                  'Qty On Hand', 'Forecasted Quantity', 'Unit Of Measure']
-        columnProps = ['sku_code', 'product_name', 'sale_price', 'standard_price', 'product_type',
-                       'qty_on_hand', 'forecasted_qty', 'unit_of_measure']
-        closing_content = "Thanks & Regards,<br/> Admin Team"
-        self.process_common_email_notification_template(from_user, to_user, subject,
-                                                        description, products, header, columnProps, closing_content,
-                                                        self.acquisitions_email)
+        pass
+        # subject = "Products which are in red status"
+        # description = "Hi Team, <br><br/>Please find a listing below of products whose inventory level status is now Color(Red):"
+        # header = ['Catalog #', 'Product Description', 'Sales Price', 'Cost', 'Product Type',
+        #           'Qty On Hand', 'Forecasted Quantity', 'Unit Of Measure']
+        # columnProps = ['sku_code', 'product_name', 'sale_price', 'standard_price', 'product_type',
+        #                'qty_on_hand', 'forecasted_qty', 'unit_of_measure']
+        # closing_content = "Thanks & Regards,<br/> Admin Team"
+        # self.process_common_email_notification_template(from_user, to_user, subject,
+        #                                                 description, products, header, columnProps, closing_content,
+        #                                                 self.acquisitions_email)
 
     def process_notify_low_product(self, products, to_user, from_user,max_inventory_level_duration):
         subject = "Products which are in Low Stock"
