@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Vendor Offer",
+    'name': " Vendor Offer",
 
     'author': "Benchmark IT Solutions",
     'website': "http://www.benchmarkitsolutions.com",
