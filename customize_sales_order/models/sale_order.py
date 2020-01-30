@@ -23,10 +23,27 @@ class sale_order(models.Model):
     _inherit = 'sale.order'
 
     sale_note = fields.Text('Sale Notes')
-
     carrier_track_ref = fields.Char('Tracking Reference', store=True, readonly=True, compute='_get_carrier_tracking_ref')
-
     delivery_method_readonly_flag = fields.Integer('Delivery method readonly flag', default=1, compute='_get_delivery_method_readonly_flag')
+
+    @api.depends('order_line.price_total')
+    def _amount_all(self):
+        """
+        Compute the total amounts of the SO.
+        """
+        for order in self:
+            amount_untaxed = amount_tax = 0.0
+            stockhawk_additional_discount = 5  # In Percent(5%)
+
+            for line in order.order_line:
+                amount_untaxed += line.price_subtotal
+                amount_tax += line.price_tax
+
+            order.update({
+                'amount_untaxed': amount_untaxed,
+                'amount_tax': amount_tax,
+                'amount_total': amount_untaxed + amount_tax,
+            })
 
     def write(self, val):
         super(sale_order, self).write(val)
