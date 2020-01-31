@@ -4,6 +4,17 @@
 <!-- License URL : https://store.webkul.com/license.html/ -->
 <odoo>
     <data>
+        <record id="bank_cheque_paperformat" model="report.paperformat">
+            <field name="name">Bank Cheque Print Paper Format</field>
+            <field name="default" eval="False"/>
+            <field name="margin_top">00</field>
+            <field name="margin_bottom">00</field>
+            <field name="margin_left">00</field>
+            <field name="margin_right">00</field>
+            <field name="header_spacing">00</field>
+            <field name="orientation">Portrait</field>
+        </record>
+        
         <template id="bank_cheque_print_pdf_report">
             <t t-call="web.basic_layout">
                 <t t-foreach="docs" t-as="o">
@@ -57,17 +68,6 @@
                 </t>
             </t>
         </template>
-
-        <record id="bank_cheque_paperformat" model="report.paperformat">
-            <field name="name">Bank Cheque Print Paper Format</field>
-            <field name="default" eval="False"/>
-            <field name="margin_top">00</field>
-            <field name="margin_bottom">00</field>
-            <field name="margin_left">00</field>
-            <field name="margin_right">00</field>
-            <field name="header_spacing">00</field>
-            <field name="orientation">Portrait</field>
-        </record>
 
         <report id="bank_cheque_print_report" model="res.bank" string="Cheque Preview" report_type="qweb-pdf" name="odoo_cheque_management.bank_cheque_print_pdf_report" file="odoo_cheque_management.bank_cheque_print_pdf_report" print_report_name="(object.name)" paperformat="odoo_cheque_management.bank_cheque_paperformat"/>
 
