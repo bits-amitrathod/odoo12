@@ -221,14 +221,16 @@
                         <button name="action_send_offer_email" string="Send" type="object" context="{'send_rfq':True}"
                                 class="btn-primary" attrs="{'invisible':[('state', 'in', ('purchase','cancel'))]}"/>
                         <button name="action_print_vendor_offer" string="Print" type="object" class="btn-primary"
-                                attrs="{'invisible':[('state', 'in', ('purchase'))]}"/>
-                        <button name="action_button_confirm" states="ven_draft,ven_sent"
-                                context="{'vendor_offer_data': True}" string="Offer Accepted" type="object"/>
-                        <button name="action_cancel_vendor_offer" states="ven_draft,ven_sent" string="Cancel"
-                                type="object"/>
+                                attrs="{'invisible':[('state', 'in', ('purchase','cancel'))]}"/>
                         <button name="%(vendor_offer.action_purchase_order_edit_note)d" type="action"
                                 context="{'isFooterInvisible':False}"
                                 string="Add Note"/>
+                        <!--<button name="action_button_confirm_api_cash" states="ven_draft,ven_sent"-->
+                                <!--context="{'vendor_offer_data': True}" string="Offer Accept As Cash" type="object"/>-->
+                        <!--<button name="action_button_confirm_api_credit" states="ven_draft,ven_sent"-->
+                                <!--context="{'vendor_offer_data': True}" string="Offer Accept As Credit" type="object"/>-->
+                        <button name="action_confirm_offer_both" states="ven_draft,ven_sent"
+                                context="{'vendor_offer_data': True}" string="Offer Accepted" type="object"/>
                         <field name="status" widget="statusbar" statusbar_visible="ven_draft,ven_sent,purchase"
                                readonly="1"/>
                         <field name="vendor_offer_data" invisible="1"/>
@@ -239,6 +241,8 @@
                                 name="%(action_view_tracking_text)d"
                                 attrs="{'invisible': [('status', 'not in', ('ven_draft','ven_sent'))]}"
                                 groups="stock.group_stock_user"/>
+                         <button name="action_cancel_vendor_offer" states="ven_draft,ven_sent" string="Cancel"
+                                type="object"/>
                         <!--                        <button string="Track Shipment"-->
                         <!--                                type="object" class="btn-primary"-->
                         <!--                                name="action_fedex_track_request"-->
@@ -743,6 +747,27 @@
                         <button name="download_excel_ven_price" string="Export To File" type="object"
                                 class="btn-primary"/>
                         <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="vendor_offer_accept_popup" model="ir.ui.view">
+            <field name="name">ven.offer.accept.vendor</field>
+            <field name="model">purchase.order</field>
+            <field name="priority">20</field>
+            <field name="arch" type="xml">
+                <form string="Offer Accept">
+                    <group>
+                        <div>
+                             <field name="offer_type_popup"></field>
+                        </div>
+
+                    </group>
+                    <footer>
+                        <button name="popup_confirm_vendor_offer" string="Offer Accepted" type="object"
+                                class="btn-primary"/>
+                        <button string="Back" class="btn-default" special="cancel"/>
                     </footer>
                 </form>
             </field>
