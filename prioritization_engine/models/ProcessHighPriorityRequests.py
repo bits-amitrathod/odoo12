@@ -40,6 +40,7 @@ class ProcessHighPriorityRequests(models.Model):
                     _logger.error("Error processing requests %r", exc)
             else:
                 _logger.info('customer request count is 0.')
+                document.write({'status': 'In Process'})
 
             try:
                 self.env['prioritization.engine.model'].check_uploaded_document_status(document.id)

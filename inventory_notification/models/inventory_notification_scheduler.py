@@ -652,8 +652,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                 yellow_products.append(vals)
             elif product.inventory_percent_color <= 75:
                 red_product.append(vals)
-        if yellow_products:
-            self.process_notify_yellow_product(yellow_products, None, super_user)
+        # if yellow_products:
+        #     self.process_notify_yellow_product(yellow_products, None, super_user)
         # if red_product:
         #     self.process_notify_red_product(red_product, None, super_user)
 
@@ -689,10 +689,10 @@ class InventoryNotificationScheduler(models.TransientModel):
             }
             if product.inventory_percent_color > 125:
                 green_products.append(vals)
-        if green_products:
-            self.process_notify_green_product(green_products, None, super_user)
-        if yellow_products:
-            self.process_notify_yellow_product(yellow_products, None, super_user)
+        # if green_products:
+        #     self.process_notify_green_product(green_products, None, super_user)
+        # if yellow_products:
+        #     self.process_notify_yellow_product(yellow_products, None, super_user)
 
         '''for user in users:
             has_group = user.has_group('purchase.group_purchase_manager') or user.has_group(
@@ -731,28 +731,30 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                                 closing_content)
 
     def process_notify_green_product(self, products, to_user, from_user):
-        subject = "Products which are in green status"
-        description = "Hi Team, <br><br/>Please find a listing below of products whose inventory level status is now Color(Green):"
-        header = ['Catalog #', 'Product Description', 'Sales Price', 'Cost', 'Product Type',
-                  'Quantity On Hand', 'Forecasted Quantity', 'Unit Of Measure']
-        columnProps = ['sku_code', 'product_name', 'sale_price', 'standard_price', 'product_type',
-                       'qty_on_hand', 'forecasted_qty', 'unit_of_measure']
-        closing_content = "Thanks & Regards,<br/> Admin Team"
-        self.process_common_email_notification_template(from_user, to_user, subject,
-                                                        description, products, header, columnProps, closing_content,
-                                                        self.acquisitions_email)
+        pass
+        # subject = "Products which are in green status"
+        # description = "Hi Team, <br><br/>Please find a listing below of products whose inventory level status is now Color(Green):"
+        # header = ['Catalog #', 'Product Description', 'Sales Price', 'Cost', 'Product Type',
+        #           'Quantity On Hand', 'Forecasted Quantity', 'Unit Of Measure']
+        # columnProps = ['sku_code', 'product_name', 'sale_price', 'standard_price', 'product_type',
+        #                'qty_on_hand', 'forecasted_qty', 'unit_of_measure']
+        # closing_content = "Thanks & Regards,<br/> Admin Team"
+        # self.process_common_email_notification_template(from_user, to_user, subject,
+        #                                                 description, products, header, columnProps, closing_content,
+        #                                                 self.acquisitions_email)
 
     def process_notify_yellow_product(self, products, to_user, from_user):
-        subject = "Products which are in yellow status"
-        description = "Hi Team, <br><br/>Please find a listing below of products whose inventory level status is now Color(Yellow):"
-        header = ['Catalog #', 'Product Description', 'Sales Price', 'Cost', 'Product Type',
-                  'Qty On Hand', 'Forecasted Quantity', 'Unit Of Measure']
-        columnProps = ['sku_code', 'product_name', 'sale_price', 'standard_price', 'product_type',
-                       'qty_on_hand', 'forecasted_qty', 'unit_of_measure']
-        closing_content = "Thanks & Regards,<br/> Admin Team"
-        self.process_common_email_notification_template(from_user, to_user, subject,
-                                                        description, products, header, columnProps, closing_content,
-                                                        self.acquisitions_email)
+        pass
+        # subject = "Products which are in yellow status"
+        # description = "Hi Team, <br><br/>Please find a listing below of products whose inventory level status is now Color(Yellow):"
+        # header = ['Catalog #', 'Product Description', 'Sales Price', 'Cost', 'Product Type',
+        #           'Qty On Hand', 'Forecasted Quantity', 'Unit Of Measure']
+        # columnProps = ['sku_code', 'product_name', 'sale_price', 'standard_price', 'product_type',
+        #                'qty_on_hand', 'forecasted_qty', 'unit_of_measure']
+        # closing_content = "Thanks & Regards,<br/> Admin Team"
+        # self.process_common_email_notification_template(from_user, to_user, subject,
+        #                                                 description, products, header, columnProps, closing_content,
+        #                                                 self.acquisitions_email)
 
     def process_notify_red_product(self, products, to_user, from_user):
         pass
