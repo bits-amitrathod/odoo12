@@ -279,6 +279,7 @@
                         <group>
                             <group>
                                 <!--<field name="partner_id"  />-->
+                                <field name="vendor_cust_id"/>
                                 <field name="partner_id" string='Facility Name'
                                        context="{'search_default_supplier':1, 'default_supplier':1, 'default_customer':0}"
                                        domain="[('supplier','=',True)]"/>

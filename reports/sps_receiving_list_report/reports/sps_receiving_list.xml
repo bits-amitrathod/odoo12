@@ -52,6 +52,10 @@
                             </thead>
                     <tbody>
 
+                      <div class="col-sm-6" style="margin-bottom: 10px;">
+                            <strong>To be Received Date :</strong>
+                             <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%m/%d/%Y')"/>
+                        </div>
                      <div class="col-sm-6" style="margin-bottom: 10px;">
                             <strong>Purchase Order :</strong>
                             <span t-esc="new_receiving_item['po_order_no']"/>

@@ -170,6 +170,20 @@ class VendorOffer(models.Model):
     arrival_date_grp = fields.Datetime(string="Arrival Date")
 
     super_user_email = fields.Char(compute='_email_info_user')
+    vendor_cust_id = fields.Char(string="Customer ID",store=True,readonly=False)
+
+    @api.onchange('vendor_cust_id')
+    @api.depends('vendor_cust_id')
+    def _onchange_vendor_cust_id(self):
+        for order in self:
+            if order.vendor_cust_id:
+                user_fetch = self.env['res.partner'].search([('saleforce_ac', '=', order.vendor_cust_id), ])
+                if user_fetch and user_fetch.id:
+                    order.partner_id = user_fetch.id
+                else:
+                    order.partner_id = False
+            else:
+                order.partner_id = False
 
     @api.onchange('super_user_email')
     @api.depends('super_user_email')
@@ -635,7 +649,11 @@ class VendorOffer(models.Model):
             vals['vendor_offer_data'] = True
             vals['revision'] = '1'
             vals['revision_date'] = fields.Datetime.now()
-
+            if 'partner_id' in vals:
+                fetch_id = vals['partner_id']
+                user_fetch = self.env['res.partner'].search([('id', '=', fetch_id), ])
+                if user_fetch:
+                    vals['vendor_cust_id'] = user_fetch.saleforce_ac
             record = super(VendorOffer, self).create(vals)
             return record
         else:
@@ -652,12 +670,18 @@ class VendorOffer(models.Model):
                 temp = int(self.revision) + 1
                 values['revision'] = str(temp)
                 values['revision_date'] = fields.Datetime.now()
+            if 'partner_id' in values:
+                fetch_id = values['partner_id']
+                user_fetch = self.env['res.partner'].search([('id', '=', fetch_id), ])
+                if user_fetch:
+                    values['vendor_cust_id'] = user_fetch.saleforce_ac
             record = super(VendorOffer, self).write(values)
             if 'arrival_date_grp' in values:
                 for purchase in self:
                     stock_pick = self.env['stock.picking'].search([('origin', '=', purchase.name)])
                     for pick in stock_pick:
                         pick.arrival_date = values['arrival_date_grp']
+
             return record
         else:
             record = super(VendorOffer, self).write(values)
