@@ -2,6 +2,8 @@
 from odoo import models, fields, api, _,tools
 import base64
 import threading
+from odoo import api, fields, models, tools, SUPERUSER_ID, _
+from odoo.exceptions import UserError, ValidationError
 from odoo.modules import get_module_resource
 MAP_INVOICE_TYPE_PARTNER_TYPE = {
     'out_invoice': 'customer',
@@ -75,6 +77,35 @@ class VendorBillPartnerName(models.Model):
             res.append((partner.id, name))
         return res
 
+    # @api.multi
+    # def write(self, vals):
+    #     super_return = super(VendorBillPartnerName, self).write(vals)
+    #
+    #     colorize, img_path, image = False, False, False
+    #
+    #     if self.type in ['other']:
+    #         img_path = get_module_resource('vendor_bill_partner_name', 'static/src/img', 'cart.png')
+    #         colorize = True
+    #
+    #     if not image and self.type == 'invoice':
+    #         img_path = get_module_resource('base', 'static/img', 'money.png')
+    #     elif not image and self.type == 'delivery':
+    #         img_path = get_module_resource('base', 'static/img', 'truck.png')
+    #     elif not image and self.is_company:
+    #         img_path = get_module_resource('base', 'static/img', 'company_image.png')
+    #     elif not image:
+    #         img_path = get_module_resource('base', 'static/img', 'avatar.png')
+    #         colorize = True
+    #
+    #     if img_path:
+    #         with open(img_path, 'rb') as f:
+    #             image = f.read()
+    #     if image and colorize:
+    #         self.image = tools.image_colorize(image)
+    #     tools.image_resize_image_big(base64.b64encode(image))
+
+
+
     @api.model
     def _get_default_image(self, partner_type, is_company, parent_id):
         super_return = super(VendorBillPartnerName, self)._get_default_image(partner_type, is_company, parent_id)
@@ -94,23 +125,23 @@ class VendorBillPartnerName(models.Model):
         return tools.image_resize_image_big(base64.b64encode(image)) if image and colorize else super_return
 
 
-    @api.model
-    def _get_default_image(self, partner_type, is_company, parent_id):
-        super_return=super(VendorBillPartnerName, self). _get_default_image(partner_type, is_company, parent_id)
-        colorize, img_path, image = False, False, False
-
-        if super_return and partner_type == 'other':
-            if not image :
-                img_path = get_module_resource('vendor_bill_partner_name', 'static/src/img', 'cart.png')
-                colorize = True
-
-            if img_path:
-                with open(img_path, 'rb') as f:
-                    image = f.read()
-        # if image and colorize:
-        #     image = tools.image_colorize(image)
-
-        return tools.image_resize_image_big(base64.b64encode(image)) if image and colorize else super_return
+    # @api.model
+    # def _get_default_image(self, partner_type, is_company, parent_id):
+    #     super_return=super(VendorBillPartnerName, self). _get_default_image(partner_type, is_company, parent_id)
+    #     colorize, img_path, image = False, False, False
+    #
+    #     if super_return and partner_type == 'other':
+    #         if not image :
+    #             img_path = get_module_resource('vendor_bill_partner_name', 'static/src/img', 'cart.png')
+    #             colorize = True
+    #
+    #         if img_path:
+    #             with open(img_path, 'rb') as f:
+    #                 image = f.read()
+    #     # if image and colorize:
+    #     #     image = tools.image_colorize(image)
+    #
+    #     return tools.image_resize_image_big(base64.b64encode(image)) if image and colorize else super_return
 
 class account_invoice(models.Model):
     _inherit = "account.invoice"
