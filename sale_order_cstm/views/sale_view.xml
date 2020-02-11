@@ -10,6 +10,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//filter[@name='my_quotation']" position="after">
                     <filter string="Quotation Send" name="quotation_send" domain="[('state','=','sent')]"/>
+                    <filter string="Stockhawk Sales Order" name="stockhawk_sales_order" domain="[('team_id.team_type','=','engine')]"/>
                     <filter string="From Website" name="from_website" domain="[('team_id.team_type', '=', 'website')]"/>
 <!--                    <filter string="Recovery Email to Send" name="recovery_email" domain="[('cart_recovery_email_sent', '=', False)]" />
                     <filter string="Confirmed Orders" name="order_confirmed" domain="[('state', 'in', ('sale', 'done'))]"/>-->
