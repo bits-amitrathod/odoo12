@@ -55,6 +55,29 @@
         </field>
     </record>
 
+    <record id="view_voided_product" model="ir.ui.view">
+        <field name="name">voided.product</field>
+        <field name="model">voided.product.export</field>
+        <field name="arch" type="xml">
+            <form string="Export Voided Product">
+                <group>
+                    <div>Click On ' Export Voided product ' button to export Voided Product</div>
+                </group>
+                <footer>
+                    <button name="download_excel_voided_product" string="Export Voided product" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <act_window name="Export Voided Product"
+                    res_model="voided.product.export"
+                    src_model="sps.customer.requests"
+                    view_mode="form"
+                    target="new"
+                    key2="client_action_multi"
+                    id="export_voided_product_act_window"/>
 
     <record id="voided_product_template_action" model="ir.actions.act_window">
         <field name="name">Voided Products</field>
