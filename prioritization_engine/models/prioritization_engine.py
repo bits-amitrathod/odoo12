@@ -29,7 +29,7 @@ class PrioritizationEngine(models.TransientModel):
             for customer_request in customer_request_list:
                 # auto allocate True/False
                 if customer_request.auto_allocate:
-                    customer_request.write({'customer_request_logs': 'Auto allocate is true, '})
+                    # customer_request.write({'customer_request_logs': 'Auto allocate is true, '})
                     _logger.debug('Auto allocate is true.')
                     filter_available_product_lot_dict = self.filter_available_product_lot_dict(available_product_lot_dict, customer_request.product_id.id, customer_request.expiration_tolerance)
                     if len(filter_available_product_lot_dict) > 0:
