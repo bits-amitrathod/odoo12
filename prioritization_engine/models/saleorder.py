@@ -37,6 +37,19 @@ class SaleOrder(models.Model):
     order_processor = fields.Many2one('res.users', string='Order Processor', index=True, track_visibility='onchange',
                               default=lambda self: self.env.user)
 
+    gl_account = fields.Char("GL Account", store=False, compute='_get_gl_account', readonly=True)
+
+    @api.multi
+    def _get_gl_account(self):
+        for order in self:
+            if order.partner_id and order.partner_id.gl_account:
+                for gl_acnt in order.partner_id.gl_account:
+                    if gl_acnt.name:
+                        if order.gl_account:
+                            order.gl_account = order.gl_account + ", " + gl_acnt.name
+                        else:
+                            order.gl_account = gl_acnt.name
+
     @api.onchange('client_order_ref')
     def update_account_invoice_purchase_order(self):
         self.env['account.invoice'].search([('origin', '=', self.name)]).write({'name': self.client_order_ref})
