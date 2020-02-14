@@ -314,6 +314,8 @@ class InventoryNotificationScheduler(models.TransientModel):
         if picking.note and picking.note is not None:
             picking_note = picking.note
 
+        _logger.info("#picking_note#")
+        _logger.info(picking_note)
         vals = {
             'sale_order_lines': sales_order,
             'subject': "Sale Order # " + picking.sale_id.name + " is Out for Delivery for customer " + partner_name,
