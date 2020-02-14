@@ -321,7 +321,7 @@ class InventoryNotificationScheduler(models.TransientModel):
             'subject': "Sale Order # " + picking.sale_id.name + " is Out for Delivery for customer " + partner_name,
             'description': "Hi " + picking.sale_id.user_id.display_name + ",<br><br> Please find detail Of Sale Order: "
                            + picking.sale_id.name + " and their tracking is " + tracking +
-                            "<br><br> <strong> Notes : </strong>" + (picking_note) + "",
+                            "<br><br> <strong> Notes : </strong>" + (str(picking_note)) + "",
             'header': ['Catalog number', 'Description', 'Quantity'],
             'columnProps': ['sku', 'Product', 'qty'],
             'closing_content': 'Thanks & Regards, <br/> Warehouse Team'
