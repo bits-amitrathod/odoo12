@@ -309,12 +309,17 @@ class InventoryNotificationScheduler(models.TransientModel):
             partner_name = picking.sale_id.partner_id.name
         else:
             partner_name = ""
+
+        picking_note = "N/A"
+        if picking.note and picking.note is not None:
+            picking_note = picking.note
+
         vals = {
             'sale_order_lines': sales_order,
             'subject': "Sale Order # " + picking.sale_id.name + " is Out for Delivery for customer " + partner_name,
             'description': "Hi " + picking.sale_id.user_id.display_name + ",<br><br> Please find detail Of Sale Order: "
                            + picking.sale_id.name + " and their tracking is " + tracking +
-                            "<br><br> <strong> Notes : </strong>" + (picking.note or "N/A") + "",
+                            "<br><br> <strong> Notes : </strong>" + (picking_note) + "",
             'header': ['Catalog number', 'Description', 'Quantity'],
             'columnProps': ['sku', 'Product', 'qty'],
             'closing_content': 'Thanks & Regards, <br/> Warehouse Team'
