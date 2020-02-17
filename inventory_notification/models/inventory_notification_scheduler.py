@@ -311,7 +311,7 @@ class InventoryNotificationScheduler(models.TransientModel):
             partner_name = ""
 
         _logger.info("#picking_note#")
-        _logger.info(picking_note)
+        _logger.info(picking.note)
         vals = {
             'sale_order_lines': sales_order,
             'subject': "Sale Order # " + picking.sale_id.name + " is Out for Delivery for customer " + partner_name,
