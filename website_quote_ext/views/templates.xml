@@ -1505,7 +1505,7 @@
                         <th style="border:1px solid black;border-collapse:collapse;">Sale Order</th>
                         <th style="border:1px solid black;border-collapse:collapse;">Upload Type</th>
                         <th style="border:1px solid black;border-collapse:collapse;">Date</th>
-                        <th style="border:1px solid black;border-collapse:collapse;">Status</th>
+                        <!--<th style="border:1px solid black;border-collapse:collapse;">Status</th>-->
                         <th style="border:1px solid black;border-collapse:collapse;">Note</th>
                     </tr>
                     <tr>
@@ -1513,7 +1513,7 @@
                         <td style="border:1px solid black;border-collapse:collapse;">${ctx['sales_order_name']}</td>
                         <td style="border:1px solid black;border-collapse:collapse;">${ctx['upload_type']}</td>
                         <td style="border:1px solid black;border-collapse:collapse;">${ctx['date']}</td>
-                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['sales_order_status']}</td>
+                        <!--<td style="border:1px solid black;border-collapse:collapse;">${ctx['sales_order_status']}</td>-->
                         <td style="border:1px solid black;border-collapse:collapse;">${ctx['note']}</td>
                     </tr>
                 </table>
