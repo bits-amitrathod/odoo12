@@ -200,6 +200,9 @@ class WebsiteSale(http.Controller):
             upload_type = Order.order_line[0].customer_request_id.document_id.source
         if Order.user_id and Order.user_id.partner_id and Order.user_id.partner_id.email:
             salesperson_email = Order.user_id.partner_id.email
+        elif Order.partner_id and Order.partner_id.parent_id and Order.partner_id.parent_id.user_id \
+                and Order.partner_id.parent_id.user_id.partner_id and Order.partner_id.parent_id.user_id.partner_id.email:
+            salesperson_email = Order.partner_id.parent_id.user_id.partner_id.email
         self._send_sales_order_accepted_email(Order.partner_id.display_name, Order.name, Order.state, salesperson_email, upload_type, message)
         return request.redirect(order_sudo.get_portal_url(query_string=query_string))
 
