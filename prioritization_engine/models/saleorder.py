@@ -5,7 +5,7 @@ from odoo import models, fields,  SUPERUSER_ID,api, _
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools.float_utils import float_compare, float_is_zero
 from werkzeug.urls import url_encode
-
+from datetime import datetime
 
 _logger = logging.getLogger(__name__)
 
@@ -120,7 +120,40 @@ class SaleOrder(models.Model):
             user_sale_person = current_user.user_id
             user = sale_order_customer.user_id if sale_order_customer.user_id else super_user
             self.update({'user_id': user.id})
+
+            # Send email to Salesperson and Admin when sales order accepted(Confirm)
+            upload_type = None
+            salesperson_email = None
+            if self.order_line[0].customer_request_id and self.order_line[0].customer_request_id.document_id and \
+                    self.order_line[0].customer_request_id.document_id.source:
+                upload_type = self.order_line[0].customer_request_id.document_id.source
+            if self.user_id and self.user_id.partner_id and self.user_id.partner_id.email:
+                salesperson_email = self.user_id.partner_id.email
+            elif self.partner_id and self.partner_id.parent_id and self.partner_id.parent_id.user_id \
+                    and self.partner_id.parent_id.user_id.partner_id and self.partner_id.parent_id.user_id.partner_id.email:
+                salesperson_email = self.partner_id.parent_id.user_id.partner_id.email
+            if self.sale_note:
+                note = self.sale_note
+            else:
+                note = ""
+            self._send_sales_order_accepted_email(self.partner_id.display_name, self.name, self.state,
+                                                  salesperson_email, upload_type, note)
+
         return res
+
+    def _send_sales_order_accepted_email(self, customer_name, sales_order_name, sales_order_status, salespersonEmail,
+                                         upload_type, note):
+        today_date = datetime.today().strftime('%m/%d/%Y %H:%M:%S')
+        template = self.env.ref('prioritization_engine.stockhawk_sales_order_confirm_email_response').sudo()
+        local_context = {'customer_name': customer_name, 'sales_order_name': sales_order_name,
+                         'salesperson_email': salespersonEmail,
+                         'date': today_date, 'sales_order_status': sales_order_status, 'upload_type': upload_type,
+                         'note': note}
+        try:
+            template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True)
+        except Exception as exc:
+            _logger.error("getting error while sending email of sales order : %r", exc)
+            response = {'message': 'Unable to connect to SMTP Server'}
 
     @api.multi
     def get_share_url(self, redirect=False, signup_partner=False, pid=None):
