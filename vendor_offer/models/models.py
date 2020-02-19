@@ -118,7 +118,7 @@ class VendorOffer(models.Model):
         ('cash', 'Cash'),
         ('credit', 'Credit'),
         ('cashcredit', 'Cash/Credit')
-    ], string='Offer Type')
+    ], string='Offer Type',default='cashcredit')
 
     offer_type_popup = fields.Selection([
         ('cash', 'Cash'),
@@ -584,7 +584,7 @@ class VendorOffer(models.Model):
         #         raise UserError(_('Offer Type must be either "Cash" or "Credit" not both to Accept'))
 
 
-        if self.offer_type == 'cashcredit':
+        if self.offer_type == 'cashcredit' or not self.offer_type:
             self.offer_type_popup = 'cash'
             form_view_id = self.env.ref('vendor_offer.vendor_offer_accept_popup').id
             action = {
@@ -616,6 +616,17 @@ class VendorOffer(models.Model):
 
     @api.multi
     def action_cancel_vendor_offer(self):
+
+        if self.offer_type == 'cash' or (not self.offer_type) or 'cashcredit':
+            self.amount_untaxed = math.floor(round(self.cash_amount_untaxed, 2))
+            self.amount_total = math.floor(round(self.cash_amount_total, 2))
+            self.offer_type = 'cash'
+
+        if self.offer_type == 'credit' :
+            self.amount_untaxed = math.floor(round(self.credit_amount_untaxed, 2))
+            self.amount_total = math.floor(round(self.credit_amount_total, 2))
+            self.offer_type = 'credit'
+
         self.write({'state': 'cancel'})
         self.write({'status': 'cancel'})
         self.write({'status_ven': 'Declined'})
@@ -624,6 +635,17 @@ class VendorOffer(models.Model):
     @api.multi
     def action_cancel_vendor_offer_api(self, product_id):
         purchase = self.env['purchase.order'].search([('id', '=', product_id)])
+
+        if purchase.offer_type == 'cash' or (not purchase.offer_type) or 'cashcredit':
+            purchase.amount_untaxed = math.floor(round(self.cash_amount_untaxed, 2))
+            purchase.amount_total = math.floor(round(self.cash_amount_total, 2))
+            purchase.offer_type = 'cash'
+
+        if purchase.offer_type == 'credit':
+            purchase.amount_untaxed = math.floor(round(self.credit_amount_untaxed, 2))
+            purchase.amount_total = math.floor(round(self.credit_amount_total, 2))
+            purchase.offer_type = 'credit'
+
         purchase.button_cancel()
         purchase.write({'state': 'cancel'})
         purchase.write({'status': 'cancel'})
@@ -633,6 +655,17 @@ class VendorOffer(models.Model):
     @api.multi
     def button_cancel(self):
         if (self.vendor_offer_data == True):
+
+            if self.offer_type == 'cash' or (not self.offer_type) or 'cashcredit':
+                self.amount_untaxed = math.floor(round(self.cash_amount_untaxed, 2))
+                self.amount_total = math.floor(round(self.cash_amount_total, 2))
+                self.offer_type = 'cash'
+
+            if self.offer_type == 'credit':
+                self.amount_untaxed = math.floor(round(self.credit_amount_untaxed, 2))
+                self.amount_total = math.floor(round(self.credit_amount_total, 2))
+                self.offer_type = 'credit'
+
             self.write({'state': 'cancel'})
             self.write({'status': 'cancel'})
             self.write({'status_ven': 'Declined'})

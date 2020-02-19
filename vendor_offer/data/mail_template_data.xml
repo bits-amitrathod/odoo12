@@ -78,6 +78,7 @@
                     Credit amounting <strong>${format_amount(object.credit_amount_total, object.currency_id)}</strong>
                     Cash amounting <strong>${format_amount(object.cash_amount_total, object.currency_id)}</strong>
                   % else:
+                   Credit amounting <strong>${format_amount(object.credit_amount_total, object.currency_id)}</strong>
                      Cash amounting <strong>${format_amount(object.cash_amount_total, object.currency_id)}</strong>
                  % endif
 
