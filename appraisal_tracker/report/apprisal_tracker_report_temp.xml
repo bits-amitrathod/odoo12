@@ -30,8 +30,8 @@
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Type</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">PO#</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Payment Terms</th>
-                                    <th style="border: 1px solid black;text-align: center;width: 5%;">Total Offer</th>
-                                    <th style="border: 1px solid black;text-align: center;width: 5%;">Total Retail</th>
+                                    <th style="border: 1px solid black;text-align: center;width: 5%;">Billed Total Offer</th>
+                                    <th style="border: 1px solid black;text-align: center;width: 5%;">Billed Total Retail</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Created On</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Shipping Label Issued</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Shipping Date</th>
@@ -75,11 +75,17 @@
                                          <td  style="border: 1px solid black;width: 5%;">
                                              <span t-esc="order.payment_term_id.name"/>
                                         </td>
-                                        <td align="right" style="border: 1px solid black;width: 5%;">
-                                            <span t-esc="order.amount_total"  t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                        <!--<td align="right" style="border: 1px solid black;width: 5%;">-->
+                                            <!--<span t-esc="order.amount_total"  t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>-->
+                                        <!--</td>-->
+                                          <!--<td align="right" style="border: 1px solid black;width: 5%;">-->
+                                            <!--<span t-esc="order.rt_price_total_amt"  t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>-->
+                                        <!--</td>-->
+                                         <td align="right" style="border: 1px solid black;width: 5%;">
+                                            <span t-esc="order.billed_offer_total"  t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
                                         </td>
                                           <td align="right" style="border: 1px solid black;width: 5%;">
-                                            <span t-esc="order.rt_price_total_amt"  t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                            <span t-esc="order.billed_retail_total"  t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
                                         </td>
                                           <td  style="border: 1px solid black;width: 5%;">
                                              <span t-esc="order.create_date"/>

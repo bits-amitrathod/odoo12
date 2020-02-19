@@ -1016,7 +1016,7 @@
                                     </td>
                                      <td>
                                         <span t-field="order.offer_type"/>
-                                        <span t-if="(not order.offer_type ) or order.offer_type=='False'"> Cash</span>
+                                        <span t-if="(not order.offer_type ) or order.offer_type=='False'"> Cash/Credit </span>
                                     </td>
                                     <td>
                                         <t t-if="order.state == 'cancel'">
@@ -1057,7 +1057,7 @@
                                     </td>
                                     <td>
                                          <t t-if="order.state != 'cancel'">
-                                            <t t-if="order.offer_type=='credit'  or order.offer_type=='cashcredit' ">
+                                            <t t-if="order.offer_type=='credit'  or order.offer_type=='cashcredit' or not order.offer_type ">
                                             <span t-field="order.credit_amount_total"
                                                   t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
                                             </t>
@@ -1131,7 +1131,7 @@
                             <div class="mb8">
                                 <strong>Offer Type:</strong>
                                 <span t-field="order.offer_type" />
-                                <span  t-if="not order.offer_type or  order.offer_type=='False'" >Cash</span>
+                                <span  t-if="not order.offer_type or  order.offer_type=='False'" >Cash/Credit </span>
                             </div>
                             <div class="row">
                                 <div class="col-md-5">
@@ -1261,7 +1261,7 @@
                             <i class="fa fa-check"></i>
                             Accept Cash Offer
                         </a>
-                         <a class="btn btn-success" data-target="#modalacceptcredit" data-toggle="modal" t-if="order.offer_type == 'credit' or order.offer_type == 'cashcredit'" >
+                         <a class="btn btn-success" data-target="#modalacceptcredit" data-toggle="modal" t-if="order.offer_type == 'credit' or order.offer_type == 'cashcredit' or  not order.offer_type" >
                             <i class="fa fa-check"></i>
                             Accept Credit Offer
                         </a>
@@ -1354,7 +1354,7 @@
                             <tr>
                               <td><a t-attf-href="/my/purchase/#{order.id}?#{keep_query()}"><t t-esc="order.name"/></a></td>
                               <td><span t-field="order.date_order"/></td>
-                                <td><span t-field="order.offer_type"/> <span t-if="((not order.offer_type) or order.offer_type=='False' ) and order.vendor_offer_data == True ">Cash</span> </td>
+                                <td><span t-field="order.offer_type"/> <span t-if="((not order.offer_type) or order.offer_type=='False' ) and order.vendor_offer_data == True ">Cash/Credit </span> </td>
                               <td>
                                 <t t-if="order.invoice_status == 'to invoice'">
                                   <span class="badge badge-info"><i class="fa fa-fw fa-file-text"/> Waiting for Bill</span>
@@ -1399,7 +1399,7 @@
                                   <strong>Date:</strong> <span t-field="order.date_order" t-options='{"widget": "date"}'/>
                               </div>
                                  <div class="mb8">
-                                  <strong>Offer type:</strong> <span t-field="order.offer_type"/> <span t-if="((not order.offer_type) or order.offer_type=='False' ) and order.vendor_offer_data == True">Cash</span>
+                                  <strong>Offer type:</strong> <span t-field="order.offer_type"/> <span t-if="((not order.offer_type) or order.offer_type=='False' ) and order.vendor_offer_data == True">Cash/Credit</span>
                               </div>
                               <div class="row">
                                 <div class="col-lg-6">
