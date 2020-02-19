@@ -141,7 +141,7 @@ class WebsiteSale(http.Controller):
         SaleOrderLines = request.env['sale.order.line'].sudo().search([('order_id', '=', Order.id)])
         for SaleOrderLine in SaleOrderLines:
             StockMove = request.env['stock.move'].sudo().search([('sale_line_id', '=', SaleOrderLine.id)])
-            if SaleOrderLine.product_uom_qty and StockMove.product_uom_qty:
+            if SaleOrderLine.product_uom_qty >= 0 and StockMove.product_uom_qty >= 0:
                 if SaleOrderLine.product_uom_qty < StockMove.product_uom_qty:
                     flag = True
                     break
