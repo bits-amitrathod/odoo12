@@ -41,7 +41,6 @@ class ReportQuotationExport(http.Controller):
                 else:
                     worksheet.col(i).width = 4700  # around 110 pixels
 
-
             base_style = xlwt.easyxf('align: wrap yes')
             date_style = xlwt.easyxf('align: wrap yes', num_format_str='YYYY-MM-DD')
             datetime_style = xlwt.easyxf('align: wrap yes', num_format_str='YYYY-MM-DD HH:mm:SS')
@@ -79,11 +78,11 @@ class ReportQuotationExport(http.Controller):
 
     @http.route('/web/export/sale_quotation_export_xl', type='http', auth="public")
     @serialize_exception
-    def download_document_xl(self,token=1, debug=1):
+    def download_document_xl(self, token=1, debug=1):
 
-        str_functions = """	 
-          
-              select pp.default_code as sku,rp.name cust_name,so.name so,pt.name prod_name,so.create_date,
+        str_functions = """	
+
+         select pp.default_code as sku,rp.name cust_name,so.name so,pt.name prod_name,so.create_date,
             round( sol.product_uom_qty, 2) as qty ,um.name as uom,
             round( sol.price_unit, 2) as price_unit ,round((sol.product_uom_qty * sol.price_unit),2) as total,
             (select resa.name from res_users rus join res_partner rps on rus.id=rps.account_manager_cust 
@@ -94,7 +93,7 @@ class ReportQuotationExport(http.Controller):
                            END     AS quotation_count
             from sale_order_line  sol 
             left join sale_order so on sol.order_id = so.id 
-            
+
             left join product_product pp on sol.product_id = pp.id
             left join product_template pt on pp.product_tmpl_id = pt.id
             left join res_partner rp on so.partner_id = rp.id
@@ -109,7 +108,7 @@ class ReportQuotationExport(http.Controller):
                                            on pp.id =  quotations_per_code.id  
             where so.state in ('draft','draft') and sol.price_unit >= 0         
             and sol.product_uom_qty > 0
-                            
+
         """
         request.env.cr.execute(str_functions)
         order_lines = request.env.cr.dictfetchall()
@@ -117,15 +116,15 @@ class ReportQuotationExport(http.Controller):
         records = []
 
         for line in order_lines:
-
-            records.append([line['sku'], line['cust_name'],  line['account_mang'], line['so'], line['prod_name'],
-                            line['create_date'], line['qty'], line['uom'],line['price_unit'],
-                            line['total'],line['quotation_count']])
+            records.append([line['sku'], line['cust_name'], line['account_mang'], line['so'], line['prod_name'],
+                            line['create_date'], line['qty'], line['uom'], line['price_unit'],
+                            line['total'], line['quotation_count']])
 
         res = request.make_response(
-            self.from_data(["Product SKU", "Customer Name","Account Manager ", "Sales Order#", "Product Name", "Ordered Date"
-                               , "Ordered Qty", "UOM", "Unit Price", "Total","Open Quotations Per Code"],
-                           records),
+            self.from_data(
+                ["Product SKU", "Customer Name", "Account Manager ", "Sales Order#", "Product Name", "Ordered Date"
+                    , "Ordered Qty", "UOM", "Unit Price", "Total", "Open Quotations Per Code"],
+                records),
             headers=[('Content-Disposition', content_disposition('sale_quotation_export' + '.xls')),
                      ('Content-Type', 'application/vnd.ms-excel')],
         )

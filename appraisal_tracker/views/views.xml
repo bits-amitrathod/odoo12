@@ -25,12 +25,13 @@
                            string="PO#"/>
                     <field name="payment_term_id" attrs="{'invisible':[('status', 'not in', ('purchase','cancel','ven_draft','ven_sent'))]}"
                           />
+                       <field name="amount_total" attrs="{'invisible':[('state', 'not in', ('purchase','cancel','ven_draft','ven_sent'))]}"
+                           widget="monetary" string="Total Offer"/>
+                    <field name="rt_price_total_amt" attrs="{'invisible':[('state', 'not in', ('purchase','cancel','ven_draft','ven_sent'))]}"
+                           widget="monetary" string="Total Retail"/>
                       <field name="billed_offer_total" attrs="{'invisible':[('state', 'not in', ('purchase','cancel','ven_draft','ven_sent'))]}" string="Billed Total Offer" />
                      <field name="billed_retail_total" attrs="{'invisible':[('state', 'not in', ('purchase','cancel','ven_draft','ven_sent'))]}"  string="Billed Total Retail"/>
-                    <!--<field name="amount_total" attrs="{'invisible':[('state', 'not in', ('purchase','cancel','ven_draft','ven_sent'))]}"-->
-                           <!--widget="monetary" string="Total Offer"/>-->
-                    <!--<field name="rt_price_total_amt" attrs="{'invisible':[('state', 'not in', ('purchase','cancel','ven_draft','ven_sent'))]}"-->
-                           <!--widget="monetary" string="Total Retail"/>-->
+
                     <field name="create_date" attrs="{'invisible':[('status', 'not in', ('purchase','cancel','ven_draft','ven_sent'))]}"/>
                     <field name="shipping_label_issued"
                            attrs="{'invisible':[('status', 'not in', ('purchase','cancel','ven_draft','ven_sent'))]}"/>

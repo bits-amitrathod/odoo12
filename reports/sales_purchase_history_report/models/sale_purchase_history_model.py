@@ -21,6 +21,12 @@ class SalePurchaseHistory(models.Model):
     total_price_converted = fields.Monetary("Total", currency_field='currency_id', store=False)
     product_uom_converted = fields.Many2one('uom.uom', 'Unit of Measure', currency_field='currency_id', store=False)
     account_manager_cust_name = fields.Char(string="Account Manager", compute='_compare_data', store=False)
+    sales_person_cust_name = fields.Char(string="Sales Person", compute='_compare_data', store=False)
+    is_broker_opt = fields.Boolean(string="Is Broker", compute='_compare_data', store=False)
+    is_shared_opt = fields.Boolean(string="Is Shared", compute='_compare_data', store=False)
+    sales_person_cust_name = fields.Char(string="Sales Person", compute='_compare_data', store=False)
+    sales_team_id = fields.Char(string="Sales Team", compute='_compare_data', store=False)
+    sale_sales_margine = fields.Char(string="Sales Level", compute='_compare_data', store=False)
     quotations_per_code = fields.Integer(string='Open Quotations Per Code',
                                          compute='_compare_data',
                                          readonly=True, store=False)
@@ -33,6 +39,12 @@ class SalePurchaseHistory(models.Model):
         for sale_order_line in self:
             sale_order_line.customer_name=sale_order_line.order_id.partner_id.name
             sale_order_line.account_manager_cust_name = sale_order_line.order_id.partner_id.account_manager_cust.name
+            sale_order_line.sales_person_cust_name = sale_order_line.order_id.partner_id.user_id.name
+            sale_order_line.is_broker_opt = sale_order_line.order_id.partner_id.is_broker
+            sale_order_line.is_shared_opt = sale_order_line.order_id.is_share
+            sale_order_line.sales_team_id = sale_order_line.order_id.team_id.name
+            sale_order_line.sale_sales_margine = sale_order_line.order_id.partner_id.sale_margine
+
             sale_order_line.product_sku_ref=sale_order_line.product_id.product_tmpl_id.sku_code
             sale_order_line_list = self.env['sale.order.line'].search(
                 [('product_id', '=', sale_order_line.product_id.id), ('state', 'in', ('draft', 'sent'))])

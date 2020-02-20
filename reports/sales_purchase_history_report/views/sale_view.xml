@@ -46,9 +46,14 @@
 
                     <field name="product_sku_ref" string="Product SKU"/>
                     <field name="customer_name" string="Customer Name"/>
+                    <field name="sales_person_cust_name" />
                     <field name="account_manager_cust_name" />
                     <field name="order_id" string="Sales Order#"/>
                     <field name="product_id" string="Product Name"/>
+                    <field name="is_broker_opt" />
+                    <field name="is_shared_opt" />
+                    <field name="sales_team_id" />
+                    <field name="sale_sales_margine" />
                     <field name="delivered_date" string="Delivered Date"/>
                     <field name="qty_delivered_converted" string="Delivered Qty" />
                     <field name="product_uom_converted" string="UOM"/>
