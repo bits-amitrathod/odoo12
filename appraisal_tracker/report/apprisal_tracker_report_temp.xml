@@ -35,7 +35,7 @@
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Billed Total Offer</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Billed Total Retail</th>
                                     <!--<th style="border: 1px solid black;text-align: center;width: 5%;">Created On</th>-->
-                                    <th style="border: 1px solid black;text-align: center;width: 5%;">Shipping Label Issued</th>
+                                    <th style="border: 1px solid black;text-align: center;width: 5%;">Ship ping Label Issu ed</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Shipping Date</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Delivered Date</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Arrival Date</th>
@@ -43,7 +43,7 @@
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Tier 1 Retail</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Tier 2 Retail</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">&lt; 40% Retail</th>
-                                    <th style="border: 1px solid black;text-align: center;width: 5%;">New Customer</th>
+                                    <th style="border: 1px solid black;text-align: center;width: 5%;">New Cust omer</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Status</th>
                                     <!--<th style="border: 1px solid black;text-align: center;width: 5%;">T1 Margin</th>-->
                                     <!--<th style="border: 1px solid black;text-align: center;width: 5%;">T2 Margin</th>-->
