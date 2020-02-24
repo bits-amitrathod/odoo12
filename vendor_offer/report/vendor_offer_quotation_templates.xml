@@ -32,7 +32,7 @@
             <!--<div style="display:flex">-->
                 <p style="margin: 3px 0; display:flex">
 
-               <div t-if="o.offer_type =='cashcredit'" >
+               <div t-if="o.offer_type =='cashcredit' or not o.offer_type">
                    <span style="font-weight:600;font-size:14px !important;">OFFER PRICE  : </span>
                      <span style="font-weight:600;font-size:14px !important;" t-field="o.cash_amount_total"/>
                      <span  style="font-weight:600;font-size:14px!important;">Cash Back</span>
@@ -50,16 +50,16 @@
                      <span style="font-weight:600;font-size:14px !important;" t-field="o.cash_amount_total"/>
                      <span  style="font-weight:600;font-size:14px!important;">Cash Back</span>
                </div>
-                  <div t-if="not o.offer_type or  o.offer_type=='False'" >
-                      <span style="font-weight:600;font-size:14px !important;">OFFER PRICE  : </span>
-                     <span style="font-weight:600;font-size:14px !important;" t-field="o.cash_amount_total"/>
-                     <span  style="font-weight:600;font-size:14px!important;">Cash Back</span>
-               </div>
+<!--                  <div t-if="not o.offer_type or  o.offer_type=='False'" >-->
+<!--                      <span style="font-weight:600;font-size:14px !important;">OFFER PRICE  : </span>-->
+<!--                     <span style="font-weight:600;font-size:14px !important;" t-field="o.cash_amount_total"/>-->
+<!--                     <span  style="font-weight:600;font-size:14px!important;">Cash Back</span>-->
+<!--               </div>-->
             </p>
 
             <!--</div>-->
            <div><p style="margin: 3px 0;"><span t-field="o.credit_offer_type_pdf_text"> </span></p></div>
-            <div t-if="(o.offer_type =='credit' or o.offer_type =='cashcredit') and not o.credit_offer_type_pdf_text"><p style="margin: 3px 0;"><span>Credit Offer is valid for 12 months from the date of issue</span></p></div>
+            <div t-if="(o.offer_type =='credit' or o.offer_type =='cashcredit' or not o.offer_type) and not o.credit_offer_type_pdf_text"><p style="margin: 3px 0;"><span>Credit Offer is valid for 12 months from the date of issue</span></p></div>
             <div><p style="margin: 3px 0;font-size:14px;">This offer must be accepted within 3 business days of delivery date unless otherwise noted.</p></div>
               <div><p style="margin: 3px 0;font-size:14px;">Once the offer is accepted, the offer price is contingent upon requirements detailed below.</p></div>
               <div><p style="margin: 3px 0;font-size:14px;"><strong>OFFER PRICE CONDITIONAL UPON</strong>:</p></div>
@@ -74,27 +74,27 @@
                  <!--<span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" >0 Days </span>-->
                 <!--after completion of SPS quality control inspection</p></div>-->
 
-                <div t-if="o.offer_type =='cashcredit'"><p style="margin: 5px 0;font-size:14px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>
-                    <strong>Credit issued immediately </strong> after completion of SPS quality control inspection.
+                <div t-if="o.offer_type =='cashcredit' or not o.offer_type"><p style="margin: 5px 0;font-size:14px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>
+                    <strong>Credit issued immediately </strong> following completion of SPS Quality Control inspection. <strong>Cash issued</strong>
                  <span t-if="o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.temp_payment_term"/>
                  <span t-if="not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.payment_term_id.name"/>
-                 <span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" >0 Days </span>
-                 after completion of SPS quality control inspection</p></div>
+                 <span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" >0 Days</span>
+                    from completion of SPS Quality Control inspection.</p></div>
 
               <div t-if="o.offer_type =='cash'"><p style="margin: 5px 0;font-size:14px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>
                     <span t-if="o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.temp_payment_term"/>
                  <span t-if="not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.payment_term_id.name"/>
-               <span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" >0 Days </span>
-                 after completion of SPS quality control inspection</p></div>
+                 <span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" >0 Days</span>
+                   from completion of SPS Quality Control inspection.</p></div>
 
               <div t-if="o.offer_type =='credit'"><p style="margin: 5px 0;font-size:14px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>
                   <strong>Credit issued immediately </strong> after completion of SPS quality control inspection.</p></div>
 
-              <div t-if="not o.offer_type or  o.offer_type=='False'"><p style="margin: 5px 0;font-size:14px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>
-                    <span t-if="o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.temp_payment_term"/>
-                 <span t-if="not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.payment_term_id.name"/>
-                 <span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" >0 Days </span>
-                 after completion of SPS quality control inspection</p></div>
+<!--              <div t-if="not o.offer_type or  o.offer_type=='False'"><p style="margin: 5px 0;font-size:14px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>-->
+<!--                    <span t-if="o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.temp_payment_term"/>-->
+<!--                 <span t-if="not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.payment_term_id.name"/>-->
+<!--                 <span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" >0 Days </span>-->
+<!--                 after completion of SPS quality control inspection</p></div>-->
 
 
               <div><p style="margin: 3px 0;font-size:13px;"><strong>SPS RESERVES THE RIGHT TO ADJUST THIS PURCHASE OFFER IN THE EVENT THAT THE SPS QUALITY CONTROL PROCESS INDENTIFIES ANY DAMAGES OR DISCREPENCIES WITH THE PRODUCT FURNISHED. SELLER WILL BE NOTIFIED IMMEDIATELY IF AND WHEN THIS OFFER IS ADJUSTED.</strong></p></div>
@@ -173,14 +173,14 @@
                             <span t-field="order_line.price_subtotal" widget="monetary" />
                         </td>
                     </tr>
-                      <tr t-if="not o.offer_type or  o.offer_type=='False'" >
-                        <td></td> <td></td> <td></td> <td></td>
-                        <td>Cash Amount Total</td> <!--<td></td>    <td></td>-->
-                         <td class="text-right">
-                              <span t-field="o.cash_amount_total" />
+<!--                      <tr t-if="not o.offer_type or  o.offer_type=='False'" >-->
+<!--                        <td></td> <td></td> <td></td> <td></td>-->
+<!--                        <td>Cash Amount Total</td> &lt;!&ndash;<td></td>    <td></td>&ndash;&gt;-->
+<!--                         <td class="text-right">-->
+<!--                              <span t-field="o.cash_amount_total" />-->
 
-                         </td>
-                    </tr>
+<!--                         </td>-->
+<!--                    </tr>-->
                      <tr t-if="o.offer_type=='cash'" >
                         <td></td> <td></td> <td></td> <td></td>
                         <td>Cash Amount Total</td> <!--<td></td>    <td></td>-->
@@ -199,7 +199,7 @@
 
                          </td>
                     </tr>
-                    <tr  t-if="o.offer_type=='cashcredit'">
+                    <tr  t-if="o.offer_type=='cashcredit' or not o.offer_type">
                         <td></td> <td></td> <td></td> <td></td>
                         <td>Cash Amount Total</td> <!--<td></td>    <td></td>-->
                          <td class="text-right">
@@ -207,7 +207,7 @@
 
                          </td>
                     </tr>
-                    <tr  t-if="o.offer_type=='cashcredit'">
+                    <tr  t-if="o.offer_type=='cashcredit' or not o.offer_type">
                         <td></td> <td></td> <td></td> <td></td>
                         <td>
                             Credit Amount Total
@@ -289,7 +289,7 @@
 
             </div>
             <div><p style="margin: 3px 0;"><span t-field="o.credit_offer_type_pdf_text"> </span></p></div>
-            <div t-if="(o.offer_type =='credit' or o.offer_type =='cashcredit') and not o.credit_offer_type_pdf_text"><p style="margin: 3px 0;"><span>Credit Offer is valid for 12 months from the date of issue</span></p></div>
+            <div t-if="(o.offer_type =='credit' or o.offer_type =='cashcredit' or o.offer_type=='False') and not o.credit_offer_type_pdf_text"><p style="margin: 3px 0;"><span>Credit Offer is valid for 12 months from the date of issue</span></p></div>
             <div><p style="margin: 3px 0;font-size:14px;">This offer must be accepted within 3 business days of delivery date unless otherwise noted.</p></div>
               <div><p style="margin: 3px 0;font-size:14px;">Once the offer is accepted, the offer price is contingent upon requirements detailed below.</p></div>
               <div><p style="margin: 3px 0;font-size:14px;"><strong>OFFER PRICE CONDITIONAL UPON</strong>:</p></div>
@@ -301,23 +301,23 @@
                     <strong>Credit issued immediately </strong> after completion of SPS quality control inspection.
                  <span t-if="o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.temp_payment_term"/>
                  <span t-if="not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.payment_term_id.name"/>
-                 <span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" >0 Days </span>
+                 <span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" >0 </span>
                  after completion of SPS quality control inspection</p></div>
 
               <div t-if="o.offer_type =='cash'"><p style="margin: 5px 0;font-size:14px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>
                     <span t-if="o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.temp_payment_term"/>
                  <span t-if="not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.payment_term_id.name"/>
-               <span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" >0 Days </span>
+               <span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" >0 </span>
                  after completion of SPS quality control inspection</p></div>
 
               <div t-if="o.offer_type =='credit'"><p style="margin: 5px 0;font-size:14px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>
                   <strong>Credit issued immediately </strong> after completion of SPS quality control inspection.</p></div>
 
-              <div t-if="not o.offer_type or  o.offer_type=='False'"><p style="margin: 5px 0;font-size:14px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>
-                    <span t-if="o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.temp_payment_term"/>
-                 <span t-if="not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.payment_term_id.name"/>
-                 <span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" >0 Days </span>
-                 after completion of SPS quality control inspection</p></div>
+<!--              <div t-if="not o.offer_type or  o.offer_type=='False'"><p style="margin: 5px 0;font-size:14px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>-->
+<!--                    <span t-if="o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.temp_payment_term"/>-->
+<!--                 <span t-if="not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.payment_term_id.name"/>-->
+<!--                 <span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" >0 Days </span>-->
+<!--                 after completion of SPS quality control inspection</p></div>-->
            <!--<div><p style="margin: 3px 0;"><span t-field="o.credit_offer_type_pdf_text"> </span></p></div>-->
             <!--<div t-if="o.offer_type =='credit' and not o.credit_offer_type_pdf_text"><p style="margin: 3px 0;"><span>Credit Offer is valid for 12 months from the date of issue</span></p></div>-->
             <!--<div><p style="margin: 3px 0;font-size:14px;">This offer must be accepted within 3 business days of delivery date unless otherwise noted.</p></div>-->
