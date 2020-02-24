@@ -118,7 +118,7 @@ class VendorOffer(models.Model):
         ('cash', 'Cash'),
         ('credit', 'Credit'),
         ('cashcredit', 'Cash/Credit')
-    ], string='Offer Type')
+    ], string='Offer Type',default='cashcredit')
 
     offer_type_popup = fields.Selection([
         ('cash', 'Cash'),
@@ -170,6 +170,20 @@ class VendorOffer(models.Model):
     arrival_date_grp = fields.Datetime(string="Arrival Date")
 
     super_user_email = fields.Char(compute='_email_info_user')
+    vendor_cust_id = fields.Char(string="Customer ID",store=True,readonly=False)
+
+    @api.onchange('vendor_cust_id')
+    @api.depends('vendor_cust_id')
+    def _onchange_vendor_cust_id(self):
+        for order in self:
+            if order.vendor_cust_id:
+                user_fetch = self.env['res.partner'].search([('saleforce_ac', '=', order.vendor_cust_id), ])
+                if user_fetch and user_fetch.id:
+                    order.partner_id = user_fetch.id
+                else:
+                    order.partner_id = False
+            else:
+                order.partner_id = False
 
     @api.onchange('super_user_email')
     @api.depends('super_user_email')
@@ -570,7 +584,7 @@ class VendorOffer(models.Model):
         #         raise UserError(_('Offer Type must be either "Cash" or "Credit" not both to Accept'))
 
 
-        if self.offer_type == 'cashcredit':
+        if self.offer_type == 'cashcredit' or not self.offer_type:
             self.offer_type_popup = 'cash'
             form_view_id = self.env.ref('vendor_offer.vendor_offer_accept_popup').id
             action = {
@@ -602,6 +616,17 @@ class VendorOffer(models.Model):
 
     @api.multi
     def action_cancel_vendor_offer(self):
+
+        if self.offer_type == 'cash' or (not self.offer_type) or 'cashcredit':
+            self.amount_untaxed = math.floor(round(self.cash_amount_untaxed, 2))
+            self.amount_total = math.floor(round(self.cash_amount_total, 2))
+            self.offer_type = 'cash'
+
+        if self.offer_type == 'credit' :
+            self.amount_untaxed = math.floor(round(self.credit_amount_untaxed, 2))
+            self.amount_total = math.floor(round(self.credit_amount_total, 2))
+            self.offer_type = 'credit'
+
         self.write({'state': 'cancel'})
         self.write({'status': 'cancel'})
         self.write({'status_ven': 'Declined'})
@@ -610,6 +635,17 @@ class VendorOffer(models.Model):
     @api.multi
     def action_cancel_vendor_offer_api(self, product_id):
         purchase = self.env['purchase.order'].search([('id', '=', product_id)])
+
+        if purchase.offer_type == 'cash' or (not purchase.offer_type) or 'cashcredit':
+            purchase.amount_untaxed = math.floor(round(self.cash_amount_untaxed, 2))
+            purchase.amount_total = math.floor(round(self.cash_amount_total, 2))
+            purchase.offer_type = 'cash'
+
+        if purchase.offer_type == 'credit':
+            purchase.amount_untaxed = math.floor(round(self.credit_amount_untaxed, 2))
+            purchase.amount_total = math.floor(round(self.credit_amount_total, 2))
+            purchase.offer_type = 'credit'
+
         purchase.button_cancel()
         purchase.write({'state': 'cancel'})
         purchase.write({'status': 'cancel'})
@@ -619,6 +655,17 @@ class VendorOffer(models.Model):
     @api.multi
     def button_cancel(self):
         if (self.vendor_offer_data == True):
+
+            if self.offer_type == 'cash' or (not self.offer_type) or 'cashcredit':
+                self.amount_untaxed = math.floor(round(self.cash_amount_untaxed, 2))
+                self.amount_total = math.floor(round(self.cash_amount_total, 2))
+                self.offer_type = 'cash'
+
+            if self.offer_type == 'credit':
+                self.amount_untaxed = math.floor(round(self.credit_amount_untaxed, 2))
+                self.amount_total = math.floor(round(self.credit_amount_total, 2))
+                self.offer_type = 'credit'
+
             self.write({'state': 'cancel'})
             self.write({'status': 'cancel'})
             self.write({'status_ven': 'Declined'})
@@ -635,7 +682,11 @@ class VendorOffer(models.Model):
             vals['vendor_offer_data'] = True
             vals['revision'] = '1'
             vals['revision_date'] = fields.Datetime.now()
-
+            if 'partner_id' in vals:
+                fetch_id = vals['partner_id']
+                user_fetch = self.env['res.partner'].search([('id', '=', fetch_id), ])
+                if user_fetch:
+                    vals['vendor_cust_id'] = user_fetch.saleforce_ac
             record = super(VendorOffer, self).create(vals)
             return record
         else:
@@ -652,12 +703,18 @@ class VendorOffer(models.Model):
                 temp = int(self.revision) + 1
                 values['revision'] = str(temp)
                 values['revision_date'] = fields.Datetime.now()
+            if 'partner_id' in values:
+                fetch_id = values['partner_id']
+                user_fetch = self.env['res.partner'].search([('id', '=', fetch_id), ])
+                if user_fetch:
+                    values['vendor_cust_id'] = user_fetch.saleforce_ac
             record = super(VendorOffer, self).write(values)
             if 'arrival_date_grp' in values:
                 for purchase in self:
                     stock_pick = self.env['stock.picking'].search([('origin', '=', purchase.name)])
                     for pick in stock_pick:
                         pick.arrival_date = values['arrival_date_grp']
+
             return record
         else:
             record = super(VendorOffer, self).write(values)

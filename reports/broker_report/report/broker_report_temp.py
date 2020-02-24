@@ -54,7 +54,7 @@ class ReportBrokerReport(models.AbstractModel):
     def _get_report_values(self, docids, data):
 
         apprisal_list = {}
-        if (data['start_date'] != False and data['end_date'] != False):
+        if ('start_date' in data and 'end_date' in data and data['start_date'] != False and data['end_date'] != False):
             apprisal_list = self.env['purchase.order'].with_context(vendor_offer_data=True).search(
                 [('state', '=', 'purchase'), ('status', '=', 'purchase'), ('vendor_offer_data', '=', True),
                  ('date_order', '>=', data['start_date']), ('date_order', '<=', data['end_date'])])
