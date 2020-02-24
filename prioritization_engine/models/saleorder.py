@@ -149,8 +149,8 @@ class SaleOrder(models.Model):
                 note = self.sale_note
             else:
                 note = ""
-            self._send_sales_order_accepted_email(self.partner_id.display_name, self.name, self.state,
-                                                  salesperson_email, upload_type, note)
+            # self._send_sales_order_accepted_email(self.partner_id.display_name, self.name, self.state,
+            #                                       salesperson_email, upload_type, note)
 
         return res
 
