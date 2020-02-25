@@ -208,7 +208,7 @@ class WebsiteSale(http.Controller):
 
     @staticmethod
     def _send_sales_order_accepted_email(customer_name, sales_order_name, sales_order_status, salespersonEmail, upload_type, note):
-        today_date = datetime.today().strftime('%m/%d/%Y %H:%M:%S')
+        today_date = datetime.today().strftime('%m/%d/%Y')
         template = request.env.ref('website_quote_ext.stockhawk_sales_order_confirm_email_response').sudo()
         local_context = {'customer_name': customer_name, 'sales_order_name': sales_order_name,'salesperson_email': salespersonEmail,
                          'date': today_date, 'sales_order_status': sales_order_status, 'upload_type': upload_type, 'note': note}
