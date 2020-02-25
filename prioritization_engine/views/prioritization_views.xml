@@ -469,6 +469,19 @@
             </field>
         </record>
 
+        <record id="sale_order_line_filter" model="ir.ui.view">
+            <field name="name">sale.order.line.filter</field>
+            <field name="model">sale.order.line</field>
+            <field name="arch" type="xml">
+                <search string="Order">
+                    <field name="order_id" string="Order"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Order" name="group_by_order_id" domain="[]" context="{'group_by':'order_id'}" help="Group by Order"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
         <record id="view_stockhawk_sale_order" model="ir.actions.act_window">
             <field name="name">STOCKHAWK Sales Order</field>
             <field name="type">ir.actions.act_window</field>
@@ -479,19 +492,6 @@
             <field name="search_view_id" ref="sale_order_line_filter"/>
             <field name="context">{'search_default_group_by_order_id': 1}</field>
         </record>
-
-        <record id="sale_order_line_filter" model="ir.ui.view">
-        <field name="name">sale.order.line.filter</field>
-        <field name="model">sale.order.line</field>
-        <field name="arch" type="xml">
-            <search string="Order">
-                <field name="order_id" string="Order"/>
-                <group expand="0" string="Group By">
-                    <filter string="Order" name="group_by_order_id" domain="[]" context="{'group_by':'order_id'}" help="Group by Order"/>
-                </group>
-            </search>
-        </field>
-    </record>
 
         <!-- Email template for Send Prioritization Credentials -->
         <record id="send_prioritization_credential_email" model="mail.template">
