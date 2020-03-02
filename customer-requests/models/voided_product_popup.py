@@ -11,7 +11,7 @@ _logger = logging.getLogger(__name__)
 class VoidedProductPopup(models.TransientModel):
 
     _name = 'voided.product.popup'
-    _description = 'Products On Order'
+    _description = 'Voided Product Filter'
 
     compute_at_date = fields.Selection([
         (0, 'All Voided Products'),
