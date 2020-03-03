@@ -288,12 +288,13 @@
             </field>
         </record>
 
-        <record id="appraisal_tracker.action_window" model="ir.actions.act_window">
+       <record id="appraisal_tracker.action_window" model="ir.actions.act_window">
 
             <field name="name">Appraisal Tracker</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">purchase.order</field>
-             <field name="domain">[('state','in',('purchase','cancel','ven_draft','ven_sent')),('status','in',('purchase','cancel','ven_draft','ven_sent'))]</field>
+            <!--<field name="domain">[('state','in',('purchase','cancel','ven_draft','ven_sent')),('status','in',('purchase','cancel','ven_draft','ven_sent'))]</field>-->
+            <field name="domain">[('vendor_offer_data','=',True)]</field>
             <field name="context">{'vendor_offer_data': True}</field>
             <field name="view_mode">form,tree</field>
             <field name="view_ids" eval="[(5, 0, 0),
@@ -352,6 +353,31 @@
               </field>
         </field>
         </record>
+
+          <record id="appraisal_tracker_popup" model="ir.ui.view">
+            <field name="name">purchase.order.popup</field>
+            <field name="model">appraisaltracker.export</field>
+            <field name="arch" type="xml">
+                <form string="Export Appraisal Tracker">
+                    <group>
+                        <div>Click On ' Export To File ' button to export Appraisal Tracker file</div>
+                    </group>
+                    <footer>
+                        <button name="download_excel_appraisal_tracker" string="Export To File" type="object"
+                                class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <act_window name="Export Appraisal Tracker"
+                    res_model="appraisaltracker.export"
+                    src_model="purchase.order"
+                    view_mode="form"
+                    target="new"
+                    key2="client_action_multi"
+                    id="appraisal_tracker_act_window"/>
 
         <menuitem id="menu_procurement_management_appraisal_tracker" name="Appraisal Tracker"
                   parent="purchase.menu_procurement_management" action="appraisal_tracker.action_window" sequence="15"
