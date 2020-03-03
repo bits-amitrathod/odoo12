@@ -145,6 +145,17 @@ class CustomerAsWholesaler(models.Model):
         return {'value': val, 'warning': warning}
 
 
+class ApprisalTrackerExport(models.TransientModel):
+    _name = 'appraisaltracker.export'
+    _description = 'appraisaltracker.export'
+
+    def download_excel_appraisal_tracker(self):
+        return {
+            'type': 'ir.actions.act_url',
+            'url': '/web/export/appraisal_xl',
+            'target': 'new'
+        }
+
 
 
 
