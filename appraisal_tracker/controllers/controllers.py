@@ -112,7 +112,7 @@ class ApprisalTracker(http.Controller):
 					and po.invoice_status !='invoiced'
 					then 'Accepted'
 					when po.state ='cancel'  then 'Declined'
-					when po.arrival_date_grp is not null  and po.state !='cancel' then 'Arrived'
+					when po.arrival_date_grp is not null  and po.state !='cancel'  and  po.invoice_status !='invoiced' then 'Arrived'
                                         when date_done.date_done is not null  and po.invoice_status !='invoiced' 
                                         and  po.state !='cancel' then 'Checked Into Inventory' 
 					when po.invoice_status ='invoiced' and po.state !='cancel' then 'Bill created'
