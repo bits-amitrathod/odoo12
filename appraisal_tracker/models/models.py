@@ -38,8 +38,7 @@ class apprisal_tracker_vendor(models.Model):
                 if order.state == 'purchase':
                     order.status_ven_app = 'Accepted'
 
-                if order.state == 'cancel':
-                    order.status_ven_app = 'Declined'
+
 
                 if order.arrival_date_grp and order.arrival_date_grp != '':
                     order.status_ven_app = 'Arrived'
@@ -51,6 +50,9 @@ class apprisal_tracker_vendor(models.Model):
 
                 if order.invoice_status and order.invoice_status == 'invoiced':
                     order.status_ven_app = 'Bill created'
+
+                if order.state == 'cancel':
+                    order.status_ven_app = 'Declined'
 
                 account_invoice = self.env['account.invoice'].search([('origin', '=', order.name)])
                 for acc in account_invoice:
