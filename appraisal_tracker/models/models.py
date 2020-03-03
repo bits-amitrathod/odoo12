@@ -35,6 +35,12 @@ class apprisal_tracker_vendor(models.Model):
                 if order.state in ('ven_draft', 'ven_sent'):
                     order.status_ven_app = 'Vendor Offer'
 
+                if order.state == 'purchase':
+                    order.status_ven_app = 'Accepted'
+
+                if order.state == 'cancel':
+                    order.status_ven_app = 'Declined'
+
                 if order.arrival_date_grp and order.arrival_date_grp != '':
                     order.status_ven_app = 'Arrived'
 
