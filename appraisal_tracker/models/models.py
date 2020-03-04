@@ -35,6 +35,11 @@ class apprisal_tracker_vendor(models.Model):
                 if order.state in ('ven_draft', 'ven_sent'):
                     order.status_ven_app = 'Vendor Offer'
 
+                if order.state == 'purchase':
+                    order.status_ven_app = 'Accepted'
+
+
+
                 if order.arrival_date_grp and order.arrival_date_grp != '':
                     order.status_ven_app = 'Arrived'
 
@@ -45,6 +50,9 @@ class apprisal_tracker_vendor(models.Model):
 
                 if order.invoice_status and order.invoice_status == 'invoiced':
                     order.status_ven_app = 'Bill created'
+
+                if order.state == 'cancel':
+                    order.status_ven_app = 'Declined'
 
                 account_invoice = self.env['account.invoice'].search([('origin', '=', order.name)])
                 for acc in account_invoice:
@@ -144,6 +152,17 @@ class CustomerAsWholesaler(models.Model):
             }
         return {'value': val, 'warning': warning}
 
+
+class ApprisalTrackerExport(models.TransientModel):
+    _name = 'appraisaltracker.export'
+    _description = 'appraisaltracker.export'
+
+    def download_excel_appraisal_tracker(self):
+        return {
+            'type': 'ir.actions.act_url',
+            'url': '/web/export/appraisal_xl',
+            'target': 'new'
+        }
 
 
 
