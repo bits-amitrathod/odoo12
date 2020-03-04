@@ -8,7 +8,7 @@
             <field name="arch" type="xml">
 
                 <tree create="false" delete="false">
-                    <field name="appraisal_no" attrs="{'invisible':[('state', 'not in', ('purchase','cancel','ven_draft','ven_sent'))]}"/>
+                    <field name="appraisal_no" attrs="{'invisible':[('state', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"/>
                     <!--<field name="priority" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"/>-->
                     <!--<field name="revision" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"-->
                            <!--class="text-center"/>-->
@@ -17,31 +17,31 @@
                     <field name="status" invisible="1"/>
                     <field name="state" invisible="1"/>
                     <field name="acq_user_id" string='Acq Manager'
-                           attrs="{'invisible':[('status', 'not in', ('purchase','cancel','ven_draft','ven_sent'))]}"/>
-                    <field name="partner_id" attrs="{'invisible':[('status', 'not in', ('purchase','cancel' ,'ven_draft','ven_sent'))]}"
+                           attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"/>
+                    <field name="partner_id" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel' ,'ven_draft','ven_sent'))]}"
                            string="Facility"/>
-                    <field name="cust_type_appraisal" attrs="{'invisible':[('status', 'not in', ('purchase','cancel','ven_draft','ven_sent'))]}"/>
-                    <field name="name" attrs="{'invisible':[('status', 'not in', ('purchase','cancel','ven_draft','ven_sent'))]}"
+                    <field name="cust_type_appraisal" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"/>
+                    <field name="name" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"
                            string="PO#"/>
-                    <field name="payment_term_id" attrs="{'invisible':[('status', 'not in', ('purchase','cancel','ven_draft','ven_sent'))]}"
+                    <field name="payment_term_id" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"
                           />
-                       <field name="amount_total" attrs="{'invisible':[('state', 'not in', ('purchase','cancel','ven_draft','ven_sent'))]}"
+                       <field name="amount_total" attrs="{'invisible':[('state', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"
                            widget="monetary" string="Total Offer"/>
-                    <field name="rt_price_total_amt" attrs="{'invisible':[('state', 'not in', ('purchase','cancel','ven_draft','ven_sent'))]}"
+                    <field name="rt_price_total_amt" attrs="{'invisible':[('state', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"
                            widget="monetary" string="Total Retail"/>
-                      <field name="billed_offer_total" attrs="{'invisible':[('state', 'not in', ('purchase','cancel','ven_draft','ven_sent'))]}" string="Billed Total Offer" />
-                     <field name="billed_retail_total" attrs="{'invisible':[('state', 'not in', ('purchase','cancel','ven_draft','ven_sent'))]}"  string="Billed Total Retail"/>
+                      <field name="billed_offer_total" attrs="{'invisible':[('state', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}" string="Billed Total Offer" />
+                     <field name="billed_retail_total" attrs="{'invisible':[('state', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"  string="Billed Total Retail"/>
 
-                    <field name="create_date" attrs="{'invisible':[('status', 'not in', ('purchase','cancel','ven_draft','ven_sent'))]}"/>
+                    <field name="create_date" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"/>
                     <field name="shipping_label_issued"
-                           attrs="{'invisible':[('status', 'not in', ('purchase','cancel','ven_draft','ven_sent'))]}"/>
-                    <field name="shipping_date" attrs="{'invisible':[('status', 'not in', ('purchase','cancel','ven_draft','ven_sent'))]}"/>
-                    <field name="delivered_date" attrs="{'invisible':[('status', 'not in', ('purchase','cancel','ven_draft','ven_sent'))]}"/>
-                     <field name="arrival_date_grp" attrs="{'invisible':[('status', 'not in', ('purchase','cancel','ven_draft','ven_sent'))]}"/>
-                    <field name="tier1_retail" attrs="{'invisible':[('status', 'not in', ('purchase','cancel','ven_draft','ven_sent'))]}"   widget="monetary" />
-                    <field name="tier2_retail" attrs="{'invisible':[('status', 'not in', ('purchase','cancel','ven_draft','ven_sent'))]}"   widget="monetary" />
-                    <field name="less_than_40_retail" attrs="{'invisible':[('status', 'not in', ('purchase','cancel','ven_draft','ven_sent'))]}"   widget="monetary" />
-                    <field name="new_customer" attrs="{'invisible':[('status', 'not in', ('purchase','cancel','ven_draft','ven_sent'))]}"/>
+                           attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"/>
+                    <field name="shipping_date" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"/>
+                    <field name="delivered_date" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"/>
+                     <field name="arrival_date_grp" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"/>
+                    <field name="tier1_retail" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"   widget="monetary" />
+                    <field name="tier2_retail" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"   widget="monetary" />
+                    <field name="less_than_40_retail" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"   widget="monetary" />
+                    <field name="new_customer" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"/>
                     <!--<field name="tier1_margin"-->
                            <!--options='{"bg_color": "#f3f397 : t1color"+"==3;"+"#c9fbcf : t1color"+"==2;"+"#ff7098 : t1color"+"==1"}'-->
                            <!--string="T1 Margin"-->
@@ -58,7 +58,7 @@
                            <!--options='{"bg_color": "#f3f397 : color"+"==3;"+"#c9fbcf : color"+"==2;"+"#ff7098 : color"+"==1"}'-->
                            <!--string="Margin Detail"-->
                            <!--attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"></field>-->
-                    <field name="status_ven_app" attrs="{'invisible':[('status', 'not in', ('purchase','cancel','ven_draft','ven_sent'))]}"/>
+                    <field name="status_ven_app" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"/>
                     <field name="color" invisible="1"/>
                       <field name="t1color" invisible="1"/>
                       <field name="t2color" invisible="1"/>
