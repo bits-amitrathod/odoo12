@@ -55,29 +55,40 @@
         </field>
     </record>
 
-    <record id="view_voided_product" model="ir.ui.view">
-        <field name="name">voided.product</field>
-        <field name="model">voided.product.export</field>
-        <field name="arch" type="xml">
-            <form string="Export Voided Product">
-                <group>
-                    <div>Click On ' Export Voided product ' button to export Voided Product</div>
-                </group>
-                <footer>
-                    <button name="download_excel_voided_product" string="Export Voided product" type="object" class="btn-primary"/>
-                    <button string="Cancel" class="btn-default" special="cancel"/>
-                </footer>
-            </form>
-        </field>
-    </record>
 
-    <act_window name="Export Voided Product"
-                    res_model="voided.product.export"
-                    src_model="sps.customer.requests"
-                    view_mode="form"
-                    target="new"
-                    key2="client_action_multi"
-                    id="export_voided_product_act_window"/>
+    <record id="view_voided_product_popup" model="ir.ui.view">
+            <field name="name">Voided Product Filter</field>
+            <field name="model">voided.product.popup</field>
+            <field name="arch" type="xml">
+                <form string="Choose your date">
+                    <group>
+                        <group>
+                            <field name="customer_id"/>
+                        </group>
+                        <group>
+                            <field name="compute_at_date" widget="radio"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+
+    <record id="action_voided_product_popup" model="ir.actions.act_window">
+        <field name="name">Voided Product Filter</field>
+        <field name="res_model">voided.product.popup</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_voided_product_popup"/>
+        <field name="target">new</field>
+        <field name="context">{'valuation': True}</field>
+    </record>
 
     <record id="voided_product_template_action" model="ir.actions.act_window">
         <field name="name">Voided Products</field>
@@ -98,6 +109,6 @@
     </record>
 
     <menuitem name="Voided Product" id="prioritization_engine.prioritization_voided_pro_menu" parent="prioritization_engine.prioritization_pmenu"
-              action="customer-requests.voided_product_template_action"/>
+              action="customer-requests.action_voided_product_popup"/>
 
 </odoo>
