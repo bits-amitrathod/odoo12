@@ -126,7 +126,7 @@
                             </group>
                             <group>
                                 <field name="date_offered" string="Offer Date" readonly="1"/>
-                                <field name="appraisal_no" readonly="1"/>
+                                <field name="appraisal_no" />
                                 <field name="accepted_date" readonly="1"/>
                                 <field name="declined_date" readonly="1"/>
                                 <field name="arrival_date_grp"/>
