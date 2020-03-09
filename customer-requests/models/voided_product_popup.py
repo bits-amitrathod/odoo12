@@ -13,10 +13,16 @@ class VoidedProductPopup(models.TransientModel):
     _name = 'voided.product.popup'
     _description = 'Voided Product Filter'
 
-    compute_at_date = fields.Selection([
+    compute_at_product_selection = fields.Selection([
         (0, 'All Voided Products'),
+        (1, 'All Unprocessed Products ')
+    ], string="Products", default=0, help="Choose Voided Products which are not in inventory or Unprocessed Products "
+                                         "which were not allocated because of some reason")
+
+    compute_at_date = fields.Selection([
+        (0, 'Show All'),
         (1, 'Date Range ')
-    ], string="Compute", default=0, help="Choose to analyze the Show Summary or from a specific date in the past.")
+    ], string="Compute", default=0, help="Choose Show All or from a specific date in the past.")
 
     start_date = fields.Date('Start Date', default=fields.date.today())
 
@@ -28,7 +34,10 @@ class VoidedProductPopup(models.TransientModel):
         tree_view_id = self.env.ref('customer-requests.view_tree_voided_products').id
         form_view_id = self.env.ref('customer-requests.view_form_voided_product').id
 
-        domain = [('status', '=', 'Voided')]
+        if self.compute_at_product_selection:
+            domain = [('status', '=', 'Unprocessed')]
+        else:
+            domain = [('status', '=', 'Voided')]
 
         if self.compute_at_date:
             s_date = self.string_to_date(str(self.start_date))

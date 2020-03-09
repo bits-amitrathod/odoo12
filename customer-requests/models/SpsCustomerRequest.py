@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api
-from operator import attrgetter
+import json
 import logging
-from operator import itemgetter
 
 
 _logger = logging.getLogger(__name__)
@@ -21,6 +20,8 @@ class SpsCustomerRequest(models.Model):
     sale_order_name = fields.Char(string="Sale Order", compute="_get_sale_order_name")
     gl_account = fields.Char(string='GL Account')
     document_name = fields.Char(string="Document Name", compute="_get_document_name")
+    manufacturer_oem_price = fields.Float(string="Price from OEM", compute="_get_manufacturer_oem_price")
+    manufacturer_oem = fields.Char(string="Product OEM", compute="_get_product_oem")
 
     customer_sku = fields.Char()
     req_no = fields.Char()
@@ -157,3 +158,31 @@ class SpsCustomerRequest(models.Model):
     def _get_document_name(self):
         for record in self:
             record.document_name = str(record.document_id.document_name)
+
+    @api.multi
+    def _get_product_oem(self):
+        for record in self:
+            if record.un_mapped_data:
+                un_mapped_dict = record.un_mapped_data
+
+                # removing spaces from keys, storing them in sam dictionary
+                un_mapped_dict = {x.replace(' ', '').lower(): v for x, v in json.loads(un_mapped_dict).items()}
+
+                if 'mfr.name' in un_mapped_dict:
+                    record.manufacturer_oem = un_mapped_dict.get('mfr.name')
+                else:
+                    record.manufacturer_oem = None
+
+    @api.multi
+    def _get_manufacturer_oem_price(self):
+        for record in self:
+            if record.un_mapped_data:
+                un_mapped_dict = record.un_mapped_data
+
+                # removing spaces from keys, storing them in sam dictionary
+                un_mapped_dict = {x.replace(' ', '').lower(): v for x, v in json.loads(un_mapped_dict).items()}
+
+                if 'cost' in un_mapped_dict:
+                    record.manufacturer_oem_price = un_mapped_dict.get('cost')
+                else:
+                    record.manufacturer_oem_price = None

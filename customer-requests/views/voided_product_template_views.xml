@@ -6,14 +6,17 @@
         <field name="model">sps.customer.requests</field>
         <field name="mode">primary</field>
         <field name="arch" type="xml">
-            <tree create="false">
+            <tree create="false" default_order="create_date desc">
                 <field name="customer_id"/>
                 <field name="document_name"/>
                 <field name="customer_sku" string="Customer SKU"/>
                 <field name="product_description" string="Customer Product Description"/>
                 <field name="qty_to_show" string="Quantity"/>
+                <field name="manufacturer_oem"/>
+                <field name="manufacturer_oem_price"/>
                 <field name="status"/>
                 <field name="create_date" string="Date"/>
+                <field name="customer_request_logs" string="Reason" attrs="{'invisible': [('status', '=', 'Voided')]}"/>
                 <!--<field name="template_type" invisible="1" />-->
             </tree>
         </field>
@@ -27,14 +30,19 @@
             <form create="false" edit="false">
                 <group>
                     <field name="customer_id"/>
+                    <field name="document_name"/>
                     <field name="status"/>
                 </group>
                 <group>
-                    <field name="customer_sku"/>
+                    <field name="customer_sku" string="Customer SKU"/>
+                    <field name="product_description" string="Customer Product Description"/>
                     <field name="qty_to_show" string="Quantity"/>
                 </group>
                 <group>
+                    <field name="manufacturer_oem"/>
+                    <field name="manufacturer_oem_price"/>
                     <field name="un_mapped_data"/>
+                    <field name="customer_request_logs" string="Reason" attrs="{'invisible': [('status', '=', 'Voided')]}"/>
                 </group>
             </form>
         </field>
@@ -64,6 +72,11 @@
                     <group>
                         <group>
                             <field name="customer_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="compute_at_product_selection" widget="radio"/>
                         </group>
                         <group>
                             <field name="compute_at_date" widget="radio"/>
