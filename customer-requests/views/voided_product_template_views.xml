@@ -36,7 +36,7 @@
                 <group>
                     <field name="product_id"/>
                     <field name="customer_sku" string="Customer SKU"/>
-                    <field name="product_description" string="Customer Product Description"/>
+                    <field name="customer_product_description"/>
                     <field name="qty_to_show" string="Quantity"/>
                 </group>
                 <group>
