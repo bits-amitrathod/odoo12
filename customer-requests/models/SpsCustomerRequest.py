@@ -20,7 +20,7 @@ class SpsCustomerRequest(models.Model):
     sale_order_name = fields.Char(string="Sale Order", compute="_get_sale_order_name")
     gl_account = fields.Char(string='GL Account')
     document_name = fields.Char(string="Document Name", compute="_get_document_name")
-    manufacturer_oem_price = fields.Float(string="Price from OEM", compute="_get_manufacturer_oem_price")
+    manufacturer_oem_price = fields.Char(string="Price from OEM", compute="_get_manufacturer_oem_price")
     manufacturer_oem = fields.Char(string="Product OEM", compute="_get_product_oem")
     customer_product_description = fields.Char(string='Customer Product Description', compute="_get_customer_product_description")
 
