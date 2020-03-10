@@ -171,6 +171,12 @@ class SpsCustomerRequest(models.Model):
 
                 if 'mfr.name' in un_mapped_dict:
                     record.manufacturer_oem = un_mapped_dict.get('mfr.name')
+                elif 'manufacturer' in un_mapped_dict:
+                    record.manufacturer_oem = un_mapped_dict.get('manufacturer')
+                elif 'manufacturername' in un_mapped_dict:
+                    record.manufacturer_oem = un_mapped_dict.get('manufacturername')
+                elif 'productoem' in un_mapped_dict:
+                    record.manufacturer_oem = un_mapped_dict.get('productoem')
                 else:
                     record.manufacturer_oem = None
 
@@ -185,6 +191,8 @@ class SpsCustomerRequest(models.Model):
 
                 if 'cost' in un_mapped_dict:
                     record.manufacturer_oem_price = un_mapped_dict.get('cost')
+                elif 'price' in un_mapped_dict:
+                    record.manufacturer_oem_price = un_mapped_dict.get('price')
                 else:
                     record.manufacturer_oem_price = None
 
@@ -201,5 +209,15 @@ class SpsCustomerRequest(models.Model):
 
                 if 'description' in un_mapped_dict:
                     record.customer_product_description = un_mapped_dict.get('description')
+                elif 'productdescription' in un_mapped_dict:
+                    record.customer_product_description = un_mapped_dict.get('productdescription')
+                elif 'desc' in un_mapped_dict:
+                    record.customer_product_description = un_mapped_dict.get('desc')
+                elif 'desc.' in un_mapped_dict:
+                    record.customer_product_description = un_mapped_dict.get('desc.')
+                elif 'product' in un_mapped_dict:
+                    record.customer_product_description = un_mapped_dict.get('product')
+                elif 'productname' in un_mapped_dict:
+                    record.customer_product_description = un_mapped_dict.get('productname')
                 else:
                     record.customer_product_description = None
