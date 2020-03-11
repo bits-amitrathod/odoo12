@@ -14,8 +14,8 @@ class VoidedProductPopup(models.TransientModel):
     _description = 'Voided Product Filter'
 
     compute_at_product_selection = fields.Selection([
-        (0, 'All Voided Products'),
-        (1, 'All Unprocessed Products ')
+        (0, 'All Voided Products[Products not in SPS Inventory]'),
+        (1, 'All Unprocessed Products[Low/Out of stock products at the time of request]')
     ], string="Products", default=0, help="Choose Voided Products which are not in inventory or Unprocessed Products "
                                          "which were not allocated because of some reason")
 
