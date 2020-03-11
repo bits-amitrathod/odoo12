@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api
-from operator import attrgetter
+import json
 import logging
-from operator import itemgetter
 
 
 _logger = logging.getLogger(__name__)
@@ -21,6 +20,9 @@ class SpsCustomerRequest(models.Model):
     sale_order_name = fields.Char(string="Sale Order", compute="_get_sale_order_name")
     gl_account = fields.Char(string='GL Account')
     document_name = fields.Char(string="Document Name", compute="_get_document_name")
+    manufacturer_oem_price = fields.Char(string="Price from OEM", compute="_get_manufacturer_oem_price")
+    manufacturer_oem = fields.Char(string="Product OEM", compute="_get_product_oem")
+    customer_product_description = fields.Char(string='Customer Product Description', compute="_get_customer_product_description")
 
     customer_sku = fields.Char()
     req_no = fields.Char()
@@ -157,3 +159,65 @@ class SpsCustomerRequest(models.Model):
     def _get_document_name(self):
         for record in self:
             record.document_name = str(record.document_id.document_name)
+
+    @api.multi
+    def _get_product_oem(self):
+        for record in self:
+            if record.un_mapped_data:
+                un_mapped_dict = record.un_mapped_data
+
+                # removing spaces from keys, storing them in sam dictionary
+                un_mapped_dict = {x.replace(' ', '').lower(): v for x, v in json.loads(un_mapped_dict).items()}
+
+                if 'mfr.name' in un_mapped_dict:
+                    record.manufacturer_oem = un_mapped_dict.get('mfr.name')
+                elif 'manufacturer' in un_mapped_dict:
+                    record.manufacturer_oem = un_mapped_dict.get('manufacturer')
+                elif 'manufacturername' in un_mapped_dict:
+                    record.manufacturer_oem = un_mapped_dict.get('manufacturername')
+                elif 'productoem' in un_mapped_dict:
+                    record.manufacturer_oem = un_mapped_dict.get('productoem')
+                else:
+                    record.manufacturer_oem = None
+
+    @api.multi
+    def _get_manufacturer_oem_price(self):
+        for record in self:
+            if record.un_mapped_data:
+                un_mapped_dict = record.un_mapped_data
+
+                # removing spaces from keys, storing them in sam dictionary
+                un_mapped_dict = {x.replace(' ', '').lower(): v for x, v in json.loads(un_mapped_dict).items()}
+
+                if 'cost' in un_mapped_dict:
+                    record.manufacturer_oem_price = un_mapped_dict.get('cost')
+                elif 'price' in un_mapped_dict:
+                    record.manufacturer_oem_price = un_mapped_dict.get('price')
+                else:
+                    record.manufacturer_oem_price = None
+
+    @api.multi
+    def _get_customer_product_description(self):
+        for record in self:
+            if record.product_description and record.product_description is not None:
+                record.customer_product_description = record.product_description
+            elif record.un_mapped_data:
+                un_mapped_dict = record.un_mapped_data
+
+                # removing spaces from keys, storing them in sam dictionary
+                un_mapped_dict = {x.replace(' ', '').lower(): v for x, v in json.loads(un_mapped_dict).items()}
+
+                if 'description' in un_mapped_dict:
+                    record.customer_product_description = un_mapped_dict.get('description')
+                elif 'productdescription' in un_mapped_dict:
+                    record.customer_product_description = un_mapped_dict.get('productdescription')
+                elif 'desc' in un_mapped_dict:
+                    record.customer_product_description = un_mapped_dict.get('desc')
+                elif 'desc.' in un_mapped_dict:
+                    record.customer_product_description = un_mapped_dict.get('desc.')
+                elif 'product' in un_mapped_dict:
+                    record.customer_product_description = un_mapped_dict.get('product')
+                elif 'productname' in un_mapped_dict:
+                    record.customer_product_description = un_mapped_dict.get('productname')
+                else:
+                    record.customer_product_description = None
