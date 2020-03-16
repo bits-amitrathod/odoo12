@@ -6,14 +6,17 @@
         <field name="model">sps.customer.requests</field>
         <field name="mode">primary</field>
         <field name="arch" type="xml">
-            <tree create="false">
+            <tree create="false" default_order="create_date desc">
                 <field name="customer_id"/>
                 <field name="document_name"/>
                 <field name="customer_sku" string="Customer SKU"/>
-                <field name="product_description" string="Customer Product Description"/>
+                <field name="customer_product_description"/>
                 <field name="qty_to_show" string="Quantity"/>
+                <field name="manufacturer_oem"/>
+                <field name="manufacturer_oem_price"/>
                 <field name="status"/>
                 <field name="create_date" string="Date"/>
+                <field name="customer_request_logs" string="Reason"/>
                 <!--<field name="template_type" invisible="1" />-->
             </tree>
         </field>
@@ -27,14 +30,20 @@
             <form create="false" edit="false">
                 <group>
                     <field name="customer_id"/>
+                    <field name="document_name"/>
                     <field name="status"/>
                 </group>
                 <group>
-                    <field name="customer_sku"/>
+                    <field name="product_id"/>
+                    <field name="customer_sku" string="Customer SKU"/>
+                    <field name="customer_product_description"/>
                     <field name="qty_to_show" string="Quantity"/>
                 </group>
                 <group>
+                    <field name="manufacturer_oem"/>
+                    <field name="manufacturer_oem_price"/>
                     <field name="un_mapped_data"/>
+                    <field name="customer_request_logs" string="Reason" attrs="{'invisible': [('status', '=', 'Voided')]}"/>
                 </group>
             </form>
         </field>
@@ -55,6 +64,44 @@
         </field>
     </record>
 
+    <record id="view_voided_product_popup" model="ir.ui.view">
+            <field name="name">Voided Product Filter</field>
+            <field name="model">voided.product.popup</field>
+            <field name="arch" type="xml">
+                <form string="Choose your date">
+                    <group>
+                        <group>
+                            <field name="customer_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="compute_at_product_selection" widget="radio"/>
+                        </group>
+                        <group>
+                            <field name="compute_at_date" widget="radio"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+
+    <record id="action_voided_product_popup" model="ir.actions.act_window">
+        <field name="name">Voided Product Filter</field>
+        <field name="res_model">voided.product.popup</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_voided_product_popup"/>
+        <field name="target">new</field>
+        <field name="context">{'valuation': True}</field>
+    </record>
 
     <record id="voided_product_template_action" model="ir.actions.act_window">
         <field name="name">Voided Products</field>
@@ -75,6 +122,6 @@
     </record>
 
     <menuitem name="Voided Product" id="prioritization_engine.prioritization_voided_pro_menu" parent="prioritization_engine.prioritization_pmenu"
-              action="customer-requests.voided_product_template_action"/>
+              action="customer-requests.action_voided_product_popup"/>
 
 </odoo>
