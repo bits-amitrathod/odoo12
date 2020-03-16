@@ -171,6 +171,33 @@ class VendorOffer(models.Model):
 
     super_user_email = fields.Char(compute='_email_info_user')
     vendor_cust_id = fields.Char(string="Customer ID",store=True,readonly=False)
+    cash_text_pdf = fields.Char(string="",compute='_cash_text_pdf_fun')
+
+    @api.onchange('cash_text_pdf')
+    @api.depends('cash_text_pdf')
+    def _cash_text_pdf_fun(self):
+        for order in self:
+            final_text = ''
+            days = 0
+            flag = True
+            if order.payment_term_id:
+                payment_term = self.env['account.payment.term'].search([('id', '=', order.payment_term_id.id)], limit=1)
+                if payment_term.line_ids:
+                    line_count = 0
+                    for line in payment_term.line_ids:
+                        line_count = line_count + 1
+                        days = line.days
+                    if line_count > 1:
+                        flag = False
+
+                if flag:
+                    if days == 0:
+                        order.cash_text_pdf = order.payment_term_id.name
+                    else:
+                        order.cash_text_pdf = ' ' + str(days) + ' ' + 'days'
+                else:
+                    order.cash_text_pdf = order.payment_term_id.name
+
 
     @api.onchange('vendor_cust_id')
     @api.depends('vendor_cust_id')
