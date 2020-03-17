@@ -99,6 +99,7 @@ class ApprisalTracker(http.Controller):
         str_functions = """	 
 
                      select distinct po.name as po , po.appraisal_no,acq_man.name as acq_manager,rp.name as facility,
+                     po.vendor_cust_id,
                     case when  rp.is_wholesaler = true then 'Wholesaler' 
                     when  rp.is_broker = true then 'Broker' 
                     else  'Traditional' end as ap_type, 
@@ -172,7 +173,9 @@ class ApprisalTracker(http.Controller):
                         group by pof1.id
                   ) as retail_val  on retail_val.order_id = po.id
 
-                       where  po.vendor_offer_data= true order by po.name desc
+                   where(po.state in ('purchase', 'cancel', 'ven_draft', 'ven_sent','done') and
+                   po.status in ('purchase', 'cancel', 'ven_draft', 'ven_sent','done')) 
+                   order by po.name desc
 
                 """
         # where(po.state in ('purchase', 'cancel', 'ven_draft', 'ven_sent') and
@@ -184,7 +187,8 @@ class ApprisalTracker(http.Controller):
         records = []
 
         for line in order_lines:
-            records.append([line['appraisal_no'], line['acq_manager'], line['facility'], line['ap_type'], line['po'],
+            records.append([line['appraisal_no'], line['acq_manager'], line['facility'], line['vendor_cust_id'],
+                            line['ap_type'], line['po'],
                             line['payment_term'], line['total_offer'], line['total_retail'], line['billed_offer'],
                             line['billed_retail'], line['create_date'],
 
@@ -194,7 +198,7 @@ class ApprisalTracker(http.Controller):
                             line['new_customer'], line['status']])
 
         res = request.make_response(
-            self.from_data(["Appraisal No", "Acq Manager", "Facility", "Type", "PO#", "Payment Term",
+            self.from_data(["Appraisal No", "Acq Manager", "Facility","Customer ID", "Type", "PO#", "Payment Term",
                             "Total Offer", "Total Retail", "Billed Total Offer", "Billed Total Retail",
                             "Created On",
                             "Shipping label Issued", "Shipping Date",
