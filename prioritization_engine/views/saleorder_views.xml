@@ -120,6 +120,7 @@
                 <xpath expr="//field[@name='client_order_ref']" position="replace"/>
                 <xpath expr="//field[@name='carrier_acc_no']" position="after">
                     <field name="client_order_ref"/>
+                    <field name="gl_account"/>
                 </xpath>
             </field>
         </record>
@@ -204,7 +205,7 @@
                 <div t-if="doc.partner_id.gl_account" class="mr8 ml8">
                     <strong>GL Account:</strong>
                     <t t-foreach="doc.partner_id.gl_account" t-as="gl_account">
-                        <b t-field="gl_account.name"/>
+                        <p t-field="gl_account.name"/>
                     </t>
                 </div>
                 <div name="payment_term" t-if="doc.payment_term_id" class="mr8 ml8">

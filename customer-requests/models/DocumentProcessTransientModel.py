@@ -253,6 +253,7 @@ class DocumentProcessTransientModel(models.TransientModel):
         else:
             print('matched_template = 1')
         return column_mappings, non_selected_columns, template_type
+
     @staticmethod
     def _read_xls_book(book, read_data=False):
         sheet = book.sheet_by_index(0)
