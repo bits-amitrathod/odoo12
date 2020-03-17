@@ -20,6 +20,9 @@
                            attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"/>
                     <field name="partner_id" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel' ,'ven_draft','ven_sent'))]}"
                            string="Facility"/>
+                    <field name="vendor_cust_id" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel' ,'ven_draft','ven_sent'))]}"
+                          />
+
                     <field name="cust_type_appraisal" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"/>
                     <field name="name" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"
                            string="PO#"/>
@@ -115,6 +118,8 @@
                         </div>
                         <group>
                             <group>
+
+                                <field name="vendor_cust_id" readonly="1"/>
                                 <field name="partner_id" string='Facility Name' readonly="1"/>
                                 <field name="acq_user_id" readonly="1"/>
                                 <field name="possible_competition" readonly="1"/>
@@ -293,8 +298,8 @@
             <field name="name">Appraisal Tracker</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">purchase.order</field>
-            <!--<field name="domain">[('state','in',('purchase','cancel','ven_draft','ven_sent')),('status','in',('purchase','cancel','ven_draft','ven_sent'))]</field>-->
-            <field name="domain">[('vendor_offer_data','=',True)]</field>
+            <field name="domain">[('state','in',('purchase','cancel','ven_draft','ven_sent')),('status','in',('purchase','cancel','ven_draft','ven_sent'))]</field>
+            <!--<field name="domain">[('vendor_offer_data','=',True)]</field>-->
             <field name="context">{'vendor_offer_data': True}</field>
             <field name="view_mode">form,tree</field>
             <field name="view_ids" eval="[(5, 0, 0),
