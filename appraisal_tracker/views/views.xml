@@ -298,7 +298,7 @@
             <field name="name">Appraisal Tracker</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">purchase.order</field>
-            <field name="domain">[('state','in',('purchase','cancel','ven_draft','ven_sent')),('status','in',('purchase','cancel','ven_draft','ven_sent'))]</field>
+            <field name="domain">[('state','in',('purchase','cancel','ven_draft','ven_sent','done')),('status','in',('purchase','cancel','ven_draft','ven_sent','done'))]</field>
             <!--<field name="domain">[('vendor_offer_data','=',True)]</field>-->
             <field name="context">{'vendor_offer_data': True}</field>
             <field name="view_mode">form,tree</field>
