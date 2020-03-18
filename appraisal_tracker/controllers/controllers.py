@@ -99,7 +99,7 @@ class ApprisalTracker(http.Controller):
         str_functions = """	 
 
                      select distinct po.name as po , po.appraisal_no,acq_man.name as acq_manager,rp.name as facility,
-                     po.vendor_cust_id,
+                     rp.saleforce_ac as vendor_cust_id,
                     case when  rp.is_wholesaler = true then 'Wholesaler' 
                     when  rp.is_broker = true then 'Broker' 
                     else  'Traditional' end as ap_type, 

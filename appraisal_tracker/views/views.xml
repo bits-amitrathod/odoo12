@@ -20,7 +20,7 @@
                            attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"/>
                     <field name="partner_id" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel' ,'ven_draft','ven_sent'))]}"
                            string="Facility"/>
-                    <field name="vendor_cust_id" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel' ,'ven_draft','ven_sent'))]}"
+                    <field name="vendor_cust_id_app" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel' ,'ven_draft','ven_sent'))]}"
                           />
 
                     <field name="cust_type_appraisal" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"/>
