@@ -24,6 +24,8 @@ class apprisal_tracker_vendor(models.Model):
     lscolor = fields.Integer(compute="_value_broker_margin", store=False)
 
     status_ven_app = fields.Char(string="Status",store=False)
+    vendor_cust_id_app = fields.Char(string="Customer ID", store=False ,compute="_value_broker_margin")
+
 
 
     @api.onchange('broker_margin')
@@ -32,6 +34,7 @@ class apprisal_tracker_vendor(models.Model):
             for order in self:
 
                 order.status_ven_app = order.status_ven
+                order.vendor_cust_id_app = order.partner_id.saleforce_ac
                 if order.state in ('ven_draft', 'ven_sent'):
                     order.status_ven_app = 'Vendor Offer'
 
