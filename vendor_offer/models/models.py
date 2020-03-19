@@ -171,6 +171,33 @@ class VendorOffer(models.Model):
 
     super_user_email = fields.Char(compute='_email_info_user')
     vendor_cust_id = fields.Char(string="Customer ID",store=True,readonly=False)
+    cash_text_pdf = fields.Char(string="",compute='_cash_text_pdf_fun')
+
+    @api.onchange('cash_text_pdf')
+    @api.depends('cash_text_pdf')
+    def _cash_text_pdf_fun(self):
+        for order in self:
+            final_text = ''
+            days = 0
+            flag = True
+            if order.payment_term_id:
+                payment_term = self.env['account.payment.term'].search([('id', '=', order.payment_term_id.id)], limit=1)
+                if payment_term.line_ids:
+                    line_count = 0
+                    for line in payment_term.line_ids:
+                        line_count = line_count + 1
+                        days = line.days
+                    if line_count > 1:
+                        flag = False
+
+                if flag:
+                    if days == 0:
+                        order.cash_text_pdf = order.payment_term_id.name
+                    else:
+                        order.cash_text_pdf = ' ' + str(days) + ' ' + 'days'
+                else:
+                    order.cash_text_pdf = order.payment_term_id.name
+
 
     @api.onchange('vendor_cust_id')
     @api.depends('vendor_cust_id')
@@ -2349,3 +2376,63 @@ class ExportPPVendorPricingXL(http.Controller):
             res = request.make_response('','')
             product_lines_export_pp.clear()
             return res
+
+class MailComposer(models.TransientModel):
+    _inherit = 'mail.compose.message'
+
+    @api.multi
+    def onchange_template_id(self, template_id, composition_mode, model, res_id):
+        """ - mass_mailing: we cannot render, so return the template values
+            - normal mode: return rendered values
+            /!\ for x2many field, this onchange return command instead of ids
+        """
+        if template_id and composition_mode == 'mass_mail':
+            template = self.env['mail.template'].browse(template_id)
+            fields = ['subject', 'body_html', 'email_from', 'reply_to', 'mail_server_id']
+            values = dict((field, getattr(template, field)) for field in fields if getattr(template, field))
+            if template.attachment_ids:
+                values['attachment_ids'] = [att.id for att in template.attachment_ids]
+            if template.mail_server_id:
+                values['mail_server_id'] = template.mail_server_id.id
+            if template.user_signature and 'body_html' in values:
+                signature = self.env.user.signature
+                values['body_html'] = tools.append_content_to_html(values['body_html'], signature, plaintext=False)
+        elif template_id:
+            values = self.generate_email_for_composer(template_id, [res_id])[res_id]
+            # transform attachments into attachment_ids; not attached to the document because this will
+            # be done further in the posting process, allowing to clean database if email not send
+            attachment_ids = []
+            Attachment = self.env['ir.attachment']
+            for attach_fname, attach_datas in values.pop('attachments', []):
+                data_attach = {
+                    'name': attach_fname,
+                    'datas': attach_datas,
+                    'datas_fname': attach_fname,
+                    'res_model': 'mail.compose.message',
+                    'res_id': 0,
+                    'type': 'binary',  # override default_type from context, possibly meant for another model!
+                }
+                attachment_ids.append(Attachment.create(data_attach).id)
+            ship_label = self.env['ir.attachment'].search(
+                [('res_id', '=', res_id), ('res_model_name', '=', 'Vendor Offer Automation')], order="id desc")
+            if values.get('attachment_ids', []) or attachment_ids:
+                values['attachment_ids'] = [(5,)] + values.get('attachment_ids', []) + attachment_ids + ([ship_label[0].id] if ship_label else [])
+        else:
+            default_values = self.with_context(default_composition_mode=composition_mode, default_model=model,
+                                               default_res_id=res_id).default_get(
+                ['composition_mode', 'model', 'res_id', 'parent_id', 'partner_ids', 'subject', 'body', 'email_from',
+                 'reply_to', 'attachment_ids', 'mail_server_id'])
+            values = dict((key, default_values[key]) for key in
+                          ['subject', 'body', 'partner_ids', 'email_from', 'reply_to', 'attachment_ids',
+                           'mail_server_id'] if key in default_values)
+
+        if values.get('body_html'):
+            values['body'] = values.pop('body_html')
+
+        # This onchange should return command instead of ids for x2many field.
+        # ORM handle the assignation of command list on new onchange (api.v8),
+        # this force the complete replacement of x2many field with
+        # command and is compatible with onchange api.v7
+        values = self._convert_to_write(values)
+
+        return {'value': values}

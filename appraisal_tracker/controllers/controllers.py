@@ -98,7 +98,8 @@ class ApprisalTracker(http.Controller):
 
         str_functions = """	 
 
-                    select distinct po.name as po , po.appraisal_no,acq_man.name as acq_manager,rp.name as facility,
+                     select distinct po.name as po , po.appraisal_no,acq_man.name as acq_manager,rp.name as facility,
+                     rp.saleforce_ac as vendor_cust_id,
                     case when  rp.is_wholesaler = true then 'Wholesaler' 
                     when  rp.is_broker = true then 'Broker' 
                     else  'Traditional' end as ap_type, 
@@ -149,7 +150,7 @@ class ApprisalTracker(http.Controller):
                        or
                          ((rpf1.is_wholesaler = true or rpf1.is_broker = true ) and ttf1.code='1' and polf1.product_unit_price!=0 and
                      (ABS(cast((polf1.product_offer_price/polf1.product_unit_price)-1 as numeric)) >= 0.48 )) )
-                    then (polf1.product_unit_price * polf1.product_qty) else 0 end ) as tier1_retail_temp ,
+                    then (polf1.product_unit_price * polf1.qty_invoiced) else 0 end ) as tier1_retail_temp ,
 
                         sum(case when  ( (rpf1.is_wholesaler != true  or rpf1.is_wholesaler is null ) and rpf1.is_broker != true and ttf1.code='2' ) or
 
@@ -157,11 +158,11 @@ class ApprisalTracker(http.Controller):
                         (ABS(cast((polf1.product_offer_price/polf1.product_unit_price)-1 as numeric))  >= 0.4 )) 
                         and (ABS(cast((polf1.product_offer_price/polf1.product_unit_price)-1 as numeric)) < 0.48 )) 
                         or (ttf1.code='2' and polf1.product_unit_price!=0 and (ABS(cast((polf1.product_offer_price/polf1.product_unit_price)-1 as numeric))  > 0.4) )))
-                    then (polf1.product_unit_price * polf1.product_qty) else 0 end ) as tier2_retail ,
+                    then (polf1.product_unit_price * polf1.qty_invoiced) else 0 end ) as tier2_retail ,
 
                     sum(case when  (rpf1.is_wholesaler = true or rpf1.is_broker = true ) and ( polf1.product_unit_price!=0 and 
                     (ABS(cast((polf1.product_offer_price/polf1.product_unit_price) -1 as numeric)) < 0.4 )) 
-                    then (polf1.product_unit_price * polf1.product_qty) else 0 end ) as less_than_40_retail 
+                    then (polf1.product_unit_price * polf1.qty_invoiced) else 0 end ) as less_than_40_retail 
 
                     from purchase_order pof1 left join purchase_order_line polf1 on pof1.id = polf1.order_id
                     left join product_product ppf1 on ppf1.id =polf1.product_id
@@ -172,7 +173,9 @@ class ApprisalTracker(http.Controller):
                         group by pof1.id
                   ) as retail_val  on retail_val.order_id = po.id
 
-                       where  po.vendor_offer_data= true order by po.name desc
+                   where(po.state in ('purchase', 'cancel', 'ven_draft', 'ven_sent','done') and
+                   po.status in ('purchase', 'cancel', 'ven_draft', 'ven_sent','done')) 
+                   order by po.name desc
 
                 """
         # where(po.state in ('purchase', 'cancel', 'ven_draft', 'ven_sent') and
@@ -184,7 +187,8 @@ class ApprisalTracker(http.Controller):
         records = []
 
         for line in order_lines:
-            records.append([line['appraisal_no'], line['acq_manager'], line['facility'], line['ap_type'], line['po'],
+            records.append([line['appraisal_no'], line['acq_manager'], line['facility'], line['vendor_cust_id'],
+                            line['ap_type'], line['po'],
                             line['payment_term'], line['total_offer'], line['total_retail'], line['billed_offer'],
                             line['billed_retail'], line['create_date'],
 
@@ -194,7 +198,7 @@ class ApprisalTracker(http.Controller):
                             line['new_customer'], line['status']])
 
         res = request.make_response(
-            self.from_data(["Appraisal No", "Acq Manager", "Facility", "Type", "PO#", "Payment Term",
+            self.from_data(["Appraisal No", "Acq Manager", "Facility","Customer ID", "Type", "PO#", "Payment Term",
                             "Total Offer", "Total Retail", "Billed Total Offer", "Billed Total Retail",
                             "Created On",
                             "Shipping label Issued", "Shipping Date",

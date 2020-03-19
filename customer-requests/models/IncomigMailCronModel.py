@@ -157,9 +157,13 @@ class IncomingMailCronModel(models.Model):
                                 # find customer in res.partner
                                 if saleforce_ac and saleforce_ac is not None:
                                     res_partner = self.env['res.partner'].search([("saleforce_ac", "=ilike", saleforce_ac), ('prioritization', '=', True), ('on_hold', '=', False)])
+
                                     if len(res_partner) == 1:
+                                        salesperson = None
+                                        if res_partner.user_id and res_partner.user_id.partner_id and res_partner.user_id.partner_id.email:
+                                            salesperson = res_partner.user_id.partner_id.email
                                         # when new email in inbox, send email to admin
-                                        self.send_mail_with_attachment(str(email_from), str(email_subject), str(res_partner.name), attachments)
+                                        self.send_mail_with_attachment(str(email_from), str(email_subject), str(res_partner.name), attachments, str(salesperson))
                                         if res_partner.email:
                                             customer_email = res_partner.email
                                         else:
@@ -181,8 +185,11 @@ class IncomingMailCronModel(models.Model):
                                 if email_from and email_from is not None:
                                     res_partner = self.env['res.partner'].search([("email", "=ilike", email_from), ('prioritization', '=', True), ('on_hold', '=', False)])
                                     if len(res_partner) == 1:
+                                        salesperson = None
+                                        if res_partner.user_id and res_partner.user_id.partner_id and res_partner.user_id.partner_id.email:
+                                            salesperson = res_partner.user_id.partner_id.email
                                         # when new email in inbox, send email to admin
-                                        self.send_mail_with_attachment(str(email_from), str(email_subject), str(res_partner.name), attachments)
+                                        self.send_mail_with_attachment(str(email_from), str(email_subject), str(res_partner.name), attachments, str(salesperson))
                                         if res_partner.email:
                                             customer_email = res_partner.email
                                         else:
@@ -405,10 +412,10 @@ class IncomingMailCronModel(models.Model):
             except:
                 response = {'message': 'Unable to connect to SMTP Server'}
 
-    def send_mail_with_attachment(self, email_from, email_subject, customer_name, attachments):
+    def send_mail_with_attachment(self, email_from, email_subject, customer_name, attachments, salesperson):
         today_date = datetime.today().strftime('%m/%d/%Y')
         template = self.env.ref('customer-requests.new_email_in_inbox').sudo()
-        local_context = {'emailFrom': email_from, 'emailSubject': email_subject, 'date': today_date, 'customerName': customer_name}
+        local_context = {'emailFrom': email_from, 'emailSubject': email_subject, 'date': today_date, 'customerName': customer_name, 'salesperson': salesperson}
         if attachments:
             for attachment in attachments:
                 try:
