@@ -465,6 +465,8 @@
                     <field name="ex_product_desc" string="Product Description"/>
                     <field name="product_uom_qty" string="Ordered Quantity"/>
                     <field name="qty_delivered" string="Delivered Quantity"/>
+                    <field name="price_unit" string="Unit Price"/>
+                    <field name="price_subtotal" string="Total"/>
                     <field name="ex_sale_order_confirm_date" string="Date Sold"/>
                 </tree>
             </field>
