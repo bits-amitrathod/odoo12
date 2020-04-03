@@ -80,7 +80,6 @@ class ReportPrintInStockExport(http.Controller):
     @serialize_exception
     def download_document_xl(self, token, **kwargs):
 
-
         """
           DROP VIEW DATA;
           DROP FUNCTION list_price_val(integer,integer,double precision);
@@ -94,7 +93,7 @@ class ReportPrintInStockExport(http.Controller):
                     price_list_id_val integer;  
                     compnay_id_param integer;  
                 BEGIN
-                
+
                                 select company_id INTO  compnay_id_param from res_partner where id=partner_id_param;
                                 SELECT r.id INTO price_list_id_val FROM ir_property p
                                 LEFT JOIN product_pricelist r ON substr(p.value_reference, 19)::integer=r.id
@@ -102,37 +101,37 @@ class ReportPrintInStockExport(http.Controller):
                                     AND (p.company_id=compnay_id_param OR p.company_id IS NULL)
                                     AND (p.res_id IN ('res.partner,'||partner_id_param) OR p.res_id IS NULL)
                                 ORDER BY p.company_id NULLS FIRST;
-                            
+
                             IF price_list_id_val is not null THEN
                             RETURN price_list_id_val; 
                             ELSE 
-                                
+
                                         select pp.id as price_list_id into price_list_id_val  from product_pricelist pp left join
                                         res_country_group_pricelist_rel rec
                                         on  pp.id = rec.pricelist_id left join res_country_res_country_group_rel rel
                                         on  rec.res_country_group_id= rel.res_country_group_id right join 	res_partner	resp
                                         on resp.country_id= rel.res_country_id    where resp.id =partner_id_param;
-                
+
                                     IF price_list_id_val is not null THEN
                                     RETURN price_list_id_val; 
                                     ELSE 
                                            select id from product_pricelist into price_list_id_val where id not in  
                                           (select pricelist_id from res_country_group_pricelist_rel) order by id  limit 1;
-                
+
                                             IF price_list_id_val is not null THEN
                                                   RETURN price_list_id_val; 
                                             ELSE  
                                                   select id from product_pricelist  into price_list_id_val order by id  limit 1;
                                             END IF;
-                
+
                                     END IF;
                             END IF;
-                        
+
                 RETURN price_list_id_val;  
                 END;  
                 $price_list_id$ LANGUAGE plpgsql; 
-                
-                
+
+
                 CREATE OR REPLACE FUNCTION cal_price_rule (id_param integer,compute_price_param varchar,product_id_param integer,pricelist_param integer,product_tmpl_id_param integer)  
                 RETURNS numeric AS $list_price_return$  
                 declare  
@@ -147,7 +146,7 @@ class ReportPrintInStockExport(http.Controller):
                     price_surcharge_val float8;
                     price_min_margin_val float8;
                     price_max_margin_val float8;
-                    
+
                 BEGIN  
                             IF compute_price_param ='fixed' THEN
                             select fixed_price INTO list_price_return_val  from product_pricelist_item where id = id_param limit 1;
@@ -163,16 +162,16 @@ class ReportPrintInStockExport(http.Controller):
                                     RETURN list_price_return_val;
                                   ELSE
                                         IF compute_price_param ='formula' THEN
-                                            
+
                                         END IF;
                                   END IF;
-                                    
+
                             END IF;
-                        
+
                 RETURN list_price_return_val;  
                 END;  
                 $list_price_return$ LANGUAGE plpgsql; 
-                
+
                   CREATE OR REPLACE FUNCTION list_price_val (partner_id_param integer,product_id_param integer,actual_quantity_param float8)  
                 RETURNS numeric AS $list_price_return$  
                 declare  
@@ -180,32 +179,32 @@ class ReportPrintInStockExport(http.Controller):
                      product_tmpl_id_param integer;  
                      categ_id_param integer;
                      pricelist_param integer;
-                    
+
                 BEGIN  		pricelist_param = getPricelist(partner_id_param);
                             select product_tmpl_id INTO product_tmpl_id_param from product_product where id=product_id_param;
                             select categ_id INTO categ_id_param from product_template where id=product_tmpl_id_param and product_template.sale_ok = True;
-                             
+
                                 select cal_price_rule(id,compute_price,product_id_param,pricelist_param,product_tmpl_id_param) INTO list_price_return_val  from product_pricelist_item 
                                 where pricelist_id = pricelist_param and product_id = product_id_param and min_quantity <= actual_quantity_param
                                 and (date_start is null OR date_start <= now()) and (date_end is null OR date_end >= now())   order by min_quantity desc ,id limit 1;
-                            
+
                             IF list_price_return_val is not null THEN
                                 RETURN list_price_return_val; 
                             ELSE 
-                          
-                                
+
+
                                  select cal_price_rule(id,compute_price,product_id_param,pricelist_param,product_tmpl_id_param) INTO list_price_return_val from product_pricelist_item
                                     where pricelist_id = pricelist_param and  product_tmpl_id = product_tmpl_id_param and min_quantity <= actual_quantity_param
                                     and (date_start is null OR date_start <= now()) and (date_end is null OR date_end >= now())
                                      order by min_quantity desc ,id limit 1;
-                                
+
                                     IF list_price_return_val is not null THEN
                                         RETURN list_price_return_val; 
                                     ELSE
                                             select cal_price_rule(id,compute_price,product_id_param,pricelist_param,product_tmpl_id_param) INTO list_price_return_val  from product_pricelist_item 
                                             where pricelist_id = pricelist_param and categ_id = categ_id_param and min_quantity <= actual_quantity_param
                                             and (date_start is null OR date_start <= now()) and (date_end is null OR date_end >= now())  order by min_quantity desc ,id limit 1;
-                                            
+
                                             IF list_price_return_val is not null THEN
                                                 RETURN list_price_return_val; 
                                             ELSE
@@ -213,11 +212,11 @@ class ReportPrintInStockExport(http.Controller):
                                                     where pricelist_id = pricelist_param and applied_on = '3_global' and min_quantity <= actual_quantity_param
                                                     and (date_start is null OR date_start <= now()) and (date_end is null OR date_end >= now())  order by min_quantity desc ,id limit 1;
                                             END IF;
-                                    
+
                                     END IF;
-                                        
+
                             END IF;
-                            
+
                 IF list_price_return_val is  null THEN
                     select list_price INTO list_price_return_val from product_template where id=product_tmpl_id_param and product_template.sale_ok = True;
                         IF list_price_return_val is  null THEN
@@ -230,8 +229,8 @@ class ReportPrintInStockExport(http.Controller):
                 END IF;
                 END;  
                 $list_price_return$ LANGUAGE plpgsql; 
-                
-                
+
+
                 CREATE OR REPLACE FUNCTION is_pricelist_formula (partner_id_param integer,product_id_param integer,actual_quantity_param float8)  
                 RETURNS numeric AS $list_price_return$  
                 declare  
@@ -239,21 +238,21 @@ class ReportPrintInStockExport(http.Controller):
                      product_tmpl_id_param integer;  
                      categ_id_param integer;
                      pricelist_param integer;
-                
+
                 BEGIN  		
                         pricelist_param = getPricelist(partner_id_param);
                         select product_tmpl_id INTO product_tmpl_id_param from product_product where id=product_id_param;
                         select categ_id INTO categ_id_param from product_template where id=product_tmpl_id_param and product_template.sale_ok = True;
-                        
+
                          select get_formula_rule(id,compute_price,product_id_param,pricelist_param,product_tmpl_id_param) INTO list_price_return_val  from product_pricelist_item 
                             where pricelist_id = pricelist_param and product_id = product_id_param and min_quantity <= actual_quantity_param
                             and (date_start is null OR date_start <= now()) and (date_end is null OR date_end >= now())   order by min_quantity desc ,id limit 1;
-                
-                      
+
+
                         IF list_price_return_val is not null THEN
                             RETURN list_price_return_val; 
                         ELSE 
-                        
+
                                       select get_formula_rule(id,compute_price,product_id_param,pricelist_param,product_tmpl_id_param) INTO list_price_return_val from product_pricelist_item
                                         where pricelist_id = pricelist_param and  product_tmpl_id = product_tmpl_id_param and min_quantity <= actual_quantity_param
                                         and (date_start is null OR date_start <= now()) and (date_end is null OR date_end >= now())
@@ -264,7 +263,7 @@ class ReportPrintInStockExport(http.Controller):
                                            select get_formula_rule(id,compute_price,product_id_param,pricelist_param,product_tmpl_id_param) INTO list_price_return_val  from product_pricelist_item 
                                             where pricelist_id = pricelist_param and categ_id = categ_id_param and min_quantity <= actual_quantity_param
                                             and (date_start is null OR date_start <= now()) and (date_end is null OR date_end >= now()) order by min_quantity desc ,id limit 1 ;
-                
+
                                         IF list_price_return_val is not null THEN
                                             RETURN list_price_return_val; 
                                         ELSE
@@ -272,20 +271,20 @@ class ReportPrintInStockExport(http.Controller):
                                                 where pricelist_id = pricelist_param and applied_on = '3_global' and min_quantity <= actual_quantity_param
                                                 and (date_start is null OR date_start <= now()) and (date_end is null OR date_end >= now())  order by min_quantity desc ,id limit 1;
                                         END IF;
-                
+
                                 END IF;
-                
+
                         END IF;
-                
+
                  IF list_price_return_val is  null THEN
                     RETURN 0;  
                  ELSE
                     RETURN list_price_return_val;  
                  END IF;
-                
+
                 END;  
                 $list_price_return$ LANGUAGE plpgsql; 
-                             
+
                 CREATE OR REPLACE FUNCTION get_formula_rule (id_param integer,compute_price_param varchar,product_id_param integer,pricelist_param integer,product_tmpl_id_param integer)  
                 RETURNS numeric AS $list_price_return$  
                 declare  
@@ -297,10 +296,10 @@ class ReportPrintInStockExport(http.Controller):
                         END IF;
                 END;  
                 $list_price_return$ LANGUAGE plpgsql; 
-                            
+
         """
 
-        str_query = """
+        str_query0 = """
         create or replace TEMPORARY VIEW data AS 
         SELECT
           CONCAT(sale_order.partner_id, product_product.id) as id,
@@ -311,9 +310,32 @@ class ReportPrintInStockExport(http.Controller):
           public.uom_uom.name as product_uom,
           public.sale_order_line.product_id,
           sale_order.partner_id,
-          public.product_template.actual_quantity,
-          list_price_val(sale_order.partner_id,product_product.id,public.product_template.actual_quantity) as list_price,
-          is_pricelist_formula(sale_order.partner_id,product_product.id,public.product_template.actual_quantity) as formula
+          public.product_template.actual_quantity
+          """
+        str_query1 = """
+                create or replace TEMPORARY VIEW data AS 
+                SELECT
+                 distinct(  CONCAT(sale_order.partner_id, product_product.id)) as id,
+                  public.res_partner.name as res_partner,
+                  public.product_brand.name as product_brand,
+                  public.product_template.sku_code,
+                  public.product_template.name as product_template,
+                  public.uom_uom.name as product_uom,
+                  public.sale_order_line.product_id,
+                  sale_order.partner_id,
+                  public.product_template.actual_quantity
+                  """
+        str_query2 = """
+        ,
+          list_price_val(sale_order.partner_id,product_product.id,public.product_template.actual_quantity) as list_price
+          , CAST ('0' AS numeric)  as formula
+        """
+        str_query3 = """
+        ,  CAST ('0' AS numeric) as list_price, 
+        is_pricelist_formula(sale_order.partner_id,product_product.id,public.product_template.actual_quantity) as formula
+          """
+        str_query4 = """
+
         FROM
           public.sale_order 
           INNER JOIN
@@ -363,9 +385,9 @@ class ReportPrintInStockExport(http.Controller):
             ON ( data.product_id = data2.product_id )
         """
 
-        request.env.cr.execute(str_functions+str_query)
+        request.env.cr.execute(str_functions + str_query0 + str_query2 + str_query4)
         order_lines = request.env.cr.dictfetchall()
-        request.env.cr.execute(str_functions + str_query + "where formula = 1")
+        request.env.cr.execute(str_query1 + str_query3 + str_query4 + "where formula = 1")
         order_lines_formula = request.env.cr.dictfetchall()
 
         data = {}
@@ -388,7 +410,8 @@ class ReportPrintInStockExport(http.Controller):
             product_id = request.env['product.product'].browse(line['product_id'])
             if product_id:
                 if partner_id.property_product_pricelist.id:
-                    line['list_price'] = partner_id.property_product_pricelist.get_product_price(product_id, line['actual_quantity'],
+                    line['list_price'] = partner_id.property_product_pricelist.get_product_price(product_id, line[
+                        'actual_quantity'],
                                                                                                  partner_id)
             data[line['id']] = line
 

@@ -32,6 +32,9 @@ class apprisal_tracker_vendor(models.Model):
             for order in self:
 
                 order.status_ven_app = order.status_ven
+                if order.state in ('ven_draft', 'ven_sent'):
+                    order.status_ven_app = 'Vendor Offer'
+
                 if order.arrival_date_grp and order.arrival_date_grp != '':
                     order.status_ven_app = 'Arrived'
 

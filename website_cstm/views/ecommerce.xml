@@ -4,11 +4,37 @@
     <!--
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Product Item List ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     -->
+
+
  <template id="assets_frontend" inherit_id="web.assets_frontend" name="Website Assets">
         <xpath expr="//link[last()]" position="after">
             <link rel="stylesheet" href="/website_cstm/static/src/less/website.style.less"/>
         </xpath>
  </template>
+
+
+    <template id="assets_frontend" inherit_id="web.assets_frontend" name="Website Assets">
+        <xpath expr="//link[last()]" position="after">
+            <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,600i,700,700i,800"
+                  rel="stylesheet"/>
+            <link href="https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i,700,700i,900" rel="stylesheet"/>
+            <link rel="stylesheet" href="/website_cstm/static/src/less/website.style.less"/>
+        </xpath>
+
+        <xpath expr="//script[last()]" position="after">
+            <script type="text/javascript" src="/website_cstm/static/src/js/script.js"/>
+            <!-- Google Tag Manager -->
+            <script>
+                <![CDATA[
+(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-P9BX97D');]]>
+            </script>
+            <!-- End Google Tag Manager -->
+        </xpath>
+    </template>
 
     <template id="products_item_cstm" name="Products item" inherit_id="website_sale.products">
         <xpath expr="//table" position="replace">
@@ -488,10 +514,11 @@
                                                        t-att-value="userEmail" name="notificationEmail"
                                                        t-att-data-productid="product.id"/>
                                                 <div class="input-group-btn">
-                                                    <button type="button" class="btn btn-danger dropdown-toggle"
-                                                            data-toggle="dropdown" aria-haspopup="true" id="notifyMe"
+                                                    <button type="button" class="btn btn-danger "
+                                                             aria-haspopup="true" id="notifyMe"
                                                             aria-expanded="false">Notify me
                                                     </button>
+
                                                 </div><!-- /btn-group -->
                                             </div><!-- /input-group -->
                                             <p style="display: none;" class="invalidEmail">
