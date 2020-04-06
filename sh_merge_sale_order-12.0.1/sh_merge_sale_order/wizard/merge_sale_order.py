@@ -104,10 +104,6 @@ class sh_mso_merge_sale_order_wizard(models.TransientModel):
             raise UserError(_("Please Select atleast two quotations to perform merge operation."))     
 
         sale_orders = self.env['sale.order'].browse(active_ids)
-
-        # Check all sale order are draft state
-        if any(order.state != 'draft' for order in sale_orders):
-            raise UserError(_("You can only merge sale orders which are in Quotation state"))
         
 
         # return frist sale order partner id and sale order ids,
