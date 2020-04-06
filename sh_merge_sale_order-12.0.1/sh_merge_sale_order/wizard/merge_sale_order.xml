@@ -11,7 +11,7 @@
             		<group>
             			<field name="sale_order_ids" widget="many2many_tags" invisible="1"/>
             			<field name="partner_id" domain="[('customer','=',True)]"/>
-            			<field name="sale_order_id" domain="[('partner_id','=',partner_id)]"/>
+            			<field name="sale_order_id" domain="[('state','=','draft'),('partner_id','=',partner_id)]"/>
             			<field name="merge_type" widget="radio"/>
             		</group>
             	</group>
