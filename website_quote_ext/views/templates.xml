@@ -43,12 +43,13 @@
             </xpath>
 
             <xpath expr="//div[2]/div" position="inside">
-                <label t-if="sale_order.partner_id.gl_account" class="col-sm-4 col-xs-4 text-right">GL Account:</label>
-                <div class="col-sm-8 col-xs-8">
-                    <div t-if="sale_order.partner_id.gl_account"/>
-                    <t t-foreach="sale_order.partner_id.gl_account" t-as="gl_account">
-                        <b t-field="gl_account.name"/>
-                    </t>
+                <div>
+                    <strong t-if="sale_order.partner_id.gl_account">GL Account:</strong>
+                    <div t-if="sale_order.partner_id.gl_account">
+                        <t t-foreach="sale_order.partner_id.gl_account" t-as="gl_account">
+                            <p t-field="gl_account.name"/>
+                        </t>
+                    </div>
                 </div>
             </xpath>
         </template>
@@ -1370,7 +1371,7 @@
               </xpath>
          </template>
 
-          <template id="portal_my_purchase_order_offer" inherit_id="purchase.portal_my_purchase_order" name="Purchase">
+        <template id="portal_my_purchase_order_offer" inherit_id="purchase.portal_my_purchase_order" name="Purchase">
               <xpath expr="//t[@t-call='portal.portal_layout']" position="replace">
 
                     <t t-call="portal.portal_layout">
@@ -1482,5 +1483,46 @@
                 </li>
             </xpath>
         </template>
+
+        <record id="stockhawk_sales_order_confirm_email_response" model="mail.template">
+            <field name="name">final email response on uploaded documents</field>
+            <field name="model_id" ref="base.model_res_users"/>
+            <field name="email_from"><![CDATA["${object.company_id.name|safe}" <${(object.company_id.email or user.email)|safe}>]]></field>
+            <field name="email_to">${object.email|safe}</field>
+            <field name="email_cc"><![CDATA[${ctx['salesperson_email']}]]></field>
+            <field name="subject">Sales Order Confirm #<![CDATA[${ctx['sales_order_name']}]]></field>
+            <field name="body_html">${ctx['body']}</field>
+            <field name="body_html"><![CDATA[
+                <p>
+                    Hi Administrator,
+                </p>
+                <p style="text-align: left; margin-top: 10px;">
+                    A new Stockhawk order has been confirmed. Please see the below details.
+                </p>
+                <table style="width:100%;border:1px solid black;border-collapse:collapse;">
+                    <tr>
+                        <th style="border:1px solid black;border-collapse:collapse;">Customer Name</th>
+                        <th style="border:1px solid black;border-collapse:collapse;">Sale Order</th>
+                        <th style="border:1px solid black;border-collapse:collapse;">Upload Type</th>
+                        <th style="border:1px solid black;border-collapse:collapse;">Date</th>
+                        <!--<th style="border:1px solid black;border-collapse:collapse;">Status</th>-->
+                        <th style="border:1px solid black;border-collapse:collapse;">Note</th>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['customer_name']}</td>
+                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['sales_order_name']}</td>
+                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['upload_type']}</td>
+                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['date']}</td>
+                        <!--<td style="border:1px solid black;border-collapse:collapse;">${ctx['sales_order_status']}</td>-->
+                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['note']}</td>
+                    </tr>
+                </table>
+                <P style="text-align: left; margin-top: 10px;">
+                    Thanks & Regards,<br/>
+                    Odoo
+                </P>
+            ]]></field>
+            <field name="user_signature" eval="False"/>
+        </record>
     </data>
 </odoo>

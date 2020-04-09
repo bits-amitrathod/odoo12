@@ -54,7 +54,7 @@ class VoidedProductPopup(models.TransientModel):
             'view_mode': 'tree,form',
             'name': _('Voided Product'),
             'res_model': 'sps.customer.requests',
-            'context': {'group_by': 'customer_id',},
+            # 'context': {'group_by': 'customer_id',},
             'domain': domain,
             'target': 'main',
         }

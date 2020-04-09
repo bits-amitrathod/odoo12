@@ -24,6 +24,8 @@ class apprisal_tracker_vendor(models.Model):
     lscolor = fields.Integer(compute="_value_broker_margin", store=False)
 
     status_ven_app = fields.Char(string="Status",store=False)
+    vendor_cust_id_app = fields.Char(string="Customer ID", store=False ,compute="_value_broker_margin")
+
 
 
     @api.onchange('broker_margin')
@@ -32,8 +34,14 @@ class apprisal_tracker_vendor(models.Model):
             for order in self:
 
                 order.status_ven_app = order.status_ven
+                order.vendor_cust_id_app = order.partner_id.saleforce_ac
                 if order.state in ('ven_draft', 'ven_sent'):
                     order.status_ven_app = 'Vendor Offer'
+
+                if order.state == 'purchase':
+                    order.status_ven_app = 'Accepted'
+
+
 
                 if order.arrival_date_grp and order.arrival_date_grp != '':
                     order.status_ven_app = 'Arrived'
@@ -45,6 +53,9 @@ class apprisal_tracker_vendor(models.Model):
 
                 if order.invoice_status and order.invoice_status == 'invoiced':
                     order.status_ven_app = 'Bill created'
+
+                if order.state == 'cancel':
+                    order.status_ven_app = 'Declined'
 
                 account_invoice = self.env['account.invoice'].search([('origin', '=', order.name)])
                 for acc in account_invoice:
@@ -67,16 +78,16 @@ class apprisal_tracker_vendor(models.Model):
 
                             if (line.product_id.tier.code == '1') and \
                                     (abs(float(amt - 1)) >= 0.48):
-                                tier1_retail_temp = tier1_retail_temp + line.product_retail
+                                tier1_retail_temp = tier1_retail_temp + line.billed_product_retail_price
 
                             if (((line.product_id.tier.code == '1') and \
                                  ((abs(float(amt - 1)) >= 0.4) and (abs(float(amt - 1)) < 0.48)))
                                     or (line.product_id.tier.code == '2' and (abs(float(amt-1)) > 0.4))
                             ):
-                                tier2_retail_temp = tier2_retail_temp + line.product_retail
+                                tier2_retail_temp = tier2_retail_temp + line.billed_product_retail_price
 
                             if abs(float(amt - 1)) < 0.4:
-                                less_than_40_retail = less_than_40_retail + line.product_retail
+                                less_than_40_retail = less_than_40_retail + line.billed_product_retail_price
                         order.update({
                             'tier1_retail': tier1_retail_temp,
                             'tier2_retail': tier2_retail_temp,
@@ -94,17 +105,17 @@ class apprisal_tracker_vendor(models.Model):
                             if (line.product_id.tier.code == '1') and \
                                     (abs(float(amt - 1)) >= 0.48):
 
-                                tier1_retail_temp = tier1_retail_temp + line.product_retail
+                                tier1_retail_temp = tier1_retail_temp + line.billed_product_retail_price
 
                             if (((line.product_id.tier.code == '1') and \
                                     ((abs(float(amt - 1)) >= 0.4) and (abs(float(amt - 1)) < 0.48)))
                                     or (line.product_id.tier.code == '2' and (abs(float(amt-1)) > 0.4))
                                     ):
 
-                                tier2_retail_temp = tier2_retail_temp + line.product_retail
+                                tier2_retail_temp = tier2_retail_temp + line.billed_product_retail_price
 
                             if abs(float(amt - 1)) < 0.4:
-                                less_than_40_retail = less_than_40_retail + line.product_retail
+                                less_than_40_retail = less_than_40_retail + line.billed_product_retail_price
 
                     order.update({
                         'tier1_retail': tier1_retail_temp,
@@ -116,9 +127,9 @@ class apprisal_tracker_vendor(models.Model):
                     order.cust_type_appraisal = 'Traditional'
                     for line in order.order_line:
                         if line.product_id.tier.code == '1':
-                            tier1_retail_temp = tier1_retail_temp + line.product_retail
+                            tier1_retail_temp = tier1_retail_temp + line.billed_product_retail_price
                         if line.product_id.tier.code == '2':
-                            tier2_retail_temp = tier2_retail_temp + line.product_retail
+                            tier2_retail_temp = tier2_retail_temp + line.billed_product_retail_price
 
                     order.update({
                         'tier1_retail': tier1_retail_temp,
@@ -144,6 +155,17 @@ class CustomerAsWholesaler(models.Model):
             }
         return {'value': val, 'warning': warning}
 
+
+class ApprisalTrackerExport(models.TransientModel):
+    _name = 'appraisaltracker.export'
+    _description = 'appraisaltracker.export'
+
+    def download_excel_appraisal_tracker(self):
+        return {
+            'type': 'ir.actions.act_url',
+            'url': '/web/export/appraisal_xl',
+            'target': 'new'
+        }
 
 
 
