@@ -116,7 +116,7 @@
                         <group>
                             <group>
                                 <field name="partner_id" string='Facility Name' readonly="1"/>
-                                <field name="acq_user_id" readonly="1"/>
+                                <field name="acq_user_id" />
                                 <field name="possible_competition" readonly="1"/>
                                 <field name="accelerator" readonly="1"/>
                                 <field name="priority" readonly="1"/>
