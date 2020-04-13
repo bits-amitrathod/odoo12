@@ -213,21 +213,26 @@ class VendorOffer(models.Model):
                     user = self.env['res.users'].search(
                         [('active', '=', True), ('id', '=', order._uid)])
                     order.acq_manager_email = user.partner_id.email
+                    order.acq_manager_phone = user.partner_id.phone
                     if not order.acq_manager_email:
                         user = self.env['res.users'].search(
                             [('active', '=', True), ('id', '=', order._uid)])
                         order.acq_manager_email = user.partner_id.email
+                        order.acq_manager_phone = user.partner_id.phone
                         if not order.acq_manager_email:
                             super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
                             order.acq_manager_email = super_user.email
+                            order.acq_manager_phone = super_user.phone
             else:
                 if not order.acq_manager_email:
                     user = self.env['res.users'].search(
                         [('active', '=', True), ('id', '=', order._uid)])
                     order.acq_manager_email = user.partner_id.email
+                    order.acq_manager_phone = user.partner_id.phone
                     if not order.acq_manager_email:
                         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
                         order.acq_manager_email = super_user.email
+                        order.acq_manager_phone = super_user.phone
 
     @api.onchange('vendor_cust_id')
     @api.depends('vendor_cust_id')
