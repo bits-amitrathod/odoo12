@@ -199,6 +199,36 @@ class VendorOffer(models.Model):
                     order.cash_text_pdf = order.payment_term_id.name
 
 
+    acq_manager_email = fields.Char(readonly=False, compute='acq_manager_detail')
+    acq_manager_phone = fields.Char( readonly=False,compute='acq_manager_detail')
+
+    @api.onchange('acq_manager_email','acq_manager_phone','partner_id')
+    @api.depends('acq_manager_email','acq_manager_phone','partner_id')
+    def acq_manager_detail(self):
+        for order in self:
+            if order.partner_id.acq_manager:
+                order.acq_manager_email = order.partner_id.acq_manager.partner_id.email
+                order.acq_manager_phone = order.partner_id.acq_manager.partner_id.phone
+                if not order.acq_manager_email:
+                    user = self.env['res.users'].search(
+                        [('active', '=', True), ('id', '=', order._uid)])
+                    order.acq_manager_email = user.partner_id.email
+                    if not order.acq_manager_email:
+                        user = self.env['res.users'].search(
+                            [('active', '=', True), ('id', '=', order._uid)])
+                        order.acq_manager_email = user.partner_id.email
+                        if not order.acq_manager_email:
+                            super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
+                            order.acq_manager_email = super_user.email
+            else:
+                if not order.acq_manager_email:
+                    user = self.env['res.users'].search(
+                        [('active', '=', True), ('id', '=', order._uid)])
+                    order.acq_manager_email = user.partner_id.email
+                    if not order.acq_manager_email:
+                        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
+                        order.acq_manager_email = super_user.email
+
     @api.onchange('vendor_cust_id')
     @api.depends('vendor_cust_id')
     def _onchange_vendor_cust_id(self):
@@ -2377,6 +2407,14 @@ class ExportPPVendorPricingXL(http.Controller):
             product_lines_export_pp.clear()
             return res
 
+
+
+class CustomerACQManager(models.Model):
+    _inherit = 'res.partner'
+
+    acq_manager = fields.Many2one('res.users', string="ACQ Manager", domain="[('active', '=', True)"""
+                                                                            ",('share','=',False)]")
+
 class MailComposer(models.TransientModel):
     _inherit = 'mail.compose.message'
 
@@ -2436,3 +2474,4 @@ class MailComposer(models.TransientModel):
         values = self._convert_to_write(values)
 
         return {'value': values}
+
