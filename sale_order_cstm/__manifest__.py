@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Sales Order Line Alert Message",
+    'name': " Sales Order Line Alert Message",
 
 
     'author': "Benchmark IT Solutions",
