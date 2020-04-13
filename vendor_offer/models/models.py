@@ -2474,4 +2474,4 @@ class MailComposer(models.TransientModel):
         values = self._convert_to_write(values)
 
         return {'value': values}
->>>>>>> b595b2298144c612ced464f5306fb72f27e2b06c
+
