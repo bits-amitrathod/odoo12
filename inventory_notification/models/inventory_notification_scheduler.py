@@ -309,12 +309,15 @@ class InventoryNotificationScheduler(models.TransientModel):
             partner_name = picking.sale_id.partner_id.name
         else:
             partner_name = ""
+
+        _logger.info("#picking_note#")
+        _logger.info(picking.note)
         vals = {
             'sale_order_lines': sales_order,
             'subject': "Sale Order # " + picking.sale_id.name + " is Out for Delivery for customer " + partner_name,
-            'description': "Hi " + picking.sale_id.user_id.display_name + ",<br><br> Please find detail Of Sale Order: "
+            'description': "Hi " + (picking.sale_id.user_id.display_name or "Salesperson") + ",<br><br> Please find detail Of Sale Order: "
                            + picking.sale_id.name + " and their tracking is " + tracking +
-                            "<br><br> <strong> Notes : </strong>" + (picking.note or "N/A") + "",
+                            "<br><br> <strong> Notes : </strong>" + str(picking.note or "N/A") + "",
             'header': ['Catalog number', 'Description', 'Quantity'],
             'columnProps': ['sku', 'Product', 'qty'],
             'closing_content': 'Thanks & Regards, <br/> Warehouse Team'

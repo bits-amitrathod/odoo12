@@ -43,7 +43,7 @@ class SpsCustomerRequest(models.Model):
     priority = fields.Integer()
     uom_flag = fields.Boolean(help="if uom is each then set uom flag is 1(True)")
     product_description = fields.Char(string='Product Description')
-    customer_request_logs = fields.Char(string='Customer Request Logs')
+    customer_request_logs = fields.Char(string='Customer Request Logs', default='')
 
     auto_allocate = fields.Boolean("Allow Auto Allocation")
     min_threshold = fields.Integer("Min Threshold")
@@ -126,11 +126,11 @@ class SpsCustomerRequest(models.Model):
                                  str(global_level_setting.id))
                     return False
 
-    def update_customer_status(self,sps_customer_request_id, status, log):
-        if status.lower().strip() != 'unprocessed':
-            # update status Unprocessed
-            self.env['sps.customer.requests'].search(
-                [('id', '=', sps_customer_request_id)]).write({'status':'Unprocessed','customer_request_logs':log})
+    # def update_customer_status(self,sps_customer_request_id, status, log):
+    #     if status.lower().strip() != 'unprocessed':
+    #         # update status Unprocessed
+    #         self.env['sps.customer.requests'].search(
+    #             [('id', '=', sps_customer_request_id)]).write({'status':'Unprocessed','customer_request_logs':log})
 
     @api.multi
     @api.depends('document_id')

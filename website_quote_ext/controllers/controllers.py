@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import werkzeug
+import logging
 from collections import OrderedDict
 from odoo import fields as odoo_fields, tools, _
 from odoo import exceptions, http, _
@@ -14,6 +15,14 @@ from odoo.exceptions import AccessError, MissingError
 from odoo.addons.payment.controllers.portal import PaymentProcessing
 from odoo.addons.portal.controllers.mail import _message_post_helper
 from odoo.addons.portal.controllers.portal import CustomerPortal, pager as portal_pager, get_records_pager
+_logger = logging.getLogger(__name__)
+SUPERUSER_ID = 2
+
+
+_logger = logging.getLogger(__name__)
+
+SUPERUSER_ID = 2
+
 
 class WebsiteSale(http.Controller):
     def _document_check_access(self, model_name, document_id, access_token=None):
@@ -125,7 +134,6 @@ class WebsiteSale(http.Controller):
 
         return request.render("website_quote_ext.portal_order_page_ex", values)
 
-
     @http.route(['/my/orders/<int:order_id>/accepts'], type='http', auth="public", methods=['POST'], website=True)
     def accepts(self, order_id, access_token=None, **post):
         try:
@@ -155,13 +163,13 @@ class WebsiteSale(http.Controller):
             Order.action_cancel()
             Order.action_draft()
             Order.action_confirm()
+
             # picking = request.env['stock.picking'].sudo().search([('sale_id', '=', Order.id), ('picking_type_id', '=', 1), ('state', 'not in', ['draft', 'cancel'])])
             # picking.write({'state': 'assigned'})
             # stock_move = request.env['stock.move'].sudo().search([('picking_id', '=', picking.id)])
             # stock_move.write({'state': 'assigned'})
         else:
             Order.write({'state': 'sale', 'confirmation_date': datetime.now()})
-
 
         client_order_ref = post.get('client_order_ref')
         if client_order_ref:
@@ -188,8 +196,30 @@ class WebsiteSale(http.Controller):
                 }
                 request.env['mail.message'].sudo().create(values)
 
+        # Send email to Salesperson and Admin when sales order accepted(Confirm)
+        upload_type = None
+        salesperson_email = None
+        if Order.order_line[0].customer_request_id and Order.order_line[0].customer_request_id.document_id and Order.order_line[0].customer_request_id.document_id.source:
+            upload_type = Order.order_line[0].customer_request_id.document_id.source
+        if Order.user_id and Order.user_id.partner_id and Order.user_id.partner_id.email:
+            salesperson_email = Order.user_id.partner_id.email
+        elif Order.partner_id and Order.partner_id.parent_id and Order.partner_id.parent_id.user_id \
+                and Order.partner_id.parent_id.user_id.partner_id and Order.partner_id.parent_id.user_id.partner_id.email:
+            salesperson_email = Order.partner_id.parent_id.user_id.partner_id.email
+        self._send_sales_order_accepted_email(Order.partner_id.display_name, Order.name, Order.state, salesperson_email, upload_type, message)
         return request.redirect(order_sudo.get_portal_url(query_string=query_string))
 
+    @staticmethod
+    def _send_sales_order_accepted_email(customer_name, sales_order_name, sales_order_status, salespersonEmail, upload_type, note):
+        today_date = datetime.today().strftime('%m/%d/%Y')
+        template = request.env.ref('website_quote_ext.stockhawk_sales_order_confirm_email_response').sudo()
+        local_context = {'customer_name': customer_name, 'sales_order_name': sales_order_name,'salesperson_email': salespersonEmail,
+                         'date': today_date, 'sales_order_status': sales_order_status, 'upload_type': upload_type, 'note': note}
+        try:
+            template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True)
+        except Exception as exc:
+            _logger.error("getting error while sending email of sales order : %r", exc)
+            response = {'message': 'Unable to connect to SMTP Server'}
 
     @http.route(['/my/orders/<int:order_id>/declines'], type='http', auth="public", methods=['POST'], website=True)
     def decline(self, order_id, access_token=None, **post):
