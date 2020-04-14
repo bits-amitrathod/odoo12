@@ -202,13 +202,23 @@ class VendorOffer(models.Model):
     acq_manager_email = fields.Char(readonly=False, compute='acq_manager_detail')
     acq_manager_phone = fields.Char( readonly=False,compute='acq_manager_detail')
 
-    @api.onchange('acq_manager_email','acq_manager_phone','partner_id')
-    @api.depends('acq_manager_email','acq_manager_phone','partner_id')
+    @api.onchange('partner_id')
+    @api.depends('partner_id')
+    def acq_manager_detail_pt(self):
+        for order in self:
+            if order.partner_id:
+                order.acq_user_id = order.partner_id.acq_manager
+
+    @api.onchange('acq_manager_email', 'acq_manager_phone')
+    @api.depends('acq_manager_email', 'acq_manager_phone')
     def acq_manager_detail(self):
         for order in self:
-            if order.partner_id.acq_manager:
-                order.acq_manager_email = order.partner_id.acq_manager.partner_id.email
-                order.acq_manager_phone = order.partner_id.acq_manager.partner_id.phone
+            if order.partner_id:
+                if not order.acq_user_id:
+                    order.acq_user_id = order.partner_id.acq_manager
+            if order.acq_user_id:
+                order.acq_manager_email = order.acq_user_id.partner_id.email
+                order.acq_manager_phone = order.acq_user_id.partner_id.phone
                 if not order.acq_manager_email:
                     user = self.env['res.users'].search(
                         [('active', '=', True), ('id', '=', order._uid)])
