@@ -188,10 +188,12 @@ class SaleOrderLinePrioritization(models.Model):
     customer_request_id = fields.Many2one('sps.customer.requests', string='Request')
     req_no = fields.Char(string='Requisition Number')
     default_code = fields.Char("SKU", store=False, readonly=True, related='product_id.product_tmpl_id.default_code')
-    ex_product_desc = fields.Char("Product Description", store=False, readonly=True, related='product_id.product_tmpl_id.name')
-    ex_sale_order_customer = fields.Char("Customer", store=False, readonly=True,related='order_id.partner_id.name')
-    ex_sale_order_name = fields.Char("#Sale Order", store=False, readonly=True,related='order_id.name')
-    ex_sale_order_confirm_date = fields.Datetime("Date Sold", store=False, readonly=True, related='order_id.confirmation_date')
+    ex_product_desc = fields.Char("Product Description", store=False, readonly=True,
+                                  related='product_id.product_tmpl_id.name')
+    ex_sale_order_customer = fields.Char("Customer", store=False, readonly=True, related='order_id.partner_id.name')
+    ex_sale_order_name = fields.Char("#Sale Order", store=False, readonly=True, related='order_id.name')
+    ex_sale_order_confirm_date = fields.Datetime("Date Sold", store=False, readonly=True,
+                                                 related='order_id.confirmation_date')
     ex_product_oem = fields.Char("Product OEM", store=False, readonly=True, related='product_id.product_brand_id.name')
     # manufacturer_uom = fields.Char('Manufacturer Unit of Measure',related='product_id.product_tmpl_id.manufacturer_uom.name')
     manufacturer_uom = fields.Many2one('uom.uom',
