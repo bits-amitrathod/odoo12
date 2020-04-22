@@ -64,7 +64,7 @@
                               Accept
                           </a>
 
-                          <a class="text-right btn btn-info" t-att-href="'/my/orders/edit/%s' % (sale_order.id)">
+                          <a t-if="sale_order.team_id.team_type == 'engine'" class="text-right btn btn-info" t-att-href="'/my/orders/edit/%s' % (sale_order.id)">
                                    <b><u>Update Quantity</u></b>
                           </a>
                  </div>
@@ -295,7 +295,7 @@
                     </style>
                     <div>
                         <h1 class="page-header" style="padding-top: 0px">Pricing</h1>
-                        <h5 class="update-qty" t-if="sale_order.state in ['sent']"><b>Click here to update quantity </b><a class="btn btn-info btn-update" t-att-href="'/my/orders/edit/%s' % (sale_order.id)">
+                        <h5 class="update-qty" t-if="sale_order.state in ['sent'] and sale_order.team_id.team_type == 'engine'"><b>Click here to update quantity </b><a class="btn btn-info btn-update" t-att-href="'/my/orders/edit/%s' % (sale_order.id)">
                             <b><u>Update Quantity</u></b>
                             </a>
                         </h5>
