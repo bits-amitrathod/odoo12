@@ -174,7 +174,7 @@
                                                         </span>
                                                         <br style="background: #ffffff;"/>
                                                         <img class="img img-responsive"
-                                                             src="https://shopspsnew-pstaging-639408.dev.odoo.com/web/image/119914/chartFairMarketValue.png"
+                                                             src="/website_cstm/static/src/img/chartFairMarketValue.png"
                                                              alt="Odoo - Sample 1 for three columns"
                                                              data-original-title="" title=""
                                                              style="background: #ffffff;"/>
@@ -188,7 +188,7 @@
                                                         <br style="background: #ffffff;"/>
                                                         <br style="background: #ffffff;"/>
                                                         <img class="img img-responsive"
-                                                             src="https://shopspsnew-pstaging-639408.dev.odoo.com/web/image/119916/chartDepracationOfValue.png"
+                                                             src="/website_cstm/static/src/img/chartDepracationOfValue.png"
                                                              alt="Odoo - Sample 1 for three columns"
                                                              data-original-title="" title=""
                                                              style="background: #ffffff;"/>
