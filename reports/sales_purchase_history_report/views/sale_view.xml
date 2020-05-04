@@ -105,7 +105,14 @@
             <field name="arch" type="xml">
                 <form string="Export Sales Purchase History">
                     <group>
-                        <div>Click On ' Export To File ' button to export Sales Purchase History file</div>
+                        <group>
+                            <field name="compute_at_date" widget="radio"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
+                        </group>
+                        <group>
+                            <div>Click On ' Export To File ' button to export Sales Purchase History file</div>
+                        </group>
                     </group>
                     <footer>
                         <button name="download_excel_sale_puchase_history" string="Export To File" type="object"
