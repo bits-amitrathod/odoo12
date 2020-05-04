@@ -76,9 +76,9 @@ class ReportPrintSalesPurchaseHistory(http.Controller):
         fp.close()
         return data
 
-    @http.route('/web/export/sale_purchase_history_export', type='http', auth="public")
+    @http.route('/web/export/sale_purchase_history_export/<string:start_date>/<string:end_date>', type='http', auth="public")
     @serialize_exception
-    def download_document_xl(self, token=1, debug=1):
+    def download_document_xl(self, start_date, end_date, token=1, debug=1, **kw):
 
         str_functions_old = """	 
 
@@ -160,6 +160,11 @@ class ReportPrintSalesPurchaseHistory(http.Controller):
                      order by id desc )   and sol.qty_delivered > 0 and pp.active =true and pt.active =true
 
                 """
+
+        if start_date != "all" and end_date != "all":
+            str_functions = str_functions + """ and sp.date_done >= '""" + str(
+                start_date) + """' and sp.date_done <= '""" + \
+                            str(end_date) + """' """
 
         request.env.cr.execute(str_functions)
         order_lines = request.env.cr.dictfetchall()

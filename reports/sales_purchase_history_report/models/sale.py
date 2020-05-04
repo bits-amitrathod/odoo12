@@ -22,12 +22,12 @@ class SaleSalespersonReport(models.TransientModel):
             e_date = e_date + datetime.timedelta(days=1)
             s_date=SaleSalespersonReport.string_to_date(str(self.start_date))
             stock_location = self.env['stock.location'].search([('name', '=', 'Customers')]).ids
-            stock_picking = self.env['stock.picking'].search([('date_done', '>=', str(s_date)), ('date_done', '<=', str(e_date)), ('state', '=', ('done')),('location_dest_id', '=', stock_location[0])])
-            sale_id_list =[]
-            for sp in stock_picking :
+            stock_picking = self.env['stock.picking'].search([('date_done', '>=', str(s_date)), ('date_done', '<', str(e_date)), ('state', '=', ('done')),('location_dest_id', '=', stock_location[0])])
+            sale_id_list = []
+            for sp in stock_picking:
                 sale_id_list.append(sp.origin)
-            so_id =self.env['sale.order'].search([('name', 'in', sale_id_list  ),]).ids
-            sale_order_line = self.env['sale.order.line'].search([('order_id', 'in', so_id), ('state', 'not in', ('cancel','void')),]).ids
+            so_id = self.env['sale.order'].search([('name', 'in', sale_id_list)]).ids
+            sale_order_line = self.env['sale.order.line'].search([('order_id', 'in', so_id), ('state', 'not in', ('cancel', 'void'))]).ids
         else:
             sale_order_line = self.env['sale.order.line'].search([('state', 'not in', ('cancel', 'void')), ]).ids
         action = {
@@ -36,7 +36,7 @@ class SaleSalespersonReport(models.TransientModel):
             'view_mode': 'tree,form',
             'name': _('Sales Purchase History'),
             'res_model': 'sale.order.line',
-            'domain': [ ('id', 'in', sale_order_line),('qty_delivered','>',0),('price_unit','>=',0)],
+            'domain': [('id', 'in', sale_order_line), ('qty_delivered', '>', 0), ('price_unit', '>=', 0)],
             'target': 'main'
         }
 
