@@ -103,7 +103,7 @@
             <field name="name">salepuchasehistory.export.popup</field>
             <field name="model">salepuchasehistory.export</field>
             <field name="arch" type="xml">
-                <form string="Export Sales Purchase History">
+                <form string="Export Payroll Report">
                     <group>
                         <group>
                             <field name="compute_at_date" widget="radio"/>
@@ -111,7 +111,7 @@
                             <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
                         </group>
                         <group>
-                            <div>Click On ' Export To File ' button to export Sales Purchase History file</div>
+                            <div>Click On ' Export To File ' button to export payroll report file</div>
                         </group>
                     </group>
                     <footer>
@@ -123,7 +123,7 @@
             </field>
         </record>
 
-        <act_window name="Export Sales Purchase History"
+        <act_window name="Export Payroll Report"
                     res_model="salepuchasehistory.export"
                     src_model="sale.order.line"
                     view_mode="form"
