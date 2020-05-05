@@ -2,13 +2,26 @@ from odoo import api, fields, models ,_
 import datetime
 from odoo.exceptions import ValidationError, AccessError
 
+
 class PurchaseOrderPopUp(models.TransientModel):
     _name = 'purchase.order.shipping.popup'
 
-    carrier_id = fields.Many2one('delivery.carrier', 'Carrier', required=True, ondelete='cascade',domain="[('delivery_type','=','fedex')]")
-    product_packaging = fields.Many2one('product.packaging', string='Package', domain="[('package_carrier_type','=','fedex')]")
-    weight = fields.Float('Weight')
-    package_count=fields.Integer("Packages Count", default=1)
+    def _get_default_carrier(self):
+        carrier = self.env['delivery.carrier'].search([('name', '=', 'FedEx Ground')])
+        if carrier:
+            return carrier.id
+
+    def _get_default_packaging(self):
+        packing = self.env['product.packaging'].search([('name', '=', 'FEDEX_YOUR_PACKAGING')])
+        if packing:
+            return packing.id
+
+    carrier_id = fields.Many2one('delivery.carrier', 'Carrier', required=True, ondelete='cascade',
+                                 domain="[('delivery_type','=','fedex')]", default=_get_default_carrier)
+    product_packaging = fields.Many2one('product.packaging', string='Package',
+                                        domain="[('package_carrier_type','=','fedex')]", default=_get_default_packaging)
+    weight = fields.Float('Weight', default=5.00)
+    package_count = fields.Integer("Packages Count", default=1)
 
     @api.constrains('package_count')
     @api.one
