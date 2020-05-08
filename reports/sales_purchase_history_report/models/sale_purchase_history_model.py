@@ -37,7 +37,7 @@ class SalePurchaseHistory(models.Model):
     @api.multi
     def _compare_data(self):
         for sale_order_line in self:
-            sale_order_line.customer_name=sale_order_line.order_id.partner_id.name
+            sale_order_line.customer_name = sale_order_line.order_id.partner_id.name
             sale_order_line.account_manager_cust_name = sale_order_line.order_id.partner_id.account_manager_cust.name
             sale_order_line.sales_person_cust_name = sale_order_line.order_id.partner_id.user_id.name
             sale_order_line.is_broker_opt = sale_order_line.order_id.partner_id.is_broker
@@ -45,9 +45,8 @@ class SalePurchaseHistory(models.Model):
             sale_order_line.sales_team_id = sale_order_line.order_id.team_id.name
             sale_order_line.sale_sales_margine = sale_order_line.order_id.partner_id.sale_margine
 
-            sale_order_line.product_sku_ref=sale_order_line.product_id.product_tmpl_id.sku_code
-            sale_order_line_list = self.env['sale.order.line'].search(
-                [('product_id', '=', sale_order_line.product_id.id), ('state', 'in', ('draft', 'sent'))])
+            sale_order_line.product_sku_ref = sale_order_line.product_id.product_tmpl_id.sku_code
+            sale_order_line_list = self.env['sale.order.line'].search([('product_id', '=', sale_order_line.product_id.id), ('state', 'in', ('draft', 'sent'))])
             sale_order_line.quotations_per_code = len(sale_order_line_list)
             if sale_order_line.order_id.state != 'cancel':
                 stock_location=self.env['stock.location'].search([('name', '=', 'Customers')])
@@ -63,7 +62,7 @@ class SalePurchaseHistory(models.Model):
                                     sale_order_line.total_price_converted = (sale_order_line.price_unit * sale_order_line.qty_delivered)
                                     sale_order_line.product_uom_converted = move_line.product_uom
                             if picking.date_done:
-                               sale_order_line.delivered_date = picking.date_done
+                                sale_order_line.delivered_date = picking.date_done
                             else:
                                 sale_order_line.delivered_date = None
                     else:
@@ -74,10 +73,33 @@ class SalePurchaseHistoryExport(models.TransientModel):
     _name = 'salepuchasehistory.export'
     _description = 'salepuchasehistory export'
 
+    compute_at_date = fields.Selection([
+        (0, 'Show All'),
+        (1, 'Date Range ')
+    ], string="Compute", default=0, help="Choose Show All or from a specific date in the past.")
+
+    start_date = fields.Date(string="Start Date", required=True)
+    end_date = fields.Date(string="End Date", required=True)
+
     def download_excel_sale_puchase_history(self):
 
-        return {
-            'type': 'ir.actions.act_url',
-            'url': '/web/export/sale_purchase_history_export',
-            'target': 'new'
-        }
+        if self.compute_at_date:
+            e_date = self.string_to_date(str(self.end_date))
+            e_date = e_date + datetime.timedelta(days=1)
+            s_date = self.string_to_date(str(self.start_date))
+
+            return {
+                'type': 'ir.actions.act_url',
+                'url': '/web/export/sale_purchase_history_export/'+str(s_date)+'/'+str(e_date),
+                'target': 'new'
+            }
+        else:
+            return {
+                'type': 'ir.actions.act_url',
+                'url': '/web/export/sale_purchase_history_export/'+str('all')+'/'+str('all'),
+                'target': 'new'
+            }
+
+    @staticmethod
+    def string_to_date(date_string):
+        return datetime.datetime.strptime(date_string, DEFAULT_SERVER_DATE_FORMAT).date()
