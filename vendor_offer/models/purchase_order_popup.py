@@ -7,7 +7,7 @@ class PurchaseOrderPopUp(models.TransientModel):
     _name = 'purchase.order.shipping.popup'
 
     def _get_default_carrier(self):
-        carrier = self.env['delivery.carrier'].search([('name', '=', 'FedEx Ground')])
+        carrier = self.env['delivery.carrier'].search([('name', '=', 'Vendor_Fedex Ground')])
         if carrier:
             return carrier.id
 
