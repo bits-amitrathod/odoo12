@@ -40,7 +40,7 @@
 
 
     <!-- ~~~~~~~~~~~~~~ Confirm Order~~~~~~~~~~~~ -->
-    <template id="customerReferenceSO" name="customerReferenceSO" inherit_id="website_sale.payment">
+    <!--<template id="customerReferenceSO" name="customerReferenceSO" inherit_id="website_sale.payment">
         <xpath expr="//div[@id='payment_method']" position="before">
             <t t-if="website_sale_order.partner_id.allow_purchase">
                 <div class="row" id="order_customer_referance_so">
@@ -54,7 +54,7 @@
                 </div>
             </t>
         </xpath>
-    </template>
+    </template>-->
 
 
     <template id="confirmationCstm" name="confirmation cstm" inherit_id="website_sale.confirmation">
