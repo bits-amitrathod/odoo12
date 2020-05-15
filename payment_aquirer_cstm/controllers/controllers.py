@@ -57,6 +57,11 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
     def payment(self, **post):
         responce = super(WebsiteSalesPaymentAquirerCstm, self).payment(**post)
 
+        if 'expedited_shipping' not in request.session:
+            request.session['expedited_shipping'] = "Ground"
+        elif 'expedited_shipping' in request.session and request.session['expedited_shipping'] == "":
+            request.session['expedited_shipping'] = "Ground"
+
         ctx = responce.qcontext
 
         if 'acquirers' not in ctx:
