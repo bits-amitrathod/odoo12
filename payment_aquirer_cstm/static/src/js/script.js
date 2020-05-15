@@ -5,7 +5,9 @@ odoo.define('payment_aquirer_cstm.payment_aquirer_cstm', function(require) {
     $(document).ready(function() {
           $("#delivery_35").prop('checked', true);
           $("#hasShippingNote").prop('checked', true);
-
+          var default_e = document.getElementById("selectDeliveryMethod");
+          var default_value = default_e.options[default_e.selectedIndex].value;
+          document.getElementById("noteText").value = default_value;
 
         $("#hasShippingNote").change(function() {
             if ( $(this).is(':checked') ) {

@@ -126,10 +126,10 @@
                             </p>
                             <h3 class="mb24">Select a delivery method</h3>
                             <select class="form-control" id="selectDeliveryMethod">
-                                <option value="">Select  delivery method</option>
-                                <option value="FedEx Ground">FedEx Ground</option>
-                                <option value="FedEx 2nd Day a.m. (U.S.) (by 10:30 a.m. or noon second business day)">FedEx 2nd Day a.m. (U.S.) (by 10:30 a.m. or noon second business day)</option>
-                                <option value="FedEx 2nd Day p.m. (U.S.) (by 4:30 p.m. second business day)">FedEx 2nd Day p.m. (U.S.) (by 4:30 p.m. second business day)</option>
+                                <!--<option value="">Select  delivery method</option>-->
+                                <option value="Ground" selected="true">Ground</option>
+                                <option value="2nd day">2nd day</option>
+                                <option value="Overnight">Overnight</option>
                                 <option value="other">Other</option>
                             </select>
                             <br/>
