@@ -6,6 +6,7 @@ odoo.define('payment_aquirer_cstm.payment_aquirer_cstm', function(require) {
           $("#delivery_35").prop('checked', true);
           $("#hasShippingNote").prop('checked', true);
 
+
         $("#hasShippingNote").change(function() {
             if ( $(this).is(':checked') ) {
                 $("#expedited_shipping").show();
@@ -88,6 +89,7 @@ odoo.define('payment_aquirer_cstm.payment_aquirer_cstm', function(require) {
             if(value === "other"){
                 document.getElementById("noteText").value = "";
                 document.getElementById("noteText").removeAttribute('readonly');
+                document.getElementById("noteText").setAttribute('required', true);
             } else {
                 document.getElementById("noteText").value = value;
                 document.getElementById("noteText").setAttribute('readonly', true);
