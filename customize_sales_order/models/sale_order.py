@@ -8,9 +8,15 @@ from odoo.exceptions import UserError
 class CustomerContract(models.Model):
     _inherit = "res.partner"
 
+    def _get_default_user_id(self):
+        res_users = self.env['res.users'].search([('partner_id.name', '=', 'Surgical Product Solutions')])
+        if res_users:
+            return res_users.id
+
     account_manager_cust = fields.Many2one('res.users', string="Account Manager", domain="[('active', '=', True)"
                                                                                          ",('share','=',False)]")
-
+    user_id = fields.Many2one('res.users', string='Salesperson', help='The internal user in charge of this contact.',
+                              default=_get_default_user_id)
 
 class CustomerContract(models.Model):
     _inherit = "res.partner"
