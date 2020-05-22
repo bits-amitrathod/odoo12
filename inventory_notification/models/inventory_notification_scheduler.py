@@ -450,8 +450,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                                     <p>412-564-9011</p>
                                     </td>
                                     <td style="width: 154px; height: 76px;">
-                                    <p style="text-align: left;"><strong>Nick Zanetta</strong></p>
-                                    <p style="text-align: left;">412-745-0329&nbsp;</p>
+                                    <p style="text-align: left;"><strong>Brianna Galonis</strong></p>
+                                    <p style="text-align: left;">412-565-1280&nbsp;</p>
                                     </td>
                                     <td style="width: 157px; height: 76px;">
                                     <p style="text-align: left;"><strong>Andrew Marnoch&nbsp;</strong></p>
@@ -463,14 +463,6 @@ class InventoryNotificationScheduler(models.TransientModel):
                                     </td>
                                     </tr>
                                     <tr style="height: 92px;">
-                                    <td style="width: 156px; height: 92px;">
-                                    <p><strong>Tyler Pusateri</strong></p>
-                                    <p>412-745-0338&nbsp;</p>
-                                    </td>
-                                    <td style="width: 154px; height: 92px;">
-                                    <p style="text-align: left;"><strong>Garret Bigley</strong></p>
-                                    <p style="text-align: left;">412-745-1327</p>
-                                    </td>
                                     <td style="width: 157px; height: 92px;">
                                     <p style="text-align: left;"><strong>Rachel Buck&nbsp;</strong></p>
                                     <p style="text-align: left;">412-745-2343</p>
