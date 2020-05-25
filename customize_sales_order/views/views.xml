@@ -10,6 +10,9 @@
                 <xpath expr="//field[@name='property_delivery_carrier_id']" position="before">
                   <field name="account_manager_cust"/>
                 </xpath>
+                <xpath expr="//page[@name='sales_purchases']/group[@name='container_row_2']/group[@name='sale']/field[@name='user_id']" position="replace">
+                  <field name="user_id"/>
+                </xpath>
             </field>
         </record>
 
