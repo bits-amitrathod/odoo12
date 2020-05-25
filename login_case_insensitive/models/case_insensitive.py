@@ -161,6 +161,9 @@ class LoginCaseInsensitive(models.Model):
             # no token, sign up an external user
             values['saleforce_ac'] = self.env['ir.sequence'].next_by_code('sale.force.no') or _('New')
             values['email'] = values.get('email') or values.get('login')
+            res_user = self.env['res.users'].search([('partner_id.name', '=', 'Surgical Product Solutions')])
+            if res_user:
+                values['user_id'] = res_user.id
             self._create_user_from_template(values)
 
         return (self.env.cr.dbname, values.get('login'), values.get('password'))
