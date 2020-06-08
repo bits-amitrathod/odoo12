@@ -9,7 +9,7 @@ class CustomerContract(models.Model):
         contract_id = self.env['contract.contract'].search([('code', '=', 'cap')])
         return contract_id or False
 
-    contract = fields.Many2one('contract.contract', string="Contract")
+    contract = fields.Many2many('contract.contract', string="Contract")
 
 
 class Contract(models.Model):

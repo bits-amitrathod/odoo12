@@ -76,7 +76,7 @@
                     </group>
                     <group>
                          <field name="vendor_id"  />
-                         <field name="contract_id"  />
+                         <field name="contract_id" widget="many2many_tags" placeholder="Contracts..."/>
                     </group>
 
                 </group>
