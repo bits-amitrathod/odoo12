@@ -9,7 +9,7 @@ class SaleSalespersonReport(models.TransientModel):
     end_date = fields.Date(string="End Date", required=True)
     product_id = fields.Many2many('product.product', string="Products")
     order_partner_id = fields.Many2one('res.partner', string='Customer')
-    contract_id = fields.Many2one('contract.contract', string='Contract')
+    contract_id = fields.Many2many('contract.contract', string='Contract')
     order_account_manager_cust = fields.Many2one('res.users', string="Account Manager", domain="[('active', '=', True)"
                                                                                                ",('share','=',False)]")
 
@@ -48,7 +48,7 @@ class SaleSalespersonReport(models.TransientModel):
         elif self.order_partner_id:
             action['domain'].append(('order_partner_id', '=', self.order_partner_id.id))
         if self.contract_id:
-            action['domain'].append(('order_partner_id.contract', '=', self.contract_id.id))
+            action['domain'].append(('order_partner_id.contract', 'in', self.contract_id.ids))
         if self.order_account_manager_cust:
             action['domain'].append(('order_partner_id.account_manager_cust', '=', self.order_account_manager_cust.id))
         return action

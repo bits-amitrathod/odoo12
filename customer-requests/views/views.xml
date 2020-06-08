@@ -407,8 +407,12 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_res_partner_filter"/>
             <field name="arch" type="xml">
+                <xpath expr="/search/filter[@name='customer']" position="after">
+                    <filter string="Contract" name="contract" domain="[('contract', '!=', None)]"/>
+               </xpath>
                 <xpath expr="/search" position="inside">
                    <field name="saleforce_ac"/>
+                   <field name="contract"/>
                </xpath>
             </field>
         </record>
