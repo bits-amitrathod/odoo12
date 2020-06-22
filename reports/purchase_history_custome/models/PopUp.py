@@ -16,6 +16,7 @@ class PopUp(models.TransientModel):
     end_date = fields.Date(string="End Date" ,required=True)
     product_id = fields.Many2many('product.product', string="Products")
     contract_id = fields.Many2many('contract.contract', string='Contract')
+    category_id = fields.Many2many('res.partner.category', string='Tag')
     vendor_id = fields.Many2one('res.partner', string='Vendor')
 
     # compute_at_date = fields.Selection([
@@ -50,7 +51,8 @@ class PopUp(models.TransientModel):
             action['domain'].append(('product_id','in', self.product_id.ids))
         if self.vendor_id:
             action['domain'].append(('partner_id','=', self.vendor_id.id))
-
+        if self.category_id:
+            action['domain'].append(('partner_id.category_id','in', self.category_id.ids))
         action.update({'target': 'main'})
         return action
 

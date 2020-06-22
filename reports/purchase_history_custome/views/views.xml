@@ -77,6 +77,7 @@
                     <group>
                          <field name="vendor_id"  />
                          <field name="contract_id" widget="many2many_tags" placeholder="Contracts..."/>
+                         <field name="category_id" widget="many2many_tags" placeholder="Tags..."/>
                     </group>
 
                 </group>
