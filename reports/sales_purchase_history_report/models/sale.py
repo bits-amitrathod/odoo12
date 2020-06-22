@@ -10,6 +10,7 @@ class SaleSalespersonReport(models.TransientModel):
     product_id = fields.Many2many('product.product', string="Products")
     order_partner_id = fields.Many2one('res.partner', string='Customer')
     contract_id = fields.Many2many('contract.contract', string='Contract')
+    category_id = fields.Many2many('res.partner.category', string='Tag')
     order_account_manager_cust = fields.Many2one('res.users', string="Account Manager", domain="[('active', '=', True)"
                                                                                                ",('share','=',False)]")
 
@@ -51,6 +52,8 @@ class SaleSalespersonReport(models.TransientModel):
             action['domain'].append(('order_partner_id.contract', 'in', self.contract_id.ids))
         if self.order_account_manager_cust:
             action['domain'].append(('order_partner_id.account_manager_cust', '=', self.order_account_manager_cust.id))
+        if self.category_id:
+            action['domain'].append(('order_partner_id.category_id', 'in', self.category_id.ids))
         return action
 
     @staticmethod
