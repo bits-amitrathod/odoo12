@@ -32,8 +32,10 @@
                            widget="monetary" string="Total Offer"/>
                     <field name="rt_price_total_amt" attrs="{'invisible':[('state', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"
                            widget="monetary" string="Total Retail"/>
-                      <field name="billed_offer_total" attrs="{'invisible':[('state', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}" string="Billed Total Offer" />
-                     <field name="billed_retail_total" attrs="{'invisible':[('state', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"  string="Billed Total Retail"/>
+                    <field name="billed_offer_total" attrs="{'invisible':[('state', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}" string="Billed Total Offer" />
+                    <field name="final_billed_offer_total" attrs="{'invisible':[('state', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}" string="Final Billed Total Offer" />
+                    <field name="billed_retail_total" attrs="{'invisible':[('state', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"  string="Billed Total Retail"/>
+                    <field name="final_billed_retail_total" attrs="{'invisible':[('state', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"  string="Final Billed Total Retail"/>
 
                     <field name="create_date" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"/>
                     <field name="shipping_label_issued"
@@ -118,7 +120,6 @@
                         </div>
                         <group>
                             <group>
-
                                 <field name="vendor_cust_id_app" readonly="1"/>
                                 <field name="partner_id" string='Facility Name' readonly="1"/>
                                 <field name="acq_user_id" />
@@ -128,6 +129,8 @@
                                 <field name="offer_type" readonly="1"/>
                                 <field name="potential_profit_margin" readonly="1"/>
                                 <field name="state" invisible="1"/>
+                                <field name="final_billed_offer_total"/>
+                                <field name="final_billed_retail_total"/>
                             </group>
                             <group>
                                 <field name="date_offered" string="Offer Date" readonly="1"/>
@@ -250,7 +253,12 @@
                                             <label for="billed_offer_total"/>
                                         </div>
                                         <field name="billed_offer_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Billed Total Retail Price"/>
-                                    </group>
+                                        <div class="oe_subtotal_footer_separator oe_inline">
+                                            <label for="final_billed_offer_total"/>
+                                        </div>
+                                        <field name="final_billed_offer_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Final Billed Total Retail Price"/>
+
+                            </group>
 
                             <group class="oe_subtotal_footer " attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" style="margin-right: 15px;">
                                         <field name="billed_retail_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}" string="Billed Untaxed Retail Price"/>
@@ -259,7 +267,11 @@
                                             <label for="billed_retail_total"/>
                                         </div>
                                         <field name="billed_retail_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Billed Total Retail Price"/>
-                                    </group>
+                                        <div class="oe_subtotal_footer_separator oe_inline">
+                                            <label for="final_billed_retail_total"/>
+                                        </div>
+                                        <field name="final_billed_retail_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Final Billed Total Retail Price"/>
+                            </group>
                                 </group>
                                 <field name="notes" class="oe_inline"
                                        placeholder="Define your terms and conditions ..."/>

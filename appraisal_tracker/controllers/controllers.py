@@ -99,7 +99,7 @@ class ApprisalTracker(http.Controller):
         str_functions = """	 
 
                      select distinct po.name as po , po.appraisal_no,acq_man.name as acq_manager,rp.name as facility,
-                     rp.saleforce_ac as vendor_cust_id,
+                     rp.saleforce_ac as vendor_cust_id,po.final_billed_offer_total,po.final_billed_retail_total,
                     case when  rp.is_wholesaler = true then 'Wholesaler' 
                     when  rp.is_broker = true then 'Broker' 
                     else  'Traditional' end as ap_type, 
@@ -190,7 +190,8 @@ class ApprisalTracker(http.Controller):
             records.append([line['appraisal_no'], line['acq_manager'], line['facility'], line['vendor_cust_id'],
                             line['ap_type'], line['po'],
                             line['payment_term'], line['total_offer'], line['total_retail'], line['billed_offer'],
-                            line['billed_retail'], line['create_date'],
+                            line['final_billed_offer_total'], line['billed_retail'], line['final_billed_retail_total'],
+                            line['create_date'],
 
                             line['shipping_label_issued'], line['shipping_date'], line['delivered_date'],
                             line['arrival_date_grp'], line['tier1_retail_temp'], line['tier2_retail'],
@@ -199,8 +200,8 @@ class ApprisalTracker(http.Controller):
 
         res = request.make_response(
             self.from_data(["Appraisal No", "Acq Manager", "Facility","Customer ID", "Type", "PO#", "Payment Term",
-                            "Total Offer", "Total Retail", "Billed Total Offer", "Billed Total Retail",
-                            "Created On",
+                            "Total Offer", "Total Retail", "Billed Total Offer", "Final Billed Total Offer",
+                            "Billed Total Retail", "Final Billed Total Retail", "Created On",
                             "Shipping label Issued", "Shipping Date",
                             "Delivered Date", "Arrival Date", "Tier 1 Retail", "Tier 2 Retail", "< 40% Retail",
                             "New Customer", "Status"],
