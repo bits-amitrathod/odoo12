@@ -107,8 +107,10 @@ class VendorOffer(models.Model):
 
     billed_retail_untaxed = fields.Monetary(string='Billed Untaxed Retail', compute='_amount_all', readonly=True)
     billed_retail_total = fields.Monetary(string='Billed Retail Total', compute='_amount_all', readonly=True)
+    final_billed_retail_total = fields.Monetary(string='Final Billed Retail Total', default=0)
     billed_offer_untaxed = fields.Monetary(string='Billed Untaxed Offer', compute='_amount_all', readonly=True)
     billed_offer_total = fields.Monetary(string='Billed Offer Total', compute='_amount_all', readonly=True)
+    final_billed_offer_total = fields.Monetary(string='Final Billed Offer Total', default=0)
 
     '''show_validate = fields.Boolean(
         compute='_compute_show_validate',
