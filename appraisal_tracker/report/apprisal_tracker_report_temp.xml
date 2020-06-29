@@ -33,7 +33,9 @@
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Total Offer</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Total Retail</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Billed Total Offer</th>
+                                    <th style="border: 1px solid black;text-align: center;width: 5%;">Final Billed Total Offer</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Billed Total Retail</th>
+                                    <th style="border: 1px solid black;text-align: center;width: 5%;">Final Billed Total Retail</th>
                                     <!--<th style="border: 1px solid black;text-align: center;width: 5%;">Created On</th>-->
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Ship ping Label Issu ed</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Shipping Date</th>
@@ -86,8 +88,14 @@
                                          <td align="right" style="border: 1px solid black;width: 5%;">
                                             <span t-esc="order.billed_offer_total"  t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
                                         </td>
+                                        <td align="right" style="border: 1px solid black;width: 5%;">
+                                            <span t-esc="order.final_billed_offer_total"  t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                        </td>
                                           <td align="right" style="border: 1px solid black;width: 5%;">
                                             <span t-esc="order.billed_retail_total"  t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                        </td>
+                                        <td align="right" style="border: 1px solid black;width: 5%;">
+                                            <span t-esc="order.final_billed_retail_total"  t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
                                         </td>
                                           <!--<td  style="border: 1px solid black;width: 5%;">-->
                                              <!--<span t-esc="order.create_date"/>-->
