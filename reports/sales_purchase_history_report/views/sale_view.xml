@@ -16,6 +16,7 @@
                             <field name="end_date"/>
                             <field name="contract_id" widget="many2many_tags" placeholder="Contracts..." operator="child_of" />
                             <field name="order_account_manager_cust" operator="child_of" />
+                            <field name="category_id" widget="many2many_tags" placeholder="Tags..." operator="child_of" />
                         </group>
                     </group>
 
