@@ -169,7 +169,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr t-foreach="o.order_line" t-as="order_line">
+                    <t t-set="purchase_order_line_multiplier_sorted" t-value="o.order_line.sorted(key=lambda a:(a.multiplier.name))"/>
+                    <tr t-foreach="purchase_order_line_multiplier_sorted" t-as="order_line">
                         <td class="text-left">
                             <span t-field="order_line.product_brand_id"/>
                         </td>
