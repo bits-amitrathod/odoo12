@@ -18,12 +18,6 @@ class CustomerContract(models.Model):
     user_id = fields.Many2one('res.users', string='Salesperson', help='The internal user in charge of this contact.',
                               default=_get_default_user_id)
 
-class CustomerContract(models.Model):
-    _inherit = "res.partner"
-
-    account_manager_cust = fields.Many2one('res.users', string="Account Manager", domain="[('active', '=', True)"
-                                                                                         ",('share','=',False)]")
-
 
 class sale_order(models.Model):
     _inherit = 'sale.order'
@@ -31,6 +25,12 @@ class sale_order(models.Model):
     sale_note = fields.Text('Sale Notes')
     carrier_track_ref = fields.Char('Tracking Reference', store=True, readonly=True, compute='_get_carrier_tracking_ref')
     delivery_method_readonly_flag = fields.Integer('Delivery method readonly flag', default=1, compute='_get_delivery_method_readonly_flag')
+    account_manager = fields.Char(string="Account Manager", compute="get_account_manager")
+
+    @api.one
+    def get_account_manager(self):
+        for so in self:
+            so.account_manager = so.partner_id.account_manager_cust.name
 
     @api.depends('order_line.price_total')
     def _amount_all(self):
