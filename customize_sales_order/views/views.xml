@@ -128,5 +128,30 @@
             </field>
         </record>
 
+      <!-- Adding Account Manager field into group by and filter-->
+        <record id="view_sales_order_filter_inherited" model="ir.ui.view">
+            <field name="name">sale.order.common.search.inherit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+            <field name="arch" type="xml">
+		    <xpath expr="/search/group" position="after">
+		        <filter name="account_manager" string="Account Manager" domain="[]" context="{'group_by':'account_manager'}"/>
+		    </xpath>
+            <xpath expr="/search" position="inside">
+                   <field name="account_manager"/>
+            </xpath>
+            </field>
+        </record>
+
+      <record id="view_order_form_ex" model="ir.ui.view">
+            <field name="name">sale.order.form_ex</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='sales_person']/field[@name='user_id']"  position="after">
+                     <field name="account_manager"/>
+                </xpath>
+            </field>
+        </record>
   </data>
 </odoo>
