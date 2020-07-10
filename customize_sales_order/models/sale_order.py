@@ -25,12 +25,7 @@ class sale_order(models.Model):
     sale_note = fields.Text('Sale Notes')
     carrier_track_ref = fields.Char('Tracking Reference', store=True, readonly=True, compute='_get_carrier_tracking_ref')
     delivery_method_readonly_flag = fields.Integer('Delivery method readonly flag', default=1, compute='_get_delivery_method_readonly_flag')
-    account_manager = fields.Many2one('res.users', store=True, readonly=True, compute="get_account_manager")
-
-    @api.one
-    def get_account_manager(self):
-        for so in self:
-            so.account_manager = so.partner_id.account_manager_cust.id
+    account_manager = fields.Many2one(string="Account Manager", store=True, related="partner_id.account_manager_cust")
 
     @api.depends('order_line.price_total')
     def _amount_all(self):
@@ -50,15 +45,6 @@ class sale_order(models.Model):
                 'amount_tax': amount_tax,
                 'amount_total': amount_untaxed + amount_tax,
             })
-
-    @api.model
-    def create(self, vals):
-        # add account manager
-        if 'partner_id' in vals and vals['partner_id'] is not None:
-            res_partner = self.env['res.partner'].search([('id', '=', vals['partner_id'])])
-            if res_partner and res_partner.account_manager_cust and res_partner.account_manager_cust.id:
-                vals['account_manager'] = res_partner.account_manager_cust.id
-        return super(sale_order, self).create(vals)
 
     def write(self, val):
         # Add note in pick delivery
@@ -84,11 +70,6 @@ class sale_order(models.Model):
                     'author_id': self.env.user.partner_id.id,
                 }
                 self.env['mail.message'].sudo().create(stock_picking_val)
-
-        # add account manager
-        if self.partner_id and self.partner_id.account_manager_cust and self.partner_id.account_manager_cust.id:
-            val['account_manager'] = self.partner_id.account_manager_cust.id
-        return super(sale_order, self).write(val)
 
     @api.one
     def _get_carrier_tracking_ref(self):
