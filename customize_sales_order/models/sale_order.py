@@ -15,14 +15,8 @@ class CustomerContract(models.Model):
 
     account_manager_cust = fields.Many2one('res.users', string="Account Manager", domain="[('active', '=', True)"
                                                                                          ",('share','=',False)]")
-    user_id = fields.Many2one('res.users', string='Salesperson', help='The internal user in charge of this contact.',
+    user_id = fields.Many2one('res.users', string='Business Development', help='The internal user in charge of this contact.',
                               default=_get_default_user_id)
-
-class CustomerContract(models.Model):
-    _inherit = "res.partner"
-
-    account_manager_cust = fields.Many2one('res.users', string="Account Manager", domain="[('active', '=', True)"
-                                                                                         ",('share','=',False)]")
 
 
 class sale_order(models.Model):
