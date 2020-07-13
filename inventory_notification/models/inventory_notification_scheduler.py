@@ -469,7 +469,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                                     </td>
                                     <td style="width: 154px; height: 76px;">
                                     <p style="text-align: left;"><strong>Brianna Galonis</strong></p>
-                                    <p style="text-align: left;">412-565-1280&nbsp;</p>
+                                    <p style="text-align: left;">412-745-2345&nbsp;</p>
                                     </td>
                                     </tr>
                                     </tbody>
