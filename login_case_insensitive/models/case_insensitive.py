@@ -667,7 +667,7 @@ class WebsiteSale(http.Controller):
             error["email"] = 'error'
             error_message.append(_('Invalid Email! Please enter a valid email address.'))
 
-        if data.get('email') != data.get('email').lower():
+        if data.get('email') is not None and data.get('email') != data.get('email').lower():
             error["email"] = 'error'
             error_message.append(_('Email address should contain small letters only.'))
 
