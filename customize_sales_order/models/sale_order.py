@@ -13,10 +13,13 @@ class CustomerContract(models.Model):
         if res_users:
             return res_users.id
 
-    account_manager_cust = fields.Many2one('res.users', string="Account Manager", domain="[('active', '=', True)"
+    account_manager_cust = fields.Many2one('res.users', string="Key Account(KA)", domain="[('active', '=', True)"
                                                                                          ",('share','=',False)]")
-    user_id = fields.Many2one('res.users', string='Salesperson', help='The internal user in charge of this contact.',
+    user_id = fields.Many2one('res.users', string='Business Development(BD)', help='The internal user in charge of this contact.',
                               default=_get_default_user_id)
+
+    national_account_rep = fields.Many2one('res.users', string="National Account Rep.(NA)",
+                                           domain="[('active', '=', True), ('share','=',False)]")
 
 
 class sale_order(models.Model):
