@@ -25,7 +25,7 @@ class sale_order(models.Model):
     sale_note = fields.Text('Sale Notes')
     carrier_track_ref = fields.Char('Tracking Reference', store=True, readonly=True, compute='_get_carrier_tracking_ref')
     delivery_method_readonly_flag = fields.Integer('Delivery method readonly flag', default=1, compute='_get_delivery_method_readonly_flag')
-    account_manager = fields.Many2one('res.users', store=True, readonly=True, string="Key Account", compute="get_account_manager")
+    account_manager = fields.Many2one('res.users', store=True, readonly=True, string="Account Manager", compute="get_account_manager")
 
     @api.one
     def get_account_manager(self):
