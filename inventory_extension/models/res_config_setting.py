@@ -66,6 +66,14 @@ class StockPickingMarkAllButton(models.Model):
     _inherit = "stock.picking"
 
     is_mark_all_button_visible = fields.Boolean(string="Mark all visibility", compute='_compute_visibility', store=False)
+    acq_user_id = fields.Many2one('res.users', string='Acq  Manager', compute='_get_acq_manager')
+
+    def _get_acq_manager(self):
+        for sp in self:
+            if sp.origin and sp.origin is not None:
+                purchase_order = self.env['purchase.order'].search([('name', '=', sp.origin)])
+                if purchase_order and purchase_order.acq_user_id is not None and purchase_order.acq_user_id:
+                    sp.acq_user_id = purchase_order.acq_user_id.id
 
     def _compute_visibility(self):
         for pick in self:
