@@ -12,8 +12,23 @@
                                 type="object"
                                 string="Mark All Done"/>
                     </xpath>
+                    <xpath expr="/form/sheet/group/group/field[@name='partner_id']" position="after">
+                        <field name="acq_user_id"/>
+                    </xpath>
                 </data>
             </field>
         </record>
+
+        <record id="vpicktree_inherit" model="ir.ui.view">
+            <field name="name">stock.picking.tree</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.vpicktree"/>
+            <field name="arch" type="xml">
+                <xpath expr="/tree/field[@name='location_dest_id']" position="after">
+                    <field name="acq_user_id"/>
+                </xpath>
+            </field>
+        </record>
+
     </data>
 </odoo>
