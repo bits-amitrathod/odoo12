@@ -9,7 +9,7 @@
                         <center>
                             <b>
                                 <h2>Surgical Product Solutions</h2>
-                                <h4>Gross Sales By Salesperson</h4>
+                                <h4>Gross Sales By Business Development</h4>
                                 <h4 t-if="popup.compute_at_date">
                                      Date Range: <span t-esc="popup.start_date" t-options='{"widget": "date"}'/>
                                              -  <span t-esc="popup.end_date" t-options='{"widget": "date"}'/>
@@ -23,7 +23,7 @@
                     <t t-foreach="data['form']" t-as="user">
                         <center>
                             <b>
-                                <span>Salesperson :</span>
+                                <span>Business Development :</span>
                                 <span t-esc="user[0]"/>
                             </b>
                         </center>

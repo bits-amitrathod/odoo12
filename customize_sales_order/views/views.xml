@@ -136,7 +136,7 @@
             <field name="inherit_id" ref="sale.view_sales_order_filter"/>
             <field name="arch" type="xml">
 		    <xpath expr="/search/group" position="after">
-		        <filter name="account_manager" string="Account Manager" domain="[]" context="{'group_by':'account_manager'}"/>
+		        <filter name="account_manager" string="Key Account" domain="[]" context="{'group_by':'account_manager'}"/>
 		    </xpath>
             <xpath expr="/search" position="inside">
                    <field name="account_manager"/>

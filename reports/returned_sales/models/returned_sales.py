@@ -21,7 +21,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
 
     end_date = fields.Date('End Date', default = fields.date.today())
 
-    sale_person_id = fields.Many2one('res.users', string='Sales Person', required=False)
+    sale_person_id = fields.Many2one('res.users', string='Business Development', required=False)
 
     sku_code = fields.Many2one('product.product', string='Product SKU',
                                domain="[('active','=',True),('product_tmpl_id.type','=','product')]")

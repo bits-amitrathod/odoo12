@@ -122,7 +122,7 @@ class ReportQuotationExport(http.Controller):
 
         res = request.make_response(
             self.from_data(
-                ["Product SKU", "Customer Name", "Account Manager ", "Sales Order#", "Product Name", "Ordered Date"
+                ["Product SKU", "Customer Name", "Key Account ", "Sales Order#", "Product Name", "Ordered Date"
                     , "Ordered Qty", "UOM", "Unit Price", "Total", "Open Quotations Per Code"],
                 records),
             headers=[('Content-Disposition', content_disposition('sale_quotation_export' + '.xls')),
