@@ -132,10 +132,10 @@ class StockedProductSoldByKaExport(models.TransientModel):
     compute_at_date = fields.Selection([
         (0, 'Show All'),
         (1, 'Date Range ')
-    ], string="Compute", default=0, help="Choose Show All or from a specific date in the past.")
+    ], string="Compute", default=0, help="Choose to analyze the Show Summary or from a specific date in the past.")
 
-    start_date = fields.Date(string="Start Date", required=True)
-    end_date = fields.Date(string="End Date", required=True)
+    start_date = fields.Date(string="Start Date")
+    end_date = fields.Date(string="End Date")
     key_account = fields.Many2one('res.users', string="Key Account", domain="[('active', '=', True), "
                                                                             "('share','=',False)]")
 
