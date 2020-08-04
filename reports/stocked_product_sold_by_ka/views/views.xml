@@ -127,6 +127,25 @@
                     key2="client_action_multi"
                     id="product_sold_by_ka_act_window"/>
 
+      <record id="stocked_product_sold_by_ka_filter" model="ir.ui.view">
+            <field name="name">stocked.product.sold.by.ka.filter</field>
+            <field name="model">report.product.sold.by.ka</field>
+            <field name="arch" type="xml">
+                <search string="Search">
+                    <field name="product_tmpl_id"/>
+                    <field name="customer_id"/>
+                    <field name="sale_order_id"/>
+                    <field name="key_account"/>
+                    <group expand="0" string="Group By">
+                        <filter name="product_tmpl_id" string="Product" domain="[]" context="{'group_by':'product_tmpl_id'}"/>
+                        <filter name="customer_id" string="Customer Name" domain="[]" context="{'group_by':'customer_id'}"/>
+                        <filter name="sale_order_id" string="Sale Order#" domain="[]" context="{'group_by':'sale_order_id'}"/>
+                        <filter name="key_account" string="Key Account" domain="[]" context="{'group_by':'key_account'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
         <!-- Top menu item -->
         <menuitem id="menu_sale_report_short_date_and_over_stocked_product_sold_by_ka"
               name="Short date and over stocked product sold by KA"
