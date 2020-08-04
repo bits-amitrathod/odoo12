@@ -46,7 +46,7 @@ class StockedProductSoldByKa(models.Model):
                 PT.id                               AS product_tmpl_id, 
                 PT.uom_id                           AS product_uom_id,
                 PT.sku_code                         AS sku_code, 
-                SOL.price_unit                      AS unit_price, 
+                SOL.price_reduce                    AS unit_price, 
                 SUM(SML.qty_done)                   AS qty_done, 
                 SUM(SML.qty_done) * SOL.price_unit  AS total_amount,
                 SOL.currency_id                     AS currency_id 
