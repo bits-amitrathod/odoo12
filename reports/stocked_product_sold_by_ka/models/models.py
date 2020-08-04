@@ -22,7 +22,7 @@ class StockedProductSoldByKa(models.Model):
     key_account = fields.Many2one('res.users', 'Key Account')
     product_tmpl_id = fields.Many2one('product.template', "Product")
     product_uom_id = fields.Many2one('uom.uom', 'Product UOM')
-    qty_done = fields.Float('Quantity')
+    qty_done = fields.Integer('Quantity')
     unit_price = fields.Float('Unit Price')
     total_amount = fields.Float('Total')
     currency_id = fields.Many2one('res.currency', string='Currency')

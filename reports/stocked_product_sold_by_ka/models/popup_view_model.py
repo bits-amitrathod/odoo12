@@ -36,6 +36,7 @@ class ProductsSoldByKaPopUp(models.TransientModel):
             'view_mode': 'tree',
             'name': 'Short date and over stocked product sold by KA',
             'res_model': res_model,
+            'context': {'group_by': 'key_account', },
             # "context": {"search_default_group_by_location": 1},
         }
 
