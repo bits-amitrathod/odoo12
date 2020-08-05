@@ -20,14 +20,14 @@
                             <thead>
                                 <tr>
                                     <th style="border: 1px solid black;text-align:  center !important;width: 15%;">
-                                        Sale Order
+                                        Sale Order#
                                     </th>
                                     <th style="border: 1px solid black;text-align:  center !important;">
-                                        Customer
+                                        Customer Name
                                     </th>
-                                    <th style="border: 1px solid black;text-align:  center !important;width: 8%;">
-                                        Salesperson
-                                    </th>
+                                    <!--<th style="border: 1px solid black;text-align:  center !important;width: 8%;">-->
+                                        <!--Salesperson-->
+                                    <!--</th>-->
                                     <th style="border: 1px solid black;text-align:  center !important;width: 8%;">
                                         Key Account
                                     </th>
@@ -47,9 +47,9 @@
                                     <td style="border: 1px solid black;text-align: center;">
                                         <span t-esc="sale.customer.name"/>
                                     </td>
-                                    <td style="border: 1px solid black;text-align: center;">
+<!--                                    <td style="border: 1px solid black;text-align: center;">
                                         <span t-esc="sale.salesperson.name"/>
-                                    </td>
+                                    </td>-->
                                     <td style="border: 1px solid black;text-align: center;">
                                         <span t-esc="sale.key_account.partner_id.name"/>
                                     </td>

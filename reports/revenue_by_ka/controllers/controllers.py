@@ -82,73 +82,44 @@ class StockedProductSoldByKa(http.Controller):
 
         select_query = """
                    SELECT
-                       ROW_NUMBER () OVER (ORDER BY SP.id) AS id, 
+                       ROW_NUMBER () OVER (ORDER BY SO.id) AS id, 
                        SO.name                               AS sale_order_id,
-                       SO.user_id                          AS salesperson,
                        SP.date_done                        AS delivery_date,
                        RP.name                             AS key_account,
                        ResPartner.name                     AS customer,
-                       SO.account_manager                  AS key_account, 
-                       PT.id                               AS product_tmpl_id,  
-                       SO.amount_total                     AS total_amount 
-                   FROM 
-                       public.stock_picking SP
-
-                   INNER JOIN 
-                       public.sale_order SO 
-                   ON 
-                       (
-                           SP.sale_id = SO.id)
-                   INNER JOIN 
-                       public.sale_order_line SOL 
-                   ON 
-                       (
-                           SO.id = SOL.order_id)
-                   INNER JOIN 
-                       public.res_users RU 
-                   ON 
-                       (
-                           SO.account_manager = RU.id)
-                   INNER JOIN 
-                       public.res_partner RP 
-                   ON
-                       ( 
-                           RU.partner_id = RP.id)
-                   INNER JOIN 
-                       public.res_partner ResPartner 
-                   ON
-                       ( 
-                           SO.partner_id = ResPartner.id)
-                   INNER JOIN 
-                       public.stock_move SM 
-                   ON 
-                       (
-                           SP.id = SM.picking_id)
-                   INNER JOIN 
-                       public.stock_move_line SML
-                   ON 
-                       (
-                           SM.id = SML.move_id)
-                   INNER JOIN 
-                       public.stock_production_lot SPL 
-                   ON 
-                       (
-                           SML.lot_id = SPL.id)
-                   INNER JOIN 
-                       public.product_product PP 
-                   ON 
-                       (
-                           SM.product_id = PP.id)
-                   INNER JOIN 
-                       public.product_template PT 
-                   ON 
-                       (
-                           PP.product_tmpl_id = PT.id)
-
-                   WHERE SO.state NOT IN ('cancel', 'void') AND SP.state = 'done' AND SP.picking_type_id = 5 
-                       AND SM.product_id = SOL.product_id AND SO.account_manager IS NOT NULL
+                       SO.state                             AS status,
+                       SUM(SOL.qty_delivered * SOL.price_reduce)  AS total_amount 
+                   
+                FROM public.sale_order SO
+                INNER JOIN 
+                    public.sale_order_line SOL 
+                ON 
+                    SO.id = SOL.order_id
+                INNER JOIN 
+                    public.stock_picking SP 
+                ON 
+                    SO.id = SP.sale_id
+                INNER JOIN 
+                    public.res_users RU 
+                ON 
+                    (
+                        SO.account_manager = RU.id)
+                INNER JOIN 
+                    public.res_partner RP 
+                ON
+                    ( 
+                        RU.partner_id = RP.id)
+                INNER JOIN 
+                    public.res_partner ResPartner 
+                ON
+                    ( 
+                        SO.partner_id = ResPartner.id)
+                
+                                       
+                   WHERE SO.state NOT IN ('cancel', 'void') AND SO.account_manager IS NOT NULL AND SP.state = 'done' AND SP.picking_type_id = 5
 
                """
+
 
         if start_date != "all" and end_date != "all":
             select_query = select_query + " AND SP.date_done BETWEEN '" + str(
@@ -158,10 +129,9 @@ class StockedProductSoldByKa(http.Controller):
             select_query = select_query + "AND SO.account_manager = '" + str(key_account_id) + "'"
 
         group_by = """
-                      GROUP BY
-                      
-                          SP.id, SO.name, SO.account_manager, SO.user_id, SO.amount_total, RP.name, ResPartner.name, PT.id
-                          """
+                           GROUP BY
+                            SO.id, SP.date_done, RP.name, ResPartner.name              
+                               """
 
         select_query = select_query + group_by
 
@@ -172,12 +142,12 @@ class StockedProductSoldByKa(http.Controller):
 
         for line in order_lines:
             records.append([line['sale_order_id'],
-                            line['customer'], line['salesperson'], line['key_account'],
+                            line['customer'],line['key_account'],
                             line['delivery_date'],
                             line['total_amount']])
 
         res = request.make_response(
-            self.from_data(["Sale Order", "Customer", "Salesperson", "Key Account", "Delivery Date", "Total"],
+            self.from_data(["Sale Order#", "Customer Name","Key Account", "Delivery Date", "Total"],
                            records),
             headers=[('Content-Disposition', content_disposition('revenue_by_ka' + '.xls')),
                      ('Content-Type', 'application/vnd.ms-excel')],
@@ -188,3 +158,81 @@ class StockedProductSoldByKa(http.Controller):
     @staticmethod
     def string_to_date(date_string):
         return datetime.datetime.strptime(str(date_string), DEFAULT_SERVER_DATE_FORMAT).date()
+
+
+      # select_query = """
+        #                    SELECT
+        #                        ROW_NUMBER () OVER (ORDER BY SO.id) AS id,
+        #                        SO.name                               AS sale_order_id,
+        #                        SP.date_done                        AS delivery_date,
+        #                        RP.name                             AS key_account,
+        #                        ResPartner.name                     AS customer,
+        #                        SO.state                             AS status,
+        #                        SUM(SOL.qty_delivered * SOL.price_reduce)  AS total_amount
+        #                    FROM
+        #                        public.stock_picking SP
+        #
+        #                    INNER JOIN
+        #                        public.sale_order SO
+        #                    ON
+        #                        (
+        #                            SP.sale_id = SO.id)
+        #                    INNER JOIN
+        #                        public.sale_order_line SOL
+        #                    ON
+        #                        (
+        #                            SO.id = SOL.order_id)
+        #                    INNER JOIN
+        #                        public.res_users RU
+        #                    ON
+        #                        (
+        #                            SO.account_manager = RU.id)
+        #                    INNER JOIN
+        #                        public.res_partner RP
+        #                    ON
+        #                        (
+        #                            RU.partner_id = RP.id)
+        #                    INNER JOIN
+        #                        public.res_partner ResPartner
+        #                    ON
+        #                        (
+        #                            SO.partner_id = ResPartner.id)
+        #                    INNER JOIN
+        #                        public.stock_move SM
+        #                    ON
+        #                        (
+        #                            SP.id = SM.picking_id)
+        #                    INNER JOIN
+        #                        public.stock_move_line SML
+        #                    ON
+        #                        (
+        #                            SM.id = SML.move_id)
+        #                    INNER JOIN
+        #                        public.stock_production_lot SPL
+        #                    ON
+        #                        (
+        #                            SML.lot_id = SPL.id)
+        #                    INNER JOIN
+        #                        public.product_product PP
+        #                    ON
+        #                        (
+        #                            SM.product_id = PP.id)
+        #                    INNER JOIN
+        #                        public.product_template PT
+        #                    ON
+        #                        (
+        #                            PP.product_tmpl_id = PT.id)
+        #
+        #                    WHERE SO.state NOT IN ('cancel', 'void') AND SO.account_manager IS NOT NULL AND SP.state = 'done' AND SP.picking_type_id = 5
+        #
+        #                """
+        #
+
+
+
+       #
+        # group_by = """
+        #                       GROUP BY
+        #
+        #                           SP.id, SO.name, SO.account_manager, RP.name, ResPartner.name, PT.id, SOL.price_reduce
+        #                           """

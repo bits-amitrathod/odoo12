@@ -11,7 +11,6 @@
                 <tree create="false" edit="false" delete="false">
                 <field name="sale_order_id"/>
                 <field name="customer"/>
-                <field name="salesperson"/>
                 <field name="key_account"/>
                 <field name="delivery_date" widget="date"/>
                 <field name="total_amount"/>
@@ -33,7 +32,6 @@
                             <group>
                                 <field name="sale_order_id"/>
                                 <field name="customer"/>
-                                <field name="salesperson"/>
                                 <field name="key_account"/>
                                 <field name="delivery_date" widget="date"/>
                             </group>
@@ -57,8 +55,6 @@
                 <form string="Choose your date">
                     <group>
                         <group>
-                            <!--<field name="sale_order"/>-->
-                            <!--<field name="account_manager"/>-->
                             <field name="compute_at_date" widget="radio"/>
                             <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
                             <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
@@ -82,12 +78,9 @@
         <record id="action_revenue_by_ka" model="ir.actions.act_window">
             <field name="name">Revenue By Key Account</field>
             <field name="res_model">popup.ka.revenue</field>
-            <!--<field name="res_model">sale.order</field>-->
             <field name="view_type">form</field>
-            <!--<field name="view_mode">tree,form</field>-->
             <field name="view_mode">form</field>
             <field name="view_id" ref="ka_revenue_popup_view"/>
-            <!--<field name="view_id" ref="revenue_by_ka_list_view"/>-->
             <field name="target">new</field>
             <field name="context">{'default_compute_at_date': 0, 'valuation': True}</field>
         </record>
@@ -123,6 +116,26 @@
         </record>
 
         <!-- Export popup code ends here -->
+
+        <!-- Filter's code -->
+        <record id="revenue_by_ka_filter" model="ir.ui.view">
+            <field name="name">revenue.by.ka.filter</field>
+            <field name="model">report.ka.revenue</field>
+            <field name="arch" type="xml">
+                <search string="Search">
+                    <field name="customer"/>
+                    <field name="sale_order_id"/>
+                    <field name="key_account"/>
+                    <group expand="0" string="Group By">
+                        <filter name="customer" string="Customer Name" domain="[]" context="{'group_by':'customer'}"/>
+                        <filter name="sale_order_id" string="Sale Order#" domain="[]" context="{'group_by':'sale_order_id'}"/>
+                        <filter name="key_account" string="Key Account" domain="[]" context="{'group_by':'key_account'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Filter's code ends here -->
 
         <!-- Export Action code -->
         <act_window name="Export Revenue By Key Account Report"
