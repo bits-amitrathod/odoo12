@@ -48,7 +48,7 @@ class StockedProductSoldByKa(models.Model):
                 PT.sku_code                         AS sku_code, 
                 SOL.price_reduce                    AS unit_price, 
                 SUM(SML.qty_done)                   AS qty_done, 
-                SUM(SML.qty_done) * SOL.price_unit  AS total_amount,
+                SUM(SML.qty_done) * SOL.price_reduce  AS total_amount,
                 SOL.currency_id                     AS currency_id 
             FROM 
                 public.stock_picking SP
