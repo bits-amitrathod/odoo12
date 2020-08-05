@@ -93,24 +93,39 @@ class StockedProductSoldByKa(http.Controller):
                         SO.state                            AS status,
                         PT.name                             AS product_tmpl_id, 
                         PT.sku_code                         AS sku_code, 
-                        SOL.price_unit                      AS unit_price, 
-                        UU.name                             AS product_uom_id,
-                        SUM(SML.qty_done)                   AS qty_done, 
-                        SUM(SML.qty_done) * SOL.price_unit  AS total_amount,
-                        SOL.currency_id                     AS currency_id 
+                        SOL.price_reduce                    AS unit_price, 
+                        UU.name                             AS product_uom_id,                        
+                        SOL.currency_id                     AS currency_id,
+                        SUM(SML.qty_done - (
+                            SELECT CASE WHEN SUM(SMLS.qty_done) > 0 THEN SUM(SMLS.qty_done) ELSE 0 END AS qty 
+                            FROM public.stock_picking SPS
+                            INNER JOIN public.stock_move SMS ON SPS.id = SMS.picking_id
+                            INNER JOIN public.stock_move_line SMLS ON SMS.id = SMLS.move_id
+                            INNER JOIN public.stock_production_lot SPLS ON SMLS.lot_id = SPLS.id
+                            WHERE SPS.sale_id = SO.id AND SMS.product_id = SM.product_id AND SPS.state = 'done' 
+                            AND SPS.picking_type_id = 7 AND SPLS.use_date <= SPS.date_done + INTERVAL '6 MONTH')) AS qty_done,
+                        SUM(SML.qty_done - (
+                            SELECT CASE WHEN SUM(SMLS.qty_done) > 0 THEN SUM(SMLS.qty_done) ELSE 0 END AS qty 
+                            FROM public.stock_picking SPS
+                            INNER JOIN public.stock_move SMS ON SPS.id = SMS.picking_id
+                            INNER JOIN public.stock_move_line SMLS ON SMS.id = SMLS.move_id
+                            INNER JOIN public.stock_production_lot SPLS ON SMLS.lot_id = SPLS.id
+                            WHERE SPS.sale_id = SO.id AND SMS.product_id = SM.product_id AND SPS.state = 'done' 
+                            AND SPS.picking_type_id = 7 AND SPLS.use_date <= SPS.date_done + INTERVAL '6 MONTH')) * SOL.price_reduce  AS total_amount
+            
                     FROM 
-                        public.stock_picking SP
-
-                    INNER JOIN 
                         public.sale_order SO 
-                    ON 
-                        (
-                            SP.sale_id = SO.id)
+                    
                     INNER JOIN 
                         public.sale_order_line SOL 
                     ON 
                         (
                             SO.id = SOL.order_id)
+                    INNER JOIN 
+                        public.stock_picking SP 
+                    ON 
+                        (
+                            SO.id = SP.sale_id)
                     INNER JOIN 
                         public.res_users RU 
                     ON 
@@ -172,7 +187,7 @@ class StockedProductSoldByKa(http.Controller):
         group_by = """
                             GROUP BY
                                 SP.id, SO.name, SO.date_order, SO.account_manager, RP.name, ResPartner.name, SO.state, PT.name, PT.sku_code,
-                                SOL.price_unit, UU.name, SOL.currency_id
+                                SOL.price_reduce, UU.name, SOL.currency_id
                                 
                                 """
 
@@ -192,7 +207,7 @@ class StockedProductSoldByKa(http.Controller):
 
         res = request.make_response(
             self.from_data(["Product SKU", "Product Name", "Customer Name", "Sale Order#", "Key Account ", "Delivery Date",
-                            "Status", "Quantity", "Product UOM", "Unit Price", "Total"],
+                            "Status", "Delivered Quantity", "Product UOM", "Unit Price", "Total"],
                            records),
             headers=[('Content-Disposition', content_disposition('short_date_and_over_stocked_product_sold_by_ka' + '.xls')),
                      ('Content-Type', 'application/vnd.ms-excel')],

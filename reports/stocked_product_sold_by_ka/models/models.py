@@ -22,7 +22,7 @@ class StockedProductSoldByKa(models.Model):
     key_account = fields.Many2one('res.users', 'Key Account')
     product_tmpl_id = fields.Many2one('product.template', "Product")
     product_uom_id = fields.Many2one('uom.uom', 'Product UOM')
-    qty_done = fields.Integer('Quantity')
+    qty_done = fields.Integer('Delivered Quantity')
     unit_price = fields.Float('Unit Price')
     total_amount = fields.Float('Total')
     currency_id = fields.Many2one('res.currency', string='Currency')
@@ -37,32 +37,47 @@ class StockedProductSoldByKa(models.Model):
         select_query = """
             SELECT
                 ROW_NUMBER () OVER (ORDER BY SP.id) AS id, 
-                SO.id                               AS sale_order_id, 
-                SO.partner_id                       AS customer_id,
-                SO.date_order                       AS date_order,
-                SP.date_done                        AS delivery_date,
-                SO.account_manager                  AS key_account,
-                SO.state                            AS status,
-                PT.id                               AS product_tmpl_id, 
-                PT.uom_id                           AS product_uom_id,
-                PT.sku_code                         AS sku_code, 
-                SOL.price_reduce                    AS unit_price, 
-                SUM(SML.qty_done)                   AS qty_done, 
-                SUM(SML.qty_done) * SOL.price_reduce  AS total_amount,
-                SOL.currency_id                     AS currency_id 
-            FROM 
-                public.stock_picking SP
+                SO.id               AS sale_order_id, 
+                SO.partner_id       AS customer_id, 
+                SO.date_order       AS date_order, 
+                SP.date_done        AS delivery_date,
+                SO.account_manager  AS key_account, 
+                SO.state            AS status, 
+                PT.id               AS product_tmpl_id, 
+                PT.uom_id           AS product_uom_id, 
+                PT.sku_code         AS sku_code, 
+                SOL.price_reduce    AS unit_price, 
+                SOL.currency_id     AS currency_id,
+                SUM(SML.qty_done - (
+                    SELECT CASE WHEN SUM(SMLS.qty_done) > 0 THEN SUM(SMLS.qty_done) ELSE 0 END AS qty 
+                    FROM public.stock_picking SPS
+                    INNER JOIN public.stock_move SMS ON SPS.id = SMS.picking_id
+                    INNER JOIN public.stock_move_line SMLS ON SMS.id = SMLS.move_id
+                    INNER JOIN public.stock_production_lot SPLS ON SMLS.lot_id = SPLS.id
+                    WHERE SPS.sale_id = SO.id AND SMS.product_id = SM.product_id AND SPS.state = 'done' 
+                    AND SPS.picking_type_id = 7 AND SPLS.use_date <= SPS.date_done + INTERVAL '6 MONTH')) AS qty_done,
+                SUM(SML.qty_done - (
+                    SELECT CASE WHEN SUM(SMLS.qty_done) > 0 THEN SUM(SMLS.qty_done) ELSE 0 END AS qty 
+                    FROM public.stock_picking SPS
+                    INNER JOIN public.stock_move SMS ON SPS.id = SMS.picking_id
+                    INNER JOIN public.stock_move_line SMLS ON SMS.id = SMLS.move_id
+                    INNER JOIN public.stock_production_lot SPLS ON SMLS.lot_id = SPLS.id
+                    WHERE SPS.sale_id = SO.id AND SMS.product_id = SM.product_id AND SPS.state = 'done' 
+                    AND SPS.picking_type_id = 7 AND SPLS.use_date <= SPS.date_done + INTERVAL '6 MONTH')) * SOL.price_reduce  AS total_amount
             
-            INNER JOIN 
-                public.sale_order SO 
-            ON 
-                (
-                    SP.sale_id = SO.id)
+            FROM 
+                public.sale_order SO
+            
             INNER JOIN 
                 public.sale_order_line SOL 
             ON 
                 (
                     SO.id = SOL.order_id)
+            INNER JOIN 
+                public.stock_picking SP 
+            ON 
+                (
+                    SO.id = SP.sale_id)
             INNER JOIN 
                 public.stock_move SM 
             ON 
