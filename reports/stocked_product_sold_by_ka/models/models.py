@@ -109,7 +109,7 @@ class StockedProductSoldByKa(models.Model):
         group_by = """
                     GROUP BY
                         SP.id, SO.id, SO.partner_id, SO.date_order, SO.account_manager, SO.state, PT.id, PT.uom_id,
-                        PT.sku_code, SOL.price_unit, SOL.currency_id
+                        PT.sku_code, SOL.price_reduce, SOL.currency_id
                         """
 
         sql_query = select_query + group_by
