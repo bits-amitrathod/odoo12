@@ -187,8 +187,8 @@ class StockedProductSoldByKa(http.Controller):
         group_by = """
                             GROUP BY
                                 SP.id, SO.name, SO.date_order, SO.account_manager, RP.name, ResPartner.name, SO.state, PT.name, PT.sku_code,
-                                SOL.price_reduce, UU.name, SOL.currency_id
-                                
+                                SOL.price_reduce, UU.name, SOL.currency_id 
+                                ORDER BY RP.name  
                                 """
 
         select_query = select_query + group_by
