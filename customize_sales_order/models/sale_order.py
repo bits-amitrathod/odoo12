@@ -31,6 +31,8 @@ class sale_order(models.Model):
     account_manager = fields.Many2one('res.users', store=True, readonly=True, string="Key Account", compute="get_account_manager")
     user_id = fields.Many2one('res.users', string='Business Development', index=True, track_visibility='onchange',
                               track_sequence=2, default=lambda self: self.env.user)
+    national_account = fields.Many2one('res.users', readonly=True, string="National Account",
+                                       related='partner_id.national_account_rep')
 
     @api.one
     def get_account_manager(self):
