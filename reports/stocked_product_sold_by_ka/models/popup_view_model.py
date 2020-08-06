@@ -12,8 +12,8 @@ class ProductsSoldByKaPopUp(models.TransientModel):
     _name = 'popup.product.sold.by.ka'
     _description = 'Short date and over stocked product sold by KA'
 
-    start_date = fields.Date('Start Date')
-    end_date = fields.Date('End Date')
+    start_date = fields.Date('Start Date', default=(fields.date.today() - datetime.timedelta(days=31)))
+    end_date = fields.Date('End Date', default=fields.date.today())
     key_account = fields.Many2one('res.users', string="Key Account", domain="[('active', '=', True), "
                                                                             "('share','=',False)]")
 

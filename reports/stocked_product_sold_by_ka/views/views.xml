@@ -93,12 +93,12 @@
                             <field name="compute_at_date" widget="radio"/>
                             <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
                             <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
-                            <field name="key_account"/>
                         </group>
                         <group>
-                            <div>Click On ' Export To File ' button to export Short date and over stocked product sold by KA report file</div>
+                            <field name="key_account"/>
                         </group>
                     </group>
+                    <div><b>Click On ' Export To File ' button to export Short date and over stocked product sold by KA report file</b></div>
                     <footer>
                         <button name="download_excel_product_sold_by_ka" string="Export To File" type="object"
                                 class="btn-primary"/>
