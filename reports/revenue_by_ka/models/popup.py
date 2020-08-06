@@ -5,10 +5,8 @@ from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMA
 class KaRevenueReportPopup(models.TransientModel):
     _name = 'popup.ka.revenue'
 
-    start_date = fields.Date('Start Date', help="Choose a date to get the Revenu By Key Account at that  Start date",
-                                 default=(fields.date.today() - datetime.timedelta(days=31)))
-    end_date = fields.Date('End Date', help="Choose a date to get the Revenue By Key Account at that  End date",
-                               default=fields.date.today())
+    start_date = fields.Date('Start Date', default=(fields.date.today() - datetime.timedelta(days=31)), help="Choose a date to get the Revenu By Key Account at that  Start date")
+    end_date = fields.Date('End Date',default=fields.date.today(), help="Choose a date to get the Revenue By Key Account at that  End date")
     key_account = fields.Many2one('res.users', string="Key Account", domain="[('active', '=', True), "
                                                                             "('share','=',False)]")
 
@@ -32,7 +30,7 @@ class KaRevenueReportPopup(models.TransientModel):
             'view_mode': 'tree',
             'name': 'Revenue By Key Account',
             'res_model': res_model,
-            'context': {'group_by': 'key_account'},
+            # 'context': {'group_by': 'key_account'},
         }
 
         return action

@@ -41,6 +41,7 @@ class RevenueByKa(models.Model):
                 SO.account_manager                  AS key_account,
                 SO.state                            AS status,  
                 SP.date_done                        AS delivery_date,
+                SP.picking_type_id                  AS picking_id,
                 SUM(SOL.qty_delivered * SOL.price_reduce)  AS total_amount 
             FROM public.sale_order SO
                 INNER JOIN 
@@ -70,7 +71,7 @@ class RevenueByKa(models.Model):
 
         group_by = """
                     GROUP BY
-                     SO.id, SP.date_done                
+                     SO.id, SP.date_done, SP.picking_type_id                
                         """
 
         sql_query = select_query + group_by
@@ -97,11 +98,9 @@ class RevenueByKaExport(models.TransientModel):
         (1, 'Date Range ')
     ], string="Compute", default=0, help="Choose Show All or from a specific date in the past.")
 
-    start_date = fields.Date('Start Date',
-                             help="Choose a date to get the Revenu By Key Account at that  Start date",
-                             default=(fields.date.today() - datetime.timedelta(days=31)))
-    end_date = fields.Date('End Date', help="Choose a date to get the Revenue By Key Account at that  End date",
-                           default=fields.date.today())
+    start_date = fields.Date('Start Date', default=(fields.date.today() - datetime.timedelta(days=31)),
+                             help="Choose a date to get the Revenu By Key Account at that  Start date")
+    end_date = fields.Date('End Date',default=fields.date.today(), help="Choose a date to get the Revenue By Key Account at that  End date")
     key_account = fields.Many2one('res.users', string="Key Account", domain="[('active', '=', True), "
                                                                             "('share','=',False)]")
 
@@ -143,77 +142,3 @@ class RevenueByKaExport(models.TransientModel):
     @staticmethod
     def string_to_date(date_string):
         return datetime.datetime.strptime(date_string, DEFAULT_SERVER_DATE_FORMAT).date()
-
-    # Uncomment for original Query
-
-    # select_query = """
-    #             SELECT
-    #                 ROW_NUMBER () OVER (ORDER BY SP.id) AS id,
-    #                 SO.id                               AS sale_order_id,
-    #                 SO.partner_id                       AS customer,
-    #                 SP.date_done                        AS delivery_date,
-    #                 SO.account_manager                  AS key_account,
-    #                 PT.id                               AS product_tmpl_id,
-    #                 SOL.price_unit                      AS unit_price,
-    #                 SUM(SML.qty_done)                   AS qty_done,
-    #                 SUM(SML.qty_done) * SOL.price_unit  AS total_amount
-    #             FROM
-    #                 public.stock_picking SP
-    #
-    #             INNER JOIN
-    #                 public.sale_order SO
-    #             ON
-    #                 (
-    #                     SP.sale_id = SO.id)
-    #             INNER JOIN
-    #                 public.sale_order_line SOL
-    #             ON
-    #                 (
-    #                     SO.id = SOL.order_id)
-    #             INNER JOIN
-    #                 public.res_users RU
-    #             ON
-    #                 (
-    #                     SO.account_manager = RU.id)
-    #             INNER JOIN
-    #                 public.res_partner RP
-    #             ON
-    #                 (
-    #                     RU.partner_id = RP.id)
-    #             INNER JOIN
-    #                 public.stock_move SM
-    #             ON
-    #                 (
-    #                     SP.id = SM.picking_id)
-    #             INNER JOIN
-    #                 public.stock_move_line SML
-    #             ON
-    #                 (
-    #                     SM.id = SML.move_id)
-    #             INNER JOIN
-    #                 public.stock_production_lot SPL
-    #             ON
-    #                 (
-    #                     SML.lot_id = SPL.id)
-    #             INNER JOIN
-    #                 public.product_product PP
-    #             ON
-    #                 (
-    #                     SM.product_id = PP.id)
-    #             INNER JOIN
-    #                 public.product_template PT
-    #             ON
-    #                 (
-    #                     PP.product_tmpl_id = PT.id)
-    #
-    #             WHERE SO.state NOT IN ('cancel', 'void') AND SP.state = 'done' AND SP.picking_type_id = 5
-    #                 AND SM.product_id = SOL.product_id AND SO.account_manager IS NOT NULL
-    #
-    #         """
-
-    # Uncomment for original Query
-
-    # group_by = """
-    #                        GROUP BY
-    #                            SP.id, SO.id, SO.account_manager,PT.id, SOL.price_unit
-    #                                """
