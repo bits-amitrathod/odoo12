@@ -41,7 +41,6 @@ class RevenueByKa(models.Model):
                 SO.account_manager                  AS key_account,
                 SO.state                            AS status,  
                 SP.date_done                        AS delivery_date,
-                SP.picking_type_id                  AS picking_id,
                 SUM(SOL.qty_delivered * SOL.price_reduce)  AS total_amount 
             FROM public.sale_order SO
                 INNER JOIN 
@@ -71,7 +70,7 @@ class RevenueByKa(models.Model):
 
         group_by = """
                     GROUP BY
-                     SO.id, SP.date_done, SP.picking_type_id                
+                     SO.id, SP.date_done              
                         """
 
         sql_query = select_query + group_by
