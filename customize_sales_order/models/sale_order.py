@@ -32,12 +32,17 @@ class sale_order(models.Model):
     user_id = fields.Many2one('res.users', string='Business Development', index=True, track_visibility='onchange',
                               track_sequence=2, default=lambda self: self.env.user)
     national_account = fields.Many2one('res.users', store=True, readonly=True, string="National Account",
-                                       related='partner_id.national_account_rep', copy=False)
+                                       compute="get_national_account")
 
     @api.one
     def get_account_manager(self):
         for so in self:
             so.account_manager = so.partner_id.account_manager_cust.id
+
+    @api.one
+    def get_national_account(self):
+        for so in self:
+            so.national_account = so.partner_id.national_account_rep.id
 
     @api.model
     def create(self, vals):
@@ -46,6 +51,8 @@ class sale_order(models.Model):
             res_partner = self.env['res.partner'].search([('id', '=', vals['partner_id'])])
             if res_partner and res_partner.account_manager_cust and res_partner.account_manager_cust.id:
                 vals['account_manager'] = res_partner.account_manager_cust.id
+            if res_partner and res_partner.national_account_rep and res_partner.national_account_rep.id:
+                vals['national_account'] = res_partner.national_account_rep.id
         return super(sale_order, self).create(vals)
 
     @api.depends('order_line.price_total')
@@ -95,6 +102,8 @@ class sale_order(models.Model):
         # add account manager
         if self.partner_id and self.partner_id.account_manager_cust and self.partner_id.account_manager_cust.id:
             val['account_manager'] = self.partner_id.account_manager_cust.id
+        if self.partner_id and self.partner_id.national_account_rep and self.partner_id.national_account_rep.id:
+            val['account_manager'] = self.partner_id.national_account_rep.id
         return super(sale_order, self).write(val)
 
     @api.one
