@@ -96,7 +96,7 @@ class StockedProductSoldByKa(http.Controller):
                 ON 
                     SO.id = SOL.order_id
                 INNER JOIN 
-                        (SELECT DISTINCT ON (origin) origin,date_done,sale_id  FROM stock_picking WHERE picking_type_id = 5 ORDER BY origin)
+                        (SELECT DISTINCT ON (origin) origin,date_done,sale_id  FROM stock_picking WHERE picking_type_id = 5 AND state = 'done' ORDER BY origin)
                     AS SP 
                 ON 
                     SO.id = SP.sale_id
