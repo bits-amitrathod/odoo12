@@ -31,28 +31,33 @@ class RevenueByKa(models.Model):
         tools.drop_view_if_exists(self._cr, self._name.replace(".", "_"))
 
         #  For salesperson              SO.user_id                          AS salesperson,
-
+        # SP.picking_type_id        AS       picking_id,
         select_query = """
             SELECT
-                ROW_NUMBER () OVER (ORDER BY SO.id) AS id,
-                SO.id                               AS sale_order_id,
-                SO.partner_id                       AS customer,
-                SO.date_order                       AS date_order,
-                SO.account_manager                  AS key_account,
-                SO.state                            AS status,  
-                SP.date_done                        AS delivery_date,
-                SUM(SOL.qty_delivered * SOL.price_reduce)  AS total_amount 
-            FROM public.sale_order SO
+                 ROW_NUMBER () OVER (ORDER BY SO.id) AS id,
+                 SO.id                               AS sale_order_id,
+                 SO.partner_id                       AS customer,
+                 SO.date_order                       AS date_order,
+                 SO.account_manager                  AS key_account,
+                 SO.state                            AS status,                            
+                 MAX(SP.date_done)                        AS delivery_date,
+                 SUM(SOL.qty_delivered * SOL.price_reduce)  AS total_amount 
+                        
+                FROM public.sale_order SO
+                            
                 INNER JOIN 
                     public.sale_order_line SOL 
                 ON 
-                    SO.id = SOL.order_id
+                    SO.id = SOL.order_id  
                 INNER JOIN 
-                    public.stock_picking SP 
+                    (SELECT DISTINCT ON (origin) origin,date_done,sale_id  FROM stock_picking WHERE picking_type_id = 5 ORDER BY origin)
+                    
+                   AS SP 
                 ON 
                     SO.id = SP.sale_id
-                
-                WHERE SO.state NOT IN ('cancel', 'void') AND SO.account_manager IS NOT NULL AND SP.state = 'done' AND SP.picking_type_id = 5
+                    
+                    WHERE SO.state NOT IN ('cancel', 'void') AND SO.account_manager IS NOT NULL
+                             
 
         """
 
@@ -70,7 +75,7 @@ class RevenueByKa(models.Model):
 
         group_by = """
                     GROUP BY
-                     SO.id, SP.date_done              
+                     SO.id
                         """
 
         sql_query = select_query + group_by

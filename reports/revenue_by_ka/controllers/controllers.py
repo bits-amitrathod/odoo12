@@ -81,10 +81,10 @@ class StockedProductSoldByKa(http.Controller):
     def download_document_xl(self, start_date, end_date, key_account_id, token=1, debug=1, **kw):
 
         select_query = """
-                   SELECT
+                SELECT
                        ROW_NUMBER () OVER (ORDER BY SO.id) AS id, 
                        SO.name                               AS sale_order_id,
-                       SP.date_done                        AS delivery_date,
+                       MAX(SP.date_done)                        AS delivery_date,
                        RP.name                             AS key_account,
                        ResPartner.name                     AS customer,
                        SO.state                             AS status,
@@ -96,7 +96,8 @@ class StockedProductSoldByKa(http.Controller):
                 ON 
                     SO.id = SOL.order_id
                 INNER JOIN 
-                    public.stock_picking SP 
+                        (SELECT DISTINCT ON (origin) origin,date_done,sale_id  FROM stock_picking WHERE picking_type_id = 5 ORDER BY origin)
+                    AS SP 
                 ON 
                     SO.id = SP.sale_id
                 INNER JOIN 
@@ -116,7 +117,7 @@ class StockedProductSoldByKa(http.Controller):
                         SO.partner_id = ResPartner.id)
                 
                                        
-                   WHERE SO.state NOT IN ('cancel', 'void') AND SO.account_manager IS NOT NULL AND SP.state = 'done' AND SP.picking_type_id = 5
+                   WHERE SO.state NOT IN ('cancel', 'void') AND SO.account_manager IS NOT NULL
 
                """
 
@@ -130,7 +131,7 @@ class StockedProductSoldByKa(http.Controller):
 
         group_by = """
                            GROUP BY
-                            SO.id, SP.date_done, RP.name, ResPartner.name
+                            SO.id, RP.name, ResPartner.name
                             ORDER BY RP.name             
                                """
 

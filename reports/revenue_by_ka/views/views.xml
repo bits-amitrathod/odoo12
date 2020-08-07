@@ -153,83 +153,12 @@
         <menuitem id="sale.revenue_by_ka_menu"
                   name="Revenue By KA"
                   action="action_revenue_by_ka"
-                  parent="sale.menu_sale_report"
+                  parent="stocked_product_sold_by_ka.key_account_reports"
                   sequence="14"/>
-                  <!--parent="stocked_product_sold_by_ka.key_account_reports"-->
 
+                <!--parent="sale.menu_sale_report"-->
 
         <!-- Menus declaration ends here -->
 
     </data>
 </odoo>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <!-- explicit list view definition -->
-    <!--
-    <record model="ir.ui.view" id="revenue_by__ka.list">
-      <field name="name">revenue_by_KA list</field>
-      <field name="model">revenue_by__ka.revenue_by__ka</field>
-      <field name="arch" type="xml">
-        <tree>
-          <field name="name"/>
-          <field name="value"/>
-          <field name="value2"/>
-        </tree>
-      </field>
-    </record>
-    -->
-
-    <!-- actions opening views on models -->
-    <!--
-    <record model="ir.actions.act_window" id="revenue_by__ka.action_window">
-      <field name="name">revenue_by_KA window</field>
-      <field name="res_model">revenue_by__ka.revenue_by__ka</field>
-      <field name="view_mode">tree,form</field>
-    </record>
-    -->
-
-    <!-- server action to the one above -->
-    <!--
-    <record model="ir.actions.server" id="revenue_by__ka.action_server">
-      <field name="name">revenue_by_KA server</field>
-      <field name="model_id" ref="model_revenue_by__ka_revenue_by__ka"/>
-      <field name="state">code</field>
-      <field name="code">
-        action = {
-          "type": "ir.actions.act_window",
-          "view_mode": "tree,form",
-          "res_model": self._name,
-        }
-      </field>
-    </record>
-    -->
-
-    <!-- Top menu item -->
-    <!--
-    <menuitem name="revenue_by_KA" id="revenue_by__ka.menu_root"/>
-    -->
-    <!-- menu categories -->
-    <!--
-    <menuitem name="Menu 1" id="revenue_by__ka.menu_1" parent="revenue_by__ka.menu_root"/>
-    <menuitem name="Menu 2" id="revenue_by__ka.menu_2" parent="revenue_by__ka.menu_root"/>
-    -->
-    <!-- actions -->
-    <!--
-    <menuitem name="List" id="revenue_by__ka.menu_1_list" parent="revenue_by__ka.menu_1"
-              action="revenue_by__ka.action_window"/>
-    <menuitem name="Server to list" id="revenue_by__ka" parent="revenue_by__ka.menu_2"
-              action="revenue_by__ka.action_server"/>
-    -->
