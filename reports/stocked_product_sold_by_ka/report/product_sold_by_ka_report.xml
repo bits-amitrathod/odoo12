@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report
+                id="action_report_product_sold_by_ka"
+                string="Short date and over stocked product sold by KA"
+                model="report.product.sold.by.ka"
+                report_type="qweb-html"
+                file="stocked_product_sold_by_ka.product_sold_by_ka_template"
+                name="stocked_product_sold_by_ka.product_sold_by_ka_template"
+                />
+    </data>
+</odoo>
