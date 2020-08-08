@@ -76,7 +76,8 @@ class StockedProductSoldByKa(http.Controller):
         fp.close()
         return data
 
-    @http.route('/web/export/product_sold_by_ka_export/<string:start_date>/<string:end_date>/<string:key_account_id>', type='http',
+    @http.route('/web/export/product_sold_by_ka_export/<string:start_date>/<string:end_date>/<string:key_account_id>',
+                type='http',
                 auth="public")
     @serialize_exception
     def download_document_xl(self, start_date, end_date, key_account_id, token=1, debug=1, **kw):
@@ -96,26 +97,38 @@ class StockedProductSoldByKa(http.Controller):
                         SOL.price_reduce                    AS unit_price, 
                         UU.name                             AS product_uom_id,                        
                         SOL.currency_id                     AS currency_id,
-                        SUM(SML.qty_done - (
-                            SELECT CASE WHEN SUM(SMLS.qty_done) > 0 THEN SUM(SMLS.qty_done) ELSE 0 END AS qty 
-                            FROM public.stock_picking SPS
-                            INNER JOIN public.stock_move SMS ON SPS.id = SMS.picking_id
-                            INNER JOIN public.stock_move_line SMLS ON SMS.id = SMLS.move_id
-                            INNER JOIN public.stock_production_lot SPLS ON SMLS.lot_id = SPLS.id
-                            WHERE SPS.sale_id = SO.id AND SMS.product_id = SM.product_id AND SPS.state = 'done' 
-                            AND SPS.picking_type_id = 7 AND SPLS.use_date <= SPS.date_done + INTERVAL '6 MONTH')) AS qty_done,
-                        SUM(SML.qty_done - (
-                            SELECT CASE WHEN SUM(SMLS.qty_done) > 0 THEN SUM(SMLS.qty_done) ELSE 0 END AS qty 
-                            FROM public.stock_picking SPS
-                            INNER JOIN public.stock_move SMS ON SPS.id = SMS.picking_id
-                            INNER JOIN public.stock_move_line SMLS ON SMS.id = SMLS.move_id
-                            INNER JOIN public.stock_production_lot SPLS ON SMLS.lot_id = SPLS.id
-                            WHERE SPS.sale_id = SO.id AND SMS.product_id = SM.product_id AND SPS.state = 'done' 
-                            AND SPS.picking_type_id = 7 AND SPLS.use_date <= SPS.date_done + INTERVAL '6 MONTH')) * SOL.price_reduce  AS total_amount
-            
+
+                        CASE WHEN (SELECT SUM(SMLS.qty_done)
+                        FROM public.stock_picking SPS
+                        INNER JOIN public.stock_move SMS ON SPS.id = SMS.picking_id
+                        INNER JOIN public.stock_move_line SMLS ON SMS.id = SMLS.move_id AND SMS.product_id = SM.product_id
+                        INNER JOIN public.stock_production_lot SPLS ON SMLS.lot_id = SPLS.id AND SPLS.use_date <= SP.date_done + INTERVAL '6 MONTH'
+                        WHERE SPS.sale_id = SO.id AND SPS.state = 'done' AND SPS.picking_type_id = 7) is null THEN SUM(SML.qty_done) ELSE
+                        (SUM(SML.qty_done) - (SELECT SUM(SMLS.qty_done)
+                        FROM public.stock_picking SPS
+                        INNER JOIN public.stock_move SMS ON SPS.id = SMS.picking_id
+                        INNER JOIN public.stock_move_line SMLS ON SMS.id = SMLS.move_id AND SMS.product_id = SM.product_id
+                        INNER JOIN public.stock_production_lot SPLS ON SMLS.lot_id = SPLS.id AND SPLS.use_date <= SP.date_done + INTERVAL '6 MONTH'
+                        WHERE SPS.sale_id = SO.id AND SPS.state = 'done' AND SPS.picking_type_id = 7)) END AS qty_done,
+
+
+                        CASE WHEN (SELECT SUM(SMLS.qty_done)
+                        FROM public.stock_picking SPS
+                        INNER JOIN public.stock_move SMS ON SPS.id = SMS.picking_id
+                        INNER JOIN public.stock_move_line SMLS ON SMS.id = SMLS.move_id AND SMS.product_id = SM.product_id
+                        INNER JOIN public.stock_production_lot SPLS ON SMLS.lot_id = SPLS.id AND SPLS.use_date <= SP.date_done + INTERVAL '6 MONTH'
+                        WHERE SPS.sale_id = SO.id AND SPS.state = 'done' AND SPS.picking_type_id = 7) is null THEN SUM(SML.qty_done) ELSE
+                        (SUM(SML.qty_done) - (SELECT SUM(SMLS.qty_done)
+                        FROM public.stock_picking SPS
+                        INNER JOIN public.stock_move SMS ON SPS.id = SMS.picking_id
+                        INNER JOIN public.stock_move_line SMLS ON SMS.id = SMLS.move_id AND SMS.product_id = SM.product_id
+                        INNER JOIN public.stock_production_lot SPLS ON SMLS.lot_id = SPLS.id AND SPLS.use_date <= SP.date_done + INTERVAL '6 MONTH'
+                        WHERE SPS.sale_id = SO.id AND SPS.state = 'done' AND SPS.picking_type_id = 7)) END * SOL.price_reduce AS total_amount
+
+
                     FROM 
                         public.sale_order SO 
-                    
+
                     INNER JOIN 
                         public.sale_order_line SOL 
                     ON 
@@ -125,7 +138,7 @@ class StockedProductSoldByKa(http.Controller):
                         public.stock_picking SP 
                     ON 
                         (
-                            SO.id = SP.sale_id)
+                            SO.id = SP.sale_id AND SP.state = 'done' AND SP.picking_type_id = 5)
                     INNER JOIN 
                         public.res_users RU 
                     ON 
@@ -145,7 +158,7 @@ class StockedProductSoldByKa(http.Controller):
                         public.stock_move SM 
                     ON 
                         (
-                            SP.id = SM.picking_id)
+                            SP.id = SM.picking_id AND SM.product_id = SOL.product_id)
                     INNER JOIN 
                         public.stock_move_line SML
                     ON 
@@ -155,7 +168,7 @@ class StockedProductSoldByKa(http.Controller):
                         public.stock_production_lot SPL 
                     ON 
                         (
-                            SML.lot_id = SPL.id)
+                            SML.lot_id = SPL.id AND SPL.use_date <= SP.date_done + INTERVAL '6 MONTH')
                     INNER JOIN 
                         public.product_product PP 
                     ON 
@@ -172,9 +185,8 @@ class StockedProductSoldByKa(http.Controller):
                         (
                             PT.uom_id = UU.id)
 
-                    WHERE SO.state NOT IN ('cancel', 'void') AND SP.state = 'done' AND SP.picking_type_id = 5 
-                        AND SM.product_id = SOL.product_id AND SPL.use_date <= SP.date_done + INTERVAL '6 MONTH'
-                        AND SO.account_manager IS NOT NULL
+                    WHERE SO.state NOT IN ('cancel', 'void') AND SO.account_manager IS NOT NULL
+
                 """
 
         if start_date != "all" and end_date != "all":
@@ -186,8 +198,8 @@ class StockedProductSoldByKa(http.Controller):
 
         group_by = """
                             GROUP BY
-                                SP.id, SO.name, SO.date_order, SO.account_manager, RP.name, ResPartner.name, SO.state, PT.name, PT.sku_code,
-                                SOL.price_reduce, UU.name, SOL.currency_id 
+                                SM.product_id, SO.id, SP.date_done, PT.id, SOL.price_reduce, SOL.currency_id, SP.id, 
+                                RP.name, ResPartner.name, UU.name 
                                 ORDER BY RP.name  
                                 """
 
@@ -206,11 +218,13 @@ class StockedProductSoldByKa(http.Controller):
                             line['qty_done'], line['product_uom_id'], line['unit_price'], line['total_amount']])
 
         res = request.make_response(
-            self.from_data(["Product SKU", "Product Name", "Customer Name", "Sale Order#", "Key Account ", "Delivery Date",
-                            "Status", "Delivered Quantity", "Product UOM", "Unit Price", "Total"],
-                           records),
-            headers=[('Content-Disposition', content_disposition('short_date_and_over_stocked_product_sold_by_ka' + '.xls')),
-                     ('Content-Type', 'application/vnd.ms-excel')],
+            self.from_data(
+                ["Product SKU", "Product Name", "Customer Name", "Sale Order#", "Key Account ", "Delivery Date",
+                 "Status", "Delivered Quantity", "Product UOM", "Unit Price", "Total"],
+                records),
+            headers=[
+                ('Content-Disposition', content_disposition('short_date_and_over_stocked_product_sold_by_ka' + '.xls')),
+                ('Content-Type', 'application/vnd.ms-excel')],
         )
 
         return res
