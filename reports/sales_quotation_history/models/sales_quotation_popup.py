@@ -11,7 +11,7 @@ class SaleQuotationExport(models.TransientModel):
     product_id = fields.Many2many('product.product', string="Products")
     order_partner_id = fields.Many2one('res.partner', string='Customer')
     contract_id = fields.Many2one('contract.contract', string='Contract')
-    order_account_manager_cust = fields.Many2one('res.users', string="Account Manager", domain="[('active', '=', True)"
+    order_account_manager_cust = fields.Many2one('res.users', string="Key Account", domain="[('active', '=', True)"
                                                                                                ",('share','=',False)]")
 
     @api.multi

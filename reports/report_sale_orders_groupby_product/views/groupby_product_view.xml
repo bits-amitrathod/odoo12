@@ -18,7 +18,7 @@
                     <group expand="0" string="Group By">
                         <filter name="product" string="Product" domain="[]" context="{'group_by':'product_id'}"/>
                         <filter name="order" string="Order" domain="[]" context="{'group_by':'order_id'}"/>
-                        <filter name="salesperson" string="Salesperson" domain="[]" context="{'group_by':'salesman_id'}"/>
+                        <filter name="salesperson" string="Business Development" domain="[]" context="{'group_by':'salesman_id'}"/>
                     </group>
                 </search>
             </field>

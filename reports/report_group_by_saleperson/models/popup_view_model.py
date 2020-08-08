@@ -3,7 +3,7 @@ import datetime
 
 class DiscountSummaryPopUp(models.TransientModel):
     _name = 'popup.gross.sales.by.person'
-    _description = 'Gross Sale By Salesperson'
+    _description = 'Gross Sale By Business Development'
 
     compute_at_date = fields.Selection([
         (0, 'Show All '),
@@ -23,7 +23,7 @@ class DiscountSummaryPopUp(models.TransientModel):
                 'type': 'ir.actions.act_window',
                 'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
                 'view_mode': 'tree,form',
-                'name': _('Gross Sales By Salesperson'),
+                'name': _('Gross Sales By Business Development'),
                 'res_model': 'sale.order',
                 'context': {'group_by':'user_id' , 'start_date' : self.start_date , 'end_date' : self.end_date} ,
                 'domain':[('state', '=', 'sale'),('confirmation_date', '>=', self.start_date),('confirmation_date','<=', self.end_date)] ,
@@ -34,7 +34,7 @@ class DiscountSummaryPopUp(models.TransientModel):
                 'type': 'ir.actions.act_window',
                 'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
                 'view_mode': 'tree,form',
-                'name': _('Gross Sales By Salesperson'),
+                'name': _('Gross Sales By Business Development'),
                 'res_model': 'sale.order',
                 'context': {'group_by':'user_id'},
                 'domain': [('state', '=', 'sale')],

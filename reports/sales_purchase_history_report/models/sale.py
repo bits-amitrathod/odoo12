@@ -11,7 +11,7 @@ class SaleSalespersonReport(models.TransientModel):
     order_partner_id = fields.Many2one('res.partner', string='Customer')
     contract_id = fields.Many2many('contract.contract', string='Contract')
     category_id = fields.Many2many('res.partner.category', string='Tag')
-    order_account_manager_cust = fields.Many2one('res.users', string="Account Manager", domain="[('active', '=', True)"
+    order_account_manager_cust = fields.Many2one('res.users', string="Key Account", domain="[('active', '=', True)"
                                                                                                ",('share','=',False)]")
 
     @api.multi

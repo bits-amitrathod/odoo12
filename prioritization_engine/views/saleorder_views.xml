@@ -199,7 +199,7 @@
                     <p t-field="doc.date_order"/>
                 </div>
                 <div t-if="doc.user_id.name" class="mr8 ml8">
-                    <strong>Salesperson:</strong>
+                    <strong>Business Development:</strong>
                     <p t-field="doc.user_id"/>
                 </div>
                 <div t-if="doc.partner_id.gl_account" class="mr8 ml8">

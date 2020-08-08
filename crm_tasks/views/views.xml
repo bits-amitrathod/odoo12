@@ -15,7 +15,7 @@
 <!--               <field name="names" string="Account"/>-->
                <field name="note"/>
                <field name="feedback"/>
-               <field name="user_id" string="Salesperson"/>
+               <field name="user_id" string="Business Development"/>
                <field name="recommended_activity_type_id"/>
                <field name="previous_activity_type_id"/>
                <field name="calendar_event_id"/>

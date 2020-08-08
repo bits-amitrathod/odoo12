@@ -14,7 +14,7 @@ class ReportInStockReportPopup(models.TransientModel):
     end_date = fields.Date('End Date')
 
     partner_id = fields.Many2one('res.partner', string='Customer', )
-    user_id = fields.Many2one('res.users', 'Salesperson')
+    user_id = fields.Many2one('res.users', 'Business Development')
     warehouse_id = fields.Many2one('stock.warehouse', 'Warehouse')
     sku_code = fields.Many2one('product.product', string='Product SKU',
                                domain="[('active','=',True),('product_tmpl_id.type','=','product')]")
@@ -61,7 +61,7 @@ class ReportInStockReport(models.Model):
 
 
     partner_id = fields.Many2one('res.partner', string='Customer', )
-    user_id = fields.Many2one('res.users', 'Salesperson', readonly=True)
+    user_id = fields.Many2one('res.users', 'Business Development', readonly=True)
     warehouse_id = fields.Many2one('stock.warehouse', 'Warehouse')
     product_brand_id = fields.Many2one(
         'product.brand',

@@ -1,5 +1,5 @@
 {
-    'name': 'Gross Sales By Salesperson',
+    'name': 'Gross Sales By Business Development',
     'summary':"Report",
     'category': 'sale',
     'version': '11.0.0.1',

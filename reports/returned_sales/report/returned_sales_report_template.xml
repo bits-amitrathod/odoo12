@@ -32,7 +32,7 @@
                                     <tr style="">
                                         <th style="text-align: left;">Sales Order #</th>
                                         <th style="text-align: left;">Customer Name</th>
-                                        <th style="text-align: left;">Salesperson</th>
+                                        <th style="text-align: left;">Business Development</th>
                                         <th style="text-align: right;">Qty Done</th>
                                         <th style="text-align: right;">UOM</th>
                                         <th style="text-align: right;">Selling Cost</th>

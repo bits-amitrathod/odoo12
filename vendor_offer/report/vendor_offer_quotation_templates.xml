@@ -13,12 +13,20 @@
                      <strong>BUYER NAME / ADDRESS:</strong>
                     <div t-if="o.dest_address_id" style="font-size:14px!important;" >
                         <div t-field="o.dest_address_id" style="font-size:14px!important;"
-                            t-optiOFFERons='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True, "phone_icons": True}'/>
+                            t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True, "phone_icons": True}'/>
+                         <span t-field="o.acq_manager_email" style="font-size:14px!important;"/>
+                         <br></br>
+                         <span t-field="o.acq_manager_phone" style="font-size:14px!important;"/>
                     </div>
                     <div t-if="not o.dest_address_id and o.picking_type_id.warehouse_id" style="font-size:14px!important;">
                         <span t-field="o.picking_type_id.warehouse_id.name" style="font-size:14px!important;"/>
                         <div t-field="o.picking_type_id.warehouse_id.partner_id"  style="font-size:14px!important;"
-                            t-options='{"widget": "contact", "fields": ["address", "phone"], "no_marker": True, "phone_icons": True}'/>
+                            t-options='{"widget": "contact", "fields": ["address"], "no_marker": True, "phone_icons": True}'/>
+                         <span t-field="o.acq_manager_email" style="font-size:14px!important;"/>
+                         <br></br>
+                         <span t-field="o.acq_manager_phone" style="font-size:14px!important;"/>
+                        <!--<div t-field="o.acq_manager_phone"  style="font-size:14px!important;"-->
+                            <!--t-options='{"widget": "contact", "fields": ["acq_manager_phone"], "no_marker": True, "phone_icons": True}'/>-->
                     </div>
                 </div>
                 <div class="col-6 col-lg-6 col-xs-6 col-xs-offset-1">
@@ -169,7 +177,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr t-foreach="o.order_line" t-as="order_line">
+                    <t t-set="purchase_order_line_multiplier_sorted" t-value="o.order_line.sorted(key=lambda a:(a.multiplier.name))"/>
+                    <tr t-foreach="purchase_order_line_multiplier_sorted" t-as="order_line">
                         <td class="text-left">
                             <span t-field="order_line.product_brand_id"/>
                         </td>

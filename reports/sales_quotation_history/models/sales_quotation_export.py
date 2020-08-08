@@ -14,7 +14,7 @@ class SalesQuotationExport(models.Model):
     qe_unit_price_converted = fields.Monetary("Unit Price", currency_field='currency_id', store=False)
     qe_total_price_converted = fields.Monetary("Total", currency_field='currency_id', store=False)
     qe_product_uom_converted = fields.Many2one('uom.uom', 'Unit of Measure', currency_field='currency_id', store=False)
-    qe_account_manager_cust_name = fields.Char(string="Account Manager", compute='_compare_data_exp', store=False)
+    qe_account_manager_cust_name = fields.Char(string="Key Account", compute='_compare_data_exp', store=False)
     qe_quotations_per_code = fields.Integer(string='Open Quotations Per Code',
                                          compute='_compare_data_exp',
                                          readonly=True, store=False)
