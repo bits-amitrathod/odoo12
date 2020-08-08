@@ -179,7 +179,7 @@ class ReportPrintSalesPurchaseHistory(http.Controller):
                             line['total'], line['quotation_count']])
 
         res = request.make_response(
-            self.from_data(["Product SKU", "Customer Name", "Sales Person", "Account Manager ", "Sales Order#",
+            self.from_data(["Product SKU", "Customer Name", "Business Development", "Key Account ", "Sales Order#",
                             "Product Name", "Is Broker", "Is Shared", "Sales Team", "Sales Level",
                             "Delivered Date"
                                , "Delivered Qty", "UOM", "Unit Price", "Total", "Open Quotations Per Code"],

@@ -19,7 +19,7 @@ class ReturnrdSales(models.Model):
     product_id = fields.Many2one('product.product', string='Product Name', )
     move_id = fields.Many2one('stock.move', string='Stock Move' )
     moved_date = fields.Date('Date')
-    user_id = fields.Many2one('res.users', 'Salesperson', readonly=True)
+    user_id = fields.Many2one('res.users', 'Business Development', readonly=True)
     sku_code = fields.Char('Product SKU')
     currency_id = fields.Many2one("res.currency", string="Currency", readonly=True)
 

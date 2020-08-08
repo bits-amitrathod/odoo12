@@ -114,6 +114,7 @@
             <field name="arch" type="xml">
             <xpath expr="//field[@name='user_id']" position="after">
                 <field name="account_manager"/>
+                <field name="national_account"/>
             </xpath>
             </field>
         </record>
@@ -124,7 +125,8 @@
             <field name="inherit_id" ref="sale.view_quotation_tree"/>
             <field name="arch" type="xml">
             <xpath expr="//field[@name='user_id']" position="after">
-                 <field name="account_manager"/>
+                <field name="account_manager"/>
+                <field name="national_account"/>
             </xpath>
             </field>
         </record>
@@ -135,11 +137,19 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_sales_order_filter"/>
             <field name="arch" type="xml">
+                <xpath expr="/search/group/filter[@name='salesperson']" position="replace">
+		            <filter string="Business Development" name="salesperson" domain="[]" context="{'group_by':'user_id'}"/>
+		        </xpath>
 		    <xpath expr="/search/group" position="after">
-		        <filter name="account_manager" string="Account Manager" domain="[]" context="{'group_by':'account_manager'}"/>
+		        <filter name="account_manager" string="Key Account" domain="[]" context="{'group_by':'account_manager'}"/>
+                <filter name="national_account" string="National Account" domain="[]" context="{'group_by':'national_account'}"/>
 		    </xpath>
+                <xpath expr="/search/field[@name='user_id']" position="replace">
+                   <field name="user_id"/>
+                </xpath>
             <xpath expr="/search" position="inside">
-                   <field name="account_manager"/>
+                    <field name="account_manager"/>
+                    <field name="national_account"/>
             </xpath>
             </field>
         </record>
@@ -150,7 +160,8 @@
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//group[@name='sales_person']/field[@name='user_id']"  position="after">
-                     <field name="account_manager"/>
+                    <field name="account_manager"/>
+                    <field name="national_account"/>
                 </xpath>
             </field>
       </record>

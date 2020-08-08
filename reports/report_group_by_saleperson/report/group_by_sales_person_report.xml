@@ -3,7 +3,7 @@
     <data>
         <report
                 id="action_report_sales_saleperson_wise"
-                string="Gross Sales By Salesperson"
+                string="Gross Sales By Business Development"
                 model="sale.order"
                 report_type="qweb-html"
                 file="report_group_by_saleperson.saleperson_temp"

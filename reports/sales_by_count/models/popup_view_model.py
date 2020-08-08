@@ -12,7 +12,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
     _name = 'popup.sales.by.count'
     _description = 'Sales By Count'
 
-    user_id = fields.Many2one('res.users', 'Salesperson')
+    user_id = fields.Many2one('res.users', 'Business Development')
     # warehouse_id = fields.Many2one('stock.warehouse', 'Warehouse')
 
     compute_at_date = fields.Selection([

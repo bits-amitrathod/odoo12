@@ -1,10 +1,12 @@
 
-from odoo import models, api, _
+from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 
 
 class SaleOrderLineInherit(models.Model):
     _inherit = 'sale.order.line'
+
+    salesman_id = fields.Many2one(related='order_id.user_id', store=True, string='Business Development', readonly=True)
 
     # @api.multi
     # def unlink(self):
