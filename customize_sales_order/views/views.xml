@@ -176,5 +176,17 @@
 		        </xpath>
             </field>
       </record>
+
+      <record id="click_to_dial_field" model="ir.ui.view">
+        <field name="name">res.partner.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field eval="20" name="priority"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='sale_margine']" position="after">
+                <field name="reinstated_date"/>
+            </xpath>
+        </field>
+        </record>
   </data>
 </odoo>

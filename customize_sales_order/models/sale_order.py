@@ -21,6 +21,8 @@ class CustomerContract(models.Model):
     national_account_rep = fields.Many2one('res.users', string="National Account Rep.(NA)",
                                            domain="[('active', '=', True), ('share','=',False)]")
 
+    reinstated_date = fields.Datetime(string='Reinstated Date')
+
 
 class sale_order(models.Model):
     _inherit = 'sale.order'
