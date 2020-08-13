@@ -29,7 +29,7 @@ class BdRevenuePerAccountReportPopup(models.TransientModel):
             'view_mode': 'tree',
             'name': 'Revenue By Business Development Per Account',
             'res_model': res_model,
-            # 'context': {'group_by': 'key_account'},
+            'context': {'group_by': ('business_development','customer','delivery_date')},
         }
 
         return action
