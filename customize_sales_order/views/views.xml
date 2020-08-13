@@ -184,6 +184,8 @@
         <field eval="20" name="priority"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='sale_margine']" position="after">
+                <field name="order_quota"/>
+                <field name="revenue_quota"/>
                 <field name="reinstated_date"/>
             </xpath>
         </field>

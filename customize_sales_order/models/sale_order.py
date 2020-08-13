@@ -21,6 +21,10 @@ class CustomerContract(models.Model):
     national_account_rep = fields.Many2one('res.users', string="National Account Rep.(NA)",
                                            domain="[('active', '=', True), ('share','=',False)]")
 
+    order_quota = fields.Integer(string="Order Quota", help="Number of transactions")
+
+    revenue_quota = fields.Monetary(string="Revenue Quota", help="Amount")
+
     reinstated_date = fields.Datetime(string='Reinstated Date')
 
 
