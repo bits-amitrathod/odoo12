@@ -14,12 +14,12 @@ class CustomerContract(models.Model):
             return res_users.id
 
     account_manager_cust = fields.Many2one('res.users', string="Key Account(KA)", domain="[('active', '=', True)"
-                                                                                         ",('share','=',False)]")
+                                                                                         ",('share','=',False)]", track_visibility='onchange')
     user_id = fields.Many2one('res.users', string='Business Development(BD)', help='The internal user in charge of this contact.',
-                              default=_get_default_user_id)
+                              default=_get_default_user_id, track_visibility='onchange')
 
     national_account_rep = fields.Many2one('res.users', string="National Account Rep.(NA)",
-                                           domain="[('active', '=', True), ('share','=',False)]")
+                                           domain="[('active', '=', True), ('share','=',False)]", track_visibility='onchange')
 
     order_quota = fields.Integer(string="Order Quota", help="Number of transactions", track_visibility='onchange')
 
