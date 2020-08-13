@@ -73,9 +73,9 @@ class AccountClosedByBd(models.Model):
                     WHERE SO.partner_id IN (
                             SELECT id
                             FROM public.res_partner RP
-                            WHERE RP.rejoin_date IS NOT NULL AND """
+                            WHERE RP.reinstated_date IS NOT NULL AND """
 
-            select_query = select_query + " RP.rejoin_date BETWEEN '" + str(end_date) + "'" + " AND '" + str(
+            select_query = select_query + " RP.reinstated_date BETWEEN '" + str(end_date) + "'" + " AND '" + str(
                 start_date) + "' )) WHERE " + " SP.date_done BETWEEN '" + str(end_date) + "'" + " AND '" + str(
                 start_date) + "' " + """ AND SP.state = 'done' AND SP.picking_type_id = 5 
                 AND SO.state NOT IN ('cancel', 'void') AND SO.partner_id NOT IN (
@@ -90,14 +90,14 @@ class AccountClosedByBd(models.Model):
                                 WHERE SO.partner_id IN (
                                         SELECT id 
                                         FROM public.res_partner RP
-                                        WHERE RP.rejoin_date IS NOT NULL AND 
+                                        WHERE RP.reinstated_date IS NOT NULL AND 
     
             """
 
-            select_query = select_query + " RP.rejoin_date <= '" + str(end_date) + "' ) ) WHERE SP.date_done <= '" + str(end_date) +" ' " \
+            select_query = select_query + " RP.reinstated_date <= '" + str(end_date) + "' ) ) WHERE SP.date_done <= '" + str(end_date) +" ' " \
                                           " AND SP.state = 'done' AND SP.picking_type_id = 5 AND SO.state NOT IN ('cancel', 'void')))) "
 
-            select_query = select_query + " AND SPS.date_done >= COALESCE(RPS.rejoin_date, RPS.create_date) " \
+            select_query = select_query + " AND SPS.date_done >= COALESCE(RPS.reinstated_date, RPS.create_date) " \
                                           " AND SPS.date_done BETWEEN '" + str(end_date) + "' " + " AND '" + str(start_date) + "' "
 
             business_development_id = self.env.context.get('business_development')
