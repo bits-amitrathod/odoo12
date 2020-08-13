@@ -21,11 +21,11 @@ class CustomerContract(models.Model):
     national_account_rep = fields.Many2one('res.users', string="National Account Rep.(NA)",
                                            domain="[('active', '=', True), ('share','=',False)]")
 
-    order_quota = fields.Integer(string="Order Quota", help="Number of transactions")
+    order_quota = fields.Integer(string="Order Quota", help="Number of transactions", track_visibility='onchange')
 
-    revenue_quota = fields.Monetary(string="Revenue Quota", help="Amount")
+    revenue_quota = fields.Monetary(string="Revenue Quota", help="Amount", track_visibility='onchange')
 
-    reinstated_date = fields.Datetime(string='Reinstated Date')
+    reinstated_date = fields.Datetime(string='Reinstated Date', track_visibility='onchange')
 
 
 class sale_order(models.Model):
