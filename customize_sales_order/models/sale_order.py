@@ -103,7 +103,7 @@ class sale_order(models.Model):
         if self.partner_id and self.partner_id.account_manager_cust and self.partner_id.account_manager_cust.id:
             val['account_manager'] = self.partner_id.account_manager_cust.id
         if self.partner_id and self.partner_id.national_account_rep and self.partner_id.national_account_rep.id:
-            val['account_manager'] = self.partner_id.national_account_rep.id
+            val['national_account'] = self.partner_id.national_account_rep.id
         return super(sale_order, self).write(val)
 
     @api.one
