@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Revenue By Business Development Report",
+    'name': "New Account By Month By Business Development Report",
 
     'summary': """Report""",
 
@@ -24,8 +24,8 @@
     'data': [
         'security/ir.model.access.csv',
         'views/views.xml',
-        'report/revenue_by_bd_report.xml',
-        'report/revenue_by_bd_temp.xml',
+        'report/new_account_by_month_by_bd_report.xml',
+        'report/new_account_by_month_by_bd_temp.xml',
     ],
 
     'installable': True,

@@ -4,14 +4,14 @@ from datetime import datetime
 
 log = logging.getLogger(__name__)
 
-class ReportBdRevenue(models.AbstractModel):
-    _name = 'report.revenue_by_bd.bd_revenue_temp_test'
+class ReportBdNewAccount(models.AbstractModel):
+    _name = 'report.new_account_by_month_by_bd.bd_new_account_temp_test'
 
     @api.model
     def _get_report_values(self, docids, data=None):
-        records = self.env['report.bd.revenue'].browse(docids)
+        records = self.env['report.bd.new.account'].browse(docids)
 
-        popup = self.env['popup.bd.revenue'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
+        popup = self.env['popup.bd.new.account'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
 
         if popup.start_date and popup.end_date:
             date = datetime.strptime(str(popup.start_date), '%Y-%m-%d').strftime(
@@ -20,7 +20,7 @@ class ReportBdRevenue(models.AbstractModel):
         else:
             date = False
 
-        return {'sales': records, 'date': date}
+        return {'accounts': records, 'date': date}
 
     @staticmethod
     def string_to_date(date_string):
