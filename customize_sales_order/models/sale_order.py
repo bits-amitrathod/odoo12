@@ -27,6 +27,15 @@ class CustomerContract(models.Model):
 
     reinstated_date = fields.Datetime(string='Reinstated Date', track_visibility='onchange')
 
+    display_reinstated_date_flag = fields.Integer(default=0, compute="_display_reinstated_date_flag")
+
+    @api.depends('category_id')
+    def _display_reinstated_date_flag(self):
+        for record in self:
+            for category_id in record.category_id:
+                if category_id.id == 31:
+                    self.display_reinstated_date_flag = 1
+
 
 class sale_order(models.Model):
     _inherit = 'sale.order'
