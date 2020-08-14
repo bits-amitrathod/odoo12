@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="na_new_account_temp_test">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <page>
+                    <div class="oe_structure"/>
+                    <div>
+                        <center>
+                            <b>
+                                <h2>Surgical Product Solutions</h2>
+                                <h4>New Account By Month By National Account</h4>
+                                <h4 t-if="date">
+                                   Date Range: <span t-esc="date"/>
+                               </h4>
+                            </b>
+                        </center>
+                    </div>
+                        <table class="table table-sm" style="border: 1px solid black;">
+                            <thead>
+                                <tr>
+                                    <th style="border: 1px solid black;text-align:  center !important;">
+                                        Customer Name
+                                    </th>
+                                    <th style="border: 1px solid black;text-align:  center !important;width: 8%;">
+                                        Onboard Date
+                                    </th>
+                                    <th style="border: 1px solid black;text-align:  center !important;width: 8%;">
+                                        National Account
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="accounts" t-as="account" style="page-break-inside: avoid">
+                                    <td style="border: 1px solid black;text-align: center;">
+                                        <span t-esc="account.customer.name"/>
+                                    </td>
+                                    <td style="border: 1px solid black;text-align: center;">
+                                        <span t-esc="account.onboard_date" t-options='{"widget": "date"}'/>
+                                    </td>
+                                    <td style="border: 1px solid black;text-align: center;">
+                                        <span t-esc="account.national_account.partner_id.name"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                </page>
+            </t>
+        </t>
+    </template>
+</odoo>
