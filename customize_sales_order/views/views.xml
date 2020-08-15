@@ -176,5 +176,22 @@
 		        </xpath>
             </field>
       </record>
+
+      <record id="click_to_dial_field" model="ir.ui.view">
+        <field name="name">res.partner.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field eval="20" name="priority"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='sale_margine']" position="after">
+                <field name="order_quota"/>
+                <field name="revenue_quota"/>
+            </xpath>
+            <xpath expr="//sheet/group/group/field[@name='category_id']" position="after">
+                <field name="display_reinstated_date_flag" invisible="1"/>
+                <field name="reinstated_date" attrs="{'invisible': [('display_reinstated_date_flag', '=', 0)]}"/>
+            </xpath>
+        </field>
+        </record>
   </data>
 </odoo>

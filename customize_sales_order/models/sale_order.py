@@ -14,12 +14,27 @@ class CustomerContract(models.Model):
             return res_users.id
 
     account_manager_cust = fields.Many2one('res.users', string="Key Account(KA)", domain="[('active', '=', True)"
-                                                                                         ",('share','=',False)]")
+                                                                                         ",('share','=',False)]", track_visibility='onchange')
     user_id = fields.Many2one('res.users', string='Business Development(BD)', help='The internal user in charge of this contact.',
-                              default=_get_default_user_id)
+                              default=_get_default_user_id, track_visibility='onchange')
 
     national_account_rep = fields.Many2one('res.users', string="National Account Rep.(NA)",
-                                           domain="[('active', '=', True), ('share','=',False)]")
+                                           domain="[('active', '=', True), ('share','=',False)]", track_visibility='onchange')
+
+    order_quota = fields.Integer(string="Order Quota", help="Number of transactions", track_visibility='onchange')
+
+    revenue_quota = fields.Monetary(string="Revenue Quota", help="Amount", track_visibility='onchange')
+
+    reinstated_date = fields.Datetime(string='Reinstated Date', track_visibility='onchange')
+
+    display_reinstated_date_flag = fields.Integer(default=0, compute="_display_reinstated_date_flag")
+
+    @api.depends('category_id')
+    def _display_reinstated_date_flag(self):
+        for record in self:
+            for category_id in record.category_id:
+                if category_id.id == 31:
+                    self.display_reinstated_date_flag = 1
 
 
 class sale_order(models.Model):
