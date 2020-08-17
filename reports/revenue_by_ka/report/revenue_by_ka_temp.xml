@@ -19,45 +19,57 @@
                         <table class="table table-sm" style="border: 1px solid black;">
                             <thead>
                                 <tr>
-                                    <th style="border: 1px solid black;text-align:  center !important;width: 15%;">
-                                        Sale Order#
-                                    </th>
                                     <th style="border: 1px solid black;text-align:  center !important;">
                                         Customer Name
                                     </th>
-                                    <!--<th style="border: 1px solid black;text-align:  center !important;width: 8%;">-->
-                                        <!--Salesperson-->
-                                    <!--</th>-->
                                     <th style="border: 1px solid black;text-align:  center !important;width: 8%;">
                                         Key Account
                                     </th>
-                                    <th style="border: 1px solid black;text-align:  center !important;width: 8%;">
-                                        Delivery Date
+                                    <th style="border: 1px solid black;text-align:  center !important;width: 15%;">
+                                        No. of orders
+                                    </th>
+                                    <th style="border: 1px solid black;text-align:  center !important;width: 15%;">
+                                        Order Quota
+                                    </th>
+                                    <th style="border: 1px solid black;text-align:  center !important;width: 15%;">
+                                        Progress of Order Quota
                                     </th>
                                     <th style="border: 1px solid black;text-align:  center !important;width: 8%;">
-                                        Total
+                                        Total Revenue
+                                    </th>
+                                    <th style="border: 1px solid black;text-align:  center !important;width: 8%;">
+                                        Revenue Quota
+                                    </th>
+                                    <th style="border: 1px solid black;text-align:  center !important;width: 8%;">
+                                        Progress of Revenue Quota
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr t-foreach="sales" t-as="sale" style="page-break-inside: avoid">
                                     <td style="border: 1px solid black;text-align: center;">
-                                        <span t-esc="sale.sale_order_id.name"/>
-                                    </td>
-                                    <td style="border: 1px solid black;text-align: center;">
                                         <span t-esc="sale.customer.name"/>
                                     </td>
-<!--                                    <td style="border: 1px solid black;text-align: center;">
-                                        <span t-esc="sale.salesperson.name"/>
-                                    </td>-->
                                     <td style="border: 1px solid black;text-align: center;">
-                                        <span t-esc="sale.key_account.partner_id.name"/>
+                                        <span t-esc="sale.key_account.name"/>
                                     </td>
                                     <td style="border: 1px solid black;text-align: center;">
-                                        <span t-esc="sale.delivery_date" t-options='{"widget": "date"}'/>
+                                        <span t-esc="sale.no_of_orders"/>
                                     </td>
                                     <td style="border: 1px solid black;text-align: center;">
-                                        <span t-esc="sale.total_amount"/>
+                                        <span t-esc="sale.order_quota"/>
+                                    </td>
+                                    <td style="border: 1px solid black;text-align: center;">
+                                        <span t-esc="sale.progress_order_quota"/>
+                                    </td>
+                                    <td style="border: 1px solid black;text-align: center;">
+                                        <span t-esc="sale.total_revenue" t-options='{"widget": "monetary","display_currency": sale.currency_id}'/>
+                                    </td>
+                                    <td style="border: 1px solid black;text-align: center;">
+                                        <span t-esc="sale.revenue_quota" t-options='{"widget": "monetary","display_currency": sale.currency_id}'/>
+                                    </td>
+                                    <td style="border: 1px solid black;text-align: center;">
+                                        <span t-esc="sale.progress_revenue_quota"/>
                                     </td>
                                 </tr>
                             </tbody>

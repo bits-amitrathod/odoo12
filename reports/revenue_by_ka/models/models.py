@@ -12,16 +12,15 @@ class RevenueByKa(models.Model):
     _name = 'report.ka.revenue'
     _auto = False
 
-    sale_order_id = fields.Many2one('sale.order', 'Sale Order#')
-    # date_order = fields.Datetime('Order Date')
-    delivery_date = fields.Datetime('Delivery Date')
-    key_account = fields.Many2one('res.users', 'Key Account')
     customer = fields.Many2one('res.partner', 'Customer Name')
-    # salesperson = fields.Many2one('res.users', 'Salesperson')
-    # product_tmpl_id = fields.Many2one('product.template', "Product")
-    # qty_done = fields.Integer('Quantity')
-    # unit_price = fields.Float('Unit Price')
-    total_amount = fields.Float('Total')
+    key_account = fields.Many2one('res.users', 'Key Account')
+    no_of_orders = fields.Integer('No. of orders')
+    total_revenue = fields.Float('Total Revenue')
+    order_quota = fields.Integer(string="Order Quota", help="Number of transactions")
+    revenue_quota = fields.Integer(string="Revenue Quota", help="Amount")
+    progress_order_quota = fields.Char('Progress of Order Quota')
+    progress_revenue_quota = fields.Char('Progress of Revenue Quota')
+    currency_id = fields.Many2one('res.currency', string='Currency')
 
     @api.model_cr
     def init(self):
@@ -30,33 +29,35 @@ class RevenueByKa(models.Model):
     def init_table(self):
         tools.drop_view_if_exists(self._cr, self._name.replace(".", "_"))
 
-        #  For salesperson              SO.user_id                          AS salesperson,
-        # SP.picking_type_id        AS       picking_id,
         select_query = """
             SELECT
-                 ROW_NUMBER () OVER (ORDER BY SO.id) AS id,
-                 SO.id                               AS sale_order_id,
-                 SO.partner_id                       AS customer,
-                 SO.date_order                       AS date_order,
-                 SO.account_manager                  AS key_account,
-                 SO.state                            AS status,                            
-                 MAX(SP.date_done)                        AS delivery_date,
-                 SUM(SOL.qty_delivered * SOL.price_reduce)  AS total_amount 
-                        
-                FROM public.sale_order SO
-                            
+                ROW_NUMBER () OVER (ORDER BY RP.id) AS id, 
+                RP.id                                       AS customer, 
+                RP.account_manager_cust                     AS key_account,
+                COUNT(SO.partner_id)                        AS no_of_orders, 
+                SUM(SOL.qty_delivered * SOL.price_reduce)   AS total_revenue, 
+                RP.order_quota                              AS order_quota, 
+                RP.revenue_quota                            AS revenue_quota,
+                CONCAT(ROUND((COUNT(SO.partner_id)/RP.order_quota::float)*100), '%') AS progress_order_quota,
+                CONCAT(ROUND((SUM(SOL.qty_delivered * SOL.price_reduce)/RP.revenue_quota::float)*100), '%') AS progress_revenue_quota,
+                SOL.currency_id     AS currency_id
+                
+                FROM public.res_partner RP
+                
+                INNER JOIN 
+                    public.sale_order SO 
+                ON 
+                    RP.id = SO.partner_id
                 INNER JOIN 
                     public.sale_order_line SOL 
                 ON 
-                    SO.id = SOL.order_id  
+                    SO.id = SOL.order_id
                 INNER JOIN 
-                    (SELECT DISTINCT ON (origin) origin,date_done,sale_id  FROM stock_picking WHERE picking_type_id = 5 AND state = 'done' ORDER BY origin)
-                    
-                   AS SP 
+                    (SELECT DISTINCT ON (origin) origin,date_done,sale_id  FROM stock_picking WHERE picking_type_id = 5 AND state = 'done' ORDER BY origin) AS SP 
                 ON 
-                    SO.id = SP.sale_id
-                    
-                    WHERE SO.state NOT IN ('cancel', 'void') AND SO.account_manager IS NOT NULL
+                    SO.id = SP.sale_id 
+                        
+                WHERE SO.state NOT IN ('cancel', 'void') AND RP.account_manager_cust IS NOT NULL
                              
 
         """
@@ -71,11 +72,11 @@ class RevenueByKa(models.Model):
                 select_query = select_query + " AND SP.date_done BETWEEN '" + str(
                     start_date) + "'" + " AND '" + str(self.string_to_date(end_date) + datetime.timedelta(days=1)) + "'"
         if key_account_id:
-            select_query = select_query + "AND SO.account_manager = '" + str(key_account_id) + "'"
+            select_query = select_query + "AND RP.account_manager_cust = '" + str(key_account_id) + "'"
 
         group_by = """
                     GROUP BY
-                     SO.id
+                     SO.partner_id, RP.id, SOL.currency_id
                         """
 
         sql_query = select_query + group_by
@@ -91,9 +92,7 @@ class RevenueByKa(models.Model):
         return datetime.datetime.strptime(str(date_string), DEFAULT_SERVER_DATE_FORMAT).date()
 
 
-
-#Export code
-
+# Export code
 class RevenueByKaExport(models.TransientModel):
     _name = 'report.ka.revenue.export'
 

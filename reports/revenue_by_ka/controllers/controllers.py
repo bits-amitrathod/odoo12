@@ -82,57 +82,55 @@ class StockedProductSoldByKa(http.Controller):
 
         select_query = """
                 SELECT
-                       ROW_NUMBER () OVER (ORDER BY SO.id) AS id, 
-                       SO.name                               AS sale_order_id,
-                       MAX(SP.date_done)                        AS delivery_date,
-                       RP.name                             AS key_account,
-                       ResPartner.name                     AS customer,
-                       SO.state                             AS status,
-                       SUM(SOL.qty_delivered * SOL.price_reduce)  AS total_amount 
-                   
-                FROM public.sale_order SO
+                ROW_NUMBER () OVER (ORDER BY RP.id) AS id, 
+                RP.name                                     AS customer, 
+                RPS.name                                    AS key_account,
+                COUNT(SO.partner_id)                        AS no_of_orders, 
+                SUM(SOL.qty_delivered * SOL.price_reduce)   AS total_revenue, 
+                RP.order_quota                              AS order_quota, 
+                RP.revenue_quota                            AS revenue_quota,
+                CONCAT(ROUND((COUNT(SO.partner_id)/RP.order_quota::float)*100), '%') AS progress_order_quota,
+                CONCAT(ROUND((SUM(SOL.qty_delivered * SOL.price_reduce)/RP.revenue_quota::float)*100), '%') AS progress_revenue_quota
+                
+                FROM public.res_partner RP
+                
+                INNER JOIN 
+                    public.res_users RU
+                ON
+                    RP.account_manager_cust = RU.id
+                INNER JOIN 
+                    public.res_partner RPS
+                ON 
+                    RU.partner_id = RPS.id
+                INNER JOIN 
+                    public.sale_order SO 
+                ON 
+                    RP.id = SO.partner_id
                 INNER JOIN 
                     public.sale_order_line SOL 
                 ON 
                     SO.id = SOL.order_id
                 INNER JOIN 
-                        (SELECT DISTINCT ON (origin) origin,date_done,sale_id  FROM stock_picking WHERE picking_type_id = 5 AND state = 'done' ORDER BY origin)
-                    AS SP 
+                    (SELECT DISTINCT ON (origin) origin,date_done,sale_id  FROM stock_picking WHERE picking_type_id = 5 AND state = 'done' ORDER BY origin) AS SP 
                 ON 
-                    SO.id = SP.sale_id
-                INNER JOIN 
-                    public.res_users RU 
-                ON 
-                    (
-                        SO.account_manager = RU.id)
-                INNER JOIN 
-                    public.res_partner RP 
-                ON
-                    ( 
-                        RU.partner_id = RP.id)
-                INNER JOIN 
-                    public.res_partner ResPartner 
-                ON
-                    ( 
-                        SO.partner_id = ResPartner.id)
-                
-                                       
-                   WHERE SO.state NOT IN ('cancel', 'void') AND SO.account_manager IS NOT NULL
+                    SO.id = SP.sale_id 
+                        
+                WHERE SO.state NOT IN ('cancel', 'void')
 
                """
-
 
         if start_date != "all" and end_date != "all":
             select_query = select_query + " AND SP.date_done BETWEEN '" + str(
                 start_date) + "'" + " AND '" + str(self.string_to_date(end_date) + datetime.timedelta(days=1)) + "'"
 
         if key_account_id != "none":
-            select_query = select_query + "AND SO.account_manager = '" + str(key_account_id) + "'"
+            select_query = select_query + "AND RP.account_manager_cust = '" + str(key_account_id) + "'"
 
         group_by = """
                            GROUP BY
-                            SO.id, RP.name, ResPartner.name
-                            ORDER BY RP.name             
+                                RP.id, SO.partner_id, RP.name, RPS.name, RP.order_quota, RP.revenue_quota  
+                            
+                            ORDER BY RPS.name          
                                """
 
         select_query = select_query + group_by
@@ -143,13 +141,13 @@ class StockedProductSoldByKa(http.Controller):
         records = []
 
         for line in order_lines:
-            records.append([line['sale_order_id'],
-                            line['customer'],line['key_account'],
-                            line['delivery_date'],
-                            line['total_amount']])
+            records.append([line['customer'], line['key_account'],
+                            line['no_of_orders'], line['order_quota'], line['progress_order_quota'],
+                            line['total_revenue'], line['revenue_quota'], line['progress_revenue_quota']])
 
         res = request.make_response(
-            self.from_data(["Sale Order#", "Customer Name","Key Account", "Delivery Date", "Total"],
+            self.from_data(["Customer Name", "Key Account", "No. of orders", "Order Quota", "Progress of Order Quota",
+                            "Total Revenue", "Revenue Quota", "Progress of Revenue Quota"],
                            records),
             headers=[('Content-Disposition', content_disposition('revenue_by_ka' + '.xls')),
                      ('Content-Type', 'application/vnd.ms-excel')],
