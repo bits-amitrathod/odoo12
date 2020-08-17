@@ -44,7 +44,9 @@ class AccountClosedByBd(models.Model):
                 FROM public.sale_order SOS
                 INNER JOIN public.sale_order_line SOL ON SOS.id = SOL.order_id 
                 INNER JOIN public.res_partner RPS ON SOS.partner_id = RPS.id
-                INNER JOIN public.stock_picking SPS ON SOS.id = SPS.sale_id AND SPS.picking_type_id = 5 AND SPS.state = 'done'
+                INNER JOIN 
+                (SELECT DISTINCT ON (origin) origin,date_done,sale_id  FROM stock_picking WHERE picking_type_id = 5 AND state = 'done' ORDER BY origin) AS SPS 
+                ON SOS.id = SPS.sale_id
                 WHERE SOS.state NOT IN ('cancel', 'void') AND SOS.user_id IS NOT NULL AND SOS.partner_id IN 
                 ((SELECT DISTINCT (SO.partner_id) partner1
                 FROM public.sale_order SO
