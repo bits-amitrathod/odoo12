@@ -90,8 +90,8 @@ class StockedProductSoldByKa(http.Controller):
                 RP.order_quota                              AS order_quota, 
                 RP.revenue_quota                            AS revenue_quota,
                 CONCAT(ROUND((COUNT(SO.partner_id)/RP.order_quota::float)*100), '%') AS progress_order_quota,
-                CONCAT(ROUND((SUM(SOL.qty_delivered * SOL.price_reduce)/RP.revenue_quota::float)*100), '%') AS progress_revenue_quota
-                
+                CONCAT(ROUND((SUM(SOL.qty_delivered * SOL.price_reduce)/RP.revenue_quota::float)*100), '%') AS progress_revenue_quota,
+                date_trunc('month', SP.date_done)   AS delivery_date
                 FROM public.res_partner RP
                 
                 INNER JOIN 
@@ -107,7 +107,7 @@ class StockedProductSoldByKa(http.Controller):
                 ON 
                     RP.id = SO.partner_id
                 INNER JOIN 
-                    public.sale_order_line SOL 
+                    (SELECT DISTINCT ON (order_id) order_id, qty_delivered, price_reduce, currency_id FROM sale_order_line) AS SOL
                 ON 
                     SO.id = SOL.order_id
                 INNER JOIN 
@@ -115,7 +115,7 @@ class StockedProductSoldByKa(http.Controller):
                 ON 
                     SO.id = SP.sale_id 
                         
-                WHERE SO.state NOT IN ('cancel', 'void')
+                WHERE SO.state NOT IN ('cancel', 'void') AND RP.account_manager_cust IS NOT NULL
 
                """
 
@@ -128,7 +128,8 @@ class StockedProductSoldByKa(http.Controller):
 
         group_by = """
                            GROUP BY
-                                RP.id, SO.partner_id, RP.name, RPS.name, RP.order_quota, RP.revenue_quota  
+                                RP.id, SO.partner_id, RP.name, RPS.name, RP.order_quota, RP.revenue_quota,
+                                date_trunc('month', SP.date_done)  
                             
                             ORDER BY RPS.name          
                                """
