@@ -24,13 +24,16 @@ class KaRevenueReportPopup(models.TransientModel):
         margins_context = {'start_date': self.start_date, 'end_date': self.end_date, 'compute_at': self.compute_at_date,
                            'key_account': self.key_account.id}
         self.env[res_model].with_context(margins_context).delete_and_create()
+
+        group_by_domain = ['key_account', 'customer', 'delivery_date:month']
+
         action = {
             'type': 'ir.actions.act_window',
             'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
             'view_mode': 'tree',
             'name': 'Revenue By Key Account',
             'res_model': res_model,
-            # 'context': {'group_by': 'key_account'},
+            'context': {'group_by': group_by_domain},
         }
 
         return action
