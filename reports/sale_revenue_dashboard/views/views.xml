@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Tree view -->
+        <record model="ir.ui.view" id="revenue_graph_ka_list_view">
+              <field name="name">revenue.graph.by.ka.view.list</field>
+              <field name="model">sale.report.revenue</field>
+              <field name="priority">20</field>
+              <field name="arch" type="xml">
+                  <dashboard>
+                    <view type="graph" ref="revenue_graph_ka.view_revenuegraph"/>
+                  </dashboard>
+              </field>
+        </record>
+
+        <record id="view_revenuegraph" model="ir.ui.view">
+         <field name="name">sale.report.revenuegraph</field>
+         <field name="model">sale.report.revenue</field>
+         <field name="arch" type="xml">
+            <graph string="Sales Revenue Analysis" type="bar">
+                <field name="delivery_date" type="row" interval="day"/>
+                 <field name="total_amount" type="measure"/>
+             </graph>
+         </field>
+    </record>
+
+
+
+        <!-- Action code -->
+        <record id="action_revenue_graph_by_ka" model="ir.actions.act_window">
+            <field name="name">Sale Revenue Dashboard</field>
+            <field name="res_model">sale.report.revenue</field>
+            <!--<field name="view_type">form</field>-->
+            <field name="view_mode">graph</field>
+            <field name="view_id" ref="revenue_graph_ka_list_view"/>
+            <field name="target">main</field>
+              <field name="search_view_id" ref="revenue_graph_ka.view_order_product_search_revenue"/>
+            <!--<field name="context">{'search_default_Sales':1, 'group_by_no_leaf':1,'group_by':[]}</field>-->
+            <field name="context" eval="{'search_default_Sales': 1, 'time_ranges': {'field':'delivery_date', 'range':'last_30_days'}}"/>
+            <!--<field name="context">{'default_compute_at_date': 0, 'valuation': True}</field>-->
+        </record>
+
+
+       <record id="view_order_product_search_revenue" model="ir.ui.view">
+        <field name="name">sale.report.revenue.search</field>
+        <field name="model">sale.report.revenue</field>
+        <field name="arch" type="xml">
+            <search string="Sales Revenue Analysis">
+                <field name="date"/>
+                <filter string="Date" name="year" invisible="1" date="date" default_period="this_year"/>
+                <!--<filter name="Quotations" string="Quotations" domain="[('state','=', 'draft')]"/>-->
+                <filter name="Sales" string="Sales Orders" domain="[('state','not in',('draft', 'cancel', 'sent'))]"/>
+                <separator/>
+                <field name="user_id"/>
+                <field name="team_id"/>
+                <field name="product_id"/>
+                <field name="categ_id"/>
+                <field name="partner_id"/>
+                <field name="country_id"/>
+                <group expand="0" string="Extended Filters">
+                    <field name="categ_id" filter_domain="[('categ_id', 'child_of', self)]"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </group>
+                <group expand="1" string="Group By">
+                    <filter string="Business Development(BD)" name="User" context="{'group_by':'user_id'}"/>
+                    <filter string="Key Account(KA)" name="User" context="{'group_by':'key_account'}"/>
+                    <filter string="National Account Rep.(NA)" name="User" context="{'group_by':'national_account_rep'}"/>
+                    <filter string="Sales Team" name="sales_channel" context="{'group_by':'team_id'}"/>
+                    <filter string="Customer" name="Customer" context="{'group_by':'partner_id'}"/>
+                    <filter string="Customer Country" name="country_id" context="{'group_by':'country_id'}"/>
+                    <filter string="Product" name="Product" context="{'group_by':'product_id'}"/>
+                    <filter string="Product Category" name="Category" context="{'group_by':'categ_id'}"/>
+                    <filter name="status" string="Status" context="{'group_by':'state'}"/>
+                    <filter string="Company" name="company" groups="base.group_multi_company" context="{'group_by':'company_id'}"/>
+                    <separator/>
+                    <filter string="Order Date" name="date" context="{'group_by':'date'}"/>
+                    <filter string="Confirmation Date" name="confirm_month" context="{'group_by':'confirmation_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+
+          <record id="revenue_report_action_dashboard" model="ir.actions.act_window">
+            <field name="name">Sale Revenue Dashboard</field>
+            <field name="res_model">sale.report.revenue</field>
+               <field name="view_type">form</field>
+            <field name="view_mode">graph</field>
+            <field name="search_view_id" ref="revenue_graph_ka.view_order_product_search_revenue"/>
+            <field name="context" eval="{'search_default_Sales': 1, 'time_ranges': {'field':'delivery_date', 'range':'last_30_days'}}"/>
+        </record>
+
+        <!--<record id="revenue_report_action_dashboard_dashboard" model="ir.actions.act_window.view">-->
+        	<!--<field name="sequence" eval="1"/>-->
+        	<!--<field name="view_mode">dashboard</field>-->
+        	<!--<field name="view_id" ref="sale_revenue_dashboard.revenue_graph_ka_list_view"/>-->
+        	<!--<field name="act_window_id" ref="revenue_report_action_dashboard"/>-->
+        <!--</record>-->
+         <!--<record id="revenue_report_action_dashboard_pivot" model="ir.actions.act_window.view">-->
+        	<!--<field name="sequence" eval="2"/>-->
+        	<!--<field name="view_mode">pivot</field>-->
+        	<!--<field name="view_id" ref="sale_revenue_dashboard.revenue_graph_ka_list_view"/>-->
+        	<!--<field name="act_window_id" ref="revenue_report_action_dashboard"/>-->
+        <!--</record>-->
+        <record id="revenue_report_action_dashboard_graph" model="ir.actions.act_window.view">
+        	<field name="sequence" eval="3"/>
+        	<field name="view_mode">graph</field>
+        	<field name="view_id" ref="revenue_graph_ka.revenue_graph_ka_list_view"/>
+        	<field name="act_window_id" ref="revenue_report_action_dashboard"/>
+        </record>
+
+        <!-- Menus declaration -->
+        <menuitem id="sale.revenue_graph_by_ka_menu"
+                  name="Sale Revenue Dashboard"
+                  action="action_revenue_graph_by_ka"
+                  parent="sale.menu_sale_report"
+                  sequence="3"/>
+                <!--parent="sale.menu_sale_report" action_revenue_graph_by_ka       parent="stocked_product_sold_by_ka.key_account_reports"-->
+
+        <!-- Menus declaration ends here -->
+
+    </data>
+</odoo>
