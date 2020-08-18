@@ -9,7 +9,7 @@
               <field name="priority">20</field>
               <field name="arch" type="xml">
                   <dashboard>
-                    <view type="graph" ref="revenue_graph_ka.view_revenuegraph"/>
+                    <view type="graph" ref="sale_revenue_dashboard.view_revenuegraph"/>
                   </dashboard>
               </field>
         </record>
@@ -35,7 +35,7 @@
             <field name="view_mode">graph</field>
             <field name="view_id" ref="revenue_graph_ka_list_view"/>
             <field name="target">main</field>
-              <field name="search_view_id" ref="revenue_graph_ka.view_order_product_search_revenue"/>
+              <field name="search_view_id" ref="sale_revenue_dashboard.view_order_product_search_revenue"/>
             <!--<field name="context">{'search_default_Sales':1, 'group_by_no_leaf':1,'group_by':[]}</field>-->
             <field name="context" eval="{'search_default_Sales': 1, 'time_ranges': {'field':'delivery_date', 'range':'last_30_days'}}"/>
             <!--<field name="context">{'default_compute_at_date': 0, 'valuation': True}</field>-->
@@ -87,7 +87,7 @@
             <field name="res_model">sale.report.revenue</field>
                <field name="view_type">form</field>
             <field name="view_mode">graph</field>
-            <field name="search_view_id" ref="revenue_graph_ka.view_order_product_search_revenue"/>
+            <field name="search_view_id" ref="sale_revenue_dashboard.view_order_product_search_revenue"/>
             <field name="context" eval="{'search_default_Sales': 1, 'time_ranges': {'field':'delivery_date', 'range':'last_30_days'}}"/>
         </record>
 
@@ -106,7 +106,7 @@
         <record id="revenue_report_action_dashboard_graph" model="ir.actions.act_window.view">
         	<field name="sequence" eval="3"/>
         	<field name="view_mode">graph</field>
-        	<field name="view_id" ref="revenue_graph_ka.revenue_graph_ka_list_view"/>
+        	<field name="view_id" ref="sale_revenue_dashboard.revenue_graph_ka_list_view"/>
         	<field name="act_window_id" ref="revenue_report_action_dashboard"/>
         </record>
 
