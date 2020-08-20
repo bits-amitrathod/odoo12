@@ -75,11 +75,13 @@ class ExportAccountClosedByBd(http.Controller):
         fp.close()
         return data
 
-    @http.route('/web/export/account_closed_by_bd_export/<string:start_date>/<string:end_date>/<string:business_development_id>',
+    @http.route('/web/export/account_closed_by_bd_export/<string:start_date>/<string:end_date>/<string:business_development_id>/'
+                '<string:delivery_start_date>/<string:delivery_end_date>',
                 type='http',
                 auth="public")
     @serialize_exception
-    def download_document_xl(self, start_date, end_date, business_development_id, token=1, debug=1, **kw):
+    def download_document_xl(self, start_date, end_date, business_development_id, delivery_start_date, delivery_end_date,
+                             token=1, debug=1, **kw):
 
         select_query = """
                     SELECT 
@@ -167,12 +169,24 @@ class ExportAccountClosedByBd(http.Controller):
 
         records = []
 
-        for line in order_lines:
-            records.append([line['sale_order_id'],
-                            line['customer'], line['business_development'],
-                            line['delivery_date'],
-                            line['state'],
-                            line['total_amount']])
+        if delivery_start_date != 'none' and delivery_end_date != 'none':
+            for line in order_lines:
+                print((line['delivery_date']).date())
+                print(self.string_to_date(delivery_start_date))
+                if line['delivery_date'].date() >= self.string_to_date(delivery_start_date) and \
+                        line['delivery_date'].date() <= self.string_to_date(delivery_end_date):
+                    records.append([line['sale_order_id'],
+                                    line['customer'], line['business_development'],
+                                    line['delivery_date'],
+                                    line['state'],
+                                    line['total_amount']])
+        else:
+            for line in order_lines:
+                records.append([line['sale_order_id'],
+                                line['customer'], line['business_development'],
+                                line['delivery_date'],
+                                line['state'],
+                                line['total_amount']])
 
         res = request.make_response(
             self.from_data(["Sale Order#", "Customer Name", "Business Development", "Delivery Date", "Status", "Total"],

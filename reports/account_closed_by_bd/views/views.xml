@@ -56,7 +56,12 @@
             <field name="name">Accounts Closed and Revenue in 12 Months By Business Development</field>
             <field name="model">popup.bd.account.closed</field>
             <field name="arch" type="xml">
-                <form string="Choose your date">
+                <form>
+                    <div><b>Filter By SO# Delivery Date(Optional)</b></div>
+                    <group>
+                        <group><field name="delivery_start_date"/></group>
+                        <group><field name="delivery_end_date"/></group>
+                    </group>
                     <group>
                         <group>
                             <field name="start_date"/>
@@ -94,6 +99,11 @@
             <field name="model">report.bd.account.closed.export</field>
             <field name="arch" type="xml">
                 <form string="Export Accounts Closed and Revenue in 12 Months By Business Development Report">
+                    <div><b>Filter By SO# Delivery Date(Optional)</b></div>
+                    <group>
+                        <group><field name="delivery_start_date"/></group>
+                        <group><field name="delivery_end_date"/></group>
+                    </group>
                     <group>
                         <group>
                             <field name="start_date"/>
@@ -123,12 +133,12 @@
                     <field name="customer"/>
                     <field name="sale_order_id"/>
                     <field name="business_development"/>
-                    <group expand="0" string="Group By">
+                    <!--<group expand="0" string="Group By">
                         <filter name="customer" string="Customer Name" domain="[]" context="{'group_by':'customer'}"/>
                         <filter name="sale_order_id" string="Sale Order#" domain="[]" context="{'group_by':'sale_order_id'}"/>
                         <filter name="business_development" string="Business Development" domain="[]" context="{'group_by':'business_development'}"/>
                         <filter name="delivery_date" string="Delivery Date" domain="[]" context="{'group_by':'delivery_date'}"/>
-                    </group>
+                    </group>-->
                 </search>
             </field>
         </record>
