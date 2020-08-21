@@ -28,7 +28,7 @@ class PaymentAquirerCstm(http.Controller):
                         result = request.env['sale.order'].sudo().search(
                             [('client_order_ref', '=', kwargs['purchase_order'])])
                         if result:
-                            vals = {'error': "Duplicate Purchase Order"}
+                            vals = {'error': "The PO number is already present on another Sales Order."}
                             return http.request.render('payment_aquirer_cstm.purchase_order_page', vals)
                         else:
                             order.client_order_ref = kwargs['purchase_order']
