@@ -3,6 +3,7 @@
 from odoo import models, fields, api
 from odoo import _
 from odoo.exceptions import UserError
+import odoo.addons.decimal_precision as dp
 
 
 class CustomerContract(models.Model):
@@ -21,7 +22,8 @@ class CustomerContract(models.Model):
     national_account_rep = fields.Many2one('res.users', string="National Account Rep.(NA)",
                                            domain="[('active', '=', True), ('share','=',False)]", track_visibility='onchange')
 
-    order_quota = fields.Integer(string="Order Quota", help="Number of transactions", track_visibility='onchange')
+    order_quota = fields.Float(string="Order Quota", help="Number of transactions", track_visibility='onchange',
+                               digits=dp.get_precision('Product Price'))
 
     revenue_quota = fields.Monetary(string="Revenue Quota", help="Amount", track_visibility='onchange')
 
