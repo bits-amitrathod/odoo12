@@ -25,7 +25,13 @@ class PaymentAquirerCstm(http.Controller):
                     transaction.state = 'pending'
                     order.state = 'sent'
                     if not order.client_order_ref:
-                        order.client_order_ref = kwargs['purchase_order']
+                        result = request.env['sale.order'].sudo().search(
+                            [('client_order_ref', '=', kwargs['purchase_order'])])
+                        if result:
+                            vals = {'error': "The PO number is already present on another Sales Order."}
+                            return http.request.render('payment_aquirer_cstm.purchase_order_page', vals)
+                        else:
+                            order.client_order_ref = kwargs['purchase_order']
                     return request.redirect('/shop/payment/validate')
                 else:
                     request.redirect('/shop')
