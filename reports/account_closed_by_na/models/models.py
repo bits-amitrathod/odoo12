@@ -135,7 +135,7 @@ class AccountClosedByNaExport(models.TransientModel):
     delivery_start_date = fields.Date('SO# Delivery Start Date')
     delivery_end_date = fields.Date('SO# Delivery End Date')
 
-    def download_excel_bd_account_closed(self):
+    def download_excel_na_account_closed(self):
 
         s_date = self.string_to_date(str(self.start_date))
         e_date = s_date - datetime.timedelta(days=365)
