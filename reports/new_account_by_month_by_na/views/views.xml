@@ -147,7 +147,7 @@
         <menuitem id="sale.new_account_by_month_by_na_menu"
                   name="New Account By Month By NA"
                   action="action_new_account_by_month_by_na"
-                  parent="account_closed_by_na.national_account_reports"
+                  parent="revenue_by_na_per_account.national_account_reports"
                   sequence="2"/>
 
                 <!--parent="sale.menu_sale_report"-->
