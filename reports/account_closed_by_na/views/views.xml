@@ -57,17 +57,15 @@
             <field name="model">popup.na.account.closed</field>
             <field name="arch" type="xml">
                 <form string="Choose your date">
-                    <div><b>Filter By SO# Delivery Date(Optional)</b></div>
-                    <group>
-                        <group><field name="delivery_start_date"/></group>
-                        <group><field name="delivery_end_date"/></group>
-                    </group>
                     <group>
                         <group>
                             <field name="start_date"/>
+                            <field name="national_account"/>
                         </group>
                         <group>
-                            <field name="national_account"/>
+                            <b>Filter By Revenue</b>
+                            <field name="delivery_start_date"/>
+                            <field name="delivery_end_date"/>
                         </group>
                     </group>
                     <footer>
@@ -99,17 +97,15 @@
             <field name="model">report.na.account.closed.export</field>
             <field name="arch" type="xml">
                 <form string="Export Accounts Closed and Revenue in 12 Months By National Account Report">
-                    <div><b>Filter By SO# Delivery Date(Optional)</b></div>
-                    <group>
-                        <group><field name="delivery_start_date"/></group>
-                        <group><field name="delivery_end_date"/></group>
-                    </group>
                     <group>
                         <group>
                             <field name="start_date"/>
+                            <field name="national_account"/>
                         </group>
                         <group>
-                            <field name="national_account"/>
+                            <b>Filter By Revenue</b>
+                            <field name="delivery_start_date"/>
+                            <field name="delivery_end_date"/>
                         </group>
                     </group>
                     <div>Click On ' Export To File ' button to export Account Closed And Revenue Generated in 12 Months By National Account report file</div>
