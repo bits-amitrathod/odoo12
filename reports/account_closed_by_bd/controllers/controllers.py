@@ -171,8 +171,6 @@ class ExportAccountClosedByBd(http.Controller):
 
         if delivery_start_date != 'none' and delivery_end_date != 'none':
             for line in order_lines:
-                print((line['delivery_date']).date())
-                print(self.string_to_date(delivery_start_date))
                 if line['delivery_date'].date() >= self.string_to_date(delivery_start_date) and \
                         line['delivery_date'].date() <= self.string_to_date(delivery_end_date):
                     records.append([line['sale_order_id'],

@@ -4,6 +4,7 @@ from odoo import api, fields, models, tools
 import datetime
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, pycompat, misc
 import logging
+import odoo.addons.decimal_precision as dp
 
 _logger = logging.getLogger(__name__)
 
@@ -17,7 +18,7 @@ class AccountClosedByBd(models.Model):
     state = fields.Char('Status')
     customer = fields.Many2one('res.partner', 'Customer Name')
     business_development = fields.Many2one('res.users', 'Business Development')
-    total_amount = fields.Float('Total')
+    total_amount = fields.Float('Total', digits=dp.get_precision('Product Price'))
     currency_id = fields.Many2one('res.currency', string='Currency')
 
     @api.model_cr
@@ -132,12 +133,13 @@ class AccountClosedByBdExport(models.TransientModel):
 
     business_development = fields.Many2one('res.users', string='Business Development', index=True)
 
-    delivery_start_date = fields.Date('SO# Delivery Start Date')
-    delivery_end_date = fields.Date('SO# Delivery End Date')
+    delivery_start_date = fields.Date('Revenue Start Date')
+    delivery_end_date = fields.Date('Revenue End Date')
 
     def download_excel_bd_account_closed(self):
 
         s_date = self.string_to_date(str(self.start_date))
+        s_date = s_date + datetime.timedelta(days=1)
         e_date = s_date - datetime.timedelta(days=365)
         if self.delivery_end_date:
             updated_delivery_end_date = self.string_to_date(str(self.delivery_end_date)) # + datetime.timedelta(days=1)

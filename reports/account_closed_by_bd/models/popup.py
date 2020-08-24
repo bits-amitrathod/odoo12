@@ -10,13 +10,14 @@ class BdAccountClosedReportPopup(models.TransientModel):
                              help="Choose a date to get the Accounts Closed and Revenue in 12 Months By Business Development at that End date")
     business_development = fields.Many2one('res.users', string='Business Development', index=True)
 
-    delivery_start_date = fields.Date('SO# Delivery Start Date')
-    delivery_end_date = fields.Date('SO# Delivery End Date')
+    delivery_start_date = fields.Date('Revenue Start Date')
+    delivery_end_date = fields.Date('Revenue End Date')
 
     # @api.multi
     def open_table(self):
 
         start_date = self.string_to_date(str(self.start_date))
+        start_date = start_date + datetime.timedelta(days=1)
         end_date = start_date - datetime.timedelta(days=365)
 
         tree_view_id = self.env.ref('account_closed_by_bd.account_closed_by_bd_list_view').id

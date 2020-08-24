@@ -57,19 +57,18 @@
             <field name="model">popup.bd.account.closed</field>
             <field name="arch" type="xml">
                 <form>
-                    <div><b>Filter By SO# Delivery Date(Optional)</b></div>
-                    <group>
-                        <group><field name="delivery_start_date"/></group>
-                        <group><field name="delivery_end_date"/></group>
-                    </group>
                     <group>
                         <group>
                             <field name="start_date"/>
-                        </group>
-                        <group>
                             <field name="business_development"/>
                         </group>
+                        <group>
+                            <b>Filter By Revenue Date</b>
+                            <field name="delivery_start_date"/>
+                            <field name="delivery_end_date"/>
+                        </group>
                     </group>
+
                     <footer>
                         <button name="open_table" string="View Report" type="object" class="btn-primary"/>
                         <button string="Cancel" class="btn-default" special="cancel" />
@@ -99,17 +98,15 @@
             <field name="model">report.bd.account.closed.export</field>
             <field name="arch" type="xml">
                 <form string="Export Accounts Closed and Revenue in 12 Months By Business Development Report">
-                    <div><b>Filter By SO# Delivery Date(Optional)</b></div>
-                    <group>
-                        <group><field name="delivery_start_date"/></group>
-                        <group><field name="delivery_end_date"/></group>
-                    </group>
                     <group>
                         <group>
                             <field name="start_date"/>
+                            <field name="business_development"/>
                         </group>
                         <group>
-                            <field name="business_development"/>
+                            <b>Filter By Revenue Date</b>
+                            <field name="delivery_start_date"/>
+                            <field name="delivery_end_date"/>
                         </group>
                     </group>
                     <div>Click On ' Export To File ' button to export Account Closed And Revenue Generated in 12 Months By Business Development report file</div>
