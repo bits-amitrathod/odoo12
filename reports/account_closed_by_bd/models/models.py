@@ -139,8 +139,9 @@ class AccountClosedByBdExport(models.TransientModel):
     def download_excel_bd_account_closed(self):
 
         s_date = self.string_to_date(str(self.start_date))
-        s_date = s_date + datetime.timedelta(days=1)
         e_date = s_date - datetime.timedelta(days=365)
+        s_date = s_date + datetime.timedelta(days=1)
+
         if self.delivery_end_date:
             updated_delivery_end_date = self.string_to_date(str(self.delivery_end_date)) # + datetime.timedelta(days=1)
 
