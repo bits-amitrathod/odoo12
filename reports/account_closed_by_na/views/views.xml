@@ -63,7 +63,7 @@
                             <field name="national_account"/>
                         </group>
                         <group>
-                            <b>Filter By Revenue</b>
+                            <!--<b>Filter By Revenue</b>-->
                             <field name="delivery_start_date"/>
                             <field name="delivery_end_date"/>
                         </group>
@@ -103,7 +103,7 @@
                             <field name="national_account"/>
                         </group>
                         <group>
-                            <b>Filter By Revenue</b>
+                            <!--<b>Filter By Revenue</b>-->
                             <field name="delivery_start_date"/>
                             <field name="delivery_end_date"/>
                         </group>
