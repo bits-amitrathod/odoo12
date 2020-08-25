@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report
+                id="action_report_account_closed_by_bd"
+                string="Accounts Closed and Revenue in 12 Months By Business Development"
+                model="report.bd.account.closed"
+                report_type="qweb-html"
+                file="account_closed_by_bd.bd_account_closed_temp_test"
+                name="account_closed_by_bd.bd_account_closed_temp_test"
+        />
+    </data>
+</odoo>
