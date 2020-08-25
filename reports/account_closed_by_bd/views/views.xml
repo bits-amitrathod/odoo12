@@ -63,7 +63,7 @@
                             <field name="business_development"/>
                         </group>
                         <group>
-                            <b>Filter By Revenue Date</b>
+                            <!--<b>Filter By Revenue Date</b>-->
                             <field name="delivery_start_date"/>
                             <field name="delivery_end_date"/>
                         </group>
@@ -104,7 +104,7 @@
                             <field name="business_development"/>
                         </group>
                         <group>
-                            <b>Filter By Revenue Date</b>
+                            <!--<b>Filter By Revenue Date</b>-->
                             <field name="delivery_start_date"/>
                             <field name="delivery_end_date"/>
                         </group>
