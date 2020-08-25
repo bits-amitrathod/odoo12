@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report
+                id="action_report_revenue_by_na_per_account"
+                string="Revenue By National Account Per Account"
+                model="report.na.revenue.per.account"
+                report_type="qweb-html"
+                file="revenue_by_na_per_account.na_revenue_pa_temp_test"
+                name="revenue_by_na_per_account.na_revenue_pa_temp_test"
+        />
+    </data>
+</odoo>

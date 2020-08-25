@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Tree view -->
+        <record model="ir.ui.view" id="new_account_by_month_by_bd_list_view">
+              <field name="name">new.account.by.month.by.bd.view.list</field>
+              <field name="model">report.bd.new.account</field>
+              <field name="priority">20</field>
+              <field name="arch" type="xml">
+                <tree create="false" edit="false" delete="false">
+                <field name="customer"/>
+                <field name="onboard_date" widget="date"/>
+                <field name="business_development"/>
+                </tree>
+              </field>
+        </record>
+
+        <!-- Tree view ends here -->
+
+        <!-- Form view-->
+        <record id="new_account_by_month_by_bd_form_view" model="ir.ui.view">
+          <field name="name">new.account.by.month.by.bd.form</field>
+          <field name="model">report.bd.new.account</field>
+          <field name="priority">20</field>
+          <field name="arch" type="xml">
+              <form create="false" edit="false" delete="false">
+                  <sheet>
+                      <group>
+                            <group>
+                                <field name="customer"/>
+                                <field name="business_development"/>
+
+                            </group>
+                            <group>
+                                <field name="onboard_date" widget="date"/>
+                            </group>
+                      </group>
+                  </sheet>
+              </form>
+          </field>
+        </record>
+
+        <!-- Form view ends here -->
+
+
+        <!-- Popup code -->
+        <record id="bd_new_account_popup_view" model="ir.ui.view">
+            <field name="name">New Account By Month By Business Development</field>
+            <field name="model">popup.bd.new.account</field>
+            <field name="arch" type="xml">
+                <form string="Choose your date">
+                    <group>
+                        <group>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                        </group>
+                        <group>
+                            <field name="business_development"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Popup code ends here-->
+
+
+        <!-- Action code -->
+        <record id="action_new_account_by_month_by_bd" model="ir.actions.act_window">
+            <field name="name">New Account By Month By BD</field>
+            <field name="res_model">popup.bd.new.account</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="bd_new_account_popup_view"/>
+            <field name="target">new</field>
+            <field name="context">{'valuation': True}</field>
+        </record>
+
+        <!-- Action code ends here -->
+
+        <!-- Export popup code -->
+        <record id="export_new_account_by_month_by_bd_popup" model="ir.ui.view">
+            <field name="name">report.new.account.by.month.by.bd.export.popup</field>
+            <field name="model">report.bd.new.account.export</field>
+            <field name="arch" type="xml">
+                <form string="Export New Account By Month By Business Development Report">
+                    <group>
+                        <group>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                        </group>
+                        <group>
+                            <field name="business_development"/>
+                        </group>
+                        <group>
+                            <div>Click On ' Export To File ' button to export New Account By Month By Business Development report file</div>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="download_excel_bd_new_account" string="Export To File" type="object"
+                                class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Export popup code ends here -->
+
+        <!-- Filter's code -->
+        <record id="new_account_by_month_by_bd_filter" model="ir.ui.view">
+            <field name="name">new.account.by.bd.filter</field>
+            <field name="model">report.bd.new.account</field>
+            <field name="arch" type="xml">
+                <search string="Search">
+                    <field name="customer"/>
+                    <field name="onboard_date"/>
+                    <field name="business_development"/>
+                    <group expand="0" string="Group By">
+                        <filter name="customer" string="Customer Name" domain="[]" context="{'group_by':'customer'}"/>
+                        <filter name="business_development" string="Business Development" domain="[]" context="{'group_by':'business_development'}"/>
+                        <filter name="onboard_date" string="Onboard Date" domain="[]" context="{'group_by':'onboard_date'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Filter's code ends here -->
+
+        <!-- Export Action code -->
+        <act_window name="Export New Account By Month By Business Development Report"
+                    res_model="report.bd.new.account.export"
+                    src_model="report.bd.new.account"
+                    view_mode="form"
+                    target="new"
+                    key2="client_action_multi"
+                    id="new_account_by_month_by_bd_export_act_window"/>
+
+        <!-- Export Action code ends here -->
+
+        <!-- Menus declaration -->
+        <menuitem id="sale.new_account_by_month_by_bd_menu"
+                  name="New Account By Month By BD"
+                  action="action_new_account_by_month_by_bd"
+                  parent="account_closed_by_bd.business_development_reports"
+                  sequence="2"/>
+
+                <!--parent="sale.menu_sale_report"-->
+
+        <!-- Menus declaration ends here -->
+
+    </data>
+</odoo>
