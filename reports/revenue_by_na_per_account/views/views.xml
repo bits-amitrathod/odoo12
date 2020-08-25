@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Tree view -->
+        <record model="ir.ui.view" id="revenue_by_na_per_account_list_view">
+              <field name="name">revenue.by.na.per.account.view.list</field>
+              <field name="model">report.na.revenue.per.account</field>
+              <field name="priority">20</field>
+              <field name="arch" type="xml">
+                <tree create="false" edit="false" delete="false">
+                <field name="sale_order_id"/>
+                <field name="customer"/>
+                <field name="national_account"/>
+                <field name="delivery_date" widget="date"/>
+                <field name="total_amount"/>
+                </tree>
+              </field>
+        </record>
+
+        <!-- Tree view ends here -->
+
+        <!-- Form view-->
+        <record id="revenue_by_na_per_account_form_view" model="ir.ui.view">
+          <field name="name">report.revenue.by.na.per.account.form</field>
+          <field name="model">report.na.revenue.per.account</field>
+          <field name="priority">20</field>
+          <field name="arch" type="xml">
+              <form create="false" edit="false" delete="false">
+                  <sheet>
+                      <group>
+                            <group>
+                                <field name="sale_order_id"/>
+                                <field name="customer"/>
+                                <field name="national_account"/>
+                                <field name="delivery_date" widget="date"/>
+                            </group>
+                            <group>
+                                <field name="total_amount"/>
+                            </group>
+                      </group>
+                  </sheet>
+              </form>
+          </field>
+        </record>
+
+        <!-- Form view ends here -->
+
+
+        <!-- Popup code -->
+        <record id="na_revenue_per_account_popup_view" model="ir.ui.view">
+            <field name="name">Revenue By National Account Per Account</field>
+            <field name="model">popup.na.revenue.per.account</field>
+            <field name="arch" type="xml">
+                <form string="Choose your date">
+                    <group>
+                        <group>
+                            <field name="compute_at_date" widget="radio"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
+                        </group>
+                        <group>
+                            <field name="national_account"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Popup code ends here-->
+
+
+        <!-- Action code -->
+        <record id="action_revenue_by_na_per_account" model="ir.actions.act_window">
+            <field name="name">Revenue By National Account Per Account</field>
+            <field name="res_model">popup.na.revenue.per.account</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="na_revenue_per_account_popup_view"/>
+            <field name="target">new</field>
+            <field name="context">{'default_compute_at_date': 0, 'valuation': True}</field>
+        </record>
+
+        <!-- Action code ends here -->
+
+        <!-- Export popup code -->
+        <record id="export_revenue_by_na_per_account_popup" model="ir.ui.view">
+            <field name="name">report.revenue.by.na.per.account.export.popup</field>
+            <field name="model">report.na.revenue.per.account.export</field>
+            <field name="arch" type="xml">
+                <form string="Export Revenue By National Account Per Account Report">
+                    <group>
+                        <group>
+                            <field name="compute_at_date" widget="radio"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
+                        </group>
+                        <group>
+                            <field name="national_account"/>
+                        </group>
+                        <group>
+                            <div>Click On ' Export To File ' button to export Revenue By National Account Per Account report file</div>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="download_excel_na_revenue" string="Export To File" type="object"
+                                class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Export popup code ends here -->
+
+        <!-- Filter's code -->
+        <record id="revenue_by_na_per_account_filter" model="ir.ui.view">
+            <field name="name">revenue.by.na.per.account.filter</field>
+            <field name="model">report.na.revenue.per.account</field>
+            <field name="arch" type="xml">
+                <search string="Search">
+                    <field name="customer"/>
+                    <field name="sale_order_id"/>
+                    <field name="national_account"/>
+                    <group expand="0" string="Group By">
+                        <filter name="customer" string="Customer Name" domain="[]" context="{'group_by':'customer'}"/>
+                        <filter name="sale_order_id" string="Sale Order#" domain="[]" context="{'group_by':'sale_order_id'}"/>
+                        <filter name="national_account" string="National Account" domain="[]" context="{'group_by':'national_account'}"/>
+                        <filter name="delivery_date" string="Delivery Date" domain="[]" context="{'group_by':'delivery_date'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Filter's code ends here -->
+
+        <!-- Export Action code -->
+        <act_window name="Export Revenue By National Account Per Account Report"
+                    res_model="report.na.revenue.per.account.export"
+                    src_model="report.na.revenue.per.account"
+                    view_mode="form"
+                    target="new"
+                    key2="client_action_multi"
+                    id="revenue_by_na_per_account_export_act_window"/>
+
+        <!-- Export Action code ends here -->
+
+        <!-- Menus declaration -->
+        <menuitem id="national_account_reports" name="National Account Reports" parent="sale.menu_sale_report" sequence="1"/>
+        <menuitem id="sale.revenue_by_na_per_account_menu"
+                  name="Revenue By NA Per Account"
+                  action="action_revenue_by_na_per_account"
+                  parent="revenue_by_na_per_account.national_account_reports"
+                  sequence="20"/>
+
+         <!--sequence="2"/>-->
+
+         <!--parent="account_closed_by_na.national_account_reports"-->
+
+                <!--parent="sale.menu_sale_report"-->
+
+        <!-- Menus declaration ends here -->
+
+    </data>
+</odoo>

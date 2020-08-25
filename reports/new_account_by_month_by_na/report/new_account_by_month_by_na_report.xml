@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report
+                id="action_report_new_account_by_month_by_na"
+                string="New Account By Month By National Account"
+                model="report.na.new.account"
+                report_type="qweb-html"
+                file="new_account_by_month_by_na.na_new_account_temp_test"
+                name="new_account_by_month_by_na.na_new_account_temp_test"
+        />
+    </data>
+</odoo>
