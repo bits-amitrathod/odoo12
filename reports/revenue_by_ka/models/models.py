@@ -18,10 +18,9 @@ class RevenueByKa(models.Model):
     total_revenue = fields.Float('Total Revenue')
     order_quota = fields.Integer(string="Order Quota", help="Number of transactions")
     revenue_quota = fields.Integer(string="Revenue Quota", help="Amount")
-    progress_order_quota = fields.Char('Progress of Order Quota')
-    progress_revenue_quota = fields.Char('Progress of Revenue Quota')
+    progress_order_quota = fields.Float('Progress of Order Quota')
+    progress_revenue_quota = fields.Float('Progress of Revenue Quota')
     currency_id = fields.Many2one('res.currency', string='Currency')
-    delivery_date = fields.Datetime('Delivery Date')
 
     @api.model_cr
     def init(self):
@@ -30,60 +29,59 @@ class RevenueByKa(models.Model):
     def init_table(self):
         tools.drop_view_if_exists(self._cr, self._name.replace(".", "_"))
 
-        select_query = """
-            SELECT
-                ROW_NUMBER () OVER (ORDER BY RP.id) AS id, 
-                RP.id                                       AS customer, 
-                RP.account_manager_cust                     AS key_account,
-                COUNT(SO.partner_id)                        AS no_of_orders, 
-                SUM(SOL.qty_delivered * SOL.price_reduce)   AS total_revenue, 
-                RP.order_quota                              AS order_quota, 
-                RP.revenue_quota                            AS revenue_quota,
-                CONCAT(ROUND((COUNT(SO.partner_id)/RP.order_quota::float)*100), '%') AS progress_order_quota,
-                CONCAT(ROUND((SUM(SOL.qty_delivered * SOL.price_reduce)/RP.revenue_quota::float)*100), '%') AS progress_revenue_quota,
-                SOL.currency_id     AS currency_id,
-                date_trunc('month', SP.date_done)   AS delivery_date
+        start_date_month = self.env.context.get('start_date')
+        end_date_month = self.env.context.get('end_date')
+        key_account_id = self.env.context.get('key_account')
+
+        if start_date_month and end_date_month:
+            select_query = """
+                SELECT 
+                    ROW_NUMBER () OVER (ORDER BY RP.id) AS id, 
+                    RP.id                                       AS customer, 
+                    RP.account_manager_cust                     AS key_account,
+                    ROUND(RP.order_quota)                       AS order_quota, 
+                    CASE WHEN COUNT(SO.no_of_order) > 0 THEN COUNT(SO.no_of_order) ELSE 0 END AS no_of_orders,
+                    COUNT(SO.no_of_order)/ROUND(RP.order_quota)*100 AS progress_order_quota, 
+                    RP.revenue_quota AS revenue_quota,
+                    CASE WHEN SUM(SOL.revenue) > 0 THEN SUM(SOL.revenue) ELSE 0 END AS total_revenue,
+                    SUM(SOL.revenue)/RP.revenue_quota*100 AS progress_revenue_quota,
+                    SOL.currency_id     AS currency_id
                 
                 FROM public.res_partner RP
                 
-                INNER JOIN 
-                    public.sale_order SO 
-                ON 
-                    RP.id = SO.partner_id
-                INNER JOIN 
-                    (SELECT DISTINCT ON (order_id) order_id, qty_delivered, price_reduce, currency_id FROM sale_order_line) AS SOL
-                ON 
-                    SO.id = SOL.order_id
-                INNER JOIN 
-                    (SELECT DISTINCT ON (origin) origin,date_done,sale_id  FROM stock_picking WHERE picking_type_id = 5 AND state = 'done' ORDER BY origin) AS SP 
-                ON 
-                    SO.id = SP.sale_id 
-                        
-                WHERE SO.state NOT IN ('cancel', 'void') AND RP.account_manager_cust IS NOT NULL
-                             
+                LEFT JOIN 
+                    (SELECT id, COUNT(sale_order.id) AS no_of_order, sale_order.partner_id, sale_order.create_date 
+                        FROM public.sale_order sale_order
+                    LEFT JOIN (SELECT DISTINCT ON (origin) origin, date_done, sale_id 
+                        FROM stock_picking WHERE picking_type_id = 5 AND state = 'done' ORDER BY origin) AS SP 
+                    ON sale_order.id = SP.sale_id
+                    WHERE state not in ('cancel', 'void') AND """
 
-        """
+            select_query = select_query + "SP.date_done >= '" + str(start_date_month) + "' AND SP.date_done <= '" + \
+                                                                                    str(end_date_month) + "'"
 
-        start_date = self.env.context.get('start_date')
-        end_date = self.env.context.get('end_date')
-        compute_at = self.env.context.get('compute_at')
-        key_account_id = self.env.context.get('key_account')
+            select_query = select_query + """   GROUP BY id, partner_id) AS SO ON RP.id = SO.partner_id
+    
+                LEFT JOIN 
+                    (SELECT DISTINCT ON (order_id) order_id, SUM(qty_delivered * price_reduce) AS revenue, currency_id 
+                        FROM sale_order_line
+                        GROUP BY order_id, currency_id) AS SOL ON SO.id = SOL.order_id
+                
+                WHERE RP.account_manager_cust IS NOT NULL          
+                                 
+            """
 
-        if compute_at:
-            if start_date and start_date is not None and end_date and end_date is not None:
-                select_query = select_query + " AND SP.date_done BETWEEN '" + str(
-                    start_date) + "'" + " AND '" + str(self.string_to_date(end_date) + datetime.timedelta(days=1)) + "'"
-        if key_account_id:
-            select_query = select_query + "AND RP.account_manager_cust = '" + str(key_account_id) + "'"
+            if key_account_id:
+                select_query = select_query + "AND RP.account_manager_cust = '" + str(key_account_id) + "'"
 
-        group_by = """
-                    GROUP BY
-                        RP.id, date_trunc('month', SP.date_done), SOL.currency_id
-                        """
+            group_by = """
+                        GROUP BY
+                            RP.id, SO.no_of_order, SOL.currency_id
+                            """
 
-        sql_query = select_query + group_by
+            sql_query = select_query + group_by
 
-        self._cr.execute("CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + sql_query + " )")
+            self._cr.execute("CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + sql_query + " )")
 
     @api.model_cr
     def delete_and_create(self):
