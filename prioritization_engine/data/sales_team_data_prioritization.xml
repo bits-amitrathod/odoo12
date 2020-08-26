@@ -84,7 +84,7 @@ from ${object.company_id.name}.
 <p style="color:#888888;">
 % if object.user_id and object.user_id.signature:
     ${object.user_id.signature | safe}
-% endif <br/>
+% endif
 </p>
 ]]></field>
         </record>
