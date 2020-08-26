@@ -142,7 +142,7 @@
         <!-- Filter's code ends here -->
 
         <!-- Export Action code -->
-        <act_window name="Export Account Closed By National Account Report"
+        <act_window name="Export Revenue From Accounts Closed In 12 Months By NA Report"
                     res_model="report.na.account.closed.export"
                     src_model="report.na.account.closed"
                     view_mode="form"
