@@ -31,7 +31,7 @@ class BdAccountClosedReportPopup(models.TransientModel):
             'type': 'ir.actions.act_window',
             'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
             'view_mode': 'tree',
-            'name': 'Accounts Closed And Revenue in 12 Months By Business Development',
+            'name': 'Revenue From Accounts Closed In 12 Months By BD',
             'res_model': res_model,
             'domain': [],
             'context': {'group_by': group_by_domain}
