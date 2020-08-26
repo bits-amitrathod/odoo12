@@ -129,7 +129,7 @@ class AccountClosedByBdExport(models.TransientModel):
     _name = 'report.bd.account.closed.export'
 
     start_date = fields.Date('Start Date', default=fields.date.today(), required=True,
-                             help="Choose a date to get the Accounts Closed and Revenue in 12 Months By Business Development at that End date")
+                             help="Choose a date to get the Revenue From Accounts Closed In 12 Months By BD at that End date")
 
     business_development = fields.Many2one('res.users', string='Business Development', index=True)
 
