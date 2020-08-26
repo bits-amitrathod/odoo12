@@ -189,7 +189,7 @@ class ExportAccountClosedByNa(http.Controller):
         res = request.make_response(
             self.from_data(["Sale Order#", "Customer Name", "National Account", "Delivery Date", "Status", "Total"],
                            records),
-            headers=[('Content-Disposition', content_disposition('account_closed_by_na' + '.xls')),
+            headers=[('Content-Disposition', content_disposition('revenue_from_accounts_closed_in_12_months_by_na' + '.xls')),
                      ('Content-Type', 'application/vnd.ms-excel')],
         )
 
