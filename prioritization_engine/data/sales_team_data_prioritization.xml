@@ -77,8 +77,9 @@ from ${object.company_id.name}.
 
 <p>You can reply to this email if you have any questions.</p>
 <p>Thank you,<br/>
+% if object.team_id.team_type == 'engine':
    <img src="/website_quote_ext/static/src/img/stockhawk_logo_2.jpg" style="height: auto; width: 150px;" alt="Stockhawk"/>
-
+% endif
 </p>
 
 <p style="color:#888888;">
