@@ -67,8 +67,15 @@
                 <form string="Choose your date">
                     <group>
                         <group>
-                            <field name="start_date"/>
+                            <field name="start_month"/>
+                            <field name="start_year"/>
                         </group>
+                        <group>
+                            <field name="end_month"/>
+                            <field name="end_year"/>
+                        </group>
+                    </group>
+                    <group>
                         <group>
                             <field name="key_account"/>
                         </group>

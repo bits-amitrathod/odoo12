@@ -2,24 +2,45 @@ from odoo import api, fields, models,_
 import datetime
 import calendar
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, pycompat, misc
+from dateutil import relativedelta
 
 
 class KaRevenueReportPopup(models.TransientModel):
     _name = 'popup.ka.revenue'
 
-    start_date = fields.Date('Start Date', default=fields.date.today(),
-                             help="Choose a date to get the Selected month report", required=True)
+    start_month = fields.Selection([('01', 'January'), ('02', 'February'), ('03', 'March'), ('04', 'April'),
+                                    ('05', 'May'), ('06', 'June'), ('07', 'July'), ('08', 'August'), ('09', 'September'),
+                                    ('10', 'October'), ('11', 'November'), ('12', 'December')], 'Start Month', required=True)
+
+    start_year = fields.Selection([(num, str(num)) for num in range(2010, (datetime.datetime.now().year) + 20)],
+                                  'Start Year', default=datetime.datetime.now().year, required=True)
+
+    end_month = fields.Selection([('01', 'January'), ('02', 'February'), ('03', 'March'), ('04', 'April'),
+                                 ('05', 'May'), ('06', 'June'), ('07', 'July'), ('08', 'August'), ('09', 'September'),
+                                 ('10', 'October'), ('11', 'November'), ('12', 'December')], 'End Month', required=True)
+
+    end_year = fields.Selection([(num, str(num)) for num in range(2010, (datetime.datetime.now().year) + 20)],
+                                'End Year', default=datetime.datetime.now().year, required=True)
+
     key_account = fields.Many2one('res.users', string="Key Account", domain="[('active', '=', True), "
                                                                             "('share','=',False)]")
 
     # @api.multi
     def open_table(self):
-        start_date_month = datetime.datetime(self.start_date.year, self.start_date.month, 1)
-        end_date_month = datetime.datetime(self.start_date.year, self.start_date.month, calendar.mdays[self.start_date.month])
+        start_date = datetime.datetime.strptime(str(self.start_year) + "-" + str(self.start_month) + "-01", "%Y-%m-%d").date()
+
+        end_date_custom = datetime.datetime.strptime(str(self.end_year) + "-" + str(self.end_month) + "-15", "%Y-%m-%d")
+
+        end_date = datetime.datetime(end_date_custom.year, end_date_custom.month, calendar.mdays[end_date_custom.month]).date()
+
+        date_difference = relativedelta.relativedelta(end_date, start_date)
+        date_difference = date_difference.months + 1
+
         tree_view_id = self.env.ref('revenue_by_ka.revenue_by_ka_list_view').id
         form_view_id = self.env.ref('revenue_by_ka.revenue_by_ka_form_view').id
         res_model = 'report.ka.revenue'
-        margins_context = {'start_date': start_date_month, 'end_date': end_date_month, 'key_account': self.key_account.id}
+        margins_context = {'start_date': start_date, 'end_date': end_date, 'key_account': self.key_account.id,
+                           'date_difference': date_difference}
 
         self.env[res_model].with_context(margins_context).delete_and_create()
 

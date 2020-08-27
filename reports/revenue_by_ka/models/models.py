@@ -32,20 +32,27 @@ class RevenueByKa(models.Model):
         start_date_month = self.env.context.get('start_date')
         end_date_month = self.env.context.get('end_date')
         key_account_id = self.env.context.get('key_account')
+        date_difference = self.env.context.get('date_difference')
 
         if start_date_month and end_date_month:
             select_query = """
                 SELECT 
-                    ROW_NUMBER () OVER (ORDER BY RP.id) AS id, 
+                    ROW_NUMBER () OVER (ORDER BY RP.id)         AS id, 
                     RP.id                                       AS customer, 
                     RP.account_manager_cust                     AS key_account,
-                    ROUND(RP.order_quota)                       AS order_quota, 
+                    SOL.currency_id                             AS currency_id,
                     CASE WHEN COUNT(SO.no_of_order) > 0 THEN COUNT(SO.no_of_order) ELSE 0 END AS no_of_orders,
-                    CASE WHEN ROUND(RP.order_quota) > 0 THEN COUNT(SO.no_of_order)/ROUND(RP.order_quota)*100 ELSE 0 END AS progress_order_quota, 
-                    RP.revenue_quota AS revenue_quota,
                     CASE WHEN SUM(SOL.revenue) > 0 THEN SUM(SOL.revenue) ELSE 0 END AS total_revenue,
-                    CASE WHEN RP.revenue_quota > 0 THEN SUM(SOL.revenue)/RP.revenue_quota*100 ELSE 0 END AS progress_revenue_quota,
-                    SOL.currency_id     AS currency_id
+                    
+                    """
+            select_query = select_query + "ROUND(RP.order_quota)*" + str(date_difference) + " AS order_quota, " + \
+                           " CASE WHEN ROUND(RP.order_quota) > 0 THEN COUNT(SO.no_of_order)/(ROUND(RP.order_quota)*" + \
+                            str(date_difference) + ")*100 ELSE 0 END AS progress_order_quota," + \
+                            "RP.revenue_quota *" + str(date_difference) + " AS revenue_quota," + \
+                            "CASE WHEN RP.revenue_quota > 0 THEN SUM(SOL.revenue)/(RP.revenue_quota*" + str(date_difference) + \
+                            ")*100 ELSE 0 END AS progress_revenue_quota"
+
+            select_query = select_query + """
                 
                 FROM public.res_partner RP
                 
