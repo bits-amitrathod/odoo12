@@ -41,10 +41,10 @@ class RevenueByKa(models.Model):
                     RP.account_manager_cust                     AS key_account,
                     ROUND(RP.order_quota)                       AS order_quota, 
                     CASE WHEN COUNT(SO.no_of_order) > 0 THEN COUNT(SO.no_of_order) ELSE 0 END AS no_of_orders,
-                    COUNT(SO.no_of_order)/ROUND(RP.order_quota)*100 AS progress_order_quota, 
+                    CASE WHEN ROUND(RP.order_quota) > 0 THEN COUNT(SO.no_of_order)/ROUND(RP.order_quota)*100 ELSE 0 END AS progress_order_quota, 
                     RP.revenue_quota AS revenue_quota,
                     CASE WHEN SUM(SOL.revenue) > 0 THEN SUM(SOL.revenue) ELSE 0 END AS total_revenue,
-                    SUM(SOL.revenue)/RP.revenue_quota*100 AS progress_revenue_quota,
+                    CASE WHEN RP.revenue_quota > 0 THEN SUM(SOL.revenue)/RP.revenue_quota*100 ELSE 0 END AS progress_revenue_quota,
                     SOL.currency_id     AS currency_id
                 
                 FROM public.res_partner RP
