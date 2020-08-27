@@ -38,7 +38,9 @@
                                  </span>
                              </t>
                              <!-- &#160;&#160;&#160;&#160;&#160; -->
-                             <img src="/website_quote_ext/static/src/img/stockhawk_logo_2.jpg" align="right" style="height: auto; width: 150px;" alt="Stockhawk"/>
+                             <t t-if="sale_order.team_id.team_type == 'engine'">
+                                <img src="/website_quote_ext/static/src/img/stockhawk_logo_2.jpg" align="right" style="height: auto; width: 150px;" alt="Stockhawk"/>
+                             </t>
                          </span>
                      </h2>
                 </div>
@@ -83,7 +85,9 @@
                                     &amp;times;
                                 </button>
                                 <h4 class="modal-title">Accept Order</h4>
-                                <img src="/website_quote_ext/static/src/img/stockhawk_logo_2.jpg" align="right" style="height: auto; width: 150px;" alt="Stockhawk"/>
+                                <t t-if="sale_order.team_id.team_type == 'engine'">
+                                    <img src="/website_quote_ext/static/src/img/stockhawk_logo_2.jpg" align="right" style="height: auto; width: 150px;" alt="Stockhawk"/>
+                                </t>
                             </div>
                              <t t-if="sale_order.partner_id.allow_purchase">
                                     <div class="modal-body">
@@ -128,7 +132,9 @@
                                     &amp;times;
                                 </button>
                                 <h4 class="modal-title">Reject</h4>
-                                <img src="/website_quote_ext/static/src/img/stockhawk_logo_2.jpg" align="right" style="height: auto; width: 150px;" alt="Stockhawk"/>
+                                <t t-if="sale_order.team_id.team_type == 'engine'">
+                                    <img src="/website_quote_ext/static/src/img/stockhawk_logo_2.jpg" align="right" style="height: auto; width: 150px;" alt="Stockhawk"/>
+                                </t>
                             </div>
                             <div class="modal-body">
                                 <p>
@@ -724,7 +730,9 @@
                             <div class="mb8">
                                 <strong>Date:</strong>
                                 <span t-field="sale_order.create_date" t-options='{"widget": "date"}'/>
+                                <t t-if="sale_order.team_id.team_type == 'engine'">
                                    <img src="/website_quote_ext/static/src/img/stockhawk_logo_2.jpg" align="right" style="height: auto; width: 150px;" alt="Stockhawk"/>
+                                </t>
                             </div>
                             <div class="mb8" t-if="sale_order.validity_date">
                                 <strong>Expiration Date:</strong>
@@ -921,7 +929,9 @@
                                             &amp;times;
                                         </button>
                                         <h4 class="modal-title">Accept Order</h4>
-                                        <img src="/website_quote_ext/static/src/img/stockhawk_logo_2.jpg" align="right" style="height: auto; width: 150px;" alt="Stockhawk"/>
+                                        <t t-if="sale_order.team_id.team_type == 'engine'">
+                                            <img src="/website_quote_ext/static/src/img/stockhawk_logo_2.jpg" align="right" style="height: auto; width: 150px;" alt="Stockhawk"/>
+                                        </t>
                                     </div>
                                      <t t-if="sale_order.partner_id.allow_purchase">
                                             <div class="modal-body">
@@ -956,7 +966,9 @@
                                             &amp;times;
                                         </button>
                                         <h4 class="modal-title">Reject</h4>
-                                        <img src="/website_quote_ext/static/src/img/stockhawk_logo_2.jpg" align="right" style="height: auto; width: 150px;" alt="Stockhawk"/>
+                                        <t t-if="sale_order.team_id.team_type == 'engine'">
+                                            <img src="/website_quote_ext/static/src/img/stockhawk_logo_2.jpg" align="right" style="height: auto; width: 150px;" alt="Stockhawk"/>
+                                        </t>
                                     </div>
                                     <div class="modal-body">
                                         <p>
