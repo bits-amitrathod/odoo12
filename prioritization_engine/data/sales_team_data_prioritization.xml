@@ -76,7 +76,10 @@ from ${object.company_id.name}.
 % endif
 
 <p>You can reply to this email if you have any questions.</p>
-<p>Thank you,</p>
+<p>Thank you,<br/>
+   <img src="/website_quote_ext/static/src/img/stockhawk_logo_2.jpg" style="height: auto; width: 150px;" alt="Stockhawk"/>
+
+</p>
 
 <p style="color:#888888;">
 % if object.user_id and object.user_id.signature:
