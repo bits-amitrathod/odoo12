@@ -18,8 +18,8 @@ class RevenueByKa(models.Model):
     total_revenue = fields.Float('Total Revenue')
     order_quota = fields.Integer(string="Order Quota", help="Number of transactions")
     revenue_quota = fields.Integer(string="Revenue Quota", help="Amount")
-    progress_order_quota = fields.Float('Progress of Order Quota')
-    progress_revenue_quota = fields.Float('Progress of Revenue Quota')
+    progress_order_quota = fields.Float('Progress of Order Quota %', group_operator='avg')
+    progress_revenue_quota = fields.Float('Progress of Revenue Quota %', group_operator='avg')
     currency_id = fields.Many2one('res.currency', string='Currency')
 
     @api.model_cr
