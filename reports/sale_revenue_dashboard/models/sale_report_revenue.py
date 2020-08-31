@@ -60,16 +60,20 @@ class SaleReport(models.Model):
 
     delivery_date = fields.Datetime('Delivery Date')
     total_amount = fields.Float('Total')
-    order_quota_progress_per = fields.Float('Order Quota Progress %')
-    revenue_quota_progress_per = fields.Float('Revenue Quota Progress %')
+    order_quota_progress_per = fields.Char('Order Quota Progress %')
+    revenue_quota_progress_per = fields.Char('Revenue Quota Progress %')
 
 
     def _query(self, with_clause='', fields={}, groupby='', from_clause=''):
         with_ = ("WITH %s" % with_clause) if with_clause else ""
+        # (COUNT(s.partner_id) / partner.order_quota::float) * 100
+        # AS
+        # order_quota_progress_per,
+        # (SUM(l.qty_delivered * l.price_reduce) / partner.revenue_quota::float) * 100
+        # AS
+        # revenue_quota_progress_per,
 
         select_ = """
-               (COUNT(s.partner_id)/partner.order_quota::float)*100 AS order_quota_progress_per,
-            (SUM(l.qty_delivered * l.price_reduce)/partner.revenue_quota::float)*100 AS revenue_quota_progress_per,
             min(l.id) as id,
             l.product_id as product_id,
             t.uom_id as product_uom,
@@ -147,10 +151,11 @@ class SaleReport(models.Model):
             partner.country_id,
             partner.commercial_partner_id,
             l.discount,
-           partner.revenue_quota,
-           partner.order_quota,
+          
             s.id %s
         """ % (groupby)
+        # partner.revenue_quota,
+        # partner.order_quota,
 
         return '%s (SELECT %s FROM %s WHERE l.product_id IS NOT NULL GROUP BY %s)' % (with_, select_, from_, groupby_)
 
