@@ -344,155 +344,152 @@ class InventoryNotificationScheduler(models.TransientModel):
         count=0
         for customr in customers:
             count=count+1
-            if count>=785:
-                _logger.info("@Processing Count Of Customer = >")
-                _logger.info(str(count) +" / "+ str(len(customers)))
-                #if (customr.email not in email_queue):
-                _logger.info(customr.email)
-                print("customr.start_date")
-                print(customr.start_date)
-                print("customr.end_date")
-                print(customr.end_date)
-                if (customr.start_date == False and customr.end_date == False) \
-                        or (customr.end_date != False and InventoryNotificationScheduler.string_to_date(
-                    customr.end_date) >= today_start) \
-                        or (customr.start_date != False and InventoryNotificationScheduler.string_to_date(
-                    customr.start_date) <= today_start) \
-                        or (customr.start_date != False and customr.end_date != False and InventoryNotificationScheduler.string_to_date(
-                    customr.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
-                    customr.end_date) >= today_start):
-                    #print("To Customer =")
-                    #print(customr.email)
-                    #email_queue.append(customr.email)
-                    #_logger.info("customer :%r", customr)
-                    to_customer = customr
-                    contacts = self.env['res.partner'].search(
-                        [('parent_id', '=', customr.id), ('email', '!=', ''), ('active', '=', True)])
-                    print("contacts")
-                    print(contacts)
-                    product_list = []
-                    cust_ids = []
-                    cust_ids.append(customr.id)
-                    email_list_cc = []
-                    for contact in contacts:
-                        #if (contact.email not in email_queue):
-                        if (contact.email!=customr.email and contact.email not in email_list_cc):
-                            if (contact.start_date == False and contact.end_date == False) \
-                                    or (contact.start_date == False and InventoryNotificationScheduler.string_to_date(
-                                contact.end_date) and InventoryNotificationScheduler.string_to_date(
-                                contact.end_date) >= today_start) \
-                                    or (contact.end_date == False and InventoryNotificationScheduler.string_to_date(
-                                contact.start_date) and InventoryNotificationScheduler.string_to_date(
-                                contact.start_date) <= today_start) \
-                                    or (InventoryNotificationScheduler.string_to_date(
-                                contact.start_date) and InventoryNotificationScheduler.string_to_date(
-                                contact.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
-                                contact.end_date) and InventoryNotificationScheduler.string_to_date(
-                                contact.end_date) >= today_start):
-                                cust_ids.extend(contact.ids)
-                                print("cc Customer =")
-                                print(contact.email)
-                                email_list_cc.append(contact.email)
-                            #email_queue.append(contact.email)
-                    if (customr.historic_months > 0):
-                        historic_day = customr.historic_months * 30
-                        #_logger.info("historic_day :%r", historic_day)
-                        last_day = fields.Date.to_string(datetime.now() - timedelta(days=historic_day))
-                        #_logger.info("date order  :%r", last_day)
-                        sales = self.env['sale.order'].search(
-                            [('partner_id', 'in', cust_ids), ('date_order', '>', last_day)])
-                    else:
-                        #historic_day = 36 * 30
-                        #_logger.info("historic_day :%r", historic_day)
-                        #last_day = fields.Date.to_string(datetime.now() - timedelta(days=historic_day))
-                        sales = self.env['sale.order'].search([('partner_id', 'in', cust_ids)])
-                    #_logger.info("sales  :%r", sales)
-                    products = {}
-                    for sale in sales:
-                        sale_order_lines = self.env['sale.order.line'].search([('order_id.id', '=', sale.id)])
-                        for line in sale_order_lines:
-                            #_logger.info(" product_id qty_available %r", line.product_id.actual_quantity)
-                            if line.product_id.actual_quantity and line.product_id.actual_quantity is not None and line.product_id.actual_quantity > 0 and line.product_id.product_tmpl_id.sale_ok:
-                                products[line.product_id.id] = line.product_id
-                    subject = "SPS Updated In-Stock Product Report"
-                    descrption = "<strong>Good morning " + customr.name + "</strong>" \
-                                                                          "<br/> <br/> Below are items you have previously requested that are currently in stock. " \
-                                                                          "In addition, below is the link to download full product catalog. Please let us know what" \
-                                                                          " ordering needs we can help provide savings on this week! <br/> <a href='https://www.shopsps.com/downloadCatalog'>Click Here to Download SPS Product Catalog </a>"
-                    header = ['Manufacturer','Catalog number', 'Description', 'Sales Price', 'Quantity On Hand',
-                              'Min Exp. Date',
-                              'Max Exp. Date', 'Unit Of Measure']
-                    columnProps = ['product_brand_id.name','sku_code', 'name', 'customer_price_list', 'actual_quantity', 'minExDate',
-                                   'maxExDate', 'uom_id.name']
-                    closing_content = """
-                                        Please reply to this email or contact your Account Manager to hold product or place an order. 
-                                        <br/> Many Thanks, 
-                                        <br/> SPS Customer Care <br/>
-                                        <table style="height: 96px; width: 601px; float: left;" border="0">
-                                        <tbody>
-                                        <tr style="height: 78px;">
-                                        <td style="width: 156px; height: 78px;">
-                                        <p style="text-align: left;"><strong>Brittany Edwards</strong></p>
-                                        <p style="text-align: left;">412-434-0214</p>
-                                        </td>
-                                        <td style="width: 154px; height: 78px;">
-                                        <p><strong>Gabriella Thomas</strong></p>
-                                        <p>412-745-0324&nbsp;</p>
-                                        </td>
-                                        <td style="width: 157px; height: 78px;">
-                                        <p style="text-align: left;"><strong>Kacie Gerboc</strong></p>
-                                        <p style="text-align: left;">412-745-1325</p>
-                                        </td>
-                                        <td style="width: 123px; height: 78px;">&nbsp;</td>
-                                        </tr>
-                                        <tr style="height: 76px;">
-                                        <td style="width: 156px; height: 76px;">
-                                        <p><strong>Matt Cochran</strong></p>
-                                        <p>412-564-9011</p>
-                                        </td>                                    
-                                        <td style="width: 157px; height: 76px;">
-                                        <p style="text-align: left;"><strong>Andrew Marnoch&nbsp;</strong></p>
-                                        <p style="text-align: left;">412-745-2331&nbsp;&nbsp;</p>
-                                        </td>
-                                        <td style="width: 123px; height: 76px;">
-                                        <p style="text-align: left;"><strong>Nikki Testa</strong></p>
-                                        <p style="text-align: left;">412-248-1284</p>
-                                        </td>
-                                        </tr>
-                                        <tr style="height: 92px;">
-                                        <td style="width: 157px; height: 92px;">
-                                        <p style="text-align: left;"><strong>Rachel Buck&nbsp;</strong></p>
-                                        <p style="text-align: left;">412-745-2343</p>
-                                        </td>
-                                        <td style="width: 123px; height: 92px;">
-                                        <p style="text-align: left;"><strong>Laura Herald</strong></p>
-                                        <p style="text-align: left;">412-745-2344</p>
-                                        </td>
-                                        <td style="width: 154px; height: 76px;">
-                                        <p style="text-align: left;"><strong>Brianna Galonis</strong></p>
-                                        <p style="text-align: left;">412-745-2345&nbsp;</p>
-                                        </td>
-                                        </tr>
-                                        </tbody>
-                                        </table>
-                                        <p style="text-align: left;">&nbsp;</p>
-                                        <p style="font-weight: 400; text-align: center;">&nbsp;</p>
-    
-                                        """
-                    if products:
-                        product_list.extend(list(products.values()))
-                        if customr.user_id.email:
-                            email_list_cc.append(customr.user_id.email)
-                        if customr.account_manager_cust.email:
-                            email_list_cc.append(customr.account_manager_cust.email)
-                        sort_col=True
-                        self.process_email_in_stock_scheduler_template(super_user, customr, subject, descrption,
-                                                                       product_list,
-                                                                       header, columnProps, closing_content,
-                                                                       customr.email,
-                                                                       email_list_cc,sort_col,is_employee=False,partner_id=customr)
+            _logger.info("@Processing Count Of Customer = >")
+            _logger.info(str(count) +" / "+ str(len(customers)))
+            #if (customr.email not in email_queue):
+            _logger.info(customr.email)
+            print("customr.start_date")
+            print(customr.start_date)
+            print("customr.end_date")
+            print(customr.end_date)
+            if (customr.start_date == False and customr.end_date == False) \
+                    or (customr.end_date != False and InventoryNotificationScheduler.string_to_date(
+                customr.end_date) >= today_start) \
+                    or (customr.start_date != False and InventoryNotificationScheduler.string_to_date(
+                customr.start_date) <= today_start) \
+                    or (customr.start_date != False and customr.end_date != False and InventoryNotificationScheduler.string_to_date(
+                customr.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
+                customr.end_date) >= today_start):
+                #print("To Customer =")
+                #print(customr.email)
+                #email_queue.append(customr.email)
+                #_logger.info("customer :%r", customr)
+                to_customer = customr
+                contacts = self.env['res.partner'].search(
+                    [('parent_id', '=', customr.id), ('email', '!=', ''), ('active', '=', True)])
+                print("contacts")
+                print(contacts)
+                product_list = []
+                cust_ids = []
+                cust_ids.append(customr.id)
+                email_list_cc = []
+                for contact in contacts:
+                    #if (contact.email not in email_queue):
+                    if (contact.email!=customr.email and contact.email not in email_list_cc):
+                        if (contact.start_date == False and contact.end_date == False) \
+                                or (contact.start_date == False and InventoryNotificationScheduler.string_to_date(
+                            contact.end_date) and InventoryNotificationScheduler.string_to_date(
+                            contact.end_date) >= today_start) \
+                                or (contact.end_date == False and InventoryNotificationScheduler.string_to_date(
+                            contact.start_date) and InventoryNotificationScheduler.string_to_date(
+                            contact.start_date) <= today_start) \
+                                or (InventoryNotificationScheduler.string_to_date(
+                            contact.start_date) and InventoryNotificationScheduler.string_to_date(
+                            contact.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
+                            contact.end_date) and InventoryNotificationScheduler.string_to_date(
+                            contact.end_date) >= today_start):
+                            cust_ids.extend(contact.ids)
+                            print("cc Customer =")
+                            print(contact.email)
+                            email_list_cc.append(contact.email)
+                        #email_queue.append(contact.email)
+                if (customr.historic_months > 0):
+                    historic_day = customr.historic_months * 30
+                    #_logger.info("historic_day :%r", historic_day)
+                    last_day = fields.Date.to_string(datetime.now() - timedelta(days=historic_day))
+                    #_logger.info("date order  :%r", last_day)
+                    sales = self.env['sale.order'].search(
+                        [('partner_id', 'in', cust_ids), ('date_order', '>', last_day)])
                 else:
-                    pass
+                    #historic_day = 36 * 30
+                    #_logger.info("historic_day :%r", historic_day)
+                    #last_day = fields.Date.to_string(datetime.now() - timedelta(days=historic_day))
+                    sales = self.env['sale.order'].search([('partner_id', 'in', cust_ids)])
+                #_logger.info("sales  :%r", sales)
+                products = {}
+                for sale in sales:
+                    sale_order_lines = self.env['sale.order.line'].search([('order_id.id', '=', sale.id)])
+                    for line in sale_order_lines:
+                        #_logger.info(" product_id qty_available %r", line.product_id.actual_quantity)
+                        if line.product_id.actual_quantity and line.product_id.actual_quantity is not None and line.product_id.actual_quantity > 0 and line.product_id.product_tmpl_id.sale_ok:
+                            products[line.product_id.id] = line.product_id
+                subject = "SPS Updated In-Stock Product Report"
+                descrption = "<strong>Good morning " + customr.name + "</strong>" \
+                                                                      "<br/> <br/> Below are items you have previously requested that are currently in stock. " \
+                                                                      "In addition, below is the link to download full product catalog. Please let us know what" \
+                                                                      " ordering needs we can help provide savings on this week! <br/> <a href='https://www.shopsps.com/downloadCatalog'>Click Here to Download SPS Product Catalog </a>"
+                header = ['Manufacturer','Catalog number', 'Description', 'Sales Price', 'Quantity On Hand',
+                          'Min Exp. Date',
+                          'Max Exp. Date', 'Unit Of Measure']
+                columnProps = ['product_brand_id.name','sku_code', 'name', 'customer_price_list', 'actual_quantity', 'minExDate',
+                               'maxExDate', 'uom_id.name']
+                closing_content = """
+                                    Please reply to this email or contact your Account Manager to hold product or place an order. 
+                                    <br/> Many Thanks, 
+                                    <br/> SPS Customer Care <br/>
+                                    <table style="height: 96px; width: 601px; float: left;" border="0">
+                                    <tbody>
+                                    <tr style="height: 78px;">
+                                    <td style="width: 156px; height: 78px;">
+                                    <p style="text-align: left;"><strong>Brittany Edwards</strong></p>
+                                    <p style="text-align: left;">412-434-0214</p>
+                                    </td>
+                                    <td style="width: 154px; height: 78px;">
+                                    <p><strong>Gabriella Thomas</strong></p>
+                                    <p>412-745-0324&nbsp;</p>
+                                    </td>
+                                    <td style="width: 157px; height: 78px;">
+                                    <p style="text-align: left;"><strong>Kacie Gerboc</strong></p>
+                                    <p style="text-align: left;">412-745-1325</p>
+                                    </td>
+                                    <td style="width: 123px; height: 78px;">&nbsp;</td>
+                                    </tr>
+                                    <tr style="height: 76px;">
+                                    <td style="width: 156px; height: 76px;">
+                                    <p><strong>Matt Cochran</strong></p>
+                                    <p>412-564-9011</p>
+                                    </td>                                    
+                                    <td style="width: 157px; height: 76px;">
+                                    <p style="text-align: left;"><strong>Andrew Marnoch&nbsp;</strong></p>
+                                    <p style="text-align: left;">412-745-2331&nbsp;&nbsp;</p>
+                                    </td>
+                                    <td style="width: 123px; height: 76px;">
+                                    <p style="text-align: left;"><strong>Nikki Testa</strong></p>
+                                    <p style="text-align: left;">412-248-1284</p>
+                                    </td>
+                                    </tr>
+                                    <tr style="height: 92px;">
+                                    <td style="width: 157px; height: 92px;">
+                                    <p style="text-align: left;"><strong>Rachel Buck&nbsp;</strong></p>
+                                    <p style="text-align: left;">412-745-2343</p>
+                                    </td>
+                                    <td style="width: 123px; height: 92px;">
+                                    <p style="text-align: left;"><strong>Laura Herald</strong></p>
+                                    <p style="text-align: left;">412-745-2344</p>
+                                    </td>
+                                    <td style="width: 154px; height: 76px;">
+                                    <p style="text-align: left;"><strong>Brianna Galonis</strong></p>
+                                    <p style="text-align: left;">412-745-2345&nbsp;</p>
+                                    </td>
+                                    </tr>
+                                    </tbody>
+                                    </table>
+                                    <p style="text-align: left;">&nbsp;</p>
+                                    <p style="font-weight: 400; text-align: center;">&nbsp;</p>
+
+                                    """
+                if products:
+                    product_list.extend(list(products.values()))
+                    if customr.user_id.email:
+                        email_list_cc.append(customr.user_id.email)
+                    if customr.account_manager_cust.email:
+                        email_list_cc.append(customr.account_manager_cust.email)
+                    sort_col=True
+                    self.process_email_in_stock_scheduler_template(super_user, customr, subject, descrption,
+                                                                   product_list,
+                                                                   header, columnProps, closing_content,
+                                                                   customr.email,
+                                                                   email_list_cc,sort_col,is_employee=False,partner_id=customr)
             else:
                 pass
         end = time.time()
@@ -1172,7 +1169,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                 msg = "\n Email sent --->  " + local_context['subject'] + "\n --From--" + local_context[
                     'email_from'] + " \n --To-- " + local_context['email_to']
                 _logger.info(msg)
-                template_id = vals['template'].with_context(local_context).send_mail(SUPERUSER_ID_INFO, raise_exception=True,force_send=True,)
+                template_id = vals['template'].with_context(local_context).send_mail(SUPERUSER_ID_INFO, raise_exception=True)
         except:
             erro_msg = "mail sending fail for email id: %r" + vals[
                 'email_to_user'].sudo().email + " sending error report to admin"
