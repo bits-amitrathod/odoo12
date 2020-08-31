@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Sale Revenue Dashboard",
+    'name': "Dashboard KA/BD/NA",
 
      'summary': """Report""",
 

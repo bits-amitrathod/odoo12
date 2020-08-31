@@ -70,7 +70,7 @@
 
         <!-- Action code -->
         <record id="action_revenue_graph_by_ka" model="ir.actions.act_window">
-            <field name="name">Sale Revenue Dashboard</field>
+            <field name="name">Dashboard KA/BD/NA</field>
             <field name="res_model">sale.report.revenue</field>
             <!--<field name="view_type">form</field>-->
             <field name="view_mode">graph</field>
@@ -83,7 +83,7 @@
         </record>
 
           <record id="revenue_report_action_dashboard" model="ir.actions.act_window">
-            <field name="name">Sale Revenue Dashboard</field>
+            <field name="name">Dashboard KA/BD/NA</field>
             <field name="res_model">sale.report.revenue</field>
                <field name="view_type">form</field>
             <field name="view_mode">graph</field>
@@ -112,10 +112,10 @@
 
         <!-- Menus declaration -->
         <menuitem id="sale.revenue_graph_by_ka_menu"
-                  name="Sale Revenue Dashboard"
+                  name="Dashboard KA/BD/NA"
                   action="action_revenue_graph_by_ka"
                   parent="sale.menu_sale_report"
-                  sequence="3"/>
+                  sequence="1"/>
                 <!--parent="sale.menu_sale_report" action_revenue_graph_by_ka       parent="stocked_product_sold_by_ka.key_account_reports"-->
 
         <!-- Menus declaration ends here -->
