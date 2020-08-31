@@ -37,7 +37,7 @@ class InventoryNotificationScheduler(models.TransientModel):
     @api.multi
     def process_notification_scheduler(self):
         _logger.info("process_notification_scheduler called")
-        #self.process_in_stock_scheduler()
+        self.process_in_stock_scheduler()
         self.process_new_product_scheduler()
         self.process_notify_available()
         self.process_packing_list()
@@ -344,10 +344,10 @@ class InventoryNotificationScheduler(models.TransientModel):
         count=0
         for customr in customers:
             count=count+1
-            print("@Processing Count Of Customer = >")
-            print(str(count) +" / "+ str(len(customers)))
+            _logger.info("@Processing Count Of Customer = >")
+            _logger.info(str(count) +" / "+ str(len(customers)))
             #if (customr.email not in email_queue):
-            print(customr.email)
+            _logger.info(customr.email)
             print("customr.start_date")
             print(customr.start_date)
             print("customr.end_date")
@@ -493,8 +493,8 @@ class InventoryNotificationScheduler(models.TransientModel):
             else:
                 pass
         end = time.time()
-        print("Time for Execution")
-        print(end - start)
+        _logger.info("Time for Execution")
+        _logger.info(end - start)
 
     def process_new_product_scheduler(self):
         today_date = datetime.now() - timedelta(days=1)
