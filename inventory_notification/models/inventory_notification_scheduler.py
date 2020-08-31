@@ -38,10 +38,10 @@ class InventoryNotificationScheduler(models.TransientModel):
     def process_notification_scheduler(self):
         _logger.info("process_notification_scheduler called")
         self.process_in_stock_scheduler()
-        #self.process_new_product_scheduler()
-        #self.process_notify_available()
-        #self.process_packing_list()
-        #self.process_on_hold_customer()
+        self.process_new_product_scheduler()
+        self.process_notify_available()
+        self.process_packing_list()
+        self.process_on_hold_customer()
 
     def pick_notification_for_customer(self, picking):
         Stock_Moves = self.env['stock.move'].search([('picking_id', '=', picking.id)])
@@ -344,11 +344,8 @@ class InventoryNotificationScheduler(models.TransientModel):
         count=0
         for customr in customers:
             count=count+1
-            if count>=500:
-                break
             _logger.info("@Processing Count Of Customer = >")
             _logger.info(str(count) +" / "+ str(len(customers)))
-            _logger.info(str(customr.id))
             #if (customr.email not in email_queue):
             _logger.info(customr.email)
             print("customr.start_date")
@@ -1172,7 +1169,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                 msg = "\n Email sent --->  " + local_context['subject'] + "\n --From--" + local_context[
                     'email_from'] + " \n --To-- " + local_context['email_to']
                 _logger.info(msg)
-                template_id = vals['template'].with_context(local_context).send_mail(SUPERUSER_ID_INFO, raise_exception=True)
+                template_id = vals['template'].with_context(local_context).send_mail(SUPERUSER_ID_INFO, raise_exception=True,force_send=True,)
         except:
             erro_msg = "mail sending fail for email id: %r" + vals[
                 'email_to_user'].sudo().email + " sending error report to admin"
