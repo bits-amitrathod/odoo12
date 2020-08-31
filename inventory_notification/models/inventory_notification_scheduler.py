@@ -38,10 +38,10 @@ class InventoryNotificationScheduler(models.TransientModel):
     def process_notification_scheduler(self):
         _logger.info("process_notification_scheduler called")
         self.process_in_stock_scheduler()
-        self.process_new_product_scheduler()
-        self.process_notify_available()
-        self.process_packing_list()
-        self.process_on_hold_customer()
+        #self.process_new_product_scheduler()
+        #self.process_notify_available()
+        #self.process_packing_list()
+        #self.process_on_hold_customer()
 
     def pick_notification_for_customer(self, picking):
         Stock_Moves = self.env['stock.move'].search([('picking_id', '=', picking.id)])
@@ -338,14 +338,17 @@ class InventoryNotificationScheduler(models.TransientModel):
         weekday = days[dayName]
         customers = self.env['res.partner'].search(
             [('customer', '=', True), ('is_parent', '=', True), ('email', '!=', ''), ('active', '=', True),
-             (weekday, '=', True)])
+             (weekday, '=', True)],order='id asc')
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
         start = time.time()
         count=0
         for customr in customers:
             count=count+1
+            if count>=500:
+                break
             _logger.info("@Processing Count Of Customer = >")
             _logger.info(str(count) +" / "+ str(len(customers)))
+            _logger.info(str(customr.id))
             #if (customr.email not in email_queue):
             _logger.info(customr.email)
             print("customr.start_date")
