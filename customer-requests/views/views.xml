@@ -249,7 +249,9 @@
                 </table>
                 <p>
                     Thanks & Regards,<br/>
-                    ODOO
+                    ODOO <br/>
+                    <img src="/website_quote_ext/static/src/img/stockhawk_logo_2.jpg" style="height: auto; width: 150px;" alt="Stockhawk"/>
+
                 </p>
 
             ]]></field>
