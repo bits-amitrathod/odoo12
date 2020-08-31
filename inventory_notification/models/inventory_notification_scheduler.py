@@ -344,7 +344,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         count=0
         for customr in customers:
             count=count+1
-            if count>=515:
+            if count>=785:
                 _logger.info("@Processing Count Of Customer = >")
                 _logger.info(str(count) +" / "+ str(len(customers)))
                 #if (customr.email not in email_queue):
