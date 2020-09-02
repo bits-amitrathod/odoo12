@@ -38,10 +38,6 @@ class InventoryNotificationScheduler(models.TransientModel):
     def process_notification_scheduler(self):
         _logger.info("process_notification_scheduler called")
         self.process_in_stock_scheduler()
-        self.process_new_product_scheduler()
-        self.process_notify_available()
-        self.process_packing_list()
-        self.process_on_hold_customer()
 
     def pick_notification_for_customer(self, picking):
         Stock_Moves = self.env['stock.move'].search([('picking_id', '=', picking.id)])
@@ -333,12 +329,12 @@ class InventoryNotificationScheduler(models.TransientModel):
         #email_queue = []
         today_date = date.today()
         today_start = today_date
-        # days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
-        # dayName = today_date.weekday()
-        # weekday = days[dayName]
+        days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+        dayName = today_date.weekday()
+        weekday = days[dayName]
         customers = self.env['res.partner'].search(
             [('customer', '=', True), ('is_parent', '=', True), ('email', '!=', ''), ('active', '=', True),
-             ('monday', '=', True), ('todays_notification', '=', True)], order='id asc', limit=25)
+             (weekday, '=', True), ('todays_notification', '=', True)], order='id asc', limit=25)
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
         start = time.time()
         count=0
@@ -499,6 +495,13 @@ class InventoryNotificationScheduler(models.TransientModel):
 
     @api.model
     @api.multi
+    def process_notification_scheduler_everyday(self):
+        self.process_new_product_scheduler()
+        self.process_notify_available()
+        self.process_packing_list()
+        self.process_on_hold_customer()
+        self.process_todays_notification_flag_scheduler()
+
     def process_todays_notification_flag_scheduler(self):
         _logger.info('process_todays_notification_flag_scheduler called')
 
