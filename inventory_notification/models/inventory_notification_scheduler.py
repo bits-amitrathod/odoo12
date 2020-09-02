@@ -497,6 +497,18 @@ class InventoryNotificationScheduler(models.TransientModel):
         _logger.info("Time for Execution")
         _logger.info(end - start)
 
+    @api.model
+    @api.multi
+    def process_todays_notification_flag_scheduler(self):
+        _logger.info('process_todays_notification_flag_scheduler called')
+
+        customers = self.env['res.partner'].search(
+            [('customer', '=', True), ('is_parent', '=', True), ('email', '!=', ''), ('active', '=', True),
+             ('monday', '=', True), ('todays_notification', '=', False)])
+
+        for customer in customers:
+            customer.write({'todays_notification': True})
+
     def process_new_product_scheduler(self):
         today_date = datetime.now() - timedelta(days=1)
         today_start = datetime.strftime(today_date, "%Y-%m-%d 00:00:00")
