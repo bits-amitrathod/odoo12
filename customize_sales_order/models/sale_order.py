@@ -31,6 +31,8 @@ class CustomerContract(models.Model):
 
     display_reinstated_date_flag = fields.Integer(default=0, compute="_display_reinstated_date_flag")
 
+    todays_notification = fields.Boolean(string='Todays Notification', default=True)
+
     @api.depends('category_id')
     def _display_reinstated_date_flag(self):
         for record in self:

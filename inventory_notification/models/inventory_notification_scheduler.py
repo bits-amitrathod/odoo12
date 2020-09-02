@@ -333,25 +333,25 @@ class InventoryNotificationScheduler(models.TransientModel):
         #email_queue = []
         today_date = date.today()
         today_start = today_date
-        days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
-        dayName = today_date.weekday()
-        weekday = days[dayName]
+        # days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+        # dayName = today_date.weekday()
+        # weekday = days[dayName]
         customers = self.env['res.partner'].search(
             [('customer', '=', True), ('is_parent', '=', True), ('email', '!=', ''), ('active', '=', True),
-             (weekday, '=', True)])
+             ('monday', '=', True), ('todays_notification', '=', True)], order='id asc', limit=25)
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
         start = time.time()
         count=0
         for customr in customers:
             count=count+1
-            print("@Processing Count Of Customer = >")
-            print(str(count) +" / "+ str(len(customers)))
+            _logger.info("@Processing Count Of Customer = >")
+            _logger.info(str(count) +" / "+ str(len(customers)))
             #if (customr.email not in email_queue):
-            print(customr.email)
-            print("customr.start_date")
-            print(customr.start_date)
-            print("customr.end_date")
-            print(customr.end_date)
+            _logger.info(customr.email)
+            _logger.info("customr.start_date")
+            _logger.info(customr.start_date)
+            _logger.info("customr.end_date")
+            _logger.info(customr.end_date)
             if (customr.start_date == False and customr.end_date == False) \
                     or (customr.end_date != False and InventoryNotificationScheduler.string_to_date(
                 customr.end_date) >= today_start) \
@@ -367,8 +367,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                 to_customer = customr
                 contacts = self.env['res.partner'].search(
                     [('parent_id', '=', customr.id), ('email', '!=', ''), ('active', '=', True)])
-                print("contacts")
-                print(contacts)
+                _logger.info("contacts")
+                _logger.info(contacts)
                 product_list = []
                 cust_ids = []
                 cust_ids.append(customr.id)
@@ -389,8 +389,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                             contact.end_date) and InventoryNotificationScheduler.string_to_date(
                             contact.end_date) >= today_start):
                             cust_ids.extend(contact.ids)
-                            print("cc Customer =")
-                            print(contact.email)
+                            _logger.info("cc Customer =")
+                            _logger.info(contact.email)
                             email_list_cc.append(contact.email)
                         #email_queue.append(contact.email)
                 if (customr.historic_months > 0):
@@ -490,11 +490,12 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                                    header, columnProps, closing_content,
                                                                    customr.email,
                                                                    email_list_cc,sort_col,is_employee=False,partner_id=customr)
+                customr.todays_notification = False
             else:
                 pass
         end = time.time()
-        print("Time for Execution")
-        print(end - start)
+        _logger.info("Time for Execution")
+        _logger.info(end - start)
 
     def process_new_product_scheduler(self):
         today_date = datetime.now() - timedelta(days=1)
