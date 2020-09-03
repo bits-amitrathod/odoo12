@@ -355,7 +355,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                 customr.start_date) <= today_start) \
                     or (customr.start_date != False and customr.end_date != False and InventoryNotificationScheduler.string_to_date(
                 customr.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
-                customr.end_date) >= today_start):
+                customr.end_date) >= today_start)\
+                    or (customr.end_date is None):
                 #print("To Customer =")
                 #print(customr.email)
                 #email_queue.append(customr.email)
@@ -516,7 +517,16 @@ class InventoryNotificationScheduler(models.TransientModel):
              (weekday, '=', True), ('todays_notification', '=', False)])
 
         for customer in customers:
-            if customer.end_date and self.string_to_date(customer.end_date) >= today_start:
+            if (customer.start_date == False and customer.end_date == False) \
+                    or (customer.end_date != False and InventoryNotificationScheduler.string_to_date(
+                customer.end_date) >= today_start) \
+                    or (customer.start_date != False and InventoryNotificationScheduler.string_to_date(
+                customer.start_date) <= today_start) \
+                    or (
+                    customer.start_date != False and customer.end_date != False and InventoryNotificationScheduler.string_to_date(
+                customer.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
+                customer.end_date) >= today_start) \
+                    or (customer.end_date is None):
                 customer.write({'todays_notification': True})
 
     def process_new_product_scheduler(self):
