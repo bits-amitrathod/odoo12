@@ -152,7 +152,7 @@ class sale_order(models.Model):
                 else:
                     sale_ordr.delivery_method_readonly_flag = 1
                     return 1
-                
+
     @api.onchange('carrier_id')
     def onchange_carrier_id(self):
         if self.state in ('draft', 'sent', 'sale'):
