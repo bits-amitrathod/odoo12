@@ -334,7 +334,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         weekday = days[dayName]
         customers = self.env['res.partner'].search(
             [('customer', '=', True), ('is_parent', '=', True), ('email', '!=', ''), ('active', '=', True),
-             (weekday, '=', True), ('todays_notification', '=', True)], order='id asc', limit=25)
+             (weekday, '=', True), ('todays_notification', '=', True)], order='id asc', limit=40)
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
         start = time.time()
         count=0
@@ -486,9 +486,9 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                                    header, columnProps, closing_content,
                                                                    customr.email,
                                                                    email_list_cc,sort_col,is_employee=False,partner_id=customr)
-                customr.todays_notification = False
             else:
                 pass
+            customr.todays_notification = False
         end = time.time()
         _logger.info("Time for Execution")
         _logger.info(end - start)
@@ -506,6 +506,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         _logger.info('process_todays_notification_flag_scheduler called')
 
         today_date = date.today()
+        today_start = today_date
         days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
         dayName = today_date.weekday()
         weekday = days[dayName]
@@ -515,7 +516,8 @@ class InventoryNotificationScheduler(models.TransientModel):
              (weekday, '=', True), ('todays_notification', '=', False)])
 
         for customer in customers:
-            customer.write({'todays_notification': True})
+            if self.string_to_date(customer.end_date) >= today_start:
+                customer.write({'todays_notification': True})
 
     def process_new_product_scheduler(self):
         today_date = datetime.now() - timedelta(days=1)
