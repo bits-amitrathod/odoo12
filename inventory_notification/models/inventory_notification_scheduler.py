@@ -505,9 +505,14 @@ class InventoryNotificationScheduler(models.TransientModel):
     def process_todays_notification_flag_scheduler(self):
         _logger.info('process_todays_notification_flag_scheduler called')
 
+        today_date = date.today()
+        days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+        dayName = today_date.weekday()
+        weekday = days[dayName]
+
         customers = self.env['res.partner'].search(
             [('customer', '=', True), ('is_parent', '=', True), ('email', '!=', ''), ('active', '=', True),
-             ('monday', '=', True), ('todays_notification', '=', False)])
+             (weekday, '=', True), ('todays_notification', '=', False)])
 
         for customer in customers:
             customer.write({'todays_notification': True})
