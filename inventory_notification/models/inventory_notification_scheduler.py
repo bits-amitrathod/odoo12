@@ -516,7 +516,7 @@ class InventoryNotificationScheduler(models.TransientModel):
              (weekday, '=', True), ('todays_notification', '=', False)])
 
         for customer in customers:
-            if self.string_to_date(customer.end_date) >= today_start:
+            if customer.end_date and self.string_to_date(customer.end_date) >= today_start:
                 customer.write({'todays_notification': True})
 
     def process_new_product_scheduler(self):
