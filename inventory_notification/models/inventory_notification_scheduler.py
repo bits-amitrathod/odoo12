@@ -334,11 +334,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         weekday = days[dayName]
         customers = self.env['res.partner'].search(
             [('customer', '=', True), ('is_parent', '=', True), ('email', '!=', ''), ('active', '=', True),
-<<<<<<< HEAD
-             (weekday, '=', True)],order='id asc')
-=======
              (weekday, '=', True), ('todays_notification', '=', True)], order='id asc', limit=40)
->>>>>>> in_stock_notification_changes
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
         start = time.time()
         count=0
@@ -348,17 +344,10 @@ class InventoryNotificationScheduler(models.TransientModel):
             _logger.info(str(count) +" / "+ str(len(customers)))
             #if (customr.email not in email_queue):
             _logger.info(customr.email)
-<<<<<<< HEAD
-            print("customr.start_date")
-            print(customr.start_date)
-            print("customr.end_date")
-            print(customr.end_date)
-=======
             _logger.info("customr.start_date")
             _logger.info(customr.start_date)
             _logger.info("customr.end_date")
             _logger.info(customr.end_date)
->>>>>>> in_stock_notification_changes
             if (customr.start_date == False and customr.end_date == False) \
                     or (customr.end_date != False and InventoryNotificationScheduler.string_to_date(
                 customr.end_date) >= today_start) \
@@ -368,10 +357,6 @@ class InventoryNotificationScheduler(models.TransientModel):
                 customr.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
                 customr.end_date) >= today_start)\
                     or (customr.end_date is None):
-                #print("To Customer =")
-                #print(customr.email)
-                #email_queue.append(customr.email)
-                #_logger.info("customer :%r", customr)
                 to_customer = customr
                 contacts = self.env['res.partner'].search(
                     [('parent_id', '=', customr.id), ('email', '!=', ''), ('active', '=', True)])
@@ -432,8 +417,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                 columnProps = ['product_brand_id.name','sku_code', 'name', 'customer_price_list', 'actual_quantity', 'minExDate',
                                'maxExDate', 'uom_id.name']
                 closing_content = """
-                                    Please reply to this email or contact your Account Manager to hold product or place an order. 
-                                    <br/> Many Thanks, 
+                                    Please reply to this email or contact your Account Manager to hold product or place an order.
+                                    <br/> Many Thanks,
                                     <br/> SPS Customer Care <br/>
                                     <table style="height: 96px; width: 601px; float: left;" border="0">
                                     <tbody>
@@ -456,7 +441,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                                     <td style="width: 156px; height: 76px;">
                                     <p><strong>Matt Cochran</strong></p>
                                     <p>412-564-9011</p>
-                                    </td>                                    
+                                    </td>
                                     <td style="width: 157px; height: 76px;">
                                     <p style="text-align: left;"><strong>Andrew Marnoch&nbsp;</strong></p>
                                     <p style="text-align: left;">412-745-2331&nbsp;&nbsp;</p>
@@ -504,8 +489,6 @@ class InventoryNotificationScheduler(models.TransientModel):
         end = time.time()
         _logger.info("Time for Execution")
         _logger.info(end - start)
-<<<<<<< HEAD
-=======
 
     @api.model
     @api.multi
@@ -541,7 +524,6 @@ class InventoryNotificationScheduler(models.TransientModel):
                 customer.end_date) >= today_start) \
                     or (customer.end_date is None):
                 customer.write({'todays_notification': True})
->>>>>>> in_stock_notification_changes
 
     def process_new_product_scheduler(self):
         today_date = datetime.now() - timedelta(days=1)
