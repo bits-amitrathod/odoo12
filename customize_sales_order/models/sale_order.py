@@ -139,13 +139,21 @@ class sale_order(models.Model):
     @api.one
     def _get_delivery_method_readonly_flag(self):
         for sale_ordr in self:
-            if sale_ordr.state in ('draft', 'sent'):
-                sale_ordr.delivery_method_readonly_flag = 1
-            elif sale_ordr.state == 'sale':
-                stock_pickings = self.env['stock.picking'].search([('sale_id', '=', sale_ordr.id),('picking_type_id', '=', 1)])
-                for stock_picking in stock_pickings:
-                    if stock_picking.state == 'assigned':
-                        sale_ordr.delivery_method_readonly_flag = 1
+            if sale_ordr.state in ('draft', 'sent', 'sale'):
+                if sale_ordr.state == 'sale':
+                    stock_pickings = self.env['stock.picking'].search(
+                        [('sale_id', '=', sale_ordr.id), ('picking_type_id', '=', 1)])
+                    for stock_picking in stock_pickings:
+                        if stock_picking.state == 'assigned' or stock_picking.state == 'draft' or stock_picking.state == 'waiting' \
+                                or stock_picking.state == 'confirmed' or stock_picking.state == 'confirmed':
+                            sale_ordr.delivery_method_readonly_flag = 1
+                            return 1
+                        else:
+                            sale_ordr.delivery_method_readonly_flag = 0
+                            return 0
+                else:
+                    sale_ordr.delivery_method_readonly_flag = 1
+                    return 1
 
     @api.onchange('carrier_id')
     def onchange_carrier_id(self):
