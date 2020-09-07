@@ -52,6 +52,14 @@ class sale_order(models.Model):
                               track_sequence=2, default=lambda self: self.env.user)
     national_account = fields.Many2one('res.users', store=True, readonly=True, string="National Account",
                                        compute="get_national_account")
+    field_read_only = fields.Integer(compute="_get_user")
+
+    @api.one
+    def _get_user(self):
+        if self.env.user.email == "jtennant@surgicalproductsolutions.com":
+            self.field_read_only = 0
+        else:
+            self.field_read_only = 1
 
     @api.one
     def get_account_manager(self):
