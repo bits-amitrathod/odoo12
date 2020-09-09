@@ -47,11 +47,12 @@ class sale_order(models.Model):
     sale_note = fields.Text('Sale Notes')
     carrier_track_ref = fields.Char('Tracking Reference', store=True, readonly=True, compute='_get_carrier_tracking_ref')
     delivery_method_readonly_flag = fields.Integer('Delivery method readonly flag', default=1, compute='_get_delivery_method_readonly_flag')
-    account_manager = fields.Many2one('res.users', store=True, readonly=True, string="Key Account", compute="get_account_manager")
+    account_manager = fields.Many2one('res.users', store=True, readonly=True, string="Key Account",
+                                      compute="get_account_manager", track_visibility='onchange')
     user_id = fields.Many2one('res.users', string='Business Development', index=True, track_visibility='onchange',
                               track_sequence=2, default=lambda self: self.env.user)
     national_account = fields.Many2one('res.users', store=True, readonly=True, string="National Account",
-                                       compute="get_national_account")
+                                       compute="get_national_account", track_visibility='onchange')
     field_read_only = fields.Integer(compute="_get_user")
 
     @api.one
