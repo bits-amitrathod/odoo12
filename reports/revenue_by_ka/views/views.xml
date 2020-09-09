@@ -2,6 +2,32 @@
 <odoo>
     <data>
 
+        <record model="ir.ui.view" id="revenue_ka_graph_view">
+            <field name="name">ka.revenue.view.graph</field>
+            <field name="model">report.ka.revenue</field>
+            <field name="type">graph</field>
+            <field name="arch" type="xml">
+                <graph string="Revenue by KA" orientation="horizontal" stacked="True" type="bar">
+                    <field name="customer" type="row"/>
+                    <field name="progress_revenue_quota" type="measure" string="Revenue"/>
+                </graph>
+            </field>
+        </record>
+
+        <record id="revenue_ka_pivot_view" model="ir.ui.view">
+            <field name="name">ka.revenue.view.pivot</field>
+            <field name="model">report.ka.revenue</field>
+            <field name="type">pivot</field>
+            <field name="arch" type="xml">
+                <pivot string="Revenue by KA">
+                    <field name="customer" type="row"/>
+                    <field name="total_revenue" type="measure"/>
+                    <field name="revenue_quota" type="measure"/>
+                    <field name="progress_revenue_quota" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+
         <!-- Tree view -->
         <record model="ir.ui.view" id="revenue_by_ka_list_view">
               <field name="name">revenue.by.ka.view.list</field>
