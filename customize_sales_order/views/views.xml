@@ -159,9 +159,11 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//group[@name='sales_person']/field[@name='user_id']"  position="after">
-                    <field name="account_manager"/>
-                    <field name="national_account"/>
+                <xpath expr="//group[@name='sales_person']/field[@name='user_id']"  position="replace">
+                    <field name="field_read_only" invisible="1"/>
+                    <field name="user_id" attrs="{'readonly': [('field_read_only', '==', 1)]}"/>
+                    <field name="account_manager" attrs="{'readonly': [('field_read_only', '==', 1)]}"/>
+                    <field name="national_account" attrs="{'readonly': [('field_read_only', '==', 1)]}"/>
                 </xpath>
             </field>
       </record>
