@@ -12,7 +12,7 @@
         <!--Email template -->
         <record id="email_template_sale_custom" model="mail.template">
             <field name="name">Sales Order - Send by Email</field>
-            <field name="email_from">${(object.order_processor.partner_id.email and '&quot;%s&quot; &lt;%s&gt;' % (object.order_processor.partner_id.name, object.order_processor.partner_id.email) or '')|safe}</field>
+            <field name="email_from">${(object.order_processor.email and '&quot;%s&quot; &lt;%s&gt;' % (object.order_processor.name, object.order_processor.email) or '')|safe}</field>
             <field name="subject">${object.company_id.name} ${object.state in ('draft', 'sent') and 'Quotation' or 'Order'} (Ref ${object.name or 'n/a' })</field>
             <field name="partner_to">${object.partner_id.id}</field>
             <field name="email_cc"><![CDATA[${ctx['email_from']}]]></field>
@@ -83,17 +83,19 @@ from ${object.company_id.name}.
 </p>
 
 <p style="color:#888888;">
-% if object.order_processor and object.order_processor.signature:
+<br></br>
+% if object.order_processor and object.order_processor.signature and object.order_processor.signature != '<p><br></p>':
     ${object.order_processor.signature | safe}
 % else:
-    % if object.order_processor and object.order_processor.partner_id and object.order_processor.partner_id.name:
-        ${object.order_processor.partner_id.name | safe}
+    % if object.order_processor and object.order_processor.name:
+        ${object.order_processor.name | safe}
     % endif
-    % if object.order_processor and object.order_processor.partner_id and object.order_processor.partner_id.phone:
+    % if object.order_processor and object.order_processor.phone:
         <br></br>
-        ${object.order_processor.partner_id.phone | safe}
+        ${object.order_processor.phone | safe}
     % endif
 % endif
+
 </p>
 ]]></field>
         </record>
