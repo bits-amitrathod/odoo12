@@ -146,7 +146,7 @@
                     id="sale_quotation_export_act_window"/>
 
         <menuitem id="menu_sale_quotation_export_list_view_wizard" name="Sales Quotation History" action="action_sale_quotation_export_wizard"
-           parent="sale.menu_sale_report" sequence="1"/>
+           parent="sale.menu_sale_report" sequence="26"/>
     </data>
 </odoo>
 

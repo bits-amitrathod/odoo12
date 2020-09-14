@@ -138,6 +138,6 @@
                   name="Gross Sales By Product"
                   action="action_sale_order_groupby_product"
                   parent="sale.menu_sale_report"
-                  sequence="1"/>
+                  sequence="21"/>
     </data>
 </odoo>

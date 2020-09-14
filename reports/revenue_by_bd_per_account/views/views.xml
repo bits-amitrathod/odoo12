@@ -154,7 +154,7 @@
                   name="Revenue By BD Per Account"
                   action="action_revenue_by_bd_per_account"
                   parent="account_closed_by_bd.business_development_reports"
-                  sequence="20"/>
+                  sequence="1"/>
 
          <!--sequence="2"/>-->
 

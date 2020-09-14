@@ -75,7 +75,7 @@
                   name="Compare Sales By Month"
                   action="action_comp_sale_valuation"
                   parent="sale.menu_sale_report"
-                  sequence="1"/>
+                  sequence="23"/>
     </data>
 
 </odoo>

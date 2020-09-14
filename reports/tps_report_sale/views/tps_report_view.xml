@@ -75,7 +75,7 @@
             id="menu_tps_report"
             name="Total Product Sales"
             parent="sale.menu_sale_report"
-            sequence="5"
+            sequence="14"
             action="action_stock_quantity_history"/>
 
 </odoo>
