@@ -77,15 +77,22 @@ from ${object.company_id.name}.
 
 <p>You can reply to this email if you have any questions.</p>
 <p>Thank you,<br/>
-   ${object.order_processor.partner_id.name | safe}
    % if object.team_id.team_type == 'engine':
         <img src="/website_quote_ext/static/src/img/stockhawk_logo_2.jpg" style="height: auto; width: 150px;" alt="Stockhawk"/>
     % endif
 </p>
 
 <p style="color:#888888;">
-% if object.user_id and object.user_id.signature:
-    ${object.user_id.signature | safe}
+% if object.order_processor and object.order_processor.signature:
+    ${object.order_processor.signature | safe}
+% else:
+    % if object.order_processor and object.order_processor.partner_id and object.order_processor.partner_id.name:
+        ${object.order_processor.partner_id.name | safe}
+    % endif
+    % if object.order_processor and object.order_processor.partner_id and object.order_processor.partner_id.phone:
+        <br></br>
+        ${object.order_processor.partner_id.phone | safe}
+    % endif
 % endif
 </p>
 ]]></field>
