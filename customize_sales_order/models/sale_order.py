@@ -97,7 +97,7 @@ class sale_order(models.Model):
             for pick in self.picking_ids:
                 if pick.picking_type_id.name == 'Pick':
                     pick.note = val['sale_note'] if ('sale_note' in val.keys()) else self.sale_note
-                    
+
         if self.carrier_id and self.state in 'sale':
             self.env['stock.picking'].search([('sale_id', '=', self.id), ('picking_type_id', '=', 5)]).write({'carrier_id':self.carrier_id.id})
 
