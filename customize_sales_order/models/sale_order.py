@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import re
 from odoo import models, fields, api
 from odoo import _
 from odoo.exceptions import UserError
@@ -50,6 +50,17 @@ class sale_order(models.Model):
                               track_sequence=2, default=lambda self: self.env.user)
     national_account = fields.Many2one('res.users', store=True, readonly=True, string="National Account",
                                        compute="get_national_account")
+
+    is_signature = fields.Integer(compute="_is_signature")
+
+    @api.depends('signature')
+    def _is_signature(self):
+        clean = re.compile('<.*?>')
+        clean_text = re.sub(clean, '', self.order_processor.signature)
+        if len(clean_text.strip()) > 0:
+            self.is_signature = 1
+        else:
+            self.is_signature = 0
 
     @api.one
     def get_account_manager(self):

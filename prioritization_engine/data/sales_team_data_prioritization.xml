@@ -84,7 +84,7 @@ from ${object.company_id.name}.
 
 <p style="color:#888888;">
 <br></br>
-% if object.order_processor and object.order_processor.signature and object.order_processor.signature != '<p><br></p>':
+% if object.is_signature:
     ${object.order_processor.signature | safe}
 % else:
     % if object.order_processor and object.order_processor.name:
