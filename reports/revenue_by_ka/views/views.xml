@@ -1,15 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-
+        <record id="revenue_by_ka_dashboard_view" model="ir.ui.view">
+            <field name="name">ka.revenue.view.dashboard</field>
+            <field name="model">report.ka.revenue</field>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+                <dashboard>
+                    <view type="graph" ref="revenue_by_ka.revenue_ka_graph_view"/>
+                    <group>
+                        <group>
+                                <!--<aggregate name="leads" string="Leads" group_operator="count_distinct" field="id" measure="__count__"/>-->
+                                <!--<aggregate name="days_to_convert" string="Days To Opportunity" group_operator="avg" field="days_to_convert"/>-->
+                                <!--<aggregate name="days_to_assign" string="Days to Assign" field="day_open" group_operator="avg" value_label="day(s)"/>-->
+                                <formula name="progress_revenue_quota" string="% Revenue Quota" value="record.total_revenue / record.revenue_quota" widget="percentage"/>
+                                <!--<aggregate name="planned_revenue" string="Expected Revenue" field="planned_revenue"-->
+                                <!--group_operator="sum" widget="monetary"/>-->
+                                <!--<aggregate name="expected_revenue" string="Prorated Revenue" field="expected_revenue" group_operator="sum" widget="monetary"/>-->
+                                <!--<aggregate name="day_close" string="Days to Close" field="day_close" group_operator="avg" value_label="day(s)"/>-->
+                                <!--<aggregate name="opportunities" string="Opportunities" field="id" domain="[('type','=','opportunity')]" group_operator="count" invisible="1"/>-->
+                        </group>
+                        <!--<group>-->
+                            <!--<widget name="pie_chart" title="Sales Teams" attrs="{'groupby': 'team_id'}"/>-->
+                            <!--<widget name="pie_chart" title="Medium" attrs="{'groupby': 'medium_id'}"/>-->
+                        <!--</group>-->
+                    </group>
+                    <view type="pivot" ref="revenue_by_ka.revenue_ka_pivot_view"/>
+                </dashboard>
+            </field>
+        </record>
         <record model="ir.ui.view" id="revenue_ka_graph_view">
             <field name="name">ka.revenue.view.graph</field>
             <field name="model">report.ka.revenue</field>
             <field name="type">graph</field>
             <field name="arch" type="xml">
                 <graph string="Revenue by KA" orientation="horizontal" stacked="True" type="bar">
-                    <field name="customer" type="row"/>
-                    <field name="progress_revenue_quota" type="measure" string="Revenue"/>
+                    <field name="key_account" type="row"/>
+                    <field name="total_revenue" type="measure" string="Revenue"/>
                 </graph>
             </field>
         </record>
@@ -20,7 +47,10 @@
             <field name="type">pivot</field>
             <field name="arch" type="xml">
                 <pivot string="Revenue by KA">
-                    <field name="customer" type="row"/>
+                    <field name="key_account" type="row"/>
+                    <field name="no_of_orders" type="measure"/>
+                    <field name="order_quota" type="measure"/>
+                    <field name="progress_order_quota" type="measure"/>
                     <field name="total_revenue" type="measure"/>
                     <field name="revenue_quota" type="measure"/>
                     <field name="progress_revenue_quota" type="measure"/>
@@ -34,17 +64,17 @@
               <field name="model">report.ka.revenue</field>
               <field name="priority">20</field>
               <field name="arch" type="xml">
-                <tree create="false" edit="false" delete="false">
-                <field name="currency_id" invisible="1"/>
-                <field name="customer"/>
-                <field name="key_account"/>
-                <field name="no_of_orders"/>
-                <field name="order_quota"/>
-                <field name="progress_order_quota"/>
-                <field name="total_revenue" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-                <field name="revenue_quota" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-                <field name="progress_revenue_quota"/>
-                </tree>
+                  <tree create="false" edit="false" delete="false">
+                        <field name="currency_id" invisible="1"/>
+                        <field name="customer"/>
+                        <field name="key_account"/>
+                        <field name="no_of_orders"/>
+                        <field name="order_quota"/>
+                        <field name="progress_order_quota"/>
+                        <field name="total_revenue" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                        <field name="revenue_quota" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                        <field name="progress_revenue_quota"/>
+                    </tree>
               </field>
         </record>
 

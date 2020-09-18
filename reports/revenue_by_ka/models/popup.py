@@ -39,18 +39,19 @@ class KaRevenueReportPopup(models.TransientModel):
         tree_view_id = self.env.ref('revenue_by_ka.revenue_by_ka_list_view').id
         graph_view_id = self.env.ref('revenue_by_ka.revenue_ka_graph_view').id
         pivot_view_id = self.env.ref('revenue_by_ka.revenue_ka_pivot_view').id
+        dashboard_view_id = self.env.ref('revenue_by_ka.revenue_by_ka_dashboard_view').id
         form_view_id = self.env.ref('revenue_by_ka.revenue_by_ka_form_view').id
         res_model = 'report.ka.revenue'
         margins_context = {'start_date': start_date, 'end_date': end_date, 'key_account': self.key_account.id,
                            'date_difference': date_difference}
 
-        self.env[res_model].with_context(margins_context).delete_and_create()
+        self.env['report.ka.revenue'].with_context(margins_context).delete_and_create()
 
         group_by_domain = ['key_account']
 
         action = {
             'type': 'ir.actions.act_window',
-            'views': [(tree_view_id, 'tree'), (form_view_id, 'form'), (graph_view_id, 'graph'), (pivot_view_id, 'pivot')],
+            'views': [(tree_view_id, 'tree'), (form_view_id, 'form'), (dashboard_view_id, 'dashboard')],
             'view_mode': 'tree, form, graph, pivot',
             'name': 'Revenue By Key Account',
             'res_model': res_model,
