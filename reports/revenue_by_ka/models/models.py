@@ -19,23 +19,20 @@ class RevenueByKa(models.Model):
     total_revenue = fields.Float('Total Revenue')
     order_quota = fields.Integer(string="Order Quota", help="Number of transactions")
     revenue_quota = fields.Integer(string="Revenue Quota", help="Amount")
-    progress_order_quota = fields.Float('Progress of Order Quota %', compute="_get_progress_order_quota",
-                                        digits=dp.get_precision('Product Price'), store=True)
-    progress_revenue_quota = fields.Float('Progress of Revenue Quota %', compute="_get_progress_revenue_quota",
-                                          digits=dp.get_precision('Product Price'), store=True)
+    progress_order_quota = fields.Float('Progress of Order Quota %', digits=dp.get_precision('Product Price'))
+    progress_revenue_quota = fields.Float('Progress of Revenue Quota %', digits=dp.get_precision('Product Price'))
     currency_id = fields.Many2one('res.currency', string='Currency')
 
-    @api.multi
-    def _get_progress_order_quota(self):
-        for record in self:
-            if record.order_quota > 0:
-                record.progress_order_quota = (record.no_of_orders/record.order_quota)*100
-
-    @api.multi
-    def _get_progress_revenue_quota(self):
-        for record in self:
-            if record.revenue_quota > 0:
-                record.progress_revenue_quota = (record.total_revenue/record.revenue_quota)*100
+    @api.model
+    def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
+        res = super(RevenueByKa, self).read_group(domain, fields, groupby, offset, limit=limit, orderby=orderby, lazy=lazy)
+        for line in res:
+            if 'order_quota' in line and 'revenue_quota' in line:
+                if line['order_quota'] > 0:
+                    line['progress_order_quota'] = (line['no_of_orders']/line['order_quota'])*100
+                if line['revenue_quota'] > 0:
+                    line['progress_revenue_quota'] = (line['total_revenue'] / line['revenue_quota'])*100
+        return res
 
     @api.model_cr
     def init(self):
@@ -114,7 +111,7 @@ class RevenueByKa(models.Model):
         return datetime.datetime.strptime(str(date_string), DEFAULT_SERVER_DATE_FORMAT).date()
 
 
-class RevenueByKa(models.Model):
+class RevenueByKaGraph(models.Model):
     _name = 'report.ka.revenue.graph'
     _auto = False
 

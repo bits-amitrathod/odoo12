@@ -8,23 +8,6 @@
             <field name="arch" type="xml">
                 <dashboard>
                     <view type="graph" ref="revenue_by_ka.revenue_ka_graph_view"/>
-                    <group>
-                        <group>
-                                <!--<aggregate name="leads" string="Leads" group_operator="count_distinct" field="id" measure="__count__"/>-->
-                                <!--<aggregate name="days_to_convert" string="Days To Opportunity" group_operator="avg" field="days_to_convert"/>-->
-                                <!--<aggregate name="days_to_assign" string="Days to Assign" field="day_open" group_operator="avg" value_label="day(s)"/>-->
-                                <formula name="progress_revenue_quota" string="% Revenue Quota" value="record.total_revenue / record.revenue_quota" widget="percentage"/>
-                                <!--<aggregate name="planned_revenue" string="Expected Revenue" field="planned_revenue"-->
-                                <!--group_operator="sum" widget="monetary"/>-->
-                                <!--<aggregate name="expected_revenue" string="Prorated Revenue" field="expected_revenue" group_operator="sum" widget="monetary"/>-->
-                                <!--<aggregate name="day_close" string="Days to Close" field="day_close" group_operator="avg" value_label="day(s)"/>-->
-                                <!--<aggregate name="opportunities" string="Opportunities" field="id" domain="[('type','=','opportunity')]" group_operator="count" invisible="1"/>-->
-                        </group>
-                        <!--<group>-->
-                            <!--<widget name="pie_chart" title="Sales Teams" attrs="{'groupby': 'team_id'}"/>-->
-                            <!--<widget name="pie_chart" title="Medium" attrs="{'groupby': 'medium_id'}"/>-->
-                        <!--</group>-->
-                    </group>
                     <view type="pivot" ref="revenue_by_ka.revenue_ka_pivot_view"/>
                 </dashboard>
             </field>
