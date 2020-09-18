@@ -115,11 +115,11 @@ class sale_order(models.Model):
 
     def write(self, val):
         # Add note in pick delivery
-        if self.state in 'sale':
+        if self.state and self.state in 'sale':
             for pick in self.picking_ids:
                 pick.note = val['sale_note'] if ('sale_note' in val.keys()) else self.sale_note
 
-        if self.carrier_id and self.state in 'sale':
+        if self.carrier_id and self.state and self.state in 'sale':
             self.env['stock.picking'].search([('sale_id', '=', self.id), ('picking_type_id', '=', 5)]).write({'carrier_id':self.carrier_id.id})
 
         # if 'sale_note' in val or self.sale_note:
