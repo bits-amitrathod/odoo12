@@ -19,7 +19,12 @@
             <field name="arch" type="xml">
                 <graph string="Revenue by KA" orientation="horizontal" stacked="True" type="bar">
                     <field name="key_account" type="row"/>
-                    <field name="total_revenue" type="measure" string="Revenue"/>
+                    <field name="no_of_orders" type="measure"/>
+                    <field name="order_quota" type="measure"/>
+                    <field name="total_revenue" type="measure"/>
+                    <field name="revenue_quota" type="measure"/>
+                    <field name="progress_order_quota" type="measure" string="Progress Order Quota %"/>
+                    <field name="progress_revenue_quota" type="measure" string="Progress Revenue Quota %"/>
                 </graph>
             </field>
         </record>

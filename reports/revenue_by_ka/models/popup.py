@@ -51,8 +51,8 @@ class KaRevenueReportPopup(models.TransientModel):
 
         action = {
             'type': 'ir.actions.act_window',
-            'views': [(tree_view_id, 'tree'), (form_view_id, 'form'), (dashboard_view_id, 'dashboard')],
-            'view_mode': 'tree, form, graph, pivot',
+            'views': [(dashboard_view_id, 'dashboard'), (tree_view_id, 'tree'), (form_view_id, 'form')],
+            'view_mode': 'dashboard, tree, form',
             'name': 'Revenue By Key Account',
             'res_model': res_model,
             'context': {'group_by': group_by_domain},
