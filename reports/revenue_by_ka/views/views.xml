@@ -156,10 +156,15 @@
                 <form string="Export Revenue By Key Account Report">
                     <group>
                         <group>
-                            <field name="compute_at_date" widget="radio"/>
-                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
-                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <field name="start_month"/>
+                            <field name="start_year"/>
                         </group>
+                        <group>
+                            <field name="end_month"/>
+                            <field name="end_year"/>
+                        </group>
+                    </group>
+                    <group>
                         <group>
                             <field name="key_account"/>
                         </group>

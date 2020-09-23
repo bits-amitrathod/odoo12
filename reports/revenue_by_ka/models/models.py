@@ -2,9 +2,11 @@
 
 from odoo import api, fields, models, tools
 import datetime
+import calendar
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, pycompat, misc
 import logging
 import odoo.addons.decimal_precision as dp
+from dateutil import relativedelta
 
 _logger = logging.getLogger(__name__)
 
@@ -116,49 +118,55 @@ class RevenueByKa(models.Model):
 class RevenueByKaExport(models.TransientModel):
     _name = 'report.ka.revenue.export'
 
-    compute_at_date = fields.Selection([
-        (0, 'Show All'),
-        (1, 'Date Range ')
-    ], string="Compute", default=0, help="Choose Show All or from a specific date in the past.")
+    start_month = fields.Selection([('01', 'January'), ('02', 'February'), ('03', 'March'), ('04', 'April'),
+                                    ('05', 'May'), ('06', 'June'), ('07', 'July'), ('08', 'August'),
+                                    ('09', 'September'),
+                                    ('10', 'October'), ('11', 'November'), ('12', 'December')], 'Start Month',
+                                   required=True)
 
-    start_date = fields.Date('Start Date', default=(fields.date.today() - datetime.timedelta(days=31)),
-                             help="Choose a date to get the Revenu By Key Account at that  Start date")
-    end_date = fields.Date('End Date',default=fields.date.today(), help="Choose a date to get the Revenue By Key Account at that  End date")
+    start_year = fields.Selection([(num, str(num)) for num in range(2010, (datetime.datetime.now().year) + 20)],
+                                  'Start Year', default=datetime.datetime.now().year, required=True)
+
+    end_month = fields.Selection([('01', 'January'), ('02', 'February'), ('03', 'March'), ('04', 'April'),
+                                  ('05', 'May'), ('06', 'June'), ('07', 'July'), ('08', 'August'), ('09', 'September'),
+                                  ('10', 'October'), ('11', 'November'), ('12', 'December')], 'End Month',
+                                 required=True)
+
+    end_year = fields.Selection([(num, str(num)) for num in range(2010, (datetime.datetime.now().year) + 20)],
+                                'End Year', default=datetime.datetime.now().year, required=True)
+
     key_account = fields.Many2one('res.users', string="Key Account", domain="[('active', '=', True), "
                                                                             "('share','=',False)]")
 
     def download_excel_ka_revenue(self):
 
-        if self.compute_at_date:
-            e_date = self.string_to_date(str(self.end_date))
-            e_date = e_date + datetime.timedelta(days=1)
-            s_date = self.string_to_date(str(self.start_date))
+        start_date = datetime.datetime.strptime(str(self.start_year) + "-" + str(self.start_month) + "-01",
+                                                "%Y-%m-%d").date()
+
+        end_date_custom = datetime.datetime.strptime(str(self.end_year) + "-" + str(self.end_month) + "-15", "%Y-%m-%d")
+
+        end_date = datetime.datetime(end_date_custom.year, end_date_custom.month,
+                                     calendar.mdays[end_date_custom.month]).date()
+
+        date_difference = relativedelta.relativedelta(end_date, start_date)
+        date_difference = date_difference.months + 1
+
+        if start_date and end_date:
+            e_date = self.string_to_date(str(end_date))
+            s_date = self.string_to_date(str(start_date))
+
             if self.key_account and self.key_account is not None:
                 return {
                     'type': 'ir.actions.act_url',
                     'url': '/web/export/revenue_by_ka_export/' + str(s_date) + '/' + str(e_date) + '/' +
-                           str(self.key_account.id),
+                           str(self.key_account.id) + '/' + str(date_difference),
                     'target': 'new'
                 }
             else:
                 return {
                     'type': 'ir.actions.act_url',
-                    'url': '/web/export/revenue_by_ka_export/' + str(s_date) + '/' + str(e_date) + '/' + str('none'),
-                    'target': 'new'
-                }
-        else:
-            if self.key_account:
-                return {
-                    'type': 'ir.actions.act_url',
-                    'url': '/web/export/revenue_by_ka_export/' + str('all') + '/' + str('all') + '/' +
-                           str(self.key_account.id),
-                    'target': 'new'
-                }
-            else:
-                return {
-                    'type': 'ir.actions.act_url',
-                    'url': '/web/export/revenue_by_ka_export/' + str('all') + '/' + str('all') + '/' + str(
-                        'none'),
+                    'url': '/web/export/revenue_by_ka_export/' + str(s_date) + '/' + str(e_date) + '/' + str('none')
+                           + '/' + str(date_difference),
                     'target': 'new'
                 }
 

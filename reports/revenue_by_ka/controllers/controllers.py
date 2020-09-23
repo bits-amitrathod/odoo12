@@ -75,64 +75,73 @@ class StockedProductSoldByKa(http.Controller):
         fp.close()
         return data
 
-    @http.route('/web/export/revenue_by_ka_export/<string:start_date>/<string:end_date>/<string:key_account_id>', type='http',
-                auth="public")
+    @http.route('/web/export/revenue_by_ka_export/<string:start_date>/<string:end_date>/<string:key_account_id>'
+                '/<string:date_difference>', type='http', auth="public")
     @serialize_exception
-    def download_document_xl(self, start_date, end_date, key_account_id, token=1, debug=1, **kw):
+    def download_document_xl(self, start_date, end_date, key_account_id, date_difference, token=1, debug=1, **kw):
 
         select_query = """
-                SELECT
-                ROW_NUMBER () OVER (ORDER BY RP.id) AS id, 
-                RP.name                                     AS customer, 
-                RPS.name                                    AS key_account,
-                COUNT(SO.partner_id)                        AS no_of_orders, 
-                SUM(SOL.qty_delivered * SOL.price_reduce)   AS total_revenue, 
-                RP.order_quota                              AS order_quota, 
-                RP.revenue_quota                            AS revenue_quota,
-                CONCAT(ROUND((COUNT(SO.partner_id)/RP.order_quota::float)*100), '%') AS progress_order_quota,
-                CONCAT(ROUND((SUM(SOL.qty_delivered * SOL.price_reduce)/RP.revenue_quota::float)*100), '%') AS progress_revenue_quota,
-                date_trunc('month', SP.date_done)   AS delivery_date
-                FROM public.res_partner RP
-                
-                INNER JOIN 
-                    public.res_users RU
-                ON
-                    RP.account_manager_cust = RU.id
-                INNER JOIN 
-                    public.res_partner RPS
-                ON 
-                    RU.partner_id = RPS.id
-                INNER JOIN 
-                    public.sale_order SO 
-                ON 
-                    RP.id = SO.partner_id
-                INNER JOIN 
-                    (SELECT DISTINCT ON (order_id) order_id, qty_delivered, price_reduce, currency_id FROM sale_order_line) AS SOL
-                ON 
-                    SO.id = SOL.order_id
-                INNER JOIN 
-                    (SELECT DISTINCT ON (origin) origin,date_done,sale_id  FROM stock_picking WHERE picking_type_id = 5 AND state = 'done' ORDER BY origin) AS SP 
-                ON 
-                    SO.id = SP.sale_id 
+                        SELECT 
+                            ROW_NUMBER () OVER (ORDER BY RP.id)         AS id, 
+                            RP.name                                     AS customer, 
+                            RPS.name                                    AS key_account,
+                            SOL.currency_id                             AS currency_id,
+                            CASE WHEN COUNT(SO.no_of_order) > 0 THEN COUNT(SO.no_of_order) ELSE 0 END AS no_of_orders,
+                            CASE WHEN SUM(SOL.revenue) > 0 THEN SUM(SOL.revenue) ELSE 0 END AS total_revenue,
+
+                            """
+        select_query = select_query + "ROUND(RP.order_quota)*" + str(date_difference) + " AS order_quota, " + \
+                       " CASE WHEN ROUND(RP.order_quota) > 0 THEN COUNT(SO.no_of_order)/(ROUND(RP.order_quota)*" + \
+                       str(date_difference) + ")*100 ELSE 0 END AS progress_order_quota," + \
+                       "RP.revenue_quota *" + str(date_difference) + " AS revenue_quota," + \
+                       "CASE WHEN RP.revenue_quota > 0 THEN SUM(SOL.revenue)/(RP.revenue_quota*" + str(
+            date_difference) + \
+                       ")*100 ELSE 0 END AS progress_revenue_quota"
+
+        select_query = select_query + """
+
+                        FROM public.res_partner RP
                         
-                WHERE SO.state NOT IN ('cancel', 'void') AND RP.account_manager_cust IS NOT NULL
+                        INNER JOIN 
+                            public.res_users RU
+                        ON
+                            RP.account_manager_cust = RU.id
+                        INNER JOIN 
+                            public.res_partner RPS
+                        ON 
+                            RU.partner_id = RPS.id
 
-               """
+                        LEFT JOIN 
+                            (SELECT id, COUNT(sale_order.id) AS no_of_order, sale_order.partner_id, sale_order.create_date 
+                                FROM public.sale_order sale_order
+                            LEFT JOIN (SELECT DISTINCT ON (origin) origin, date_done, sale_id 
+                                FROM stock_picking WHERE picking_type_id = 5 AND state = 'done' ORDER BY origin) AS SP 
+                            ON sale_order.id = SP.sale_id
+                            WHERE state not in ('cancel', 'void') AND """
 
-        if start_date != "all" and end_date != "all":
-            select_query = select_query + " AND SP.date_done BETWEEN '" + str(
-                start_date) + "'" + " AND '" + str(self.string_to_date(end_date) + datetime.timedelta(days=1)) + "'"
+        select_query = select_query + "SP.date_done >= '" + str(start_date) + "' AND SP.date_done <= '" + \
+                       str(end_date) + "'"
+
+        select_query = select_query + """   GROUP BY id, partner_id) AS SO ON RP.id = SO.partner_id
+
+                        LEFT JOIN 
+                            (SELECT DISTINCT ON (order_id) order_id, SUM(qty_delivered * price_reduce) AS revenue, currency_id 
+                                FROM sale_order_line
+                                GROUP BY order_id, currency_id) AS SOL ON SO.id = SOL.order_id
+
+                        WHERE RP.account_manager_cust IS NOT NULL          
+
+                    """
 
         if key_account_id != "none":
             select_query = select_query + "AND RP.account_manager_cust = '" + str(key_account_id) + "'"
 
         group_by = """
-                           GROUP BY
-                                RP.id, SO.partner_id, RP.name, RPS.name, RP.order_quota, RP.revenue_quota,
-                                date_trunc('month', SP.date_done)  
-                            
-                            ORDER BY RPS.name          
-                               """
+                                GROUP BY
+                                    RP.id, RPS.name, SO.no_of_order, SOL.currency_id
+                                    
+                                    ORDER BY RPS.name
+                                    """
 
         select_query = select_query + group_by
 
