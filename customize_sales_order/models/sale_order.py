@@ -83,16 +83,23 @@ class sale_order(models.Model):
         for so in self:
             so.national_account = so.partner_id.national_account_rep.id
 
-    @api.model
-    def create(self, vals):
-        # add account manager
-        if 'partner_id' in vals and vals['partner_id'] is not None:
-            res_partner = self.env['res.partner'].search([('id', '=', vals['partner_id'])])
-            if res_partner and res_partner.account_manager_cust and res_partner.account_manager_cust.id:
-                vals['account_manager'] = res_partner.account_manager_cust.id
-            if res_partner and res_partner.national_account_rep and res_partner.national_account_rep.id:
-                vals['national_account'] = res_partner.national_account_rep.id
-        return super(sale_order, self).create(vals)
+    @api.multi
+    @api.onchange('partner_id')
+    def onchange_partner_id(self):
+        """
+        Update the following fields when the partner is changed:
+        - KA
+        - BD
+        - NA
+        """
+        values = {}
+        if self.partner_id and self.partner_id.user_id and self.partner_id.user_id.id:
+            values['user_id'] = self.partner_id.user_id.id
+        if self.partner_id and self.partner_id.account_manager_cust and self.partner_id.account_manager_cust.id:
+            values['account_manager'] = self.partner_id.account_manager_cust.id
+        if self.partner_id and self.partner_id.national_account_rep and self.partner_id.national_account_rep.id:
+            values['national_account'] = self.partner_id.national_account_rep.id
+        self.update(values)
 
     @api.depends('order_line.price_total')
     def _amount_all(self):
@@ -114,6 +121,7 @@ class sale_order(models.Model):
             })
 
     def write(self, val):
+        super(sale_order, self).write(val)
         # Add note in pick delivery
         if self.state and self.state in 'sale':
             for pick in self.picking_ids:
@@ -136,13 +144,6 @@ class sale_order(models.Model):
                     'author_id': self.env.user.partner_id.id,
                 }
                 self.env['mail.message'].sudo().create(stock_picking_val)
-
-        # add account manager
-        if self.partner_id and self.partner_id.account_manager_cust and self.partner_id.account_manager_cust.id:
-            val['account_manager'] = self.partner_id.account_manager_cust.id
-        if self.partner_id and self.partner_id.national_account_rep and self.partner_id.national_account_rep.id:
-            val['national_account'] = self.partner_id.national_account_rep.id
-        return super(sale_order, self).write(val)
 
     @api.one
     def _get_carrier_tracking_ref(self):
