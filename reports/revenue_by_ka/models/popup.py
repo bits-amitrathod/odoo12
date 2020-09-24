@@ -34,7 +34,11 @@ class KaRevenueReportPopup(models.TransientModel):
         end_date = datetime.datetime(end_date_custom.year, end_date_custom.month, calendar.mdays[end_date_custom.month]).date()
 
         date_difference = relativedelta.relativedelta(end_date, start_date)
-        date_difference = date_difference.months + 1
+        year_difference = date_difference.years
+        add_months = 0
+        if year_difference > 0:
+            add_months = year_difference * 12
+        date_difference = date_difference.months + add_months + 1
 
         tree_view_id = self.env.ref('revenue_by_ka.revenue_by_ka_list_view').id
         graph_view_id = self.env.ref('revenue_by_ka.revenue_ka_graph_view').id

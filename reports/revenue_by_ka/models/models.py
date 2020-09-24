@@ -19,7 +19,7 @@ class RevenueByKa(models.Model):
     key_account = fields.Many2one('res.users', 'Key Account')
     no_of_orders = fields.Integer('No. of orders')
     total_revenue = fields.Float('Total Revenue')
-    order_quota = fields.Integer(string="Order Quota", help="Number of transactions")
+    order_quota = fields.Float(string="Order Quota", help="Number of transactions", digits=dp.get_precision('Product Price'))
     revenue_quota = fields.Integer(string="Revenue Quota", help="Amount")
     progress_order_quota = fields.Float('Progress of Order Quota %', digits=dp.get_precision('Product Price'))
     progress_revenue_quota = fields.Float('Progress of Revenue Quota %', digits=dp.get_precision('Product Price'))
@@ -60,10 +60,10 @@ class RevenueByKa(models.Model):
                     CASE WHEN SUM(SOL.revenue) > 0 THEN SUM(SOL.revenue) ELSE 0 END AS total_revenue,
                     
                     """
-            select_query = select_query + " CASE WHEN ROUND(RP.order_quota) > 0 THEN ROUND(RP.order_quota)*" + \
+            select_query = select_query + " CASE WHEN RP.order_quota > 0 THEN RP.order_quota*" + \
                            str(date_difference) + " ELSE 0 END AS order_quota, " + \
-                           " CASE WHEN ROUND(RP.order_quota) > 0 THEN COUNT(SO.no_of_order)/(ROUND(RP.order_quota)*" + \
-                            str(date_difference) + ")*100 ELSE 0 END AS progress_order_quota," + \
+                           " CASE WHEN RP.order_quota > 0 THEN (COUNT(SO.no_of_order)/(RP.order_quota*" + \
+                            str(date_difference) + "))*100 ELSE 0 END AS progress_order_quota," + \
                             " CASE WHEN RP.revenue_quota > 0 THEN RP.revenue_quota *" + str(date_difference) + \
                            " ELSE 0 END AS revenue_quota," + \
                             " CASE WHEN RP.revenue_quota > 0 THEN SUM(SOL.revenue)/(RP.revenue_quota*" + str(date_difference) + \
@@ -151,7 +151,11 @@ class RevenueByKaExport(models.TransientModel):
                                      calendar.mdays[end_date_custom.month]).date()
 
         date_difference = relativedelta.relativedelta(end_date, start_date)
-        date_difference = date_difference.months + 1
+        year_difference = date_difference.years
+        add_months = 0
+        if year_difference > 0:
+            add_months = year_difference * 12
+        date_difference = date_difference.months + add_months + 1
 
         if start_date and end_date:
             e_date = self.string_to_date(str(end_date))

@@ -90,10 +90,10 @@ class StockedProductSoldByKa(http.Controller):
                             CASE WHEN SUM(SOL.revenue) > 0 THEN SUM(SOL.revenue) ELSE 0 END AS total_revenue,
 
                             """
-        select_query = select_query + " CASE WHEN ROUND(RP.order_quota) > 0 THEN ROUND(RP.order_quota)*" + \
+        select_query = select_query + " CASE WHEN RP.order_quota > 0 THEN RP.order_quota*" + \
                        str(date_difference) + " ELSE 0 END AS order_quota, " + \
-                       " CASE WHEN ROUND(RP.order_quota) > 0 THEN COUNT(SO.no_of_order)/(ROUND(RP.order_quota)*" + \
-                       str(date_difference) + ")*100 ELSE 0 END AS progress_order_quota," + \
+                       " CASE WHEN RP.order_quota > 0 THEN (COUNT(SO.no_of_order)/(RP.order_quota*" + \
+                       str(date_difference) + "))*100 ELSE 0 END AS progress_order_quota," + \
                        " CASE WHEN RP.revenue_quota > 0 THEN RP.revenue_quota *" + str(date_difference) + \
                        " ELSE 0 END AS revenue_quota," + \
                        " CASE WHEN RP.revenue_quota > 0 THEN SUM(SOL.revenue)/(RP.revenue_quota*" + str(
