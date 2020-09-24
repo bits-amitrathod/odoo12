@@ -60,7 +60,7 @@
                                         <span t-esc="sale.order_quota"/>
                                     </td>
                                     <td style="border: 1px solid black;text-align: center;">
-                                        <span t-esc="sale.progress_order_quota"/>
+                                        <span t-esc="round(sale.progress_order_quota, 2)"/>
                                     </td>
                                     <td style="border: 1px solid black;text-align: center;">
                                         <span t-esc="sale.total_revenue" t-options='{"widget": "monetary","display_currency": sale.currency_id}'/>
@@ -69,7 +69,7 @@
                                         <span t-esc="sale.revenue_quota" t-options='{"widget": "monetary","display_currency": sale.currency_id}'/>
                                     </td>
                                     <td style="border: 1px solid black;text-align: center;">
-                                        <span t-esc="sale.progress_revenue_quota"/>
+                                        <span t-esc="round(sale.progress_revenue_quota, 2)"/>
                                     </td>
                                 </tr>
                             </tbody>

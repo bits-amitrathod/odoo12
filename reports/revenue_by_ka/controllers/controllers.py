@@ -153,9 +153,14 @@ class StockedProductSoldByKa(http.Controller):
         records = []
 
         for line in order_lines:
-            records.append([line['customer'], line['key_account'],
-                            line['no_of_orders'], line['order_quota'], line['progress_order_quota'],
-                            line['total_revenue'], line['revenue_quota'], line['progress_revenue_quota']])
+            if line['progress_order_quota'] > 0 and line['progress_revenue_quota'] > 0:
+                records.append([line['customer'], line['key_account'],
+                            line['no_of_orders'], line['order_quota'], round(line['progress_order_quota'], 2),
+                            line['total_revenue'], line['revenue_quota'], round(line['progress_revenue_quota'], 2)])
+            else:
+                records.append([line['customer'], line['key_account'],
+                                line['no_of_orders'], line['order_quota'], line['progress_order_quota'],
+                                line['total_revenue'], line['revenue_quota'], line['progress_revenue_quota']])
 
         res = request.make_response(
             self.from_data(["Customer Name", "Key Account", "No. of orders", "Order Quota", "Progress of Order Quota",
