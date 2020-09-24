@@ -14,6 +14,7 @@ _logger = logging.getLogger(__name__)
 class RevenueByKa(models.Model):
     _name = 'report.ka.revenue'
     _auto = False
+    _order = "customer"
 
     customer = fields.Many2one('res.partner', 'Customer Name')
     key_account = fields.Many2one('res.users', 'Key Account')
@@ -101,6 +102,8 @@ class RevenueByKa(models.Model):
             group_by = """
                         GROUP BY
                             RP.id, SO.no_of_order, SOL.currency_id
+                            
+                            ORDER BY RP.name
                             """
 
             sql_query = select_query + group_by
