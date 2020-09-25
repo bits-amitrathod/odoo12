@@ -33,7 +33,11 @@ class RevenueByKa(models.Model):
         for line in res:
             if 'order_quota' in line and line['order_quota'] and 'revenue_quota' in line and line['revenue_quota']:
                 if line['order_quota'] > 0:
-                    line['progress_order_quota'] = (line['no_of_orders']/line['order_quota'])*100
+                    if 'key_account' in groupby and 'customer' not in line:
+                        line['order_quota'] = round(line['order_quota'])
+                        line['progress_order_quota'] = (line['no_of_orders']/line['order_quota'])*100
+                    else:
+                        line['progress_order_quota'] = (line['no_of_orders'] / line['order_quota']) * 100
                 if line['revenue_quota'] > 0:
                     line['progress_revenue_quota'] = (line['total_revenue'] / line['revenue_quota'])*100
         return res
