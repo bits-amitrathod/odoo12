@@ -3,6 +3,7 @@
 from odoo import api, fields, models, tools
 import datetime
 import calendar
+import math
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, pycompat, misc
 import logging
 import odoo.addons.decimal_precision as dp
@@ -34,7 +35,7 @@ class RevenueByKa(models.Model):
             if 'order_quota' in line and line['order_quota'] and 'revenue_quota' in line and line['revenue_quota']:
                 if line['order_quota'] > 0:
                     if 'key_account' in groupby and 'customer' not in line:
-                        line['order_quota'] = round(line['order_quota'])
+                        line['order_quota'] = math.ceil(line['order_quota'])
                         line['progress_order_quota'] = (line['no_of_orders']/line['order_quota'])*100
                     else:
                         line['progress_order_quota'] = (line['no_of_orders'] / line['order_quota']) * 100
