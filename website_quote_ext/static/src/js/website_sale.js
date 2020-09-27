@@ -9,6 +9,23 @@ odoo.define('website_quote_ext._ex', function (require) {
     var config = require('web.config');
     require("website.content.zoomodoo");
     var _t = core._t;
+    var inputClientOrderRef = $('input[name="client_order_ref"]');
+
+    inputClientOrderRef.on("keyup", function(event) {
+        ajax.jsonRpc("/notifymeclientorderref", 'call', {
+                'client_order_ref': inputClientOrderRef.val()
+            }).then(function(data) {
+                var output_data = data['client_order_ref_error']
+                if (output_data != '') {
+                    $("#client_order_ref_error").text(output_data);
+                    $("#client_order_ref_accept").attr('disabled', true);
+                }
+                else {
+                    $("#client_order_ref_error").text('');
+                    $("#client_order_ref_accept").attr('disabled', false);
+                }
+            });
+    });
 
     $('.engine').each(function () {
         var engine = this;

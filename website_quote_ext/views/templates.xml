@@ -91,6 +91,7 @@
                                        <input type="text" class="form-control"
                                                        name="client_order_ref"
                                                        t-att-value="client_order_ref"/>
+                                        <lable id="client_order_ref_error" class="text-danger"/>
                                     </div>
                               </t>
                             <div class="modal-body">
@@ -102,7 +103,7 @@
                                           class="form-control"/>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" t-object="order" class="btn btn-primary">Accept</button>
+                                <button type="submit" t-object="order" id="client_order_ref_accept" class="btn btn-primary">Accept</button>
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                             </div>
                         </form>
@@ -946,6 +947,7 @@
                                                <input type="text" class="form-control"
                                                                name="client_order_ref"
                                                                t-att-value="client_order_ref"/>
+                                                <lable id="client_order_ref_error" class="text-danger"/>
                                             </div>
                                       </t>
                                     <div class="modal-body">
@@ -957,7 +959,7 @@
                                                   class="form-control"/>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="submit" t-object="order" class="btn btn-primary">Accept</button>
+                                        <button type="submit" t-object="order" id="client_order_ref_accept" class="btn btn-primary">Accept</button>
                                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                                     </div>
                                 </form>
