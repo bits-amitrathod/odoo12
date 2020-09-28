@@ -14,7 +14,6 @@ class AgingReport(models.Model):
 
     # cr_date = fields.Date("Created date")
     qty = fields.Integer("Product Qty")
-    days = fields.Char("Days",compute='get_quantity_byorm', store=False)
 
     sku_code = fields.Char(string="Product SKU", compute='get_quantity_byorm', store=False)
     prod_lot_id = fields.Many2one('stock.production.lot', 'stock production lot')
@@ -22,7 +21,6 @@ class AgingReport(models.Model):
     lot_name = fields.Char(string="Lot#")
     create_date = fields.Date(string="Created Date")
     use_date = fields.Date(string="Expiry Date")
-
     warehouse_id = fields.Many2one('stock.warehouse', 'Warehouse')
     location_id = fields.Many2one('stock.location', string="Location")
     # tracking  = fields.Char("Tracking" ,compute='_get_Data',default=0)
@@ -30,6 +28,7 @@ class AgingReport(models.Model):
     product_uom_id = fields.Char(string="UOM",compute='get_quantity_byorm', store=False)
     product_id = fields.Many2one('product.template', 'Product')
     type=fields.Char(string="Type")
+    days = fields.Char("Days", compute='get_quantity_byorm', store=False)
 
     @api.multi
     def get_quantity_byorm(self):
@@ -37,14 +36,13 @@ class AgingReport(models.Model):
             order.sku_code=order.product_id.sku_code
             order.product_uom_id = order.product_id.uom_id.name
             order.warehouse_name = order.warehouse_id.name
-            date_format = "%Y-%m-%d"
-            today = date.today().strftime('%Y-%m-%d')
-            a = datetime.strptime(str(today), date_format)
-            b = datetime.strptime(str(order.create_date), date_format)
-            diff = a - b
-            order.days = diff.days
-
-
+            if order.create_date :
+                date_format = "%Y-%m-%d"
+                today = date.today().strftime('%Y-%m-%d')
+                a = datetime.strptime(str(today), date_format)
+                b = datetime.strptime(str(order.create_date), date_format)
+                diff = a - b
+                order.days = diff.days
 
     @api.model_cr
     def init(self):
@@ -68,12 +66,11 @@ class AgingReport(models.Model):
            public.product_template.name as product_name,
            sum(public.stock_quant.quantity) as qty ,
            public.stock_production_lot.name as lot_name,
-           date(public.stock_production_lot.create_date) as create_date,
+           date(a.date_done) as create_date,
            date(public.stock_production_lot.use_date) as use_date,
            public.stock_warehouse.id as warehouse_id,
            14 as location_id, 
            public.product_template.id as product_id,
-          
            'Stock' as type
            FROM
            public.product_product
@@ -97,8 +94,17 @@ class AgingReport(models.Model):
                public.stock_warehouse
                ON
                 (public.stock_location.id in (public.stock_warehouse.lot_stock_id,public.stock_warehouse.wh_output_stock_loc_id,wh_pack_stock_loc_id))
-             WHERE public.stock_quant.quantity>0  group by  public.stock_production_lot.id ,public.product_template.name,public.stock_production_lot.name,public.stock_production_lot.create_date,
-             public.stock_production_lot.use_date, public.stock_warehouse.id, public.product_template.id
+           LEFT JOIN
+                (select DISTINCT ON (lot_id) stock_move_line.lot_id , stock_picking.date_done from stock_move_line
+                 inner join stock_picking 
+                 on stock_move_line.picking_id = stock_picking.id and stock_move_line.location_dest_id =14
+                 where lot_id is not null and stock_picking.date_done is not null
+                 order by lot_id, stock_picking.date_done desc) as a
+               ON    stock_production_lot.id = a.lot_id
+             WHERE public.stock_quant.quantity>0 
+             
+             group by  public.stock_production_lot.id ,public.product_template.name,public.stock_production_lot.name,public.stock_production_lot.create_date,
+             public.stock_production_lot.use_date, public.stock_warehouse.id, public.product_template.id,a.date_done
         """
         if stock_location and not stock_location is None :
             # select_query=select_query + " and public.stock_quant.location_id =%s "
