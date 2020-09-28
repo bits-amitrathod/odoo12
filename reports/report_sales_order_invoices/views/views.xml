@@ -51,6 +51,6 @@
                   name="Sales Order Invoice"
                   action="action_sales_order_invoices"
                   parent="sale.menu_sale_report"
-                  sequence="1"/>
+                  sequence="24"/>
     </data>
 </odoo>

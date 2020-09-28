@@ -132,6 +132,6 @@
                     key2="client_action_multi"
                     id="sale_purchase_history_act_window"/>
 
-        <menuitem id="menu_sale_report_purchase_wizard" name="Sales Purchase History" action="action_sale_report_purchase_wizard" parent="sale.menu_sale_report" sequence="1"/>
+        <menuitem id="menu_sale_report_purchase_wizard" name="Sales Purchase History" action="action_sale_report_purchase_wizard" parent="sale.menu_sale_report" sequence="22"/>
     </data>
 </odoo>

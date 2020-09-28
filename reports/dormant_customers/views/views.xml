@@ -44,6 +44,6 @@
               </field>
         </record>
     <menuitem name="Dormant Customers" id="dormant_customers_report_menu" parent="sale.menu_sale_report"
-              action="dormant_customers.action_dormant_customers"/>
+              action="dormant_customers.action_dormant_customers" sequence="29"/>
   </data>
 </odoo>

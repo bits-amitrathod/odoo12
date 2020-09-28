@@ -76,7 +76,7 @@
               name="Inventory Allocation For SO"
               action="inventory_allocation_so.Inv_allow_so_report_list_id"
               parent="sale.menu_sale_report"
-              sequence="5"/>
+              sequence="27"/>
 
 
     </data>

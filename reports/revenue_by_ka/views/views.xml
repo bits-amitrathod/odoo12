@@ -214,7 +214,7 @@
                   name="Revenue By KA"
                   action="action_revenue_by_ka"
                   parent="stocked_product_sold_by_ka.key_account_reports"
-                  sequence="14"/>
+                  sequence="1"/>
 
                 <!--parent="sale.menu_sale_report"-->
 

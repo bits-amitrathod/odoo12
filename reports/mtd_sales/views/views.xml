@@ -65,6 +65,6 @@
         </record>
 
         <menuitem name="MTD Sales" id="mtd_sales_menu" parent="sale.menu_sale_report"
-                  action="mtd_sales.action_mtd_sales"/>
+                  action="mtd_sales.action_mtd_sales" sequence="20"/>
     </data>
 </odoo>

@@ -32,7 +32,7 @@
                   action="action_rma_report"
                   name="RMA Report"
                   parent="sale.menu_sale_report"
-                  sequence="4"/>
+                  sequence="9"/>
 
     </data>
 </odoo>

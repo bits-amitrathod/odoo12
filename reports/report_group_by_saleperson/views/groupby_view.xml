@@ -71,6 +71,6 @@
                   name="Gross Sales By Business Development"
                    action="action_gross_sale_valuation"
                   parent="sale.menu_sale_report"
-                  />
+                  sequence="25"/>
  </data>
 </odoo>
