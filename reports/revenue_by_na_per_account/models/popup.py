@@ -27,7 +27,7 @@ class NaRevenuePerAccountReportPopup(models.TransientModel):
             'type': 'ir.actions.act_window',
             'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
             'view_mode': 'tree',
-            'name': 'Revenue By Natiopnal Account Per Account',
+            'name': 'Revenue By National Account Per Account',
             'res_model': res_model,
             'context': {'group_by': ('national_account','customer','delivery_date')},
         }
