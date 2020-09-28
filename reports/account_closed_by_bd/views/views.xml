@@ -154,12 +154,12 @@
         <!-- Export Action code ends here -->
 
         <!-- Menus declaration -->
-        <menuitem id="business_development_reports" name="Business Development Reports" parent="sale.menu_sale_report" sequence="1"/>
+        <menuitem id="business_development_reports" name="Business Development Reports" parent="sale.menu_sale_report" sequence="4"/>
         <menuitem id="sale.account_closed_by_bd_menu"
                   name="Revenue From Accounts Closed In 12 Months By BD"
                   action="action_account_closed_by_bd"
                   parent="account_closed_by_bd.business_development_reports"
-                  sequence="1"/>
+                  sequence="3"/>
 
                 <!--parent="sale.menu_sale_report"-->
 

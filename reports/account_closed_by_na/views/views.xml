@@ -158,7 +158,7 @@
                   name="Revenue From Accounts Closed In 12 Months By NA"
                   action="action_account_closed_by_na"
                   parent="revenue_by_na_per_account.national_account_reports"
-                  sequence="1"/>
+                  sequence="3"/>
 
                 <!--parent="sale.menu_sale_report"-->
 

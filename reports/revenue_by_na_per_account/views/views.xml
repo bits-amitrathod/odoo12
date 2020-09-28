@@ -150,12 +150,12 @@
         <!-- Export Action code ends here -->
 
         <!-- Menus declaration -->
-        <menuitem id="national_account_reports" name="National Account Reports" parent="sale.menu_sale_report" sequence="1"/>
+        <menuitem id="national_account_reports" name="National Account Reports" parent="sale.menu_sale_report" sequence="5"/>
         <menuitem id="sale.revenue_by_na_per_account_menu"
                   name="Revenue By NA Per Account"
                   action="action_revenue_by_na_per_account"
                   parent="revenue_by_na_per_account.national_account_reports"
-                  sequence="20"/>
+                  sequence="1"/>
 
          <!--sequence="2"/>-->
 

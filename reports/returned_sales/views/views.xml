@@ -78,6 +78,6 @@
         </record>
 
         <menuitem name="Returned Sales" id="returned_sales_menu" parent="sale.menu_sale_report"
-                  action="returned_sales.action_returned_sales"/>
+                  action="returned_sales.action_returned_sales" sequence="18"/>
     </data>
 </odoo>

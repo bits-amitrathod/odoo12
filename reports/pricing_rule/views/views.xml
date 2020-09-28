@@ -66,7 +66,7 @@
               name="Pricing Rules"
               parent="sale.menu_sale_report"
               action="action_price_rule_customer"
-             />
+              sequence="19"/>
 
 
     </data>
