@@ -59,7 +59,8 @@ class RevenueByBdPerAccount(models.Model):
                         INNER JOIN 
                             public.res_partner RP
                         ON
-                            SO.partner_id = RP.id AND RP.is_wholesaler = FALSE AND RP.is_broker = FALSE
+                            SO.partner_id = RP.id AND (RP.is_wholesaler is NULL OR RP.is_wholesaler != TRUE) 
+                            AND (RP.is_broker is NULL OR RP.is_broker != TRUE)
 
                         WHERE SO.state NOT IN ('cancel', 'void') AND SO.user_id IS NOT NULL
 
