@@ -55,8 +55,13 @@ class RevenueByBdPerAccount(models.Model):
                           AS SP 
                        ON 
                            SO.id = SP.sale_id
+                           
+                        INNER JOIN 
+                            public.res_partner RP
+                        ON
+                            SO.partner_id = RP.id AND RP.is_wholesaler = FALSE AND RP.is_broker = FALSE
 
-                           WHERE SO.state NOT IN ('cancel', 'void') AND SO.user_id IS NOT NULL
+                        WHERE SO.state NOT IN ('cancel', 'void') AND SO.user_id IS NOT NULL
 
 
                """
