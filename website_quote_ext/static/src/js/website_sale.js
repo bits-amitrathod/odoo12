@@ -10,10 +10,12 @@ odoo.define('website_quote_ext._ex', function (require) {
     require("website.content.zoomodoo");
     var _t = core._t;
     var inputClientOrderRef = $('input[name="client_order_ref"]');
+    var orderId = $('input[name="order_id"]');
 
     inputClientOrderRef.on("keyup", function(event) {
         ajax.jsonRpc("/notifymeclientorderref", 'call', {
-                'client_order_ref': inputClientOrderRef.val()
+                'client_order_ref': inputClientOrderRef.val(),
+                'orderId': orderId.val()
             }).then(function(data) {
                 var output_data = data['client_order_ref_error']
                 if (output_data != '') {

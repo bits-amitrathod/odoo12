@@ -135,12 +135,14 @@ class WebsiteSale(http.Controller):
         return request.render("website_quote_ext.portal_order_page_ex", values)
 
     @http.route('/notifymeclientorderref', type='json', auth="public", methods=['POST'], website=True, csrf=False)
-    def notifymeclientorderref(self, client_order_ref):
-        result = request.env['sale.order'].sudo().search([('client_order_ref', '=', client_order_ref)])
-        if result:
-            return {'client_order_ref_error': 'The PO number is already present on another Sales Order.'}
-        else:
-            return {'client_order_ref_error': ''}
+    def notifymeclientorderref(self, client_order_ref, orderId):
+        sale_order = request.env['sale.order'].sudo().search([('id', '=', orderId)])
+        if not sale_order.x_studio_allow_duplicate_po:
+            result = request.env['sale.order'].sudo().search([('client_order_ref', '=', client_order_ref)])
+            if result:
+                return {'client_order_ref_error': 'The PO number is already present on another Sales Order.'}
+            else:
+                return {'client_order_ref_error': ''}
 
     @http.route(['/my/orders/<int:order_id>/accepts'], type='http', auth="public", methods=['POST'], website=True)
     def accepts(self, order_id, access_token=None, **post):

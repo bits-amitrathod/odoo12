@@ -77,7 +77,7 @@
                     <div class="modal-dialog">
 			            <form id="accept" method="POST" t-attf-action="/my/orders/#{sale_order.id}/accepts?access_token=#{sale_order.access_token}" class="modal-content">
                             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-
+                            <input type="hidden" name="order_id" t-att-value="sale_order.id"/>
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                                     &amp;times;
@@ -933,7 +933,7 @@
                             <div class="modal-dialog">
 			                    <form id="accept" method="POST" t-attf-action="/my/orders/#{sale_order.id}/accepts?access_token=#{sale_order.access_token}" class="modal-content">
                                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-
+                                    <input type="hidden" name="order_id" t-att-value="sale_order.id"/>
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                                             &amp;times;
