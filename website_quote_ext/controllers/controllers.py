@@ -140,7 +140,7 @@ class WebsiteSale(http.Controller):
         if not sale_order.x_studio_allow_duplicate_po:
             result = request.env['sale.order'].sudo().search([('client_order_ref', '=', client_order_ref)])
             if result:
-                return {'client_order_ref_error': 'The PO number is already present on another Sales Order.'}
+                return {'client_order_ref_error': 'The PO number is already present on another Sales Order'}
             else:
                 return {'client_order_ref_error': ''}
 
