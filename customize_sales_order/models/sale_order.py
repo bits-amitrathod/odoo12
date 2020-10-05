@@ -93,7 +93,6 @@ class sale_order(models.Model):
             if res_partner and res_partner.national_account_rep and res_partner.national_account_rep.id:
                 vals['national_account'] = res_partner.national_account_rep.id
         return super(sale_order, self).create(vals)
-    
     @api.depends('order_line.price_total')
     def _amount_all(self):
         """
