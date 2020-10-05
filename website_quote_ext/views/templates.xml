@@ -77,7 +77,7 @@
                     <div class="modal-dialog">
 			            <form id="accept" method="POST" t-attf-action="/my/orders/#{sale_order.id}/accepts?access_token=#{sale_order.access_token}" class="modal-content">
                             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-
+                            <input type="hidden" name="order_id" t-att-value="sale_order.id"/>
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                                     &amp;times;
@@ -91,6 +91,7 @@
                                        <input type="text" class="form-control"
                                                        name="client_order_ref"
                                                        t-att-value="client_order_ref"/>
+                                        <lable id="client_order_ref_error" class="text-danger"/>
                                     </div>
                               </t>
                             <div class="modal-body">
@@ -102,7 +103,7 @@
                                           class="form-control"/>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" t-object="order" class="btn btn-primary">Accept</button>
+                                <button type="submit" t-object="order" id="client_order_ref_accept" class="btn btn-primary">Accept</button>
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                             </div>
                         </form>
@@ -932,7 +933,7 @@
                             <div class="modal-dialog">
 			                    <form id="accept" method="POST" t-attf-action="/my/orders/#{sale_order.id}/accepts?access_token=#{sale_order.access_token}" class="modal-content">
                                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-
+                                    <input type="hidden" name="order_id" t-att-value="sale_order.id"/>
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                                             &amp;times;
@@ -946,6 +947,7 @@
                                                <input type="text" class="form-control"
                                                                name="client_order_ref"
                                                                t-att-value="client_order_ref"/>
+                                                <lable id="client_order_ref_error" class="text-danger"/>
                                             </div>
                                       </t>
                                     <div class="modal-body">
@@ -957,7 +959,7 @@
                                                   class="form-control"/>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="submit" t-object="order" class="btn btn-primary">Accept</button>
+                                        <button type="submit" t-object="order" id="client_order_ref_accept" class="btn btn-primary">Accept</button>
                                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                                     </div>
                                 </form>
