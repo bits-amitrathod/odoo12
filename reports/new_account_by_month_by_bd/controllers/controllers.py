@@ -179,7 +179,7 @@ class ExportNewAccountByMonthByBd(http.Controller):
         if business_development_id != "none":
             select_query = select_query + "AND SOS.user_id = '" + str(business_development_id) + "'"
 
-        group_by = """ GROUP BY RPS.name, SOS.partner_id, SOS.user_id  
+        group_by = """ GROUP BY RPS.id, RPS.name, RPSS.name  
                         ORDER BY RPSS.name """
 
         select_query = select_query + group_by

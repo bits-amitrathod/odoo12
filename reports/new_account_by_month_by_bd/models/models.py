@@ -11,7 +11,7 @@ _logger = logging.getLogger(__name__)
 class NewAccountByMonthByBd(models.Model):
     _name = 'report.bd.new.account'
     _auto = False
-    # _order = 'business_development'
+    _order = 'business_development'
 
     onboard_date = fields.Datetime('Onboard Date')
     customer = fields.Many2one('res.partner', 'Customer Name')
