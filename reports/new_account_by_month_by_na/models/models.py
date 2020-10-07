@@ -70,49 +70,45 @@ class NewAccountByMonthByNa(models.Model):
                                 WHERE SO.state NOT IN ('cancel', 'void'))) UNION ALL ("""
 
             select_query = select_query + """ 
-                        SELECT 
-                            DISTINCT (SO.partner_id) partner1
-                        FROM 
-                            public.sale_order SO
-                        INNER JOIN 
-                            public.stock_picking SP ON SO.id IN (
-                            SELECT SO.id
-                            FROM 
-                                public.sale_order SO
-                            INNER JOIN 
-                                public.stock_picking SP 
-                            ON 
-                                SO.id = SP.sale_id AND SP.state = 'done' AND SP.picking_type_id = 5 
-                                          AND SO.state NOT IN ('cancel', 'void') AND SO.national_account IS NOT NULL
-                            WHERE SO.partner_id IN (
-                                    SELECT id
-                                    FROM public.res_partner RP
-                                    WHERE RP.reinstated_date IS NOT NULL AND RP.reinstated_date BETWEEN ' """ + \
-                           str(start_date) + "'" + " AND '" + str(end_date) + "' ) ) WHERE SP.date_done BETWEEN ' " + \
-                           str(start_date) + "'" + " AND '" + str(end_date) + "' AND SP.state = 'done' " \
-                                                                              " AND SP.picking_type_id = 5 AND SO.state NOT IN ('cancel', 'void') AND SO.partner_id NOT IN ("
+                                SELECT 
+                                    DISTINCT (SO.partner_id) partner1
+                                FROM 
+                                    public.sale_order SO 
+                                WHERE SO.id IN (
+                                    SELECT SO.id
+                                    FROM 
+                                        public.sale_order SO
+                                    INNER JOIN 
+                                        public.stock_picking SP 
+                                    ON 
+                                        SO.id = SP.sale_id AND SP.state = 'done' AND SP.picking_type_id = 5 AND SP.date_done BETWEEN ' """ + \
+                           str(start_date) + "' " + " AND '" + str(end_date) + \
+                           """ ' AND SO.state NOT IN ('cancel', 'void') AND SO.national_account IS NOT NULL
+                       WHERE SO.partner_id IN (
+                               SELECT id
+                               FROM public.res_partner RP
+                               WHERE RP.reinstated_date IS NOT NULL AND RP.reinstated_date BETWEEN ' """ + \
+                           str(start_date) + "'" + " AND '" + str(end_date) + "' ) ) AND SO.partner_id NOT IN ("
 
             select_query = select_query + """ 
-                            SELECT 
-                                DISTINCT (SO.partner_id) partner
-                            FROM 
-                                public.sale_order SO        
-                            INNER JOIN 
-                                public.stock_picking SP 
-                            ON SO.id IN (        
-                                    Select SO.id
-                                    From public.sale_order SO
-                                    INNER JOIN public.stock_picking SP 
-                                    ON SO.id = SP.sale_id AND SP.state = 'done' AND SP.picking_type_id = 5 
-                                                  AND SO.state NOT IN ('cancel', 'void') AND SO.national_account IS NOT NULL
-                                    WHERE SO.partner_id IN (
-                                            SELECT id 
-                                            FROM public.res_partner RP
-                                            WHERE RP.reinstated_date IS NOT NULL AND RP.reinstated_date <= '""" + str(
+                                    SELECT 
+                                        DISTINCT (SO.partner_id) partner
+                                    FROM 
+                                        public.sale_order SO        
+                                    WHERE SO.id IN (        
+                                            Select SO.id
+                                            From public.sale_order SO
+                                            INNER JOIN public.stock_picking SP 
+                                            ON SO.id = SP.sale_id AND SP.state = 'done' AND SP.picking_type_id = 5 AND SP.date_done <= ' """ + \
+                           str(start_date) + "' " + \
+                           """ AND SO.state NOT IN ('cancel', 'void') AND SO.national_account IS NOT NULL
+                           WHERE SO.partner_id IN (
+                                   SELECT id 
+                                   FROM public.res_partner RP
+                                   WHERE RP.reinstated_date IS NOT NULL AND RP.reinstated_date <= '""" + str(
                 start_date) + \
-                           "' ) ) WHERE SP.date_done <= '" + str(start_date) + "' AND SP.state = 'done' AND " \
-                                                                               " SP.picking_type_id = 5 AND SO.state NOT IN ('cancel', 'void') ))) AND SPS.date_done" \
-                                                                               " >= COALESCE(RPS.reinstated_date, RPS.create_date) AND SPS.date_done BETWEEN '" + \
+                           "' ) ) ))) AND SPS.date_done" \
+                           " >= COALESCE(RPS.reinstated_date, RPS.create_date) AND SPS.date_done BETWEEN '" + \
                            str(start_date) + "'" + " AND '" + str(end_date) + "' "
 
             if national_account_id:
