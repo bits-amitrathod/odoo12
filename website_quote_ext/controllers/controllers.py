@@ -216,15 +216,18 @@ class WebsiteSale(http.Controller):
         elif Order.partner_id and Order.partner_id.parent_id and Order.partner_id.parent_id.user_id \
                 and Order.partner_id.parent_id.user_id.partner_id and Order.partner_id.parent_id.user_id.partner_id.email:
             salesperson_email = Order.partner_id.parent_id.user_id.partner_id.email
-        self._send_sales_order_accepted_email(Order.partner_id.display_name, Order.name, Order.state, salesperson_email, upload_type, message)
+        if Order.account_manager and Order.account_manager.partner_id and Order.account_manager.partner_id.email:
+            key_account_email = Order.account_manager.partner_id.email
+        self._send_sales_order_accepted_email(Order.partner_id.display_name, Order.name, Order.state, salesperson_email, upload_type, message, key_account_email)
         return request.redirect(order_sudo.get_portal_url(query_string=query_string))
 
     @staticmethod
-    def _send_sales_order_accepted_email(customer_name, sales_order_name, sales_order_status, salespersonEmail, upload_type, note):
+    def _send_sales_order_accepted_email(customer_name, sales_order_name, sales_order_status, salespersonEmail, upload_type, note, key_account_email):
         today_date = datetime.today().strftime('%m/%d/%Y')
         template = request.env.ref('website_quote_ext.stockhawk_sales_order_confirm_email_response').sudo()
         local_context = {'customer_name': customer_name, 'sales_order_name': sales_order_name,'salesperson_email': salespersonEmail,
-                         'date': today_date, 'sales_order_status': sales_order_status, 'upload_type': upload_type, 'note': note}
+                         'date': today_date, 'sales_order_status': sales_order_status, 'upload_type': upload_type, 'note': note,
+                         'key_account_email': key_account_email}
         try:
             template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True)
         except Exception as exc:
