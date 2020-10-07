@@ -37,16 +37,14 @@ class AgingReport(models.Model):
             order.sku_code=order.product_id.sku_code
             order.product_uom_id = order.product_id.uom_id.name
             order.warehouse_name = order.warehouse_id.name
-            if order.type == 'Stock' and order.location_id.id == 14 :
-                order.days = order.avg_day
-            else:
-                if order.create_date :
-                    date_format = "%Y-%m-%d"
-                    today = date.today().strftime('%Y-%m-%d')
-                    a = datetime.strptime(str(today), date_format)
-                    b = datetime.strptime(str(order.create_date), date_format)
-                    diff = a - b
-                    order.days = diff.days
+            order.days = order.avg_day
+                # if order.create_date :
+                #     date_format = "%Y-%m-%d"
+                #     today = date.today().strftime('%Y-%m-%d')
+                #     a = datetime.strptime(str(today), date_format)
+                #     b = datetime.strptime(str(order.create_date), date_format)
+                #     diff = a - b
+                #     order.days = diff.days
 
     @api.model_cr
     def init(self):
@@ -138,7 +136,7 @@ class AgingReport(models.Model):
                                              public.stock_move.location_id as location_id,
                                              public.product_template.id as product_id,
                                              'Shipping' as type,
-                                             0 as avg_day
+                                             a.avg_day
                                              FROM 
                                              public.sale_order 
                                        RIGHT JOIN
@@ -172,8 +170,16 @@ class AgingReport(models.Model):
                                      RIGHT JOIN
                                           public.stock_warehouse
                                           ON
-                                          (public.stock_warehouse.wh_pack_stock_loc_id = public.stock_location.id)     
-
+                                          (public.stock_warehouse.wh_pack_stock_loc_id = public.stock_location.id) 
+                                    LEFT JOIN (select stock_move_line.lot_id ,
+                                                    avg(DATE_PART('day',CURRENT_DATE :: TIMESTAMP - stock_move.create_date :: TIMESTAMP )) as avg_day
+                                            from stock_move_line
+                                            inner join stock_move 
+                                            on stock_move.id = stock_move_line.move_id and stock_move_line.location_dest_id =12
+                                            where stock_move_line.lot_id is not null
+                                            group by stock_move_line.lot_id) as a
+                                          ON            
+                                            stock_production_lot.id = a.lot_id
                                      where  public.stock_move.state in ('waiting','assigned')        
                                 """
         if cust_location_id and not cust_location_id is None:
@@ -194,7 +200,7 @@ class AgingReport(models.Model):
                                 public.stock_move.location_id as location_id,
                                 public.product_template.id as product_id,
                                 'Receving' as type,
-                                0 as avg_day
+                                a.avg_day
                                 FROM 
                                 public.purchase_order 
                           INNER JOIN
@@ -224,7 +230,16 @@ class AgingReport(models.Model):
                         INNER JOIN
                              public.stock_warehouse
                              ON
-                             (public.stock_warehouse.lot_stock_id = public.stock_location.id)     
+                             (public.stock_warehouse.lot_stock_id = public.stock_location.id)    
+                        LEFT JOIN (select stock_move_line.lot_id ,
+                                                    avg(DATE_PART('day',CURRENT_DATE :: TIMESTAMP - stock_move.create_date :: TIMESTAMP )) as avg_day
+                                            from stock_move_line
+                                            inner join stock_move 
+                                            on stock_move.id = stock_move_line.move_id and stock_move_line.location_dest_id =14
+                                            where stock_move_line.lot_id is not null
+                                            group by stock_move_line.lot_id) as a
+                                          ON            
+                                            stock_move_line.lot_id = a.lot_id
 
                         where  public.stock_move.state='assigned'      
                    """
