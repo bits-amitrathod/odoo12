@@ -104,7 +104,7 @@ class AgingReport(models.Model):
                  on stock_move_line.picking_id = stock_picking.id and stock_move_line.location_dest_id =14
                  where lot_id is not null
                  order by lot_id, stock_move_line.date desc) as a
-               ON    stock_production_lot.id = a.lot_id
+               ON stock_production_lot.id = a.lot_id
            LEFT JOIN 
                 (select stock_move_line.lot_id ,
                  DATE_PART('day',CURRENT_DATE :: TIMESTAMP - stock_move.date :: TIMESTAMP ) as avg_day
