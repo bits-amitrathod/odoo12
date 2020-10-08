@@ -177,7 +177,7 @@ class AgingReport(models.Model):
                                             from stock_move_line
                                             inner join stock_move 
                                             on stock_move.id = stock_move_line.move_id and stock_move_line.location_dest_id =12
-                                            where stock_move_line.lot_id is not null
+                                            where stock_move_line.lot_id is not null and stock_move.state in ('waiting','assigned')
                                             group by stock_move_line.lot_id) as a
                                           ON            
                                             stock_production_lot.id = a.lot_id
@@ -236,8 +236,8 @@ class AgingReport(models.Model):
                                                     avg(DATE_PART('day',CURRENT_DATE :: TIMESTAMP - stock_move.create_date :: TIMESTAMP )) as avg_day
                                             from stock_move_line
                                             inner join stock_move 
-                                            on stock_move.id = stock_move_line.move_id and stock_move_line.location_dest_id =14
-                                            where stock_move_line.lot_id is not null
+                                            on stock_move.id = stock_move_line.move_id and stock_move_line.location_dest_id =14 and public.stock_move.state='assigned'
+                                            where stock_move_line.lot_id is not null 
                                             group by stock_move_line.lot_id) as a
                                           ON            
                                             stock_move_line.lot_id = a.lot_id
