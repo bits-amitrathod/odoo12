@@ -347,6 +347,7 @@
             <field name="email_from"><![CDATA["${object.company_id.name|safe}" <${(object.company_id.email or user.email)|safe}>]]></field>
             <field name="email_to"><![CDATA[${ctx['customerEmail']}]]></field>
             <field name="email_cc"><![CDATA[${ctx['salespersonEmail']}]]></field>
+            <field name="email_cc"><![CDATA[${ctx['keyAccountEmail']}]]></field>
             <field name="subject"><![CDATA[Email response <${(object.company_id.email or user.email)|safe}>]]></field>
             <field name="body_html">${ctx['body']}</field>
             <field name="body_html"><![CDATA[
@@ -379,6 +380,7 @@
             <field name="email_from"><![CDATA["${object.company_id.name|safe}" <${(object.company_id.email or user.email)|safe}>]]></field>
             <field name="email_to"><![CDATA[${ctx['customerEmail']}]]></field>
             <field name="email_cc"><![CDATA[${ctx['salespersonEmail']}]]></field>
+            <field name="email_cc"><![CDATA[${ctx['keyAccountEmail']}]]></field>
             <field name="subject"><![CDATA[Email response <${(object.company_id.email or user.email)|safe}>]]></field>
             <field name="body_html">${ctx['body']}</field>
             <field name="body_html"><![CDATA[
