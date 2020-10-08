@@ -28,8 +28,8 @@ class AgingReport(models.Model):
     product_uom_id = fields.Char(string="UOM",compute='get_quantity_byorm', store=False)
     product_id = fields.Many2one('product.template', 'Product')
     type=fields.Char(string="Type")
-    days = fields.Char("Days", compute='get_quantity_byorm', store=False)
-    avg_day = fields.Char("AVG Days")
+    days = fields.Integer("Days", compute='get_quantity_byorm', store=False)
+    avg_day = fields.Integer("AVG Days")
 
     @api.multi
     def get_quantity_byorm(self):
@@ -68,7 +68,7 @@ class AgingReport(models.Model):
            public.product_template.name as product_name,
            sum(public.stock_quant.quantity) as qty ,
            public.stock_production_lot.name as lot_name,
-           date(a.date) as create_date,
+           max(date(a.date)) as create_date,
            date(public.stock_production_lot.use_date) as use_date,
            public.stock_warehouse.id as warehouse_id,
            14 as location_id, 
@@ -113,13 +113,13 @@ class AgingReport(models.Model):
                 on stock_production_lot.id = stock_move_line.lot_id
                 where lot_id is not null
                  group by stock_move_line.lot_id) as b    
-                      ON    stock_production_lot.id = b.lot_id
+            ON  (  stock_production_lot.id = b.lot_id)
                
                
              WHERE public.stock_quant.quantity>0
              
              group by  public.stock_production_lot.id ,public.product_template.name,public.stock_production_lot.name,public.stock_production_lot.create_date,
-             public.stock_production_lot.use_date, public.stock_warehouse.id, public.product_template.id,a.date,b.avg_day
+             public.stock_production_lot.use_date, public.stock_warehouse.id, public.product_template.id,b.avg_day
         """
         if stock_location and not stock_location is None :
             # select_query=select_query + " and public.stock_quant.location_id =%s "
@@ -129,9 +129,9 @@ class AgingReport(models.Model):
         select_query = insert + """ SELECT 
                                              public.stock_move_line.lot_id as prod_lot_id,
                                              public.product_template.name as product_name,
-                                             public.stock_move_line.product_uom_qty as qty,
+                                             sum(public.stock_move_line.product_uom_qty) as qty,
                                              public.stock_production_lot.name as lot_name, 
-                                             public.stock_move.create_date as create_date,
+                                             max(public.stock_move.create_date) as create_date,
                                              public.stock_production_lot.use_date as use_date,
                                              public.stock_warehouse.id as warehouse_id, 
                                              public.stock_move.location_id as location_id,
@@ -180,11 +180,13 @@ class AgingReport(models.Model):
                                             where stock_move_line.lot_id is not null and stock_move.state in ('waiting','assigned')
                                             group by stock_move_line.lot_id) as a
                                           ON            
-                                            stock_production_lot.id = a.lot_id
-                                     where  public.stock_move.state in ('waiting','assigned')        
+                                            (stock_production_lot.id = a.lot_id)
+                                     where  public.stock_move.state in ('waiting','assigned')  and  public.stock_move.location_dest_id=12
+                                     group by prod_lot_id ,product_name,stock_production_lot.name,stock_production_lot.use_date,stock_warehouse.id,
+                                     stock_move.location_id,product_template.id,a.avg_day   
                                 """
         if cust_location_id and not cust_location_id is None:
-            select_query = select_query + " and  public.stock_move.location_dest_id=%s    "
+            # select_query = select_query + " and  public.stock_move.location_dest_id=%s "
             self._cr.execute(select_query, (cust_location_id,))
 
 
@@ -193,9 +195,9 @@ class AgingReport(models.Model):
         select_query = insert + """ SELECT 
                                 public.stock_move_line.lot_id as prod_lot_id,
                                 public.product_template.name as product_name,
-                                public.stock_move_line.product_uom_qty as qty,
+                                sum(public.stock_move_line.product_uom_qty) as qty,
                                 public.stock_move_line.lot_name as lot_name, 
-                                public.stock_move.create_date as create_date,
+                                max(public.stock_move.create_date) as create_date,
                                 public.stock_move_line.lot_expired_date as use_date,
                                 public.stock_warehouse.id as warehouse_id, 
                                 public.stock_move.location_id as location_id,
@@ -242,10 +244,12 @@ class AgingReport(models.Model):
                                           ON            
                                             stock_move_line.lot_id = a.lot_id
 
-                        where  public.stock_move.state='assigned'      
+                        where  public.stock_move.state='assigned' and   public.stock_move.location_dest_id=14
+                        group by prod_lot_id ,product_name,stock_move_line.lot_name,stock_move_line.lot_expired_date,stock_warehouse.id,
+                                     stock_move.location_id,product_template.id,a.avg_day      
                    """
         if receiving_location and not receiving_location is None:
-            select_query = select_query + " and  public.stock_move.location_dest_id=%s"
+            # select_query = select_query + " and  public.stock_move.location_dest_id=%s"
             self._cr.execute(select_query, (receiving_location,))
 
     @api.model_cr
