@@ -11,11 +11,13 @@ class NaNewAccountByMonthReportPopup(models.TransientModel):
 
     # @api.multi
     def open_table(self):
+        e_date = self.string_to_date(str(self.end_date))
+        e_date = e_date + datetime.timedelta(days=1)
 
         tree_view_id = self.env.ref('new_account_by_month_by_na.new_account_by_month_by_na_list_view').id
         form_view_id = self.env.ref('new_account_by_month_by_na.new_account_by_month_by_na_form_view').id
         res_model = 'report.na.new.account'
-        margins_context = {'start_date': self.start_date, 'end_date': self.end_date,
+        margins_context = {'start_date': self.start_date, 'end_date': e_date,
                            'national_account': self.national_account.id}
         self.env[res_model].with_context(margins_context).delete_and_create()
         action = {
