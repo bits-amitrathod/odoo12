@@ -209,6 +209,7 @@ class WebsiteSale(http.Controller):
         # Send email to Salesperson and Admin when sales order accepted(Confirm)
         upload_type = None
         salesperson_email = None
+        key_account_email = None
         if Order.order_line[0].customer_request_id and Order.order_line[0].customer_request_id.document_id and Order.order_line[0].customer_request_id.document_id.source:
             upload_type = Order.order_line[0].customer_request_id.document_id.source
         if Order.user_id and Order.user_id.partner_id and Order.user_id.partner_id.email:
