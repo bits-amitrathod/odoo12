@@ -5,8 +5,8 @@ from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMA
 class NaNewAccountByMonthReportPopup(models.TransientModel):
     _name = 'popup.na.new.account'
 
-    start_date = fields.Date('Start Date', default=(fields.date.today() - datetime.timedelta(days=31)),required=True ,help="Choose a date to get the New Account By Month By National Account at that  Start date")
-    end_date = fields.Date('End Date',default=fields.date.today(),required=True , help="Choose a date to get the New Account By Month By National Account at that  End date")
+    start_date = fields.Date('Start Date', default=(fields.date.today() - datetime.timedelta(days=31)), required=True, help="Choose a date to get the New Account By Month By National Account at that  Start date")
+    end_date = fields.Date('End Date', default=fields.date.today(), required=True, help="Choose a date to get the New Account By Month By National Account at that  End date")
     national_account = fields.Many2one('res.users', string="National Account", index=True)
 
     # @api.multi
