@@ -13,7 +13,7 @@ class NewAccountByMonthByBd(models.Model):
     _auto = False
     _order = 'business_development'
 
-    onboard_date = fields.Datetime('Onboard Date')
+    onboard_date = fields.Datetime('Delivery Date')
     customer = fields.Many2one('res.partner', 'Customer Name')
     business_development = fields.Many2one('res.users', 'Business Development')
 
