@@ -162,8 +162,10 @@ class IncomingMailCronModel(models.Model):
                                         salesperson = None
                                         if res_partner.user_id and res_partner.user_id.partner_id and res_partner.user_id.partner_id.email:
                                             salesperson = res_partner.user_id.partner_id.email
+                                        if res_partner.account_manager_cust and res_partner.account_manager_cust.partner_id and res_partner.account_manager_cust.partner_id.email:
+                                            key_account = res_partner.account_manager_cust.partner_id.email
                                         # when new email in inbox, send email to admin
-                                        self.send_mail_with_attachment(str(email_from), str(email_subject), str(res_partner.name), attachments, str(salesperson))
+                                        self.send_mail_with_attachment(str(email_from), str(email_subject), str(res_partner.name), attachments, str(salesperson), str(key_account))
                                         if res_partner.email:
                                             customer_email = res_partner.email
                                         else:
@@ -188,8 +190,10 @@ class IncomingMailCronModel(models.Model):
                                         salesperson = None
                                         if res_partner.user_id and res_partner.user_id.partner_id and res_partner.user_id.partner_id.email:
                                             salesperson = res_partner.user_id.partner_id.email
+                                        if res_partner.account_manager_cust and res_partner.account_manager_cust.partner_id and res_partner.account_manager_cust.partner_id.email:
+                                            key_account = res_partner.account_manager_cust.partner_id.email
                                         # when new email in inbox, send email to admin
-                                        self.send_mail_with_attachment(str(email_from), str(email_subject), str(res_partner.name), attachments, str(salesperson))
+                                        self.send_mail_with_attachment(str(email_from), str(email_subject), str(res_partner.name), attachments, str(salesperson), str(key_account))
                                         if res_partner.email:
                                             customer_email = res_partner.email
                                         else:
@@ -412,10 +416,11 @@ class IncomingMailCronModel(models.Model):
             except:
                 response = {'message': 'Unable to connect to SMTP Server'}
 
-    def send_mail_with_attachment(self, email_from, email_subject, customer_name, attachments, salesperson):
+    def send_mail_with_attachment(self, email_from, email_subject, customer_name, attachments, salesperson, key_account):
         today_date = datetime.today().strftime('%m/%d/%Y')
         template = self.env.ref('customer-requests.new_email_in_inbox').sudo()
-        local_context = {'emailFrom': email_from, 'emailSubject': email_subject, 'date': today_date, 'customerName': customer_name, 'salesperson': salesperson}
+        local_context = {'emailFrom': email_from, 'emailSubject': email_subject, 'date': today_date, 'customerName': customer_name,
+                         'salesperson': salesperson, 'key_account': key_account}
         if attachments:
             for attachment in attachments:
                 try:

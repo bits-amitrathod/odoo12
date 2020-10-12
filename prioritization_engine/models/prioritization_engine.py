@@ -594,13 +594,29 @@ class PrioritizationEngine(models.TransientModel):
                 # Send Email Notification to customer about the progress of uploaded or sent document
                 if template is not None:
                     # Send Email
-                    if sps_cust_uploaded_document.customer_id.user_id and sps_cust_uploaded_document.customer_id.user_id.partner_id and sps_cust_uploaded_document.customer_id.user_id.partner_id.email:
+                    if sps_cust_uploaded_document.customer_id.user_id and sps_cust_uploaded_document.customer_id.user_id.partner_id and \
+                            sps_cust_uploaded_document.customer_id.user_id.partner_id.email and sps_cust_uploaded_document.customer_id.account_manager_cust and \
+                            sps_cust_uploaded_document.customer_id.account_manager_cust.partner_id and \
+                            sps_cust_uploaded_document.customer_id.account_manager_cust.partner_id.email:
                         self.send_mail(sps_cust_uploaded_document.customer_id.name,
                                        sps_cust_uploaded_document.customer_id.email,
-                                       sps_cust_uploaded_document.customer_id.user_id.partner_id.email, template)
+                                       sps_cust_uploaded_document.customer_id.user_id.partner_id.email,
+                                       sps_cust_uploaded_document.customer_id.account_manager_cust.partner_id.email, template)
+                    elif sps_cust_uploaded_document.customer_id.user_id and sps_cust_uploaded_document.customer_id.user_id.partner_id \
+                            and sps_cust_uploaded_document.customer_id.user_id.partner_id.email:
+                        self.send_mail(sps_cust_uploaded_document.customer_id.name,
+                                       sps_cust_uploaded_document.customer_id.email,
+                                       sps_cust_uploaded_document.customer_id.user_id.partner_id.email, None, template)
+                    elif sps_cust_uploaded_document.customer_id.account_manager_cust and \
+                            sps_cust_uploaded_document.customer_id.account_manager_cust.partner_id \
+                            and sps_cust_uploaded_document.customer_id.account_manager_cust.partner_id.email:
+                        self.send_mail(sps_cust_uploaded_document.customer_id.name,
+                                       sps_cust_uploaded_document.customer_id.email,
+                                       None, sps_cust_uploaded_document.customer_id.account_manager_cust.partner_id.email,
+                                       template)
                     else:
                         self.send_mail(sps_cust_uploaded_document.customer_id.name,
-                                       sps_cust_uploaded_document.customer_id.email, None, template)
+                                       sps_cust_uploaded_document.customer_id.email, None, None, template)
 
     @staticmethod
     def _update_all_request_status(sps_cust_uploaded_document):
@@ -662,9 +678,9 @@ class PrioritizationEngine(models.TransientModel):
             _logger.error("getting error while sending email of sales order : %r", exc)
             response = {'message': 'Unable to connect to SMTP Server'}
 
-    def send_mail(self, customerName, customerEmail, salespersonEmail, template):
+    def send_mail(self, customerName, customerEmail, salespersonEmail, keyAccountEmail, template):
         local_context = {'customerName': customerName, 'customerEmail': customerEmail,
-                         'salespersonEmail': salespersonEmail}
+                         'salespersonEmail': salespersonEmail, 'keyAccountEmail': keyAccountEmail}
         try:
             template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True)
         except Exception as exc:

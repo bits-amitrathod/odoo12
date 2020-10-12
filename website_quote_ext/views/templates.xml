@@ -1515,7 +1515,7 @@
             <field name="model_id" ref="base.model_res_users"/>
             <field name="email_from"><![CDATA["${object.company_id.name|safe}" <${(object.company_id.email or user.email)|safe}>]]></field>
             <field name="email_to">${object.email|safe}</field>
-            <field name="email_cc"><![CDATA[${ctx['salesperson_email']}]]></field>
+            <field name="email_cc"><![CDATA[${ctx['salesperson_email'] |safe}, ${ctx['key_account_email'] |safe}]]></field>
             <field name="subject">Sales Order Confirm #<![CDATA[${ctx['sales_order_name']}]]></field>
             <field name="body_html">${ctx['body']}</field>
             <field name="body_html"><![CDATA[
