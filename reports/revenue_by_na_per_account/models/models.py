@@ -55,7 +55,13 @@ class RevenueByNaPerAccount(models.Model):
                        ON 
                            SO.id = SP.sale_id
 
-                           WHERE SO.state NOT IN ('cancel', 'void') AND SO.national_account IS NOT NULL
+                        INNER JOIN 
+                            public.res_partner RP
+                        ON
+                            SO.partner_id = RP.id AND (RP.is_wholesaler is NULL OR RP.is_wholesaler != TRUE) 
+                            AND (RP.is_broker is NULL OR RP.is_broker != TRUE)
+                            
+                        WHERE SO.state NOT IN ('cancel', 'void') AND SO.national_account IS NOT NULL
 
 
                """
