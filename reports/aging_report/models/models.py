@@ -126,64 +126,27 @@ class AgingReport(models.Model):
             self._cr.execute(select_query)
 
         # Shipping
-        select_query = insert + """ SELECT 
-                                             public.stock_move_line.lot_id as prod_lot_id,
-                                             public.product_template.name as product_name,
-                                             sum(public.stock_move_line.product_uom_qty) as qty,
-                                             public.stock_production_lot.name as lot_name, 
-                                             max(public.stock_move.create_date) as create_date,
-                                             public.stock_production_lot.use_date as use_date,
-                                             public.stock_warehouse.id as warehouse_id, 
-                                             public.stock_move.location_id as location_id,
-                                             public.product_template.id as product_id,
-                                             'Shipping' as type,
-                                             a.avg_day
-                                             FROM 
-                                             public.sale_order 
-                                       RIGHT JOIN
-                                             public.sale_order_line 
-                                         ON 
-                                           (public.sale_order_line.order_id = public.sale_order.id) 
-                                        RIGHT JOIN             
-                                             public.stock_move
-                                         ON 
-                                           (public.stock_move.sale_line_id = public.sale_order_line.id)      
-                                       RIGHT JOIN
-                                         public.product_product
-                                         ON
-                                         (public.product_product.id = public.stock_move.product_id)       
-                                      RIGHT JOIN
-                                         public.product_template
-                                         ON
-                                         (public.product_template.id=public.product_product.product_tmpl_id)        
-                                     RIGHT JOIN
-                                         public.stock_move_line
-                                         ON
-                                         (public.stock_move_line.move_id = public.stock_move.id)
-                                     RIGHT JOIN
-                                         public.stock_production_lot
-                                         ON
-                                         (public.stock_production_lot.id = public.stock_move_line.lot_id)    
-                                     RIGHT JOIN
-                                          public.stock_location
-                                          ON 
-                                          (public.stock_location.id=public.stock_move.location_dest_id )
-                                     RIGHT JOIN
-                                          public.stock_warehouse
-                                          ON
-                                          (public.stock_warehouse.wh_pack_stock_loc_id = public.stock_location.id) 
-                                    LEFT JOIN (select stock_move_line.lot_id ,
-                                                    avg(DATE_PART('day',CURRENT_DATE :: TIMESTAMP - stock_move.create_date :: TIMESTAMP )) as avg_day
-                                            from stock_move_line
-                                            inner join stock_move 
-                                            on stock_move.id = stock_move_line.move_id and stock_move_line.location_dest_id =12
-                                            where stock_move_line.lot_id is not null and stock_move.state in ('waiting','assigned')
-                                            group by stock_move_line.lot_id) as a
-                                          ON            
-                                            (stock_production_lot.id = a.lot_id)
-                                     where  public.stock_move.state in ('waiting','assigned')  and  public.stock_move.location_dest_id=12
-                                     group by prod_lot_id ,product_name,stock_production_lot.name,stock_production_lot.use_date,stock_warehouse.id,
-                                     stock_move.location_id,product_template.id,a.avg_day   
+            select_query = insert + """ SELECT 
+                            stock_move_line.lot_id as lot_id,
+                            product_template.name as product_name,
+                            sum(stock_move_line.product_uom_qty) as qty ,
+                            stock_production_lot.name as lot_name ,
+                            max(sale_order.confirmation_date) as create_date,
+                            stock_production_lot.use_date as use_date,
+                            stock_warehouse.id as warehouse_id,
+                            14 as location_id,
+                            product_template.id as product_id,
+                            'Shipping' as type,
+                            avg(DATE_PART('day',CURRENT_DATE :: TIMESTAMP - sale_order.confirmation_date :: TIMESTAMP )) as avg_day   
+                    from sale_order
+                    INNER JOIN stock_picking ON  stock_picking.sale_id = sale_order.id and sale_order.state in('sale') and stock_picking.picking_type_id =1 and stock_picking.state in('assigned','waiting')
+                    LEFT JOIN stock_move_line ON stock_move_line.picking_id = stock_picking.id
+                    LEFT JOIN stock_production_lot ON stock_production_lot.id = stock_move_line.lot_id
+                    LEFT JOIN product_product ON product_product.id = stock_move_line.product_id
+                    LEFT JOIN product_template ON product_template.id = product_product.product_tmpl_id
+                    LEFT JOIN stock_warehouse ON stock_warehouse.wh_pack_stock_loc_id = stock_move_line.location_dest_id
+                    WHERE product_template.id is not null and stock_move_line.lot_id is not null
+                    group by stock_move_line.lot_id,product_template.name,stock_production_lot.name,stock_production_lot.use_date,stock_warehouse.id, product_template.id   
                                 """
         if cust_location_id and not cust_location_id is None:
             # select_query = select_query + " and  public.stock_move.location_dest_id=%s "
@@ -193,60 +156,29 @@ class AgingReport(models.Model):
 
         # Receiving
         select_query = insert + """ SELECT 
-                                public.stock_move_line.lot_id as prod_lot_id,
+                                public.stock_move_line.lot_id as prod_lot_id, 
                                 public.product_template.name as product_name,
-                                sum(public.stock_move_line.product_uom_qty) as qty,
-                                public.stock_move_line.lot_name as lot_name, 
-                                max(public.stock_move.create_date) as create_date,
-                                public.stock_move_line.lot_expired_date as use_date,
-                                public.stock_warehouse.id as warehouse_id, 
+                                sum(public.stock_move_line.product_uom_qty) as qty, 
+                                public.stock_production_lot.name as lot_name,
+                                max(public.purchase_order.date_order) as create_date,
+                                public.stock_production_lot.use_date as use_date,
+                                1 as warehouse_id,
                                 public.stock_move.location_id as location_id,
                                 public.product_template.id as product_id,
                                 'Receving' as type,
-                                a.avg_day
-                                FROM 
-                                public.purchase_order 
-                          INNER JOIN
-                                public.purchase_order_line 
-                            ON 
-                              (public.purchase_order_line.order_id = public.purchase_order.id) 
-                           INNER JOIN             
-                                public.stock_move
-                            ON 
-                              (public.stock_move.purchase_line_id = public.purchase_order_line.id)      
-                          INNER JOIN
-                            public.product_product
-                            ON
-                            (public.product_product.id = public.stock_move.product_id)       
-                         INNER JOIN
-                            public.product_template
-                            ON
-                            (public.product_template.id=public.product_product.product_tmpl_id)        
-                        INNER JOIN
-                            public.stock_move_line
-                            ON
-                            (public.stock_move_line.move_id = public.stock_move.id)
-                        INNER JOIN
-                             public.stock_location
-                             ON 
-                             (public.stock_location.id=public.stock_move.location_dest_id )
-                        INNER JOIN
-                             public.stock_warehouse
-                             ON
-                             (public.stock_warehouse.lot_stock_id = public.stock_location.id)    
-                        LEFT JOIN (select stock_move_line.lot_id ,
-                                                    avg(DATE_PART('day',CURRENT_DATE :: TIMESTAMP - stock_move.create_date :: TIMESTAMP )) as avg_day
-                                            from stock_move_line
-                                            inner join stock_move 
-                                            on stock_move.id = stock_move_line.move_id and stock_move_line.location_dest_id =14 and public.stock_move.state='assigned'
-                                            where stock_move_line.lot_id is not null 
-                                            group by stock_move_line.lot_id) as a
-                                          ON            
-                                            stock_move_line.lot_id = a.lot_id
-
-                        where  public.stock_move.state='assigned' and   public.stock_move.location_dest_id=14
-                        group by prod_lot_id ,product_name,stock_move_line.lot_name,stock_move_line.lot_expired_date,stock_warehouse.id,
-                                     stock_move.location_id,product_template.id,a.avg_day      
+                                avg(DATE_PART('day',CURRENT_DATE :: TIMESTAMP - purchase_order.date_order :: TIMESTAMP )) as avg_day
+                            FROM public.purchase_order 
+                            INNER JOIN public.purchase_order_line ON (public.purchase_order.id = public.purchase_order_line.order_id and public.purchase_order.state in ('purchase')) 
+                            INNER JOIN public.stock_move ON (public.purchase_order_line.id = public.stock_move.purchase_line_id) 
+                            INNER JOIN public.stock_move_line ON (public.stock_move.id = public.stock_move_line.move_id) 
+                            INNER JOIN public.stock_picking ON (public.stock_move_line.picking_id = public.stock_picking.id and public.stock_picking.state in ('assigned')) 
+                            INNER JOIN public.product_product ON (public.purchase_order_line.product_id = public.product_product.id) 
+                            INNER JOIN public.product_template ON (public.product_product.product_tmpl_id = public.product_template.id)
+                            LEFT JOIN public.stock_production_lot ON (public.stock_move_line.lot_id = public.stock_production_lot.id)
+                            LEFT JOIN public.stock_location ON (public.stock_location.id=public.stock_move.location_dest_id )
+                            LEFT JOIN stock_warehouse ON (public.stock_warehouse.wh_pack_stock_loc_id = public.stock_location.location_id) 
+                            group by public.stock_move_line.lot_id ,public.product_template.name,public.stock_production_lot.name, public.stock_production_lot.use_date,
+                            stock_warehouse.id,public.stock_move.location_id,public.product_template.id      
                    """
         if receiving_location and not receiving_location is None:
             # select_query = select_query + " and  public.stock_move.location_dest_id=%s"
