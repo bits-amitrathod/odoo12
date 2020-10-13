@@ -96,14 +96,29 @@ class AgingReport(models.Model):
                public.stock_warehouse
                ON
                 (public.stock_location.id in (public.stock_warehouse.lot_stock_id,public.stock_warehouse.wh_output_stock_loc_id,wh_pack_stock_loc_id))
-           LEFT JOIN
-                (select DISTINCT ON (lot_id) stock_move_line.lot_id , stock_move_line.date  from stock_move_line
+           INNER JOIN
+                (select DISTINCT ON (a.lot_id) lot_id, a.date from (
+(select stock_move_line.lot_id , stock_move.date  from stock_move_line
                  inner join stock_picking 
                  on stock_move_line.picking_id = stock_picking.id and stock_move_line.location_dest_id =14
-                 where lot_id is not null
-                 order by lot_id, stock_move_line.date desc) as a
+                 inner join stock_move on stock_move.id = stock_move_line.move_id
+                 join (SELECT 
+                            public.stock_inventory_line.prod_lot_id, 
+                            public.stock_inventory.date 
+                        FROM public.stock_inventory_line 
+                        INNER JOIN public.stock_inventory 
+                        ON ( public.stock_inventory_line.inventory_id = public.stock_inventory.id )where stock_inventory_line.prod_lot_id is not null ) as b
+                 on b.prod_lot_id = stock_move_line.lot_id       
+                 where lot_id is not null)   
+union
+(SELECT 
+    public.stock_inventory_line.prod_lot_id as lot_id, 
+    public.stock_inventory.date 
+FROM public.stock_inventory_line 
+INNER JOIN public.stock_inventory 
+ON ( public.stock_inventory_line.inventory_id = public.stock_inventory.id )where stock_inventory_line.prod_lot_id is not null)) a) as a
                ON stock_production_lot.id = a.lot_id
-           LEFT JOIN 
+           inner JOIN 
                 (select stock_move_line.lot_id ,
                  avg(DATE_PART('day',CURRENT_DATE :: TIMESTAMP - stock_move.date :: TIMESTAMP )) as avg_day
                 from stock_move_line
