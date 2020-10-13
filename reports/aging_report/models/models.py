@@ -63,7 +63,8 @@ class AgingReport(models.Model):
         insert = "INSERT INTO aging_report" \
                  "(prod_lot_id,product_name,qty,lot_name, create_date,use_date,warehouse_id,location_id,product_id,type,avg_day)"
         # Stock Location
-        select_query=insert + """ SELECT
+        select_query=insert + """ 
+            SELECT
             public.stock_production_lot.id as prod_lot_id  ,
            public.product_template.name as product_name,
            sum(public.stock_quant.quantity) as qty ,
@@ -74,7 +75,7 @@ class AgingReport(models.Model):
            14 as location_id, 
            public.product_template.id as product_id,
            'Stock' as type,
-           b.avg_day
+           a.avg_day
            FROM public.product_product
            INNER JOIN
               public.product_template
@@ -96,45 +97,27 @@ class AgingReport(models.Model):
                public.stock_warehouse
                ON
                 (public.stock_location.id in (public.stock_warehouse.lot_stock_id,public.stock_warehouse.wh_output_stock_loc_id,wh_pack_stock_loc_id))
-           INNER JOIN
-                (select DISTINCT ON (a.lot_id) lot_id, a.date from (
-(select stock_move_line.lot_id , stock_move.date  from stock_move_line
-                 inner join stock_picking 
-                 on stock_move_line.picking_id = stock_picking.id and stock_move_line.location_dest_id =14
-                 inner join stock_move on stock_move.id = stock_move_line.move_id
-                 join (SELECT 
-                            public.stock_inventory_line.prod_lot_id, 
-                            public.stock_inventory.date 
-                        FROM public.stock_inventory_line 
-                        INNER JOIN public.stock_inventory 
-                        ON ( public.stock_inventory_line.inventory_id = public.stock_inventory.id )where stock_inventory_line.prod_lot_id is not null ) as b
-                 on b.prod_lot_id = stock_move_line.lot_id       
-                 where lot_id is not null)   
-union
-(SELECT 
-    public.stock_inventory_line.prod_lot_id as lot_id, 
-    public.stock_inventory.date 
-FROM public.stock_inventory_line 
-INNER JOIN public.stock_inventory 
-ON ( public.stock_inventory_line.inventory_id = public.stock_inventory.id )where stock_inventory_line.prod_lot_id is not null)) a) as a
-               ON stock_production_lot.id = a.lot_id
-           inner JOIN 
-                (select stock_move_line.lot_id ,
-                 avg(DATE_PART('day',CURRENT_DATE :: TIMESTAMP - stock_move.date :: TIMESTAMP )) as avg_day
-                from stock_move_line
-                inner join stock_move 
-                on stock_move_line.move_id = stock_move.id and  stock_move_line.location_dest_id =14 
-                left join stock_production_lot
-                on stock_production_lot.id = stock_move_line.lot_id
-                where lot_id is not null
-                 group by stock_move_line.lot_id) as b    
-            ON  (  stock_production_lot.id = b.lot_id)
-               
-               
+           inner JOIN ( 
+                select a.lot_id, max(a.date) as date,avg(DATE_PART('day',CURRENT_DATE :: TIMESTAMP - a.date :: TIMESTAMP )) as avg_day  from(        
+                SELECT stock_move_line.lot_id ,stock_move.date FROM public.stock_inventory 
+                left JOIN public.stock_move 
+                ON ( public.stock_inventory.id = public.stock_move.inventory_id and public.stock_inventory.state in('done'))
+                left join stock_move_line ON  stock_move.id = stock_move_line.move_id
+                where stock_move_line.lot_id is not null
+                union
+                select stock_move_line.lot_id , stock_move.date from stock_move_line
+                inner join stock_picking 
+                on stock_move_line.picking_id = stock_picking.id and stock_move_line.location_dest_id =14
+                inner join stock_move on stock_move.id = stock_move_line.move_id
+                where lot_id is not null) a 
+        group by a.lot_id
+           ) as a
+             ON stock_production_lot.id = a.lot_id  
              WHERE public.stock_quant.quantity>0
              
              group by  public.stock_production_lot.id ,public.product_template.name,public.stock_production_lot.name,public.stock_production_lot.create_date,
-             public.stock_production_lot.use_date, public.stock_warehouse.id, public.product_template.id,b.avg_day
+             public.stock_production_lot.use_date, public.stock_warehouse.id, public.product_template.id,a.avg_day
+        
         """
         if stock_location and not stock_location is None :
             # select_query=select_query + " and public.stock_quant.location_id =%s "
