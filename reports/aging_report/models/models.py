@@ -14,7 +14,6 @@ class AgingReport(models.Model):
 
     # cr_date = fields.Date("Created date")
     qty = fields.Integer("Product Qty")
-    days = fields.Char("Days",compute='get_quantity_byorm', store=False)
 
     sku_code = fields.Char(string="Product SKU", compute='get_quantity_byorm', store=False)
     prod_lot_id = fields.Many2one('stock.production.lot', 'stock production lot')
@@ -22,7 +21,6 @@ class AgingReport(models.Model):
     lot_name = fields.Char(string="Lot#")
     create_date = fields.Date(string="Created Date")
     use_date = fields.Date(string="Expiry Date")
-
     warehouse_id = fields.Many2one('stock.warehouse', 'Warehouse')
     location_id = fields.Many2one('stock.location', string="Location")
     # tracking  = fields.Char("Tracking" ,compute='_get_Data',default=0)
@@ -30,6 +28,8 @@ class AgingReport(models.Model):
     product_uom_id = fields.Char(string="UOM",compute='get_quantity_byorm', store=False)
     product_id = fields.Many2one('product.template', 'Product')
     type=fields.Char(string="Type")
+    days = fields.Integer("Days", compute='get_quantity_byorm', store=False)
+    avg_day = fields.Integer("AVG Days")
 
     @api.multi
     def get_quantity_byorm(self):
@@ -37,14 +37,14 @@ class AgingReport(models.Model):
             order.sku_code=order.product_id.sku_code
             order.product_uom_id = order.product_id.uom_id.name
             order.warehouse_name = order.warehouse_id.name
-            date_format = "%Y-%m-%d"
-            today = date.today().strftime('%Y-%m-%d')
-            a = datetime.strptime(str(today), date_format)
-            b = datetime.strptime(str(order.create_date), date_format)
-            diff = a - b
-            order.days = diff.days
-
-
+            order.days = order.avg_day
+                # if order.create_date :
+                #     date_format = "%Y-%m-%d"
+                #     today = date.today().strftime('%Y-%m-%d')
+                #     a = datetime.strptime(str(today), date_format)
+                #     b = datetime.strptime(str(order.create_date), date_format)
+                #     diff = a - b
+                #     order.days = diff.days
 
     @api.model_cr
     def init(self):
@@ -61,22 +61,21 @@ class AgingReport(models.Model):
         cust_location_id = self.env.context.get('cust_location_id')
         receiving_location = self.env.context.get('receiving_location')
         insert = "INSERT INTO aging_report" \
-                 "(prod_lot_id,product_name,qty,lot_name, create_date,use_date,warehouse_id,location_id,product_id,type)"
+                 "(prod_lot_id,product_name,qty,lot_name, create_date,use_date,warehouse_id,location_id,product_id,type,avg_day)"
         # Stock Location
         select_query=insert + """ SELECT
             public.stock_production_lot.id as prod_lot_id  ,
            public.product_template.name as product_name,
            sum(public.stock_quant.quantity) as qty ,
            public.stock_production_lot.name as lot_name,
-           date(public.stock_production_lot.create_date) as create_date,
+           max(date(a.date)) as create_date,
            date(public.stock_production_lot.use_date) as use_date,
            public.stock_warehouse.id as warehouse_id,
            14 as location_id, 
            public.product_template.id as product_id,
-          
-           'Stock' as type
-           FROM
-           public.product_product
+           'Stock' as type,
+           b.avg_day
+           FROM public.product_product
            INNER JOIN
               public.product_template
               ON
@@ -97,8 +96,30 @@ class AgingReport(models.Model):
                public.stock_warehouse
                ON
                 (public.stock_location.id in (public.stock_warehouse.lot_stock_id,public.stock_warehouse.wh_output_stock_loc_id,wh_pack_stock_loc_id))
-             WHERE public.stock_quant.quantity>0  group by  public.stock_production_lot.id ,public.product_template.name,public.stock_production_lot.name,public.stock_production_lot.create_date,
-             public.stock_production_lot.use_date, public.stock_warehouse.id, public.product_template.id
+           LEFT JOIN
+                (select DISTINCT ON (lot_id) stock_move_line.lot_id , stock_move_line.date  from stock_move_line
+                 inner join stock_picking 
+                 on stock_move_line.picking_id = stock_picking.id and stock_move_line.location_dest_id =14
+                 where lot_id is not null
+                 order by lot_id, stock_move_line.date desc) as a
+               ON stock_production_lot.id = a.lot_id
+           LEFT JOIN 
+                (select stock_move_line.lot_id ,
+                 avg(DATE_PART('day',CURRENT_DATE :: TIMESTAMP - stock_move.date :: TIMESTAMP )) as avg_day
+                from stock_move_line
+                inner join stock_move 
+                on stock_move_line.move_id = stock_move.id and  stock_move_line.location_dest_id =14 
+                left join stock_production_lot
+                on stock_production_lot.id = stock_move_line.lot_id
+                where lot_id is not null
+                 group by stock_move_line.lot_id) as b    
+            ON  (  stock_production_lot.id = b.lot_id)
+               
+               
+             WHERE public.stock_quant.quantity>0
+             
+             group by  public.stock_production_lot.id ,public.product_template.name,public.stock_production_lot.name,public.stock_production_lot.create_date,
+             public.stock_production_lot.use_date, public.stock_warehouse.id, public.product_template.id,b.avg_day
         """
         if stock_location and not stock_location is None :
             # select_query=select_query + " and public.stock_quant.location_id =%s "
@@ -108,14 +129,15 @@ class AgingReport(models.Model):
         select_query = insert + """ SELECT 
                                              public.stock_move_line.lot_id as prod_lot_id,
                                              public.product_template.name as product_name,
-                                             public.stock_move_line.product_uom_qty as qty,
+                                             sum(public.stock_move_line.product_uom_qty) as qty,
                                              public.stock_production_lot.name as lot_name, 
-                                             public.stock_move.create_date as create_date,
+                                             max(public.stock_move.create_date) as create_date,
                                              public.stock_production_lot.use_date as use_date,
                                              public.stock_warehouse.id as warehouse_id, 
                                              public.stock_move.location_id as location_id,
                                              public.product_template.id as product_id,
-                                             'Shipping' as type
+                                             'Shipping' as type,
+                                             a.avg_day
                                              FROM 
                                              public.sale_order 
                                        RIGHT JOIN
@@ -149,12 +171,22 @@ class AgingReport(models.Model):
                                      RIGHT JOIN
                                           public.stock_warehouse
                                           ON
-                                          (public.stock_warehouse.wh_pack_stock_loc_id = public.stock_location.id)     
-
-                                     where  public.stock_move.state in ('waiting','assigned')        
+                                          (public.stock_warehouse.wh_pack_stock_loc_id = public.stock_location.id) 
+                                    LEFT JOIN (select stock_move_line.lot_id ,
+                                                    avg(DATE_PART('day',CURRENT_DATE :: TIMESTAMP - stock_move.create_date :: TIMESTAMP )) as avg_day
+                                            from stock_move_line
+                                            inner join stock_move 
+                                            on stock_move.id = stock_move_line.move_id and stock_move_line.location_dest_id =12
+                                            where stock_move_line.lot_id is not null and stock_move.state in ('waiting','assigned')
+                                            group by stock_move_line.lot_id) as a
+                                          ON            
+                                            (stock_production_lot.id = a.lot_id)
+                                     where  public.stock_move.state in ('waiting','assigned')  and  public.stock_move.location_dest_id=12
+                                     group by prod_lot_id ,product_name,stock_production_lot.name,stock_production_lot.use_date,stock_warehouse.id,
+                                     stock_move.location_id,product_template.id,a.avg_day   
                                 """
         if cust_location_id and not cust_location_id is None:
-            select_query = select_query + " and  public.stock_move.location_dest_id=%s    "
+            # select_query = select_query + " and  public.stock_move.location_dest_id=%s "
             self._cr.execute(select_query, (cust_location_id,))
 
 
@@ -163,14 +195,15 @@ class AgingReport(models.Model):
         select_query = insert + """ SELECT 
                                 public.stock_move_line.lot_id as prod_lot_id,
                                 public.product_template.name as product_name,
-                                public.stock_move_line.product_uom_qty as qty,
+                                sum(public.stock_move_line.product_uom_qty) as qty,
                                 public.stock_move_line.lot_name as lot_name, 
-                                public.stock_move.create_date as create_date,
+                                max(public.stock_move.create_date) as create_date,
                                 public.stock_move_line.lot_expired_date as use_date,
                                 public.stock_warehouse.id as warehouse_id, 
                                 public.stock_move.location_id as location_id,
                                 public.product_template.id as product_id,
-                                'Receving' as type
+                                'Receving' as type,
+                                a.avg_day
                                 FROM 
                                 public.purchase_order 
                           INNER JOIN
@@ -200,12 +233,23 @@ class AgingReport(models.Model):
                         INNER JOIN
                              public.stock_warehouse
                              ON
-                             (public.stock_warehouse.lot_stock_id = public.stock_location.id)     
+                             (public.stock_warehouse.lot_stock_id = public.stock_location.id)    
+                        LEFT JOIN (select stock_move_line.lot_id ,
+                                                    avg(DATE_PART('day',CURRENT_DATE :: TIMESTAMP - stock_move.create_date :: TIMESTAMP )) as avg_day
+                                            from stock_move_line
+                                            inner join stock_move 
+                                            on stock_move.id = stock_move_line.move_id and stock_move_line.location_dest_id =14 and public.stock_move.state='assigned'
+                                            where stock_move_line.lot_id is not null 
+                                            group by stock_move_line.lot_id) as a
+                                          ON            
+                                            stock_move_line.lot_id = a.lot_id
 
-                        where  public.stock_move.state='assigned'      
+                        where  public.stock_move.state='assigned' and   public.stock_move.location_dest_id=14
+                        group by prod_lot_id ,product_name,stock_move_line.lot_name,stock_move_line.lot_expired_date,stock_warehouse.id,
+                                     stock_move.location_id,product_template.id,a.avg_day      
                    """
         if receiving_location and not receiving_location is None:
-            select_query = select_query + " and  public.stock_move.location_dest_id=%s"
+            # select_query = select_query + " and  public.stock_move.location_dest_id=%s"
             self._cr.execute(select_query, (receiving_location,))
 
     @api.model_cr
