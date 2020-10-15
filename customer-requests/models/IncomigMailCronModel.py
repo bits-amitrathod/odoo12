@@ -160,6 +160,7 @@ class IncomingMailCronModel(models.Model):
 
                                     if len(res_partner) == 1:
                                         salesperson = None
+                                        key_account = None
                                         if res_partner.user_id and res_partner.user_id.partner_id and res_partner.user_id.partner_id.email:
                                             salesperson = res_partner.user_id.partner_id.email
                                         if res_partner.account_manager_cust and res_partner.account_manager_cust.partner_id and res_partner.account_manager_cust.partner_id.email:
