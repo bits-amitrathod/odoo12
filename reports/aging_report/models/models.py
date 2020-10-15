@@ -19,7 +19,7 @@ class AgingReport(models.Model):
     prod_lot_id = fields.Many2one('stock.production.lot', 'stock production lot')
     product_name = fields.Char(string="Product Name")
     lot_name = fields.Char(string="Lot#")
-    create_date = fields.Date(string="Updated Date")
+    create_date = fields.Date(string="Last Updated Date")
     use_date = fields.Date(string="Expiry Date")
     warehouse_id = fields.Many2one('stock.warehouse', 'Warehouse')
     location_id = fields.Many2one('stock.location', string="Location")

@@ -12,7 +12,7 @@
                       <field name="lot_name"/>
                       <field name="qty"/>
                       <field name="product_uom_id"/>
-                      <field name="create_date" string="Updated Date"/>
+                      <field name="create_date" string="Last Updated Date"/>
                       <field name="use_date" string="Expriry Date"/>
                       <field name="days"/>
                 </tree>
@@ -34,7 +34,7 @@
                             <field name="lot_name"/>
                             <field name="qty"/>
                             <field name="product_uom_id"/>
-                            <field name="create_date" string="Updated Date"/>
+                            <field name="create_date" string="Last Updated Date"/>
                             <field name="use_date" string="Expriry Date"/>
                             <field name="days"/>
                         </group>
