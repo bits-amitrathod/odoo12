@@ -45,7 +45,7 @@
                                     <th style="border: 1px solid black;text-align: center; width:100px">Lot#</th>
                                     <th style="border: 1px solid black;text-align: center; width:100px">Product Qty</th>
                                     <th style="border: 1px solid black;text-align: center;width:70px">UOM</th>
-                                    <th style="border: 1px solid black;text-align: center;width:150px">Created Date</th>
+                                    <th style="border: 1px solid black;text-align: center;width:150px">Last Updated Date</th>
                                     <th style="border: 1px solid black;text-align: center;width:150px">Expiry Date</th>
                                     <th style="border: 1px solid black;text-align: center;width:70px">Days</th>
                                 </tr>
@@ -93,7 +93,7 @@
                                         <th style="border: 1px solid black;text-align: center; width:100px">Lot#</th>
                                         <th style="border: 1px solid black;text-align: center; width:100px">Product Qty</th>
                                         <th style="border: 1px solid black;text-align: center;width:70px">UOM</th>
-                                        <th style="border: 1px solid black;text-align: center;width:150px">Created Date</th>
+                                        <th style="border: 1px solid black;text-align: center;width:150px">Last Updated Date</th>
                                         <th style="border: 1px solid black;text-align: center;width:150px">Expiry Date</th>
                                         <th style="border: 1px solid black;text-align: center;width:70px">Days</th>
                                     </tr>
@@ -143,7 +143,7 @@
                                     <th style="border: 1px solid black;text-align: center; width:100px">Lot#</th>
                                     <th style="border: 1px solid black;text-align: center; width:100px">Product Qty</th>
                                     <th style="border: 1px solid black;text-align: center;width:70px">UOM</th>
-                                    <th style="border: 1px solid black;text-align: center;width:150px">Created Date</th>
+                                    <th style="border: 1px solid black;text-align: center;width:150px">Last Updated Date</th>
                                     <th style="border: 1px solid black;text-align: center;width:150px">Expiry Date</th>
                                     <th style="border: 1px solid black;text-align: center;width:70px">Days</th>
                                 </tr>
