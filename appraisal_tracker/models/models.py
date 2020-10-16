@@ -143,15 +143,23 @@ class CustomerAsWholesaler(models.Model):
 
     is_wholesaler = fields.Boolean(string="Is a Wholesaler?")
 
-    @api.onchange('is_wholesaler', 'is_broker')
+    @api.onchange('is_wholesaler', 'is_broker', 'charity')
     def _check_wholesaler_setting(self):
         warning = {}
         val = {}
-        if self.is_broker == True and self.is_wholesaler == True:
+        if self.is_broker is True and (self.is_wholesaler is True or self.charity is True):
             val.update({'is_broker': False})
+            if self.is_wholesaler is True and self.charity is True:
+                val.update({'is_wholesaler': False})
             warning = {
                 'title': _('Warning'),
-                'message': _('Customer can be either Wholesaler or Broker , not both'),
+                'message': _('Customer can be Wholesaler or Broker or Charity'),
+            }
+        elif self.is_wholesaler is True and self.charity is True:
+            val.update({'is_wholesaler': False})
+            warning = {
+                'title': _('Warning'),
+                'message': _('Customer can be Wholesaler or Broker or Charity'),
             }
         return {'value': val, 'warning': warning}
 
