@@ -123,6 +123,35 @@ class apprisal_tracker_vendor(models.Model):
                         'less_than_40_retail': less_than_40_retail
                     })
 
+                elif order.partner_id.charity == True:
+
+                    order.cust_type_appraisal = 'Charity'
+
+                    for line in order.order_line:
+                        if line.product_unit_price and line.product_unit_price > 0:
+                            amt = line.product_offer_price/line.product_unit_price
+
+                            if (line.product_id.tier.code == '1') and \
+                                    (abs(float(amt - 1)) >= 0.48):
+
+                                tier1_retail_temp = tier1_retail_temp + line.billed_product_retail_price
+
+                            if (((line.product_id.tier.code == '1') and \
+                                    ((abs(float(amt - 1)) >= 0.4) and (abs(float(amt - 1)) < 0.48)))
+                                    or (line.product_id.tier.code == '2' and (abs(float(amt-1)) > 0.4))
+                                    ):
+
+                                tier2_retail_temp = tier2_retail_temp + line.billed_product_retail_price
+
+                            if abs(float(amt - 1)) < 0.4:
+                                less_than_40_retail = less_than_40_retail + line.billed_product_retail_price
+
+                    order.update({
+                        'tier1_retail': tier1_retail_temp,
+                        'tier2_retail': tier2_retail_temp,
+                        'less_than_40_retail': less_than_40_retail
+                    })
+
                 else:
                     order.cust_type_appraisal = 'Traditional'
                     for line in order.order_line:
