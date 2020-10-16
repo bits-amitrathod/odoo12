@@ -197,13 +197,13 @@ class DocumentProcessTransientModel(models.TransientModel):
                         user_model.user_id.partner_id.email, user_model.account_manager_cust.partner_id.email, template)
             elif user_model.user_id and user_model.user_id.partner_id and user_model.user_id.partner_id.email:
                 self.env['prioritization.engine.model'].send_mail(user_model.name, user_model.email,
-                                                                  user_model.user_id.partner_id.email, None, template)
+                                                                  user_model.user_id.partner_id.email, '', template)
             elif user_model.account_manager_cust and user_model.account_manager_cust.partner_id and \
                     user_model.account_manager_cust.partner_id.email:
-                self.env['prioritization.engine.model'].send_mail(user_model.name, user_model.email, None,
+                self.env['prioritization.engine.model'].send_mail(user_model.name, user_model.email, '',
                                                                   user_model.account_manager_cust.partner_id.email, template)
             else:
-                self.env['prioritization.engine.model'].send_mail(user_model.name, user_model.email, None, None, template)
+                self.env['prioritization.engine.model'].send_mail(user_model.name, user_model.email, '', '', template)
             file_uploaded_record.write({'document_processed_count': 1, 'status': 'Completed'})
 
     def _get_updated_qty(self, req, template_type, product_template_id):
