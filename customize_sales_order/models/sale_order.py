@@ -29,6 +29,8 @@ class CustomerContract(models.Model):
 
     reinstated_date = fields.Datetime(string='Reinstated Date', track_visibility='onchange')
 
+    charity = fields.Boolean(string='Is a Charity?', track_visibility='onchange')
+
     display_reinstated_date_flag = fields.Integer(default=0, compute="_display_reinstated_date_flag")
 
     todays_notification = fields.Boolean(string='Todays Notification', default=False)
