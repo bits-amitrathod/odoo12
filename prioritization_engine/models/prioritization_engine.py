@@ -606,17 +606,17 @@ class PrioritizationEngine(models.TransientModel):
                             and sps_cust_uploaded_document.customer_id.user_id.partner_id.email:
                         self.send_mail(sps_cust_uploaded_document.customer_id.name,
                                        sps_cust_uploaded_document.customer_id.email,
-                                       sps_cust_uploaded_document.customer_id.user_id.partner_id.email, None, template)
+                                       sps_cust_uploaded_document.customer_id.user_id.partner_id.email, '', template)
                     elif sps_cust_uploaded_document.customer_id.account_manager_cust and \
                             sps_cust_uploaded_document.customer_id.account_manager_cust.partner_id \
                             and sps_cust_uploaded_document.customer_id.account_manager_cust.partner_id.email:
                         self.send_mail(sps_cust_uploaded_document.customer_id.name,
                                        sps_cust_uploaded_document.customer_id.email,
-                                       None, sps_cust_uploaded_document.customer_id.account_manager_cust.partner_id.email,
+                                       '', sps_cust_uploaded_document.customer_id.account_manager_cust.partner_id.email,
                                        template)
                     else:
                         self.send_mail(sps_cust_uploaded_document.customer_id.name,
-                                       sps_cust_uploaded_document.customer_id.email, None, None, template)
+                                       sps_cust_uploaded_document.customer_id.email, '', '', template)
 
     @staticmethod
     def _update_all_request_status(sps_cust_uploaded_document):
