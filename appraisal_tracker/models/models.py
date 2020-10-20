@@ -30,8 +30,6 @@ class apprisal_tracker_vendor(models.Model):
     status_ven_app = fields.Char(string="Status",store=False)
     vendor_cust_id_app = fields.Char(string="Customer ID", store=False ,compute="_value_broker_margin")
 
-
-
     @api.onchange('broker_margin')
     def _value_broker_margin(self):
 
@@ -44,8 +42,6 @@ class apprisal_tracker_vendor(models.Model):
 
                 if order.state == 'purchase':
                     order.status_ven_app = 'Accepted'
-
-
 
                 if order.arrival_date_grp and order.arrival_date_grp != '':
                     order.status_ven_app = 'Arrived'
@@ -73,7 +69,7 @@ class apprisal_tracker_vendor(models.Model):
                 tier2_retail_temp = 0
                 less_than_40_retail = 0
 
-                if order.partner_id.is_wholesaler == True:
+                if order.partner_id.is_wholesaler:
 
                     order.cust_type_appraisal = 'Wholesaler'
                     for line in order.order_line:
@@ -92,13 +88,18 @@ class apprisal_tracker_vendor(models.Model):
 
                             if abs(float(amt - 1)) < 0.4:
                                 less_than_40_retail = less_than_40_retail + line.billed_product_retail_price
-                        order.update({
-                            'tier1_retail': tier1_retail_temp,
-                            'tier2_retail': tier2_retail_temp,
-                            'less_than_40_retail': less_than_40_retail
-                        })
 
-                elif order.partner_id.is_broker == True:
+                    tier1_retail_temp = tier1_retail_temp + order.tier1_extra_retail
+                    tier2_retail_temp = tier2_retail_temp + order.tier2_extra_retail
+                    less_than_40_retail = less_than_40_retail + order.less_than_40_extra_retail
+
+                    order.update({
+                        'tier1_retail': tier1_retail_temp,
+                        'tier2_retail': tier2_retail_temp,
+                        'less_than_40_retail': less_than_40_retail
+                    })
+
+                elif order.partner_id.is_broker:
 
                     order.cust_type_appraisal = 'Broker'
 
@@ -121,13 +122,17 @@ class apprisal_tracker_vendor(models.Model):
                             if abs(float(amt - 1)) < 0.4:
                                 less_than_40_retail = less_than_40_retail + line.billed_product_retail_price
 
+                    tier1_retail_temp = tier1_retail_temp + order.tier1_extra_retail
+                    tier2_retail_temp = tier2_retail_temp + order.tier2_extra_retail
+                    less_than_40_retail = less_than_40_retail + order.less_than_40_extra_retail
+
                     order.update({
                         'tier1_retail': tier1_retail_temp,
                         'tier2_retail': tier2_retail_temp,
                         'less_than_40_retail': less_than_40_retail
                     })
 
-                elif order.partner_id.charity == True:
+                elif order.partner_id.charity:
 
                     order.cust_type_appraisal = 'Charity'
 
@@ -150,6 +155,10 @@ class apprisal_tracker_vendor(models.Model):
                             if abs(float(amt - 1)) < 0.4:
                                 less_than_40_retail = less_than_40_retail + line.billed_product_retail_price
 
+                    tier1_retail_temp = tier1_retail_temp + order.tier1_extra_retail
+                    tier2_retail_temp = tier2_retail_temp + order.tier2_extra_retail
+                    less_than_40_retail = less_than_40_retail + order.less_than_40_extra_retail
+
                     order.update({
                         'tier1_retail': tier1_retail_temp,
                         'tier2_retail': tier2_retail_temp,
@@ -163,6 +172,10 @@ class apprisal_tracker_vendor(models.Model):
                             tier1_retail_temp = tier1_retail_temp + line.billed_product_retail_price
                         if line.product_id.tier.code == '2':
                             tier2_retail_temp = tier2_retail_temp + line.billed_product_retail_price
+
+                    tier1_retail_temp = tier1_retail_temp + order.tier1_extra_retail
+                    tier2_retail_temp = tier2_retail_temp + order.tier2_extra_retail
+                    less_than_40_retail = less_than_40_retail + order.less_than_40_extra_retail
 
                     order.update({
                         'tier1_retail': tier1_retail_temp,
