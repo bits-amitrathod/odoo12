@@ -82,41 +82,102 @@ class ExportNewAccountByMonthByNa(http.Controller):
     def download_document_xl(self, start_date, end_date, national_account_id, token=1, debug=1, **kw):
 
         select_query = """
-                       SELECT
-                            ROW_NUMBER () OVER (ORDER BY RP.id) AS id,
-                            RP.name                             AS customer,
-                            COALESCE(RP.reinstated_date, RP.create_date)        AS onboard_date,
-                            RPS.name                                            AS national_account
-            
-                       FROM public.res_partner RP
-                        
-                        INNER JOIN 
-                            public.res_users RU 
-                        ON 
-                            (
-                              RP.national_account_rep = RU.id)
-                        INNER JOIN
-                              public.res_partner RPS
-                        ON 
-                            (
-                                RU.partner_id = RPS.id)
-            
-                        WHERE RP.customer = true AND RP.active = true 
-                        AND RP.national_account_rep IS NOT NULL AND RP.parent_id IS NULL
+                                SELECT 
+                                    ROW_NUMBER () OVER (ORDER BY RPS.id)    AS id,
+                                    RPS.name                                AS customer, 
+                                    RPSS.name                               AS national_account, 
+                                    MIN(SPS.date_done)                      AS onboard_date
+                                FROM public.sale_order SOS 
+                                INNER JOIN 
+                                    public.res_partner RPS 
+                                ON 
+                                    SOS.partner_id = RPS.id AND (RPS.is_wholesaler is NULL OR RPS.is_wholesaler != TRUE) 
+                                    AND (RPS.is_broker is NULL OR RPS.is_broker != TRUE)
+                                INNER JOIN 
+                                    public.stock_picking SPS 
+                                ON 
+                                    SOS.id = SPS.sale_id AND SPS.picking_type_id = 5 AND SPS.state = 'done'
 
-          """
+                                INNER JOIN 
+                                    public.res_users RU 
+                                ON 
+                                    SOS.national_account = RU.id
+                                INNER JOIN
+                                      public.res_partner RPSS
+                                ON 
+                                    RU.partner_id = RPSS.id
 
+                                WHERE SOS.national_account IS NOT NULL AND SOS.state NOT IN ('cancel', 'void') AND SOS.partner_id IN
 
-        if start_date != "all" and end_date != "all":
-            select_query = select_query + " AND COALESCE(RP.reinstated_date, RP.create_date) BETWEEN '" + str(
-                start_date) + "'" + " AND '" + str(self.string_to_date(end_date) + datetime.timedelta(days=1)) + "'"
+                                ((  SELECT 
+                                        DISTINCT (SO.partner_id) partner1
+                                    FROM 
+                                        public.sale_order SO
+                                    INNER JOIN 
+                                        public.stock_picking SP 
+                                    ON 
+                                        SO.id = SP.sale_id AND SP.state = 'done' AND SP.picking_type_id = 5 AND
+
+                                   """
+        select_query = select_query + " SP.date_done BETWEEN '" + str(start_date) + "'" + " AND '" + str(
+            end_date) + "' " + """ WHERE SO.state NOT IN ('cancel', 'void') AND SO.partner_id NOT IN (
+                                SELECT 
+                                    DISTINCT (SO.partner_id) partner
+                                FROM 
+                                    public.sale_order SO
+                                INNER JOIN 
+                                    public.stock_picking SP ON SO.id = SP.sale_id AND SP.state = 'done' AND 
+                                    SP.picking_type_id = 5 AND SP.date_done <= ' """ + str(start_date) + """ ' 
+                                    WHERE SO.state NOT IN ('cancel', 'void'))) UNION ALL ("""
+
+        select_query = select_query + """ 
+                            SELECT 
+                                DISTINCT (SO.partner_id) partner1
+                            FROM 
+                                public.sale_order SO 
+                            WHERE SO.id IN (
+                                SELECT SO.id
+                                FROM 
+                                    public.sale_order SO
+                                INNER JOIN 
+                                    public.stock_picking SP 
+                                ON 
+                                    SO.id = SP.sale_id AND SP.state = 'done' AND SP.picking_type_id = 5 AND SP.date_done BETWEEN ' """ + \
+                       str(start_date) + "' " + " AND '" + str(end_date) + \
+                       """ ' AND SO.state NOT IN ('cancel', 'void') AND SO.national_account IS NOT NULL
+                   WHERE SO.partner_id IN (
+                           SELECT id
+                           FROM public.res_partner RP
+                           WHERE RP.reinstated_date IS NOT NULL AND RP.reinstated_date BETWEEN ' """ + \
+                       str(start_date) + "'" + " AND '" + str(end_date) + "' ) ) AND SO.partner_id NOT IN ("
+
+        select_query = select_query + """ 
+                                SELECT 
+                                    DISTINCT (SO.partner_id) partner
+                                FROM 
+                                    public.sale_order SO        
+                                WHERE SO.id IN (        
+                                        Select SO.id
+                                        From public.sale_order SO
+                                        INNER JOIN public.stock_picking SP 
+                                        ON SO.id = SP.sale_id AND SP.state = 'done' AND SP.picking_type_id = 5 AND SP.date_done <= ' """ + \
+                       str(start_date) + "' " + \
+                       """ AND SO.state NOT IN ('cancel', 'void') AND SO.national_account IS NOT NULL
+                       WHERE SO.partner_id IN (
+                               SELECT id 
+                               FROM public.res_partner RP
+                               WHERE RP.reinstated_date IS NOT NULL AND RP.reinstated_date <= '""" + str(start_date) + \
+                       "' ) ) ))) AND SPS.date_done" \
+                       " >= COALESCE(RPS.reinstated_date, RPS.create_date) AND SPS.date_done BETWEEN '" + \
+                       str(start_date) + "'" + " AND '" + str(end_date) + "' "
 
         if national_account_id != "none":
-            select_query = select_query + "AND RP.national_account_rep = '" + str(national_account_id) + "'"
+            select_query = select_query + "AND SOS.national_account = '" + str(national_account_id) + "'"
 
-        order_by = """ ORDER BY RPS.name"""
+        group_by = """ GROUP BY RPS.id, RPS.name, RPSS.name  
+                                ORDER BY RPSS.name """
 
-        select_query = select_query + order_by
+        select_query = select_query + group_by
 
         request.env.cr.execute(select_query)
         order_lines = request.env.cr.dictfetchall()
@@ -130,7 +191,7 @@ class ExportNewAccountByMonthByNa(http.Controller):
                             line['national_account']])
 
         res = request.make_response(
-            self.from_data(["Customer Name", "Onboard Date", "National Account"],
+            self.from_data(["Customer Name", "Delivery Date", "National Account"],
                            records),
             headers=[('Content-Disposition', content_disposition('new_account_by_month_by_na' + '.xls')),
                      ('Content-Type', 'application/vnd.ms-excel')],

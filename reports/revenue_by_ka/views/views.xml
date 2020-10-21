@@ -1,6 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <record id="revenue_by_ka_dashboard_view" model="ir.ui.view">
+            <field name="name">ka.revenue.view.dashboard</field>
+            <field name="model">report.ka.revenue</field>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+                <dashboard>
+                    <view type="graph" ref="revenue_by_ka.revenue_ka_graph_view"/>
+                    <view type="pivot" ref="revenue_by_ka.revenue_ka_pivot_view"/>
+                </dashboard>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="revenue_ka_graph_view">
+            <field name="name">ka.revenue.view.graph</field>
+            <field name="model">report.ka.revenue</field>
+            <field name="type">graph</field>
+            <field name="arch" type="xml">
+                <graph string="Revenue by KA" orientation="horizontal" stacked="True" type="bar">
+                    <field name="key_account" type="row"/>
+                    <field name="no_of_orders" type="measure"/>
+                    <field name="order_quota" type="measure"/>
+                    <field name="total_revenue" type="measure"/>
+                    <field name="revenue_quota" type="measure"/>
+                    <field name="progress_order_quota" type="measure" string="Progress Order Quota %"/>
+                    <field name="progress_revenue_quota" type="measure" string="Progress Revenue Quota %"/>
+                </graph>
+            </field>
+        </record>
+
+        <record id="revenue_ka_pivot_view" model="ir.ui.view">
+            <field name="name">ka.revenue.view.pivot</field>
+            <field name="model">report.ka.revenue</field>
+            <field name="type">pivot</field>
+            <field name="arch" type="xml">
+                <pivot string="Revenue by KA">
+                    <field name="key_account" type="row"/>
+                    <field name="no_of_orders" type="measure"/>
+                    <field name="order_quota" type="measure"/>
+                    <field name="progress_order_quota" type="measure"/>
+                    <field name="total_revenue" type="measure"/>
+                    <field name="revenue_quota" type="measure"/>
+                    <field name="progress_revenue_quota" type="measure"/>
+                </pivot>
+            </field>
+        </record>
 
         <!-- Tree view -->
         <record model="ir.ui.view" id="revenue_by_ka_list_view">
@@ -8,13 +52,17 @@
               <field name="model">report.ka.revenue</field>
               <field name="priority">20</field>
               <field name="arch" type="xml">
-                <tree create="false" edit="false" delete="false">
-                <field name="sale_order_id"/>
-                <field name="customer"/>
-                <field name="key_account"/>
-                <field name="delivery_date" widget="date"/>
-                <field name="total_amount"/>
-                </tree>
+                  <tree create="false" edit="false" delete="false">
+                        <field name="currency_id" invisible="1"/>
+                        <field name="customer"/>
+                        <field name="key_account"/>
+                        <field name="no_of_orders"/>
+                        <field name="order_quota"/>
+                        <field name="progress_order_quota"/>
+                        <field name="total_revenue" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                        <field name="revenue_quota" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                        <field name="progress_revenue_quota"/>
+                    </tree>
               </field>
         </record>
 
@@ -30,14 +78,22 @@
                   <sheet>
                       <group>
                             <group>
-                                <field name="sale_order_id"/>
                                 <field name="customer"/>
                                 <field name="key_account"/>
-                                <field name="delivery_date" widget="date"/>
                             </group>
-                            <group>
-                                <field name="total_amount"/>
-                            </group>
+                      </group>
+                      <group>
+                          <group>
+                              <field name="no_of_orders"/>
+                              <field name="order_quota"/>
+                              <field name="progress_order_quota"/>
+                          </group>
+                          <group>
+                              <field name="currency_id" invisible="1"/>
+                              <field name="total_revenue" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                              <field name="revenue_quota" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                              <field name="progress_revenue_quota"/>
+                          </group>
                       </group>
                   </sheet>
               </form>
@@ -55,10 +111,15 @@
                 <form string="Choose your date">
                     <group>
                         <group>
-                            <field name="compute_at_date" widget="radio"/>
-                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
-                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <field name="start_month"/>
+                            <field name="start_year"/>
                         </group>
+                        <group>
+                            <field name="end_month"/>
+                            <field name="end_year"/>
+                        </group>
+                    </group>
+                    <group>
                         <group>
                             <field name="key_account"/>
                         </group>
@@ -95,17 +156,20 @@
                 <form string="Export Revenue By Key Account Report">
                     <group>
                         <group>
-                            <field name="compute_at_date" widget="radio"/>
-                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
-                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <field name="start_month"/>
+                            <field name="start_year"/>
                         </group>
+                        <group>
+                            <field name="end_month"/>
+                            <field name="end_year"/>
+                        </group>
+                    </group>
+                    <group>
                         <group>
                             <field name="key_account"/>
                         </group>
-                        <group>
-                            <div>Click On ' Export To File ' button to export Revenue By Key Account report file</div>
-                        </group>
                     </group>
+                    <div><b>Click On ' Export To File ' button to export Revenue By Key Account report file</b></div>
                     <footer>
                         <button name="download_excel_ka_revenue" string="Export To File" type="object"
                                 class="btn-primary"/>
@@ -123,14 +187,10 @@
             <field name="model">report.ka.revenue</field>
             <field name="arch" type="xml">
                 <search string="Search">
-                    <field name="customer"/>
-                    <field name="sale_order_id"/>
                     <field name="key_account"/>
+                    <field name="customer"/>
                     <group expand="0" string="Group By">
-                        <filter name="customer" string="Customer Name" domain="[]" context="{'group_by':'customer'}"/>
-                        <filter name="sale_order_id" string="Sale Order#" domain="[]" context="{'group_by':'sale_order_id'}"/>
-                        <filter name="key_account" string="Key Account" domain="[]" context="{'group_by':'key_account'}"/>
-                        <filter name="delivery_date" string="Delivery Date" domain="[]" context="{'group_by':'delivery_date'}"/>
+                        <!--<filter name="key_account" string="Key Account" domain="[]" context="{'group_by':'key_account'}"/>-->
                     </group>
                 </search>
             </field>
@@ -154,7 +214,7 @@
                   name="Revenue By KA"
                   action="action_revenue_by_ka"
                   parent="stocked_product_sold_by_ka.key_account_reports"
-                  sequence="14"/>
+                  sequence="1"/>
 
                 <!--parent="sale.menu_sale_report"-->
 

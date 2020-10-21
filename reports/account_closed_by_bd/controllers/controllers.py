@@ -96,7 +96,8 @@ class ExportAccountClosedByBd(http.Controller):
                     INNER JOIN public.res_users RU ON SOS.user_id = RU.id
                     INNER JOIN public.res_partner RPSS ON RU.partner_id = RPSS.id
                     INNER JOIN public.sale_order_line SOL ON SOS.id = SOL.order_id 
-                    INNER JOIN public.res_partner RPS ON SOS.partner_id = RPS.id
+                    INNER JOIN public.res_partner RPS ON SOS.partner_id = RPS.id AND
+                    (RPS.is_wholesaler is NULL OR RPS.is_wholesaler != TRUE) AND (RPS.is_broker is NULL OR RPS.is_broker != TRUE)
                     INNER JOIN 
                     (SELECT DISTINCT ON (origin) origin,date_done,sale_id  FROM stock_picking WHERE picking_type_id = 5 AND state = 'done' ORDER BY origin) AS SPS 
                     ON SOS.id = SPS.sale_id

@@ -148,9 +148,9 @@
         </record>
 
         <!-- Top menu item -->
-      <menuitem id="key_account_reports" name="Key Account Reports" parent="sale.menu_sale_report" sequence="1"/>
+      <menuitem id="key_account_reports" name="Key Account Reports" parent="sale.menu_sale_report" sequence="3"/>
       <menuitem id="menu_sale_report_short_date_and_over_stocked_product_sold_by_ka"
               name="Short date and over stocked product sold by KA"
-              action="action_short_date_and_over_stocked_product_sold_by_ka" parent="stocked_product_sold_by_ka.key_account_reports" sequence="1"/>
+              action="action_short_date_and_over_stocked_product_sold_by_ka" parent="stocked_product_sold_by_ka.key_account_reports" sequence="2"/>
     </data>
 </odoo>

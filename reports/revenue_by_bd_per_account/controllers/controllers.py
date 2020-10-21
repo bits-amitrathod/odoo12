@@ -115,7 +115,8 @@ class ExportRevenueByBdPerAccount(http.Controller):
                     public.res_partner ResPartner 
                 ON
                     ( 
-                        SO.partner_id = ResPartner.id)
+                        SO.partner_id = ResPartner.id AND (ResPartner.is_wholesaler is NULL OR ResPartner.is_wholesaler != TRUE) 
+                        AND (ResPartner.is_broker is NULL OR ResPartner.is_broker != TRUE))
 
 
                    WHERE SO.state NOT IN ('cancel', 'void') AND SO.user_id IS NOT NULL

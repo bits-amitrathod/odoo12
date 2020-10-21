@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import re
 from odoo import models, fields, api
 from odoo import _
 from odoo.exceptions import UserError
@@ -28,6 +28,8 @@ class CustomerContract(models.Model):
     revenue_quota = fields.Monetary(string="Revenue Quota", help="Amount", track_visibility='onchange')
 
     reinstated_date = fields.Datetime(string='Reinstated Date', track_visibility='onchange')
+
+    charity = fields.Boolean(string='Is a Charity?', track_visibility='onchange')
 
     display_reinstated_date_flag = fields.Integer(default=0, compute="_display_reinstated_date_flag")
 
@@ -61,6 +63,17 @@ class sale_order(models.Model):
             self.field_read_only = 0
         else:
             self.field_read_only = 1
+
+    is_signature = fields.Integer(compute="_is_signature")
+
+    @api.depends('signature')
+    def _is_signature(self):
+        clean = re.compile('<.*?>')
+        clean_text = re.sub(clean, '', self.order_processor.signature)
+        if len(clean_text.strip()) > 0:
+            self.is_signature = 1
+        else:
+            self.is_signature = 0
 
     @api.one
     def get_account_manager(self):
@@ -103,13 +116,14 @@ class sale_order(models.Model):
             })
 
     def write(self, val):
+        super(sale_order, self).write(val)
         # Add note in pick delivery
-        if self.state in 'sale':
-            for pick in self.picking_ids:
-                if pick.picking_type_id.name == 'Pick':
-                    pick.note = val['sale_note'] if('sale_note' in val.keys()) else self.sale_note
 
-        if self.carrier_id and self.state in 'sale':
+        if self.state and self.state in 'sale':
+            for pick in self.picking_ids:
+                pick.note = val['sale_note'] if ('sale_note' in val.keys()) else self.sale_note
+
+        if self.carrier_id and self.state and self.state in 'sale':
             self.env['stock.picking'].search([('sale_id', '=', self.id), ('picking_type_id', '=', 5)]).write({'carrier_id':self.carrier_id.id})
 
         # if 'sale_note' in val or self.sale_note:
@@ -126,13 +140,6 @@ class sale_order(models.Model):
                     'author_id': self.env.user.partner_id.id,
                 }
                 self.env['mail.message'].sudo().create(stock_picking_val)
-
-        # add account manager
-        if self.partner_id and self.partner_id.account_manager_cust and self.partner_id.account_manager_cust.id:
-            val['account_manager'] = self.partner_id.account_manager_cust.id
-        if self.partner_id and self.partner_id.national_account_rep and self.partner_id.national_account_rep.id:
-            val['national_account'] = self.partner_id.national_account_rep.id
-        return super(sale_order, self).write(val)
 
     @api.one
     def _get_carrier_tracking_ref(self):

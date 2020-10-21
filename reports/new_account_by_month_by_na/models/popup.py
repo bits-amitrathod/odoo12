@@ -5,17 +5,19 @@ from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMA
 class NaNewAccountByMonthReportPopup(models.TransientModel):
     _name = 'popup.na.new.account'
 
-    start_date = fields.Date('Start Date', default=(fields.date.today() - datetime.timedelta(days=31)),required=True ,help="Choose a date to get the New Account By Month By National Account at that  Start date")
-    end_date = fields.Date('End Date',default=fields.date.today(),required=True , help="Choose a date to get the New Account By Month By National Account at that  End date")
+    start_date = fields.Date('Start Date', default=(fields.date.today() - datetime.timedelta(days=31)), required=True, help="Choose a date to get the New Account By Month By National Account at that  Start date")
+    end_date = fields.Date('End Date', default=fields.date.today(), required=True, help="Choose a date to get the New Account By Month By National Account at that  End date")
     national_account = fields.Many2one('res.users', string="National Account", index=True)
 
     # @api.multi
     def open_table(self):
+        e_date = self.string_to_date(str(self.end_date))
+        e_date = e_date + datetime.timedelta(days=1)
 
         tree_view_id = self.env.ref('new_account_by_month_by_na.new_account_by_month_by_na_list_view').id
         form_view_id = self.env.ref('new_account_by_month_by_na.new_account_by_month_by_na_form_view').id
         res_model = 'report.na.new.account'
-        margins_context = {'start_date': self.start_date, 'end_date': self.end_date,
+        margins_context = {'start_date': self.start_date, 'end_date': e_date,
                            'national_account': self.national_account.id}
         self.env[res_model].with_context(margins_context).delete_and_create()
         action = {

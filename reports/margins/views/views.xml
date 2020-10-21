@@ -108,6 +108,6 @@
         </record>
 
         <menuitem name="Margins" id="margins_menu" parent="sale.menu_sale_report"
-                  action="margins.action_margins"/>
+                  action="margins.action_margins" sequence="8"/>
     </data>
 </odoo>

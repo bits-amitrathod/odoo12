@@ -309,3 +309,15 @@ class sale_order_track(models.Model):
     def action_fedex_track_request(self):
         if self.carrier_id:
             return self.carrier_id.get_tracking(self, [self.carrier_track_ref])
+
+class StockPicking(models.Model):
+    _inherit = "stock.picking"
+
+    carrier_tracking_url = fields.Char(string='Tracking URL', compute='_compute_carrier_tracking_url')
+
+    @api.depends('carrier_id', 'carrier_tracking_ref')
+    def _compute_carrier_tracking_url(self):
+        for picking in self:
+            result = picking.carrier_id.get_tracking_link(picking) if picking.carrier_id and picking.carrier_tracking_ref else False
+            picking.carrier_tracking_url = result if result else ""
+

@@ -75,65 +75,75 @@ class StockedProductSoldByKa(http.Controller):
         fp.close()
         return data
 
-    @http.route('/web/export/revenue_by_ka_export/<string:start_date>/<string:end_date>/<string:key_account_id>', type='http',
-                auth="public")
+    @http.route('/web/export/revenue_by_ka_export/<string:start_date>/<string:end_date>/<string:key_account_id>'
+                '/<string:date_difference>', type='http', auth="public")
     @serialize_exception
-    def download_document_xl(self, start_date, end_date, key_account_id, token=1, debug=1, **kw):
+    def download_document_xl(self, start_date, end_date, key_account_id, date_difference, token=1, debug=1, **kw):
 
         select_query = """
-                SELECT
-                       ROW_NUMBER () OVER (ORDER BY SO.id) AS id, 
-                       SO.name                               AS sale_order_id,
-                       MAX(SP.date_done)                        AS delivery_date,
-                       RP.name                             AS key_account,
-                       ResPartner.name                     AS customer,
-                       SO.state                             AS status,
-                       SUM(SOL.qty_delivered * SOL.price_reduce)  AS total_amount 
-                   
-                FROM public.sale_order SO
-                INNER JOIN 
-                    public.sale_order_line SOL 
-                ON 
-                    SO.id = SOL.order_id
-                INNER JOIN 
-                        (SELECT DISTINCT ON (origin) origin,date_done,sale_id  FROM stock_picking WHERE picking_type_id = 5 AND state = 'done' ORDER BY origin)
-                    AS SP 
-                ON 
-                    SO.id = SP.sale_id
-                INNER JOIN 
-                    public.res_users RU 
-                ON 
-                    (
-                        SO.account_manager = RU.id)
-                INNER JOIN 
-                    public.res_partner RP 
-                ON
-                    ( 
-                        RU.partner_id = RP.id)
-                INNER JOIN 
-                    public.res_partner ResPartner 
-                ON
-                    ( 
-                        SO.partner_id = ResPartner.id)
-                
-                                       
-                   WHERE SO.state NOT IN ('cancel', 'void') AND SO.account_manager IS NOT NULL
+                        SELECT 
+                            ROW_NUMBER () OVER (ORDER BY RP.id)         AS id, 
+                            RP.name                                     AS customer, 
+                            RPS.name                                    AS key_account,
+                            SOL.currency_id                             AS currency_id,
+                            CASE WHEN COUNT(SO.no_of_order) > 0 THEN COUNT(SO.no_of_order) ELSE 0 END AS no_of_orders,
+                            CASE WHEN SUM(SOL.revenue) > 0 THEN SUM(SOL.revenue) ELSE 0 END AS total_revenue,
 
-               """
+                            """
+        select_query = select_query + " CASE WHEN RP.order_quota > 0 THEN RP.order_quota*" + \
+                       str(date_difference) + " ELSE 0 END AS order_quota, " + \
+                       " CASE WHEN RP.order_quota > 0 THEN (COUNT(SO.no_of_order)/(RP.order_quota*" + \
+                       str(date_difference) + "))*100 ELSE 0 END AS progress_order_quota," + \
+                       " CASE WHEN RP.revenue_quota > 0 THEN RP.revenue_quota *" + str(date_difference) + \
+                       " ELSE 0 END AS revenue_quota," + \
+                       " CASE WHEN RP.revenue_quota > 0 THEN SUM(SOL.revenue)/(RP.revenue_quota*" + str(
+            date_difference) + \
+                       ")*100 ELSE 0 END AS progress_revenue_quota"
 
+        select_query = select_query + """
 
-        if start_date != "all" and end_date != "all":
-            select_query = select_query + " AND SP.date_done BETWEEN '" + str(
-                start_date) + "'" + " AND '" + str(self.string_to_date(end_date) + datetime.timedelta(days=1)) + "'"
+                        FROM public.res_partner RP
+                        
+                        INNER JOIN 
+                            public.res_users RU
+                        ON
+                            RP.account_manager_cust = RU.id
+                        INNER JOIN 
+                            public.res_partner RPS
+                        ON 
+                            RU.partner_id = RPS.id
+
+                        LEFT JOIN 
+                            (SELECT id, COUNT(sale_order.id) AS no_of_order, sale_order.partner_id, sale_order.create_date 
+                                FROM public.sale_order sale_order
+                            LEFT JOIN (SELECT DISTINCT ON (origin) origin, date_done, sale_id 
+                                FROM stock_picking WHERE picking_type_id = 5 AND state = 'done' ORDER BY origin) AS SP 
+                            ON sale_order.id = SP.sale_id
+                            WHERE state not in ('cancel', 'void') AND """
+
+        select_query = select_query + "SP.date_done >= '" + str(start_date) + "' AND SP.date_done <= '" + \
+                       str(end_date) + "'"
+
+        select_query = select_query + """   GROUP BY id, partner_id) AS SO ON RP.id = SO.partner_id
+
+                        LEFT JOIN 
+                            (SELECT DISTINCT ON (order_id) order_id, SUM(qty_delivered * price_reduce) AS revenue, currency_id 
+                                FROM sale_order_line
+                                GROUP BY order_id, currency_id) AS SOL ON SO.id = SOL.order_id
+
+                        WHERE RP.account_manager_cust IS NOT NULL          
+
+                    """
 
         if key_account_id != "none":
-            select_query = select_query + "AND SO.account_manager = '" + str(key_account_id) + "'"
+            select_query = select_query + "AND RP.account_manager_cust = '" + str(key_account_id) + "'"
 
         group_by = """
-                           GROUP BY
-                            SO.id, RP.name, ResPartner.name
-                            ORDER BY RP.name             
-                               """
+                                GROUP BY
+                                    RP.id, RPS.name, SO.no_of_order, SOL.currency_id
+                                    
+                                    ORDER BY RPS.name
+                                    """
 
         select_query = select_query + group_by
 
@@ -143,13 +153,18 @@ class StockedProductSoldByKa(http.Controller):
         records = []
 
         for line in order_lines:
-            records.append([line['sale_order_id'],
-                            line['customer'],line['key_account'],
-                            line['delivery_date'],
-                            line['total_amount']])
+            if line['progress_order_quota'] > 0 and line['progress_revenue_quota'] > 0:
+                records.append([line['customer'], line['key_account'],
+                            line['no_of_orders'], line['order_quota'], round(line['progress_order_quota'], 2),
+                            line['total_revenue'], line['revenue_quota'], round(line['progress_revenue_quota'], 2)])
+            else:
+                records.append([line['customer'], line['key_account'],
+                                line['no_of_orders'], line['order_quota'], line['progress_order_quota'],
+                                line['total_revenue'], line['revenue_quota'], line['progress_revenue_quota']])
 
         res = request.make_response(
-            self.from_data(["Sale Order#", "Customer Name","Key Account", "Delivery Date", "Total"],
+            self.from_data(["Customer Name", "Key Account", "No. of orders", "Order Quota", "Progress of Order Quota",
+                            "Total Revenue", "Revenue Quota", "Progress of Revenue Quota"],
                            records),
             headers=[('Content-Disposition', content_disposition('revenue_by_ka' + '.xls')),
                      ('Content-Type', 'application/vnd.ms-excel')],

@@ -102,13 +102,13 @@
                   name="Trending Report for 6 month"
                   action="trending_report_list6_id"
                   parent="sale.menu_sale_report"
-                  sequence="5"/>
+                  sequence="10"/>
 
         <menuitem id="menu_trending_report_list_report12"
                   name="Trending Report for 12 month"
                   action="trending_report_list12_id"
                   parent="sale.menu_sale_report"
-                  sequence="6"/>
+                  sequence="11"/>
 
     </data>
 

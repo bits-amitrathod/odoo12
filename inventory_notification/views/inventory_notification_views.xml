@@ -10,6 +10,7 @@
             <field name="state">code</field>
             <field name="code">model.process_notification_scheduler()</field>
             <field name="numbercall">-1</field>
+            <field name="priority">0</field>
             <field name="doall" eval="False"/>
             <field name="active" eval="False"/>
         </record>
@@ -22,6 +23,7 @@
             <field name="state">code</field>
             <field name="code">model.process_notification_scheduler_everyday()</field>
             <field name="numbercall">-1</field>
+            <field name="priority">0</field>
             <field name="doall" eval="False"/>
             <field name="active" eval="False"/>
         </record>
