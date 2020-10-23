@@ -42,6 +42,15 @@ class CustomerContract(models.Model):
                 if category_id.id == 31:
                     self.display_reinstated_date_flag = 1
 
+    @api.onchange('parent_id')
+    def onchange_parent_id(self):
+        super(CustomerContract, self).onchange_parent_id()
+        self.customer = True
+        account_payment_term = self.env['account.payment.term'].search([('name', '=', 'Net 30'), ('active', '=', True)])
+        if account_payment_term:
+            self.property_payment_term_id = account_payment_term.id
+            self.property_supplier_payment_term_id = account_payment_term.id
+
 
 class sale_order(models.Model):
     _inherit = 'sale.order'
