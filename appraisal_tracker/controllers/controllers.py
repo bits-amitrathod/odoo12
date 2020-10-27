@@ -101,6 +101,7 @@ class ApprisalTracker(http.Controller):
                      select distinct po.name as po , po.appraisal_no,acq_man.name as acq_manager,rp.name as facility,
                      rp.saleforce_ac as vendor_cust_id,po.final_billed_offer_total,po.final_billed_retail_total,
                     case when  rp.is_wholesaler = true then 'Wholesaler' 
+                    when  rp.charity = true then 'Charity' 
                     when  rp.is_broker = true then 'Broker' 
                     else  'Traditional' end as ap_type, 
                       apt.name as payment_term,
@@ -145,22 +146,23 @@ class ApprisalTracker(http.Controller):
 
                     select  pof1.id as order_id,
 
-                    sum(case when (   ( (rpf1.is_wholesaler != true  or rpf1.is_wholesaler is null ) and rpf1.is_broker != true and ttf1.code='1' )
+                    sum(case when (   ( (rpf1.is_wholesaler != true  or rpf1.is_wholesaler is null ) and rpf1.is_broker != true and rpf1.charity != true and ttf1.code='1' )
 
                        or
-                         ((rpf1.is_wholesaler = true or rpf1.is_broker = true ) and ttf1.code='1' and polf1.product_unit_price!=0 and
+                         ((rpf1.is_wholesaler = true or rpf1.is_broker = true or rpf1.charity = true ) and ttf1.code='1' and polf1.product_unit_price!=0 and
                      (ABS(cast((polf1.product_offer_price/polf1.product_unit_price)-1 as numeric)) >= 0.48 )) )
                     then (polf1.product_unit_price * polf1.qty_invoiced) else 0 end ) as tier1_retail_temp ,
 
-                        sum(case when  ( (rpf1.is_wholesaler != true  or rpf1.is_wholesaler is null ) and rpf1.is_broker != true and ttf1.code='2' ) or
-
-                         ( (rpf1.is_wholesaler = true or rpf1.is_broker = true ) and (((ttf1.code='1' and polf1.product_unit_price!=0 and 
+                        sum(case when  ( (rpf1.is_wholesaler != true  or rpf1.is_wholesaler is null ) and rpf1.is_broker != true and rpf1.charity != true and ttf1.code='2' ) 
+                        
+                        or
+                         ( (rpf1.is_wholesaler = true or rpf1.is_broker = true or rpf1.charity = true ) and (((ttf1.code='1' and polf1.product_unit_price!=0 and 
                         (ABS(cast((polf1.product_offer_price/polf1.product_unit_price)-1 as numeric))  >= 0.4 )) 
                         and (ABS(cast((polf1.product_offer_price/polf1.product_unit_price)-1 as numeric)) < 0.48 )) 
                         or (ttf1.code='2' and polf1.product_unit_price!=0 and (ABS(cast((polf1.product_offer_price/polf1.product_unit_price)-1 as numeric))  > 0.4) )))
                     then (polf1.product_unit_price * polf1.qty_invoiced) else 0 end ) as tier2_retail ,
 
-                    sum(case when  (rpf1.is_wholesaler = true or rpf1.is_broker = true ) and ( polf1.product_unit_price!=0 and 
+                    sum(case when  (rpf1.is_wholesaler = true or rpf1.is_broker = true or rpf1.charity = true ) and ( polf1.product_unit_price!=0 and 
                     (ABS(cast((polf1.product_offer_price/polf1.product_unit_price) -1 as numeric)) < 0.4 )) 
                     then (polf1.product_unit_price * polf1.qty_invoiced) else 0 end ) as less_than_40_retail 
 
