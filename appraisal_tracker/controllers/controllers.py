@@ -119,9 +119,9 @@ class ApprisalTracker(http.Controller):
                                         and  po.state !='cancel' then 'Checked Into Inventory' 
 					when po.invoice_status ='invoiced' and po.state !='cancel' then 'Bill created'
 					end as status ,
-					retail_val.tier1_retail_temp,
-					retail_val.tier2_retail,
-					retail_val.less_than_40_retail
+					(retail_val.tier1_retail_temp + po.tier1_extra_retail) AS tier1_retail_temp,
+					(retail_val.tier2_retail + po.tier2_extra_retail) AS tier2_retail,
+					(retail_val.less_than_40_retail + po.less_than_40_extra_retail) AS less_than_40_retail
 
                     from purchase_order as po 
                     left join res_partner rp on po.partner_id = rp.id
