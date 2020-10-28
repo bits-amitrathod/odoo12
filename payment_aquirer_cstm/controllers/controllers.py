@@ -58,6 +58,15 @@ class PaymentAquirerCstm(http.Controller):
         request.session['expedited_shipping'] = expedited_shipping
         return request.redirect('/shop/payment')
 
+    @http.route('/checkHavingCarrierWithAccountNo', type='json', auth="public", methods=['POST'], website=True, csrf=False)
+    def check_having_carrier_with_account_no(self, customerId):
+        print('In check_having_carrier_with_account_no')
+        res_partner = request.env['res.partner'].sudo().search([('id', '=', customerId)])
+        if res_partner.having_carrier and res_partner.carrier_acc_no:
+            return {'client_order_ref_error': 'account no present'}
+        else:
+            return {'client_order_ref_error': 'Account no not present'}
+
 
 class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.WebsiteSale):
     @http.route(['/shop/payment'], type='http', auth="public", website=True)

@@ -1,6 +1,7 @@
 odoo.define('payment_aquirer_cstm.payment_aquirer_cstm', function(require) {
     "use strict";
     require('web.dom_ready');
+    var ajax = require('web.ajax');
 
     $(document).ready(function() {
           $("#delivery_35").prop('checked', true);
@@ -26,6 +27,22 @@ odoo.define('payment_aquirer_cstm.payment_aquirer_cstm', function(require) {
                 $("#hasShippingNote").prop('checked', true);
                 $("#editShippingNote").show();
                 $("#expedited_shipping").show();
+
+                ajax.jsonRpc("/checkHavingCarrierWithAccountNo", 'call', {
+                    'customerId': 2
+                }).then(function(data) {
+                    var output_data = data['client_order_ref_error']
+                    if (output_data != '') {
+                          document.write('Yes');
+//                        $("#client_order_ref_error").text(output_data);
+//                        $("#client_order_ref_accept").attr('disabled', true);
+                    }
+                    else {
+                        document.write('No');
+//                        $("#client_order_ref_error").text('');
+//                        $("#client_order_ref_accept").attr('disabled', false);
+                    }
+                });
             }
         });
 
