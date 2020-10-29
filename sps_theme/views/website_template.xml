@@ -1,0 +1,18 @@
+<odoo>
+    <template id="assets_frontend" inherit_id="web.assets_frontend" name="Website Assets">
+        <xpath expr="//link[last()]" position="after">
+            <!-- Font  -->
+            <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,600i,700,700i,800" rel="stylesheet"/>
+            <link href="https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i,700,700i,900" rel="stylesheet"/>
+
+            <!-- less -->
+            <link rel="stylesheet" href="/sps_theme/static/src/less/website.style.less"/>
+        </xpath>
+
+        <xpath expr="//script[last()]" position="after">
+            <!-- .js -->
+            <script type="text/javascript" src="/sps_theme/static/src/js/script.js"/>
+        </xpath>
+    </template>
+
+</odoo>

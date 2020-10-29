@@ -1,0 +1,58 @@
+<!--
+<odoo>
+    <data>
+
+        <record id="about_page_link" model="website.menu">
+            <field name="name">ABOUT</field>
+            <field name="page_id" ref="about_page"/>
+            <field name="parent_id" ref="website.main_menu" />
+            <field name="sequence" type="int">99</field>
+        </record>
+
+        <record id="mission_page_link" model="website.menu">
+            <field name="name">Mission</field>
+            <field name="page_id" ref="about_page"/>
+            <field name="parent_id" ref="sps_theme.about_page_link" />
+            <field name="sequence" type="int">99</field>
+        </record>
+
+
+
+
+        <record id="surgical_product_page_link" model="website.menu">
+            <field name="name">SURGICAL PRODUCTS</field>
+            <field name="page_id" ref="about_page"/>
+            <field name="parent_id" ref="website.main_menu" />
+            <field name="sequence" type="int">99</field>
+        </record>
+
+        <record id="surgical_equipment_page_link" model="website.menu">
+            <field name="name">SURGICAL EQUIPMENT</field>
+            <field name="page_id" ref="about_page"/>
+            <field name="parent_id" ref="website.main_menu" />
+            <field name="sequence" type="int">99</field>
+        </record>
+
+        <record id="stockhawk_page_link" model="website.menu">
+            <field name="name">STOCKHAWK</field>
+            <field name="page_id" ref="stockhawk_page"/>
+            <field name="parent_id" ref="website.main_menu" />
+            <field name="sequence" type="int">99</field>
+        </record>
+
+        <record id="resources_page_link" model="website.menu">
+            <field name="name">RESOURCES</field>
+            <field name="page_id" ref="about_page"/>
+            <field name="parent_id" ref="website.main_menu" />
+            <field name="sequence" type="int">99</field>
+        </record>
+
+        <record id="contact_page_link" model="website.menu">
+            <field name="name">CONTACT</field>
+            <field name="page_id" ref="contact_page"/>
+            <field name="parent_id" ref="website.main_menu" />
+            <field name="sequence" type="int">99</field>
+        </record>
+
+    </data>
+</odoo>-->

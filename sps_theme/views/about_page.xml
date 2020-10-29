@@ -1,0 +1,180 @@
+<odoo>
+    <template id="about_page_template" name="About Page">
+        <t name="About Page" t-name="sps_theme.about_page">
+            <t t-name="website.about">
+                <t t-call="website.layout">
+                    <div id="wrap" class="oe_structure oe_empty">
+                        <section class="pt32 pb32">
+                            <div class="container">
+                                <div class="row s_nb_column_fixed">
+                                    <div class="col-lg-12 s_title pt16 pb16" style="text-align: center;">
+                                        <h1 style="color: rgb(255, 255, 255); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 34px; line-height: 60px; text-transform: capitalize; font-family: AmericanGotURW-Bol; font-weight: 600;">
+                                            <span style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
+                                                <font style="color: rgb(0, 0, 0);">About</font>
+                                            </span>
+                                        </h1>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="s_text_image pt32 pb32 bg-white oe_custom_bg" style="">
+                            <div class="container">
+                                <div class="row align-items-center">
+                                    <div class="pt16 pb16 col-lg-4">
+                                        <img alt="warehouse SPS Shop" class="img-responsive"
+                                             src="https://shopspsnew-pstaging-639408.dev.odoo.com/website_cstm/static/src/img/warehouse-woman-ABOUT.jpg"
+                                             data-original-title="" title="" aria-describedby="tooltip42324"/>
+                                        <br/>
+                                    </div>
+                                    <div class="pt16 pb16 col-lg-8">
+                                        <h3 style="text-transform: capitalize; color: rgb(50, 61, 73); background: 0px 0px rgb(255, 255, 255); border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 28px; line-height: 1.30435em; font-family: AmericanGotURW-Bol; text-align: center;">
+                                            Surgical Product Solutions
+                                        </h3>
+                                        <div class="s_hr text-left pt32 pb32">
+                                            <hr class="border-600 s_hr_1px s_hr_solid mx-auto w-25"/>
+                                        </div>
+                                        <p>
+                                            <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
+                                                SPS is a leader in providing cost-saving solutions for healthcare
+                                                facilities across the United States who choose to save money without
+                                                sacrificing quality of care. We accomplish this by providing hospitals
+                                                and surgery centers two ways to save on their high-volume surgical
+                                                disposables. We help our customers recover significant budget costs by
+                                                purchasing their un-used, in-date surgical surplus while at the same
+                                                time, providing them additional cost savings and flexibility when
+                                                purchasing the same high volume products they are currently utilizing.
+                                            </span>
+                                            <br/>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="s_text_image oe_custom_bg pb64 pt48"
+                                 style="background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial;">
+                            <div class="container">
+                                <div class="row align-items-center">
+                                    <div class="pb16 pt16 col-lg-6">
+                                        <span class="q_dropcap square"
+                                              style="background: 0px 0px rgb(232, 19, 30); border: 1px solid rgb(232, 19, 30); margin: 5px 20px 0px 0px; padding: 0px; vertical-align: baseline; outline: 0px; position: relative; display: inline-block; float: left; height: 48px; width: 48px; line-height: 48px; font-size: 42px; color: rgb(255, 255, 255); text-align: center; font-family: AmericanGotURW-Bol; border-radius: 4px;">
+                                            1
+                                        </span>
+                                        <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
+                                            SPS provides a solution for surgical disposables when they become
+                                            jeopardized and are no longer being used by the facility. This can be due to
+                                            product conversions, contract changes, or physician departures. We purchase
+                                            these surgical disposables that would otherwise remain un-used and
+                                            eventually expire on the shelves of the OR, injecting cash directly into the
+                                            hospital’s budget.
+                                        </span>
+                                        <br/>
+                                    </div>
+                                    <div class="pb16 pt16 col-lg-6">
+                                        <span class="q_dropcap square"
+                                              style="background: 0px 0px rgb(232, 19, 30); border: 1px solid rgb(232, 19, 30); margin: 5px 20px 0px 0px; padding: 0px; vertical-align: baseline; outline: 0px; position: relative; display: inline-block; float: left; height: 48px; width: 48px; line-height: 48px; font-size: 42px; color: rgb(255, 255, 255); text-align: center; font-family: AmericanGotURW-Bol; border-radius: 4px;">
+                                            2
+                                        </span>
+                                        <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
+                                            SPS acts as an independent distributor of un-used, in date surgical
+                                            disposables. We can sell your facility high volume products that you are
+                                            currently buying from top vendors, at an even greater discount from top tier
+                                            pricing. We also provide the flexibility to purchase individual items in
+                                            “eaches,” rather than in cases, which helps in the unique case of a
+                                            preferential product that is outside your normal buying patterns (Physician
+                                            Preference Item)—and avoids disrupting any contract compliances.
+                                        </span>
+                                        <br/>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="pt32 bg-white oe_custom_bg pb0" style="">
+                            <div class="container">
+                                <div class="row s_nb_column_fixed">
+                                    <div class="col-lg-12 s_title pt0 pb0" style="text-align: center;">
+                                        <h3 style="text-transform: capitalize; color: rgb(50, 61, 73);  border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 28px; line-height: 1.30435em; font-family: AmericanGotURW-Bol;">
+                                            <b>Educate Others</b>
+                                        </h3>
+                                        <h5 style="color: rgb(50, 61, 73); border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; letter-spacing: 5px; text-transform: uppercase; font-size: 18px; line-height: 1.57143em; font-family: Lato, sans-serif;">
+                                            DOWNLOAD OUR EDUCATIONAL MATERIALs
+                                        </h5>
+                                        <h5 style="color: rgb(50, 61, 73); border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; letter-spacing: 5px; text-transform: uppercase; font-size: 18px; line-height: 1.57143em; font-family: Lato, sans-serif;">
+                                            <div class="s_hr text-left pt16 pb8"
+                                                 style="color: rgb(33, 37, 41); font-family: -apple-system, system-ui, &quot;Segoe UI&quot;, Roboto, Noto, &quot;Helvetica Neue&quot;, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;, &quot;Noto Color Emoji&quot;; font-size: 14px; letter-spacing: normal; text-transform: none;">
+                                                <br class="Apple-interchange-newline"/>
+                                                <hr class="border-600 s_hr_1px s_hr_solid mx-auto w-25"
+                                                    style="width: 182.5px;"/>
+                                                <br/>
+                                            </div>
+                                        </h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="s_features pb32 bg-white oe_custom_bg pt0" style="">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-lg-4 pt32 pb32 text-center">
+                                        <img class="img-fluid o_we_custom_image"
+                                             src="/website_cstm/static/src/img/tnPresentation.png" data-original-title="" title=""
+                                             aria-describedby="tooltip851974"/>
+                                        <h3>
+                                            <a itemprop="url" href="/slides/slide/sps-company-presentation-2"
+                                               class="qbutton small default btn btn-danger btn-sm"
+                                               style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 2px solid rgb(232, 19, 30); margin: 0px; padding: 0px 17px; vertical-align: baseline; cursor: pointer; transition: color 0.1s linear 0s, background-color 0.1s linear 0s, border-color 0.1s linear 0s; display: inline-block; font-weight: 800; font-family: Lato, sans-serif; text-transform: uppercase; white-space: nowrap; position: relative; width: auto; height: 30px; line-height: 30px; font-size: 15px; text-align: left; letter-spacing: 1px; border-radius: 4px; text-shadow: none; box-sizing: initial !important;"
+                                               data-original-title="" title="" aria-describedby="tooltip1199">COMPANY
+                                                OVERVIEW (PDF)
+                                            </a>
+                                            <br/>
+                                        </h3>
+                                    </div>
+                                    <div class="col-lg-4 pt32 pb32 text-center">
+                                        <img class="img-fluid o_we_custom_image" src="/website_cstm/static/src/img/tnQA.png"
+                                             data-original-title="" title="" aria-describedby="tooltip416352" style=""/>
+                                        <h3>
+                                            <a itemprop="url" href="/quality_assurance"
+                                               class="default qbutton small btn btn-danger btn-sm"
+                                               data-original-title="" title="" aria-describedby="tooltip808241"
+                                               style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; font-size: 15px; font-weight: 800; transition: color 0.1s linear 0s, background-color 0.1s linear 0s, border-color 0.1s linear 0s; border: 2px solid rgb(232, 19, 30); margin: 0px; padding: 0px 17px; vertical-align: baseline; cursor: pointer; display: inline-block; font-family: Lato, sans-serif; text-transform: uppercase; white-space: nowrap; position: relative; width: auto; height: 30px; line-height: 30px; text-align: left; letter-spacing: 1px; border-radius: 4px; text-shadow: none; box-sizing: initial !important;">
+                                                QUALITY ASSURANCE
+                                            </a>
+                                            <br/>
+                                        </h3>
+                                    </div>
+                                    <div class="col-lg-4 pt32 pb32 text-center">
+                                        <img class="img-fluid o_we_custom_image" src="/website_cstm/static/src/img/tnBrochure.png"
+                                             data-original-title="" title="" aria-describedby="tooltip258351"/>
+                                        <h3>
+                                            <a itemprop="url" href="/marketing_brochure"
+                                               class="qbutton small default btn btn-danger btn-sm"
+                                               style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 2px solid rgb(232, 19, 30); margin: 0px; padding: 0px 17px; vertical-align: baseline; cursor: pointer; transition: color 0.1s linear 0s, background-color 0.1s linear 0s, border-color 0.1s linear 0s; display: inline-block; font-weight: 800; font-family: Lato, sans-serif; text-transform: uppercase; white-space: nowrap; position: relative; width: auto; height: 30px; line-height: 30px; font-size: 15px; text-align: left; letter-spacing: 1px; border-radius: 4px; text-shadow: none; box-sizing: initial !important;"
+                                               data-original-title="" title="">MARKETING BROCHURE (PDF)
+                                            </a>
+                                            <br/>
+                                        </h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                    <section class="about-us-section">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12 col-lg-6">
+                                    <div class="about-us-description">
+                                        <p>&amp;nbsp;</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="service-section">
+                        <div class="container">
+                            <hr/>
+                        </div>
+                    </section>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
