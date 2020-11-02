@@ -40,3 +40,7 @@ class ThemeController(http.Controller):
     @http.route('/equipment-sell', type='http', auth="public", website=True)
     def seller(self):
         return http.request.render('sps_theme.equipment_sell_template')
+
+    @http.route('/request-a-quote', type='http', auth="public", website=True)
+    def request_a_quote(self):
+        return http.request.render('sps_theme.request_a_quote_remplate')
