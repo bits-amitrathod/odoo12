@@ -13,6 +13,10 @@ from odoo.addons.http_routing.models.ir_http import slug, _guess_mimetype
 
 class ThemeController(http.Controller):
 
+    @http.route('/', type='http', auth="public", website=True)
+    def home(self, **kw):
+        return http.request.render('sps_theme.home_page_template')
+
     @http.route('/aboutus', type='http', auth="public", website=True)
     def about(self):
         return http.request.render('sps_theme.about_page_template')
@@ -32,3 +36,7 @@ class ThemeController(http.Controller):
     @http.route('/faqs', type='http', auth="public", website=True)
     def faqs(self):
         return http.request.render('sps_theme.faqs_page_template')
+
+    @http.route('/equipment-sell', type='http', auth="public", website=True)
+    def seller(self):
+        return http.request.render('sps_theme.equipment_sell_template')

@@ -18,7 +18,11 @@
         'views/about_page.xml',
         'views/contact_page.xml',
         'views/stockhawk_page.xml',
-
+        'views/career_page.xml',
+        'views/faqs_page.xml',
+        'views/equipment_repair_and_service_page.xml',
+        'views/home_page.xml',
+        'views/equipment_sell_page.xml',
 
         # 'views/menu.xml'
 
