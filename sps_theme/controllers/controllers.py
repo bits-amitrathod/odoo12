@@ -43,4 +43,12 @@ class ThemeController(http.Controller):
 
     @http.route('/request-a-quote', type='http', auth="public", website=True)
     def request_a_quote(self):
-        return http.request.render('sps_theme.request_a_quote_remplate')
+        return http.request.render('sps_theme.request_a_quote_template')
+
+    @http.route('/thank-you', type='http', auth="public", website=True)
+    def thank_you(self):
+        return http.request.render('sps_theme.thank_you_page_template')
+
+    @http.route('/surgical-products-sell', type='http', auth="public", website=True)
+    def surgical_products_sell(self):
+        return http.request.render('sps_theme.surgical_products_sell_page_template')

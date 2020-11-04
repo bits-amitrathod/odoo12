@@ -1,5 +1,5 @@
 <odoo>
-    <template id="request_a_quote_remplate" name="Request A Quote">
+    <template id="request_a_quote_template" name="Request A Quote">
         <t t-name="website.request-a-quote">
             <t t-call="website.layout">
                 <div id="wrap" class="oe_structure oe_empty">

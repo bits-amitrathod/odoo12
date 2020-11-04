@@ -7,7 +7,7 @@
     'sequence': 57,
     'version': '0.1',
     'category': 'Theme/Creative',
-    'depends': ['website', 'website_theme_install'],
+    'depends': ['website_sales','website_product_brand','web_search','auth_signup','prioritization_engine','vendor_offer','website_crm','mass_mailing','website_slides'],
 
     'data': [
         'security/ir.model.access.csv',
@@ -24,6 +24,9 @@
         'views/home_page.xml',
         'views/equipment_sell_page.xml',
         'views/request_a_quote_page.xml',
+        'views/thank_you_page.xml',
+        'views/surgical_products_sell_page.xml',
+
 
         # 'views/menu.xml'
 
