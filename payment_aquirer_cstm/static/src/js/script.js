@@ -4,8 +4,23 @@ odoo.define('payment_aquirer_cstm.payment_aquirer_cstm', function(require) {
     var ajax = require('web.ajax');
 
     $(document).ready(function() {
-          $("#delivery_35").prop('checked', true);
-          $("#hasShippingNote").prop('checked', true);
+        ajax.jsonRpc("/checkHavingCarrierWithAccountNo", 'call', {
+            }).then(function(data) {
+                var carrier_acc_no = data['carrier_acc_no']
+                if (carrier_acc_no) {
+                    $("#delivery_35").prop('checked', true);
+                    $("#hasShippingNote").prop('checked', true);
+                } else {
+                    $("#hasShippingNote").prop('checked', false);
+                    $("#delivery_35").prop('checked', false);
+                    $("#delivery_3").prop('checked', true);
+                    $("#hasShippingNote").parent().hide();
+                    $("#expedited_shipping").hide();
+                    $("#editShippingNote").hide();
+                    $("#delivery_35").parent().hide();
+                }
+         });
+
           var default_e = document.getElementById("selectDeliveryMethod");
           var default_value = default_e.options[default_e.selectedIndex].value;
           document.getElementById("noteText").value = default_value;
@@ -28,21 +43,7 @@ odoo.define('payment_aquirer_cstm.payment_aquirer_cstm', function(require) {
                 $("#editShippingNote").show();
                 $("#expedited_shipping").show();
 
-                ajax.jsonRpc("/checkHavingCarrierWithAccountNo", 'call', {
-                    'customerId': 2
-                }).then(function(data) {
-                    var output_data = data['client_order_ref_error']
-                    if (output_data != '') {
-                          document.write('Yes');
-//                        $("#client_order_ref_error").text(output_data);
-//                        $("#client_order_ref_accept").attr('disabled', true);
-                    }
-                    else {
-                        document.write('No');
-//                        $("#client_order_ref_error").text('');
-//                        $("#client_order_ref_accept").attr('disabled', false);
-                    }
-                });
+
             }
         });
 

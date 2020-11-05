@@ -44,7 +44,6 @@ class PaymentAquirerCstm(http.Controller):
     @http.route(['/shop/cart/updatePurchaseOrderNumber'], type='json', auth="public", methods=['POST'], website=True,
                 csrf=False)
     def cart_update(self, purchase_order, **kw):
-
         order = request.env['sale.order'].sudo().browse(request.session['sale_order_id'])
         order.client_order_ref = purchase_order
         value = {'success': True}
@@ -59,13 +58,11 @@ class PaymentAquirerCstm(http.Controller):
         return request.redirect('/shop/payment')
 
     @http.route('/checkHavingCarrierWithAccountNo', type='json', auth="public", methods=['POST'], website=True, csrf=False)
-    def check_having_carrier_with_account_no(self, customerId):
-        print('In check_having_carrier_with_account_no')
-        res_partner = request.env['res.partner'].sudo().search([('id', '=', customerId)])
-        if res_partner.having_carrier and res_partner.carrier_acc_no:
-            return {'client_order_ref_error': 'account no present'}
+    def check_having_carrier_with_account_no(self):
+        if request.env.user.partner_id.having_carrier and request.env.user.partner_id.carrier_acc_no:
+            return {'carrier_acc_no': True}
         else:
-            return {'client_order_ref_error': 'Account no not present'}
+            return {'carrier_acc_no': False}
 
 
 class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.WebsiteSale):
@@ -116,7 +113,6 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
     def payment_confirmation(self, **post):
         responce = super(WebsiteSalesPaymentAquirerCstm, self).payment_confirmation(**post)
         order = responce.qcontext['order']
-
         if 'expedited_shipping' in request.session:
             expedited_shipping = request.session['expedited_shipping']
             if expedited_shipping:
