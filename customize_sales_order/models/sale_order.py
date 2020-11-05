@@ -104,7 +104,6 @@ class sale_order(models.Model):
             if res_partner and res_partner.national_account_rep and res_partner.national_account_rep.id:
                 vals['national_account'] = res_partner.national_account_rep.id
         return super(sale_order, self).create(vals)
-
     @api.depends('order_line.price_total')
     def _amount_all(self):
         """
@@ -318,8 +317,7 @@ class StockPicking(models.Model):
                     'author_id': self.env.user.partner_id.id,
                 }
                 self.env['mail.message'].sudo().create(stock_picking_val)
-
-
+                
 class ResUsers(models.Model):
     _inherit = "res.users"
 

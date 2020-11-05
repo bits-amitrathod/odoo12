@@ -142,6 +142,9 @@
                                 <field name="new_customer" />
                                 <field name="carrier_id" readonly="1"/>
                                 <field name="shipping_number" readonly="1"/>
+                                <field name="tier1_extra_retail"/>
+                                <field name="tier2_extra_retail"/>
+                                <field name="less_than_40_extra_retail"/>
                             </group>
                         </group>
                         <notebook>

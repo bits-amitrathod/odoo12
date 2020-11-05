@@ -24,7 +24,7 @@ class PopUp(models.TransientModel):
         tree_view_id = self.env.ref('aging_report.aging_report_tree').id
         #form_view_id = self.env.ref('stock.view_production_lot_form').id
         form_view_id = self.env.ref('aging_report.aging_report_form').id
-        cust_location_id = self.env['stock.location'].search([('name', '=', 'Pull Zone')]).id
+        cust_location_id = self.env['stock.location'].search([('name', '=', 'Pick')]).id
         if not cust_location_id  or  cust_location_id is None:
            cust_location_id = self.env['stock.location'].search([('name', '=', 'Packing Zone')]).id
         stock_location=(self.warehouse_id['lot_stock_id']).id
@@ -41,7 +41,7 @@ class PopUp(models.TransientModel):
             'name': _('Aging Report'),
             'res_model': x_res_model,
             'context': {'group_by': 'type'},
-            'domain':[('use_date', '>=',self.current_date)],
+            'domain':[('warehouse_id', '=',1)],
             'target': 'main'
         }
 

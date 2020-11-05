@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Account Closed in 12 Months by Business Development",
+    'name': "Revenue From Accounts Closed In 12 Months By BD",
 
     'summary': """
       Report
