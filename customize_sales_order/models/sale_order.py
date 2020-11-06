@@ -42,6 +42,15 @@ class CustomerContract(models.Model):
                 if category_id.id == 31:
                     self.display_reinstated_date_flag = 1
 
+    @api.onchange('parent_id')
+    def onchange_parent_id(self):
+        self.customer = True
+        account_payment_term = self.env['account.payment.term'].search([('name', '=', 'Net 30'), ('active', '=', True)])
+        if account_payment_term:
+            self.property_payment_term_id = account_payment_term.id
+            self.property_supplier_payment_term_id = account_payment_term.id
+        return super(CustomerContract, self).onchange_parent_id()
+
 
 class sale_order(models.Model):
     _inherit = 'sale.order'
@@ -95,7 +104,6 @@ class sale_order(models.Model):
             if res_partner and res_partner.national_account_rep and res_partner.national_account_rep.id:
                 vals['national_account'] = res_partner.national_account_rep.id
         return super(sale_order, self).create(vals)
-
     @api.depends('order_line.price_total')
     def _amount_all(self):
         """
@@ -309,3 +317,17 @@ class StockPicking(models.Model):
                     'author_id': self.env.user.partner_id.id,
                 }
                 self.env['mail.message'].sudo().create(stock_picking_val)
+                
+class ResUsers(models.Model):
+    _inherit = "res.users"
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        users = super(ResUsers, self.with_context(default_customer=False)).create(vals_list)
+        for user in users:
+            user.partner_id.write({'customer': True})
+            account_payment_term = self.env['account.payment.term'].search([('name', '=', 'Net 30'), ('active', '=', True)])
+            if account_payment_term:
+                user.partner_id.write({'property_payment_term_id': account_payment_term.id,
+                                       'property_supplier_payment_term_id': account_payment_term.id})
+        return users

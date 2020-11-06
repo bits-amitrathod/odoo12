@@ -129,7 +129,14 @@ class LoginCaseInsensitive(models.Model):
             # signup with a token: find the corresponding partner id
             partner = self.env['res.partner']._signup_retrieve_partner(token, check_validity=True, raise_exception=True)
             # invalidate signup token
-            partner.write({'signup_token': False, 'signup_type': False, 'signup_expiration': False})
+            partner.write({'signup_token': False, 'signup_type': False, 'signup_expiration': False,
+                           'supplier': True})
+
+            account_payment_term = self.env['account.payment.term'].search([('name', '=', 'Net 30'),
+                                                                            ('active', '=', True)])
+            if account_payment_term:
+                partner.write({'property_payment_term_id': account_payment_term.id,
+                               'property_supplier_payment_term_id': account_payment_term.id})
 
             partner_user = partner.user_ids and partner.user_ids[0] or False
 
@@ -161,6 +168,11 @@ class LoginCaseInsensitive(models.Model):
             # no token, sign up an external user
             values['saleforce_ac'] = self.env['ir.sequence'].next_by_code('sale.force.no') or _('New')
             values['email'] = values.get('email') or values.get('login')
+            values['supplier'] = True
+            account_payment_term = self.env['account.payment.term'].search([('name', '=', 'Net 30'), ('active', '=', True)])
+            if account_payment_term:
+                values['property_payment_term_id'] = account_payment_term.id
+                values['property_supplier_payment_term_id'] = account_payment_term.id
             res_user = self.env['res.users'].search([('partner_id.name', '=', 'Surgical Product Solutions')])
             if res_user:
                 values['user_id'] = res_user.id

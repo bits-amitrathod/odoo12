@@ -53,7 +53,7 @@
 
         <!-- Popup code -->
         <record id="bd_account_closed_popup_view" model="ir.ui.view">
-            <field name="name">Accounts Closed and Revenue in 12 Months By Business Development</field>
+            <field name="name">Revenue From Accounts Closed In 12 Months By BD</field>
             <field name="model">popup.bd.account.closed</field>
             <field name="arch" type="xml">
                 <form>
@@ -82,7 +82,7 @@
 
         <!-- Action code -->
         <record id="action_account_closed_by_bd" model="ir.actions.act_window">
-            <field name="name">Account closed in 12 month by Business Development</field>
+            <field name="name">Revenue From Accounts Closed In 12 Months By BD</field>
             <field name="res_model">popup.bd.account.closed</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
@@ -97,7 +97,7 @@
             <field name="name">report.account.closed.by.bd.export.popup</field>
             <field name="model">report.bd.account.closed.export</field>
             <field name="arch" type="xml">
-                <form string="Export Accounts Closed and Revenue in 12 Months By Business Development Report">
+                <form string="Export Revenue From Accounts Closed In 12 Months By BD Report">
                     <group>
                         <group>
                             <field name="start_date"/>
@@ -109,7 +109,7 @@
                             <field name="delivery_end_date"/>
                         </group>
                     </group>
-                    <div>Click On ' Export To File ' button to export Account Closed And Revenue Generated in 12 Months By Business Development report file</div>
+                    <div>Click On ' Export To File ' button to export Revenue From Accounts Closed In 12 Months By BD report file</div>
                     <footer>
                         <button name="download_excel_bd_account_closed" string="Export To File" type="object"
                                 class="btn-primary"/>
@@ -143,7 +143,7 @@
         <!-- Filter's code ends here -->
 
         <!-- Export Action code -->
-        <act_window name="Export Account Closed By Business Development Report"
+        <act_window name="Export Revenue From Accounts Closed In 12 Months By BD"
                     res_model="report.bd.account.closed.export"
                     src_model="report.bd.account.closed"
                     view_mode="form"
@@ -156,7 +156,7 @@
         <!-- Menus declaration -->
         <menuitem id="business_development_reports" name="Business Development Reports" parent="sale.menu_sale_report" sequence="4"/>
         <menuitem id="sale.account_closed_by_bd_menu"
-                  name="Accounts Closed and Revenue in 12 Months by BD"
+                  name="Revenue From Accounts Closed In 12 Months By BD"
                   action="action_account_closed_by_bd"
                   parent="account_closed_by_bd.business_development_reports"
                   sequence="3"/>
