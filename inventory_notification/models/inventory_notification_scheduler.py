@@ -357,10 +357,6 @@ class InventoryNotificationScheduler(models.TransientModel):
                 customr.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
                 customr.end_date) >= today_start)\
                     or (customr.end_date is None):
-                #print("To Customer =")
-                #print(customr.email)
-                #email_queue.append(customr.email)
-                #_logger.info("customer :%r", customr)
                 to_customer = customr
                 contacts = self.env['res.partner'].search(
                     [('parent_id', '=', customr.id), ('email', '!=', ''), ('active', '=', True)])
@@ -421,8 +417,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                 columnProps = ['product_brand_id.name','sku_code', 'name', 'customer_price_list', 'actual_quantity', 'minExDate',
                                'maxExDate', 'uom_id.name']
                 closing_content = """
-                                    Please reply to this email or contact your Account Manager to hold product or place an order. 
-                                    <br/> Many Thanks, 
+                                    Please reply to this email or contact your Account Manager to hold product or place an order.
+                                    <br/> Many Thanks,
                                     <br/> SPS Customer Care <br/>
                                     <table style="height: 96px; width: 601px; float: left;" border="0">
                                     <tbody>
@@ -445,7 +441,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                                     <td style="width: 156px; height: 76px;">
                                     <p><strong>Jenna Lucas</strong></p>
                                     <p>412-564-1048</p>
-                                    </td>                                    
+                                    </td>
                                     <td style="width: 157px; height: 76px;">
                                     <p style="text-align: left;"><strong>Andrew Marnoch&nbsp;</strong></p>
                                     <p style="text-align: left;">412-745-2331&nbsp;&nbsp;</p>
