@@ -26,6 +26,10 @@
         'views/request_a_quote_page.xml',
         'views/thank_you_page.xml',
         'views/surgical_products_sell_page.xml',
+        'views/cart_lines_page.xml',
+        'views/modal_optional_products_view.xml',
+        'views/mile_templates.xml',
+        'views/product_expiration_lot_view.xml',
 
 
         # 'views/menu.xml'
