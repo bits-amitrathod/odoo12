@@ -1,0 +1,269 @@
+.about-header{
+    font-family: @regular-font;
+    font-size: 41px;
+    color: @title-color;
+    }
+
+.banner-wrapper{
+    img{
+        height: 450px;
+        width: 100%;
+        object-fit: cover;
+        @media (max-width: 767px){
+            height: 300px;
+        }
+    }
+}
+
+.section-title{
+        font-family: @medium-font;
+        font-size: 32px;
+        line-height: 38px;
+        color: @text-color;
+        margin: 50px 10px 10px;
+        text-align: center;
+    }
+.section-description{
+    .sub-title{
+        text-align: center;
+        font-size:32px;
+        font-family: @regular-font;
+        color: @text-color;
+        line-height: 50px;
+    }
+    p{
+        color: @text-color;
+        font-size: 17px;
+        font-family: @light-font;
+        line-height:33px;
+        span{
+            font-family: @bold-font;
+        }
+    }
+    .story-list{
+        display:flex;
+        border-bottom: 1px dashed @blue;
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+        &:last-child{
+            border-bottom: none;
+        }
+    &.link{
+     border-bottom: 0px dashed @blue;
+        padding-bottom: 0px;
+        margin-bottom: 5px;
+        .bulleted-list{
+            margin-right: 10px;
+            position: relative;
+            top: 7px;
+                > div{
+                border-radius: 0;
+                    width: 20px;
+                    height: 20px;
+                    line-height: 18px;
+                    i{
+                        font-size: 18px;
+                    }
+                }
+            }
+            .list-description{
+                .link-to{
+                    font-size: 18px;
+                    font-family: @bold-font;
+                    line-height: 34px;
+                    color: @red;
+                }
+            }
+        }
+        &.white-plus{
+            border-bottom: 0px dashed @blue;
+            padding-bottom: 0px;
+            margin-bottom: 10px;
+             .bulleted-list{
+                margin-right: 10px;
+                position: relative;
+                top: 5px;
+                > div{
+                    i{
+                        font-size: 28px;
+                    }
+                }
+             }
+             .list-description{
+                p{
+                    color: @white;
+                    font-family:@bold-font;
+                    font-size: 20px;
+                    line-height: 40px;
+                    margin-bottom:0;
+                }
+            }
+        }
+    .bulleted-list{
+        margin-right: 10px;
+            > div{
+                width: 30px;
+                height: 30px;
+                background: @red;
+                border-radius: 50%;
+                text-align: center;
+                line-height: 30px;
+                color: @white;
+                font-size: 24px;
+                font-family:@bold-font;
+            }
+        }
+    }
+}
+
+.our-mission{
+    background:@grey-bg;
+    p{
+        font-size: 38px;
+        line-height: 50px;
+        font-family: @light-font;
+        color: @blue;
+        text-align: center;
+        padding: 40px 10px 10px;
+        margin-bottom: 0;
+         @media (max-width: 767px){
+            font-size: 20px;
+            line-height: 40px;
+        }
+    }
+    .detail{
+        text-align: center;
+        padding: 20px 0;
+        .name{
+            color: @blue;
+            font-family: @bold-font;
+            font-size:18px;
+            line-height: 28px;
+        }
+        .post{
+            color: @blue;
+            font-family: @regular-font;
+             font-size:18px;
+            line-height: 28px;
+        }
+    }
+}
+
+.help-section {
+
+    p{
+        font-family: @light-font;
+        font-size:20px;
+        line-height:34px;
+        color:@text-color;
+    }
+    .help-box{
+        text-align: left;
+        padding-right: 40px;
+        .box-title{
+            color: @red;
+            font-size: 20px;
+            line-height: 26px;
+            font-family: @bold-font;
+            margin-bottom: 5px;
+        }
+        .box-content{
+            font-size: 18px;
+            line-height: 34px;
+            font-family: @light-font;
+            color: @text-color;
+        }
+    }
+}
+
+.top-plus{
+    background: #c42624;
+    border: 5px solid #ffffff;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    text-align: center;
+    color: #fff;
+    position: absolute;
+    top: -22px;
+    left: 0;
+    right: 0;
+    margin: auto;
+    line-height: 40px;
+    i{
+        font-size: 26px;
+    }
+}
+.benefit-wrapper{
+    p{
+        font-size: 20px;
+        line-height: 34px;
+        font-family: @bold-font;
+        color: @text-color;
+        text-align: center;
+    }
+}
+
+.bg-black-with-img{
+    background: url('../../images/bg.png'), #6DB3F2;
+    position: relative;
+    &:before{
+     background-color: rgba(#232e3f, 0.9);
+      content: '';
+      display: block;
+      height: 100%;
+      position: absolute;
+      width: 100%;
+      top:0
+    }
+  .overlay{
+    background-color: rgba(@text-color, 0.9);
+      content: '';
+      display: block;
+      height: 100%;
+      position: absolute;
+      width: 100%;
+  }
+
+  .additonal{
+    h3{
+        color: @white;
+        font-family: @medium-font;
+        font-size: 32px;
+        line-height: 34px;
+        letter-spacing: 3px;
+    }
+    p{
+        font-size:18px;
+        line-height: 26px;
+        font-family: @regular-font;
+        color: @white;
+    }
+  }
+}
+
+.list-item{
+   display:flex;
+   align-items: center;
+   margin-bottom: 30px;
+   .avatar-wrapper{
+        background:@blue;
+        height: 70px;
+        width: 70px;
+        border-radius: 50%;
+        margin-right: 20px;
+   }
+   .list-content{
+       .list-title{
+            margin-bottom: 0;
+            font-family: @bold-font;
+            font-size:20px;
+            line-height: 26px;
+            color: @title-color;
+       }
+       .list-content{
+            margin-bottom:0;
+            line-height:26px;
+       }
+   }
+}
