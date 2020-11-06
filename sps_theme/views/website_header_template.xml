@@ -1,0 +1,34 @@
+<odoo>
+     <template id="headerNavbar_template" name="Main layout" inherit_id="portal.frontend_layout">
+        <xpath expr="//header//div[hasclass('container')]/button[hasclass('navbar-toggler')]" position="after">
+<!--            <div class="navbar-header">-->
+<!--                   <a class="navbar-brand" href="/">-->
+<!--                    <span t-field="res_company.logo" t-options="{'widget': 'image'}"-->
+<!--                          t-att-alt="'Logo of %s' % res_company.name" t-att-title="res_company.name"/>-->
+<!--                </a>-->
+<!--               <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#top_menu_collapse">-->
+<!--                   <span class="navbar-toggler-icon"/>-->
+<!--               </button>-->
+
+<!--            </div>-->
+
+            <div class="collapse navbar-collapse o_top_menu" id="top_menu_collapse">
+                  <ul class="nav navbar-nav navbar-right">
+                    <li class="active">
+                        <a href="#" class="o_contact_no ">(412) 564-1280--check</a>
+                    </li>
+                </ul>
+                <t t-if="not request.httprequest.path[0:5] == '/shop'">
+                    <form class="navbar-form navbar-right" role="search" t-attf-action="/shop" method="get">
+                        <div class="input-group header-searchbox">
+                            <input id="SearchBox" type="text" name="search"
+                                   class="form-control search_box search-query form-control oe_search_box search_autocomplete"
+                                   placeholder="Search..." t-att-value="search"/>
+                        </div>
+                    </form>
+                </t>
+
+            </div>
+        </xpath>
+    </template>
+</odoo>

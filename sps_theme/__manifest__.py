@@ -27,9 +27,11 @@
         'views/thank_you_page.xml',
         'views/surgical_products_sell_page.xml',
         'views/cart_lines_page.xml',
-        'views/modal_optional_products_view.xml',
-        'views/mile_templates.xml',
+        'views/modale_optional_product_view.xml',
+        'views/mail_templates.xml',
         'views/product_expiration_lot_view.xml',
+        'views/website_header_template.xml',
+        'views/website_footer_template.xml',
 
 
         # 'views/menu.xml'
