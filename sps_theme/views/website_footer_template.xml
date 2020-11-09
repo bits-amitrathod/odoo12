@@ -78,13 +78,13 @@
                         <div class="copy-right">
                             <ul>
                                 <li>
-                                    <a href="#" title=""> <![CDATA[&copy;]]> 2020 Surgical Product Solutions</a>.
+                                    <a href="#" title=""> <![CDATA[&copy;]]> 2020 Surgical Product Solutions.</a>
                                 </li>
                                 <li>
-                                    <a href="#" title=""> Terms and Conditions</a>.
+                                    <a href="#" title=""> Terms and Conditions</a>
                                 </li>
                                 <li>
-                                    <a href="#" title=""> Privacy Policy</a>.
+                                    <a href="#" title=""> Privacy Policy</a>
                                 </li>
                             </ul>
 
@@ -107,17 +107,18 @@
                 </div>
                  <div class="row">
                     <div class="col-md-8 col-sm-8 px-0">
-                        <div class="copy-right">
-                            <ul>
-                                <li>
-                                    <a href="#" title=""> info@surgicalproductsolutions.com</a>.
-                                </li>
-                            </ul>
+                        <div class="contact-detail">
+                            <div class="detail">
+                                <a href="#" title=""> info@surgicalproductsolutions.com</a>.
+                            </div>
+                            <div class="detail">
+                                <a href="#" title=""> 412.564.1280 </a>.
+                            </div>
 
                         </div>
                     </div>
-                    <div class="col-md-4 col-sm-4 px-0">
-                           
+                    <div class="col-md-4 col-sm-4 px-0 align-self-end">
+                        <img src="/sps_theme/static/src/images/Credit_Cards.png" class="img-fluid"/>
                     </div>
                 </div>
             </div>
