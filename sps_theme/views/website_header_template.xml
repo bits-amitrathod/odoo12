@@ -12,10 +12,10 @@
 
 <!--            </div>-->
 
-            <div class="collapse navbar-collapse o_top_menu" id="top_menu_collapse">
-                  <ul class="nav navbar-nav navbar-right">
-                    <li class="active">
-                        <a href="#" class="o_contact_no ">(412) 564-1280--check</a>
+            <div class="top-header">
+                  <ul class="contact-detail">
+                    <li>
+                        <a href="#" class="o_contact_no ">Contact Our Sales Team Today: <span>412.564.1280</span></a>
                     </li>
                 </ul>
                 <t t-if="not request.httprequest.path[0:5] == '/shop'">
@@ -23,7 +23,10 @@
                         <div class="input-group header-searchbox">
                             <input id="SearchBox" type="text" name="search"
                                    class="form-control search_box search-query form-control oe_search_box search_autocomplete"
-                                   placeholder="Search..." t-att-value="search"/>
+                                   placeholder="Search" t-att-value="search"/>
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="icon-search"></i></span>
+                            </div>
                         </div>
                     </form>
                 </t>

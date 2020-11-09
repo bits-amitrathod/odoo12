@@ -1,126 +1,123 @@
 <odoo>
     <template id="footer_template" inherit_id="website.footer_custom" customize_show="True" name="Automatic Footer">
         <xpath expr="//div[@id='footer']" position="replace">
-            <footer>
+            <footer class="padding-100-y">
             <div id="footer" class="container hidden-print " t-if="not no_footer">
-                <div class="row">
-                    <div class="col-md-5 col-sm-12 newsletter">
-                        <h6>Sign Up for our Newsletter</h6>
-
-                        <div class="oe_snippet_body input-group js_subscribe" data-list-id="1">
-                            <input type="email" name="email" class="js_subscribe_email form-control contact_email"
-                                   placeholder="Enter your email address..."/>
-                            <span class="input-group-btn">
-                                <a href="#" class="btn btn-primary js_subscribe_btn action_button"
-                                   style="width: 130px;">Subscribe
-                                </a>
-                                <a href="#" class="btn btn-success js_subscribed_btn hidden action_button"
-                                   disabled="disabled" style="width: 130px;">
-                                    Thanks
-                                </a>
-                            </span>
-                            <div class="alert alert-success hidden">Thanks for your subscription!</div>
-                        </div>
-
-                        <p>Sign up to get the latest on sales, new releases and more …</p>
-                        <div class="">
-                            <a href="https://www.bbb.org/us/pa/pittsburgh/profile/surgical-supplies/surgical-product-solutions-llc-0141-71017485#bbbonlineclick"
-                               target="_blank" title="SPS Accredited Business Review">
-
-                            </a>
+                <div class="row border-bottom pb-4 mb-4">
+                    <div class="col-md newsletter">
+                        <div class="footer-logo">
+                            <img src="/sps_theme/static/src/images/SPS_White.png" class="img-fluid"/>
                         </div>
                     </div>
-                    <div class="col-md-2 col-sm-6" id="info">
-                        <h6>Main Menu</h6>
-                        <ul class="footer_menu">
+                    <div class="col-md" id="info">
+                        <h6 class="footer-title">ABOUT</h6>
+                        <ul class="footer-menu">
                             <li>
-                                <a href="/" title="Home">Home</a>
+                                <a href="/" title="Home">OUR STORY</a>
                             </li>
                             <li>
-                                <a href="/shop" title="Catalog">Shop</a>
-                            </li>
-                            <li>
-                                <a href="/shop/featured" title="Featured Products">Featured Products</a>
-                            </li>
-                            <li>
-                                <a href="/shop/capital-equipment" title="Capital Equipment">Capital Equipment</a>
-                            </li>
-                            <li>
-                                <a href="/about" title="About">About</a>
-                            </li>
-                            <li>
-                                <a href="/faqs" title="FAQs">FAQs</a>
-                            </li>
-                            <li>
-                                <a href="/contactus" title="Contact">Contact</a>
+                                <a href="/shop" title="Catalog">CAREERS</a>
                             </li>
                         </ul>
                     </div>
-                    <div class="col-md-2 col-sm-6">
-                        <h6 style="visibility: hidden;">Additional Links</h6>
-                        <ul class="footer_menu">
+                    <div class="col-md">
+                        <h6 class="footer-title">SURGICAL PRODUCTS</h6>
+                        <ul class="footer-menu">
                             <li>
                                 <a href="/downloadCatalog"
-                                   title="Download Catalog">Download Catalog
+                                   title="Download Catalog">SHOP
                                 </a>
                             </li>
                             <li>
-                                <a href="/search" title="Search">Search</a>
+                                <a href="/search" title="Search">SALE ITEMS</a>
                             </li>
                              <li>
-                                <a href="/career" title="Search">Careers</a>
-                            </li>
-                            <li>
-                                <a href="/about" title="About Us">About Us</a>
-                            </li>
-                            <li>
-                                <a href="/faqs" title="FAQs">FAQs</a>
-                            </li>
-                            <li>
-                                <a href="/quality_assurance" title="Quality Assurance and Service Guarantee">
-                                    Quality Assurance and Service Guarantee
-                                </a>
-                            </li>
-                    <!--        <li>
-                                <a href="http://www.surgicalproductsolutions.com/" title="SurgicalProductSolutions.com">
-                                    SurgicalProductSolutions.com
-                                </a>
-                            </li>-->
-                            <li>
-                                <a href="/terms" title="Terms">Terms</a>
+                                <a href="/career" title="Search">SELL</a>
                             </li>
                         </ul>
                     </div>
-                    <div class="col-md-2 col-sm-6 social_icons">
-                        <h6 class="social">Social</h6>
-                        <ul class="social_icons">
-                            <li class="linkedin">
-                                <a href="https://www.linkedin.com/company/2706681?trk=tyah"
-                                   title="Surgical Product Solutions on LinkedIn" rel="me" target="_blank">
-                                    <i class="fa fa-linkedin"/>
+                    <div class="col-md social_icons">
+                        <h6 class="footer-title">SURGICAL EQUIPMENT</h6>
+                         <ul class="footer-menu">
+                            <li>
+                                <a href="/downloadCatalog"
+                                   title="Download Catalog">SHOP
                                 </a>
+                            </li>
+                            <li>
+                                <a href="/search" title="Search">SELL</a>
+                            </li>
+                             <li>
+                                <a href="/career" title="Search">REPAIR</a>
+                            </li>
+                        </ul>
+                    </div>
+                     <div class="col-md social_icons">
+                          <h6 class="footer-title">STOCKHAWK</h6>
+                         <ul class="footer-menu titles">
+                            <li>
+                                <a href="/search" title="Search">RESOURCES</a>
+                            </li>
+                             <li>
+                                <a href="/career" title="Search">FAQ</a>
+                            </li>
+                             <li>
+                                <a href="/career" title="Search">CONTACT</a>
+                            </li>
+                             <li>
+                                <a href="/career" title="Search">SIGN IN</a>
+                            </li>
+                             <li>
+                                <a href="/career" title="Search">DOWNLOAD CATALOG</a>
                             </li>
                         </ul>
                     </div>
                 </div>
                 <div class="row copyright-hr">
+                    <div class="col-md-8 col-sm-8 px-0">
+                        <div class="copy-right">
+                            <ul>
+                                <li>
+                                    <a href="#" title=""> <![CDATA[&copy;]]> 2020 Surgical Product Solutions</a>.
+                                </li>
+                                <li>
+                                    <a href="#" title=""> Terms and Conditions</a>.
+                                </li>
+                                <li>
+                                    <a href="#" title=""> Privacy Policy</a>.
+                                </li>
+                            </ul>
 
-                    <hr/>
-
-                    <div class="col-md-5 col-sm-5">
-                        <p class="credits">
-                            <![CDATA[&copy;]]> 2018 <a href="#" title="">Surgical Product Solutions</a>.
-
-                        </p>
+                        </div>
                     </div>
-                    <div class="col-md-7 col-sm-7">
+                    <div class="col-md-4 col-sm-4 px-0">
+                            <div class="social-media">
+                                <div class="link">
+                                    <a href="#"><i class="icon-facebook-square-filled"></i></a>
+                                </div>
+                                <div class="link">
+                                    <a href="#"><i class="icon-linkedin-square-filled"></i></a>
+                                </div>
+                            </div>
 
-                        <div class="payment_methods">
+<!--                        <div class="ml-sm-34">-->
+<!--                        <t t-call="website.language_selector"/>-->
+<!--                        </div>-->
+                    </div>
+                </div>
+                 <div class="row">
+                    <div class="col-md-8 col-sm-8 px-0">
+                        <div class="copy-right">
+                            <ul>
+                                <li>
+                                    <a href="#" title=""> info@surgicalproductsolutions.com</a>.
+                                </li>
+                            </ul>
 
                         </div>
-                        <div class="ml-sm-34">
-                        <t t-call="website.language_selector"/>
-                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-4 px-0">
+                           
                     </div>
                 </div>
             </div>
