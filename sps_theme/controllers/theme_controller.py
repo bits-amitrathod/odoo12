@@ -21,7 +21,7 @@ class ThemeController(http.Controller):
     def about(self):
         return http.request.render('sps_theme.about_page_template')
 
-    @http.route('/contactus', type='http', auth="public", website=True)
+    @http.route('/contact-us', type='http', auth="public", website=True)
     def contact(self):
         return http.request.render('sps_theme.contact_page_template')
 
@@ -52,3 +52,7 @@ class ThemeController(http.Controller):
     @http.route('/surgical-products-sell', type='http', auth="public", website=True)
     def surgical_products_sell(self):
         return http.request.render('sps_theme.surgical_products_sell_page_template')
+
+    @http.route('/equipment-repair', type='http', auth="public", website=True)
+    def equipment_repair_and_service(self):
+        return http.request.render('sps_theme.equipment_repair_and_service_page_template')
