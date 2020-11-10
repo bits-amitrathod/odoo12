@@ -4,262 +4,303 @@
             <t name="Home" priority="29" t-name="website.homepage">
                 <t t-set="pageName" t-value="'homepage'"/>
 
-                <div id="wrap" class="oe_structure oe_empty">
-                    <div class="thumbnail">
-                                        <div class="caption" style="display: none;">
-                                            <div class="shop-title">
-                                                <h2 class="title">
-                                                    <a href="/shop/featured">Shop Now
-                                                    </a>
-                                                </h2>
-                                                <a href="/shop/featured">
-                                                    <div class="action_button">Click here</div>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <img class="img-responsive thumbnail-img" style="width:100%"
-                                             src="/website_cstm/static/src/img/discount_25_nov.png"
-                                             alt="..."/>
-                                    </div>
-                    <div id="carouselExampleCaptions" class="carousel slide main-slider" data-ride="carousel">
-                        <ol class="carousel-indicators">
-                            <li data-target="#carouselExampleCaptions" data-slide-to="0"/>
-                            <li data-target="#carouselExampleCaptions" data-slide-to="1" />
-                            <li data-target="#carouselExampleCaptions" data-slide-to="2"/>
-                            <li data-target="#carouselExampleCaptions" data-slide-to="3"  class="active"/>
-                        </ol>
-                        <div class="carousel-inner">
-                            <div class="carousel-item bg-alpha oe_img_bg oe_custom_bg"
-                                 style="background-image: url(&quot;/website_cstm/static/src/img/slideshow_3_2048x2048.jpg&quot;);">
-                                <div class="container carousel-caption d-none d-md-block">
-                                    <div class="row">
-                                        <div class="ml-res-768 col-md-5 animated fadeInDown">
-                                            <h1 class="header text-left">Start Saving<br/>On Top Brands
-                                            </h1>
-                                            <p class="o_default_snippet_text subtitle text-left">We sell high-end surgical
-                                                disposables<br/>from top manufacturers.
-                                            </p>
-                                            <p class="text-left">
-                                                <a href="/shop"
-                                                   class="btn btn-warning btn-large o_default_snippet_text action_button"
-                                                   data-original-title="" title="">Shop Our Store Today
-                                                </a>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="carousel-item bg-alpha oe_img_bg oe_custom_bg"
-                                 style="background-image: url(&quot;/website_cstm/static/src/img/slideshow_1_2048x2048.jpg&quot;);">
-                                <div class="carousel-caption d-none d-md-block">
-                                    <div class="row">
-                                        <div class="col-12 animated fadeInDown">
-                                            <h1 class="o_default_snippet_text header text-center">Surgical Product
-                                                Solutions
-                                            </h1>
-                                            <p class="o_default_snippet_text subtitle text-center">We at SPS are
-                                                committed to bringing you high quality surgical disposables at a low
-                                                price guarantee.
-                                            </p>
-                                            <p class="text-center">
-                                                <a href="/quality_assurance"
-                                                   class="btn btn-warning btn-large o_default_snippet_text action_button"
-                                                   data-original-title="" title="">Learn about our quality.
-                                                </a>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="carousel-item bg-alpha oe_img_bg oe_custom_bg"
-                                 style="background-image: url(&quot;/website_cstm/static/src/img/slideshow_2_2048x2048.jpg&quot;);">
-                                <div class="container carousel-caption d-none d-md-block">
-                                    <div class="row">
-                                        <div class="col-md-6 ml-res-768 animated fadeInDown">
-                                            <h1 class="o_default_snippet_text header text-left">One Problem<br/>Multiple Solutions
-                                            </h1>
-                                            <p class="o_default_snippet_text subtitle text-left">Our Focus is simple:<br/>Helping
-                                                customers become higher quality<br/>healthcare providers without
-                                                compromise.
-                                            </p>
-                                            <p class="text-left">
-                                                <a href="/about-us"
-                                                   class="btn btn-warning btn-large o_default_snippet_text action_button">
-                                                    Learn More
-                                                </a>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="carousel-item bg-alpha oe_img_bg oe_custom_bg active"
-                                 style="background-image: url(&quot;/website_cstm/static/src/img/slideshow_4_2048x2048.jpg&quot;);">
-                                <div class="container carousel-caption d-none d-md-block">
-                                    <div class="row">
-                                        <div class="col-md-5 ml-res-768 animated fadeInDown">
-                                            <h1 class="header text-left">
-                                                 <img class="img-fluid o_we_custom_image" src="/website_cstm/static/src/img/Stockhawk_Logo.png"/>
-                                             </h1>
-
-                                            <p class="o_default_snippet_text subtitle text-left">Your Inventory Savings
-                                                          <br/>  Search Engine ™
-                                            </p>
-                                            <p class="text-left">
-                                                <a href="/stockhawk"
-                                                   class="btn btn-warning btn-large o_default_snippet_text action_button">
-                                                    Learn More
-                                                </a>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                       <a class="carousel-control-prev" href="#carouselExampleCaptions" role="button" data-slide="prev">
-      <span><i class="fa fa-chevron-left arrows"></i></span>
-      <span class="sr-only">Previous</span>
-    </a>
-    <a class="carousel-control-next" href="#carouselExampleCaptions" role="button" data-slide="next">
-      <span><i class="fa fa-chevron-right arrows"></i></span>
-      <span class="sr-only">Next</span>
-    </a>
-                    </div>
-                    <section class="mb4 mt32">
-                        <div class="homepage_content content_page clearfix">
-                            <div class="container">
-                                <div class="sixteen columns">
-                                    <div class="homepage_content section clearfix">
-                                        <h1 class="text-center">Welcome To ShopSPS.com</h1>
-                                        <p class="text-center"><span style="background-color: #ffffff;"/>SPS is a leader
-                                            in providing cost-saving solutions for healthcare facilities across the
-                                            United States who choose to save money without sacrificing quality of care.
-                                            We accomplish this by providing hospitals and surgery centers two ways to
-                                            save on their high-volume surgical disposables. We help our customers
-                                            recover significant budget costs by purchasing their un-used, in-date
-                                            surgical surplus while at the same time, providing them additional cost
-                                            savings and flexibility when purchasing the same high volume products they
-                                            are currently utilizing.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                    <section class="banner-img">
-                        <div class="oe_img_bg mb0 oe_custom_bg mt48"
-                             style="background-image: url(&quot;/website_cstm/static/src/img/banner_2_2048x2048.jpg&quot;);height: 200px;">
-                            <div class="flex-caption">
-                                <div class="container">
-                                    <div class="columns  ten offset-by-three text-center ">
-                                        <a href="/about" class="action_button action-button-center"
-                                           data-original-title=""
-                                           title="">Learn More About Us
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                    <section class="mt0" style="background: #f6f6f6;">
+                <div id="wrap">
+                    <section class="video-section padding-80-y">
                         <div class="container">
                             <div class="row">
-                                <div class="col-md-6 mb16 mt32">
-                                    <div class="thumbnail">
-                                        <div class="caption" style="display: none;">
-                                            <div class="shop-title">
-                                                <h2 class="title">
-                                                    <a href="page/product_brands" data-original-title="" title="">Shop
-                                                        By Manufucturer
-                                                    </a>
-                                                </h2>
-                                                <a href="/page/product_brands">
-                                                    <div class="action_button">Click here</div>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <img class="img-responsive thumbnail-img"
-                                             src="/website_cstm/static/src/img/feature1_580x.jpg"
-                                             alt="..."/>
+                                <div class="col-md-6">
+                                    <h3 class="video-title">We sell high-end overstock surgical disposables at a lower price.<strong> Guaranteed.</strong></h3>
+                                    <div class="section-description mt-3 mb-4">
+                                        <p>We help our customers recover significant budget costs by
+                                            purchasing their un-used, in-date surgical surplus while at the
+                                            same time, providing them additional cost savings and flexibility
+                                            when purchasing the same high volume products they are
+                                            currently utilizing.
+                                        </p>
+                                    </div>
+                                    <div class="text-left btn-wrapper">
+                                        <button class="btn btn-info btn-sm mr-2">Shop Products</button>
+                                        <button class="btn btn-info btn-sm">Shop Equipment</button>
                                     </div>
                                 </div>
-                                <div class="col-md-6 mt32 shop-by">
-                                    <div class="thumbnail">
-                                        <div class="caption" style="display: none;">
-                                            <div class="shop-title">
-                                                <h2 class="title">
-                                                    <a href="/product_types">Shop By Product Type
-                                                    </a>
-                                                </h2>
-                                                <a href="/product_types">
-                                                    <div class="action_button">Click here</div>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <img class="img-responsive thumbnail-img"
-                                             src="/website_cstm/static/src/img/feature2_580x.jpg"
-                                             alt="..."/>
-                                    </div>
+                                <div class="col-md-6">
+                                    <iframe width="560" height="315" src="https://www.youtube.com/embed/L7dMasrhDFA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
                                 </div>
                             </div>
                         </div>
                     </section>
-                    <section class="banner-img">
-                        <div class="oe_img_bg oe_custom_bg mb0 mt0"
-                             style="background-image: url(&quot;/website_cstm/static/src/img/banner_1_2048x2048.jpg&quot;);height:350px;">
-                            <div class="homepage_content content_page clearfix">
-                                <div class="container">
-                                    <div class="center-div-info pt-5">
-                                        <h1 class="headline text-center text-white pt-5">Take A Look<br/>At Our Full Catalog
-                                        </h1>
-                                        <div class="text-center">
-                                            <a href="/shop" class="action_button">
-                                                Click Here
-                                            </a>
+                  <div class="seprator"><div class="red"></div><div class="black"></div></div>
+
+                    <section class="work-section">
+                       <div class="container pb-5">
+                            <h3 class="section-title mt-0 pt-5">3 WAYS TO WORK WITH US</h3>
+                           <div class="row">
+                               <div class="col-md-4">
+                                   <div class="work-box">
+                                        <div class="img-wrapper">
+                                            <img src="/sps_theme/static/src/images/purchase_product.png" class="img-fluid"/>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                                       <p class="box-title">1. PURCHASE PRODUCT</p>
+                                       <p class="italic-text">Independent distributor of unused, in-date surgical disposables.</p>
+                                       <div class="section-description">
+                                            <p>We sell high-volume surgical
+                                            disposables at an even greater
+                                            discount than the standard top
+                                            tier pricing.</p>
+                                       </div>
+                                   </div>
+                               </div>
+                                <div class="col-md-4">
+                                   <div class="work-box">
+                                        <div class="img-wrapper">
+                                            <img src="/sps_theme/static/src/images/sell.png" class="img-fluid" style="width:270px"/>
+                                        </div>
+                                       <p class="box-title">2. SELL EXCESS INVENTORY</p>
+                                       <p class="italic-text">Liquidation services for surgical
+                                                disposables that are no longer being
+                                                used by your facility</p>
+                                       <div class="section-description">
+                                            <p>We purchase inventory that would
+                                                otherwise remain unused and expire
+                                                on the shelves,injecting cash directly
+                                                into your hospital’s budget. </p>
+                                       </div>
+                                   </div>
+                               </div>
+                               <div class="col-md-4">
+                                   <div class="work-box">
+                                        <div class="img-wrapper">
+                                            <img src="/sps_theme/static/src/images/capital-equipment.png" class="img-fluid"/>
+                                        </div>
+                                       <p class="box-title">3. CAPITAL EQUIPMENT</p>
+                                       <p class="italic-text">Buy, sell, and repair your
+                                        facility’s capital equipment.</p>
+                                       <div class="section-description">
+                                            <p>We provide cost-savings
+                                                opportunities by purchasing,
+                                                remarketing, and repairing used,
+                                                depreciating medical equipment.</p>
+                                       </div>
+                                   </div>
+                               </div>
+                           </div>
+                       </div>
                     </section>
-                    <section class="mb0 mt0" style="background:#f6f6f6;height: 245px;">
+                    <section class="bg-black-with-img-2 padding-100-y">
+							<div class="container">
+								<div class="row">
+									 <div class="col-md-5">
+										 <div class="additonal">
+											<h3>Why Purchasing from SPS Makes Sense.</h3>
+											 <p class="pt-4">
+												SPS is an independent distributor of unused, in-date
+                                                surgical disposables. We can sell your facility highvolume surgical disposables that you are currently
+                                                buying from top vendors. However, we sell them at an
+                                                even greater discount than your top tier pricing.
+											 </p>
+										 </div>
+									 </div>
+									<div class="col-md-7 section-description pl-3 pl-md-5">
+										<div class="story-list white-plus">
+											<div class="bulleted-list">
+												<div><i class="icon-plus"></i></div></div>
+											<div class="list-description">
+												<p>LOW PRICE GUARANTEE</p>
+											</div>
+										</div>
+										<div class="story-list white-plus">
+											<div class="bulleted-list">
+												<div><i class="icon-plus"></i></div></div>
+											<div class="list-description">
+												<p>NO MINIMUM ORDER REQUIRED</p>
+											</div>
+										</div>
+										<div class="story-list white-plus">
+											<div class="bulleted-list">
+												<div><i class="icon-plus"></i></div></div>
+											<div class="list-description">
+												<p>BUY BY THE EACH</p>
+											</div>
+										</div>
+										<div class="story-list white-plus">
+											<div class="bulleted-list">
+												<div><i class="icon-plus"></i></div></div>
+											<div class="list-description">
+												<p>NO CONTRACTS NECESSARY</p>
+											</div>
+										</div>
+										<div class="story-list white-plus">
+											<div class="bulleted-list">
+												<div><i class="icon-plus"></i></div></div>
+											<div class="list-description">
+												<p>REAL TIME INVENTORY</p>
+											</div>
+										</div>
+                                        <div class="story-list white-plus">
+											<div class="bulleted-list">
+												<div><i class="icon-plus"></i></div></div>
+											<div class="list-description">
+												<p>PRODUCTS SHIP SAME DAY</p>
+											</div>
+										</div>
+
+									</div>
+                                    <div class="col-12 text-center btn-wrapper mt-5">
+                                        <button class="btn btn-info btn-sm mr-2">Shop Products</button>
+                                        <button class="btn btn-info btn-sm">Shop Equipment</button>
+                                    </div>
+								</div>
+
+                            </div>
+                    </section>
+                    <section class="padding-100-y">
+                       <div class="container">
+                           <div class="row">
+                               <div class="col-md-6">
+                                    <img src="/sps_theme/static/src/images/hawk.jpg" class="img-fluid"/>
+                               </div>
+                               <div class="col-md-6 align-self-center pl-3 pl-md-5">
+                                   <div class="stock-hwak">
+                                        <img src="/sps_theme/static/src/images/StockHawk_Logo_TM_R1.png" class="img-fluid"/>
+                                   </div>
+                                   <p class="hawk-title">Your Inventory Savings Search Engine<sup>TM</sup></p>
+                                   <div class="section-description">
+                                       <p>Stockhawk gives you keen insight into real-time
+                                            savings opportunities on hundreds of overstock brand
+                                            name premium and non-premium products you use.</p>
+                                   </div>
+                                   <div class="link-wrapper mt-5">
+                                       <a href="javascript:void(0)" class="link-btn">LEARN MORE ></a>
+                                   </div>
+                               </div>
+                           </div>
+                       </div>
+                    </section>
+                    <section class="position-relative padding-80-y mt-5 testimonial our-mission">
                         <div class="container">
-                            <div class="contact-section">
-                                <div class="homepage_content section clearfix" style="margin-top: 50px;">
-                                    <h1 class="text-center">Contact Us Today!</h1>
-                                    <hr/>
-                                    <h4 class="text-center">
-                                        <a href="tel:+(412)5641280">
-                                            <b>(412) 564-1280</b>
-                                        </a>
-                                    </h4>
-                                    <h4 class="text-center">
-                                        <a href="mailto:info@surgicalproductsolutions.com" target="_top">
-                                            <b>info@surgicalproductsolutions</b>
-                                        </a>
-                                    </h4>
+                            <div class="row">
+                                <div class="col-md-7 col-xl-8 offset-md-5 offset-xl-4 ">
+                                     <div class="top-plus"><i class="icon-plus"></i></div>
+                                    <p>“SPS has allowed us to realize
+                                        significant savings on our
+                                        mesh needs, while maintaining
+                                        compliance with our GPO contract.
+                                        Thank you!”
+									</p>
+									<div class="detail">
+										<div class="name">Matthew J. </div>
+										<div class="post">North Eastern Regional Hospital • Director of Materials</div>
+									</div>
+
                                 </div>
                             </div>
                         </div>
                     </section>
-                    <section class="banner-img">
-                        <div class="mt0 oe_img_bg oe_custom_bg mb0"
-                             style="background-image: url(&quot;/website_cstm/static/src/img/banner_3_2048x2048.jpg&quot;);height:400px;">
-                            <div class="homepage_content content_page clearfix">
-                                <div class="container">
-                                    <div class="center-div-info pt-5">
-                                        <h1 class="headline text-center text-white pt-5">Download Our<br/>Product Inventory
-                                        </h1>
-                                        <div class="text-center">
-                                            <a href="/downloadCatalog"
-                                               class="action_button">
-                                                Download Now
-                                            </a>
+                     <div class="seprator"><div class="red"></div><div class="black"></div></div>
+                    <section class="padding-100-y">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-6 align-self-center">
+                                    <p class="hawk-title">Quality Assurance &amp; Service Guarantee</p>
+                                   <div class="section-description">
+                                       <p>SPS’s facility is a climate controlled, hygienic warehouse equipped
+                                            with backup generators and 24-hour video / security surveillance.
+                                            To ensure product quality and integrity, SPS has dedicated
+                                            procedures for a thorough receipt and delivery process including
+                                            storage requirements, temperature, cleanliness, exposure to
+                                            outside elements, stock rotation, data integrity and recalls.</p>
+                                   </div>
+                                   <div class="link-wrapper mt-5">
+                                       <a href="javascript:void(0)" class="link-btn">LEARN MORE ></a>
+                                   </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <img src="/sps_theme/static/src/images/quality.jpg" class="img-fluid"/>
+                               </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="common-problem-section padding-100-y additonal">
+							<div class="container">
+                                <div class="row">
+                                    <div class="col-12 text-center mb-5">
+                                        <h3>Common Problems We Solve.</h3>
+                                    </div>
+
+                                    <div class="col-md-6 border-dotted">
+                                        <div class="common reduce">
+                                            <div class="img-wrapper">
+                                                <img src="/sps_theme/static/src/images/down-arrow.png" class="img-fluid"/>
+                                            </div>
+                                            <div class="list-content">
+                                                <p class="title">WE REDUCE</p>
+                                                <ul>
+                                                    <li>Future Cost Avoidance</li>
+                                                    <li>OR Supply Expense </li>
+                                                    <li>Waste &amp; Inefficiency</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="common improve">
+                                            <div class="img-wrapper">
+                                                <img src="/sps_theme/static/src/images/up-arrow.png" class="img-fluid"/>
+                                            </div>
+                                            <div class="list-content">
+                                                <p class="title">WE IMPROVE</p>
+                                                <ul>
+                                                    <li>Consolidation of Supplies</li>
+                                                    <li>Direct Cost Savings </li>
+                                                    <li>Distribution, Space, &amp; Holding Expenses</li>
+                                                    <li>Inventory Analytics &amp; Reporting</li>
+                                                    <li>Par Level Management</li>
+                                                    <li>Supply Chain Transparency</li>
+                                                </ul>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                    </section>
+
+                    <section class="padding-100-y">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-6 align-self-center">
+                                    <p class="hawk-title mb-4">Quality Assurance &amp; Service Guarantee</p>
+                                   <div class="row order-listing">
+                                       <div class="col-md-6">
+                                           <ul>
+                                               <li>• Endo-Mechanicals</li>
+                                               <li>• Energy Devices</li>
+                                               <li>• Fixation Devices</li>
+                                               <li>• Gynecological Product</li>
+                                               <li>• Hernia Mesh</li>
+                                           </ul>
+                                       </div>
+                                       <div class="col-md-6">
+                                           <ul>
+                                               <li>• Orthopedic Product</li>
+                                               <li>• Sports Medicine</li>
+                                               <li>• Urology</li>
+                                               <li>• Wound Care</li>
+                                           </ul>
+                                       </div>
+                                   </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <img src="/sps_theme/static/src/images/specialities.jpg" class="img-fluid"/>
+                               </div>
+                                 <div class=" col-12 text-center btn-wrapper mt-5 pt-5">
+                                    <button class="btn btn-info btn-sm mr-2">Shop Products</button>
+                                    <button class="btn btn-info btn-sm">Shop Equipment</button>
+                                </div>
+                            </div>
                         </div>
                     </section>
+                     <div class="seprator"><div class="red"></div><div class="black"></div></div>
                 </div>
             </t>
         </xpath>

@@ -1,5 +1,5 @@
 .about-header{
-    font-family: @regular-font;
+    font-family: @regular-font !important;
     font-size: 41px;
     color: @title-color;
     }
@@ -16,7 +16,7 @@
 }
 
 .section-title{
-        font-family: @medium-font;
+        font-family: @medium-font !important;
         font-size: 32px;
         line-height: 38px;
         color: @text-color;
@@ -27,7 +27,7 @@
     .sub-title{
         text-align: center;
         font-size:32px;
-        font-family: @regular-font;
+        font-family: @regular-font !important;
         color: @text-color;
         line-height: 50px;
     }
@@ -86,6 +86,7 @@
                 > div{
                     i{
                         font-size: 28px;
+                        line-height: 29px;
                     }
                 }
              }
@@ -203,12 +204,13 @@
         text-align: center;
     }
 }
-
-.bg-black-with-img{
-    background: url('../../images/bg.png'), #6DB3F2;
+.bg-black-with-img-2{
+    background: url('../../images/home-bg.jpg');
     position: relative;
+    background-repeat: no-repeat;
+    background-size: cover;
     &:before{
-     background-color: rgba(#232e3f, 0.9);
+     background-color: rgba(#232e3f, 0.97);
       content: '';
       display: block;
       height: 100%;
@@ -217,7 +219,45 @@
       top:0
     }
   .overlay{
-    background-color: rgba(@text-color, 0.9);
+    background-color: rgba(@text-color, 0.97);
+      content: '';
+      display: block;
+      height: 100%;
+      position: absolute;
+      width: 100%;
+  }
+  .additonal{
+    h3{
+        color: @white;
+        font-family: @medium-font !important;
+        font-size: 32px;
+        line-height: 34px;
+        letter-spacing: 3px;
+    }
+    p{
+        font-size:18px;
+        line-height: 33px;
+        font-family: @regular-font;
+        color: #c3c8cd;
+    }
+  }
+  }
+.bg-black-with-img{
+    background: url('../../images/bg.png');
+    position: relative;
+    background-repeat: no-repeat;
+    background-size: cover;
+    &:before{
+     background-color: rgba(#232e3f, 0.97);
+      content: '';
+      display: block;
+      height: 100%;
+      position: absolute;
+      width: 100%;
+      top:0
+    }
+  .overlay{
+    background-color: rgba(@text-color, 0.97);
       content: '';
       display: block;
       height: 100%;
@@ -228,16 +268,16 @@
   .additonal{
     h3{
         color: @white;
-        font-family: @medium-font;
+        font-family: @medium-font !important;
         font-size: 32px;
         line-height: 34px;
         letter-spacing: 3px;
     }
     p{
         font-size:18px;
-        line-height: 26px;
+        line-height: 33px;
         font-family: @regular-font;
-        color: @white;
+        color: #c3c8cd;
     }
   }
 }
@@ -266,4 +306,266 @@
             line-height:26px;
        }
    }
+}
+
+.contact-us-section{
+    .contact-info{
+        padding: 40px;
+    }
+    .contact-title{
+        color: @red;
+        font-size: 20px;
+        line-height: 26px;
+        font-family: @bold-font;
+    }
+    .story-list{
+        &.link{
+            margin-bottom: 30px;
+            .bulleted-list{
+                top: 4px;
+            }
+            .list-description{
+                p{
+                    font-size: 18px;
+                    font-family: @bold-font;
+                    line-height: 26px;
+                    margin-bottom: 0;
+                }
+                span{
+                    font-size: 18px;
+                    font-family: @regular-font;
+                    line-height: 26px;
+                    margin-bottom: 0;
+                    color: @text-color;
+                }
+            }
+        }
+    }
+    .get-in-touch{
+        padding: 40px;
+        background: #ebedee;
+        height: 100%;
+        border: 1px solid #d8d8d8;
+        border-bottom: 8px solid @red;
+        .title{
+           font-size: 20px;
+           line-height: 26px;
+           font-family: @bold-font;
+           color: @text-color;
+        }
+        .sub-title{
+            font-size: 18px;
+            font-family: @regular-font;
+            line-height: 26px;
+            color: @text-color;
+        }
+    }
+}
+
+.map-section{
+    background: #ebedee;
+    iframe{
+        box-shadow: 10px 9px 0px #ced2d5;
+    }
+    .address-section{
+        img{
+            width: 200px;
+            margin-bottom: 30px;
+        }
+        .company-name{
+            font-size: 20px;
+            color: @text-color;
+            line-height: 28px;
+            font-family: @bold-font;
+            padding-left: 20px;
+            margin-bottom:0;
+        }
+        .address{
+            font-size: 18px;
+            color: @text-color;
+            line-height: 28px;
+            font-family: @regular-font;
+            padding-left: 20px;
+            letter-spacing: 1px;
+        }
+    }
+}
+
+
+/*Home Page Css*/
+.video-section{
+    background: @white;
+    .video-title{
+        font-size: 42px;
+        line-height:55px;
+        font-family: @regular-font !important;
+        color: @text-color;
+    }
+    iframe{
+        border: 1px solid #000;
+    }
+}
+.work-section{
+background: #fafafa;
+    .work-box{
+            text-align: center;
+            padding: 0 30px;
+        .img-wrapper{
+            width: 100%;
+            height: 180px;
+            position: relative;
+            img{
+                width: 200px;
+                width: 200px;
+                position: absolute;
+                 top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                margin: auto;
+            }
+        }
+        .box-title{
+            font-size: 20px;
+            line-height: 26px;
+            font-family: @bold-font;
+            color:@red;
+            margin-top: 10px;
+        }
+        .italic-text{
+            font-size: 18px;
+            line-height: 26px;
+            font-family: @medium-font;
+            font-style: italic;
+        }
+    }
+}
+
+.stock-hwak{
+    margin-bottom: 30px;
+}
+.hawk-title{
+    font-size: 22px;
+    line-height: 26px;
+    color: @text-color;
+    font-family:@bold-font;
+}
+
+.link-wrapper{
+    .link-btn{
+        color: @red;
+        font-size: 18px;
+        line-height: 26px;
+        font-family: @bold-font;
+        &:hover{
+            text-decoration: none;
+        }
+    }
+}
+
+.testimonial{
+    background: url('../../images/testimonial.png');
+    position: relative;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.testimonial{
+    .top-plus{
+        top: -100px;
+    }
+}
+
+.common-problem-section{
+    background: url('../../images/common.png');
+    position: relative;
+    background-repeat: no-repeat;
+    background-size: cover;
+    &:before{
+     background-color: rgba(#232e3f, 0.97);
+      content: '';
+      display: block;
+      height: 100%;
+      position: absolute;
+      width: 100%;
+      top:0
+    }
+    &.additonal{
+        h3{
+            color: @white;
+            font-family: @medium-font !important;
+            font-size: 32px;
+            line-height: 34px;
+            letter-spacing: 1px;
+        }
+        p{
+            font-size:18px;
+            line-height: 33px;
+            font-family: @regular-font;
+            color: #c3c8cd;
+        }
+    }
+    .border-dotted{
+        border-right: 1px dotted #fff;
+    }
+    .common{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        .img-wrapper{
+            width: 80px;
+            height: 80px;
+
+            border-radius: 8px;
+            text-align: center;
+            line-height: 78px;
+            margin-right: 20px;
+        }
+        &.reduce{
+         .img-wrapper{
+            background: @red;
+            }
+        }
+
+        &.improve{
+         .img-wrapper{
+            background: @blue;
+            }
+        }
+        .list-content{
+            margin-left: 20px;
+            .title{
+                font-size: 22px;
+                line-height:33px;
+                margin-bottom: 0;
+                font-family: @bold-font;
+                color: @white;
+                margin-bottom: 10px;
+            }
+            ul{
+                padding-left: 18px;
+                li{
+                    font-family: @regular-font;
+                    font-size: 17px;
+                    line-height: 36px;
+                    color: #c3c8cd;
+                    margin-bottom: 10px;
+                }
+            }
+        }
+    }
+}
+
+.order-listing{
+    ul{
+        padding-left: 0px;
+        list-style:none;
+        li{
+            font-size: 18px;
+            line-height: 26px;
+            font-family: @light-font;
+            margin-bottom: 20px;
+            color: @text-color;
+        }
+    }
 }

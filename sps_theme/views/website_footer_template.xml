@@ -36,7 +36,7 @@
                             </li>
                         </ul>
                     </div>
-                    <div class="col-md social_icons">
+                    <div class="col-md">
                         <h6 class="footer-title">SURGICAL EQUIPMENT</h6>
                          <ul class="footer-menu">
                             <li>
@@ -52,7 +52,7 @@
                             </li>
                         </ul>
                     </div>
-                     <div class="col-md social_icons">
+                     <div class="col-md">
                           <h6 class="footer-title">STOCKHAWK</h6>
                          <ul class="footer-menu titles">
                             <li>
@@ -73,7 +73,7 @@
                         </ul>
                     </div>
                 </div>
-                <div class="row copyright-hr">
+                <div class="row">
                     <div class="col-md-8 col-sm-8 px-0">
                         <div class="copy-right">
                             <ul>
