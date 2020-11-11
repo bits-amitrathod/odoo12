@@ -32,6 +32,7 @@
         'views/product_expiration_lot_view.xml',
         'views/website_header_template.xml',
         'views/website_footer_template.xml',
+        'views/product_catagory_and_ brand_template.xml',
 
 
         # 'views/menu.xml'
