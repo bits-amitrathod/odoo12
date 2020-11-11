@@ -1,26 +1,19 @@
 <odoo>
-
-    <template id="contact_page_template" name="Contact Form" >
-        <t name="About Page" t-name="sps_theme.contact_page">
+  <template id="contact_page_template" name="Contact Form" >
+        <t name="contact Page" t-name="sps_theme.contact_page">
             <t t-name="website.contact">
                 <t t-call="website.layout">
                     <div id="wrap" class="oe_structure oe_empty">
                         <section>
                             <div class="container">
                                     <div class="text-center pt32 pb32">
-                                        <h1  class="about-header"> contact Us </h1>
+                                        <h1  class="about-header"> contact Us  sd bbb</h1>
                                     </div>
                             </div>
                         </section>
                         <section class="about-us-section mb0">
                     <div class="container">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="header-title">
-                                    <h1>Contact</h1>
-                                </div>
-                            </div>
-                        </div>
+
                         <div class="row">
                             <div class="col-md-6 col-sm-6 mb48 mt8">
                                 <p>
@@ -197,59 +190,4 @@
         </t>
     </template>
 
-    <!--<record id="contactus" model="ir.ui.view">
-            <field name="name">Contact Us</field>
-            <field name="type">qweb</field>
-            <field name="key">website.contactus</field>
-            <field name="inherit_id" ref="website.contactus"/>
-            <field name="arch" type="xml">
-                <t name="Contact Us" t-name="website.contactus">
-                    <t t-call="website.layout">
-                        <xpath expr="//div[@id='wrap']" position="replace">
-                        <div id="wrap">
-                            <div class="oe_structure">
-                                <section class="pt8 pb8">
-                                    <div class="container">
-                                        <div class="row s_nb_column_fixed">
-                                            <div class="col-lg-12 s_title pt16 pb16">
-                                                <h1>Contact dfds</h1>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </section>
-                            </div>
-                            <div class="container mt-2">
-                                <div class="row">
-                                    <div class="col-lg-8">
-                                        <div class="oe_structure">
-                                            <section class="s_text_block">
-                                                <div class="container">
-                                                    <div class="row">
-                                                        <div class="col-lg-12">
-                                                            <p>
-                                                                Contact us about anything related to our company or services.<br/>
-                                                                We'll do our best to get back to you as soon as possible.
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </section>
-                                        </div>
-                                        <div class="text-center my-3" name="mail_button">
-                                            <a role="button" t-attf-href="mailto:{{ res_company.email }}" class="btn btn-primary" id="o_contact_mail">Send us an email</a>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <t t-call="website.company_description"/>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="oe_structure mt-2"/>
-                        </div>
-                        </xpath>
-                    </t>
-                </t>
-            </field>
-        </record>
-    -->
 </odoo>

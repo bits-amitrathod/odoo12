@@ -1,7 +1,19 @@
 body{
 font-family: @regular-font !important;
+ color: @text-color !important;
 }
-
+h1, h2, h3, h4, h5{
+font-family: @regular-font !important;
+}
+.oe_structure{
+    background: @white !important;
+}
+section {
+    background: @white;
+}
+#wrapwrap > main{
+background: @white !important;
+}
 .seprator{
     display:flex;
     height: 8px;
@@ -15,6 +27,21 @@ font-family: @regular-font !important;
         flex: 0 0 49.8%;
     }
 }
+
+.padding-60-y{
+  padding: 60px 0;
+    @media (max-width: 767px){
+        padding: 30px 0;
+    }
+}
+
+.padding-80-y{
+  padding: 80px 0;
+    @media (max-width: 767px){
+        padding: 40px 0;
+    }
+}
+
 .padding-100-y{
   padding: 100px 0;
     @media (max-width: 767px){
@@ -36,12 +63,18 @@ font-family: @regular-font !important;
     font-size:20px !important;
     line-height: 26px !important;
 }
-
+.container{
+    @media screen and (max-width: 767px){
+        max-width: 100%;
+    }
+}
 
 header{
+    border-bottom: 0 !important;
     .navbar{
         background-color: @white !important;
         border-bottom: 5px solid #394957;
+        padding: 0 !important;
         .container{
             display: block !important;
             .navbar-brand{
@@ -49,6 +82,9 @@ header{
                     width: 15%;
                     margin-right: 0px !important;
                     float: left;
+                    @media screen and (max-width: 767px){
+                        width: auto;
+                    }
                     img{
                         width: 200px;
                         height: 100%;
@@ -59,10 +95,12 @@ header{
             .top-header{
                 float: right;
                 width: 85%;
-                display: flex;
+                /*display: flex;*/
                 text-align: right;
                 justify-content: flex-end;
-
+                    @media screen and (max-width: 767px){
+                        width: 100% !important;
+                    }
                 .contact-detail{
                     list-style: none;
                     margin-bottom: 0;
@@ -118,13 +156,20 @@ header{
                             font-size: 14px;
                             line-height: 26px;
                             font-family: @medium-font;
-                            color: #394957;
+                            color: #394957 !important;
                             text-transform: uppercase;
                             letter-spacing: 1px;
+                            margin-top: 0 !important;
+                            font-weight: 500;
                         }
                     }
                 }
             }
+        }
+
+        .navbar-toggler{
+            float:right;
+            margin-top: 35px;
         }
     }
     /*&.affixed{
@@ -136,6 +181,10 @@ header{
 
 footer{
     background: #273345;
+    ul{
+       margin-left: 0 !important;
+        margin-top: 0 !important;
+    }
     .footer-logo{
         img{
             width: 230px;
@@ -147,11 +196,16 @@ footer{
         color: #fff;
         letter-spacing: 1px;
         font-family: @medium-font;
+        padding-bottom: 0 !important;
+        font-weight: 500;
     }
     .footer-menu{
         list-style: none;
         padding-left: 0;
+        margin-left: 0 !important;
+        margin-top: 0 !important;
         li {
+            padding: 0 !important;
             a{
                 font-family: @medium-font;
                 line-height: 40px;
@@ -220,4 +274,120 @@ footer{
             }
         }
     }
+}
+
+.btn-wrapper{
+    .btn{
+        &.btn-info{
+            padding: 8px 20px;
+            font-size: 15px;
+            line-height: 18px;
+            background-color: #3d9cca;
+            border-radius: 8px;
+            color:#fff;
+            font-family: @bold-font;
+            letter-spacing: 1px;
+        }
+    }
+}
+.has-float-label {
+  position: relative;
+  margin-bottom: 2rem;
+  .form-control{
+     height: 50px;
+     padding-top: 15px;
+     border-radius: 0;
+     &:focus{
+        box-shadow:none;
+        border-color:#ced4da;
+     }
+  }
+  textarea{
+     &.form-control{
+        height:auto !important;
+        }
+     }
+  label {
+    position: absolute;
+    left: 14px;
+    top: -0.35rem;
+    font-weight: 500;
+    font-family: @regular-font;
+    cursor: text;
+    font-size: 13px;
+    color: #9ca4ac;
+    opacity: 1;
+    -webkit-transition: all 0.2s;
+    transition: all 0.2s;
+    transition: all 0.2s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    letter-spacing: 1px;
+  }
+  .form-control::-webkit-input-placeholder {
+    -webkit-transition: all 0.2s;
+    transition: all 0.2s;
+  }
+
+  .form-control::-moz-placeholder {
+    -webkit-transition: all 0.2s;
+    transition: all 0.2s;
+  }
+
+  .form-control:-ms-input-placeholder {
+    -webkit-transition: all 0.2s;
+    transition: all 0.2s;
+  }
+
+  .form-control::placeholder {
+    -webkit-transition: all 0.2s;
+    transition: all 0.2s;
+  }
+
+  .form-control:placeholder-shown:not(:focus)::-webkit-input-placeholder {
+    opacity: 0;
+  }
+
+  .form-control:placeholder-shown:not(:focus)::-moz-placeholder {
+    opacity: 0;
+  }
+
+  .form-control:placeholder-shown:not(:focus) + * {
+    font-size: 18px;
+    opacity: 1;
+    top: 0.2875rem;
+    font-family: @regular-font;
+    left: 14px;
+    color: #9ca4ac;
+    letter-spacing: 1px;
+    font-weight: 500;
+  }
+
+  .form-control:focus {
+    outline: none;
+  }
+
+  /*when you want to add icon for field at start just add this "field-with-icon" class with "has-float-label" this class*/
+  &.field-with-icon {
+    i {
+      position: absolute;
+      left: 0;
+      top: 0.5625rem;
+    }
+
+    label {
+      left: 1.375rem;
+    }
+
+    .form-control {
+      padding-left: 1.375rem;
+    }
+  }
+}
+
+.has-float-label input.form-control:-webkit-autofill ~ label {
+  top: -0.25rem;
+  line-height: 1.07142857;
 }
