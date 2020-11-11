@@ -24,7 +24,7 @@ class InventoryNotificationScheduler(models.TransientModel):
     # appraisal_email = "amitrathod@benchmarkit.solutions"
 
     warehouse_email = "warehouse@surgicalproductsolutions.com"
-    sales_email = "salesteam@surgicalproductsolutions.com"
+    sales_email = "sales@surgicalproductsolutions.com"
     acquisitions_email = "acquisitions@surgicalproductsolutions.com"
     all_email="sps@surgicalproductsolutions.com"
     appraisal_email = "appraisal@surgicalproductsolutions.com"
