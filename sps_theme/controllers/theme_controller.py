@@ -56,3 +56,4 @@ class ThemeController(http.Controller):
     @http.route('/equipment-repair', type='http', auth="public", website=True)
     def equipment_repair_and_service(self):
         return http.request.render('sps_theme.equipment_repair_and_service_page_template')
+
