@@ -29,16 +29,19 @@ odoo.define('payment_aquirer_cstm.payment_aquirer_cstm', function(require) {
           var default_e = document.getElementById("selectDeliveryMethod");
           var default_value = default_e.options[default_e.selectedIndex].value;
           document.getElementById("noteText").value = default_value;
+          var $pay_button = $('#o_payment_form_pay');
 
         $("#hasShippingNote").change(function() {
             if ( $(this).is(':checked') ) {
                 $("#expedited_shipping").show();
                 $("#editShippingNote").show();
                 $("#delivery_35").prop('checked', true);
+                $pay_button.attr('disabled', false);
             } else {
                 $("#expedited_shipping").hide();
                 $("#editShippingNote").hide();
                 $("#delivery_35").prop('checked', false);
+                $pay_button.attr('disabled', true);
             }
         });
 
