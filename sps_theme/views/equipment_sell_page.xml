@@ -1,498 +1,428 @@
 <odoo>
-
-    <template id="equipment_sell_template" name="Sell Page">
-<t t-name="website.equipment">
-  <t t-call="website.layout">
-    <div id="wrap" class="oe_structure oe_empty">
-      <section class="pt32 pb32">
-        <div class="container">
-           <div class="text-center pt32 pb32">
-              <h1  class="about-header"> <strong>Sell</strong> Your Used Surgical Equipment </h1>
-           </div>
-          <div class="manufacturer">
-            <h3 class="section-title">Featured Manufacturers We Carry</h3>
-            <div class="row flex-wrap mt-5">
-              <div class="offset-md-1"></div>
-              <div class="col-2 mb-4">
-                <div class="manfaturer-box">
-                   <img src="/sps_theme/static/src/images/manufacturer/stryker.png" class="img-fluid"/>
-                </div>
-              </div>
-              <div class="col-2  mb-4">
-                <div class="manfaturer-box">
-                   <img src="/sps_theme/static/src/images/manufacturer/Aesculap-Logo.png" class="img-fluid"/>
-                </div>
-              </div>
-              <div class="col-2  mb-4">
-                <div class="manfaturer-box">
-                   <img src="/sps_theme/static/src/images/manufacturer/ethicon.png" class="img-fluid"/>
-                </div>
-              </div>
-              <div class="col-2  mb-4">
-                <div class="manfaturer-box">
-                   <img src="/sps_theme/static/src/images/manufacturer/Karl_Storz_Endoskope_logo.png" class="img-fluid"/>
-                </div>
-              </div>
-              <div class="col-2  mb-4">
-                <div class="manfaturer-box">
-                   <img src="/sps_theme/static/src/images/manufacturer/medtronic-logo.png" class="img-fluid"/>
-                </div>
-              </div>
-              </div>
-            <div class="row flex-wrap">
-              <div class="offset-md-1"></div>
-              <div class="col-2  mb-4">
-                <div class="manfaturer-box">
-                   <img src="/sps_theme/static/src/images/manufacturer/smith-nephew-vector-logo.png" class="img-fluid"/>
-                </div>
-              </div>
-              <div class="col-2  mb-4">
-                <div class="manfaturer-box">
-                   <img src="/sps_theme/static/src/images/manufacturer/depuysynthes.jpg" class="img-fluid"/>
-                </div>
-              </div>
-              <div class="col-2  mb-4">
-                <div class="manfaturer-box">
-                   <img src="/sps_theme/static/src/images/manufacturer/2178678.jpg" class="img-fluid"/>
-                </div>
-              </div>
-              <div class="col-2  mb-4">
-                <div class="manfaturer-box">
-                   <img src="/sps_theme/static/src/images/manufacturer/Arthrex-Logo-blue.png" class="img-fluid"/>
-                </div>
-              </div>
-              <div class="col-2  mb-4">
-                <div class="manfaturer-box">
-                   <img src="/sps_theme/static/src/images/manufacturer/Olympus-Logo.png" class="img-fluid"/>
-                </div>
-              </div>
-
-            </div>
-            <div class="row mt-5">
-               <div class="col-md-12 text-center btn-wrapper">
-                  <button class="btn btn-info btn-sm">Sell Your Surgical Equipment</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-       <section class="padding-100-y bg-grey">
-              <div class="container">
-                  <div class="row">
-                      <div class="col-md-6 align-self-center">
-                          <p class="hawk-title ft-32 regular-font">About SPS Surgical Equipment</p>
-                         <div class="section-description">
-                             <p>Launched in 2018, the SPS Surgical Equipment Division was
-                                created to complement our disposable goods services by
-                                offering customers solutions for their used medical equipment.
-                                This reinforces our mission to provide cost-saving solutions
-                                for healthcare facilities across the United States who choose to
-                                save money without sacrificing quality of care.</p>
-                         </div>
-                      </div>
-                      <div class="col-md-6">
-                          <img src="/sps_theme/static/src/images/surgical.jpg" class="img-fluid"/>
+   <template id="equipment_sell_template" name="Sell Page">
+      <t t-name="website.equipment">
+         <t t-call="website.layout">
+            <div id="wrap" class="oe_structure oe_empty">
+               <section class="pt32 pb32">
+                  <div class="container">
+                     <div class="text-center pt32 pb32">
+                        <h1  class="about-header"> <strong>Sell</strong> Your Used Surgical Equipment </h1>
+                     </div>
+                     <div class="manufacturer">
+                        <h3 class="section-title">Featured Manufacturers We Carry</h3>
+                        <div class="row flex-wrap mt-5">
+                           <div class="offset-md-1"></div>
+                           <div class="col-2 mb-4">
+                              <div class="manfaturer-box">
+                                 <img src="/sps_theme/static/src/images/manufacturer/stryker.png" class="img-fluid"/>
+                              </div>
+                           </div>
+                           <div class="col-2  mb-4">
+                              <div class="manfaturer-box">
+                                 <img src="/sps_theme/static/src/images/manufacturer/Aesculap-Logo.png" class="img-fluid"/>
+                              </div>
+                           </div>
+                           <div class="col-2  mb-4">
+                              <div class="manfaturer-box">
+                                 <img src="/sps_theme/static/src/images/manufacturer/ethicon.png" class="img-fluid"/>
+                              </div>
+                           </div>
+                           <div class="col-2  mb-4">
+                              <div class="manfaturer-box">
+                                 <img src="/sps_theme/static/src/images/manufacturer/Karl_Storz_Endoskope_logo.png" class="img-fluid"/>
+                              </div>
+                           </div>
+                           <div class="col-2  mb-4">
+                              <div class="manfaturer-box">
+                                 <img src="/sps_theme/static/src/images/manufacturer/medtronic-logo.png" class="img-fluid"/>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="row flex-wrap">
+                           <div class="offset-md-1"></div>
+                           <div class="col-2  mb-4">
+                              <div class="manfaturer-box">
+                                 <img src="/sps_theme/static/src/images/manufacturer/smith-nephew-vector-logo.png" class="img-fluid"/>
+                              </div>
+                           </div>
+                           <div class="col-2  mb-4">
+                              <div class="manfaturer-box">
+                                 <img src="/sps_theme/static/src/images/manufacturer/depuysynthes.jpg" class="img-fluid"/>
+                              </div>
+                           </div>
+                           <div class="col-2  mb-4">
+                              <div class="manfaturer-box">
+                                 <img src="/sps_theme/static/src/images/manufacturer/2178678.jpg" class="img-fluid"/>
+                              </div>
+                           </div>
+                           <div class="col-2  mb-4">
+                              <div class="manfaturer-box">
+                                 <img src="/sps_theme/static/src/images/manufacturer/Arthrex-Logo-blue.png" class="img-fluid"/>
+                              </div>
+                           </div>
+                           <div class="col-2  mb-4">
+                              <div class="manfaturer-box">
+                                 <img src="/sps_theme/static/src/images/manufacturer/Olympus-Logo.png" class="img-fluid"/>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="row mt-5">
+                           <div class="col-md-12 text-center btn-wrapper">
+                              <button class="btn btn-info btn-sm">Sell Your Surgical Equipment</button>
+                           </div>
+                        </div>
                      </div>
                   </div>
-              </div>
-          </section>
-        <div class="seprator"><div class="red"></div><div class="black"></div></div>
-      <section class="padding-100-y">
-              <div class="container">
-                  <div class="row">
-
-                      <div class="col-md-6">
-                          <img src="/sps_theme/static/src/images/we_do.jpg" class="img-fluid"/>
+               </section>
+               <section class="padding-100-y bg-grey">
+                  <div class="container">
+                     <div class="row">
+                        <div class="col-md-6 align-self-center">
+                           <p class="hawk-title ft-32 regular-font">About SPS Surgical Equipment</p>
+                           <div class="section-description">
+                              <p>Launched in 2018, the SPS Surgical Equipment Division was
+                                 created to complement our disposable goods services by
+                                 offering customers solutions for their used medical equipment.
+                                 This reinforces our mission to provide cost-saving solutions
+                                 for healthcare facilities across the United States who choose to
+                                 save money without sacrificing quality of care.
+                              </p>
+                           </div>
+                        </div>
+                        <div class="col-md-6">
+                           <img src="/sps_theme/static/src/images/surgical.jpg" class="img-fluid"/>
+                        </div>
                      </div>
-                      <div class="col-md-6 align-self-center pl-0 pl-md-5">
-                          <p class="hawk-title ft-32 regular-font">What We Do</p>
-                         <div class="section-description">
-                             <p>
-                                Reductions in reimbursements for health care services drive the
-                                need for cost savings from every angle. SPS can provide you with
-                                solutions to return revenue to your facility by purchasing your used,
-                                depreciated medical equipment. If you’re a buyer, we remarket our
-                                equipment and provide it to you at a reduced cost, saving healthcare
-                                facilities thousands. Equipment that is older technology, but still
-                                valued in other countries, is donated to medical missions, therefore
-                                supporting sustainability in 2nd and 3rd world markets. Let us find
-                                cost savings solutions that work for you.
-                             </p>
-                         </div>
-                      </div>
                   </div>
-              </div>
-          </section>
-
-                        <section class="bg-black-with-img-2 padding-100-y our-process">
-							<div class="container">
-								<div class="row">
-									 <div class="col-md-5">
-										 <div class="additonal">
-											<h3>Our Process</h3>
-											 <p class="pt-4">
-												When selling us your equipment, we evaluate several different factors.
-											 </p>
-										 </div>
-									 </div>
-									<div class="col-md-7 section-description pl-3 pl-md-5">
-										<div class="story-list white-plus">
-											<div class="bulleted-list">
-												<div><i class="icon-plus"></i></div></div>
-											<div class="list-description">
-                                              <p><strong>Age of the Equipment:</strong> We offer the most value for items that are less than 10 years old.</p>
-											</div>
-										</div>
-										<div class="story-list white-plus">
-											<div class="bulleted-list">
-												<div><i class="icon-plus"></i></div></div>
-											<div class="list-description">
-                                              <p><strong>Condition of the Equipment:</strong> We look at the physical condition (overall
-                                                health of the internal and external parts and attachments) and the
-                                                cosmetic condition (visible signs of wear, tear, defects, and damage).</p>
-											</div>
-										</div>
-										<div class="story-list white-plus">
-											<div class="bulleted-list">
-												<div><i class="icon-plus"></i></div></div>
-											<div class="list-description">
-												<p><strong>Age of the Technology:</strong> We look at where the equipment stands in
-                                                comparison to the state-of-the-art technology on the market.</p>
-											</div>
-										</div>
-										<div class="story-list white-plus">
-											<div class="bulleted-list">
-												<div><i class="icon-plus"></i></div></div>
-											<div class="list-description">
-												<p><strong>Logistics:</strong> The difficulty of de-installation and logistics</p>
-											</div>
-										</div>
-										<div class="story-list white-plus">
-											<div class="bulleted-list">
-												<div><i class="icon-plus"></i></div></div>
-											<div class="list-description">
-												<p><strong>Servicing:</strong> The difficulty of re-installation, sales service, and sales support</p>
-											</div>
-										</div>
-                                        <div class="story-list white-plus">
-											<div class="bulleted-list">
-												<div><i class="icon-plus"></i></div></div>
-											<div class="list-description">
-												<p><strong>Demand:</strong> Is it equipment that will sell quickly, or will it be put into storage?</p>
-											</div>
-										</div>
-
-									</div>
-                                    <div class="col-12 text-center btn-wrapper mt-5">
-                                        <button class="btn btn-info btn-sm">Sell Your Surgical Equipment</button>
-                                    </div>
-								</div>
-
+               </section>
+               <div class="seprator">
+                  <div class="red"></div>
+                  <div class="black"></div>
+               </div>
+               <section class="padding-100-y">
+                  <div class="container">
+                     <div class="row">
+                        <div class="col-md-6">
+                           <img src="/sps_theme/static/src/images/we_do.jpg" class="img-fluid"/>
+                        </div>
+                        <div class="col-md-6 align-self-center pl-0 pl-md-5">
+                           <p class="hawk-title ft-32 regular-font">What We Do</p>
+                           <div class="section-description">
+                              <p>
+                                 Reductions in reimbursements for health care services drive the
+                                 need for cost savings from every angle. SPS can provide you with
+                                 solutions to return revenue to your facility by purchasing your used,
+                                 depreciated medical equipment. If you’re a buyer, we remarket our
+                                 equipment and provide it to you at a reduced cost, saving healthcare
+                                 facilities thousands. Equipment that is older technology, but still
+                                 valued in other countries, is donated to medical missions, therefore
+                                 supporting sustainability in 2nd and 3rd world markets. Let us find
+                                 cost savings solutions that work for you.
+                              </p>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </section>
+               <section class="bg-black-with-img-2 padding-100-y our-process">
+                  <div class="container">
+                     <div class="row">
+                        <div class="col-md-5">
+                           <div class="additonal">
+                              <h3>Our Process</h3>
+                              <p class="pt-4">
+                                 When selling us your equipment, we evaluate several different factors.
+                              </p>
+                           </div>
+                        </div>
+                        <div class="col-md-7 section-description pl-3 pl-md-5">
+                           <div class="story-list white-plus">
+                              <div class="bulleted-list">
+                                 <div><i class="icon-plus"></i></div>
+                              </div>
+                              <div class="list-description">
+                                 <p><strong>Age of the Equipment:</strong> We offer the most value for items that are less than 10 years old.</p>
+                              </div>
+                           </div>
+                           <div class="story-list white-plus">
+                              <div class="bulleted-list">
+                                 <div><i class="icon-plus"></i></div>
+                              </div>
+                              <div class="list-description">
+                                 <p><strong>Condition of the Equipment:</strong> We look at the physical condition (overall
+                                    health of the internal and external parts and attachments) and the
+                                    cosmetic condition (visible signs of wear, tear, defects, and damage).
+                                 </p>
+                              </div>
+                           </div>
+                           <div class="story-list white-plus">
+                              <div class="bulleted-list">
+                                 <div><i class="icon-plus"></i></div>
+                              </div>
+                              <div class="list-description">
+                                 <p><strong>Age of the Technology:</strong> We look at where the equipment stands in
+                                    comparison to the state-of-the-art technology on the market.
+                                 </p>
+                              </div>
+                           </div>
+                           <div class="story-list white-plus">
+                              <div class="bulleted-list">
+                                 <div><i class="icon-plus"></i></div>
+                              </div>
+                              <div class="list-description">
+                                 <p><strong>Logistics:</strong> The difficulty of de-installation and logistics</p>
+                              </div>
+                           </div>
+                           <div class="story-list white-plus">
+                              <div class="bulleted-list">
+                                 <div><i class="icon-plus"></i></div>
+                              </div>
+                              <div class="list-description">
+                                 <p><strong>Servicing:</strong> The difficulty of re-installation, sales service, and sales support</p>
+                              </div>
+                           </div>
+                           <div class="story-list white-plus">
+                              <div class="bulleted-list">
+                                 <div><i class="icon-plus"></i></div>
+                              </div>
+                              <div class="list-description">
+                                 <p><strong>Demand:</strong> Is it equipment that will sell quickly, or will it be put into storage?</p>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="col-12 text-center btn-wrapper mt-5">
+                           <button class="btn btn-info btn-sm">Sell Your Surgical Equipment</button>
+                        </div>
+                     </div>
+                  </div>
+               </section>
+               <section class="padding-80-y bg-grey">
+                  <div class="container">
+                     <p class="hawk-title ft-32 regular-font text-center">Surgical Equipment Categories</p>
+                     <div class="row order-listing pt-5">
+                        <div class="col-md-3">
+                           <p class="list-title">
+                              VIDEO EQUIPMENT
+                           </p>
+                           <ul>
+                              <li> Video Towers</li>
+                              <li> Monitors</li>
+                              <li> Light Sources</li>
+                              <li> CPUs</li>
+                              <li> Printers</li>
+                              <li> Camera Heads</li>
+                              <li> Accessories</li>
+                              <li> Surgical Monitors</li>
+                           </ul>
+                        </div>
+                        <div class="col-md-3">
+                           <p class="list-title">POWER EQUIPMENT</p>
+                           <ul>
+                              <li> Drills</li>
+                              <li> Saws</li>
+                              <li> Reamers</li>
+                              <li> Battery Powered</li>
+                              <li> Pneumatic Powered</li>
+                              <li> Electric Powered</li>
+                              <li> Power Sources</li>
+                              <li> Electrosurgical Units</li>
+                              <li> Attachments and Accessories</li>
+                              <li> Chargers</li>
+                           </ul>
+                        </div>
+                        <div class="col-md-3">
+                           <p class="list-title">SCOPES</p>
+                           <ul>
+                              <li> Flexible or Rigid</li>
+                              <li> Endoscopes</li>
+                              <li> Laparoscopes</li>
+                              <li> Cystoscopes</li>
+                              <li> Arthroscopes</li>
+                              <li> Bronchoscopes</li>
+                              <li> Gastroscopes</li>
+                              <li> Colonoscopes</li>
+                           </ul>
+                        </div>
+                        <div class="col-md-3">
+                           <p class="list-title">ORTHOPEDIC TRAUMA</p>
+                           <ul>
+                              <li> Synthes Instrument and Implant Sets</li>
+                           </ul>
+                           <p class="list-title">INSTRUMENTATION</p>
+                           <ul>
+                              <li> Arthroscopy Instruments</li>
+                           </ul>
+                        </div>
+                     </div>
+                  </div>
+               </section>
+               <div class="seprator">
+                  <div class="red"></div>
+                  <div class="black"></div>
+               </div>
+               <section class="padding-80-y">
+                  <div class="container">
+                     <div class="row">
+                        <div class="col-md-7 align-self-center pl-0 pl-md-5">
+                           <p class="hawk-title ft-32 regular-font">When Buying Equipment From Us You Can Be Assured That You Will Receive:</p>
+                           <div class="assured mt-3">
+                              <ul>
+                                 <li><span class="bold-font">Quality</span> customer service and support</li>
+                                 <li><span class="bold-font">Options</span> for warranty</li>
+                                 <li><span class="bold-font">No minimum</span> order required</li>
+                                 <li><span class="bold-font">No contracts</span> necessary</li>
+                                 <li><span class="bold-font">Fast</span> and reliable shipping</li>
+                              </ul>
+                           </div>
+                        </div>
+                        <div class="col-md-5">
+                           <img src="/sps_theme/static/src/images/buy.jpg" class="img-fluid"/>
+                        </div>
+                           <div class="col-md-12 text-center btn-wrapper mt-5">
+                                <button class="btn btn-info btn-sm">Shop Equipment</button>
                             </div>
-                    </section>
+                     </div>
+                  </div>
+               </section>
 
-                        <section class="padding-80-y bg-grey">
-                        <div class="container">
-                                <p class="hawk-title ft-32 regular-font text-center">Surgical Equipment Categories</p>
+                <section class="padding-80-y bg-grey">
+                    <div class="container">
+                         <p class="hawk-title ft-32 regular-font text-center">Sell Your Surgical Equipment</p>
+                         <div class="section-description text-center">
+                             <p>Please fill out the form below in order to submit an item for valuation.</p>
+                         </div>
 
-                               <div class="row order-listing pt-5">
-                                       <div class="col-md-3">
-                                           <p class="list-title">
-                                               VIDEO EQUIPMENT
-                                           </p>
-                                           <ul>
-                                               <li> Video Towers</li>
-                                               <li> Monitors</li>
-                                               <li> Light Sources</li>
-                                               <li> CPUs</li>
-                                               <li> Printers</li>
-                                               <li> Camera Heads</li>
-                                               <li> Accessories</li>
-                                               <li> Surgical Monitors</li>
-                                           </ul>
-                                       </div>
-                                       <div class="col-md-3">
-                                            <p class="list-title">POWER EQUIPMENT</p>
-                                            <ul>
-                                               <li> Drills</li>
-                                               <li> Saws</li>
-                                               <li> Reamers</li>
-                                               <li> Battery Powered</li>
-                                               <li> Pneumatic Powered</li>
-                                               <li> Electric Powered</li>
-                                               <li> Power Sources</li>
-                                               <li> Electrosurgical Units</li>
-                                               <li> Attachments and Accessories</li>
-                                               <li> Chargers</li>
-                                           </ul>
-                                       </div>
-                                   <div class="col-md-3">
-                                        <p class="list-title">SCOPES</p>
-                                           <ul>
-                                               <li> Flexible or Rigid</li>
-                                               <li> Endoscopes</li>
-                                               <li> Laparoscopes</li>
-                                               <li> Cystoscopes</li>
-                                               <li> Arthroscopes</li>
-                                               <li> Bronchoscopes</li>
-                                               <li> Gastroscopes</li>
-                                               <li> Colonoscopes</li>
-                                           </ul>
-                                       </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group has-float-label">
+                                    <input type="text" class="form-control" placeholder="Business Name" id="bussiness_name" name="bussiness_name"/>
+                                    <label class="control-label" for="bussiness_name">Business Name</label>
+                                </div>
+                            </div>
+                              <div class="col-md-6">
+                                <div class="form-group has-float-label">
+                                    <input type="text" class="form-control" placeholder="Business Address" id="bussiness_address" name="bussiness_address"/>
+                                    <label class="control-label" for="bussiness_address">Business Address</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group has-float-label">
+                                    <input type="text" class="form-control" placeholder="City" id="City" name="City"/>
+                                    <label class="control-label" for="City">City</label>
+                                </div>
+                            </div>
+                             <div class="col-md-6">
+                                <div class="form-group has-float-label">
+                                    <input type="text" class="form-control" placeholder="State/Province" id="state" name="state"/>
+                                    <label class="control-label" for="state">State/Province</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group has-float-label">
+                                    <input type="text" class="form-control" placeholder="Zip Code" id="zipcode" name="zipcode"/>
+                                    <label class="control-label" for="zipcode">Zip Code</label>
+                                </div>
+                            </div>
+                             <div class="col-md-6">
+                                <div class="form-group has-float-label">
+                                    <input type="text" class="form-control" placeholder="First Name" id="first_name" name="first_name"/>
+                                    <label class="control-label" for="first_name">First Name</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group has-float-label">
+                                    <input type="text" class="form-control" placeholder="Last Name" id="last_name" name="last_name"/>
+                                    <label class="control-label" for="last_name">Last Name</label>
+                                </div>
+                            </div>
 
-                                        <div class="col-md-3">
-                                             <p class="list-title">ORTHOPEDIC TRAUMA</p>
-                                           <ul>
-                                               <li> Synthes Instrument and Implant Sets</li>
-                                           </ul>
-                                            <p class="list-title">INSTRUMENTATION</p>
-                                           <ul>
-                                               <li> Arthroscopy Instruments</li>
-                                           </ul>
-                                       </div>
+                             <div class="col-md-6">
+                                <div class="form-group has-float-label">
+                                    <input type="text" class="form-control" placeholder="Phone" id="Phone" name="Phone"/>
+                                    <label class="control-label" for="Phone">Phone</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group has-float-label">
+                                    <input type="text" class="form-control" placeholder="Email" id="Email" name="Email"/>
+                                    <label class="control-label" for="Email">Email</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group has-float-label">
+                                    <input type="text" class="form-control" placeholder="Contact Name (for final signature) First Name" id="contact_first_name" name="contact_first_name"/>
+                                    <label class="control-label" for="contact_first_name">Contact Name (for final signature) First Name</label>
+                                </div>
+                            </div>
+                             <div class="col-md-6">
+                                <div class="form-group has-float-label">
+                                    <input type="text" class="form-control" placeholder="Contact Name (for final signature) First Name" id="contact_last_name" name="contact_last_name"/>
+                                    <label class="control-label" for="contact_last_name">Contact Name (for final signature) Last Name</label>
+                                </div>
+                            </div>
+
+                             <div class="col-md-6">
+                                <div class="form-group has-float-label">
+                                    <input type="text" class="form-control" placeholder="Manufacturer" id="Manufacturer" name="Manufacturer"/>
+                                    <label class="control-label" for="Manufacturer">Manufacturer</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group has-float-label">
+                                    <input type="text" class="form-control" placeholder="Part Number" id="part_number" name="part_number"/>
+                                    <label class="control-label" for="part_number">Part Number</label>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                 <div class="form-group has-float-label">
+                                    <textarea id="description" placeholder="Description" class="form-control" name="description"  rows="1"></textarea>
+                                    <label class="control-label" for="description">Description</label>
+                                 </div>
+                            </div>
+                             <div class="col-md-5">
+                                <div class="form-group  has-float-label">
+                                     <div class="input-group">
+                                        <input id="birthdate" type="text" placeholder="Birthdate" name="birth_date" class="form-control o_website_form_input o_website_form_date"/>
+                                         <label class="control-label" for="birthdate">Birthdate</label>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text" id="birthdate"><i class="icon-calendars"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group has-float-label">
+                                    <input type="text" class="form-control" placeholder="Quantity (Ea)" id="quantity" name="quantity"/>
+                                    <label class="control-label" for="quantity">Quantity (Ea)</label>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group has-float-label">
+                                    <input type="text" class="form-control" placeholder="Condition" id="Condition" name="Condition"/>
+                                    <label class="control-label" for="Condition">Condition</label>
+                                </div>
+                            </div>
+                            <div class="col-md-10 offset-md-2">
+                                <div class="form-group file-input">
+                                    <label class="control-label" for="Condition">Item Picture Upload</label>
+                                    <label for="file" class="file-control">Choose File</label>
+                                    <input type="file" onChange='getFileNameWithExt(event)' class="file-upload-control" id="file" name="file"/>
+
+                                    <input id='outputfile' type='text' name='outputfile' class="selected-file" placeholder="No File Chosen" disabled="true"/>
+                                </div>
+                            </div>
+                             <div class="col-md-12 text-center btn-wrapper mt-5">
+                                <button class="btn btn-info btn-sm">Submit</button>
                             </div>
                         </div>
-                    </section>
-                    <div class="seprator"><div class="red"></div><div class="black"></div></div>
-     <section class="padding-80-y">
-              <div class="container">
-                  <div class="row">
-
-
-                      <div class="col-md-6 align-self-center pl-0 pl-md-5">
-                          <p class="hawk-title ft-32 regular-font">When Buying Equipment From Us You Can Be Assured That You Will Receive:</p>
-                         <div class="section-description">
-                             <p>
-                                Reductions in reimbursements for health care services drive the
-                                need for cost savings from every angle. SPS can provide you with
-                                solutions to return revenue to your facility by purchasing your used,
-                                depreciated medical equipment. If you’re a buyer, we remarket our
-                                equipment and provide it to you at a reduced cost, saving healthcare
-                                facilities thousands. Equipment that is older technology, but still
-                                valued in other countries, is donated to medical missions, therefore
-                                supporting sustainability in 2nd and 3rd world markets. Let us find
-                                cost savings solutions that work for you.
-                             </p>
-                         </div>
-                      </div>
-                      <div class="col-md-6">
-                          <img src="/sps_theme/static/src/images/buy.jpg" class="img-fluid"/>
-                     </div>
-                  </div>
-              </div>
-          </section>
-        <section class="s_text_image pt32 pb32">
-        <div class="container">
-          <div class="row align-items-center">
-            <div class="col-lg-6 pt16 pb16">
-              <h3 class="fr-tag" style="text-transform: capitalize; color: rgb(50, 61, 73); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 28px; line-height: 1.30435em; font-family: AmericanGotURW-Bol;">
-                <b>Our Process</b>
-              </h3>
-              <h2/>
-              <p style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; line-height: 26px;">When selling us your equipment, we evaluate your used equipment by looking at the following factors:</p>
-              <ul style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; list-style-position: inside; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;">
-                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Age of the equipment: &amp;nbsp;We offer the most value for items that are less than 10 years old.</li>
-                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Condition of the equipment: We look at the physical condition (overall health of the internal and external parts and attachments) and the cosmetic condition (visible signs of wear, tear, defects, and damage).</li>
-                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Age of the technology: We look at where the equipment stands in comparison to the state-of-the-art technology on the market.</li>
-                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">The difficulty&amp;nbsp;of de-installation and logistics</li>
-                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">The difficulty&amp;nbsp;of re-installation, sales service, and sales support</li>
-                <li style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">The overall demand of the product: Is it equipment that will sell quickly, or will it be put into storage?</li>
-              </ul>
-              <div class="s_btn text-left pt16 pb16" data-name="Buttons">
-                <a href="/sell" class="btn btn-danger" data-original-title="" title="" aria-describedby="tooltip872261">SELL AN ITEM</a>
-              </div>
+                    </div>
+                </section>
+                 <div class="seprator">
+                  <div class="red"></div>
+                  <div class="black"></div>
+               </div>
             </div>
-            <div class="col-lg-6 pt16 pb16">
-              <img src="/sps_theme/static/src/img/Olympus-Tower-inspection-1024x731.png" class="img img-fluid mx-auto" alt="Odoo • Text and Image" data-original-title="" title="" aria-describedby="tooltip692510"/>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section class="pt32 pb32 bg-white oe_custom_bg" style="">
-        <div class="container">
-          <div class="row s_nb_column_fixed">
-            <div class="col-lg-12 s_title pt16 pb16" style="text-align: center;">
-              <h3 style="text-transform: capitalize; color: rgb(50, 61, 73); background: 0px 0px rgb(255, 255, 255); border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 28px; line-height: 1.30435em; font-family: AmericanGotURW-Bol;">Categories</h3>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section class="s_text_block pt32 pb32 bg-white oe_custom_bg" style="">
-        <div class="container">
-          <div class="row">
-            <div class="pt32 pb32 col-lg-3">
-              <h4 class="p1" style="color: rgb(50, 61, 73); background: 0px 0px rgb(255, 255, 255); border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 20px; line-height: 38px; text-transform: capitalize; font-family: AmericanGotURW-Bol;">
-                <span class="s1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
-                  <b style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Video Equipment</b>
-                </span>
-              </h4>
-              <ul class="ul1" style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; list-style-position: inside; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;">
-                <li class="li1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
-                  <span class="s3" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Video Towers</span>
-                </li>
-                <li class="li1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
-                  <span class="s3" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Monitors</span>
-                </li>
-                <li class="li1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
-                  <span class="s3" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Light Sources</span>
-                </li>
-                <li class="li1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
-                  <span class="s3" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">CPUs</span>
-                </li>
-                <li class="li1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
-                  <span class="s3" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Printers</span>
-                </li>
-                <li class="li1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
-                  <span class="s3" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Camera Heads</span>
-                </li>
-                <li class="li1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
-                  <span class="s3" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Accessories</span>
-                </li>
-                <li class="li1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
-                  <span class="s3" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Surgical Monitors</span>
-                </li>
-              </ul>
-            </div>
-            <div class="pt32 pb32 col-lg-3">
-              <h4 class="p1" style="color: rgb(50, 61, 73); background: 0px 0px rgb(255, 255, 255); border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 20px; line-height: 38px; text-transform: capitalize; font-family: AmericanGotURW-Bol;">
-                <span class="s1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
-                  <b style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Power Equipment</b>
-                </span>
-              </h4>
-              <ul class="ul1" style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; list-style-position: inside; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;">
-                <li class="li1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
-                  <span class="s3" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Drills</span>
-                </li>
-                <li class="li1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
-                  <span class="s3" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Saws</span>
-                </li>
-                <li class="li1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
-                  <span class="s3" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Reamers</span>
-                </li>
-                <li class="li1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
-                  <span class="s3" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Battery Powered</span>
-                </li>
-                <li class="li1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
-                  <span class="s3" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Pneumatic Powered</span>
-                </li>
-                <li class="li1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
-                  <span class="s3" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Electric Powered</span>
-                </li>
-                <li class="li1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
-                  <span class="s3" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Power Sources</span>
-                </li>
-                <li class="li1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
-                  <span class="s3" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Electrosurgical Units</span>
-                </li>
-                <li class="li1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
-                  <span class="s3" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Attachments and Accessories</span>
-                </li>
-                <li class="li1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
-                  <span class="s3" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Chargers</span>
-                </li>
-              </ul>
-            </div>
-            <div class="pt32 pb32 col-lg-3">
-              <h4 class="p1" style="color: rgb(50, 61, 73); background: 0px 0px rgb(255, 255, 255); border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 20px; line-height: 38px; text-transform: capitalize; font-family: AmericanGotURW-Bol;">
-                <span class="s1" style="background: 0px 0px; border: 0px; margin: 0px; outline: 0px; padding: 0px; vertical-align: baseline;">
-                  <b style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Scopes</b>
-                </span>
-              </h4>
-              <ul class="ul1" style="background: 0px 0px rgb(255, 255, 255); border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; list-style-position: inside; color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;">
-                <li class="li1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
-                  <span class="s3" style="background: 0px 0px; border: 0px; margin: 0px; outline: 0px; padding: 0px; vertical-align: baseline;">Flexible or Rigid</span>
-                </li>
-                <li class="li1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
-                  <span class="s3" style="background: 0px 0px; border: 0px; margin: 0px; outline: 0px; padding: 0px; vertical-align: baseline;">Endoscopes</span>
-                </li>
-                <li class="li1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
-                  <span class="s3" style="background: 0px 0px; border: 0px; margin: 0px; outline: 0px; padding: 0px; vertical-align: baseline;">Laparoscopes</span>
-                </li>
-                <li class="li1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
-                  <span class="s3" style="background: 0px 0px; border: 0px; margin: 0px; outline: 0px; padding: 0px; vertical-align: baseline;">Cystoscopes</span>
-                </li>
-                <li class="li1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
-                  <span class="s3" style="background: 0px 0px; border: 0px; margin: 0px; outline: 0px; padding: 0px; vertical-align: baseline;">Arthroscopes</span>
-                </li>
-                <li class="li1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
-                  <span class="s3" style="background: 0px 0px; border: 0px; margin: 0px; outline: 0px; padding: 0px; vertical-align: baseline;">Bronchoscopes</span>
-                </li>
-                <li class="li1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
-                  <span class="s3" style="background: 0px 0px; border: 0px; margin: 0px; outline: 0px; padding: 0px; vertical-align: baseline;">Gastroscopes</span>
-                </li>
-                <li class="li1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
-                  <span class="s3" style="background: 0px 0px; border: 0px; margin: 0px; outline: 0px; padding: 0px; vertical-align: baseline;">Colonoscopes</span>
-                </li>
-              </ul>
-            </div>
-            <div class="pt32 pb32 col-lg-3">
-              <h4 class="p1" style="color: rgb(50, 61, 73); background: 0px 0px rgb(255, 255, 255); border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 20px; line-height: 38px; text-transform: capitalize; font-family: AmericanGotURW-Bol;">
-                <span class="s1" style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
-                  <b style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Orthopedic Trauma</b>
-                </span>
-              </h4>
-              <p class="lead">
-                <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 14px;">Synthes Instrument and Implant Sets</span>
-                <br/>
-              </p>
-              <h4 class="p1" style="color: rgb(50, 61, 73); background: 0px 0px rgb(255, 255, 255); border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 20px; line-height: 38px; text-transform: capitalize; font-family: AmericanGotURW-Bol;">
-                <span class="s1" style="background: 0px 0px; border: 0px; margin: 0px; outline: 0px; padding: 0px; vertical-align: baseline;">
-                  <b style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">Instrumentation</b>
-                </span>
-              </h4>
-              <ul>
-                <li>
-                  <p class="lead">
-                    <span style="color: rgb(50, 61, 73); font-family: Lato, sans-serif; font-size: 15px;">
-                      <b>Arthroscopy Instruments</b>
-                    </span>
-                    <br/>
-                  </p>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section class="pt32 pb32">
-        <div class="container">
-          <div class="row s_nb_column_fixed">
-            <div class="col-lg-12 s_title pt16 pb16" style="text-align: center;">
-              <h3 class="fr-tag" style="text-transform: capitalize; color: rgb(50, 61, 73); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 28px; line-height: 1.30435em; font-family: AmericanGotURW-Bol;">
-                <img src="/sps_theme/static/src/img/5-Stars-300x74.png" class="img img-fluid mx-auto" alt="Odoo • Text and Image" data-original-title="" title="" aria-describedby="tooltip692510" style="color: rgb(33, 37, 41); font-family: -apple-system, system-ui, &quot;Segoe UI&quot;, Roboto, Noto, &quot;Helvetica Neue&quot;, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;, &quot;Noto Color Emoji&quot;; font-size: 14px; text-align: left; text-transform: none;"/>
-                <br/>
-              </h3>
-              <h3 class="fr-tag" style="text-transform: capitalize; color: rgb(50, 61, 73); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 28px; line-height: 1.30435em; font-family: AmericanGotURW-Bol;">When Buying Equipment From Us</h3>
-              <h3 class="fr-tag" style="text-transform: capitalize; color: rgb(50, 61, 73); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 28px; line-height: 1.30435em; font-family: AmericanGotURW-Bol;">You Can Be Assured That You Will Receive:</h3>
-              <div class="s_hr text-left pt32 pb32">
-                <hr class="border-600 s_hr_1px s_hr_solid mx-auto w-25"/>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section class="s_text_block pb32 pt0">
-        <div class="container">
-          <div class="row">
-            <div class="col-lg-10 offset-lg-1 pb32 pt0">
-              <p class="lead" style="text-align: center; ">Quality Customer Service and Support</p>
-              <p class="lead" style="text-align: center;">Options for Warranty</p>
-              <p class="lead" style="text-align: center;">No minimum order required</p>
-              <p class="lead" style="text-align: center; ">No contracts necessary</p>
-              <p class="lead" style="text-align: center;">Fast and reliable shipping</p>
-              <p class="lead" style="text-align: center;">
-                <br/>
-              </p>
-              <div class="s_btn pt16 pb16 text-center" data-name="Buttons">
-                <a href="/shop" class="btn btn-danger" data-original-title="" title="" aria-describedby="tooltip381152">START SHOPPING!</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
-  </t>
-</t>
-    </template>
+         </t>
+      </t>
+   </template>
 </odoo>
