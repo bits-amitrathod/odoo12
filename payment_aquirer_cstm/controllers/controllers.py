@@ -59,10 +59,11 @@ class PaymentAquirerCstm(http.Controller):
 
     @http.route('/checkHavingCarrierWithAccountNo', type='json', auth="public", methods=['POST'], website=True, csrf=False)
     def check_having_carrier_with_account_no(self):
+        order = request.website.sale_get_order()
         if request.env.user.partner_id.having_carrier and request.env.user.partner_id.carrier_acc_no:
-            return {'carrier_acc_no': True}
+            return {'carrier_acc_no': True, 'amount_delivery': None}
         else:
-            return {'carrier_acc_no': False}
+            return {'carrier_acc_no': False, 'amount_delivery': order.amount_delivery}
 
 
 class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.WebsiteSale):
