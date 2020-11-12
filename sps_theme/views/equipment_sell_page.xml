@@ -6,108 +6,283 @@
     <div id="wrap" class="oe_structure oe_empty">
       <section class="pt32 pb32">
         <div class="container">
-          <div class="row s_nb_column_fixed">
-            <div class="col-lg-12 s_title pt16 pb16" style="text-align: center;">
-              <h1 style="color: rgb(255, 255, 255); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 34px; line-height: 60px; text-transform: capitalize; font-family: AmericanGotURW-Bol; font-weight: 600;">
-                <span style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
-                  <font style="color: rgb(0, 0, 0);">About SPS Capital Equipment</font>
-                </span>
-              </h1>
+           <div class="text-center pt32 pb32">
+              <h1  class="about-header"> <strong>Sell</strong> Your Used Surgical Equipment </h1>
+           </div>
+          <div class="manufacturer">
+            <h3 class="section-title">Featured Manufacturers We Carry</h3>
+            <div class="row flex-wrap mt-5">
+              <div class="offset-md-1"></div>
+              <div class="col-2 mb-4">
+                <div class="manfaturer-box">
+                   <img src="/sps_theme/static/src/images/manufacturer/stryker.png" class="img-fluid"/>
+                </div>
+              </div>
+              <div class="col-2  mb-4">
+                <div class="manfaturer-box">
+                   <img src="/sps_theme/static/src/images/manufacturer/Aesculap-Logo.png" class="img-fluid"/>
+                </div>
+              </div>
+              <div class="col-2  mb-4">
+                <div class="manfaturer-box">
+                   <img src="/sps_theme/static/src/images/manufacturer/ethicon.png" class="img-fluid"/>
+                </div>
+              </div>
+              <div class="col-2  mb-4">
+                <div class="manfaturer-box">
+                   <img src="/sps_theme/static/src/images/manufacturer/Karl_Storz_Endoskope_logo.png" class="img-fluid"/>
+                </div>
+              </div>
+              <div class="col-2  mb-4">
+                <div class="manfaturer-box">
+                   <img src="/sps_theme/static/src/images/manufacturer/medtronic-logo.png" class="img-fluid"/>
+                </div>
+              </div>
+              </div>
+            <div class="row flex-wrap">
+              <div class="offset-md-1"></div>
+              <div class="col-2  mb-4">
+                <div class="manfaturer-box">
+                   <img src="/sps_theme/static/src/images/manufacturer/smith-nephew-vector-logo.png" class="img-fluid"/>
+                </div>
+              </div>
+              <div class="col-2  mb-4">
+                <div class="manfaturer-box">
+                   <img src="/sps_theme/static/src/images/manufacturer/depuysynthes.jpg" class="img-fluid"/>
+                </div>
+              </div>
+              <div class="col-2  mb-4">
+                <div class="manfaturer-box">
+                   <img src="/sps_theme/static/src/images/manufacturer/2178678.jpg" class="img-fluid"/>
+                </div>
+              </div>
+              <div class="col-2  mb-4">
+                <div class="manfaturer-box">
+                   <img src="/sps_theme/static/src/images/manufacturer/Arthrex-Logo-blue.png" class="img-fluid"/>
+                </div>
+              </div>
+              <div class="col-2  mb-4">
+                <div class="manfaturer-box">
+                   <img src="/sps_theme/static/src/images/manufacturer/Olympus-Logo.png" class="img-fluid"/>
+                </div>
+              </div>
+
             </div>
-          </div>
-        </div>
-      </section>
-      <section class="pt32 bg-white oe_custom_bg pb0" style="">
-        <div class="container">
-          <div class="row s_nb_column_fixed">
-            <div class="col-lg-12 s_title pt16 pb16" style="text-align: center;">
-              <h3 style="text-transform: capitalize; color: rgb(50, 61, 73); background: 0px 0px rgb(255, 255, 255); border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 28px; line-height: 1.30435em; font-family: AmericanGotURW-Bol;">Manufacturers</h3>
-              <div class="s_hr text-left pt32 pb32">
-                <hr class="border-600 s_hr_1px s_hr_solid mx-auto w-25"/>
+            <div class="row mt-5">
+               <div class="col-md-12 text-center btn-wrapper">
+                  <button class="btn btn-info btn-sm">Sell Your Surgical Equipment</button>
               </div>
             </div>
           </div>
         </div>
       </section>
-      <section class="o_gallery s_image_gallery bg-white o_grid o_spc-big pb40" data-columns="6" style="overflow: hidden;">
-        <div class="container">
-          <div class="row">
-            <div class="col-lg-2">
-              <img class="img img-fluid d-block img-thumbnail" src="/sps_theme/static/src/img/Stryker.jpg" alt="Slide image" data-index="0"/>
-            </div>
-            <div class="col-lg-2">
-              <img class="img img-fluid d-block img-thumbnail" src="/sps_theme/static/src/img/Aesculap.jpg" alt="Slide image" data-index="1"/>
-            </div>
-            <div class="col-lg-2">
-              <img class="img img-fluid d-block img-thumbnail" src="/sps_theme/static/src/img/Ethicon.jpg" alt="Slide image" data-index="2"/>
-            </div>
-            <div class="col-lg-2">
-              <img class="img img-fluid d-block img-thumbnail" src="/sps_theme/static/src/img/Karl_Storz.jpg" alt="Slide image" data-index="3"/>
-            </div>
-            <div class="col-lg-2">
-              <img class="img img-fluid d-block img-thumbnail" src="/sps_theme/static/src/img/Medtronic.jpg" alt="Slide image" data-index="4"/>
-            </div>
-            <div class="col-lg-2">
-              <img class="img img-fluid d-block img-thumbnail" src="/sps_theme/static/src/img/Olympus.jpg" alt="Slide image" data-index="5" data-original-title="" title="" aria-describedby="tooltip957407"/>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-lg-2">
-              <img class="img img-fluid d-block img-thumbnail" src="/sps_theme/static/src/img/Smith__Nephew.jpg" alt="Slide image" data-index="6"/>
-            </div>
-            <div class="col-lg-2">
-              <img class="img img-fluid d-block img-thumbnail" src="/sps_theme/static/src/img/DePuy-Synthes.jpg" alt="Slide image" data-index="7"/>
-            </div>
-            <div class="col-lg-2">
-              <img class="img img-fluid d-block img-thumbnail" src="/sps_theme/static/src/img/ConMed.jpg" alt="Slide image" data-index="8"/>
-            </div>
-            <div class="col-lg-2">
-              <img class="img img-fluid d-block img-thumbnail" src="/sps_theme/static/src/img/Arthrex.jpg" alt="Slide image" data-index="9"/>
-            </div>
-            <div class="col-lg-2">
-              <img class="img img-fluid d-block img-thumbnail" src="/sps_theme/static/src/img/Anspach.jpg" alt="Slide image" data-index="10" style=""/>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section class="s_text_image pt32 pb32">
-        <div class="container">
-          <div class="row align-items-center">
-            <div class="col-lg-6 pt16 pb16">
-              <h2>About SPS – Capital Equipment</h2>
-              <p>
-                <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">Launched in 2018, the SPS Capital Equipment Division was created to complement our disposable goods services by offering customers solutions for their used medical equipment. This reinforces our mission to provide cost-saving solutions for healthcare facilities across the United States who choose to save money without sacrificing quality of care.</span>
-                <br/>
-              </p>
-              <div class="pb16 pt16 s_btn text-left" data-name="Buttons">
-                <br/>
+
+       <section class="padding-100-y bg-grey">
+              <div class="container">
+                  <div class="row">
+                      <div class="col-md-6 align-self-center">
+                          <p class="hawk-title ft-32 regular-font">About SPS Surgical Equipment</p>
+                         <div class="section-description">
+                             <p>Launched in 2018, the SPS Surgical Equipment Division was
+                                created to complement our disposable goods services by
+                                offering customers solutions for their used medical equipment.
+                                This reinforces our mission to provide cost-saving solutions
+                                for healthcare facilities across the United States who choose to
+                                save money without sacrificing quality of care.</p>
+                         </div>
+                      </div>
+                      <div class="col-md-6">
+                          <img src="/sps_theme/static/src/images/surgical.jpg" class="img-fluid"/>
+                     </div>
+                  </div>
               </div>
-            </div>
-            <div class="col-lg-6 pt16 pb16">
-              <img src="/sps_theme/static/src/img/US-Grey-Padding-2.png" class="img img-fluid mx-auto" alt="Odoo • Text and Image" data-original-title="" title="" aria-describedby="tooltip174641"/>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section class="s_text_image pt32 pb32 bg-white oe_custom_bg" style="">
-        <div class="container">
-          <div class="row align-items-center">
-            <div class="col-lg-6 pt16 pb16">
-              <img src="/sps_theme/static/src/img/savings-2.jpg" class="img img-fluid mx-auto" alt="Odoo • Image and Text"/>
-            </div>
-            <div class="col-lg-6 pt16 pb16">
-              <h3 style="text-transform: capitalize; color: rgb(50, 61, 73); background: 0px 0px rgb(255, 255, 255); border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 28px; line-height: 1.30435em; font-family: AmericanGotURW-Bol; text-align: right;">
-                <b>What We Do</b>
-              </h3>
-              <p>
-                <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px; text-align: right;">Reductions in reimbursements for health care services drive the need for cost savings from every angle. We, at SPS, can provide you with solutions to return revenue to your facility by purchasing your used, depreciated medical equipment. If you’re a buyer, we remarket our equipment and provide it to you at a reduced cost, saving healthcare facilities thousands. &amp;nbsp;Equipment that is older technology, but still valued in other countries, is donated to medical missions, therefore supporting sustainability in 2nd and 3rd world markets. Let us find cost savings solutions that work for you.</span>
-                <br/>
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section class="s_text_image pt32 pb32">
+          </section>
+        <div class="seprator"><div class="red"></div><div class="black"></div></div>
+      <section class="padding-100-y">
+              <div class="container">
+                  <div class="row">
+
+                      <div class="col-md-6">
+                          <img src="/sps_theme/static/src/images/we_do.jpg" class="img-fluid"/>
+                     </div>
+                      <div class="col-md-6 align-self-center pl-0 pl-md-5">
+                          <p class="hawk-title ft-32 regular-font">What We Do</p>
+                         <div class="section-description">
+                             <p>
+                                Reductions in reimbursements for health care services drive the
+                                need for cost savings from every angle. SPS can provide you with
+                                solutions to return revenue to your facility by purchasing your used,
+                                depreciated medical equipment. If you’re a buyer, we remarket our
+                                equipment and provide it to you at a reduced cost, saving healthcare
+                                facilities thousands. Equipment that is older technology, but still
+                                valued in other countries, is donated to medical missions, therefore
+                                supporting sustainability in 2nd and 3rd world markets. Let us find
+                                cost savings solutions that work for you.
+                             </p>
+                         </div>
+                      </div>
+                  </div>
+              </div>
+          </section>
+
+                        <section class="bg-black-with-img-2 padding-100-y our-process">
+							<div class="container">
+								<div class="row">
+									 <div class="col-md-5">
+										 <div class="additonal">
+											<h3>Our Process</h3>
+											 <p class="pt-4">
+												When selling us your equipment, we evaluate several different factors.
+											 </p>
+										 </div>
+									 </div>
+									<div class="col-md-7 section-description pl-3 pl-md-5">
+										<div class="story-list white-plus">
+											<div class="bulleted-list">
+												<div><i class="icon-plus"></i></div></div>
+											<div class="list-description">
+                                              <p><strong>Age of the Equipment:</strong> We offer the most value for items that are less than 10 years old.</p>
+											</div>
+										</div>
+										<div class="story-list white-plus">
+											<div class="bulleted-list">
+												<div><i class="icon-plus"></i></div></div>
+											<div class="list-description">
+                                              <p><strong>Condition of the Equipment:</strong> We look at the physical condition (overall
+                                                health of the internal and external parts and attachments) and the
+                                                cosmetic condition (visible signs of wear, tear, defects, and damage).</p>
+											</div>
+										</div>
+										<div class="story-list white-plus">
+											<div class="bulleted-list">
+												<div><i class="icon-plus"></i></div></div>
+											<div class="list-description">
+												<p><strong>Age of the Technology:</strong> We look at where the equipment stands in
+                                                comparison to the state-of-the-art technology on the market.</p>
+											</div>
+										</div>
+										<div class="story-list white-plus">
+											<div class="bulleted-list">
+												<div><i class="icon-plus"></i></div></div>
+											<div class="list-description">
+												<p><strong>Logistics:</strong> The difficulty of de-installation and logistics</p>
+											</div>
+										</div>
+										<div class="story-list white-plus">
+											<div class="bulleted-list">
+												<div><i class="icon-plus"></i></div></div>
+											<div class="list-description">
+												<p><strong>Servicing:</strong> The difficulty of re-installation, sales service, and sales support</p>
+											</div>
+										</div>
+                                        <div class="story-list white-plus">
+											<div class="bulleted-list">
+												<div><i class="icon-plus"></i></div></div>
+											<div class="list-description">
+												<p><strong>Demand:</strong> Is it equipment that will sell quickly, or will it be put into storage?</p>
+											</div>
+										</div>
+
+									</div>
+                                    <div class="col-12 text-center btn-wrapper mt-5">
+                                        <button class="btn btn-info btn-sm">Sell Your Surgical Equipment</button>
+                                    </div>
+								</div>
+
+                            </div>
+                    </section>
+
+                        <section class="padding-80-y bg-grey">
+                        <div class="container">
+                                <p class="hawk-title ft-32 regular-font text-center">Surgical Equipment Categories</p>
+
+                               <div class="row order-listing pt-5">
+                                       <div class="col-md-3">
+                                           <p class="list-title">
+                                               VIDEO EQUIPMENT
+                                           </p>
+                                           <ul>
+                                               <li> Video Towers</li>
+                                               <li> Monitors</li>
+                                               <li> Light Sources</li>
+                                               <li> CPUs</li>
+                                               <li> Printers</li>
+                                               <li> Camera Heads</li>
+                                               <li> Accessories</li>
+                                               <li> Surgical Monitors</li>
+                                           </ul>
+                                       </div>
+                                       <div class="col-md-3">
+                                            <p class="list-title">POWER EQUIPMENT</p>
+                                            <ul>
+                                               <li> Drills</li>
+                                               <li> Saws</li>
+                                               <li> Reamers</li>
+                                               <li> Battery Powered</li>
+                                               <li> Pneumatic Powered</li>
+                                               <li> Electric Powered</li>
+                                               <li> Power Sources</li>
+                                               <li> Electrosurgical Units</li>
+                                               <li> Attachments and Accessories</li>
+                                               <li> Chargers</li>
+                                           </ul>
+                                       </div>
+                                   <div class="col-md-3">
+                                        <p class="list-title">SCOPES</p>
+                                           <ul>
+                                               <li> Flexible or Rigid</li>
+                                               <li> Endoscopes</li>
+                                               <li> Laparoscopes</li>
+                                               <li> Cystoscopes</li>
+                                               <li> Arthroscopes</li>
+                                               <li> Bronchoscopes</li>
+                                               <li> Gastroscopes</li>
+                                               <li> Colonoscopes</li>
+                                           </ul>
+                                       </div>
+
+                                        <div class="col-md-3">
+                                             <p class="list-title">ORTHOPEDIC TRAUMA</p>
+                                           <ul>
+                                               <li> Synthes Instrument and Implant Sets</li>
+                                           </ul>
+                                            <p class="list-title">INSTRUMENTATION</p>
+                                           <ul>
+                                               <li> Arthroscopy Instruments</li>
+                                           </ul>
+                                       </div>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="seprator"><div class="red"></div><div class="black"></div></div>
+     <section class="padding-80-y">
+              <div class="container">
+                  <div class="row">
+
+
+                      <div class="col-md-6 align-self-center pl-0 pl-md-5">
+                          <p class="hawk-title ft-32 regular-font">When Buying Equipment From Us You Can Be Assured That You Will Receive:</p>
+                         <div class="section-description">
+                             <p>
+                                Reductions in reimbursements for health care services drive the
+                                need for cost savings from every angle. SPS can provide you with
+                                solutions to return revenue to your facility by purchasing your used,
+                                depreciated medical equipment. If you’re a buyer, we remarket our
+                                equipment and provide it to you at a reduced cost, saving healthcare
+                                facilities thousands. Equipment that is older technology, but still
+                                valued in other countries, is donated to medical missions, therefore
+                                supporting sustainability in 2nd and 3rd world markets. Let us find
+                                cost savings solutions that work for you.
+                             </p>
+                         </div>
+                      </div>
+                      <div class="col-md-6">
+                          <img src="/sps_theme/static/src/images/buy.jpg" class="img-fluid"/>
+                     </div>
+                  </div>
+              </div>
+          </section>
+        <section class="s_text_image pt32 pb32">
         <div class="container">
           <div class="row align-items-center">
             <div class="col-lg-6 pt16 pb16">

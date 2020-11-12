@@ -316,7 +316,7 @@
         color: @red;
         font-size: 20px;
         line-height: 26px;
-        font-family: @bold-font;
+        font-family: @bold-font !important;
     }
     .story-list{
         &.link{
@@ -350,7 +350,7 @@
         .title{
            font-size: 20px;
            line-height: 26px;
-           font-family: @bold-font;
+           font-family: @bold-font !important;
            color: @text-color;
         }
         .sub-title{
@@ -557,15 +557,63 @@ background: #fafafa;
 }
 
 .order-listing{
+    .list-title{
+        color: #c42624;
+        font-size: 20px;
+        line-height: 26px;
+        font-family: 'robotobold';
+        margin-bottom: 15px;
+    }
     ul{
-        padding-left: 0px;
-        list-style:none;
+        padding-left: 5px;
+
+        list-style-type: "•";
         li{
             font-size: 18px;
             line-height: 26px;
             font-family: @light-font;
             margin-bottom: 20px;
             color: @text-color;
+            padding-left: 5px;
+        }
+    }
+}
+
+.manufacturer{
+    .section-title{
+        font-family: @regular-font !important;
+    }
+    .manfaturer-box{
+        height: 100%;
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        text-align: center;
+        img{
+            height: 40px;
+            object-fit: contain;
+        }
+    }
+}
+
+.our-process{
+    background: url('../../images/process.png');
+    position: relative;
+    background-repeat: no-repeat;
+    background-size: cover;
+    &:before{
+     background-color: rgba(#232e3f, 0.97);
+      content: '';
+      display: block;
+      height: 100%;
+      position: absolute;
+      width: 100%;
+      top:0
+    }
+
+    .list-description{
+        p{
+            font-family: @regular-font !important;
         }
     }
 }
