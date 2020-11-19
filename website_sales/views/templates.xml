@@ -43,7 +43,7 @@
         </t>
     </template>
 
-    <template id="sort" inherit_id="website_sale.sort" active="True" customize_show="True" name="Show Sort by">
+    <!--<template id="sort" inherit_id="website_sale.sort" active="True" customize_show="True" name="Show Sort by">
         <xpath expr="//div[hasclass('dropdown_sorty_by')]" position="after">
             <button type="button" class="categoriesCollapseBtn btn btn-default" data-toggle="collapse"
                     data-target="#categories-collapse">
@@ -51,7 +51,7 @@
                 <span class="caret"/>
             </button>
         </xpath>
-    </template>
+    </template>-->
 
     <template id="products_categories" name="eCommerce Categories" inherit_id="website_sale.products_categories">
         <xpath expr="//div[@id='products_grid_before']/ul" position="replace">
