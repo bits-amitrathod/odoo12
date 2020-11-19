@@ -5,6 +5,22 @@ font-family: @regular-font !important;
 h1, h2, h3, h4, h5{
 font-family: @regular-font !important;
 }
+
+.regular-font{
+    font-family: @regular-font !important;
+}
+.bold-font{
+    font-family: @bold-font !important;
+}
+.medium-font{
+    font-family: @medium-font !important;
+}
+.light-font{
+    font-family: @light-font !important;
+}
+.black-font{
+    font-family: @black-font !important;
+}
 .oe_structure{
     background: @white !important;
 }
@@ -295,8 +311,10 @@ footer{
   margin-bottom: 2rem;
   .form-control{
      height: 50px;
-     padding-top: 15px;
+     padding-top: 20px;
      border-radius: 0;
+     font-family: @regular-font !important;
+     color: #808081;
      &:focus{
         box-shadow:none;
         border-color:#ced4da;
@@ -309,7 +327,7 @@ footer{
      }
   label {
     position: absolute;
-    left: 14px;
+    left: 13px;
     top: -0.35rem;
     font-weight: 500;
     font-family: @regular-font;
@@ -325,6 +343,7 @@ footer{
     text-overflow: ellipsis;
     width: 100%;
     letter-spacing: 1px;
+    z-index: 5;
   }
   .form-control::-webkit-input-placeholder {
     -webkit-transition: all 0.2s;
@@ -355,11 +374,11 @@ footer{
   }
 
   .form-control:placeholder-shown:not(:focus) + * {
-    font-size: 18px;
+    font-size: 16px;
     opacity: 1;
-    top: 0.2875rem;
+    top: 0.4rem;
     font-family: @regular-font;
-    left: 14px;
+    left: 13px;
     color: #9ca4ac;
     letter-spacing: 1px;
     font-weight: 500;
@@ -385,9 +404,112 @@ footer{
       padding-left: 1.375rem;
     }
   }
+
+  .input-group{
+          label{
+            cursor: pointer;
+          }
+        .input-group-append{
+            .input-group-text{
+                cursor: pointer;
+                border-radius: 0;
+                background: #d5d9dc;
+                padding: 0 8px;
+                i{
+                    cursor: pointer;
+                    color: @black;
+                    font-size: 32px;
+
+                }
+            }
+        }
+    }
 }
 
 .has-float-label input.form-control:-webkit-autofill ~ label {
   top: -0.25rem;
   line-height: 1.07142857;
+}
+
+.ui-datepicker{
+    z-index: 1021 !important
+}
+
+.file-input{
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #ced4da;
+    .control-label{
+        font-size: 16px;
+        opacity: 1;
+        font-family: 'robotoregular';
+        color: #9ca4ac;
+        letter-spacing: 1px;
+        font-weight: 500;
+        margin-right: 5px;
+    }
+    .file-control{
+        font-size: 18px;
+        line-height: 34px;
+        font-family: @regular-font;
+        color: #9ca4ac;
+        background: #e6e7e8;
+        border: 1px solid #9ca4ac;
+        border-radius: 8px;
+        padding: 0px 20px;
+        cursor: pointer;
+        margin-bottom: 0;
+    }
+    .file-upload-control {
+       opacity: 0;
+       position: absolute;
+       z-index: -1;
+    }
+
+    .selected-file{
+            border: 0;
+            font-size: 16px;
+            font-family: 'robotoregular';
+            color: #9ca4ac;
+            letter-spacing: 1px;
+            font-weight: 500;
+            border: none;
+            background: @white;
+    }
+   .selected-file::-webkit-input-placeholder { /* Chrome */
+            font-size: 16px;
+            opacity: 1;
+            font-family: 'robotoregular';
+            color: #9ca4ac;
+            letter-spacing: 1px;
+            font-weight: 500;
+            margin-right: 5px;
+    }
+    .selected-file:-ms-input-placeholder { /* IE 10+ */
+          font-size: 16px;
+        opacity: 1;
+        font-family: 'robotoregular';
+        color: #9ca4ac;
+        letter-spacing: 1px;
+        font-weight: 500;
+        margin-right: 5px;
+    }
+    .selected-file::-moz-placeholder { /* Firefox 19+ */
+          font-size: 16px;
+        opacity: 1;
+        font-family: 'robotoregular';
+        color: #9ca4ac;
+        letter-spacing: 1px;
+        font-weight: 500;
+        margin-right: 5px;
+    }
+    .selected-file:-moz-placeholder { /* Firefox 4 - 18 */
+          font-size: 16px;
+        opacity: 1;
+        font-family: 'robotoregular';
+        color: #9ca4ac;
+        letter-spacing: 1px;
+        font-weight: 500;
+        margin-right: 5px;
+    }
 }

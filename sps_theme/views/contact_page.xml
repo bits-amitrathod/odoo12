@@ -4,186 +4,110 @@
             <t t-name="website.contact">
                 <t t-call="website.layout">
                     <div id="wrap" class="oe_structure oe_empty">
-                        <section>
+                      <section class="contact-us-section  mb0">
                             <div class="container">
-                                    <div class="text-center pt32 pb32">
-                                        <h1  class="about-header"> contact Us  sd bbb</h1>
+                                <div class="text-center pt32 pb32">
+                                    <h1  class="about-header"> Contact Us </h1>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-5 col-sm-6 mb48 mt8">
+                                        <div class="contact-info">
+                                            <h3 class="contact-title">CONTACT OUR TEAM</h3>
+                                            <div class="section-description mt-5">
+                                                <div class="story-list link">
+                                                    <div class="bulleted-list">
+                                                        <div><i class="icon-plus"></i></div></div>
+                                                    <div class="list-description">
+                                                        <p>Sales</p>
+                                                        <span>Contact info here</span>
+                                                    </div>
+                                                </div>
+                                                 <div class="story-list link">
+                                                    <div class="bulleted-list">
+                                                        <div><i class="icon-plus"></i></div></div>
+                                                    <div class="list-description">
+                                                        <p>Acquisitions</p>
+                                                        <span>Contact info here</span>
+                                                    </div>
+                                                </div>
+                                                 <div class="story-list link">
+                                                    <div class="bulleted-list">
+                                                        <div><i class="icon-plus"></i></div></div>
+                                                    <div class="list-description">
+                                                        <p>Contracts &amp; National Accounts</p>
+                                                        <span>Contact info here</span>
+                                                    </div>
+                                                </div>
+                                                 <div class="story-list link">
+                                                    <div class="bulleted-list">
+                                                        <div><i class="icon-plus"></i></div></div>
+                                                    <div class="list-description">
+                                                        <p>Accounting</p>
+                                                        <span>Contact info here</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
+                                    <div class="col-md-7 col-sm-6 mb48 mt8">
+                                        <div class="get-in-touch">
+                                            <h3 class="title">GET IN TOUCH</h3>
+                                            <span class="sub-title">Use the form below to get in touch with us and we’ll respond as soon as possible. </span>
+                                             <form action="/website_form/" method="post" data-model_name="crm.lead" data-success_page="/contactus-thank-you" class="mt-5 s_website_form form-horizontal container-fluid" enctype="multipart/form-data" data-editable-form="false">
+                                                     <div class="col-md-8">
+                                                          <div class="form-group has-float-label o_website_form_required_custom">
+                                                            <input type="text" class="form-control o_website_form_input" placeholder="Name" id="contact_name" name="contact_name" t-att-value="request.params.get('contact_name', '')" required=""/>
+                                                            <label class="control-label" for="contact_name">Name</label>
+                                                          </div>
+                                                     </div>
+                                                    <div class="col-md-8">
+                                                            <div class="form-group has-float-label o_website_form_required_custom">
+                                                                <input placeholder="Email"  type="text" id="email_form" class="form-control o_website_form_input" name="email_from" required="" t-att-value="request.params.get('email_from', '')"/>
+                                                                <label class="control-label" for="email_form">Email</label>
+                                                                <input type="hidden" class="form-control o_website_form_input" name="name" required="" value="Website Contact Us" />
+                                                            </div>
+                                                    </div>
+                                                    <div class="col-12">
+                                                          <div class="form-group has-float-label o_website_form_required_custom">
+                                                                <textarea id="description" placeholder="Message" class="form-control o_website_form_input" name="description"  required="" rows="5"><t t-esc="request.params.get('description', '')" /></textarea>
+                                                                <label class="control-label" for="description">Message</label>
+                                                          </div>
+                                                     </div>
+                                                    <div class="col-md-12 text-center btn-wrapper">
+                                                        <button class="btn btn-info btn-sm">Send Message</button>
+                                                    </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </section>
-                        <section class="about-us-section mb0">
-                    <div class="container">
 
-                        <div class="row">
-                            <div class="col-md-6 col-sm-6 mb48 mt8">
-                                <p>
-                                    <strong>Jamie Gutermuth – Senior Sales Manager</strong>
-                                </p>
-                                <p>(412) 221-4280</p>
-                                <p>
-                                    <a href="#">
-                                        <font style="color: rgb(255, 0, 0);" class="bg-white-25">
-                                            Jamie@surgicalproductsolutions.com
-                                        </font>
-                                    </a>
-                                </p>
-                                <p>
-                                    <a href="#" target="_blank" title="LinkedIn: Jamie Gutermuth"
-                                       rel="noopener noreferrer">
-                                        <font style="color: rgb(255, 0, 0);" class="bg-white-25">LinkedIn</font>
-                                    </a>
-                                </p>
-                            </div>
-                            <div class="col-md-6 col-sm-6 mb48 mt8">
-                                <p>
-                                    <strong>Dena Gula – Sales Manager</strong>
-                                </p>
-                                <p>(412) 564-1047</p>
-                                <p>
-                                    <a href="#" data-original-title="" title="">
-                                        <font style="color: rgb(255, 0, 0);" data-original-title="" title="">
-                                            Dena@surgicalproductsolutions.com
-                                        </font>
-                                    </a>
-                                </p>
-                                <p>
-                                    <a href="#" target="_blank" title="LinkedIn: Dena Gula"
-                                       rel="noopener noreferrer">
-                                        <font style="color: rgb(255, 0, 0);">LinkedIn</font>
-                                    </a>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 col-sm-6 mb48 mt8">
-                                <p>
-                                    <strong>Chelsea Cernigliaro – Sales Specialist</strong>
-                                </p>
-                                <p>(412) 564-1281</p>
-                                <p>
-                                    <a href="#" data-original-title="" title="">
-                                        <font style="color: rgb(255, 0, 0);">Chelsea@surgicalproductsolutions.com
-                                        </font>
-                                    </a>
-                                </p>
-                                <p>
-                                    <a href="#">
-                                        <font style="color: rgb(255, 0, 0);">LinkedIn</font>
-                                    </a>
-                                </p>
-                            </div>
-                            <div class="col-md-6 col-sm-6 mb48 mt8">
-                                <p>
-                                    <strong>Brittany Edwards – Sales Specialist</strong>
-                                </p>
-                                <p>(412) 434-0214</p>
-                                <p>
-                                    <a href="#">
-                                        <font style="color: rgb(255, 0, 0);">brittany@surgicalproductsolutions.com
-                                        </font>
-                                    </a>
-                                </p>
-                            </div>
-                        </div>
-                       <!-- <div class="row">
-                            <div class="col-md-6 col-sm-6 mb48 mt8">
-                                <p>
-                                    <strong>Barrett Herzer – Sales Specialist</strong>
-                                </p>
-                                <p>(412) 248-1284</p>
-                                <p>
-                                    <a href="#">
-                                        <font style="color: rgb(255, 0, 0);">barrett@surgicalproductsolutions.com
-                                        </font>
-                                    </a>
-                                </p>
-                            </div>
-                            <div class="col-md-6 col-sm-6 mb48 mt8">
-                                <p>
-                                    <strong>Cassidy Nelson – Sales Specialist</strong>
-                                </p>
-                                <p>(412) 564-9011</p>
-                                <p>
-                                    <a href="#" data-original-title="" title="">
-                                        <font style="color: rgb(255, 0, 0);">cassidy@surgicalproductsolutions.com
-                                        </font>
-                                    </a>
-                                </p>
-                            </div>
+                        <section class="map-section padding-100-y">
+                            <div class="container">
+                                 <div class="row contact-form">
+                                    <div class="col-md-8 px-5">
+                                        <iframe width="100%" height="500" frameborder="0" scrolling="no" marginheight="0"
+                                                marginwidth="0"
+                                                src="https://maps.google.com/maps?f=q&amp;source=embed&amp;hl=en&amp;geocode=&amp;q=643+First+Avenue+Pittsburgh,+PA+15219&amp;z=12&amp;output=embed"/>
+                                    </div>
 
-                        </div>-->
-                        <div class="row contact-form">
-                            <div class="col-md-8 mb48">
-                                <iframe width="100%" height="340" frameborder="0" scrolling="no" marginheight="0"
-                                        marginwidth="0"
-                                        src="https://maps.google.com/maps?f=q&amp;source=embed&amp;hl=en&amp;geocode=&amp;q=643+First+Avenue+Pittsburgh,+PA+15219&amp;z=12&amp;output=embed"/>
-                            </div>
+                                    <div class="col-md-4 align-self-center">
+                                        <div class="address-section">
+                                            <img src="/sps_theme/static/src/images/logo.png" class="img-fluid"/>
 
-                            <div class="col-md-4 mb48">
-                                <form action="/website_form/" method="post" data-model_name="crm.lead"
-                                      data-success_page="/contactus-thank-you"
-                                      class="s_website_form form-horizontal container-fluid"
-                                      enctype="multipart/form-data" data-editable-form="false" style="padding: 0;">
-                                    <div class="form-group form-field o_website_form_required_custom">
-                                        <label class="col-md-3 col-sm-4 control-label pt-0" for="contact_name" style="text-align: left;">Name
-                                        </label>
-                                        <div class="col-md-12 col-sm-12">
-                                            <input type="text" class="form-control o_website_form_input"
-                                                   name="contact_name"
-                                                   t-att-value="request.params.get('contact_name', '')" required=""/>
+                                            <p class="company-name">SURGICAL PRODUCT SOLUTIONS</p>
+                                            <p class="address">
+                                                901 Pennsylvania Ave<br/>
+                                                Pittsburgh, PA 15233
+                                            </p>
+                                            <p class="address">412.564.1280</p>
                                         </div>
                                     </div>
-                                    <!--<div class="form-group form-field">-->
-                                        <!--<label class="col-md-3 col-sm-4 control-label" for="phone">Phone Number</label>-->
-                                        <!--<div class="col-md-12 col-sm-12">-->
-                                            <!--<input type="text" class="form-control o_website_form_input" name="phone"-->
-                                                   <!--t-att-value="request.params.get('phone', '')"/>-->
-                                        <!--</div>-->
-                                    <!--</div>-->
-                                    <div class="form-group form-field o_website_form_required_custom">
-                                        <label class="col-md-3 col-sm-4 control-label pt-0" for="email_from" style="text-align: left;">Email</label>
-                                        <div class="col-md-12 col-sm-12">
-                                            <input type="hidden" class="form-control o_website_form_input" name="name" required="" value="Website Contact Us" />
-                                            <input type="text" class="form-control o_website_form_input"
-                                                   name="email_from" required=""
-                                                   t-att-value="request.params.get('email_from', '')"/>
-                                        </div>
-                                    </div>
-                                    <!--<div class="form-group form-field o_website_form_required_custom">-->
-                                        <!--<label class="col-md-3 col-sm-4 control-label" for="partner_name">Your Company-->
-                                        <!--</label>-->
-                                        <!--<div class="col-md-12 col-sm-12">-->
-                                            <!--<input type="text" class="form-control o_website_form_input"-->
-                                                   <!--name="partner_name" required=""-->
-                                                   <!--t-att-value="request.params.get('partner_name', '')"/>-->
-                                        <!--</div>-->
-                                    <!--</div>-->
-                                    <!--<div class="form-group form-field o_website_form_required">-->
-                                        <!--<label class="col-md-3 col-sm-4 control-label" for="name">Subject</label>-->
-                                        <!--<div class="col-md-12 col-sm-12">-->
-                                            <!--<input type="text" class="form-control o_website_form_input" name="name"-->
-                                                   <!--required="" t-att-value="request.params.get('name', '')"/>-->
-                                        <!--</div>-->
-                                    <!--</div>-->
-                                    <div class="form-group form-field o_website_form_required_custom">
-                                        <label class="col-md-12 col-sm-12 control-label pt-0" for="description" style="text-align: left;">Message</label>
-                                        <div class="col-md-12 col-sm-12">
-                                            <textarea class="form-control o_website_form_input" name="description" style="margin-bottom: 0px;"
-                                              required=""><t t-esc="request.params.get('description', '')" /></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="col-sm-12">
-                                            <span id="o_website_form_result"></span>
-                                            <span class="btn btn-primary btn-lg action_button o_website_form_send" style="margin-top: 10px;">Send</span>
-
-                                        </div>
-                                    </div>
-                                </form>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </section>
+                        </section>
+                         <div class="seprator"><div class="red"></div><div class="black"></div></div>
                     </div>
                 </t>
             </t>

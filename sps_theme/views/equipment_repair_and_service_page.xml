@@ -5,13 +5,212 @@
             <t t-name="website.repairandservice">
                 <t t-call="website.layout">
                     <div id="wrap" class="oe_structure oe_empty">
-                        <section>
+                        <section class="padding-80-y">
                             <div class="container">
-                                    <div class="text-center pt32 pb32">
-                                        <h1  class="about-header"> Equipment Repair Service </h1>
+                                <div class="text-center pb32">
+                                    <h1  class="about-header"> Equipment <strong>Repair &amp; Service</strong> </h1>
+                                </div>
+                                <div class="banner-wrapper">
+                                    <img src="/sps_theme/static/src/images/equipement-repair.jpg" class="img-fluid"/>
+                                </div>
+                                <div class="section-description pt32">
+                                    <div class="row">
+                                        <div class="col-md-9 m-auto">
+                                            <h3 class="sub-title">SPS Equipment Repair</h3>
+                                            <p>
+                                               At SPS, we provide you with a repair service that allows you to save money without
+                                                sacrificing quality. SPS operates out of a world class, ISO13485:2016 certified laboratory
+                                                and is dedicated to providing you cost-savings in the equipment repair market.
+                                            </p>
+                                            <h3 class="sub-title ft-18 medium-font">What does ISO Certified mean?</h3>
+                                            <p>
+                                                It means that we consistently meet customer and applicable regulatory requirements.
+                                                We are set on a course of continuous improvement for ourselves, for you, and for
+                                                the patients at the end of every medical device that we repair. In addition, the quality
+                                                management system we use to inspect and repair your equipment is held to the highest
+                                                standard.
+                                            </p>
+                                        </div>
                                     </div>
+                                </div>
                             </div>
                         </section>
+                        <section class="padding-80-y bg-grey">
+                          <div class="container">
+                             <div class="row">
+                                <div class="col-md-7 align-self-center pl-0 pl-md-5">
+                                   <p class="hawk-title ft-32 regular-font">Types of Equipment We Repair</p>
+                                   <div class="types mt-3">
+                                      <ul>
+                                         <li>Flexible Scopes</li>
+                                         <li>Microscopes</li>
+                                         <li>Rigid Scopes</li>
+                                         <li>Semi-Rigid Scopes</li>
+                                         <li>Cameras</li>
+                                      </ul>
+                                   </div>
+                                </div>
+                                <div class="col-md-5">
+                                   <img src="/sps_theme/static/src/images/buy.jpg" class="img-fluid"/>
+                                </div>
+                             </div>
+                          </div>
+                       </section>
+                        <div class="seprator">
+                          <div class="red"></div>
+                          <div class="black"></div>
+                       </div>
+                        <section class="bg-black-with-img-2 padding-100-y our-process choose-sps">
+                          <div class="container">
+                             <div class="row">
+                                <div class="col-md-5">
+                                   <div class="additonal">
+                                      <h3>Why Choose SPS?</h3>
+                                      <p class="pt-4">
+                                            We understand that repairing
+                                            your equipment can be a hassle -
+                                            SPS Equipment Repair makes the
+                                            process simple.
+                                      </p>
+                                   </div>
+                                </div>
+                                <div class="col-md-7 section-description pl-3 pl-md-5">
+                                   <div class="story-list white-plus">
+                                      <div class="bulleted-list">
+                                         <div><i class="icon-plus"></i></div>
+                                      </div>
+                                      <div class="list-description">
+                                         <p><strong>OUR PRICING IS COMPETITIVE AND BUDGET-FRIENDLY—NO CONTRACTS NEEDED! </strong></p>
+                                      </div>
+                                   </div>
+                                   <div class="story-list white-plus">
+                                      <div class="bulleted-list">
+                                         <div><i class="icon-plus"></i></div>
+                                      </div>
+                                      <div class="list-description">
+                                         <p><strong>IN ORDER TO BRING YOUR EQUIPMENT TO LIKE-NEW CONDITION, OUR HIGHLY-SKILLED TECHNICIANS USE A 35-POINT INSPECTION PROCESS</strong> </p>
+                                      </div>
+                                   </div>
+                                   <div class="story-list white-plus">
+                                      <div class="bulleted-list">
+                                         <div><i class="icon-plus"></i></div>
+                                      </div>
+                                      <div class="list-description">
+                                         <p><strong>ENJOY AN EASY, STREAMLINED PROCESS THAT MAKES REPAIR QUICK, PAINLESS, AND TRANSPARENT.</strong></p>
+                                      </div>
+                                   </div>
+                                </div>
+                             </div>
+                          </div>
+                       </section>
+                         <section class="help-section step-process padding-100-y bg-grey">
+                            <div class="container">
+                                <h3 class="section-title">OUR EASY 3 STEP PROCESS</h3>
+                                 <div class="row pt-5">
+                                      <div class="col-md-4 mb-3">
+                                          <div class="help-box text-center">
+                                              <div class="img-wrapper">
+                                                  <img src="/sps_theme/static/src/images/ship-box.png" class="img-fluid" />
+                                              </div>
+                                              <p class="box-title">SHIP</p>
+                                              <p class="box-content">
+                                                   Submit an Online Repair Ticket.
+                                                    Print the confirmation to include
+                                                    with your shipment.
+                                              </p>
+                                              <p class="box-content">
+                                                   If you need a loaner device, please
+                                                    contact your SPS Account Manager
+                                                    immediately.
+                                              </p>
+                                              <div class="col-md-12 text-center btn-wrapper">
+                                                    <button class="btn btn-info btn-sm">Submit an Online Repair Ticket</button>
+                                              </div>
+                                          </div>
+                                      </div>
+                                      <div class="col-md-4 mb-3">
+                                          <div class="help-box text-center">
+                                              <div class="img-wrapper">
+                                                  <img src="/sps_theme/static/src/images/repair.png" class="img-fluid" />
+                                              </div>
+                                              <p class="box-title">INSPECTION &amp; REPAIR</p>
+                                              <p class="box-content">
+                                                    We perform an inspection of the
+                                                    equipment, and provide you with a
+                                                    quote and the estimated turnaround
+                                                    time. At this time, you will also be
+                                                    asked to authorize the repair unless
+                                                    you have provided a pre-authorized
+                                                    amount on the repair form.
+                                              </p>
+                                          </div>
+                                      </div>
+                                     <div class="col-md-4 mb-3">
+                                          <div class="help-box text-center">
+                                              <div class="img-wrapper">
+                                                  <img src="/sps_theme/static/src/images/ship-box-left.png" class="img-fluid" />
+                                              </div>
+                                              <p class="box-title">RETURN</p>
+                                              <p class="box-content">
+                                                   Once repair is complete, your item
+                                                    is shipped and you will receive an
+                                                    invoice. Payment is due in accordance
+                                                    to the agreed upon terms.
+                                              </p>
+                                          </div>
+                                      </div>
+                                 </div>
+                            </div>
+                         </section>
+                        <div class="seprator">
+                          <div class="red"></div>
+                          <div class="black"></div>
+                       </div>
+
+                         <section class="padding-100-y">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-6 align-self-center">
+                                        <p class="hawk-title ft-32 medium-font">Repair/Exchange Program</p>
+                                       <div class="section-description">
+                                           <p>
+                                                Do you find yourself needing upgraded equipment, but you
+                                                have budgetary constraints? Do you have equipment that has
+                                                been repaired to the point that it needs to be retired? For your
+                                                convenience, SPS offers an equipment Repair/Exchange program.
+                                                Upon inspection, we’ll let you know whether repair is possible or
+                                                replacement is appropriate for economic or safety reasons. We’ll
+                                                contact you for a decision, and your repair/exchange will be on its
+                                                way back to your facility.</p>
+                                       </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <img src="/sps_theme/static/src/images/exchange.jpg" class="img-fluid"/>
+                                   </div>
+
+                                </div>
+                                <div class="row mt-5">
+                                     <div class="col-md-6">
+                                        <img src="/sps_theme/static/src/images/process.jpg" class="img-fluid"/>
+                                   </div>
+                                    <div class="col-md-6 align-self-center">
+                                        <p class="hawk-title ft-32 medium-font">Loaner Program</p>
+                                       <div class="section-description">
+                                           <p>
+                                                Need a piece of equipment while we are servicing yours? We offer
+                                                loaner equipment service FREE of charge, subject to equipment
+                                                availability. If you need a loaner device, please contact your SPS
+                                                Account Manager.</p>
+                                       </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </section>
+                         <div class="seprator">
+                              <div class="red"></div>
+                              <div class="black"></div>
+                         </div>
                     </div>
                 </t>
             </t>

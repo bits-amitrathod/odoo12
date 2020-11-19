@@ -1,3 +1,4 @@
+
 .about-header{
     font-family: @regular-font !important;
     font-size: 41px;
@@ -30,6 +31,9 @@
         font-family: @regular-font !important;
         color: @text-color;
         line-height: 50px;
+        &.medium-font{
+            font-family: @medium-font !important;
+        }
     }
     p{
         color: @text-color;
@@ -151,7 +155,6 @@
 }
 
 .help-section {
-
     p{
         font-family: @light-font;
         font-size:20px;
@@ -173,6 +176,23 @@
             line-height: 34px;
             font-family: @light-font;
             color: @text-color;
+        }
+    }
+
+    &.step-process{
+        .help-box{
+             .box-title{
+                color: @text-color;
+            }
+            .img-wrapper{
+                height: 80px;
+                width: 80px;
+                background: #c42624;
+                border-radius: 8px;
+                margin: auto;
+                padding: 5px;
+                margin-bottom: 15px;
+            }
         }
     }
 }
@@ -316,7 +336,7 @@
         color: @red;
         font-size: 20px;
         line-height: 26px;
-        font-family: @bold-font;
+        font-family: @bold-font !important;
     }
     .story-list{
         &.link{
@@ -350,7 +370,7 @@
         .title{
            font-size: 20px;
            line-height: 26px;
-           font-family: @bold-font;
+           font-family: @bold-font !important;
            color: @text-color;
         }
         .sub-title{
@@ -557,15 +577,148 @@ background: #fafafa;
 }
 
 .order-listing{
+    .list-title{
+        color: #c42624;
+        font-size: 20px;
+        line-height: 26px;
+        font-family: 'robotobold';
+        margin-bottom: 15px;
+    }
     ul{
-        padding-left: 0px;
-        list-style:none;
+        padding-left: 5px;
+
+        list-style-type: "•";
         li{
             font-size: 18px;
             line-height: 26px;
             font-family: @light-font;
             margin-bottom: 20px;
             color: @text-color;
+            padding-left: 5px;
+        }
+    }
+}
+
+.manufacturer{
+    .section-title{
+        font-family: @regular-font !important;
+    }
+    .manfaturer-box{
+        height: 100%;
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        text-align: center;
+        img{
+            height: 40px;
+            object-fit: contain;
+        }
+    }
+}
+
+.our-process{
+    background: url('../../images/process.png');
+    position: relative;
+    background-repeat: no-repeat;
+    background-size: cover;
+    &.choose-sps{
+        background: url('../../images/choose-sps.jpg');
+    }
+    &:before{
+     background-color: rgba(#232e3f, 0.97);
+      content: '';
+      display: block;
+      height: 100%;
+      position: absolute;
+      width: 100%;
+      top:0
+    }
+
+    .list-description{
+        p{
+            font-family: @regular-font !important;
+        }
+    }
+}
+
+.assured{
+    ul{
+        padding-left: 0;
+        list-style: none;
+        li{
+            font-size: 20px;
+            line-height: 34px;
+            font-family: @light-font;
+            margin-bottom: 10px;
+            &:before{
+                  content: '\e932';
+                  font-family: 'icomoon' !important;
+                  speak: never;
+                  font-style: normal;
+                  font-weight: normal;
+                  font-variant: normal;
+                  text-transform: none;
+                  line-height: 1;
+
+                  /* Better Font Rendering =========== */
+                  -webkit-font-smoothing: antialiased;
+                  -moz-osx-font-smoothing: grayscale;
+
+                  width: 20px;
+                  height: 20px;
+                  background: @blue;
+                  border-radius: 50%;
+                  line-height:20px;
+                  color: #fff;
+                  margin-right: 10px;
+                  position: relative;
+                  top: 0;
+                  padding: 3px;
+                  font-size: 16px;
+            }
+        }
+    }
+}
+.types{
+    ul{
+    padding-left: 25px;
+       li{
+            font-size: 20px;
+            line-height: 34px;
+            font-family: @bold-font;
+            margin-bottom: 10px;
+        }
+    }
+}
+.ft-32{
+    font-size: 32px !important;
+    line-height: 38px !important;
+}
+.ft-18{
+    font-size: 18px !important;
+    line-height: 26px !important;
+}
+
+.quote-detail{
+    .contact-detail{
+        margin-bottom: 10px;
+        i{
+            font-size: 32px;
+            position: relative;
+            top: 8px;
+        }
+        a{
+        color: #394a58;
+        font-size: 18px;
+        margin-left: 10px;
+        font-family: @regular-font;
+        line-height: 33px;
+            &.red{
+                color: @red;
+            }
+         &:hover{
+            text-decoration: none;
+         }
         }
     }
 }
