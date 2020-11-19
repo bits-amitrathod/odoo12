@@ -722,3 +722,78 @@ background: #fafafa;
         }
     }
 }
+
+.s_faq_collapse{
+    background: #f0f0f0;
+   .accordion {
+    .card{
+        margin: 5px 0 10px;
+        .card-header{
+            line-height: 30px;
+            background: @white;
+            color: #9ca4ac;
+            font-size: 18px;
+            font-family: @regular-font;
+          &:before{
+            content: '\f056';
+            font-family: 'FontAwesome';
+            display: inline-block;
+            margin: 0 .5em 0 .75em;
+            color: #6c757d;
+            font-size: 30px;
+            color: @red;
+            position: relative;
+            top: 3px;
+            }
+            &.collapsed{
+               &:before{
+                content: '\f055';
+                font-family: 'FontAwesome';
+                }
+            }
+        }
+        .card-body{
+            p{
+               font-size: 15px;
+               line-height: 26px;
+               color:#9ca4ac;
+               font-family: @regular-font;
+               margin-bottom:5px;
+            }
+        }
+     }
+   }
+}
+
+.stockhawk-page{
+    .stockhawk-section{
+       background: @black;
+       .section-subtitle{
+         font-size: 22px;
+         line-height: 50px;
+         font-family: @bold-font;
+         color: @white;
+         margin-bottom: 0;
+       }
+       .stock-hwak{
+            img{
+                height: 80px;
+            }
+       }
+    }
+}
+
+.thank-you-page{
+    .thanks-you{
+
+        p{
+            font-size: 20px;
+            line-height: 26px;
+            color: #616e79;
+            font-family: @regular-font;
+             padding-bottom: 80px;
+            border-bottom: 1px dashed @blue;
+            display: inline-block;
+        }
+    }
+}

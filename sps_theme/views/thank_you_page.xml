@@ -2,24 +2,19 @@
     <template id="thank_you_page_template" name="Thank You">
         <t t-name="website.thank-you">
             <t t-call="website.layout">
-                <div id="wrap" class="oe_structure oe_empty">
-                    <section class="s_title oe_custom_bg" style="">
+                <div id="wrap" class="thank-you-page">
+                    <section class="padding-80-y">
                         <div class="container">
-                            <div class="row">
-                                <div class="col-md-12 pt40">
-                                    <h1 style="color: rgb(255, 255, 255); background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding: 0px; vertical-align: baseline; outline: 0px; font-size: 34px; line-height: 60px; text-transform: capitalize; font-family: AmericanGotURW-Bol; text-align: center;">
-                                        <span style="background: 0px 0px; border: 0px; margin: 0px; padding: 0px; vertical-align: baseline; outline: 0px;">
-                                            <b>
-                                                <font style="color: rgb(0, 0, 0);">Thank You</font>
-                                            </b>
-                                        </span>
-                                    </h1>
-                                    <h3 class="text-center text-muted">&amp;nbsp;</h3>
-                                </div>
+                             <div class="text-center">
+                                 <h1  class="about-header"> <strong>Thank</strong> you!</h1>
+                             </div>
+                            <div class="thanks-you text-center">
+                                <p>Your request is important to us. Someone from our team will contact you within 24 hours!</p>
                             </div>
                         </div>
                     </section>
-                   </div>
+                    <div class="seprator"><div class="red"></div><div class="black"></div></div>
+               </div>
             </t>
         </t>
 
