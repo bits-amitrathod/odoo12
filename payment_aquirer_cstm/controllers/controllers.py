@@ -61,9 +61,16 @@ class PaymentAquirerCstm(http.Controller):
     def check_having_carrier_with_account_no(self):
         order = request.website.sale_get_order()
         if request.env.user.partner_id.having_carrier and request.env.user.partner_id.carrier_acc_no:
-            return {'carrier_acc_no': True, 'amount_delivery': None}
+            return {'carrier_acc_no': True}
         else:
-            return {'carrier_acc_no': False, 'amount_delivery': order.amount_delivery}
+            currency = order.currency_id
+            return {'carrier_acc_no': False, 'error_message': order.delivery_message, 'amount_delivery': self._format_amount(order.amount_delivery, currency)}
+
+    def _format_amount(self, amount, currency):
+        fmt = "%.{0}f".format(currency.decimal_places)
+        lang = request.env['res.lang']._lang_get(request.env.context.get('lang') or 'en_US')
+        return lang.format(fmt, currency.round(amount), grouping=True, monetary=True)\
+            .replace(r' ', u'\N{NO-BREAK SPACE}').replace(r'-', u'-\N{ZERO WIDTH NO-BREAK SPACE}')
 
 
 class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.WebsiteSale):

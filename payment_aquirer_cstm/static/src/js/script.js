@@ -20,9 +20,15 @@ odoo.define('payment_aquirer_cstm.payment_aquirer_cstm', function(require) {
                     $("#expedited_shipping").hide();
                     $("#editShippingNote").hide();
                     $("#delivery_35").parent().hide();
-                    $carrier_badge.children('span').text(data['amount_delivery']);
-                    $carrier_badge.removeClass('d-none');
-                    $compute_badge.addClass('d-none');
+                    if (data['error_message'] == ''){
+                        $carrier_badge.children('span').text(data['amount_delivery']);
+                        $carrier_badge.removeClass('d-none');
+                        $compute_badge.addClass('d-none');
+                    }else{
+                        $carrier_badge.addClass('d-none');
+                        $compute_badge.removeClass('d-none');
+                        $compute_badge.text(data['error_message']);
+                    }
                 }
          });
 
