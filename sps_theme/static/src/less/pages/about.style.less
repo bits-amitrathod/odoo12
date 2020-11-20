@@ -797,3 +797,97 @@ background: #fafafa;
         }
     }
 }
+
+.surgical-product-sell{
+    .works-steps-process{
+        .no-seperated{
+            position:relative;
+            text-align: center;
+            padding: 20px 0;
+            .no-circle{
+                font-size: 35px;
+                color: #fff;
+                font-family: @black-font;
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                line-height: 60px;
+                text-align: center;
+                background: @blue;
+                margin: auto;
+                &:before{
+                    content: ' ';
+                    height: 3px;
+                    border-top: 2px dotted @blue;
+                    width: 45%;
+                    position: absolute;
+                    left: 0;
+                    top: 50%;
+                }
+                &:after{
+                    content: ' ';
+                    height: 3px;
+                    border-top: 2px dotted @blue;
+                    width: 45%;
+                    position: absolute;
+                    right: 0;
+                    top: 50%;
+                }
+            }
+        }
+
+        .targeted-products{
+            .card{
+                box-shadow: 10px 9px 0px #d7dbde;
+
+                border:1px solid #76828b;
+                .card-header{
+                    border-radius: 0;
+                    background: @black;
+                    text-align: center;
+                    font-size: 24px;
+                    line-height: 28px;
+                    font-family: @bold-font;
+                    color: @white;
+                    padding: 15px;
+                }
+                .card-body{
+                    padding: 10px 60px;
+                    border-bottom: 8px solid @red;
+                }
+                .title-seperater{
+                    text-align: center;
+                    position: relative;
+                    padding: 40px 0;
+                    .title{
+                        font-size: 23px;
+                        line-height: 27px;
+                        font-family: @bold-font;
+                        color: @red;
+                        &:before{
+                            content: ' ';
+                            height: 3px;
+                            border-top: 1px solid #b0b7bc;
+                            width: 43%;
+                            position: absolute;
+                            left: 0;
+                            top: 50%;
+                        }
+                        &:after{
+                            content: ' ';
+                            height: 3px;
+                            border-top: 1px solid #b0b7bc;
+                            width: 43%;
+                            position: absolute;
+                            right: 0;
+                            top: 50%;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .chart-wrapper{
+            box-shadow: 10px 9px 0px #d7dbde;
+        }
+}
