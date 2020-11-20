@@ -57,3 +57,7 @@ class ThemeController(http.Controller):
     def equipment_repair_and_service(self):
         return http.request.render('sps_theme.equipment_repair_and_service_page_template')
 
+    @http.route('/equipment-repair-service', type='http', auth="public", website=True)
+    def equipment_repair_service(self):
+        return http.request.render('sps_theme.equipment_service_request_template')
+
