@@ -2,131 +2,350 @@
     <template id="equipment_service_request_template" name="Equipment Service request">
         <t t-name="website.Equipment Service request">
             <t t-call="website.layout">
-                <div id="wrap" class="oe_structure oe_empty">
+                <div id="wrap" class="equipment">
                     <section class="pt32 pb32">
                         <div class="container pb-3">
                             <div class="text-center pt-3 pb-3">
-                                <h1  class="about-header"> Equipment Service request </h1>
+                                <h1  class="about-header"> <strong>Equipment</strong> Service Request </h1>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6 m-auto">
-                                    <div class="section-description quote-detail">
-                                        <p class="mb-0">Call, Email, or Fill in the form below if you would like a quote. </p>
-                                        <div class="contact-detail">
-                                             <i class="icon-email"></i>
-                                            <a class="red" href="mailto: info@surgicalproductsolutions.com">
-                                                info@surgicalproductsolutions.com
-                                            </a>
-                                        </div>
-                                        <div class="contact-detail">
-                                             <i class="icon-mobile"></i>
-                                            <a class="red" href="javascript:void(0)">
-                                                (412) 564–1280
-                                            </a>
-                                        </div>
-                                         <div class="contact-detail">
-                                             <i class="icon-printer-new"></i>
-                                            <a href="javascript:void(0)">
-                                                (412) 774–2345
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
+
+                            <div class="section-description pt-5">
+                                <p>
+                                    Complete ENTIRE FORM below. We will contact you with a quote and an estimated turnaround time. To expedite service,
+                                    pre-authorize your repairs up to a specified dollar amount. For assistance, please contact us at (412)281-4186 or via email:
+                                    Repair@surgicalproductsolutions.com . We are unable to initiate a repair without a Purchase Order number. If a return shipping
+                                    account number is not provided on this form, the cost of shipping will be added to your final invoice. Payment is NET 30 unless
+                                    otherwise specified.
+                                </p>
                             </div>
                         </div>
                     </section>
                     <section class="pt32 pb32 bg-grey" style="">
+
                         <form action="/website_form/" method="post" class="s_website_form container-fluid mt32" enctype="multipart/form-data" data-model_name="mail.mail" data-success_page="/thank-you">
                             <div class="container pb-5">
-                                <div class="row">
-                                    <div class="col-md" style="">
+                                <p class="hawk-title ft-32 text-center regular-font">Service Request Form</p>
+                                <div class="section-description text-center">
+                                    <p>Please fill out the form below in order to submit an item for valuation.</p>
+                                </div>
+                                <div class="row pt-5 no-gutters">
+                                    <div class="col-md-2 px-1" style="">
                                         <div class="form-group has-float-label">
-                                             <input type="text" class="form-control" name="title" placeholder="Title" id="title" required=""/>
-                                            <label class="control-label" for="title">Title*</label>
+                                             <input type="text" class="form-control" name="Service" placeholder="Service Type" id="Service" required=""/>
+                                            <label class="control-label" for="Service">Service Type*</label>
                                         </div>
                                     </div>
 
-                                    <div class="col-md" style="">
+                                    <div class="col-md-3 px-1" style="">
                                         <div class="form-group has-float-label">
-                                            <input type="text" placeholder="First Name" id="first_name" class="form-control" name="first_name" required=""/>
-                                            <label class="control-label" for="first_name">First Name*</label>
+                                            <input type="text" placeholder="Large Diameter Scope " id="Diameter" class="form-control" name="Diameter" required=""/>
+                                            <label class="control-label" for="Diameter">Large Diameter Scope</label>
                                         </div>
                                     </div>
-                                    <div class="col-md">
+                                    <div class="col-md-3 px-1">
                                          <div class="form-group has-float-label">
-                                            <input type="text" placeholder="Last Name" id="last_name" class="form-control" name="last_name" required=""/>
-                                            <label class="control-label" for="last_name">Last Name*</label>
+                                            <input type="text" placeholder="Small Diameter Scope" id="Scope" class="form-control" name="Scope" required=""/>
+                                            <label class="control-label" for="Scope">Small Diameter Scope</label>
                                         </div>
                                     </div>
-                                    <div class="col-md-1">
+                                    <div class="col-md px-1">
+                                         <div class="form-group has-float-label">
+                                            <input type="text" placeholder="Rigid Scope" id="Rigid" class="form-control" name="Rigid" required=""/>
+                                            <label class="control-label" for="Rigid">Rigid Scope</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md px-1">
                                         <div class="form-group has-float-label">
-                                            <input type="text" placeholder="Suffix" id="Suffix" class="form-control" name="" required=""/>
-                                            <label class="control-label" for="Suffix">Suffix*</label>
+                                            <input type="text" placeholder="Power" id="Power" class="form-control" name="Power" required=""/>
+                                            <label class="control-label" for="Power">Power</label>
                                         </div>
                                     </div>
-
+                                     <div class="col-md px-1">
+                                         <div class="form-group has-float-label">
+                                            <input type="text" placeholder="Electronics" id="Electronics" class="form-control" name="Electronics" required=""/>
+                                            <label class="control-label" for="Electronics">Electronics</label>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="row">
-                                     <div class="col-md-6">
+
+                                     <div class="col-md-12">
                                         <div class="form-group has-float-label">
-                                            <input type="text" placeholder="Phone" id="Phone" class="form-control" name="Phone" required=""/>
-                                            <label class="control-label" for="Phone">Phone*</label>
+                                            <input type="text" placeholder="Purchase Order Number" id="Purchase" class="form-control" name="Purchase" required=""/>
+                                            <label class="control-label" for="Purchase">Purchase Order Number*</label>
                                         </div>
                                     </div>
-                                     <div class="col-md-6">
+                                     <div class="col-md-12">
+                                        <div class="form-group has-float-label">
+                                            <input type="text" placeholder="Model Number" id="Model" class="form-control" name="Model" required=""/>
+                                            <label class="control-label" for="Model">Model Number*</label>
+                                        </div>
+                                    </div>
+                                      <div class="col-md-12">
+                                        <div class="form-group has-float-label">
+                                            <input type="text" placeholder="Serial Number" id="Serial" class="form-control" name="Serial" required=""/>
+                                            <label class="control-label" for="Serial">Serial Number*</label>
+                                        </div>
+                                    </div>
+                                     <div class="col-md-12">
+                                        <div class="form-group  has-float-label">
+                                             <div class="input-group">
+                                                <input id="birthdate" type="text" placeholder="Date Shipped" name="Date" class="form-control o_website_form_input o_website_form_date"/>
+                                                 <label class="control-label" for="birthdate">Date Shipped*</label>
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text" id="birthdate"><i class="icon-calendars"></i></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group has-float-label">
+                                            <input type="text" placeholder="Return Shipping Account Number" id="Shipping" class="form-control" name="Shipping" required=""/>
+                                            <label class="control-label" for="Shipping">Return Shipping Account Number*</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group has-float-label">
+                                            <input type="text" placeholder="Loaner Requested?" id="Loaner" class="form-control" name="Loaner" required=""/>
+                                            <label class="control-label" for="Loaner">Loaner Requested?*</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="custom-radio-buttons">
+                                          <input type="radio"  name="radio" />
+                                          <span class="checkmark"></span>
+                                           <span class="radio-label">Yes</span>
+                                        </label>
+                                         <label class="custom-radio-buttons">
+                                          <input type="radio"  name="radio" />
+                                          <span class="checkmark"></span>
+                                           <span class="radio-label">No</span>
+                                        </label>
+                                    </div>
+                                    <div class="w-100"></div>
+                                    <div class="col-md-2">
+                                        <div class="form-group has-float-label">
+                                            <input type="text" placeholder="Damage Waiver" id="Damage" class="form-control" name="Damage" required=""/>
+                                            <label class="control-label" for="Damage">Damage Waiver*</label>
+                                        </div>
+                                    </div>
+                                   <div class="col-md-3">
+                                        <label class="custom-radio-buttons">
+                                          <input type="radio"  name="radio" />
+                                          <span class="checkmark"></span>
+                                           <span class="radio-label">Opt-In</span>
+                                        </label>
+                                         <label class="custom-radio-buttons">
+                                          <input type="radio"  name="radio" />
+                                          <span class="checkmark"></span>
+                                           <span class="radio-label">Opt-Out</span>
+                                        </label>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-group labels">
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    <label class="control-label"> Reprocessing*</label>
+                                                </div>
+                                                <div class="col-md-9">
+                                                    <label class="control-label">
+                                                        Medical Equipment that comes into contact with potentially infectious materials must be
+                                                        decontaminated (cleaned, disinfected, or sterilized, as appropriate) before being sent to Surgical
+                                                        Product Solutions. Customers are responsible for complying with applicable federal, state, and local
+                                                        laws and regulations regarding decontamination of medical equipment. If the equipment has not been
+                                                        decontaminated, a $150 charge will be added to the final repair invoice.</label>
+
+                                                    <div class="form-group">
+                                                        <div class="custom-control custom-checkbox d-inline">
+                                                            <input type="checkbox" class="custom-control-input" id="chk2" />
+                                                            <label class="custom-control-label" for="chk2"> By checking this box, you agree the equipment has been decontaminated before shipment.</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                     <div class="col-12">
+                                          <div class="form-group has-float-label o_website_form_required_custom">
+                                                <textarea id="description" placeholder="Problem Description* (Please be specific)" class="form-control o_website_form_input" name="description"  required="" rows="5"><t t-esc="request.params.get('description', '')" /></textarea>
+                                                <label class="control-label" for="description">Problem Description* (Please be specific):</label>
+                                          </div>
+                                     </div>
+                                    <div class="col-12">
+                                        <p class="hawk-title ft-32  regular-font mb-2">Ship To:</p>
+                                        <div class="section-description">
+                                            <p>(Contact Person Regarding Repair)</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group has-float-label">
+                                            <input type="text" placeholder="Title" id="Title" class="form-control" name="Title" required=""/>
+                                            <label class="control-label" for="Title">Title</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group has-float-label">
+                                            <input type="text" placeholder="First Name" id="first_name" class="form-control" name="first_name" required=""/>
+                                            <label class="control-label" for="first_name">First Name</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group has-float-label">
+                                            <input type="text" placeholder="Last Name" id="last_name" class="form-control" name="last_name" required=""/>
+                                            <label class="control-label" for="last_name">Last Name</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group has-float-label">
+                                            <input type="text" placeholder="Direct Line" id="Direct" class="form-control" name="Direct" required=""/>
+                                            <label class="control-label" for="Direct">Direct Line*</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
                                         <div class="form-group has-float-label">
                                             <input type="text" placeholder="Email" id="Email" class="form-control" name="Email" required=""/>
                                             <label class="control-label" for="Email">Email*</label>
                                         </div>
                                     </div>
-                                     <div class="col-md-12">
+                                    <div class="col-12">
+                                        <p class="hawk-title ft-32  regular-font">Bill To:</p>
+                                    </div>
+                                    <div class="col-md-12">
                                         <div class="form-group has-float-label">
-                                            <input type="text" placeholder="Facility" id="Facility" class="form-control" name="Facility" required=""/>
-                                            <label class="control-label" for="Facility">Facility*</label>
+                                            <input type="text" placeholder="Facility Name" id="Facility" class="form-control" name="Facility" required=""/>
+                                            <label class="control-label" for="Facility">Facility Name*</label>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <div class="form-group has-float-label">
                                             <input type="text" placeholder="Address" id="Address" class="form-control" name="Address" required=""/>
                                             <label class="control-label" for="Address">Address*</label>
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group has-float-label">
-                                            <input type="text" placeholder="Apt, suite, etc." id="suite" class="form-control" name="suite" required=""/>
-                                            <label class="control-label" for="suite">Apt, suite, etc.</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group has-float-label">
-                                            <input type="text" placeholder="Country" id="Country" class="form-control" name="Country" required=""/>
-                                            <label class="control-label" for="Country">Country</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <div class="form-group has-float-label">
                                             <input type="text" placeholder="City" id="City" class="form-control" name="City" required=""/>
-                                            <label class="control-label" for="City">City*</label>
+                                            <label class="control-label" for="City">City</label>
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group has-float-label">
-                                            <input type="text" placeholder="Zip Code" id="Zip_Code" class="form-control" name="Zip_Code" required=""/>
-                                            <label class="control-label" for="Zip_Code">Zip Code</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-12">
                                         <div class="form-group has-float-label">
                                             <input type="text" placeholder="State" id="State" class="form-control" name="State" required=""/>
                                             <label class="control-label" for="State">State</label>
                                         </div>
                                     </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group has-float-label">
+                                            <input type="text" placeholder="Zip Code" id="ZipCode" class="form-control" name="ZipCode" required=""/>
+                                            <label class="control-label" for="ZipCode">Zip Code</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group mb-0 labels">
+                                                        <label class="control-label">
+                                                            Pre-Approval (SPS is authorized
+                                                            to complete your repair up to and
+                                                            including the amount indicated:)</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <div class="row">
+                                                        <div class="col-md">
+                                                             <div class="form-group mb-0">
+                                                               <label class="custom-radio-buttons">
+                                                                  <input type="radio"  name="radio" />
+                                                                  <span class="checkmark"></span>
+                                                                   <span class="radio-label">$500</span>
+                                                                </label>
+
+                                                                 <label class="custom-radio-buttons">
+                                                                  <input type="radio"  name="radio" />
+                                                                  <span class="checkmark"></span>
+                                                                   <span class="radio-label">$1000</span>
+                                                                </label>
+
+                                                               <label class="custom-radio-buttons">
+                                                                  <input type="radio"  name="radio" />
+                                                                  <span class="checkmark"></span>
+                                                                   <span class="radio-label">$1500</span>
+                                                                </label>
+
+                                                                <label class="custom-radio-buttons">
+                                                                      <input type="radio"  name="radio" />
+                                                                      <span class="checkmark"></span>
+                                                                       <span class="radio-label">$2500</span>
+                                                                </label>
+                                                                <label class="custom-radio-buttons">
+                                                                      <input type="radio"  name="radio" />
+                                                                      <span class="checkmark"></span>
+                                                                       <span class="radio-label">$2500</span>
+                                                                </label>
+                                                                <label class="custom-radio-buttons">
+                                                                      <input type="radio"  name="radio" />
+                                                                      <span class="checkmark"></span>
+                                                                       <span class="radio-label">$4000</span>
+                                                                </label>
+                                                                <label class="custom-radio-buttons">
+                                                                      <input type="radio"  name="radio" />
+                                                                      <span class="checkmark"></span>
+                                                                       <span class="radio-label">$5000</span>
+                                                                </label>
+                                                                 <div class="other">
+                                                                     <label class="custom-radio-buttons w-250">
+                                                                          <input type="radio"  name="radio" />
+                                                                          <span class="checkmark"></span>
+                                                                           <span class="radio-label">Other Pre-Approved Amount</span>
+                                                                          <span class="enter">(Enter Below)</span>
+                                                                    </label>
+
+                                                                 </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                     <div class="col-md-12">
+                                        <div class="form-group has-float-label">
+                                            <input type="text" placeholder="Other Amount" id="Other" class="form-control" name="Other" required=""/>
+                                            <label class="control-label" for="Other">Other Amount</label>
+                                        </div>
+                                    </div>
                                      <div class="col-12">
-                                          <div class="form-group has-float-label o_website_form_required_custom">
-                                                <textarea id="description" placeholder="Message" class="form-control o_website_form_input" name="description"  required="" rows="5"><t t-esc="request.params.get('description', '')" /></textarea>
-                                                <label class="control-label" for="description">Message</label>
-                                          </div>
-                                     </div>
+                                        <p class="hawk-title ft-32  regular-font">Your Contact Information:</p>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-group has-float-label">
+                                            <input type="text" placeholder="Your Title" id="your_title" class="form-control" name="your_title" required=""/>
+                                            <label class="control-label" for="your_title">Your Title*</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group has-float-label">
+                                            <input type="text" placeholder="Your Name" id="your_name" class="form-control" name="your_name" required=""/>
+                                            <label class="control-label" for="your_name">Your Name*</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group has-float-label">
+                                            <input type="text" placeholder="Direct Line" id="direct_line" class="form-control" name="direct_line" required=""/>
+                                            <label class="control-label" for="direct_line">Direct Line*</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group has-float-label">
+                                            <input type="text" placeholder="Email" id="Email2" class="form-control" name="Email2" required=""/>
+                                            <label class="control-label" for="Email2">Email*</label>
+                                        </div>
+                                    </div>
+
                                        <div class="col-md-12 text-center btn-wrapper pt-4">
                                             <button class="btn btn-info btn-sm">Submit</button>
                                         </div>
@@ -135,10 +354,26 @@
                         </form>
 
                      </section>
-                    <div class="seprator">
-                          <div class="red"></div>
-                          <div class="black"></div>
-                     </div>
+                    <section class="bg-black py-3">
+                        <div class="container">
+                            <p class="hawk-title text-white f20 text-center py-4 mb-0">REMINDER: PURCHASE ORDER NUMBER MUST BE PROVIDED WITH THIS FORM</p>
+                        </div>
+                    </section>
+                    <section class="py-4">
+                        <div class="container">
+                            <div class="section-description text-center">
+                                <p class="mb-0">Ship Equipment Including Form To:</p>
+                                <p class="mb-0">SPS Repair 2340 Stock Creek Blvd. Rockford, TN 37853</p>
+                                <p class="mb-0">Phone: 412-281-4186 Fax: 412-774-2345</p>
+                                <p class="mb-0">repair@surgicalproductsolutions.com</p>
+                                 <div class="text-center btn-wrapper pt-4 mb-4">
+                                    <button class="btn btn-info btn-sm">Downloadable Form (Fax/Scan)</button>
+                                </div>
+                                <p>Thank you for choosing Surgical Product Solutions. Ask us about our Repair/Exchange Program!</p>
+                            </div>
+                        </div>
+                    </section>
+
                 </div>
             </t>
         </t>

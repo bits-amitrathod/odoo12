@@ -5,7 +5,12 @@ font-family: @regular-font !important;
 h1, h2, h3, h4, h5{
 font-family: @regular-font !important;
 }
-
+#wrap.oe_structure{
+    background: @white !important;
+}
+#wrap{
+    background: #f0f0f0 !important;
+}
 .navbar
 .oe_structure{
     background: @white !important;
@@ -169,6 +174,21 @@ header{
                             margin-top: 0 !important;
                             font-weight: 500;
                         }
+                        &:last-child{
+                            a{
+                                background: #c42624;
+                                width: 100px;
+                                text-align: center;
+                                border-radius: 8px;
+                                line-height: 18px;
+                                color: #fff !important;
+                                font-size: 15px;
+                                text-transform: capitalize;
+                                b{
+                                    font-weight: 500 !important;
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -294,6 +314,20 @@ footer{
             color:#fff;
             font-family: @bold-font;
             letter-spacing: 1px;
+        }
+    }
+}
+.form-group{
+    &.labels{
+        .control-label{
+            font-size: 16px;
+            opacity: 1;
+            font-family: 'robotoregular';
+            left: 13px;
+            color: #9ca4ac;
+            letter-spacing: 1px;
+            font-weight: 500;
+            padding-left: 5px;
         }
     }
 }
@@ -503,4 +537,198 @@ footer{
         font-weight: 500;
         margin-right: 5px;
     }
+}
+
+/*Check box*/
+
+.custom-control {
+    padding-left: 1.7rem;
+    line-height: 23px;
+}
+
+.custom-control-input:checked~.custom-control-label::before {
+    color: #ccc;
+    border-color: #ccc;
+    background-color: #fff;
+}
+
+.custom-control-input:focus~.custom-control-label::before {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.custom-control-input:checked~.custom-control-label::before {
+    outline: none !important;
+    box-shadow: none;
+}
+
+.custom-control-input:focus:not(:checked)~.custom-control-label::before {
+    border: 1px solid #ccc !important;
+    border-radius: 0 !important;
+}
+
+.custom-control-label::before,
+.custom-control-label::after {
+    width: 50px;
+    height: 50px;
+    top: 0.125rem;
+    left: -2.2rem;
+    display: block;
+    background: #fff !important;
+    /*border: 1px solid #9ca4ac;*/
+}
+
+.custom-control-label::after {
+    background: no-repeat 50% / 60% 60% !important;
+}
+.custom-control.custom-checkbox .custom-control-input:not(:checked):not(:indeterminate) ~ .custom-control-label:before{
+    outline: none;
+    border: 1px solid #ccc;
+    border-radius: 0;
+}
+.custom-checkbox .custom-control-input:checked~.custom-control-label::after {
+    background: #41525f no-repeat 55% 50% !important;
+    background-image: url("../images/check-white.png") !important;
+    border-radius: 0px;
+}
+
+.custom-radio .custom-control-input:checked~.custom-control-label::after {
+    background: #41525f no-repeat 55%/60% 60% !important;
+    background-image: url("../images/radio.svg") !important;
+    border-radius: 100%;
+}
+
+.custom-checkbox .custom-control-input:disabled~.custom-control-label {
+    cursor: not-allowed;
+}
+
+.custom-checkbox .custom-control-input:disabled:checked~.custom-control-label::before {
+    background-color:#ccc;
+}
+.custom-control-label{
+    position: relative;
+    margin-bottom: 0;
+    font-size: 16px;
+    opacity: 1;
+    font-family: 'robotoregular';
+    left: 13px;
+    color: #9ca4ac;
+    letter-spacing: 1px;
+    font-weight: 500;
+    padding-left: 28px;
+    padding-top: 15px;
+}
+
+
+/*Custom Radio Buttons*/
+
+/* The container */
+.custom-radio-buttons {
+  display: inline-block;
+  position: relative;
+  padding-left: 35px;
+  margin: 0 10px 10px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  width: 80px;
+  height: 50px;
+  .radio-label{
+    z-index: 9;
+    color: #000;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    line-height: 50px;
+    text-align: center;
+    font-size: 16px;
+    font-family: 'robotoregular';
+    color: #9ca4ac;
+    letter-spacing: 1px;
+    font-weight: 500;
+  }
+.enter{
+    right: -45%;
+    z-index: 9;
+    position: absolute;
+    margin: auto;
+    line-height: 50px;
+    text-align: center;
+    font-size: 16px;
+    font-family: 'robotoregular';
+    color: #9ca4ac;
+    letter-spacing: 1px;
+    font-weight: 500;
+}
+  &.w-250{
+    width: 250px;
+    .checkmark{
+        width: 250px;
+    }
+  }
+}
+
+/* Hide the browser's default radio button */
+.custom-radio-buttons input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Create a custom radio button */
+.checkmark {
+     position: absolute;
+    top: 0;
+    left: 0;
+    height: 50px;
+    width: 80px;
+    background-color: #fff;
+    border-radius: 0;
+    border: 1px solid #ccc;
+}
+
+/* On mouse-over, add a grey background color */
+.custom-radio-buttons:hover input ~ .checkmark {
+  background-color: #394a58;
+   .radio-label{
+    color: #fff;
+   }
+}
+/* When the radio button is checked, add a blue background */
+.custom-radio-buttons input:checked ~ .checkmark {
+  background-color: #394a58F3;
+}
+.custom-radio-buttons:hover input ~ .checkmark ~ .radio-label{
+    color: #fff;
+   }
+.custom-radio-buttons input:checked ~ .checkmark ~ .radio-label{
+    color: #fff;
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.custom-radio-buttons input:checked ~ .checkmark:after {
+  display: none;
+}
+
+/* Style the indicator (dot/circle) */
+.custom-radio-buttons .checkmark:after {
+ 	top: 9px;
+	left: 9px;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: white;
 }

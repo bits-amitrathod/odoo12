@@ -1,7 +1,12 @@
 <odoo>
     <template id="footer_template" inherit_id="website.footer_custom" customize_show="True" name="Automatic Footer">
         <xpath expr="//div[@id='footer']" position="replace">
+             <div class="seprator">
+                          <div class="red"></div>
+                          <div class="black"></div>
+                     </div>
             <footer class="padding-100-y">
+
             <div id="footer" class="container hidden-print " t-if="not no_footer">
                 <div class="row border-bottom pb-4 mb-4">
                     <div class="col-md newsletter">
