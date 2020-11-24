@@ -1,1 +1,0 @@
-<h4>Read this Artical </h4> https://www.cybrosys.com/blog/how-to-create-module-in-odoo12
