@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<data>
+        <record id="resource_menu_action" model="ir.actions.act_window">
+        	<field name="name">Resource</field>
+        	<field name="res_model">resource.webresource</field>
+        	<field name="view_type">form</field>
+        	<field name="view_mode">tree,form</field>
+        	<field name="domain">[]</field>
+        	<field name="help" type="html">
+            	<p class="oe_view_nocontent_create">Create The First Resource
+            	</p>
+        	</field>
+        </record>
+
+        <menuitem id="resources_menu"
+              	name="Resources"/>
+    	<menuitem id="resource_student_menu"
+              	parent="resources_menu"
+              	name="Resource"
+              	action="resource_menu_action"/>
+	</data>
+</odoo>
