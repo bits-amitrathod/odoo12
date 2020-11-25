@@ -64,7 +64,7 @@ class PaymentAquirerCstm(http.Controller):
             return {'carrier_acc_no': True}
         else:
             currency = order.currency_id
-            return {'carrier_acc_no': False, 'error_message': order.delivery_message, 'amount_delivery': self._format_amount(order.amount_delivery, currency)}
+            return {'carrier_acc_no': False, 'error_message': order.delivery_message, 'amount_delivery': self._format_amount(order.amount_delivery, currency), 'status': order.delivery_rating_success}
 
     def _format_amount(self, amount, currency):
         fmt = "%.{0}f".format(currency.decimal_places)

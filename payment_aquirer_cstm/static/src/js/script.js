@@ -23,7 +23,8 @@ odoo.define('payment_aquirer_cstm.payment_aquirer_cstm', function(require) {
                     console.log('Error message');
                     console.log(data['error_message']);
                     console.log(data['amount_delivery']);
-                    if (data['error_message'] == false){
+                    console.log(data['status']);
+                    if (data['status'] === true){
                         console.log('in if blog');
                         $carrier_badge.children('span').text(data['amount_delivery']);
                         $carrier_badge.removeClass('d-none');
