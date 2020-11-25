@@ -1,0 +1,21 @@
+<odoo>
+    <template id="resouces_page_template" name="Resource page">
+        <t name="About Page" t-name="res_website.resource_page">
+            <t t-name="website.resource">
+                <t t-call="website.layout">
+                    <div id="wrap" class="oe_structure oe_empty">
+                        <section>
+
+                            <t t-foreach="video" t-as="v">
+                                <p><t t-esc="v.title"/></p>
+                                <p><t t-esc="v.description"/></p>
+                                <p><t t-esc="v.url"/></p>
+                                <p><t t-esc="v.is_active"/></p>
+                            </t>
+                        </section>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

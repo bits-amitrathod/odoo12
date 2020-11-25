@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields
 
-class StudentStudent(models.Model):
+class WebResource(models.Model):
     _name = 'resource.webresource'
 
     title = fields.Char(string='Resource Title', required=True)
