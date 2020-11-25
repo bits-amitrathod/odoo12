@@ -20,7 +20,7 @@ odoo.define('payment_aquirer_cstm.payment_aquirer_cstm', function(require) {
                     $("#expedited_shipping").hide();
                     $("#editShippingNote").hide();
                     $("#delivery_35").parent().hide();
-                    if (data['error_message'] == ''){
+                    if (data['error_message'] == false){
                         $carrier_badge.children('span').text(data['amount_delivery']);
                         $carrier_badge.removeClass('d-none');
                         $compute_badge.addClass('d-none');
