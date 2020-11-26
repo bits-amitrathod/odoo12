@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<data>
+		<record id="resource_tree" model="ir.ui.view" >
+          <field name="name">Resource List</field>
+          <field name="model">resource.webresource</field>
+          <field name="arch" type="xml">
+            <tree>
+                 <field name="title"/>
+                 <field name="description" />
+                 <field name="url"/>
+                 <field name="is_active"/>
+            </tree>
+          </field>
+    </record>
+
+		<record id="resource_form" model="ir.ui.view" >
+          <field name="name">Resource List</field>
+          <field name="model">resource.webresource</field>
+          <field name="arch" type="xml">
+            <form>
+				<group>
+                 <field name="title" string="Title"/>
+                 <field name="description" string="Description"/>
+                 <field name="url" string="URL"/>
+                 <field name="is_active" string ="Active"/>
+				</group>
+            </form>
+          </field>
+    </record>
+
+        <record id="resource_menu_action" model="ir.actions.act_window">
+        	<field name="name">Resource</field>
+        	<field name="res_model">resource.webresource</field>
+        	<field name="view_type">form</field>
+<!--            <field name="view_id" ref="resource_tree"/>-->
+        	<field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="resources_menu"
+              	name="Resources"
+                groups="base.group_user"/>
+    	<menuitem id="resource_student_menu"
+              	parent="resources_menu"
+              	name="Resourcea"
+              	action="resource_menu_action"
+                groups="base.group_user"/>
+	</data>
+</odoo>
