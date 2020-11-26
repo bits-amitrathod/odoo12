@@ -8,7 +8,7 @@
 	'maintainer': 'benchmark it solutions',
 	'company': 'benchmark it solutions',
 	'website': 'benchmark it solutions',
-	'depends': ['base','website_sale'],
+	'depends': ['base','website_sale','website_blog'],
 	'data': [
 		'security/ir.model.access.csv',
 		'views/resources_page.xml',

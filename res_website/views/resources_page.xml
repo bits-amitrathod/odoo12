@@ -12,6 +12,24 @@
                                 <p><t t-esc="v.url"/></p>
                                 <p><t t-esc="v.is_active"/></p>
                             </t>
+                            <t t-foreach="blog_post" t-as="b">
+                                <p><t t-esc="b.display_name"/></p>
+                                <p><t t-esc="b.name"/></p>
+                                <p><t t-esc="b.subtitle"/></p>
+                                <p><t t-esc="b.website_url"/></p>
+                            </t>
+                            <div class="col-lg-4 pt32 pb32 text-center">
+                                        <img class="img-fluid o_we_custom_image" src="/website_cstm/static/src/img/tnBrochure.png"
+                                             data-original-title="" title="" aria-describedby="tooltip258351"/>
+                                        <h3>
+                                            <a itemprop="url" href="/marketing_brochure"
+                                               class="qbutton small default btn btn-danger btn-sm"
+                                               style="background-image: initial; background-position: 0px 0px; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; border: 2px solid rgb(232, 19, 30); margin: 0px; padding: 0px 17px; vertical-align: baseline; cursor: pointer; transition: color 0.1s linear 0s, background-color 0.1s linear 0s, border-color 0.1s linear 0s; display: inline-block; font-weight: 800; font-family: Lato, sans-serif; text-transform: uppercase; white-space: nowrap; position: relative; width: auto; height: 30px; line-height: 30px; font-size: 15px; text-align: left; letter-spacing: 1px; border-radius: 4px; text-shadow: none; box-sizing: initial !important;"
+                                               data-original-title="" title="">MARKETING BROCHURE (PDF)
+                                            </a>
+                                            <br/>
+                                        </h3>
+                                    </div>
                         </section>
                     </div>
                 </t>
