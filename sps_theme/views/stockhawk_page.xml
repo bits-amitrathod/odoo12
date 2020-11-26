@@ -66,21 +66,21 @@
 									<div class="col-md-7 section-description pl-3 pl-md-5">
 										<div class="story-list white-plus">
 											<div class="bulleted-list">
-												<div><i class="icon-plus"></i></div></div>
+												<div><i class="fa fa-plus"></i></div></div>
 											<div class="list-description">
 												<p>PINPOINT LOW PRICES ON HIGH COST PRODUCTS YOU BUY</p>
 											</div>
 										</div>
 										<div class="story-list white-plus">
 											<div class="bulleted-list">
-												<div><i class="icon-plus"></i></div></div>
+												<div><i class="fa fa-plus"></i></div></div>
 											<div class="list-description">
 												<p>AVOID BULK REORDERS WITH BY THE "EACH" OR BOX OPTIONS</p>
 											</div>
 										</div>
 										<div class="story-list white-plus">
 											<div class="bulleted-list">
-												<div><i class="icon-plus"></i></div></div>
+												<div><i class="fa fa-plus"></i></div></div>
 											<div class="list-description">
 												<p>ORDER AND SHIP SAME DAY WITH NO CONTRACTS REQUIRED</p>
 											</div>
@@ -167,7 +167,7 @@
                     </section>
 
                     <section class="position-relative padding-80-y bg-grey">
-                         <div class="top-plus"><i class="icon-plus"></i></div>
+                         <div class="top-plus"><i class="fa fa-plus"></i></div>
                         <div class="container">
                             <div class="row">
                                 <div class="col-md-6 align-self-center">

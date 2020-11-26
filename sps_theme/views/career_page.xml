@@ -29,7 +29,7 @@
 						</div>
 					</section>
 					<section class="position-relative bg-grey padding-100-y mt-5 our-mission" style="">
-						<div class="top-plus"><i class="icon-plus"></i></div>
+						<div class="top-plus"><i class="fa fa-plus"></i></div>
 						<div class="container">
 							<div class="row align-items-center">
 								<div class="col-md-4">
@@ -160,8 +160,10 @@
 								<div class="row mt-5">
 									<div class="col-md-9 m-auto">
 										<div class="list-item">
-											<div class="avatar-wrapper">
-												<img src="/sps_theme/static/src/images/growth.png" class="img-fluid"/>
+											<div class="image-wrapper align-self-start">
+												<div class="avatar-wrapper">
+													<img src="/sps_theme/static/src/images/growth.png" class="img-fluid"/>
+												</div>
 											</div>
 											<div class="list-content">
 												<p class="list-title">GROWTH</p>
@@ -169,8 +171,10 @@
 											</div>
 										</div>
 										<div class="list-item">
-											<div class="avatar-wrapper">
-												<img src="/sps_theme/static/src/images/team.png" class="img-fluid"/>
+											<div class="image-wrapper align-self-start">
+												<div class="avatar-wrapper">
+													<img src="/sps_theme/static/src/images/team.png" class="img-fluid"/>
+												</div>
 											</div>
 											<div class="list-content">
 												<p class="list-title">TEAMWORK</p>
@@ -178,8 +182,10 @@
 											</div>
 										</div>
 										<div class="list-item">
-											<div class="avatar-wrapper">
-												<img src="/sps_theme/static/src/images/communication.png" class="img-fluid"/>
+											<div class="image-wrapper align-self-start">
+												<div class="avatar-wrapper">
+													<img src="/sps_theme/static/src/images/communication.png" class="img-fluid"/>
+												</div>
 											</div>
 											<div class="list-content">
 												<p class="list-title">COMMUNICATION</p>
@@ -187,8 +193,10 @@
 											</div>
 										</div>
 										<div class="list-item">
-											<div class="avatar-wrapper">
-												<img src="/sps_theme/static/src/images/innovations.png" class="img-fluid"/>
+											<div class="image-wrapper align-self-start">
+												<div class="avatar-wrapper">
+													<img src="/sps_theme/static/src/images/innovations.png" class="img-fluid"/>
+												</div>
 											</div>
 											<div class="list-content">
 												<p class="list-title">INNOVATION</p>
@@ -196,8 +204,10 @@
 											</div>
 										</div>
 										<div class="list-item">
-											<div class="avatar-wrapper">
-												<img src="/sps_theme/static/src/images/trust.png" class="img-fluid"/>
+											<div class="image-wrapper align-self-start">
+												<div class="avatar-wrapper">
+													<img src="/sps_theme/static/src/images/trust.png" class="img-fluid"/>
+												</div>
 											</div>
 											<div class="list-content">
 												<p class="list-title">TRUST</p>

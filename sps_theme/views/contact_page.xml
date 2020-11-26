@@ -7,7 +7,7 @@
                       <section class="contact-us-section  mb0">
                             <div class="container">
                                 <div class="text-center pt32 pb32">
-                                    <h1  class="about-header"> Contact Us </h1>
+                                    <h1  class="about-header"> Contact <strong>Us</strong> </h1>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-5 col-sm-6 mb48 mt8">
@@ -102,6 +102,9 @@
                                                 Pittsburgh, PA 15233
                                             </p>
                                             <p class="address">412.564.1280</p>
+                                            <div class="text-left btn-wrapper pl-3">
+                                                <button class="btn btn-info btn-sm">Get Directions</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

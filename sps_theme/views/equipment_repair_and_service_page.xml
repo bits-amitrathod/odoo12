@@ -51,7 +51,7 @@
                                    </div>
                                 </div>
                                 <div class="col-md-5">
-                                   <img src="/sps_theme/static/src/images/buy.jpg" class="img-fluid"/>
+                                   <img src="/sps_theme/static/src/images/types.jpg" class="img-fluid"/>
                                 </div>
                              </div>
                           </div>
@@ -77,26 +77,26 @@
                                 <div class="col-md-7 section-description pl-3 pl-md-5">
                                    <div class="story-list white-plus">
                                       <div class="bulleted-list">
-                                         <div><i class="icon-plus"></i></div>
+                                         <div><i class="fa fa-plus"></i></div>
                                       </div>
                                       <div class="list-description">
-                                         <p><strong>OUR PRICING IS COMPETITIVE AND BUDGET-FRIENDLY—NO CONTRACTS NEEDED! </strong></p>
+                                         <p><span>OUR PRICING IS COMPETITIVE AND BUDGET-FRIENDLY—NO CONTRACTS NEEDED! </span></p>
                                       </div>
                                    </div>
                                    <div class="story-list white-plus">
                                       <div class="bulleted-list">
-                                         <div><i class="icon-plus"></i></div>
+                                         <div><i class="fa fa-plus"></i></div>
                                       </div>
                                       <div class="list-description">
-                                         <p><strong>IN ORDER TO BRING YOUR EQUIPMENT TO LIKE-NEW CONDITION, OUR HIGHLY-SKILLED TECHNICIANS USE A 35-POINT INSPECTION PROCESS</strong> </p>
+                                         <p><span>IN ORDER TO BRING YOUR EQUIPMENT TO LIKE-NEW CONDITION, OUR HIGHLY-SKILLED TECHNICIANS USE A 35-POINT INSPECTION PROCESS</span> </p>
                                       </div>
                                    </div>
                                    <div class="story-list white-plus">
                                       <div class="bulleted-list">
-                                         <div><i class="icon-plus"></i></div>
+                                         <div><i class="fa fa-plus"></i></div>
                                       </div>
                                       <div class="list-description">
-                                         <p><strong>ENJOY AN EASY, STREAMLINED PROCESS THAT MAKES REPAIR QUICK, PAINLESS, AND TRANSPARENT.</strong></p>
+                                         <p><span>ENJOY AN EASY, STREAMLINED PROCESS THAT MAKES REPAIR QUICK, PAINLESS, AND TRANSPARENT.</span></p>
                                       </div>
                                    </div>
                                 </div>

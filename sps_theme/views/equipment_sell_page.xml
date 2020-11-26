@@ -12,55 +12,54 @@
                         <h3 class="section-title">Featured Manufacturers We Carry</h3>
                         <div class="row flex-wrap mt-5">
                            <div class="offset-md-1"></div>
-                           <div class="col-2 mb-4">
+                           <div class="col-md-2 col-sm-3 mb-4">
                               <div class="manfaturer-box">
                                  <img src="/sps_theme/static/src/images/manufacturer/stryker.png" class="img-fluid"/>
                               </div>
                            </div>
-                           <div class="col-2  mb-4">
+                           <div class="col-md-2 col-sm-3 mb-4">
                               <div class="manfaturer-box">
                                  <img src="/sps_theme/static/src/images/manufacturer/Aesculap-Logo.png" class="img-fluid"/>
                               </div>
                            </div>
-                           <div class="col-2  mb-4">
+                           <div class="col-md-2 col-sm-3 mb-4">
                               <div class="manfaturer-box">
                                  <img src="/sps_theme/static/src/images/manufacturer/ethicon.png" class="img-fluid"/>
                               </div>
                            </div>
-                           <div class="col-2  mb-4">
+                           <div class="col-md-2 col-sm-3 mb-4">
                               <div class="manfaturer-box">
                                  <img src="/sps_theme/static/src/images/manufacturer/Karl_Storz_Endoskope_logo.png" class="img-fluid"/>
                               </div>
                            </div>
-                           <div class="col-2  mb-4">
+                           <div class="col-md-2 col-sm-3 mb-4">
                               <div class="manfaturer-box">
                                  <img src="/sps_theme/static/src/images/manufacturer/medtronic-logo.png" class="img-fluid"/>
                               </div>
                            </div>
-                        </div>
-                        <div class="row flex-wrap">
                            <div class="offset-md-1"></div>
-                           <div class="col-2  mb-4">
+                           <div class="offset-md-1"></div>
+                           <div class="col-md-2 col-sm-3 mb-4">
                               <div class="manfaturer-box">
                                  <img src="/sps_theme/static/src/images/manufacturer/smith-nephew-vector-logo.png" class="img-fluid"/>
                               </div>
                            </div>
-                           <div class="col-2  mb-4">
+                           <div class="col-md-2 col-sm-3 mb-4">
                               <div class="manfaturer-box">
                                  <img src="/sps_theme/static/src/images/manufacturer/depuysynthes.jpg" class="img-fluid"/>
                               </div>
                            </div>
-                           <div class="col-2  mb-4">
+                           <div class="col-md-2 col-sm-3 mb-4">
                               <div class="manfaturer-box">
                                  <img src="/sps_theme/static/src/images/manufacturer/2178678.jpg" class="img-fluid"/>
                               </div>
                            </div>
-                           <div class="col-2  mb-4">
+                           <div class="col-md-2 col-sm-3 mb-4">
                               <div class="manfaturer-box">
                                  <img src="/sps_theme/static/src/images/manufacturer/Arthrex-Logo-blue.png" class="img-fluid"/>
                               </div>
                            </div>
-                           <div class="col-2  mb-4">
+                           <div class="col-md-2 col-sm-3 mb-4">
                               <div class="manfaturer-box">
                                  <img src="/sps_theme/static/src/images/manufacturer/Olympus-Logo.png" class="img-fluid"/>
                               </div>
@@ -138,18 +137,18 @@
                         <div class="col-md-7 section-description pl-3 pl-md-5">
                            <div class="story-list white-plus">
                               <div class="bulleted-list">
-                                 <div><i class="icon-plus"></i></div>
+                                 <div><i class="fa fa-plus"></i></div>
                               </div>
                               <div class="list-description">
-                                 <p><strong>Age of the Equipment:</strong> We offer the most value for items that are less than 10 years old.</p>
+                                 <p><span>Age of the Equipment:</span> We offer the most value for items that are less than 10 years old.</p>
                               </div>
                            </div>
                            <div class="story-list white-plus">
                               <div class="bulleted-list">
-                                 <div><i class="icon-plus"></i></div>
+                                 <div><i class="fa fa-plus"></i></div>
                               </div>
                               <div class="list-description">
-                                 <p><strong>Condition of the Equipment:</strong> We look at the physical condition (overall
+                                 <p><span>Condition of the Equipment:</span> We look at the physical condition (overall
                                     health of the internal and external parts and attachments) and the
                                     cosmetic condition (visible signs of wear, tear, defects, and damage).
                                  </p>
@@ -157,36 +156,36 @@
                            </div>
                            <div class="story-list white-plus">
                               <div class="bulleted-list">
-                                 <div><i class="icon-plus"></i></div>
+                                 <div><i class="fa fa-plus"></i></div>
                               </div>
                               <div class="list-description">
-                                 <p><strong>Age of the Technology:</strong> We look at where the equipment stands in
+                                 <p><span>Age of the Technology:</span> We look at where the equipment stands in
                                     comparison to the state-of-the-art technology on the market.
                                  </p>
                               </div>
                            </div>
                            <div class="story-list white-plus">
                               <div class="bulleted-list">
-                                 <div><i class="icon-plus"></i></div>
+                                 <div><i class="fa fa-plus"></i></div>
                               </div>
                               <div class="list-description">
-                                 <p><strong>Logistics:</strong> The difficulty of de-installation and logistics</p>
+                                 <p><span>Logistics:</span> The difficulty of de-installation and logistics</p>
                               </div>
                            </div>
                            <div class="story-list white-plus">
                               <div class="bulleted-list">
-                                 <div><i class="icon-plus"></i></div>
+                                 <div><i class="fa fa-plus"></i></div>
                               </div>
                               <div class="list-description">
-                                 <p><strong>Servicing:</strong> The difficulty of re-installation, sales service, and sales support</p>
+                                 <p><span>Servicing:</span> The difficulty of re-installation, sales service, and sales support</p>
                               </div>
                            </div>
                            <div class="story-list white-plus">
                               <div class="bulleted-list">
-                                 <div><i class="icon-plus"></i></div>
+                                 <div><i class="fa fa-plus"></i></div>
                               </div>
                               <div class="list-description">
-                                 <p><strong>Demand:</strong> Is it equipment that will sell quickly, or will it be put into storage?</p>
+                                 <p><span>Demand:</span> Is it equipment that will sell quickly, or will it be put into storage?</p>
                               </div>
                            </div>
                         </div>
@@ -383,7 +382,7 @@
                                 <div class="form-group  has-float-label">
                                      <div class="input-group">
                                         <input id="birthdate" type="text" placeholder="Birthdate" name="birth_date" class="form-control o_website_form_input o_website_form_date"/>
-                                         <label class="control-label" for="birthdate">Birthdate</label>
+                                         <label class="control-label" for="birthdate">Purchase Date</label>
                                         <div class="input-group-append">
                                             <span class="input-group-text" id="birthdate"><i class="icon-calendars"></i></span>
                                         </div>
@@ -392,16 +391,17 @@
                             </div>
                             <div class="col-md-5">
                                 <div class="form-group has-float-label">
-                                    <input type="text" class="form-control" placeholder="Quantity (Ea)" id="quantity" name="quantity"/>
-                                    <label class="control-label" for="quantity">Quantity (Ea)</label>
-                                </div>
-                            </div>
-                            <div class="col-md-5">
-                                <div class="form-group has-float-label">
                                     <input type="text" class="form-control" placeholder="Condition" id="Condition" name="Condition"/>
                                     <label class="control-label" for="Condition">Condition</label>
                                 </div>
                             </div>
+                            <div class="col-md-5">
+                                <div class="form-group has-float-label">
+                                    <input type="text" class="form-control" placeholder="Quantity (Ea)" id="quantity" name="quantity"/>
+                                    <label class="control-label" for="quantity">Quantity (Ea)</label>
+                                </div>
+                            </div>
+
                             <div class="col-md-10 offset-md-2">
                                 <div class="form-group file-input">
                                     <label class="control-label" for="Condition">Item Picture Upload</label>
