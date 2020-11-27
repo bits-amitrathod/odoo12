@@ -130,6 +130,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                             <li>
                                 <a href="/contactus" title="Contact">Contact</a>
                             </li>
+                            <li>
+                                <a href="/terms_of_sale" title="Terms Of Sale">Terms Of Sale</a>
+                            </li>
                         </ul>
                     </div>
                     <div class="col-md-2 col-sm-6">
@@ -163,7 +166,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                                 </a>
                             </li>-->
                             <li>
-                                <a href="/terms" title="Terms">Terms</a>
+                                <a href="/terms_of_purchase" title="Terms Of Purchase">Terms Of Purchase</a>
                             </li>
                         </ul>
                     </div>

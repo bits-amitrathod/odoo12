@@ -1,0 +1,592 @@
+<odoo>
+    <template id="terms_of_purchase" name="Terms Of Purchase">
+        <t t-name="website.terms_of_purchase">
+            <t t-call="website.layout">
+                <div id="wrap" class="oe_structure oe_empty"/>
+                <section class="about-us-section">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12 mb32">
+                                <div class="header-title">
+                                    <h1>Terms</h1>
+                                </div>
+                                <div class="about-us-description">
+
+                                    <div class="p1" style="text-align: center;">
+                                        <span class="s1">
+                                            <b>SURGICAL PRODUCT SOLUTIONS LLC</b>
+                                        </span>
+                                    </div>
+                                    <div class="p1" style="text-align: center;">
+                                        <span class="s2">STANDARD TERMS AND CONDITIONS OF PURCHASE</span>
+                                    </div>
+                                    <div class="p1" style="text-align: center;">
+                                        <span class="s1">
+                                            <b>Last Updated October 12, 2018</b>
+                                        </span>
+                                    </div>
+                                    &amp;nbsp;
+                                    <ol class="ol1">
+                                        <li class="li2">
+                                            <strong>
+                                                <span class="s3">APPLICABILITY.</span>
+                                            </strong>
+                                            <span class="s1">
+                                             <!--   <strong>.</strong> &amp;nbsp;-->
+                                                <span class="Apple-converted-space">&amp;nbsp;</span>These Standard Terms and Conditions of Purchase
+                                                (“<b>Terms and Conditions</b>”) along with any purchase orders or purchase offers (each, a “<b>Purchase Order</b>”),
+                                                any releases, requisitions, work orders, shipping instructions, supplemental terms and conditions and
+                                                any other document of Surgical Product Solutions LLC, a Pennsylvania limited liability company (“Buyer”),
+                                                including without limitation Buyer’s Quality Assurance &amp; Service Guarantee available at
+                                                http://www.surgicalproductsolutions.com/docs/SPS-Quality-Assurance.pdf and incorporated herein by reference,
+                                                whether expressed in written form or by electronic data interchange provided by Buyer (collectively,
+                                                the “<b>Agreement</b>”), will exclusively govern the purchase of goods by Buyer and represents the entire agreement
+                                                between Buyer and the vendor set forth in the applicable Purchase Order (including such vendor's agents or suppliers,
+                                                “<b>Seller</b>”) with respect thereto. Acceptance of Buyer’s purchase order shall constitute Seller’s agreement to comply
+                                                with and be bound by the Agreement, including but not limited to these Terms and Conditions.
+                                            </span>
+                                        </li>
+                                        <li class="li2">
+                                            <strong>
+                                                <span class="s3">ACCEPTANCE OF PURCHASE ORDERS.</span>
+                                            </strong>
+                                            <span class="s1">
+                                               <!-- <strong>.</strong> &amp;nbsp;-->
+                                               <span class="Apple-converted-space">&amp;nbsp;</span>Buyer's commitment to
+                                                purchase goods from Seller arises only upon Buyer's
+                                                issuance of a Purchase Order to Seller and Seller’s acceptance or deemed
+                                                acceptance of such Purchase Order.  Any forecasts, commitments,
+                                                projections, representations about quantities to be purchased or other
+                                                estimates provided to Seller are for planning purposes only and shall
+                                                not be binding upon Buyer, and Buyer shall not be liable for any amounts
+                                                incurred by Seller in reliance on such estimates.  Acknowledgement of a
+                                                Purchase Order by any means, including without limitation, by supply of
+                                                the goods called for by a Purchase Order, shall be deemed acceptance of
+                                                such Purchase Order.  The terms set forth in a Purchase Order take
+                                                precedence over any alternative terms in any other document connected
+                                                with the applicable transaction except in the case of a direct conflict
+                                                with these Terms and Conditions, in which case these Terms and Conditions
+                                                shall prevail unless the parties have expressly and specifically agreed
+                                                in writing that the conflicting Purchase Order terms are intended to
+                                                override these Terms and Conditions in the event of a conflict.
+                                                A Purchase Order shall not constitute an acceptance by Buyer of any
+                                                offer to sell, any quotation, or any proposal by Seller.  Reference in a
+                                                Purchase Order to any such offer to sell, quotation or proposal shall in
+                                                no way constitute a modification of any of the terms of the Agreement or
+                                                such Purchase Order. <b>ANY ATTEMPTED CONFIRMATION OR ACKNOWLEDGMENT BY
+                                                SELLER THAT CONTAINS TERMS INCONSISTENT WITH OR IN ADDITION TO THE TERMS
+                                                OF THE APPLICABLE PURCHASE ORDER OR BUYER'S TERMS AND CONDITIONS IS NOT
+                                                BINDING UNLESS SPECIFICALLY ACCEPTED BY BUYER IN WRITING.  THE AGREEMENT
+                                                EXPRESSLY LIMITS ACCEPTANCE TO THE TERMS OF THE APPLICABLE PURCHASE ORDER
+                                                AND BUYER'S TERMS AND CONDITIONS, AND BUYER HEREBY OBJECTS TO AND REJECTS
+                                                ANY DIFFERENT OR ADDITIONAL TERMS CONTAINED IN ANY RESPONSE TO ANY OF ITS
+                                                PURCHASE ORDERS.  EACH PURCHASE ORDER EXPRESSLY INCLUDES ALL IMPLIED WARRANTIES
+                                                AND ALL OF BUYER’S REMEDIES SET FORTH IN THE UNIFORM COMMERCIAL CODE.
+                                                EXCEPT AS STATED ABOVE, THE TERMS OF THE AGREEMENT ARE THE SOLE AND
+                                                EXCLUSIVE TERMS ON WHICH BUYER AGREES TO BE BOUND.</b>
+                                            </span>
+                                        </li>
+                                        <li class="li2">
+                                            <strong>
+                                                <span class="s3">PRICES AND PAYMENTS.</span>
+                                            </strong>
+                                            <span class="s1">
+                                               <!-- <strong>.</strong>-->
+                                            </span>
+                                            <ol class="ol2" style="list-style-type: lower-alpha;">
+                                                <li class="li2">
+                                                    <span class="s1">Buyer shall pay all invoices in accordance with the
+                                                        payment terms set forth in the applicable Purchase Order. Unless
+                                                        the face of such Purchase Order states to the contrary, all prices
+                                                        are (a) firm and not subject to increase or additional charges;
+                                                        (b) in U.S. dollars; and (c) inclusive of all duty and taxes other
+                                                        than sales or use taxes Seller is required by law to collect from Buyer.
+                                                        Such sales or use taxes shall not be included in Seller’s invoice
+                                                        if Buyer indicates that the goods are exempt from such taxes.
+                                                        Applicable taxes shall be separately stated on Seller’s invoice.
+                                                        Seller warrants the pricing for any goods or services shall not
+                                                        exceed the pricing for the same or comparable goods offered by
+                                                        Seller to third parties.  Seller shall promptly inform Buyer of
+                                                        any lower pricing levels for same or comparable goods or services,
+                                                        and the parties shall promptly make the appropriate price adjustment.
+                                                    </span>
+                                                </li>
+                                                <li class="li2">
+                                                    <span class="s1">Unless otherwise stated on the face of a Purchase Order,
+                                                        payment terms are due net thirty (30) days from the later of the
+                                                        required date identified on such Purchase Order, the received date
+                                                        of the goods in Buyer’s receiving system or the date of receipt
+                                                        of valid invoice by Buyer.  Buyer shall be entitled to reject
+                                                        Seller’s invoice if it fails to include Buyer’s applicable Purchase
+                                                        Order number or is otherwise inaccurate, and any resulting delay
+                                                        in payment shall be Seller’s responsibility.  No extra charges of
+                                                        any kind will be allowed unless specifically agreed in writing by Buyer.
+                                                        Buyer reserves the right to deduct from any amount due Seller for
+                                                        any goods ordered any amount Seller owes Buyer with respect to
+                                                        any claims of any nature whatsoever in favor of Buyer against
+                                                        Seller, whether or not related to the applicable Purchase Order
+                                                        and whether now existing or hereafter arising.  Buyer reserves
+                                                        the right to withhold any payments due Seller, without penalty
+                                                        or forfeiture, until all disputes (whether or not related to a
+                                                        Purchase Order and whether or not existing or arising in the future)
+                                                        between Buyer and Seller, are settled. Any assignee of Seller’s
+                                                        rights to payment hereunder shall be subject to Buyer’s rights under this paragraph.
+                                                    </span>
+                                                </li>
+                                            </ol>
+                                        </li>
+                                        <li class="li2">
+                                            <strong>
+                                                <span class="s3">WARRANTIES.</span>
+                                            </strong>
+                                            <span class="s1">Seller covenants, represents and warrants to Buyer, in addition
+                                                to all warranties expressed or implied at law, that all goods supplied by
+                                                Seller and the use, design, construction, assembly, production, shipment,
+                                                sale, packaging, labeling, packing, advertising, instructions and warnings
+                                                or lack thereof and other printed matter furnished or authorized by Seller,
+                                                shall (a) be un-used (except for such goods which are clearly described on
+                                                the face of the Purchase Order to be used) and of merchantable quality, free
+                                                from defects in design, workmanship and/or materials, including, without
+                                                limitation, such defects as could create a risk of injury or damage to persons
+                                                or property; (b) be fit and suitable for their intended end use; (c) not
+                                                violate or breach any agreement that Seller may have with any other person
+                                                or entity, including any other manufacturer, distributor or end user; (d)
+                                                conform to all specifications and other descriptions set forth or incorporated
+                                                in each Purchase Order; (e) be properly stamped, tagged, labeled, or marked
+                                                with such information as may be required by any applicable law, regulation
+                                                or order or by Buyer; (f) be within any expiration date indicated on the
+                                                packaging of the goods; (g) have been stored under proper conditions to
+                                                preserve the quality of the goods; (h) meet all applicable requirements
+                                                of all applicable United States federal, state and local laws and regulations;
+                                                (i) have clear title, free of all liens and encumbrances; and (j) be free of
+                                                claims of third parties of any nature whatsoever arising out of or related to
+                                                the goods or the Purchase Order. Seller also covenants to use commercially
+                                                reasonable efforts to pass-through, or arrange for assignment of, any
+                                                representations and warranties applicable to the goods covered by the
+                                                applicable Purchase Order and made to Seller by any manufacturer, distributor
+                                                or other third-party with respect to such goods. Seller’s representations and
+                                                warranties herein shall survive the delivery, inspection and acceptance of
+                                                goods to or by Buyer and any resale of goods by Buyer, and any attempt by
+                                                Seller to limit, disclaim or restrict any such warranties or remedies by
+                                                acknowledgment or otherwise shall be null, void and ineffective.  The above
+                                                warranties shall apply for twenty-four (24) months from delivery of goods,
+                                                or such longer period of time as customarily provided by Seller or as provided
+                                                under the Uniform Commercial Code, as extended for delays such as those due to
+                                                non-conforming goods and services.  The warranties shall apply to Buyer, its
+                                                successors, assigns and the end users of goods and services covered by each
+                                                Purchase Order.  If any of the goods are found to be defective or otherwise not
+                                                in conformity with the warranties in this Section during the warranty period,
+                                                then, Buyer, in addition to any other rights, remedies and choices it may have
+                                                by law, contract or at equity, and in addition to seeking recovery of any and
+                                                all damages and costs emanating therefrom, at its option and sole discretion
+                                                and at Seller’s expense may: (a) require Seller to replace nonconforming goods
+                                                with goods and/or services that conform to all requirements of the applicable
+                                                Purchase Order; (b) take such actions as may be required to cure all defects
+                                                and/or bring the goods into conformity with all requirements of the applicable
+                                                Purchase Order, in which event all related costs and expenses (including, but
+                                                not limited to, material, labor and handling costs) and other reasonable
+                                                charges shall be for Seller's account; and/or (c) reject and return all or
+                                                any portion of such goods.  Any repaired or replaced goods shall carry
+                                                warranties on the same terms as set forth above, with the warranty period
+                                                being the greater of the original unexpired warranty or twenty-four (24)
+                                                months after repair or replacement.
+                                            </span>
+                                        </li>
+                                        <li class="li2">
+                                            <strong>
+                                                <span class="s3">CHANGES.</span>
+                                            </strong>
+                                            <span class="s1">
+                                                <!--<strong>.</strong>-->
+                                                <span class="Apple-converted-space">&amp;nbsp;</span>Buyer may at any time
+                                                make changes in written, electronic or facsimile form to any Purchase Order,
+                                                including changes in the quantity, delivery time or place, methods of shipment,
+                                                warranties, packing, or time or place of delivery at any time.  Any Seller claim
+                                                for adjustment will be deemed waived unless asserted within ten (10) days from
+                                                Seller’s receipt of the change or suspension notification, and may only include
+                                                reasonable, direct costs that will necessarily be incurred as a direct result
+                                                of the change.
+                                            </span>
+                                        </li>
+                                        <li class="li2">
+                                            <strong>
+                                                <span class="s3">COMPLIANCE WITH LAWS.</span>
+                                            </strong>
+                                            <span class="s1">
+                                               <!-- <strong>.</strong>-->
+                                                <span class="Apple-converted-space">&amp;nbsp;</span>Seller represents, warrants,
+                                                certifies and covenants (collectively “<b>Covenants</b>”) that it will comply with all
+                                                laws applicable to the goods and/or the activities contemplated or provided
+                                                under each Purchase Order, including, but not limited to, any national,
+                                                international, federal, state, provincial or local law, treaty, convention,
+                                                protocol, common law, regulation, directive or ordinance and all lawful orders,
+                                                including judicial orders, rules and regulations issued thereunder, including
+                                                without limitation those dealing with the health and safety, records retention
+                                                and the transportation or storage of hazardous materials.  Seller shall also
+                                                comply with good industry practices, including the exercise of that degree of skill,
+                                                diligence, prudence and foresight which can reasonably be expected from a competent
+                                                Seller of the goods. Seller further agrees at Buyer’s request to provide certificates
+                                                relating to any applicable legal requirements or to update any and all of the certifications,
+                                                representations and warranties under the Agreement in form and substance satisfactory to Buyer.
+                                                With respect to all goods or other materials sold or otherwise transferred to Buyer hereunder,
+                                                Seller shall provide all relevant information, including without limitation, material
+                                                safety data sheets in the language and the legally required format of the location to
+                                                which the goods will be shipped and mandated labeling information required pursuant to
+                                                applicable requirements.
+                                            </span>
+                                        </li>
+                                        <li class="li2">
+                                            <strong>
+                                                <span class="s3">DELIVERY AND PASSAGE OF TITLE.</span>
+                                            </strong>
+                                            <span class="s1">
+                                                <!--<strong>.</strong> &amp;nbsp;-->
+                                            </span>
+                                            <ol class="ol2" style="list-style-type: lower-alpha;">
+                                                <li class="li2">
+                                                    <span class="s1">Time is of the essence of each Purchase Order.
+                                                        Buyer shall be entitled to recover damages that it incurs as a
+                                                        result of Seller’s failure to perform as scheduled.  Unless
+                                                        expressly stated to the contrary, Buyer’s remedies are cumulative
+                                                        and Buyer shall be entitled to pursue any and all remedies available
+                                                        at law or equity.  If delivery of goods is not completed by the date
+                                                        set forth in a Purchase Order, Buyer reserves the right, without liability
+                                                        and in addition to its other rights and remedies at law, in equity or
+                                                        under the terms of the Agreement and/or such Purchase Order, to purchase
+                                                        elsewhere and hold Seller liable for any additional loss, cost, damage or
+                                                        expense incurred thereby. Seller shall pay any loss, cost, damage or expense
+                                                        resulting from the untimely receipt of the goods ordered. Seller shall notify
+                                                        Buyer immediately if it is unable to ship timely. Buyer shall have the right
+                                                        to refuse any goods with untimely delivery and to cancel the balance of a
+                                                        Purchase Order for any part of the goods due after untimely delivery of any
+                                                        installments. By accepting the untimely delivery of any installment, Buyer
+                                                        shall not be bound to accept future shipments nor be deprived of its right
+                                                        to return goods already accepted nor to claim damages for untimely delivery.
+                                                        If Buyer accepts any advance shipment (other than requested by it) under any
+                                                        Purchase Order, payment terms on such shipment shall be computed from the
+                                                        required shipping date.
+                                                    </span>
+                                                </li>
+                                                <li class="li2">
+                                                    <span class="s1">(b)	Unless otherwise stated on the face of a
+                                                        Purchase Order, goods shall be delivered FOB Buyer’s designated facility.
+                                                    </span>
+                                                </li>
+                                            </ol>
+                                        </li>
+                                        <li class="li2">
+                                            <strong>
+                                                <span class="s3">ORDER POSTPONEMENT.</span>
+                                            </strong>
+                                            <span class="s1">
+                                             <!--   <strong>.</strong> &amp;nbsp;-->
+                                                <span class="Apple-converted-space">&amp;nbsp;</span>Buyer shall have the
+                                                right to require Seller to postpone shipment of goods covered by one or
+                                                more Purchase Orders, and Seller shall take all reasonable steps to
+                                                minimize costs during such suspension.
+                                            </span>
+                                        </li>
+                                        <li class="li2">
+                                            <strong>
+                                                <span class="s3">ORDER TERMINATION WITHOUT CAUSE.</span>
+                                            </strong>
+                                            <span class="s1">
+                                             <!--   <strong>.</strong> &amp;nbsp;-->
+                                                <span class="Apple-converted-space">&amp;nbsp;</span>In addition to Buyer’s
+                                                right to terminate a Purchase Order for cause as provided below, Buyer
+                                                may terminate the Agreement in whole or in part at any time upon notice
+                                                to Seller.  Any termination by Buyer whether for cause or otherwise,
+                                                shall be without prejudice to any claims for damages or other rights of
+                                                Buyer against Seller, and Seller shall continue performance of any
+                                                outstanding Purchase Order(s) to the extent not terminated.
+                                            </span>
+                                        </li>
+                                        <li class="li2">
+                                            <strong>
+                                                <span class="s3">RIGHT OF INSPECTION.</span>
+                                            </strong>
+                                            <span class="s1">
+                                                <!--<strong>.
+                                                </strong> --><span class="Apple-converted-space"></span>
+                                                Goods will be subject to Buyer’s inspection on arrival, notwithstanding
+                                                prior payment to obtain discount. Defective goods will be returned at
+                                                Seller’s expense and credit taken on settlements. Seller agrees to
+                                                immediately replace defective goods so returned if the Buyer shall require,
+                                                but the Buyer shall not be required to order or take replacements.
+                                            </span>
+                                        </li>
+                                        <li class="li2">
+                                            <strong>
+                                                <span class="s3">RIGHT TO REFUSE GOODS.</span>
+                                            </strong>
+                                            <span class="s1">
+                                                <!--<strong>.</strong>-->
+                                                <span class="Apple-converted-space">&amp;nbsp;</span>
+                                                Without limiting any other right of Buyer herein, Buyer shall have the
+                                                right to reject and refuse goods that are not in strict accordance with
+                                                the terms of a Purchase Order, the specifications or industry standard,
+                                                or which are different in quality or quantity from that ordered, or which
+                                                are shipped other than as specified under such Purchase Order or which are
+                                                believed by Buyer to violate a third party's rights. Buyer may, at its sole
+                                                discretion, either return rejected goods or hold the same at Seller’s risk
+                                                and expense and may, in either event, charge the Seller with the cost of
+                                                transportation, shipping, unpacking, examining, repacking, storing, reshipping
+                                                and other like expenses.  If Seller fails to accept goods returned by Buyer,
+                                                then Buyer shall have the right to dispose of such goods by any means.
+                                                If within thirty (30) days after a request by Buyer for direction regarding
+                                                disposition of rejected goods, Seller does not respond to Buyer, then Buyer
+                                                shall have the right to dispose of the goods by any means. Acceptance of any
+                                                prior shipments contrary to a Purchase Order shall not be considered a waiver
+                                                of Buyer’s right to return any or all of the goods and receive full credit therefore.
+                                                Authorization for substitution of style, color, size, quantity or other departure
+                                                from the terms of a Purchase Order, is permitted only upon the written, signed and
+                                                dated consent of Buyer.  Any claims made by Buyer for defective goods, shortages,
+                                                returns, damages, or other claim of set off asserted as a result of Seller’s failure
+                                                to comply with a Purchase Order will be charged back to Seller and the amount thereof
+                                                deducted from payments to be made to Seller or, at Buyer’s option, will be promptly
+                                                refunded to Buyer.
+                                            </span>
+                                        </li>
+                                        <li class="li2">
+                                            <strong>
+                                                <span class="s3">RIGHT TO REJECT AND RETURN GOODS.</span>
+                                            </strong>
+                                            <span class="s1">
+                                                <!--<strong>.</strong>-->
+                                                <span class="Apple-converted-space">&amp;nbsp;</span>
+                                                Without limiting any other right of Buyer herein, Buyer may at any time
+                                                after delivery of the goods (and whether or not the same have been accepted
+                                                by Buyer) reject and return all or part of the goods if any part is found
+                                                to be in a damaged or defective condition or if believed by Buyer to violate
+                                                a third party's rights. Seller shall refund to Buyer in full the price paid
+                                                by Buyer for such returned goods. Any goods so returned shall be at Seller’s
+                                                risk and expense, and Seller shall be responsible for all freight and handling charges.
+                                            </span>
+                                        </li>
+                                        <li class="li2">
+                                            <strong>
+                                                <span class="s3">CONFIDENTIAL OR PROPRIETARY INFORMATION AND PUBLICITY.</span>
+                                            </strong>
+                                            <span class="s1">
+                                                <!--<strong>.</strong>-->
+                                                <span class="Apple-converted-space">&amp;nbsp;</span>
+                                                Seller shall keep confidential any technical, process, proprietary or
+                                                economic information, including the terms of the applicable Purchase Order,
+                                                furnished by Buyer in connection with the Agreement (the “<b>Confidential
+                                                Information</b>”) and shall not divulge, directly or indirectly, the Confidential
+                                                Information for the benefit of any other party without Buyer's prior written
+                                                consent.  Except as required for the efficient performance of a Purchase
+                                                Order, Seller shall not use or permit copies to be made of the Confidential
+                                                Information without Buyer’s prior written consent.  The restrictions in this
+                                                Section regarding the Confidential Information shall be inoperative as to
+                                                particular portions of the Confidential Information disclosed by Buyer to
+                                                Seller if such information: (i) is or becomes generally available to the
+                                                public other than as a result of disclosure by Seller; (ii) was available
+                                                on a non-confidential basis prior to its disclosure to Seller; (iii) is or
+                                                becomes available to Seller on a non-confidential basis from a source other
+                                                than Buyer when such source is not, to the best of Seller’s knowledge, subject
+                                                to a confidentiality obligation with Buyer, or (iv) was independently developed
+                                                by Seller, without reference to the Confidential Information, and Seller can
+                                                verify the development of such information by written documentation.  Upon
+                                                completion or termination of a Purchase Order, Seller shall promptly return
+                                                to Buyer all Confidential Information received in connection with such Purchase
+                                                Order, including any copies thereof.  Any knowledge or information, which Seller
+                                                shall have disclosed or may hereafter disclose to Buyer and which in any way relates
+                                                to the goods purchased under a Purchase Order, or otherwise relates to the Agreement,
+                                                shall not be deemed to be confidential or proprietary and shall be acquired by Buyer
+                                                free from any restrictions (other than a claim for infringement) as part of the
+                                                consideration for the Agreement and notwithstanding any copyright or other notice
+                                                thereon, Buyer shall have the right to use, copy, modify and disclose the same as
+                                                it sees fit.
+                                            </span>
+                                        </li>
+                                        <li class="li2">
+                                            <strong>
+                                                <span class="s3">TERMINATION.</span>
+                                            </strong>
+                                            <span class="s1">
+                                                <!--<strong>.</strong>-->
+                                            </span>
+                                            <ol class="ol2" style="list-style-type: lower-alpha;">
+                                                <li class="li2">
+                                                    <span class="s1">
+                                                        <I>Termination for Default.</I>  Except for delay due to causes beyond
+                                                        the control and without the fault or negligence of Seller (lasting
+                                                        not more than 60 days), Buyer, without liability, may by written
+                                                        notice of default, terminate the Agreement or the whole or any part
+                                                        a Purchase Order:  (a) if Seller fails to perform within the time
+                                                        specified in such Purchase Order or in any written extension granted
+                                                        by Buyer; (b) if Buyer receives notice of an allegation of proprietary
+                                                        rights infringement or believes that there may be an infringement of
+                                                        proprietary rights regarding the goods that are the subject matter of
+                                                        such Purchase Order; or (c) if Seller fails to comply with any of the
+                                                        other terms of such Purchase Order.  Such termination shall become
+                                                        effective if Seller does not cure such failure within ten (10) days
+                                                        of receiving notice of default.  Seller shall continue performance
+                                                        of any other outstanding Purchase Order to the extent not terminated
+                                                        and shall be liable to Buyer for any excess costs for such similar
+                                                        goods or services.  As an alternate remedy and in lieu of termination
+                                                        for default, Buyer, at its sole discretion, may elect to extend the
+                                                        delivery schedule and/or waive other deficiencies in Seller's
+                                                        performance, making Seller liable for any costs, expenses or damages
+                                                        arising from any failure of Seller’s performance.  If Seller for any
+                                                        reason anticipates difficulty in complying with the required delivery
+                                                        date, or in meeting any of the other requirements of a Purchase Order,
+                                                        Seller shall promptly notify Buyer in writing.  If Seller does not
+                                                        comply with Buyer's delivery schedule, Buyer may require delivery by
+                                                        fastest method and charges resulting from the premium transportation
+                                                        must be fully prepaid by Seller.  Buyer’s rights and remedies in this
+                                                        clause are in addition to any other rights and remedies provided by law,
+                                                        equity or under the Agreement.
+                                                    </span>
+                                                </li>
+                                                <li class="li2">
+                                                    <span class="s1">
+                                                        <I>Termination for Insolvency/Prolonged Delay.</I>  If Seller ceases to
+                                                        conduct its operations in the normal course of business or fails
+                                                        to meet its obligations as they mature or if any proceeding under
+                                                        the bankruptcy or insolvency laws is brought by or against Seller,
+                                                        a receiver for Seller is appointed or applied for, an assignment
+                                                        for the benefit of creditors is made or an excused delay (or the
+                                                        aggregate time of multiple excused delays) lasts more than 60 days,
+                                                        Buyer may immediately terminate this Agreement without liability,
+                                                        except for goods delivered and accepted within a reasonable period
+                                                        after termination (which will be paid for at the applicable Purchase
+                                                        Order price).
+                                                    </span>
+                                                </li>
+                                            </ol>
+                                        </li>
+                                        <li class="li2">
+                                            <strong>
+                                                <span class="s3">INDEMNITY.</span>
+                                            </strong>
+                                            <span class="s1">
+                                                <!--<strong>.</strong>-->
+                                                <span class="Apple-converted-space">&amp;nbsp;</span>
+                                                Seller shall defend, indemnify, release and hold harmless Buyer, its
+                                                directors, officers, employees, agents representatives, successors and
+                                                assigns, whether acting in the course of their employment or otherwise,
+                                                against any and all suits, actions, or proceedings, at law or in equity,
+                                                and from any and all claims (including without limitation claims of
+                                                negligent or willful misconduct or breaches of warranty), demands, losses,
+                                                judgments, fines, penalties, damages, costs, expenses, or liabilities
+                                                (including without limitation claims for personal injury or property or
+                                                environmental damage, claims or damages payable to customers of Buyer)
+                                                arising from any act or omission of Seller, its agents, employees, or
+                                                subcontractors, except to the extent attributable to the sole and direct
+                                                gross negligence of Buyer.  Seller further agrees to indemnify Buyer for
+                                                any attorneys’ fees or other costs that Buyer incurs in the event that
+                                                Buyer has to file a lawsuit to enforce any indemnity or additional insured
+                                                provision of the Agreement.
+                                            </span>
+                                        </li>
+                                        <li class="li2">
+                                            <strong>
+                                                <span class="s3">LIMITATION OF LIABILITY.</span>
+                                            </strong>
+                                            <span class="s1">
+                                                <!--<strong>.</strong>-->
+                                                <span class="Apple-converted-space">&amp;nbsp;</span>
+                                                Buyer shall not be liable for any special, incidental, punitive or
+                                                consequential damages arising out of or related to the Agreement,
+                                                including any termination, rejection, or revocation of acceptance of all
+                                                or any part of the applicable Purchase Order or any goods.  In no event
+                                                shall Buyer’s liability hereunder exceed the purchase price of the
+                                                applicable Purchase Order giving rise to the claim or action.
+                                            </span>
+                                        </li>
+                                        <li class="li2">
+                                            <strong>
+                                                <span class="s3">GOVERNING LAW.</span>
+                                            </strong>
+                                            <span class="s1">
+                                                <!--<strong>.</strong>-->
+                                                <span class="Apple-converted-space">&amp;nbsp;</span>
+                                                The Agreement (and each Purchase Order contained therein) shall in all
+                                                respects be governed by and interpreted in accordance with the substantive
+                                                law of the Commonwealth of Pennsylvania, excluding its conflicts of law provisions.
+                                            </span>
+                                        </li>
+                                        <li class="li2">
+                                            <strong>
+                                                <span class="s3">DISPUTE RESOLUTION.</span>
+                                            </strong>
+                                            <span class="s1">
+                                                <!--<strong>.</strong>-->
+                                                <span class="Apple-converted-space">&amp;nbsp;</span>
+                                                Except for claims seeking equitable relief, the parties shall attempt to
+                                                amicably resolve any controversy, dispute or difference arising out of the
+                                                Agreement and/or a Purchase Order.  Except for claims seeking equitable
+                                                relief, any unresolved dispute shall be referred to a qualified independent
+                                                arbitrator acceptable to both parties. Any arbitration under the Agreement
+                                                shall take place in Pittsburgh, Pennsylvania. The arbitrator will have no
+                                                authority to award any damages that are excluded by the terms of the Agreement.
+                                                In the event that a suitable independent arbitrator cannot be identified and
+                                                agreed on by both parties within twenty (20) days of the first demand by a
+                                                party for arbitration, then the parties agree that a single arbitrator will
+                                                be appointed by the American Arbitration Association (AAA). All arbitration
+                                                proceedings shall be conducted in accordance with the Commercial Arbitration
+                                                Rules of the AAA, but shall be administered by AAA only if AAA appoints the
+                                                arbitrator. The arbitrator may award attorney’s fees and costs as part of the
+                                                award. The award of the arbitrator shall be final and binding and may be
+                                                entered as a judgment in any court of competent jurisdiction. All proceedings
+                                                shall be conducted in the English language, unless otherwise stated in the
+                                                applicable Purchase Order.  The award shall be final and binding on both Buyer
+                                                and Seller, and the parties hereby waive the right of appeal to any court for
+                                                amendment or modification of the arbitrator’s award.
+                                            </span>
+                                        </li>
+                                        <li class="li2">
+                                            <strong>
+                                                <span class="s3">WAIVER.</span>
+                                            </strong>
+                                            <span class="s1">
+                                                <!--<strong>.</strong>-->
+                                                <span class="Apple-converted-space">&amp;nbsp;</span>
+                                                No claim or right arising out of a breach of the Agreement or a Purchase
+                                                Order can be discharged in whole or in part by a waiver or renunciation unless
+                                                supported by consideration and made in writing signed by the aggrieved party.
+                                                Either party’s failure to enforce any provisions hereof shall not be construed
+                                                a waiver of a party’s right thereafter to enforce each and every such provision.
+                                            </span>
+                                        </li>
+                                        <li class="li2">
+                                            <strong>
+                                                <span class="s3">ENTIRE AGREEMENT.</span>
+                                            </strong>
+                                            <span class="s1">
+                                                <!--<strong>.</strong>-->
+                                                <span class="Apple-converted-space">&amp;nbsp;</span>
+                                                The Agreement, with documents as are expressly incorporated by reference,
+                                                is intended as a complete, exclusive and final expression of the parties’
+                                                agreement with respect to the subject matter herein and supersedes any prior
+                                                or contemporaneous agreements, whether written or oral, between the parties.
+                                                No course of prior dealings and no usage of the trade shall be relevant to
+                                                determine the meaning of the Agreement even though the accepting or acquiescing
+                                                party has knowledge of the performance and opportunity for objection.
+                                                The term “<b>including</b>” shall mean and be construed as “<b>including, but not
+                                                limited to</b>”, unless expressly stated to the contrary.  The invalidity, in
+                                                whole or in part, of any of the foregoing articles or paragraphs of the
+                                                Terms and Conditions shall not affect the remainder of such articles or
+                                                paragraphs or any other article or paragraph of the Agreement, which
+                                                shall continue in full force and effect.  Further, the parties agree to
+                                                give any such article or provision deemed invalid, in whole or in part,
+                                                a lawful interpretation that most closely reflects the original intention
+                                                of Buyer and Seller.  All provisions or obligations contained in the Agreement,
+                                                which by their nature or effect are required or intended to be observed,
+                                                kept or performed after termination or expiration will survive and remain
+                                                binding upon and for the benefit of the parties, their successors
+                                                (including without limitation successors by merger) and permitted assigns.
+                                            </span>
+                                        </li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </t>
+        </t>
+    </template>
+</odoo>
