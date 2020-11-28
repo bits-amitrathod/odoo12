@@ -74,7 +74,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     -->
 
 
-    <template id="footer_cstm1" inherit_id="website.footer_custom" customize_show="True" name="Automatic Footer">
+    <template id="footer_cstm2" inherit_id="website.footer_custom" customize_show="True" name="Automatic Footer">
         <xpath expr="//div[@id='footer']" position="replace">
             <footer>
             <div id="footer" class="container hidden-print " t-if="not no_footer">
