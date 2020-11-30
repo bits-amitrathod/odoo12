@@ -28,13 +28,29 @@ class Website_Resource(http.Controller):
     @http.route('/resource', type='http', auth="public", website=True)
     def home(self, **kw):
         video = request.env['resource.webresource'].sudo().search(
-            [('is_active', '=', True)])
+            [('active', '=', True)])
 
-        BlogPost = request.env['blog.post'].sudo().search([])
+        edu = request.env['slide.slide'].sudo().search([])
+        educational = []
+        for x in edu:
+            if x.category_id.name =='Award':
+                educational.append(x)
+
+        aw = request.env['slide.slide'].sudo().search([])
+        awards = []
+        for x in aw:
+            if x.category_id.name == 'Educational':
+                awards.append(x)
+
+        blogPost = request.env['blog.post'].sudo().search([])
+
         return request.render('res_website.resouces_page_template', {
             'teachers': ["Diana Padilla", "Jody Caroll  aa", "Lester Vaughn"],
             'video': video,
-            'blog_post' : BlogPost
+            'blog_post' : blogPost,
+            'educational':educational,
+            'awards':awards
+
         })
 class blog_resource(odoo.addons.website_blog.controllers.main.WebsiteBlog):
     @http.route([
