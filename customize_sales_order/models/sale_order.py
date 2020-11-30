@@ -101,6 +101,8 @@ class sale_order(models.Model):
             res_partner = self.env['res.partner'].search([('id', '=', vals['partner_id'])])
             if res_partner and res_partner.user_id and res_partner.user_id.id:
                 vals['user_id'] = res_partner.user_id.id
+            elif res_partner and res_partner.parent_id and res_partner.parent_id.user_id and res_partner.parent_id.user_id.id:
+                vals['user_id'] = res_partner.parent_id.user_id.id
             if res_partner and res_partner.account_manager_cust and res_partner.account_manager_cust.id:
                 vals['account_manager'] = res_partner.account_manager_cust.id
             if res_partner and res_partner.national_account_rep and res_partner.national_account_rep.id:
