@@ -1,6 +1,6 @@
 <odoo>
-    <template id="terms_of_sale" name="Terms Of Sale">
-        <t t-name="website.terms_of_sale">
+    <template id="terms_of_sales" name="Terms Of Sale">
+        <t t-name="website.terms_of_sales">
             <t t-call="website.layout">
                 <div id="wrap" class="oe_structure oe_empty"/>
                 <section class="about-us-section">

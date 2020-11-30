@@ -63,7 +63,7 @@ class WebsiteCstm(http.Controller):
 
     @http.route('/terms_of_sale', type='http', auth="public", website=True)
     def terms_of_sale(self):
-        return http.request.render('website_cstm.terms_of_sale')
+        return http.request.render('website_cstm.terms_of_sales')
 
     @http.route('/terms_of_purchase', type='http', auth="public", website=True)
     def terms_of_purchase(self):
