@@ -179,8 +179,8 @@
                            </div>
                        </div>
                     </section>
-                    <section class="position-relative padding-80-y mt-5 testimonial our-mission">
-                        <div class="container">
+                    <section class="position-relative padding-100-y testimonial our-mission">
+                        <div class="container padding-60-y ">
                             <div class="row">
                                 <div class="col-md-7 col-xl-8 offset-md-5 offset-xl-4 ">
                                      <div class="top-plus"><i class="fa fa-plus"></i></div>
@@ -204,7 +204,7 @@
                         <div class="container">
                             <div class="row">
                                 <div class="col-md-6 align-self-center">
-                                    <p class="hawk-title">Quality Assurance &amp; Service Guarantee</p>
+                                    <p class="hawk-title ft-32 medium-font">Quality Assurance &amp; Service Guarantee.</p>
                                    <div class="section-description">
                                        <p>SPS’s facility is a climate controlled, hygienic warehouse equipped
                                             with backup generators and 24-hour video / security surveillance.
@@ -272,7 +272,7 @@
                         <div class="container">
                             <div class="row">
                                 <div class="col-md-6 align-self-center">
-                                    <p class="hawk-title mb-4">Quality Assurance &amp; Service Guarantee.</p>
+                                    <p class="hawk-title mb-4">Our Product Sub-Specialties.</p>
                                    <div class="row order-listing">
                                        <div class="col-md-6">
                                            <ul>
