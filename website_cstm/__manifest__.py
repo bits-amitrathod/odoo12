@@ -10,10 +10,11 @@
     'depends': ['website_sales','website_product_brand','web_search','auth_signup','prioritization_engine','vendor_offer','website_crm','mass_mailing','website_slides'],
 
     'data': [
+        'views/templates.xml',
         'security/ir.model.access.csv',
         'data/website_data.xml',
         'views/views.xml',
-        'views/templates.xml',
+
 
         'views/home.xml',
         'views/contact.xml',
@@ -26,7 +27,8 @@
         'views/search.xml',
         'views/quickView.xml',
         'views/porduct_catalog.xml',
-        'views/terms.xml',
+        'views/terms_of_sale.xml',
+        'views/terms_of_purchase.xml',
         'views/in_stock_notification.xml',
         'views/stockhawk.xml',
         'views/sell.xml',
