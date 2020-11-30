@@ -61,9 +61,13 @@ class WebsiteCstm(http.Controller):
     def search(self):
         return http.request.render('website_cstm.search_page')
 
-    @http.route('/terms', type='http', auth="public", website=True)
-    def terms(self):
-        return http.request.render('website_cstm.terms')
+    @http.route('/terms_of_sale', type='http', auth="public", website=True)
+    def terms_of_sale(self):
+        return http.request.render('website_cstm.terms_of_sales')
+
+    @http.route('/terms_of_purchase', type='http', auth="public", website=True)
+    def terms_of_purchase(self):
+        return http.request.render('website_cstm.terms_of_purchase')
 
     @http.route('/stockhawk', type='http', auth="public", website=True)
     def stockhawk(self):
