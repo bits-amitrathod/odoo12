@@ -35,7 +35,7 @@
         'views/product_catagory_and_ brand_template.xml',
 
 
-        # 'views/menu.xml'
+        'views/menu.xml'
 
     ],
 
