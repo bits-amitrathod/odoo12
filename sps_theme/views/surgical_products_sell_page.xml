@@ -83,7 +83,7 @@
                                                        </ul>
                                                     </div>
                                                 </div>
-                                               <div class="title-seperater mt-5">
+                                               <div class="title-seperater mt-0 mt-md-5">
                                                     <div class="title">Second Tier</div>
                                                 </div>
                                                <div class="row order-listing">
@@ -230,7 +230,7 @@
                                         <p>Discover the benefits of selling your surplus surgical products with SPS. This short video will walk you through the details of the complete process.</p>
                                     </div>
                                      <div class="text-center btn-wrapper pt-4">
-                                        <button class="btn btn-info btn-sm">Contact a Sales Expert</button>
+                                        <button class="btn btn-info btn-sm">Watch the Video</button>
                                     </div>
                                 </div>
                             </div>

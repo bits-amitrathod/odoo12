@@ -38,7 +38,7 @@
                     <section class="pt32 pb32 bg-grey" style="">
                         <form action="/website_form/" method="post" class="s_website_form container-fluid mt32" enctype="multipart/form-data" data-model_name="mail.mail" data-success_page="/thank-you">
                             <div class="container pb-5">
-                                <div class="row">
+                                <div class="row no-gutters">
                                     <div class="col-md" style="">
                                         <div class="form-group has-float-label">
                                              <input type="text" class="form-control" name="title" placeholder="Title" id="title" required=""/>
@@ -46,13 +46,13 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md" style="">
+                                    <div class="col-md px-0 px-md-2" style="">
                                         <div class="form-group has-float-label">
                                             <input type="text" placeholder="First Name" id="first_name" class="form-control" name="first_name" required=""/>
                                             <label class="control-label" for="first_name">First Name*</label>
                                         </div>
                                     </div>
-                                    <div class="col-md">
+                                    <div class="col-md px-0 px-md-2">
                                          <div class="form-group has-float-label">
                                             <input type="text" placeholder="Last Name" id="last_name" class="form-control" name="last_name" required=""/>
                                             <label class="control-label" for="last_name">Last Name*</label>
@@ -109,16 +109,17 @@
                                             <label class="control-label" for="City">City*</label>
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group has-float-label">
-                                            <input type="text" placeholder="Zip Code" id="Zip_Code" class="form-control" name="Zip_Code" required=""/>
-                                            <label class="control-label" for="Zip_Code">Zip Code</label>
-                                        </div>
-                                    </div>
+
                                     <div class="col-md-3">
                                         <div class="form-group has-float-label">
                                             <input type="text" placeholder="State" id="State" class="form-control" name="State" required=""/>
                                             <label class="control-label" for="State">State</label>
+                                        </div>
+                                    </div>
+                                     <div class="col-md-3">
+                                        <div class="form-group has-float-label">
+                                            <input type="text" placeholder="Zip Code" id="Zip_Code" class="form-control" name="Zip_Code" required=""/>
+                                            <label class="control-label" for="Zip_Code">Zip Code</label>
                                         </div>
                                     </div>
                                      <div class="col-12">

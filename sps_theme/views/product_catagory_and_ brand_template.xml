@@ -160,23 +160,25 @@
             <t t-set="additional_title" t-value="product.name" />
             <div itemscope="itemscope" itemtype="http://schema.org/Product" id="wrap" class="js_sale">
                 <section t-attf-class="container padding-60-y oe_website_sale #{'discount' if combination_info['has_discounted_price'] else ''}" id="product_detail">
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <ol class="breadcrumb">
-                                <!--<li>-->
-                                <!--<a t-att-href="keep(category=0)">Products</a>-->
-                                <!--</li>-->
-                                <!--<li t-if="category">-->
-                                <!--<a t-att-href="keep('/shop/category/%s' % slug(category), category=0)"-->
-                                <!--t-field="category.name"/>-->
-                                <!--</li>-->
-                                <!--<li class="active">-->
-                                <!--<span t-field="product.name"/>-->
-                                <!--</li>-->
-                            </ol>
-                        </div>
-                        <div class="col-sm-3 mb8">
-                            <t t-call="website_sale.search"/>
+                    <div class="row pb-5">
+<!--                        <div class="col-sm-4">-->
+<!--                            <ol class="breadcrumb">-->
+<!--                                <li>-->
+<!--                                <a t-att-href="keep(category=0)">Products</a>-->
+<!--                                </li>-->
+<!--                                <li t-if="category">-->
+<!--                                <a t-att-href="keep('/shop/category/%s' % slug(category), category=0)"-->
+<!--                                t-field="category.name"/>-->
+<!--                                </li>-->
+<!--                                <li class="active">-->
+<!--                                <span t-field="product.name"/>-->
+<!--                                </li>-->
+<!--                            </ol>-->
+<!--                        </div>-->
+                        <div class="col-sm-4 mb8">
+                            <div class=" w-75 m-auto">
+                                <t t-call="website_sale.search"/>
+                            </div>
                         </div>
                         <div id="website_published_button" class="col-sm-3">
                         </div>
@@ -185,7 +187,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <t t-set="variant_img" t-value="product_variant and product_variant.image_variant"/>
                             <t t-set="image_ids"  t-value="product.product_image_ids"/>
                             <div id="o-carousel-product" class="carousel slide" data-ride="carousel" data-interval="0">
@@ -221,7 +223,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6 product-detail" id="product_details" >
+                        <div class="col-md-8 product-detail" id="product_details" >
                             <h5><a href="javascript:void(0)" itemprop="name" t-field="product.name">Product Name</a></h5>
                             <span itemprop="url" style="display:none;"
                                   t-esc="'%sshop/product/%s' % (request.httprequest.url_root, slug(product))"/>

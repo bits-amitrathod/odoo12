@@ -167,9 +167,9 @@
                                         </div>
                                     </div>
                                      <div class="col-12">
-                                          <div class="form-group has-float-label o_website_form_required_custom">
+                                          <div class="form-group has-float-label">
                                                 <textarea id="description" placeholder="Problem Description* (Please be specific)" class="form-control o_website_form_input" name="description"  required="" rows="5"><t t-esc="request.params.get('description', '')" /></textarea>
-                                                <label class="control-label" for="description">Problem Description* (Please be specific):</label>
+                                                <label class="control-label" for="description">Problem Description* (Please be specific)</label>
                                           </div>
                                      </div>
                                     <div class="col-12">
@@ -187,13 +187,13 @@
                                     <div class="col-md-12">
                                         <div class="form-group has-float-label">
                                             <input type="text" placeholder="First Name" id="first_name" class="form-control" name="first_name" required=""/>
-                                            <label class="control-label" for="first_name">First Name</label>
+                                            <label class="control-label" for="first_name">First Name*</label>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group has-float-label">
                                             <input type="text" placeholder="Last Name" id="last_name" class="form-control" name="last_name" required=""/>
-                                            <label class="control-label" for="last_name">Last Name</label>
+                                            <label class="control-label" for="last_name">Last Name*</label>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
@@ -279,11 +279,7 @@
                                                                       <span class="checkmark"></span>
                                                                        <span class="radio-label">$2500</span>
                                                                 </label>
-                                                                <label class="custom-radio-buttons">
-                                                                      <input type="radio"  name="radio" />
-                                                                      <span class="checkmark"></span>
-                                                                       <span class="radio-label">$2500</span>
-                                                                </label>
+
                                                                 <label class="custom-radio-buttons">
                                                                       <input type="radio"  name="radio" />
                                                                       <span class="checkmark"></span>
@@ -354,7 +350,7 @@
                         </form>
 
                      </section>
-                    <section class="bg-black py-3">
+                    <section class="bg-dark-blue py-3">
                         <div class="container">
                             <p class="hawk-title text-white f20 text-center py-4 mb-0">REMINDER: PURCHASE ORDER NUMBER MUST BE PROVIDED WITH THIS FORM</p>
                         </div>
@@ -362,14 +358,14 @@
                     <section class="py-4">
                         <div class="container">
                             <div class="section-description text-center">
-                                <p class="mb-0">Ship Equipment Including Form To:</p>
-                                <p class="mb-0">SPS Repair 2340 Stock Creek Blvd. Rockford, TN 37853</p>
-                                <p class="mb-0">Phone: 412-281-4186 Fax: 412-774-2345</p>
-                                <p class="mb-0">repair@surgicalproductsolutions.com</p>
+                                <p class="mb-0 regular-font gray-color">Ship Equipment Including Form To:</p>
+                                <p class="mb-0 regular-font gray-color">SPS Repair 2340 Stock Creek Blvd. Rockford, TN 37853</p>
+                                <p class="mb-0 regular-font gray-color">Phone: 412-281-4186 Fax: 412-774-2345</p>
+                                <p class="mb-0 regular-font gray-color">repair@surgicalproductsolutions.com</p>
                                  <div class="text-center btn-wrapper pt-4 mb-4">
                                     <button class="btn btn-info btn-sm">Downloadable Form (Fax/Scan)</button>
                                 </div>
-                                <p>Thank you for choosing Surgical Product Solutions. Ask us about our Repair/Exchange Program!</p>
+                                <p class="regular-font gray-color">Thank you for choosing Surgical Product Solutions. Ask us about our Repair/Exchange Program!</p>
                             </div>
                         </div>
                     </section>

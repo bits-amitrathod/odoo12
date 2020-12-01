@@ -179,7 +179,9 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <img src="/sps_theme/static/src/images/Savings-impact-estimate.png" class="img-fluid"/>
+                                    <div class="box-shadow">
+                                        <img src="/sps_theme/static/src/images/Savings-impact-estimate.png" class="img-fluid"/>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row mt-5">

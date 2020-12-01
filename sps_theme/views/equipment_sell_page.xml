@@ -104,7 +104,7 @@
                         <div class="col-md-6">
                            <img src="/sps_theme/static/src/images/we_do.jpg" class="img-fluid"/>
                         </div>
-                        <div class="col-md-6 align-self-center pl-0 pl-md-5">
+                        <div class="col-md-6 align-self-center pl-3 pl-md-5">
                            <p class="hawk-title ft-32 regular-font">What We Do</p>
                            <div class="section-description">
                               <p>
@@ -262,7 +262,7 @@
                <section class="padding-80-y">
                   <div class="container">
                      <div class="row">
-                        <div class="col-md-7 align-self-center pl-0 pl-md-5">
+                        <div class="col-md-7 align-self-center pl-3 pl-md-5">
                            <p class="hawk-title ft-32 regular-font">When Buying Equipment From Us You Can Be Assured That You Will Receive:</p>
                            <div class="assured mt-3">
                               <ul>

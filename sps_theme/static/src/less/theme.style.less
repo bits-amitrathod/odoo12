@@ -70,10 +70,18 @@ background: @white !important;
         padding: 0 50px;
     }
 }
-
+.box-shadow{
+    box-shadow: 10px 9px 0px #ced2d5;
+   }
 .bg-grey{
     background:@grey-bg;
 }
+.bg-dark-blue{
+    background: #273345;
+}
+ .gray-color{
+    color: #9ca4ac !important;
+ }
 .f20{
     font-size:20px !important;
     line-height: 26px !important;
@@ -214,6 +222,7 @@ header{
         .navbar-toggler{
             float:right;
             margin-top: 35px;
+            margin-right: 15px;
         }
     }
     /*&.affixed{
@@ -231,7 +240,7 @@ footer{
     }
     .footer-logo{
         img{
-            width: 230px;
+            height: 65px;
         }
     }
     .footer-title{
@@ -272,6 +281,7 @@ footer{
             list-style: none;
             padding-left: 0;
             margin-bottom: 0;
+            flex-wrap: wrap;
             li{
                 margin-right: 10px;
                a{
@@ -295,6 +305,9 @@ footer{
     .social-media{
         display: flex;
         justify-content: flex-end;
+        @media screen and (max-width: 767px){
+            justify-content: flex-start;
+        }
         .link{
             margin-left: 10px;
             a{
@@ -327,6 +340,17 @@ footer{
             font-size: 15px;
             line-height: 18px;
             background-color: #3d9cca;
+            border-radius: 8px;
+            color:#fff;
+            font-family: @bold-font;
+            letter-spacing: 1px;
+        }
+        &.btn-danger{
+            padding: 8px 20px;
+            font-size: 15px;
+            line-height: 18px;
+            background-color: @red;
+            border-color: @red;
             border-radius: 8px;
             color:#fff;
             font-family: @bold-font;
@@ -748,4 +772,55 @@ footer{
 	height: 8px;
 	border-radius: 50%;
 	background: white;
+}
+
+.oe_cart{
+    .form-group{
+        position: relative;
+        margin-bottom: 2rem;
+        select {
+         padding-left: 4px !important;
+        }
+        .form-control{
+            height: 50px;
+            padding-top: 20px;
+            padding-left: 8px;
+            border-radius: 0;
+            font-family: 'robotoregular' !important;
+            color: #808081;
+            &:focus{
+                box-shadow: none;
+            }
+            &:placeholder-shown:not(:focus) + * {
+                font-size: 16px;
+                opacity: 1;
+                top: 0.4rem;
+                font-family: 'robotoregular';
+                left: 13px;
+                color: #9ca4ac;
+                letter-spacing: 1px;
+                font-weight: 500;
+            }
+
+        }
+        .col-form-label{
+            position: absolute;
+            left: 13px;
+            top: -0.35rem;
+            font-weight: 500;
+            font-family: 'robotoregular';
+            cursor: text;
+            font-size: 13px;
+            color: #9ca4ac;
+            opacity: 1;
+            -webkit-transition: all 0.2s;
+            transition: all 0.2s;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+            letter-spacing: 1px;
+            z-index: 5;
+        }
+    }
 }
