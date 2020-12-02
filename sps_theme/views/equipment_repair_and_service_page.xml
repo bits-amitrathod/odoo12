@@ -38,7 +38,7 @@
                         <section class="padding-80-y bg-grey">
                           <div class="container">
                              <div class="row">
-                                <div class="col-md-7 align-self-center pl-0 pl-md-5">
+                                <div class="col-md-7 align-self-center pl-3 pl-md-5">
                                    <p class="hawk-title ft-32 regular-font">Types of Equipment We Repair</p>
                                    <div class="types mt-3">
                                       <ul>
@@ -190,7 +190,7 @@
 
                                 </div>
                                 <div class="row mt-5">
-                                     <div class="col-md-6">
+                                     <div class="col-md-6 mb-3">
                                         <img src="/sps_theme/static/src/images/process.jpg" class="img-fluid"/>
                                    </div>
                                     <div class="col-md-6 align-self-center">

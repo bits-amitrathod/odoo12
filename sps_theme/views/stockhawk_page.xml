@@ -17,7 +17,11 @@
 
                                 </div>
                                 <div class="col-md-6">
-                                    <iframe width="560" height="315" src="https://www.youtube.com/embed/L7dMasrhDFA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+                                    <div class="video-section-wrapper">
+                                        <div class="video-wrapper">
+                                            <iframe width="560" height="315" src="https://www.youtube.com/embed/L7dMasrhDFA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -26,7 +30,7 @@
                     <section class="padding-100-y">
                         <div class="container">
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-6 mb-3">
                                     <img src="/sps_theme/static/src/images/assistant.jpg" class="img-fluid"/>
                                </div>
                                <div class="col-md-6 align-self-center">

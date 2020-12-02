@@ -101,7 +101,7 @@
                <section class="padding-100-y">
                   <div class="container">
                      <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-3">
                            <img src="/sps_theme/static/src/images/we_do.jpg" class="img-fluid"/>
                         </div>
                         <div class="col-md-6 align-self-center pl-3 pl-md-5">

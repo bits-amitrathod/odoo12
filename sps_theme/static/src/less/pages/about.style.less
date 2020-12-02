@@ -166,6 +166,9 @@
     .help-box{
         text-align: left;
         padding-right: 40px;
+        @media screen and (max-width: 767px){
+            padding-right: 0;
+        }
         .box-title{
             color: @red;
             font-size: 20px;
@@ -339,6 +342,9 @@
 .contact-us-section{
     .contact-info{
         padding: 40px;
+        @media screen and (max-width: 767px){
+            padding: 15px;
+        }
     }
     .contact-title{
         color: @red;
@@ -502,6 +508,9 @@ background: #fafafa;
 .testimonial{
     .top-plus{
         top: -45px;
+        @media screen and (max-width: 767px){
+            top: -20px;
+        }
     }
 }
 
@@ -541,6 +550,9 @@ background: #fafafa;
         display: flex;
         flex-direction: row;
         justify-content: center;
+         > div{
+            flex:1;
+         }
         .img-wrapper{
             width: 80px;
             height: 80px;
@@ -553,15 +565,18 @@ background: #fafafa;
         &.reduce{
          .img-wrapper{
             background: @red;
+            margin-left: auto;
             }
         }
 
         &.improve{
          .img-wrapper{
             background: @blue;
+            margin-left: auto;
             }
         }
         .list-content{
+            flex: 2;
             margin-left: 20px;
             .title{
                 font-size: 22px;
@@ -747,6 +762,7 @@ background: #fafafa;
             color: #9ca4ac;
             font-size: 18px;
             font-family: @regular-font;
+            display: flex;
           &:before{
             content: '\f056';
             font-family: 'FontAwesome';
@@ -1214,6 +1230,8 @@ background: #fafafa;
 /*Product page css*/
 .js_sale{
     .oe_website_sale{
+           padding-left: 20px;
+           padding-right: 20px;
         .products_pager {
              justify-content: space-around !important;
              margin: 40px 0;
@@ -1265,7 +1283,9 @@ background: #fafafa;
                       }
                 }
             }
-
+            .categoriesCollapseBtn {
+                padding-bottom: 20px;
+            }
             .pagination {
               padding-bottom: 20px;
                 .page-item {
@@ -1450,6 +1470,50 @@ background: #fafafa;
     }
     .js_add_cart_variants {
         margin:0;
+        .variant_attribute {
+            position: relative;
+            margin-top: 15px;
+            .attribute_name{
+                position: absolute;
+                left: 13px;
+                top: -0rem;
+                font-weight: 500;
+                font-family: 'robotoregular';
+                cursor: text;
+                font-size: 13px;
+                color: #9ca4ac;
+                opacity: 1;
+                -webkit-transition: all 0.2s;
+                transition: all 0.2s;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                width: 100%;
+                letter-spacing: 1px;
+                z-index: 5;
+            }
+            .form-control {
+                height: 50px;
+                padding-top: 20px;
+                padding-left: 8px;
+                border-radius: 0;
+                font-family: 'robotoregular' !important;
+                color: #808081;
+                display: block;
+                width: 100%;
+                font-size: 1rem;
+                line-height: 1.5;
+                background-color: #FFFFFF;
+                background-clip: padding-box;
+                border: 1px solid #ced4da;
+                border-radius: 0.25rem;
+                transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+                &:focus{
+                    outline: none;
+                    box-shadow: none;
+                }
+            }
+        }
     }
     .qty-name{
         font-size: 14px;
@@ -1569,5 +1633,31 @@ background: #fafafa;
                 text-decoration: none;
             }
         }
+    }
+}
+
+.video-section-wrapper {
+    background: #eee;
+    border-radius: 0 0 4px 4px;
+    border: 1px solid #ccc;
+    margin: 1rem 0;
+    .video-wrapper{
+        position: relative;
+        width: 100%;
+        height: 0;
+        padding-bottom: 56.25%;
+        iframe{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    }
+}
+
+#products_grid{
+    .expiration-section{
+        border-bottom: none !important;
     }
 }
