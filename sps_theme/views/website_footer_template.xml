@@ -18,10 +18,10 @@
                         <h6 class="footer-title">ABOUT</h6>
                         <ul class="footer-menu">
                             <li>
-                                <a href="/" title="Home">OUR STORY</a>
+                                <a href="/aboutus" title="Home">OUR STORY</a>
                             </li>
                             <li>
-                                <a href="/shop" title="Catalog">CAREERS</a>
+                                <a href="/careers" title="Catalog">CAREERS</a>
                             </li>
                         </ul>
                     </div>
@@ -34,10 +34,10 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="/search" title="Search">SALE ITEMS</a>
+                                <a href="/shop/featured" title="Search">SALE ITEMS</a>
                             </li>
                              <li>
-                                <a href="/career" title="Search">SELL</a>
+                                <a href="/surgical-products-sell" title="Search">SELL</a>
                             </li>
                         </ul>
                     </div>
@@ -50,10 +50,10 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="/search" title="Search">SELL</a>
+                                <a href="/equipment-sell" title="Search">SELL</a>
                             </li>
                              <li>
-                                <a href="/career" title="Search">REPAIR</a>
+                                <a href="/equipment-repair" title="Search">REPAIR</a>
                             </li>
                         </ul>
                     </div>
@@ -61,19 +61,19 @@
                           <h6 class="footer-title">STOCKHAWK</h6>
                          <ul class="footer-menu titles">
                             <li>
-                                <a href="/search" title="Search">RESOURCES</a>
+                                <a href="/resource" title="Search">RESOURCES</a>
                             </li>
                              <li>
-                                <a href="/career" title="Search">FAQ</a>
+                                <a href="/faqs" title="Search">FAQ</a>
                             </li>
                              <li>
-                                <a href="/career" title="Search">CONTACT</a>
+                                <a href="/contact-us" title="Search">CONTACT</a>
                             </li>
                              <li>
-                                <a href="/career" title="Search">SIGN IN</a>
+                                <a href="/web/login" title="Search">SIGN IN</a>
                             </li>
                              <li>
-                                <a href="/career" title="Search">DOWNLOAD CATALOG</a>
+                                <a href="/downloadCatalog" title="Search">DOWNLOAD CATALOG</a>
                             </li>
                         </ul>
                     </div>

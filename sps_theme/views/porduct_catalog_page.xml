@@ -1,0 +1,51 @@
+<odoo>
+    <data>
+
+        <!-- Menu -->
+
+        <record id="action_product_catalog_download" model="ir.actions.act_window">
+            <field name="name">Product Catalog Download</field>
+            <field name="res_model">sps_theme.product_download_catelog</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+<!--
+        <menuitem id="menu_product_instock_notification" name="Product Catalog Download"
+                parent="website.menu_website_global_configuration" sequence="10"/>-->
+
+        <menuitem id="menu_product_catalog_download" name="Product Catalog Download"
+                  action="action_product_catalog_download"
+                  parent="website.menu_website_global_configuration"/>
+
+        <record model="ir.ui.view" id="purchase_order_line_file_field">
+            <field name="name">Product Catalog Download</field>
+            <field name="model">sps_theme.product_download_catelog</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="filename" invisible="1"/>
+                            <field widget="file" name="file" filename="filename"/>
+                            <field name="status"/>
+                        </group>
+                    </sheet>
+                </form>
+
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="sps_theme.product_download_list">
+            <field name="name">websiteCSTM list</field>
+            <field name="model">sps_theme.product_download_catelog</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="filename"/>
+                    <field name="status"/>
+                    <field name="create_date"/>
+                    <field name="write_date"/>
+                </tree>
+            </field>
+        </record>
+
+    </data>
+</odoo>

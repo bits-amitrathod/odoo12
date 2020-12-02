@@ -61,3 +61,27 @@ class ThemeController(http.Controller):
     def equipment_repair_service(self):
         return http.request.render('sps_theme.equipment_service_request_template')
 
+    @http.route('/downloadCatalog', type='http', auth="public", website=True)
+    def downloadCatalog(self):
+        result = request.env['sps_theme.product_download_catelog'].search([('status', '=', 'active')], limit=1)
+        if result:
+            id = result.id
+
+            status, headers, content = binary_content(model='sps_theme.product_download_catelog', id=id,
+                                                      field='file',
+                                                      filename_field='filename',
+                                                      download=True, env=request.env(user=SUPERUSER_ID))
+
+            if not content:
+                img_path = modules.get_module_resource('web', 'static/src/img', 'placeholder.png')
+                with open(img_path, 'rb') as f:
+                    image = f.read()
+                content = base64.b64encode(image)
+            if status == 304:
+                return werkzeug.wrappers.Response(status=304)
+            image_base64 = base64.b64decode(content)
+            headers.append(('Content-Length', len(image_base64)))
+            response = request.make_response(image_base64, headers)
+            response.status = str(status)
+            return response
+        raise werkzeug.exceptions.NotFound()
