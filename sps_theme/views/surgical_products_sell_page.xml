@@ -6,7 +6,7 @@
                      <section class="video-section padding-80-y">
                         <div class="container">
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-6 pb-3">
                                     <h3 class="video-title"><strong>Sell</strong> Your Surplus Surgical Products.</h3>
                                     <div class="section-description mt-3 mb-4">
                                         <p>If you have a surplus inventory of surgical products, why not sell
@@ -19,7 +19,11 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <iframe width="560" height="315" src="https://www.youtube.com/embed/L7dMasrhDFA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+                                    <div class="video-section-wrapper">
+                                        <div class="video-wrapper">
+                                            <iframe width="560" height="315" src="https://www.youtube.com/embed/L7dMasrhDFA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
