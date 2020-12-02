@@ -86,10 +86,10 @@
                                     <a href="#" title=""> <![CDATA[&copy;]]> 2020 Surgical Product Solutions.</a>
                                 </li>
                                 <li>
-                                    <a href="#" title=""> Terms and Conditions</a>
+                                    <a href="/terms-and-condition" title=""> Terms and Conditions</a>
                                 </li>
                                 <li>
-                                    <a href="#" title=""> Privacy Policy</a>
+                                    <a href="/policy" title=""> Privacy Policy</a>
                                 </li>
                             </ul>
 
@@ -105,9 +105,6 @@
                                 </div>
                             </div>
 
-<!--                        <div class="ml-sm-34">-->
-<!--                        <t t-call="website.language_selector"/>-->
-<!--                        </div>-->
                     </div>
                 </div>
                  <div class="row">

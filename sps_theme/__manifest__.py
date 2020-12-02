@@ -34,6 +34,8 @@
         'views/website_footer_template.xml',
         'views/product_catagory_and_ brand_template.xml',
         'views/porduct_catalog_page.xml',
+        'views/terms_and_conditions_page.xml',
+        'views/policy_page.xml',
 
 
         'views/menu.xml'

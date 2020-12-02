@@ -61,6 +61,14 @@ class ThemeController(http.Controller):
     def equipment_repair_service(self):
         return http.request.render('sps_theme.equipment_service_request_template')
 
+    @http.route('/terms-and-condition', type='http', auth="public", website=True)
+    def terms_and_condition_policy(self):
+        return http.request.render('sps_theme.terms_and_conditions_template')
+
+    @http.route('/policy', type='http', auth="public", website=True)
+    def policy(self):
+        return http.request.render('sps_theme.policy_template')
+
     @http.route('/downloadCatalog', type='http', auth="public", website=True)
     def downloadCatalog(self):
         result = request.env['sps_theme.product_download_catelog'].search([('status', '=', 'active')], limit=1)
