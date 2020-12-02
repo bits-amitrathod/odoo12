@@ -179,10 +179,13 @@
                            </div>
                        </div>
                     </section>
-                    <section class="position-relative padding-100-y testimonial our-mission">
-                        <div class="container padding-60-y ">
+                    <section class="position-relative testimonial our-mission">
+                        <div class="container pt-4">
                             <div class="row">
-                                <div class="col-md-7 col-xl-8 offset-md-5 offset-xl-4 ">
+                                <div class="col-md-5 col-xl-4">
+                                     <img src="/sps_theme/static/src/images/matthew.png" class="img-fluid"/>
+                                </div>
+                                <div class="col-md-7 col-xl-8">
                                      <div class="top-plus"><i class="fa fa-plus"></i></div>
                                     <p>“SPS has allowed us to realize
                                         significant savings on our
