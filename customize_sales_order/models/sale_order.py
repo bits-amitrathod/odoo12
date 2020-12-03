@@ -2,7 +2,7 @@
 import re
 from odoo import models, fields, api
 from odoo import _
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, Warning
 import odoo.addons.decimal_precision as dp
 
 
@@ -96,6 +96,17 @@ class sale_order(models.Model):
 
     @api.model
     def create(self, vals):
+        # check #PO and Allow duplicate PO - validation
+        if 'partner_id' in vals and vals['partner_id'] is not None and 'client_order_ref' in vals and \
+                vals['client_order_ref'] is not None:
+            sales = self.env['sale.order'].search([('partner_id', '=', vals['partner_id']),
+                                           ('client_order_ref', '=', vals['client_order_ref'])])
+            if sales:
+                for sale in sales:
+                    if sale.x_studio_allow_duplicate_po is False:
+                        raise Warning(_("The PO number is already present on %s Sales Order. "
+                                        "Set Allow Duplicate PO? On of %s Sales Order.") % (sale.name, sale.name))
+
         # add account manager
         if 'partner_id' in vals and vals['partner_id'] is not None:
             res_partner = self.env['res.partner'].search([('id', '=', vals['partner_id'])])
@@ -108,6 +119,7 @@ class sale_order(models.Model):
             if res_partner and res_partner.national_account_rep and res_partner.national_account_rep.id:
                 vals['national_account'] = res_partner.national_account_rep.id
         return super(sale_order, self).create(vals)
+
     @api.depends('order_line.price_total')
     def _amount_all(self):
         """
@@ -151,6 +163,16 @@ class sale_order(models.Model):
                     'author_id': self.env.user.partner_id.id,
                 }
                 self.env['mail.message'].sudo().create(stock_picking_val)
+
+        # check #PO and Allow duplicate PO - validation
+        if self.partner_id and self.partner_id.id and self.client_order_ref:
+            sales = self.env['sale.order'].search([('partner_id', '=', self.partner_id.id),
+                                           ('client_order_ref', '=', self.client_order_ref)])
+            if sales:
+                for sale in sales:
+                    if sale.x_studio_allow_duplicate_po is False:
+                        raise Warning(_("A The PO number is already present on %s Sales Order. "
+                                        "Set Allow Duplicate PO? On of %s Sales Order.") % (sale.name, sale.name))
 
     @api.one
     def _get_carrier_tracking_ref(self):
