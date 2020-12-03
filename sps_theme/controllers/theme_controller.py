@@ -59,7 +59,7 @@ class ThemeController(http.Controller):
 
     @http.route('/equipment-repair-service', type='http', auth="public", website=True)
     def equipment_repair_service(self):
-        return http.request.render('sps_theme.equipment_service_request_template')
+        return http.request.render('sps_theme.equipment_service_request_form_template')
 
     @http.route('/terms-and-condition', type='http', auth="public", website=True)
     def terms_and_condition_policy(self):
