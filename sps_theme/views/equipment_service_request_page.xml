@@ -1,5 +1,5 @@
 <odoo>
-    <template id="equipment_service_request_template" name="Equipment Service request">
+    <template id="equipment_service_request_form_template" name="Equipment Service request">
         <t t-name="website.Equipment Service request">
             <t t-call="website.layout">
                 <div id="wrap" class="equipment">
@@ -343,7 +343,8 @@
                                     </div>
 
                                        <div class="col-md-12 text-center btn-wrapper pt-4">
-                                            <button class="btn btn-info btn-sm">Submit</button>
+                                           <span class="btn btn-primary btn-lg action_button o_website_form_send" style="margin-top: 10px;">Send Message</span>
+                                           <button class="btn btn-info btn-sm">Submit</button>
                                         </div>
                                 </div>
                             </div>

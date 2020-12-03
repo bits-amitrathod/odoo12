@@ -7,7 +7,7 @@
     'sequence': 57,
     'version': '0.1',
     'category': 'Theme/Creative',
-    'depends': ['website_sales','website_product_brand','web_search','auth_signup','prioritization_engine','vendor_offer','website_crm','mass_mailing','website_slides'],
+    'depends': ['website_sales','website_product_brand','web_search','auth_signup','prioritization_engine','vendor_offer','website_crm','mass_mailing','website_slides','blog_cstm'],
 
     'data': [
         'security/ir.model.access.csv',
@@ -20,9 +20,11 @@
         'views/stockhawk_page.xml',
         'views/equipment_service_request_page.xml',
         'views/career_page.xml',
+        'views/vendor_list_page.xml',
         'views/faqs_page.xml',
         'views/login_page.xml',
         'views/equipment_repair_and_service_page.xml',
+        'views/quality_assurance_page.xml',
         'views/home_page.xml',
         'views/equipment_sell_page.xml',
         'views/request_a_quote_page.xml',

@@ -59,7 +59,7 @@ class ThemeController(http.Controller):
 
     @http.route('/equipment-repair-service', type='http', auth="public", website=True)
     def equipment_repair_service(self):
-        return http.request.render('sps_theme.equipment_service_request_template')
+        return http.request.render('sps_theme.equipment_service_request_form_template')
 
     @http.route('/terms-and-condition', type='http', auth="public", website=True)
     def terms_and_condition_policy(self):
@@ -68,6 +68,14 @@ class ThemeController(http.Controller):
     @http.route('/policy', type='http', auth="public", website=True)
     def policy(self):
         return http.request.render('sps_theme.policy_template')
+
+    @http.route('/quality_assurance', type='http', auth="public", website=True)
+    def quality_assurance_method(self):
+        return http.request.render('sps_theme.quality_assurance_template')
+
+    @http.route('/vendor-list', type='http', auth="public", website=True)
+    def vendor_list_method(self):
+        return http.request.render('sps_theme.vendor_list_template')
 
     @http.route('/downloadCatalog', type='http', auth="public", website=True)
     def downloadCatalog(self):

@@ -278,6 +278,7 @@
                            <img src="/sps_theme/static/src/images/buy.jpg" class="img-fluid"/>
                         </div>
                            <div class="col-md-12 text-center btn-wrapper mt-5">
+                               <a itemprop="url" href="/shop/capital-equipment" >Shop Equipment</a>
                                 <button class="btn btn-info btn-sm">Shop Equipment</button>
                             </div>
                      </div>
@@ -285,137 +286,139 @@
                </section>
 
                 <section class="padding-80-y bg-grey">
-                    <div class="container">
-                         <p class="hawk-title ft-32 regular-font text-center">Sell Your Surgical Equipment</p>
-                         <div class="section-description text-center">
-                             <p>Please fill out the form below in order to submit an item for valuation.</p>
-                         </div>
+                    <form action="/website_form/" method="post" class="s_website_form container-fluid mt32" enctype="multipart/form-data" data-model_name="mail.mail" data-success_page="/thank-you">
+                        <div class="container">
+                             <p class="hawk-title ft-32 regular-font text-center">Sell Your Surgical Equipment</p>
+                             <div class="section-description text-center">
+                                 <p>Please fill out the form below in order to submit an item for valuation.</p>
+                             </div>
+                             <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group has-float-label">
+                                        <input type="text" class="form-control" placeholder="Business Name" id="bussiness_name" name="bussiness_name"/>
+                                        <label class="control-label" for="bussiness_name">Business Name</label>
+                                    </div>
+                                </div>
+                                  <div class="col-md-6">
+                                    <div class="form-group has-float-label">
+                                        <input type="text" class="form-control" placeholder="Business Address" id="bussiness_address" name="bussiness_address"/>
+                                        <label class="control-label" for="bussiness_address">Business Address</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group has-float-label">
+                                        <input type="text" class="form-control" placeholder="City" id="City" name="City"/>
+                                        <label class="control-label" for="City">City</label>
+                                    </div>
+                                </div>
+                                 <div class="col-md-6">
+                                    <div class="form-group has-float-label">
+                                        <input type="text" class="form-control" placeholder="State/Province" id="state" name="state"/>
+                                        <label class="control-label" for="state">State/Province</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group has-float-label">
+                                        <input type="text" class="form-control" placeholder="Zip Code" id="zipcode" name="zipcode"/>
+                                        <label class="control-label" for="zipcode">Zip Code</label>
+                                    </div>
+                                </div>
+                                 <div class="col-md-6">
+                                    <div class="form-group has-float-label">
+                                        <input type="text" class="form-control" placeholder="First Name" id="first_name" name="first_name"/>
+                                        <label class="control-label" for="first_name">First Name</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group has-float-label">
+                                        <input type="text" class="form-control" placeholder="Last Name" id="last_name" name="last_name"/>
+                                        <label class="control-label" for="last_name">Last Name</label>
+                                    </div>
+                                </div>
 
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group has-float-label">
-                                    <input type="text" class="form-control" placeholder="Business Name" id="bussiness_name" name="bussiness_name"/>
-                                    <label class="control-label" for="bussiness_name">Business Name</label>
+                                 <div class="col-md-6">
+                                    <div class="form-group has-float-label">
+                                        <input type="text" class="form-control" placeholder="Phone" id="Phone" name="Phone"/>
+                                        <label class="control-label" for="Phone">Phone</label>
+                                    </div>
                                 </div>
-                            </div>
-                              <div class="col-md-6">
-                                <div class="form-group has-float-label">
-                                    <input type="text" class="form-control" placeholder="Business Address" id="bussiness_address" name="bussiness_address"/>
-                                    <label class="control-label" for="bussiness_address">Business Address</label>
+                                <div class="col-md-6">
+                                    <div class="form-group has-float-label">
+                                        <input type="text" class="form-control" placeholder="Email" id="Email" name="Email"/>
+                                        <label class="control-label" for="Email">Email</label>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group has-float-label">
-                                    <input type="text" class="form-control" placeholder="City" id="City" name="City"/>
-                                    <label class="control-label" for="City">City</label>
+                                <div class="col-md-6">
+                                    <div class="form-group has-float-label">
+                                        <input type="text" class="form-control" placeholder="Contact Name (for final signature) First Name" id="contact_first_name" name="contact_first_name"/>
+                                        <label class="control-label" for="contact_first_name">Contact Name (for final signature) First Name</label>
+                                    </div>
                                 </div>
-                            </div>
-                             <div class="col-md-6">
-                                <div class="form-group has-float-label">
-                                    <input type="text" class="form-control" placeholder="State/Province" id="state" name="state"/>
-                                    <label class="control-label" for="state">State/Province</label>
+                                 <div class="col-md-6">
+                                    <div class="form-group has-float-label">
+                                        <input type="text" class="form-control" placeholder="Contact Name (for final signature) First Name" id="contact_last_name" name="contact_last_name"/>
+                                        <label class="control-label" for="contact_last_name">Contact Name (for final signature) Last Name</label>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group has-float-label">
-                                    <input type="text" class="form-control" placeholder="Zip Code" id="zipcode" name="zipcode"/>
-                                    <label class="control-label" for="zipcode">Zip Code</label>
-                                </div>
-                            </div>
-                             <div class="col-md-6">
-                                <div class="form-group has-float-label">
-                                    <input type="text" class="form-control" placeholder="First Name" id="first_name" name="first_name"/>
-                                    <label class="control-label" for="first_name">First Name</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group has-float-label">
-                                    <input type="text" class="form-control" placeholder="Last Name" id="last_name" name="last_name"/>
-                                    <label class="control-label" for="last_name">Last Name</label>
-                                </div>
-                            </div>
 
-                             <div class="col-md-6">
-                                <div class="form-group has-float-label">
-                                    <input type="text" class="form-control" placeholder="Phone" id="Phone" name="Phone"/>
-                                    <label class="control-label" for="Phone">Phone</label>
+                                 <div class="col-md-6">
+                                    <div class="form-group has-float-label">
+                                        <input type="text" class="form-control" placeholder="Manufacturer" id="Manufacturer" name="Manufacturer"/>
+                                        <label class="control-label" for="Manufacturer">Manufacturer</label>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group has-float-label">
-                                    <input type="text" class="form-control" placeholder="Email" id="Email" name="Email"/>
-                                    <label class="control-label" for="Email">Email</label>
+                                <div class="col-md-6">
+                                    <div class="form-group has-float-label">
+                                        <input type="text" class="form-control" placeholder="Part Number" id="part_number" name="part_number"/>
+                                        <label class="control-label" for="part_number">Part Number</label>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group has-float-label">
-                                    <input type="text" class="form-control" placeholder="Contact Name (for final signature) First Name" id="contact_first_name" name="contact_first_name"/>
-                                    <label class="control-label" for="contact_first_name">Contact Name (for final signature) First Name</label>
+                                <div class="col-md-12">
+                                     <div class="form-group has-float-label">
+                                        <textarea id="description" placeholder="Description" class="form-control" name="description"  rows="1"></textarea>
+                                        <label class="control-label" for="description">Description</label>
+                                     </div>
                                 </div>
-                            </div>
-                             <div class="col-md-6">
-                                <div class="form-group has-float-label">
-                                    <input type="text" class="form-control" placeholder="Contact Name (for final signature) First Name" id="contact_last_name" name="contact_last_name"/>
-                                    <label class="control-label" for="contact_last_name">Contact Name (for final signature) Last Name</label>
-                                </div>
-                            </div>
-
-                             <div class="col-md-6">
-                                <div class="form-group has-float-label">
-                                    <input type="text" class="form-control" placeholder="Manufacturer" id="Manufacturer" name="Manufacturer"/>
-                                    <label class="control-label" for="Manufacturer">Manufacturer</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group has-float-label">
-                                    <input type="text" class="form-control" placeholder="Part Number" id="part_number" name="part_number"/>
-                                    <label class="control-label" for="part_number">Part Number</label>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                 <div class="form-group has-float-label">
-                                    <textarea id="description" placeholder="Description" class="form-control" name="description"  rows="1"></textarea>
-                                    <label class="control-label" for="description">Description</label>
-                                 </div>
-                            </div>
-                             <div class="col-md-5">
-                                <div class="form-group  has-float-label">
-                                     <div class="input-group">
-                                        <input id="birthdate" type="text" placeholder="Birthdate" name="birth_date" class="form-control o_website_form_input o_website_form_date"/>
-                                         <label class="control-label" for="birthdate">Purchase Date</label>
-                                        <div class="input-group-append">
-                                            <span class="input-group-text" id="birthdate"><i class="icon-calendars"></i></span>
+                                 <div class="col-md-5">
+                                    <div class="form-group  has-float-label">
+                                         <div class="input-group">
+                                            <input id="birthdate" type="text" placeholder="Birthdate" name="birth_date" class="form-control o_website_form_input o_website_form_date"/>
+                                             <label class="control-label" for="birthdate">Purchase Date</label>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text" id="birthdate"><i class="icon-calendars"></i></span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-5">
-                                <div class="form-group has-float-label">
-                                    <input type="text" class="form-control" placeholder="Condition" id="Condition" name="Condition"/>
-                                    <label class="control-label" for="Condition">Condition</label>
+                                <div class="col-md-5">
+                                    <div class="form-group has-float-label">
+                                        <input type="text" class="form-control" placeholder="Condition" id="Condition" name="Condition"/>
+                                        <label class="control-label" for="Condition">Condition</label>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-5">
-                                <div class="form-group has-float-label">
-                                    <input type="text" class="form-control" placeholder="Quantity (Ea)" id="quantity" name="quantity"/>
-                                    <label class="control-label" for="quantity">Quantity (Ea)</label>
+                                <div class="col-md-5">
+                                    <div class="form-group has-float-label">
+                                        <input type="text" class="form-control" placeholder="Quantity (Ea)" id="quantity" name="quantity"/>
+                                        <label class="control-label" for="quantity">Quantity (Ea)</label>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="col-md-10 offset-md-2">
-                                <div class="form-group file-input">
-                                    <label class="control-label" for="Condition">Item Picture Upload</label>
-                                    <label for="file" class="file-control">Choose File</label>
-                                    <input type="file" onChange='getFileNameWithExt(event)' class="file-upload-control" id="file" name="file"/>
+                                <div class="col-md-10 offset-md-2">
+                                    <div class="form-group file-input">
+                                        <label class="control-label" for="Condition">Item Picture Upload</label>
+                                        <label for="file" class="file-control">Choose File</label>
+                                        <input type="file" onChange='getFileNameWithExt(event)' class="file-upload-control" id="file" name="file"/>
 
-                                    <input id='outputfile' type='text' name='outputfile' class="selected-file" placeholder="No File Chosen" disabled="true"/>
+                                        <input id='outputfile' type='text' name='outputfile' class="selected-file" placeholder="No File Chosen" disabled="true"/>
+                                    </div>
                                 </div>
-                            </div>
-                             <div class="col-md-12 text-center btn-wrapper mt-5">
-                                <button class="btn btn-info btn-sm">Submit</button>
+                                 <div class="col-md-12 text-center btn-wrapper mt-5">
+                                     <span class="btn btn-primary btn-lg action_button o_website_form_send" style="margin-top: 10px;">submit</span>
+                                    <button class="btn btn-info btn-sm">Submit</button>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </form>
                 </section>
                  <!--<div class="seprator">
                   <div class="red"></div>
