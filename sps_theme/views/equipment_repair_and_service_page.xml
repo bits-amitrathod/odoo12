@@ -124,8 +124,8 @@
                                                     immediately.
                                               </p>
                                               <div class="col-md-12 text-center btn-wrapper">
-                                                  <a itemprop="url" href="/equipment-repair-service" >Submit an Online Repair Ticket</a>
-                                                  <button class="btn btn-info btn-sm">Submit an Online Repair Ticket</button>
+                                                  <a itemprop="url" href="/equipment-repair-service" class="btn btn-info btn-sm" >Submit an Online Repair Ticket</a>
+
                                               </div>
                                           </div>
                                       </div>

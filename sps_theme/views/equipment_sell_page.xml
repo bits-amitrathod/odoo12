@@ -278,8 +278,8 @@
                            <img src="/sps_theme/static/src/images/buy.jpg" class="img-fluid"/>
                         </div>
                            <div class="col-md-12 text-center btn-wrapper mt-5">
-                               <a itemprop="url" href="/shop/capital-equipment" >Shop Equipment</a>
-                                <button class="btn btn-info btn-sm">Shop Equipment</button>
+                               <a itemprop="url" href="/shop/capital-equipment" class="btn btn-info btn-sm">Shop Equipment</a>
+                                <!--<button class="btn btn-info btn-sm">Shop Equipment</button>-->
                             </div>
                      </div>
                   </div>
@@ -413,8 +413,7 @@
                                     </div>
                                 </div>
                                  <div class="col-md-12 text-center btn-wrapper mt-5">
-                                     <span class="btn btn-primary btn-lg action_button o_website_form_send" style="margin-top: 10px;">submit</span>
-                                    <button class="btn btn-info btn-sm">Submit</button>
+                                     <span class="btn btn-info btn-sm action_button o_website_form_send">Submit</span>
                                 </div>
                             </div>
                         </div>

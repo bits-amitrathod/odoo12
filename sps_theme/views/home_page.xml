@@ -19,10 +19,8 @@
                                         </p>
                                     </div>
                                     <div class="text-left btn-wrapper">
-                                        <a itemprop="url" href="/shop" >Shop Products</a>
-                                        <button class="btn btn-info btn-sm mr-2">Shop Products</button>
-                                        <a itemprop="url" href="/shop/capital-equipment" >Shop Equipment</a>
-                                        <button class="btn btn-info btn-sm">Shop Equipment</button>
+                                        <a itemprop="url" href="/shop" class="btn btn-info btn-sm mr-2" >Shop Products</a>
+                                        <a itemprop="url" href="/shop/capital-equipment" class="btn btn-info btn-sm">Shop Equipment</a>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -154,10 +152,8 @@
 
 									</div>
                                     <div class="col-12 text-center btn-wrapper mt-5">
-                                        <a itemprop="url" href="/shop" >Shop Products</a>
-                                        <button class="btn btn-info btn-sm mr-2">Shop Products</button>
-                                        <a itemprop="url" href="/shop/capital-equipment" >Shop Equipment</a>
-                                        <button class="btn btn-info btn-sm">Shop Equipment</button>
+                                        <a itemprop="url" href="/shop" class="btn btn-info btn-sm mr-2">Shop Products</a>
+                                        <a itemprop="url" href="/shop/capital-equipment" class="btn btn-info btn-sm">Shop Equipment</a>
                                     </div>
 								</div>
 
@@ -312,10 +308,8 @@
                                     <img src="/sps_theme/static/src/images/specialities.jpg" class="img-fluid"/>
                                </div>
                                  <div class=" col-12 text-center btn-wrapper mt-5 pt-5">
-                                     <a itemprop="url" href="/shop" >Shop Products</a>
-                                     <button class="btn btn-info btn-sm mr-2">Shop Products</button>
-                                     <a itemprop="url" href="/shop/capital-equipment" >Shop Equipment</a>
-                                     <button class="btn btn-info btn-sm">Shop Equipment</button>
+                                     <a itemprop="url" href="/shop" class="btn btn-info btn-sm mr-2">Shop Products</a>
+                                     <a itemprop="url" href="/shop/capital-equipment" class="btn btn-info btn-sm">Shop Equipment</a>
                                 </div>
                             </div>
                         </div>

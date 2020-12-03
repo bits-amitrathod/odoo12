@@ -343,8 +343,7 @@
                                     </div>
 
                                        <div class="col-md-12 text-center btn-wrapper pt-4">
-                                           <span class="btn btn-primary btn-lg action_button o_website_form_send" style="margin-top: 10px;">Send Message</span>
-                                           <button class="btn btn-info btn-sm">Submit</button>
+                                           <span class="btn btn-info btn-sm action_button o_website_form_send">Submit</span>
                                         </div>
                                 </div>
                             </div>

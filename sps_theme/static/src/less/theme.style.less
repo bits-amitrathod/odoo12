@@ -356,6 +356,11 @@ footer{
             font-family: @medium-font;
             letter-spacing: 1px;
         }
+        &:focus,
+        &:not(:disabled):not(.disabled):active:focus{
+            outline:none;
+            box-shadow: none;
+        }
     }
 }
 .form-group{
