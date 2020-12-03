@@ -19,7 +19,9 @@
                                         </p>
                                     </div>
                                     <div class="text-left btn-wrapper">
+                                        <a itemprop="url" href="/shop" >Shop Products</a>
                                         <button class="btn btn-info btn-sm mr-2">Shop Products</button>
+                                        <a itemprop="url" href="/shop/capital-equipment" >Shop Equipment</a>
                                         <button class="btn btn-info btn-sm">Shop Equipment</button>
                                     </div>
                                 </div>
@@ -152,7 +154,9 @@
 
 									</div>
                                     <div class="col-12 text-center btn-wrapper mt-5">
+                                        <a itemprop="url" href="/shop" >Shop Products</a>
                                         <button class="btn btn-info btn-sm mr-2">Shop Products</button>
+                                        <a itemprop="url" href="/shop/capital-equipment" >Shop Equipment</a>
                                         <button class="btn btn-info btn-sm">Shop Equipment</button>
                                     </div>
 								</div>
@@ -177,7 +181,7 @@
                                             name premium and non-premium products you use.</p>
                                    </div>
                                    <div class="link-wrapper mt-5 mb-3">
-                                       <a href="javascript:void(0)" class="link-btn">LEARN MORE ></a>
+                                       <a href="/stockhawk" class="link-btn">LEARN MORE ></a>
                                    </div>
                                </div>
                            </div>
@@ -221,7 +225,7 @@
                                             outside elements, stock rotation, data integrity and recalls.</p>
                                    </div>
                                    <div class="link-wrapper mt-5 mb-3">
-                                       <a href="javascript:void(0)" class="link-btn">LEARN MORE ></a>
+                                       <a href="/quality_assurance" class="link-btn">LEARN MORE ></a>
                                    </div>
                                 </div>
                                 <div class="col-md-6">
@@ -308,8 +312,10 @@
                                     <img src="/sps_theme/static/src/images/specialities.jpg" class="img-fluid"/>
                                </div>
                                  <div class=" col-12 text-center btn-wrapper mt-5 pt-5">
-                                    <button class="btn btn-info btn-sm mr-2">Shop Products</button>
-                                    <button class="btn btn-info btn-sm">Shop Equipment</button>
+                                     <a itemprop="url" href="/shop" >Shop Products</a>
+                                     <button class="btn btn-info btn-sm mr-2">Shop Products</button>
+                                     <a itemprop="url" href="/shop/capital-equipment" >Shop Equipment</a>
+                                     <button class="btn btn-info btn-sm">Shop Equipment</button>
                                 </div>
                             </div>
                         </div>

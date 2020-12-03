@@ -23,6 +23,7 @@
         'views/faqs_page.xml',
         'views/login_page.xml',
         'views/equipment_repair_and_service_page.xml',
+        'views/quality_assurance_page.xml',
         'views/home_page.xml',
         'views/equipment_sell_page.xml',
         'views/request_a_quote_page.xml',
