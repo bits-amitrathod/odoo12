@@ -28,7 +28,7 @@
 							 </div>
 						</div>
 					</section>
-					<section class="position-relative bg-grey padding-100-y mt-5 our-mission" style="">
+					<section class="position-relative bg-grey pt-4 pb-5 mt-5 our-mission" style="">
 						<div class="top-plus"><i class="fa fa-plus"></i></div>
 						<div class="container">
 							<div class="row align-items-center">
@@ -52,7 +52,7 @@
 						</div>
 					</section>
 					 <div class="seprator"><div class="red"></div><div class="black"></div></div>
-					<section class="padding-100-y">
+					<section class="padding-60-y">
 						<div class="container">
 							 <h3 class="section-title">Employee Benefits</h3>
 							<div class="section-description">
@@ -137,7 +137,7 @@
 										</div>
 										<div class="story-list white-plus">
 											<div class="bulleted-list">
-												<div><i class="fa fa-plus"></i></div></div>
+												<div><i class="fa fa-plus	"></i></div></div>
 											<div class="list-description">
 												<p>RESERVED PARKING</p>
 											</div>
