@@ -20,6 +20,7 @@
         'views/stockhawk_page.xml',
         'views/equipment_service_request_page.xml',
         'views/career_page.xml',
+        'views/vendor_list_page.xml',
         'views/faqs_page.xml',
         'views/login_page.xml',
         'views/equipment_repair_and_service_page.xml',

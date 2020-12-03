@@ -73,6 +73,10 @@ class ThemeController(http.Controller):
     def quality_assurance_method(self):
         return http.request.render('sps_theme.quality_assurance_template')
 
+    @http.route('/vendor-list', type='http', auth="public", website=True)
+    def vendor_list_method(self):
+        return http.request.render('sps_theme.vendor_list_template')
+
     @http.route('/downloadCatalog', type='http', auth="public", website=True)
     def downloadCatalog(self):
         result = request.env['sps_theme.product_download_catelog'].search([('status', '=', 'active')], limit=1)
