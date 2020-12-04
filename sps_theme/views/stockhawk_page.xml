@@ -180,6 +180,7 @@
 						</div>
 					</section>
 					<section class="position-relative padding-80-y bg-grey">
+						<form action="/website_form/" method="post" class="s_website_form container-fluid mt32" enctype="multipart/form-data" data-model_name="mail.mail" data-success_page="/thank-you">
 						<div class="top-plus">
 							<i class="fa fa-plus"></i>
 						</div>
@@ -238,12 +239,12 @@
 									</div>
 								</div>
 								<div class="col-12 text-center btn-wrapper mt-5">
-									<button class="btn btn-info btn-sm">Submit</button>
+									<span class="btn btn-primary btn-lg action_button o_website_form_send" style="margin-top: 10px;">Submit</span>
 								</div>
 							</div>
 						</div>
+						</form>
 					</section>
-					<!--<div class="seprator"><div class="red"></div><div class="black"></div></div>-->
 				</div>
 			</t>
 		</t>
