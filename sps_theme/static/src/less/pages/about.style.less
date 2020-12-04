@@ -1729,3 +1729,48 @@ background: #fafafa;
 .word-break{
     word-break: break-all;
 }
+.section-header-title{
+   p{
+    font-size: 24px;
+    line-height: 34px;
+    color: @text-color;
+    text-align: center;
+    position: relative;
+    &:before{
+        content: ' ';
+        height: 3px;
+        width: 40%;
+        position: absolute;
+        left: 0;
+        top: 50%;
+        background-image: linear-gradient(to right, @text-color 100%, rgba(255, 255, 255, 0) 0%);
+        background-position: bottom;
+        background-size: 7px 2px;
+        background-repeat: repeat-x;
+        @media screen and (max-width: 767px){
+            width: 25%;
+        }
+         @media screen and (min-width: 768px) and (max-width: 1024px){
+            width: 35%;
+        }
+    }
+     &:after{
+        content: ' ';
+        height: 3px;
+        width: 40%;
+        position: absolute;
+        right: 0;
+        top: 50%;
+        background-image: linear-gradient(to right, @text-color 100%, rgba(255, 255, 255, 0) 0%);
+        background-position: bottom;
+        background-size: 7px 2px;
+        background-repeat: repeat-x;
+        @media screen and (max-width: 767px){
+            width: 25%;
+        }
+         @media screen and (min-width: 768px) and (max-width: 1024px){
+            width: 35%;
+        }
+    }
+   }
+}
