@@ -104,8 +104,9 @@ class sale_order(models.Model):
             if sales:
                 for sale in sales:
                     if sale.x_studio_allow_duplicate_po is False:
-                        raise Warning(_("The PO number is already present on %s Sales Order. "
-                                        "Set Allow Duplicate PO? On of %s Sales Order.") % (sale.name, sale.name))
+                        raise Warning(_("Duplicate PO number is not allowed.\nThe PO number of this sales order is already "
+                                        "present on Sales Order %s.\n if you want to add duplicate PO against sale oder, "
+                                        "Set 'Allow Duplicate PO' setting ON for both Sales Order.") % sale.name)
 
         # add account manager
         if 'partner_id' in vals and vals['partner_id'] is not None:
@@ -165,14 +166,16 @@ class sale_order(models.Model):
                 self.env['mail.message'].sudo().create(stock_picking_val)
 
         # check #PO and Allow duplicate PO - validation
-        if self.partner_id and self.partner_id.id and self.client_order_ref:
+        if self.partner_id and self.partner_id.id and self.client_order_ref and self.name:
             sales = self.env['sale.order'].search([('partner_id', '=', self.partner_id.id),
                                            ('client_order_ref', '=', self.client_order_ref)])
             if sales:
                 for sale in sales:
                     if sale.x_studio_allow_duplicate_po is False:
-                        raise Warning(_("A The PO number is already present on %s Sales Order. "
-                                        "Set Allow Duplicate PO? On of %s Sales Order.") % (sale.name, sale.name))
+                        raise Warning(_("Duplicate PO number is not allowed.\n"
+                                        "The PO number on sales order %s is already present on Sales Order %s.\n "
+                                        "if you want to add duplicate PO against sale oder, Set 'Allow Duplicate PO' "
+                                        "setting ON for both Sales Order.") % (self.name, sale.name))
 
     @api.one
     def _get_carrier_tracking_ref(self):
