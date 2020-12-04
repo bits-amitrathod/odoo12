@@ -97,16 +97,15 @@ class sale_order(models.Model):
     @api.model
     def create(self, vals):
         # check #PO and Allow duplicate PO - validation
-        if 'partner_id' in vals and vals['partner_id'] is not None and 'client_order_ref' in vals and \
-                vals['client_order_ref'] is not None:
-            sales = self.env['sale.order'].search([('partner_id', '=', vals['partner_id']),
-                                           ('client_order_ref', '=', vals['client_order_ref'])])
+        if 'client_order_ref' in vals and vals['client_order_ref'] is not None and vals['client_order_ref'] and \
+                vals['client_order_ref'].strip() != '':
+            sales = self.env['sale.order'].search([('client_order_ref', '=', vals['client_order_ref'])])
             if sales:
                 for sale in sales:
                     if sale.x_studio_allow_duplicate_po is False:
                         raise Warning(_("Duplicate PO number is not allowed.\nThe PO number of this sales order is already "
-                                        "present on Sales Order %s.\n if you want to add duplicate PO against sale oder, "
-                                        "Set 'Allow Duplicate PO' setting ON for both Sales Order.") % sale.name)
+                              "present on Sales Order %s.\n if you want to add duplicate PO against sale oder, "
+                              "Set 'Allow Duplicate PO' setting ON for both Sales Order.") % sale.name)
 
         # add account manager
         if 'partner_id' in vals and vals['partner_id'] is not None:
@@ -166,9 +165,8 @@ class sale_order(models.Model):
                 self.env['mail.message'].sudo().create(stock_picking_val)
 
         # check #PO and Allow duplicate PO - validation
-        if self.partner_id and self.partner_id.id and self.client_order_ref and self.name:
-            sales = self.env['sale.order'].search([('partner_id', '=', self.partner_id.id),
-                                           ('client_order_ref', '=', self.client_order_ref)])
+        if self.client_order_ref and self.client_order_ref is not None and self.client_order_ref.strip() != '' and self.name:
+            sales = self.env['sale.order'].search([('client_order_ref', '=', self.client_order_ref)])
             if sales:
                 for sale in sales:
                     if sale.x_studio_allow_duplicate_po is False:
