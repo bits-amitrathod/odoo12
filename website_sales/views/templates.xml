@@ -110,15 +110,17 @@
                     <ul class="list-inline">
                         <t t-set="commas" t-value="len(product.public_categ_ids)"/>
                         <t t-set="commaCount" t-value="1"/>
+                            <li  style="padding: 0px;">
                         <t t-foreach="product.public_categ_ids" t-as="c">
-                            <li t-att-class="'active' if c.id == int(category or 0) else None" style="padding: 0px;">
+                            <p t-att-class="'active' if c.id == int(category or 0) else None">
                                 <a t-att-href="keep('/shop/category/' + slug(c), category=0)" class="linkCstm">
                                     <span t-field="c.name"/>
                                     <t t-if="commas &gt; commaCount">,</t>
                                 </a>
-                            </li>
+                            </p>
                             <t t-set="commaCount" t-value="commaCount+1"/>
                         </t>
+                            </li>
                     </ul>
                 </div>
             </div>

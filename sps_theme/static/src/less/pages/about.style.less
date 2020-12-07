@@ -48,11 +48,16 @@
     }
     .story-list{
         display:flex;
-        border-bottom: 2px dotted @blue;
+        /*border-bottom: 2px dotted @blue;*/
         padding-bottom: 15px;
         margin-bottom: 15px;
+        background-image: linear-gradient(to right, #3d9cca 33%, rgba(255, 255, 255, 0) 0%);
+        background-position: bottom;
+        background-size: 7px 2px;
+        background-repeat: repeat-x;
         &:last-child{
             border-bottom: none;
+             background-image: none;
         }
     &.link{
      border-bottom: 0px dashed @blue;
@@ -85,6 +90,7 @@
             border-bottom: 0px dashed @blue;
             padding-bottom: 0px;
             margin-bottom: 10px;
+            background-image: none;
              .bulleted-list{
                 margin-right: 10px;
                 position: relative;
@@ -135,7 +141,7 @@
     .ol2{
         list-style-type: lower-alpha;
         .li2{
-            margin-bottom: 10px;
+            margin: 5px;
         }
     }
 }
@@ -374,6 +380,12 @@
             margin-bottom: 30px;
             .bulleted-list{
                 top: 4px;
+                > div{
+                line-height: 15px;
+                    i{
+                        font-size: 16px;
+                    }
+                }
             }
             .list-description{
                 p{
@@ -525,9 +537,6 @@ background: #fafafa;
 .testimonial{
     .top-plus{
         top: -45px;
-        @media screen and (max-width: 767px){
-            top: -20px;
-        }
     }
 }
 
@@ -1712,4 +1721,65 @@ background: #fafafa;
         line-height: 30px;
         font-family: @regular-font;
     }
+}
+
+.red-title{
+    color: @red;
+    font-size: 17px;
+    font-family: @light-font;
+    line-height: 33px;
+    letter-spacing: 1px;
+    p{
+        color: @red;
+        font-family: @bold-font;
+        margin-bottom: 0px;
+    }
+}
+.word-break{
+    word-break: break-all;
+}
+.section-header-title{
+   p{
+    font-size: 24px;
+    line-height: 34px;
+    color: @text-color;
+    text-align: center;
+    position: relative;
+    &:before{
+        content: ' ';
+        height: 3px;
+        width: 40%;
+        position: absolute;
+        left: 0;
+        top: 50%;
+        background-image: linear-gradient(to right, @text-color 100%, rgba(255, 255, 255, 0) 0%);
+        background-position: bottom;
+        background-size: 7px 2px;
+        background-repeat: repeat-x;
+        @media screen and (max-width: 767px){
+            width: 25%;
+        }
+         @media screen and (min-width: 768px) and (max-width: 1024px){
+            width: 35%;
+        }
+    }
+     &:after{
+        content: ' ';
+        height: 3px;
+        width: 40%;
+        position: absolute;
+        right: 0;
+        top: 50%;
+        background-image: linear-gradient(to right, @text-color 100%, rgba(255, 255, 255, 0) 0%);
+        background-position: bottom;
+        background-size: 7px 2px;
+        background-repeat: repeat-x;
+        @media screen and (max-width: 767px){
+            width: 25%;
+        }
+         @media screen and (min-width: 768px) and (max-width: 1024px){
+            width: 35%;
+        }
+    }
+   }
 }

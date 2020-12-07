@@ -173,6 +173,9 @@ header{
                 float: right;
                 width: 85%;
                 margin-top: 20px;
+                @media screen and (max-width: 767px){
+                    padding: 0 20px;
+                }
                 .nav {
                     .nav-item{
                         a{
@@ -522,7 +525,8 @@ footer{
     .file-control{
         font-size: 18px;
         line-height: 34px;
-        font-family: @regular-font;
+        font-family: @medium-font;
+        font-weight: normal;
         color: #9ca4ac;
         background: #e6e7e8;
         border: 1px solid #9ca4ac;
