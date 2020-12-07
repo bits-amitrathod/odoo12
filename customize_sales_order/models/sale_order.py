@@ -170,7 +170,7 @@ class sale_order(models.Model):
             sales = self.env['sale.order'].search([('client_order_ref', '=', self.client_order_ref)])
             if sales:
                 for sale in sales:
-                    if sale.x_studio_allow_duplicate_po is False:
+                    if self.id != sale.id and sale.x_studio_allow_duplicate_po is False:
                         raise Warning(_("Duplicate PO number is not allowed.\n"
                                         "The PO number on Sales Order %s is already present on Sales Order %s.\n "
                                         "If you want to add Duplicate PO against Sales Order, Set 'Allow Duplicate PO' "
