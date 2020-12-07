@@ -56,15 +56,48 @@
 
     <template id="products_categories" name="eCommerce Categories" inherit_id="website_sale.products_categories">
         <xpath expr="//div[@id='products_grid_before']/ul" position="replace">
+            <!-- products categories Filter -->
+            <div class="accordion" id="accordionExample">
+                  <div class="card">
+                    <div class="card-header" id="headingOne">
+                      <h2 class="mb-0">
+                        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                          ALL CATEGORIES
+                        </button>
+                      </h2>
+                    </div>
 
-            <ul id="categories-collapse" class="nav nav-pills nav-stacked mt16 collapse">
-                <li t-att-class=" '' if category else 'active' ">
-                    <a t-att-href="keep('/shop',category=0)" class="o_not_editable">ALL CATEGORIES</a>
-                </li>
-                <t t-foreach="categories" t-as="c">
-                    <t t-call="website_sale.categories_recursive"/>
-                </t>
-            </ul>
+                    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                      <div class="card-body">
+                        <t t-foreach="categories" t-as="c">
+                            <t t-call="website_sale.categories_recursive"/>
+                        </t>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+            <!-- products Brand Filter -->
+            <div class="accordion" id="accordionExample">
+                  <div class="card">
+                    <div class="card-header" id="headingOne">
+                      <h2 class="mb-0">
+                        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                          Brands
+                        </button>
+                      </h2>
+                    </div>
+
+                    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                      <div class="card-body">
+                        <t t-foreach="categories" t-as="c">
+                            <t t-call="website_sale.categories_recursive"/>
+                        </t>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
         </xpath>
         <xpath expr="//div[@id='products_grid_before']" position="attributes">
             <attribute name="class">col-md-3 col-sm-4</attribute>
