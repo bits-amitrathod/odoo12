@@ -103,8 +103,8 @@ class sale_order(models.Model):
             if sales:
                 for sale in sales:
                     if sale.x_studio_allow_duplicate_po is False:
-                        raise Warning(_("Duplicate PO number is not allowed.\nThe PO number of this sales order is already "
-                              "present on Sales Order %s.\n if you want to add duplicate PO against sale oder, "
+                        raise Warning(_("Duplicate PO number is not allowed.\nThe PO number of this Sales Order is already "
+                              "present on Sales Order %s.\n If you want to add Duplicate PO against Sales Order, "
                               "Set 'Allow Duplicate PO' setting ON for both Sales Order.") % sale.name)
 
         # add account manager
@@ -171,8 +171,8 @@ class sale_order(models.Model):
                 for sale in sales:
                     if sale.x_studio_allow_duplicate_po is False:
                         raise Warning(_("Duplicate PO number is not allowed.\n"
-                                        "The PO number on sales order %s is already present on Sales Order %s.\n "
-                                        "if you want to add duplicate PO against sale oder, Set 'Allow Duplicate PO' "
+                                        "The PO number on Sales Order %s is already present on Sales Order %s.\n "
+                                        "If you want to add Duplicate PO against Sales Order, Set 'Allow Duplicate PO' "
                                         "setting ON for both Sales Order.") % (self.name, sale.name))
 
     @api.one
