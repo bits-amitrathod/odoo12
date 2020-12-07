@@ -165,7 +165,8 @@ class sale_order(models.Model):
                 self.env['mail.message'].sudo().create(stock_picking_val)
 
         # check #PO and Allow duplicate PO - validation
-        if self.client_order_ref and self.client_order_ref is not None and self.client_order_ref.strip() != '' and self.name:
+        if self.team_id and self.team_id.team_type in ('sales', 'engine') and self.client_order_ref and \
+                self.client_order_ref is not None and self.client_order_ref.strip() != '' and self.name:
             sales = self.env['sale.order'].search([('client_order_ref', '=', self.client_order_ref)])
             if sales:
                 for sale in sales:
