@@ -24,7 +24,7 @@
                 <t t-foreach="tr_product" t-as="td_product">
                     <t t-if="td_product">
                         <t t-set="product" t-value="td_product"/>
-                        <div t-attf-class="col-md-3 col-sm-6">
+                        <div t-attf-class="col-md-6 col-xl-4">
                             <div class="oe_product_cart"
                                  t-att-data-publish="product.website_published and 'on' or 'off'">
                                 <t t-call="website_sales.products_item"/>

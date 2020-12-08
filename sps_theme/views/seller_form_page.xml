@@ -11,7 +11,7 @@
             </div>
         </div>
       </section>
-      <section class="s_text_block pb0" style="">
+      <section class="s_text_block pb0 bg-grey py-5">
         <div class="container">
           <div class="section-description">
             <p class="text-center">Please fill out the form below in order to submit an item for valuation.</p>

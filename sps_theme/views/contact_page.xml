@@ -10,7 +10,7 @@
 							</h1>
 						</div>
 						<div class="row">
-							<div class="col-md-5 col-sm-6 mb48 mt8">
+							<div class="col-xl-5 col-md-6 col-sm-6 mb48 mt8">
 								<div class="contact-info">
 									<h3 class="contact-title">CONTACT OUR TEAM</h3>
 									<div class="section-description mt-5">
@@ -22,7 +22,9 @@
 											</div>
 											<div class="list-description">
 												<p>Sales</p>
-												<span>Contact info here</span>
+												<div class="contact-detail">
+													<span>(412) 564-1280</span>
+												</div>
 											</div>
 										</div>
 										<div class="story-list link">
@@ -33,7 +35,9 @@
 											</div>
 											<div class="list-description">
 												<p>Acquisitions</p>
-												<span>Contact info here</span>
+												<div class="contact-detail">
+													<span>(412) 745-0330</span>
+												</div>
 											</div>
 										</div>
 										<div class="story-list link">
@@ -44,7 +48,9 @@
 											</div>
 											<div class="list-description">
 												<p>Contracts &amp; National Accounts</p>
-												<span>Contact info here</span>
+												<div class="contact-detail">
+													<span>(412) 564-1047</span>
+												</div>
 											</div>
 										</div>
 										<div class="story-list link">
@@ -55,13 +61,15 @@
 											</div>
 											<div class="list-description">
 												<p>Accounting</p>
-												<span>Contact info here</span>
+												<div class="contact-detail">
+													<span>(412) 745-2322</span>
+												</div>
 											</div>
 										</div>
 									</div>
 								</div>
 							</div>
-							<div class="col-md-7 col-sm-6 mb48 mt8">
+							<div class="col-xl-7 col-md-6 col-sm-6 mb48 mt8">
 								<div class="get-in-touch">
 									<h3 class="title">GET IN TOUCH</h3>
 									<span class="sub-title">Use the form below to get in touch with us and we’ll respond as soon as possible. </span>
