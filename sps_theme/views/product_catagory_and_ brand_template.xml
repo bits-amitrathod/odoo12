@@ -12,23 +12,6 @@
                 (name_desc_label, 'name desc')
             ]"/>
             <t t-set="website_sale_sortable_current" t-value="[sort for sort in website_sale_sortable if sort[1]==request.params.get('order', '')]"/>
-            <div class="dropdown ml-2 dropdown_sorty_by">
-                <a role="button" href="#" class="dropdown-toggle btn btn-secondary" data-toggle="dropdown">
-                    <t t-if='len(website_sale_sortable_current)'>
-                        <span>Brand  : <t t-raw='website_sale_sortable_current[0][0]'/></span>
-                    </t>
-                    <t t-else='1'>
-                        <span>Brand</span>
-                    </t>
-                </a>
-                <div class="dropdown-menu" role="menu">
-                    <t t-foreach="website_sale_sortable" t-as="sortby">
-                        <a role="menuitem" rel="noindex,nofollow" t-att-href="keep('/shop', order=sortby[1])" class="dropdown-item">
-                            <span t-raw="sortby[0]"/>
-                        </a>
-                    </t>
-                </div>
-            </div>
         </xpath>
     </template>
 

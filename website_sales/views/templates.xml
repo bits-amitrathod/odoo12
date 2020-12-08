@@ -90,8 +90,12 @@
 
                     <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
                       <div class="card-body">
-                        <t t-foreach="categories" t-as="c">
-                            <t t-call="website_sale.categories_recursive"/>
+                        <t t-foreach="brands" t-as="c">
+                            <li t-att-class="'active' if c.id == int(category or 0) else None">
+                                <a t-att-href="keep('/shop/brand/' + slug(c), category=0)" t-field="c.name" class="linkCstm"></a>
+                            </li>
+                            <!--<h5><t t-esc="c.name"/></h5>-->
+                            <!--<t t-call="website_sales.brand_recursive"/>-->
                         </t>
                       </div>
                     </div>
@@ -174,6 +178,15 @@
                 <t t-foreach="c.child_id" t-as="c">
                     <t t-call="website_sales.categories_recursive"/>
                 </t>
+            </ul>
+        </li>
+    </template>
+
+    <template id="brand_recursive" name="brand list">
+        <li>
+            <a t-att-href="keep('/shop/brand/')" t-field="c.name" class="linkCstm"></a>
+            <ul t-if="c.child_id" class="nav nav-pills nav-stacked nav-hierarchy">
+
             </ul>
         </li>
     </template>
