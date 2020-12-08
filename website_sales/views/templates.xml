@@ -57,42 +57,44 @@
     <template id="products_categories" name="eCommerce Categories" inherit_id="website_sale.products_categories">
         <xpath expr="//div[@id='products_grid_before']/ul" position="replace">
             <!-- products categories Filter -->
-            <div class="accordion" id="accordionExample">
-                  <div class="card">
-                    <div class="card-header" id="headingOne">
-                      <h2 class="mb-0">
-                        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                          ALL CATEGORIES
-                        </button>
-                      </h2>
-                    </div>
-
-                    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
-                      <div class="card-body">
-                        <t t-foreach="categories" t-as="c">
-                            <t t-call="website_sale.categories_recursive"/>
-                        </t>
-                      </div>
-                    </div>
-                  </div>
+            <div class="sidebar-accordion" id="categories">
+              <div class="card">
+                <div class="card-header" id="allcategories">
+                  <h2 class="mb-0">
+                    <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#all_categories" aria-expanded="true" aria-controls="all_categories">
+                      ALL CATEGORIES <i class="fa fa-plus"></i>
+                    </button>
+                  </h2>
                 </div>
 
+                <div id="all_categories" class="collapse" aria-labelledby="headingOne" data-parent="#categories">
+                  <div class="card-body">
+                      <ul class="sub-category">
+                        <t t-foreach="categories" t-as="c">
+                            <t t-call="website_sale.categories_recursive"/>
+                        </t>
+                      </ul>
+                  </div>
+                </div>
+              </div>
+
             <!-- products Brand Filter -->
-            <div class="accordion" id="accordionExample">
                   <div class="card">
-                    <div class="card-header" id="headingOne">
+                    <div class="card-header" id="brand">
                       <h2 class="mb-0">
                         <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                          Brands
+                          BRANDS <i class="fa fa-plus"></i>
                         </button>
                       </h2>
                     </div>
 
-                    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#categories">
                       <div class="card-body">
-                        <t t-foreach="categories" t-as="c">
-                            <t t-call="website_sale.categories_recursive"/>
-                        </t>
+                          <ul class="sub-category">
+                            <t t-foreach="categories" t-as="c">
+                                <t t-call="website_sale.categories_recursive"/>
+                            </t>
+                          </ul>
                       </div>
                     </div>
                   </div>
@@ -137,28 +139,28 @@
 
     <template id="category_vender" name="category Vender">
         <div class="row category-wrapper">
-            <div class="col">
+            <div class="col-md">
                 <div class="category-detail">
                     <span class="pull-left" style="padding-right: 5px;">Category:</span>
-                    <ul class="list-inline">
+                    <ul class="list-inline mb-0">
                         <t t-set="commas" t-value="len(product.public_categ_ids)"/>
                         <t t-set="commaCount" t-value="1"/>
                             <li  style="padding: 0px;">
                         <t t-foreach="product.public_categ_ids" t-as="c">
-                            <p t-att-class="'active' if c.id == int(category or 0) else None">
+                            <span t-att-class="'active' if c.id == int(category or 0) else None">
                                 <a t-att-href="keep('/shop/category/' + slug(c), category=0)" class="linkCstm">
                                     <span t-field="c.name"/>
                                     <t t-if="commas &gt; commaCount">,</t>
                                 </a>
-                            </p>
+                            </span>
                             <t t-set="commaCount" t-value="commaCount+1"/>
                         </t>
                             </li>
                     </ul>
                 </div>
             </div>
-            <div class="col">
-                 <div class="category-detail">
+            <div class="col-md">
+                 <div class="category-detail  mb-3">
                     <span>Vendor:</span>
                     <a t-att-href="keep('/shop/brands', brand=product.product_brand_id.id)"
                        t-field="product.product_brand_id.name" class="linkCstm"></a>

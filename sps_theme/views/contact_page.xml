@@ -10,7 +10,7 @@
 							</h1>
 						</div>
 						<div class="row">
-							<div class="col-md-5 col-sm-6 mb48 mt8">
+							<div class="col-xl-5 col-md-6 col-sm-6 mb48 mt8">
 								<div class="contact-info">
 									<h3 class="contact-title">CONTACT OUR TEAM</h3>
 									<div class="section-description mt-5">
@@ -21,8 +21,13 @@
 												</div>
 											</div>
 											<div class="list-description">
-												<p>Sales</p>
-												<span>Contact info here</span>
+												<p>Senior Sales Manager</p>
+												<div class="contact-detail">
+													<span>Jamie Gutermuth </span><br/>
+													<span>(412) 221-4280</span><br/>
+													<span><a class="word-break" href="mailto: Jamie@surgicalproductsolutions.com">Jamie@surgicalproductsolutions.com</a></span><br/>
+													<span><a href="#">LinkedIn</a></span><br/>
+												</div>
 											</div>
 										</div>
 										<div class="story-list link">
@@ -32,8 +37,13 @@
 												</div>
 											</div>
 											<div class="list-description">
-												<p>Acquisitions</p>
-												<span>Contact info here</span>
+												<p>Sales Manager</p>
+												<div class="contact-detail">
+													<span>Dena Gula </span><br/>
+													<span>(412) 564-1047</span><br/>
+													<span><a class="word-break" href="mailto: Dena@surgicalproductsolutions.com">Dena@surgicalproductsolutions.com</a></span><br/>
+													<span><a href="#">LinkedIn</a></span><br/>
+												</div>
 											</div>
 										</div>
 										<div class="story-list link">
@@ -43,8 +53,13 @@
 												</div>
 											</div>
 											<div class="list-description">
-												<p>Contracts &amp; National Accounts</p>
-												<span>Contact info here</span>
+												<p>Sales Specialist</p>
+												<div class="contact-detail">
+													<span>Chelsea Cernigliaro</span><br/>
+													<span>(412) 564-1281</span><br/>
+													<span><a class="word-break" href="mailto:Chelsea@surgicalproductsolutions.com">Chelsea@surgicalproductsolutions.com</a></span><br/>
+													<span><a href="#">LinkedIn</a></span><br/>
+												</div>
 											</div>
 										</div>
 										<div class="story-list link">
@@ -54,14 +69,18 @@
 												</div>
 											</div>
 											<div class="list-description">
-												<p>Accounting</p>
-												<span>Contact info here</span>
+												<p>Sales Specialist</p>
+												<div class="contact-detail">
+													<span>Brittany Edwards</span><br/>
+													<span>(412) 434-0214</span><br/>
+													<span><a class="word-break" href="mailto:brittany@surgicalproductsolutions.com">brittany@surgicalproductsolutions.com</a></span><br/>
+												</div>
 											</div>
 										</div>
 									</div>
 								</div>
 							</div>
-							<div class="col-md-7 col-sm-6 mb48 mt8">
+							<div class="col-xl-7 col-md-6 col-sm-6 mb48 mt8 align-self-start">
 								<div class="get-in-touch">
 									<h3 class="title">GET IN TOUCH</h3>
 									<span class="sub-title">Use the form below to get in touch with us and we’ll respond as soon as possible. </span>

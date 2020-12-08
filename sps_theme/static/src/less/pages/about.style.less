@@ -60,9 +60,10 @@
              background-image: none;
         }
     &.link{
-     border-bottom: 0px dashed @blue;
+        border-bottom: 0px dashed @blue;
         padding-bottom: 0px;
         margin-bottom: 5px;
+        background-image: none;
         .bulleted-list{
             margin-right: 10px;
             position: relative;
@@ -81,7 +82,7 @@
                 .link-to{
                     font-size: 18px;
                     font-family: @bold-font;
-                    line-height: 34px;
+                    line-height: 28px;
                     color: @red;
                 }
             }
@@ -394,12 +395,18 @@
                     line-height: 26px;
                     margin-bottom: 0;
                 }
-                span{
-                    font-size: 18px;
-                    font-family: @regular-font;
-                    line-height: 26px;
-                    margin-bottom: 0;
-                    color: @text-color;
+                .contact-detail{
+                    span{
+                        font-size: 18px;
+                        font-family: @regular-font;
+                        line-height: 30px;
+                        margin-bottom: 0;
+                        color: @text-color;
+                        a{
+                            text-decoration: none;
+                            color: @red;
+                        }
+                    }
                 }
             }
         }
@@ -410,6 +417,9 @@
         height: 100%;
         border: 1px solid #d8d8d8;
         border-bottom: 8px solid @red;
+        @media screen and (max-width: 767px){
+            padding: 15px;
+        }
         .title{
            font-size: 20px;
            line-height: 26px;
@@ -1782,4 +1792,66 @@ background: #fafafa;
         }
     }
    }
+}
+
+.sidebar-accordion{
+    .card{
+        border: none;
+        border-bottom: 1px solid @red;
+        border-radius: 0;
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+        .card-header{
+            padding: 0;
+            background: transparent;
+            border: none;
+            .btn{
+                &.btn-link{
+                    font-size: 17px;
+                    line-height: 18px;
+                    color: @text-color;
+                    font-family: @bold-font;
+                    padding: 0;
+                    i{
+                        font-size: 14px;
+                    }
+                    &:hover, &:focus{
+                        text-decoration: none;
+                    }
+                    &[aria-expanded='true']{
+                        i{
+                            &:before{
+                                content: "\f068";
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        .card-body{
+            padding: 3px;
+            .sub-category{
+                padding-left: 0;
+                list-style: none;
+                margin-bottom: 0;
+                li{
+                    padding: 10px;
+                    &.active{
+                        a{
+                            color:@red;
+                            font-family: @medium-font;
+                        }
+                    }
+                   a{
+                    font-size: 17px;
+                    line-height: 18px;
+                    color: @text-color;
+                    font-family: @regular-font;
+                    text-transform: capitalize;
+                   }
+                }
+            }
+        }
+    }
 }
