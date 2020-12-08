@@ -61,7 +61,7 @@
               <div class="card">
                 <div class="card-header" id="allcategories">
                   <h2 class="mb-0">
-                    <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#all_categories" aria-expanded="true" aria-controls="all_categories">
+                    <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#all_categories" aria-expanded="false" aria-controls="all_categories">
                       ALL CATEGORIES <i class="fa fa-plus"></i>
                     </button>
                   </h2>
@@ -82,7 +82,7 @@
                   <div class="card">
                     <div class="card-header" id="brand">
                       <h2 class="mb-0">
-                        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
                           BRANDS <i class="fa fa-plus"></i>
                         </button>
                       </h2>
@@ -90,11 +90,15 @@
 
                     <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#categories">
                       <div class="card-body">
-                          <ul class="sub-category">
-                            <t t-foreach="categories" t-as="c">
-                                <t t-call="website_sale.categories_recursive"/>
-                            </t>
-                          </ul>
+                     <ul class="sub-category">
+                        <t t-foreach="brands" t-as="c">
+                            <li t-att-class="'active' if c.id == int(category or 0) else None">
+                                <a t-att-href="keep('/shop/brand/' + slug(c), category=0)" t-field="c.name" class="linkCstm"></a>
+                            </li>
+                            <!--<h5><t t-esc="c.name"/></h5>-->
+                            <!--<t t-call="website_sales.brand_recursive"/>-->
+                        </t>
+                     </ul>
                       </div>
                     </div>
                   </div>
@@ -176,6 +180,15 @@
                 <t t-foreach="c.child_id" t-as="c">
                     <t t-call="website_sales.categories_recursive"/>
                 </t>
+            </ul>
+        </li>
+    </template>
+
+    <template id="brand_recursive" name="brand list">
+        <li>
+            <a t-att-href="keep('/shop/brand/')" t-field="c.name" class="linkCstm"></a>
+            <ul t-if="c.child_id" class="nav nav-pills nav-stacked nav-hierarchy">
+
             </ul>
         </li>
     </template>

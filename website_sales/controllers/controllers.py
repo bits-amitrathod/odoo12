@@ -11,10 +11,15 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         '/shop/capital-equipment',
         '/shop/page/<int:page>',
         '/shop/category/<model("product.public.category"):category>',
-        '/shop/category/<model("product.public.category"):category>/page/<int:page>'
+        '/shop/category/<model("product.public.category"):category>/page/<int:page>',
+        '/shop/brand/<model("product.brand"):brand>',
+        '/shop/brand/<model("product.brand"):brand>/page/<int:page>'
     ], type='http', auth="public", website=True)
-    def shop(self, page=0, category=None, search='', ppg=False, **post):
+    def shop(self, page=0, category=None, search='', brand= None, ppg=False, **post):
         product_template = request.env['product.template'].search([('actual_quantity', '=', False)])
+        product_brands = request.env['product.brand'].search([])
+        if brand :
+            product_brand_list = request.env['product.template'].search([('product_brand_id', '=', brand.id)])
         if len(product_template)>0:
             for product in product_template:
                 product.update({'actual_quantity':0})
@@ -35,6 +40,8 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         responce = super(WebsiteSales, self).shop(page, category, search, ppg, **post)
 
         payload = responce.qcontext
+        if brand :
+            payload['products'] = request.env['product.template'].search([('product_brand_id', '=', brand.id)])
         irConfig = request.env['ir.config_parameter'].sudo()
         payload['isVisibleWebsiteExpirationDate'] = irConfig.get_param('website_sales.website_expiration_date')
         if payload['products'] and payload['isVisibleWebsiteExpirationDate']:
@@ -63,7 +70,7 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
             i += 1
 
         payload['porductRows'] = porductRows
-
+        payload['brands'] = product_brands
         return request.render("website_sale.products", payload)
 
     @http.route(['/shop/product/<model("product.template"):product>'], type='http', auth="public", website=True)
