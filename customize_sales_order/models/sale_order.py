@@ -105,8 +105,12 @@ class sale_order(models.Model):
                 vals['user_id'] = res_partner.parent_id.user_id.id
             if res_partner and res_partner.account_manager_cust and res_partner.account_manager_cust.id:
                 vals['account_manager'] = res_partner.account_manager_cust.id
+            elif res_partner and res_partner.parent_id and res_partner.parent_id.account_manager_cust and res_partner.parent_id.account_manager_cust.id:
+                vals['account_manager'] = res_partner.parent_id.account_manager_cust.id
             if res_partner and res_partner.national_account_rep and res_partner.national_account_rep.id:
                 vals['national_account'] = res_partner.national_account_rep.id
+            elif res_partner and res_partner.parent_id and res_partner.parent_id.national_account_rep and res_partner.parent_id.national_account_rep.id:
+                vals['national_account'] = res_partner.parent_id.national_account_rep.id
         return super(sale_order, self).create(vals)
     @api.depends('order_line.price_total')
     def _amount_all(self):
