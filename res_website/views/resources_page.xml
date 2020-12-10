@@ -16,7 +16,6 @@
                                 <p><t t-esc="b.subtitle"/></p>
                                 <p><t t-esc="b.website_url"/></p>
                             </t>
-
                         </section>
                     </div>
                 </t>

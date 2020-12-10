@@ -75,21 +75,22 @@
 									<span class="sub-title">Use the form below to get in touch with us and we’ll respond as soon as possible. </span>
 									<form action="/website_form/" method="post" data-model_name="crm.lead" data-success_page="/thank-you" class="mt-5 s_website_form form-horizontal container-fluid" enctype="multipart/form-data" data-editable-form="false">
 										<div class="col-md-8">
-											<div class="form-group form-field has-float-label o_website_form_required_custom">
+
+											<div class="form-group has-float-label form-field o_website_form_required_custom">
 												<input type="text" class="form-control o_website_form_input" placeholder="Name" id="contact_name" name="contact_name" t-att-value="request.params.get('contact_name', '')" required=""/>
 												<label class="control-label" for="contact_name">Name</label>
 											</div>
 										</div>
 										<div class="col-md-8">
-											<div class="form-group form-field  has-float-label o_website_form_required_custom">
-												<input placeholder="Email"  type="text" id="email_form" class="form-control o_website_form_input" name="email_from"  t-att-value="request.params.get('email_from', '')" required=""/>
+											<div class="form-group has-float-label form-field o_website_form_required_custom">
+												<input placeholder="Email"  type="text" id="email_form" class="form-control o_website_form_input" name="email_from" required="" t-att-value="request.params.get('email_from', '')"/>
 												<label class="control-label" for="email_form">Email</label>
 												<input type="hidden" class="form-control o_website_form_input" name="name" required="True" value="Website Contact Us" />
 											</div>
 										</div>
 										<div class="col-12">
-											<div class="form-group form-field has-float-label o_website_form_required_custom">
-												<textarea id="description" placeholder="Message" class="form-control o_website_form_input" name="description"  rows="5" required="">
+											<div class="form-group has-float-label form-field o_website_form_required_custom">
+												<textarea id="description" placeholder="Message" class="form-control o_website_form_input" name="description"  required="" rows="5">
 													<t t-esc="request.params.get('description', '')" />
 												</textarea>
 												<label class="control-label" for="description">Message</label>
