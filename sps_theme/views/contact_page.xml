@@ -97,8 +97,7 @@
 											</div>
 										</div>
 										<div class="col-md-12 text-center btn-wrapper">
-									       <!-- <span class="btn btn-info btn-sm action_button o_website_form_send">Send Message</span>-->
-											<button type= 'submit' class="btn btn-info btn-sm action_button o_website_form_send">Send Message</button>
+									        <button class="btn btn-info btn-sm action_button o_website_form_send">Send Message</button>
 										</div>
 									</form>
 								</div>
