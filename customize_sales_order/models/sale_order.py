@@ -228,6 +228,21 @@ class sale_order(models.Model):
                 order.delivery_price = 0.0
                 order.delivery_message = res['error_message']
 
+    @api.multi
+    @api.onchange('partner_id')
+    def onchange_partner_id(self):
+        if self.partner_id and self.partner_id.account_manager_cust and self.partner_id.account_manager_cust.id:
+            self.account_manager = self.partner_id.account_manager_cust.id
+        elif self.partner_id and self.partner_id.commercial_partner_id and self.partner_id.commercial_partner_id.account_manager_cust \
+                and self.partner_id.commercial_partner_id.account_manager_cust.id:
+            self.account_manager = self.partner_id.commercial_partner_id.account_manager_cust.id
+        if self.partner_id and self.partner_id.national_account_rep and self.partner_id.national_account_rep.id:
+            self.national_account = self.partner_id.national_account_rep.id
+        elif self.partner_id and self.partner_id.commercial_partner_id and self.partner_id.commercial_partner_id.national_account_rep \
+                and self.partner_id.commercial_partner_id.national_account_rep.id:
+            self.national_account = self.partner_id.commercial_partner_id.national_account_rep.id
+        super(sale_order, self).onchange_partner_id()
+
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
