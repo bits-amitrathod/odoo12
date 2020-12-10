@@ -203,43 +203,43 @@
 							</div>
 							<div class="row mt-5">
 								<div class="col-md-6">
-									<div class="form-group has-float-label">
-										<input type="text" placeholder="First Name" id="first_name" class="form-control" name="first_name" required=""/>
-										<label class="control-label" for="first_name">First Name*</label>
+									<div class="form-group has-float-label form-field o_website_form_required_custom">
+										<input type="text" placeholder="First Name" id="first_name" class="form-control o_website_form_input" name="first_name" required=""/>
+										<label class="control-label" for="first_name">First Name</label>
 									</div>
 								</div>
 								<div class="col-md-6">
-									<div class="form-group has-float-label">
-										<input type="text" placeholder="Last Name" id="last_name" class="form-control" name="last_name" required=""/>
-										<label class="control-label" for="last_name">Last Name*</label>
+									<div class="form-group has-float-label form-field o_website_form_required_custom">
+										<input type="text" placeholder="Last Name" id="last_name" class="form-control o_website_form_input" name="last_name" required=""/>
+										<label class="control-label" for="last_name">Last Name</label>
 									</div>
 								</div>
 								<div class="col-md-6">
-									<div class="form-group has-float-label">
-										<input type="text" placeholder="Phone" id="phone" class="form-control" name="phone" required=""/>
-										<label class="control-label" for="phone">Phone*</label>
+									<div class="form-group has-float-label form-field o_website_form_required_custom">
+										<input type="text" placeholder="Phone" id="phone" class="form-control o_website_form_input" name="phone" required=""/>
+										<label class="control-label" for="phone">Phone</label>
 									</div>
 								</div>
 								<div class="col-md-6">
-									<div class="form-group has-float-label">
-										<input type="text" placeholder="Email" id="email" class="form-control" name="email" required=""/>
-										<label class="control-label" for="email">Email*</label>
+									<div class="form-group has-float-label form-field o_website_form_required_custom">
+										<input type="text" placeholder="Email" id="email" class="form-control o_website_form_input" name="email" required=""/>
+										<label class="control-label" for="email">Email</label>
 									</div>
 								</div>
 								<div class="col-md-6">
-									<div class="form-group has-float-label">
-										<input type="text" placeholder="Company Name" id="Company" class="form-control" name="Company" required=""/>
-										<label class="control-label" for="Company">Company Name*</label>
+									<div class="form-group has-float-label form-field o_website_form_required_custom">
+										<input type="text" placeholder="Company Name" id="Company" class="form-control o_website_form_input" name="Company" required=""/>
+										<label class="control-label" for="Company">Company Name</label>
 									</div>
 								</div>
 								<div class="col-md-6">
-									<div class="form-group has-float-label">
-										<input type="text" placeholder="# of Reps" id="Reps" class="form-control" name="Reps" required=""/>
-										<label class="control-label" for="Reps"># of Reps*</label>
+									<div class="form-group has-float-label form-field o_website_form_required_custom">
+										<input type="text" placeholder="# of Reps" id="Reps" class="form-control o_website_form_input" name="Reps" required=""/>
+										<label class="control-label" for="Reps"># of Reps</label>
 									</div>
 								</div>
 								<div class="col-12 text-center btn-wrapper mt-5">
-									<span class="btn btn-primary btn-lg action_button o_website_form_send" style="margin-top: 10px;">Submit</span>
+									<span class="btn btn-info btn-sm action_button o_website_form_send">Submit</span>
 								</div>
 							</div>
 						</div>
