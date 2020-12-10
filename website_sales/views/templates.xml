@@ -62,7 +62,7 @@
                 <div class="card-header" id="allcategories">
                   <h2 class="mb-0">
                     <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#all_categories" aria-expanded="false" aria-controls="all_categories">
-                      ALL CATEGORIES <i class="fa fa-plus"></i>
+                      PRODUCT CATEGORY <i class="fa fa-plus"></i>
                     </button>
                   </h2>
                 </div>
