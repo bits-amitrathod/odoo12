@@ -78,7 +78,7 @@
                                      <div class="col-md-12">
                                         <div class="form-group has-float-label form-field o_website_form_required_custom">
                                             <input type="text" placeholder="Model Number" id="Model" class="form-control  o_website_form_input" name="Model" required=""/>
-                                            <label class="control-label" for="Model">Model Number*</label>
+                                            <label class="control-label" for="Model">Model Number</label>
                                         </div>
                                     </div>
                                       <div class="col-md-12">
@@ -158,7 +158,7 @@
                                         <div class="form-group labels">
                                             <div class="row">
                                                 <div class="col-md-2">
-                                                    <label class="control-label"> Reprocessing*</label>
+                                                    <label class="control-label"> Reprocessing</label>
                                                 </div>
                                                 <div class="col-md-9">
                                                     <label class="control-label">
@@ -180,8 +180,8 @@
                                     </div>
                                      <div class="col-12">
                                           <div class="form-group has-float-label   form-field o_website_form_required_custom">
-                                                <textarea id="description" placeholder="Problem Description* (Please be specific)" class="form-control o_website_form_input" name="description"  required="" rows="5"><t t-esc="request.params.get('description', '')" /></textarea>
-                                                <label class="control-label" for="description">Problem Description* (Please be specific)</label>
+                                                <textarea id="description" placeholder="Problem Description (Please be specific)" class="form-control o_website_form_input" name="description"  required="" rows="5"><t t-esc="request.params.get('description', '')" /></textarea>
+                                                <label class="control-label" for="description">Problem Description (Please be specific)</label>
                                           </div>
                                      </div>
                                     <div class="col-12">
@@ -217,7 +217,7 @@
                                     <div class="col-md-12">
                                         <div class="form-group has-float-label form-field o_website_form_required_custom">
                                             <input type="text" placeholder="Email" id="Email" class="form-control o_website_form_input" name="Email" required=""/>
-                                            <label class="control-label" for="Email">Email*</label>
+                                            <label class="control-label" for="Email">Email</label>
                                         </div>
                                     </div>
                                     <div class="col-12">
@@ -226,13 +226,13 @@
                                     <div class="col-md-12">
                                         <div class="form-group has-float-label form-field o_website_form_required_custom">
                                             <input type="text" placeholder="Facility Name" id="Facility" class="form-control o_website_form_input" name="Facility" required=""/>
-                                            <label class="control-label" for="Facility">Facility Name*</label>
+                                            <label class="control-label" for="Facility">Facility Name</label>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group has-float-label form-field o_website_form_required_custom">
                                             <input type="text" placeholder="Address" id="Address" class="form-control o_website_form_input" name="Address" required=""/>
-                                            <label class="control-label" for="Address">Address*</label>
+                                            <label class="control-label" for="Address">Address</label>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
