@@ -294,14 +294,14 @@
                              </div>
                              <div class="row">
                                 <div class="col-md-12">
-                                    <div class="form-group has-float-label">
-                                        <input type="text" class="form-control" placeholder="Business Name" id="bussiness_name" name="bussiness_name"/>
+                                    <div class="form-group has-float-label form-field o_website_form_required_custom">
+                                        <input required="" type="text" class="form-control o_website_form_input" placeholder="Business Name" id="bussiness_name" name="bussiness_name"/>
                                         <label class="control-label" for="bussiness_name">Business Name</label>
                                     </div>
                                 </div>
                                   <div class="col-md-6">
-                                    <div class="form-group has-float-label">
-                                        <input type="text" class="form-control" placeholder="Business Address" id="bussiness_address" name="bussiness_address"/>
+                                    <div class="form-group has-float-label form-field o_website_form_required_custom">
+                                        <input required=""  type="text" class="form-control o_website_form_input" placeholder="Business Address" id="bussiness_address" name="bussiness_address"/>
                                         <label class="control-label" for="bussiness_address">Business Address</label>
                                     </div>
                                 </div>

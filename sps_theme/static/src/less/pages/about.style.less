@@ -1877,3 +1877,41 @@ background: #fafafa;
         }
     }
 }
+
+.resource-page{
+    .resource-title{
+        background-image: linear-gradient(to right, #3d9cca 33%, rgba(255, 255, 255, 0) 0%);
+        background-position: bottom;
+        background-size: 7px 2px;
+        background-repeat: repeat-x;
+    }
+    .resource-section-title{
+        font-size: 42px;
+        line-height: 53px;
+        font-family: @regular-font;
+        color: @text-color;
+        span{
+            font-family: @bold-font;
+        }
+    }
+    .resource-box{
+        border: 1px solid @text-color;
+        .images-wrapper{
+            img{
+             box-shadow: 10px 9px 0px #ced2d5;
+             }
+             &.no-shadow{
+                img{
+                box-shadow: none;
+                }
+             }
+        }
+    }
+    .border-separator{
+        background-image: linear-gradient(to right, #3d9cca 33%, rgba(255, 255, 255, 0) 0%);
+        background-position: bottom;
+        background-size: 7px 2px;
+        background-repeat: repeat-x;
+        height: 5px;
+    }
+}
