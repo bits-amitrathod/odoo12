@@ -8,5 +8,5 @@ class WebResource(models.Model):
     description = fields.Char(string='Resource Description', required=True)
     url = fields.Char(string='Resource URL', required=True)
 
-    active = fields.Boolean(string='Active')
+    active = fields.Boolean(string='Active', default=True)
     website_published = fields.Boolean(string='website_published')

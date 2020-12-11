@@ -31,7 +31,7 @@
                                         <div class="resource-box h-100">
                                             <div class="video-section-wrapper m-0 border-0">
                                                 <div class="video-wrapper">
-                                                    <iframe width="100%" height="200" src="https://www.youtube.com/embed/L7dMasrhDFA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+                                                    <iframe width="100%" height="200" t-att-src="v.url" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
                                                 </div>
                                             </div>
                                             <div class="resource-detail p-3">
@@ -40,67 +40,33 @@
                                                     <p class="mb-0"><t t-esc="v.description"/></p>
                                                 </div>
                                                  <div class="link-wrapper mb-3 mt-2">
-                                                   <a t-att-href="v.url"  class="link-btn" data-toggle="modal" data-target="#modalone">WATCH VIDEO ></a>
+                                                   <a t-att-href="v.url"  class="link-btn" data-toggle="modal" t-att-data-target="'#a'+ str(v.id)">WATCH VIDEO ></a>
                                                  </div>
                                             </div>
                                         </div>
                                     </div>
-                                    </t>
-                                         <div class="col-md-4 mb-3 px-3 px-md-4">
-                                        <div class="resource-box h-100">
-                                            <div class="video-section-wrapper m-0 border-0">
-                                                <div class="video-wrapper">
-                                                    <iframe width="100%" height="200" src="https://www.youtube.com/embed/L7dMasrhDFA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
-                                                </div>
-                                            </div>
-                                            <div class="resource-detail p-3">
-                                                <div class="section-description">
-                                                    <p class="mb-0"><span>TTitle</span></p>
-                                                    <p class="mb-0">Demo</p>
-                                                </div>
-                                                 <div class="link-wrapper mb-3 mt-2">
-                                                   <a href=''  class="link-btn" data-toggle="modal" data-target="#modalone">WATCH VIDEO ></a>
-                                                 </div>
-                                            </div>
-                                        </div>
+                                        <!--video popup -->
+                                        <div class="modal fade video-modal" t-att-id="'a'+str(v.id)" tabindex="-1" role="dialog" aria-labelledby="videomodal" aria-hidden="true">
+                          <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel"><t t-esc="v.title"/></h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <i class="icon-x"></i>
+                                </button>
+                              </div>
+                              <div class="modal-body p-0">
+                                <div class="video-section-wrapper m-0 border-0">
+                                    <div class="video-wrapper">
+                                        <iframe width="100%" height="200" t-att-src="v.url" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
                                     </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
 
-                                    <!--<div class="col-md-4 mb-3 px-3 px-md-4">
-                                        <div class="resource-box h-100">
-                                             <div class="video-section-wrapper m-0 border-0">
-                                                <div class="video-wrapper">
-                                                    <iframe width="100%" height="200" src="https://www.youtube.com/embed/L7dMasrhDFA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
-                                                </div>
-                                            </div>
-                                            <div class="resource-detail p-3">
-                                                <div class="section-description">
-                                                    <p class="mb-0"><span>Our Process</span></p>
-                                                    <p class="mb-0">Learn how we save you money by liquidating and redistributing in-date, unused surgical supplies.</p>
-                                                </div>
-                                                 <div class="link-wrapper mb-3 mt-2">
-                                                   <a href="javascript:void(0)" class="link-btn">WATCH VIDEO ></a>
-                                                 </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 mb-3 px-3 px-md-4">
-                                        <div class="resource-box h-100">
-                                             <div class="video-section-wrapper m-0 border-0">
-                                                <div class="video-wrapper">
-                                                    <iframe width="100%" height="200" src="https://www.youtube.com/embed/L7dMasrhDFA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
-                                                </div>
-                                            </div>
-                                            <div class="resource-detail p-3">
-                                                <div class="section-description">
-                                                    <p class="mb-0"><span>Our Process</span></p>
-                                                    <p class="mb-0">Learn how we save you money by liquidating and redistributing in-date, unused surgical supplies.</p>
-                                                </div>
-                                                 <div class="link-wrapper mb-3 mt-2">
-                                                   <a href="javascript:void(0)" class="link-btn">WATCH VIDEO ></a>
-                                                 </div>
-                                            </div>
-                                        </div>
-                                    </div>-->
+                                    </t>
                                 </div>
                             </div>
                         </section>
@@ -203,27 +169,7 @@
                             </div>
                          </section>
 
-                        <!--Popup for full Video-->
-                        <div class="modal fade video-modal" id="modalone" tabindex="-1" role="dialog" aria-labelledby="videomodal" aria-hidden="true">
-                          <div class="modal-dialog modal-lg" role="document">
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Our Process</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <i class="icon-x"></i>
-                                </button>
-                              </div>
-                              <div class="modal-body p-0">
-                                <div class="video-section-wrapper m-0 border-0">
-                                    <div class="video-wrapper">
-                                        <iframe width="100%" height="200" src="https://www.youtube.com/embed/L7dMasrhDFA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
-                                    </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                    </div>
+                       </div>
                 </t>
             </t>
         </t>

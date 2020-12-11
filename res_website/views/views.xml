@@ -53,11 +53,5 @@
             groups="website.group_website_designer"
             action="resource_menu_action"/>
 
-        <menuitem name="Resources"
-            id="menu_website_resources_root_global"
-            sequence="150"
-            parent="website.menu_website_global_configuration"
-            groups="website.group_website_designer"/>
-
 	</data>
 </odoo>
