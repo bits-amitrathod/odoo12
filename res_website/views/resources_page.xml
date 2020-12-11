@@ -90,7 +90,7 @@
 
                                                 </div>
                                                 <div class="btn-wrapper text-center mb-3">
-                                                    <button class="btn btn-info btn-sm">Download PDF</button>
+                                                    <a t-att-href="e.url" class="btn btn-info btn-sm">Download PDF</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -121,7 +121,7 @@
 
                                                     </div>
                                                     <div class="btn-wrapper text-center mb-3">
-                                                        <button class="btn btn-info btn-sm">Download PDF</button>
+                                                        <a t-att-href="a.url" class="btn btn-info btn-sm">Download PDF</a>
                                                     </div>
                                                 </div>
                                             </div>
