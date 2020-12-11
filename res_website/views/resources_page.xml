@@ -4,7 +4,7 @@
             <t t-name="website.resource">
                 <t t-call="website.layout">
                     <div id="wrap" class="oe_structure oe_empty resource-page">
-                            <section class="">
+                        <section class="">
                                 <div class="container padding-60-y">
                                      <div class="text-center">
                                          <h1  class="about-header"> Resources</h1>
@@ -19,26 +19,53 @@
                                 <div class="col-md-9 border-separator m-auto"></div>
                             </div>
                           </section>
-                        <!--<section>
-                            <t t-foreach="video" t-as="v">
-                                <p><t t-esc="v.title"/></p>
-                                <p><t t-esc="v.description"/></p>
-                                <p><t t-esc="v.url"/></p>
-                            </t>
-                            <t t-foreach="blog_post" t-as="b">
-                                <p><t t-esc="b.display_name"/></p>
-                                <p><t t-esc="b.name"/></p>
-                                <p><t t-esc="b.subtitle"/></p>
-                                <p><t t-esc="b.website_url"/></p>
-                            </t>
-                        </section>-->
+                        <!-- Video Resources  -->
                         <section class="video-block padding-60-y">
                             <div class="container">
                                  <div class="text-center">
                                      <h1  class="resource-section-title"> <span>Video</span> Resources</h1>
                                  </div>
                                 <div class="row mt-5">
-                                    <div class="col-md-4 mb-3 px-3 px-md-4">
+                                    <t t-foreach="video" t-as="v">
+                                        <div class="col-md-4 mb-3 px-3 px-md-4">
+                                        <div class="resource-box h-100">
+                                            <div class="video-section-wrapper m-0 border-0">
+                                                <div class="video-wrapper">
+                                                    <iframe width="100%" height="200" src="https://www.youtube.com/embed/L7dMasrhDFA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+                                                </div>
+                                            </div>
+                                            <div class="resource-detail p-3">
+                                                <div class="section-description">
+                                                    <p class="mb-0"><span><t t-esc="v.title"/></span></p>
+                                                    <p class="mb-0"><t t-esc="v.description"/></p>
+                                                </div>
+                                                 <div class="link-wrapper mb-3 mt-2">
+                                                   <a t-att-href="v.url"  class="link-btn" data-toggle="modal" data-target="#modalone">WATCH VIDEO ></a>
+                                                 </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </t>
+                                         <div class="col-md-4 mb-3 px-3 px-md-4">
+                                        <div class="resource-box h-100">
+                                            <div class="video-section-wrapper m-0 border-0">
+                                                <div class="video-wrapper">
+                                                    <iframe width="100%" height="200" src="https://www.youtube.com/embed/L7dMasrhDFA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+                                                </div>
+                                            </div>
+                                            <div class="resource-detail p-3">
+                                                <div class="section-description">
+                                                    <p class="mb-0"><span>TTitle</span></p>
+                                                    <p class="mb-0">Demo</p>
+                                                </div>
+                                                 <div class="link-wrapper mb-3 mt-2">
+                                                   <a href=''  class="link-btn" data-toggle="modal" data-target="#modalone">WATCH VIDEO ></a>
+                                                 </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!--<div class="col-md-4 mb-3 px-3 px-md-4">
                                         <div class="resource-box h-100">
                                              <div class="video-section-wrapper m-0 border-0">
                                                 <div class="video-wrapper">
@@ -51,7 +78,7 @@
                                                     <p class="mb-0">Learn how we save you money by liquidating and redistributing in-date, unused surgical supplies.</p>
                                                 </div>
                                                  <div class="link-wrapper mb-3 mt-2">
-                                                   <a href="javascript:void(0)" class="link-btn" data-toggle="modal" data-target="#modalone">WATCH VIDEO ></a>
+                                                   <a href="javascript:void(0)" class="link-btn">WATCH VIDEO ></a>
                                                  </div>
                                             </div>
                                         </div>
@@ -73,28 +100,11 @@
                                                  </div>
                                             </div>
                                         </div>
-                                    </div>
-                                     <div class="col-md-4 mb-3 px-3 px-md-4">
-                                        <div class="resource-box h-100">
-                                             <div class="video-section-wrapper m-0 border-0">
-                                                <div class="video-wrapper">
-                                                    <iframe width="100%" height="200" src="https://www.youtube.com/embed/L7dMasrhDFA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
-                                                </div>
-                                            </div>
-                                            <div class="resource-detail p-3">
-                                                <div class="section-description">
-                                                    <p class="mb-0"><span>Our Process</span></p>
-                                                    <p class="mb-0">Learn how we save you money by liquidating and redistributing in-date, unused surgical supplies.</p>
-                                                </div>
-                                                 <div class="link-wrapper mb-3 mt-2">
-                                                   <a href="javascript:void(0)" class="link-btn">WATCH VIDEO ></a>
-                                                 </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    </div>-->
                                 </div>
                             </div>
                         </section>
+                        <!-- Educational Resources -->
                         <section class="video-block bg-grey padding-60-y">
                             <div class="container">
                                  <div class="text-center">
@@ -102,14 +112,15 @@
                                  </div>
                                 <div class="col-md-11 m-auto">
                                 <div class="row mt-5">
-                                    <div class="col-md-4 mb-3 px-3 px-md-4">
+                                    <t t-foreach="educational" t-as="e">
+                                        <div class="col-md-4 mb-3 px-3 px-md-4">
                                         <div class="resource-box h-100 bg-white">
                                              <div class="images-wrapper m-0 border-0 p-4">
                                                  <img src="/sps_theme/static/src/images/surgical.jpg" class="img-fluid"/>
                                             </div>
                                             <div class="resource-detail px-3 pb-3">
                                                 <div class="section-description mb-2">
-                                                    <p class="text-center"><span>Company Overview</span></p>
+                                                    <p class="text-center"><span><t t-esc="e.name"/></span></p>
 
                                                 </div>
                                                 <div class="btn-wrapper text-center mb-3">
@@ -118,43 +129,13 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-4 mb-3 px-3 px-md-4">
-                                        <div class="resource-box h-100 bg-white">
-                                             <div class="images-wrapper m-0 border-0 p-4">
-                                                 <img src="/sps_theme/static/src/images/surgical.jpg" class="img-fluid"/>
-                                            </div>
-                                            <div class="resource-detail px-3 pb-3">
-                                                <div class="section-description mb-2">
-                                                    <p class="text-center"><span>Company Overview</span></p>
-
-                                                </div>
-                                                <div class="btn-wrapper text-center mb-3">
-                                                    <button class="btn btn-info btn-sm">Download PDF</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 mb-3 px-3 px-md-4">
-                                        <div class="resource-box h-100 bg-white">
-                                             <div class="images-wrapper m-0 border-0 p-4">
-                                                 <img src="/sps_theme/static/src/images/surgical.jpg" class="img-fluid"/>
-                                            </div>
-                                            <div class="resource-detail px-3 pb-3">
-                                                <div class="section-description mb-2">
-                                                    <p class="text-center"><span>Company Overview</span></p>
-
-                                                </div>
-                                                <div class="btn-wrapper text-center mb-3">
-                                                    <button class="btn btn-info btn-sm">Download PDF</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    </t>
                                     </div>
                                 </div>
                             </div>
                         </section>
-                         <div class="seprator"><div class="red"></div><div class="black"></div></div>
+                        <div class="seprator"><div class="red"></div><div class="black"></div></div>
+                        <!-- Award And Achievements -->
                         <section class="video-block padding-60-y">
                             <div class="container">
                                  <div class="text-center">
@@ -162,14 +143,15 @@
                                  </div>
                                   <div class="col-md-11 m-auto">
                                     <div class="row mt-5">
-                                        <div class="col-md-4 mb-3 px-3 px-md-4">
+                                        <t t-foreach="awards" t-as="a">
+                                             <div class="col-md-4 mb-3 px-3 px-md-4">
                                             <div class="resource-box h-100 bg-white">
                                                  <div class="images-wrapper m-0 border-0 p-4">
                                                      <img src="/sps_theme/static/src/images/surgical.jpg" class="img-fluid"/>
                                                 </div>
                                                 <div class="resource-detail px-3 pb-3">
                                                     <div class="section-description mb-2">
-                                                        <p class="text-center"><span>xxxxxxxxxx</span></p>
+                                                        <p class="text-center"><span><t t-esc="a.name"/></span></p>
 
                                                     </div>
                                                     <div class="btn-wrapper text-center mb-3">
@@ -178,70 +160,45 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-4 mb-3 px-3 px-md-4">
-                                            <div class="resource-box h-100 bg-white">
-                                                 <div class="images-wrapper m-0 border-0 p-4">
-                                                     <img src="/sps_theme/static/src/images/surgical.jpg" class="img-fluid"/>
-                                                </div>
-                                                <div class="resource-detail px-3 pb-3">
-                                                    <div class="section-description mb-2">
-                                                        <p class="text-center"><span>xxxxxxxxxx</span></p>
-
-                                                    </div>
-                                                    <div class="btn-wrapper text-center mb-3">
-                                                        <button class="btn btn-info btn-sm">Download PDF</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 mb-3 px-3 px-md-4">
-                                            <div class="resource-box h-100 bg-white">
-                                                 <div class="images-wrapper m-0 border-0 p-4">
-                                                     <img src="/sps_theme/static/src/images/surgical.jpg" class="img-fluid"/>
-                                                </div>
-                                                <div class="resource-detail px-3 pb-3">
-                                                    <div class="section-description mb-2">
-                                                        <p class="text-center"><span>xxxxxxxxxx</span></p>
-
-                                                    </div>
-                                                    <div class="btn-wrapper text-center mb-3">
-                                                        <button class="btn btn-info btn-sm">Download PDF</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        </t>
                                     </div>
 
                                 </div>
                             </div>
                         </section>
-                          <section>
+                        <section>
                             <div class="container">
                                 <div class="col-md-9 border-separator m-auto"></div>
                             </div>
                           </section>
-                         <section class="video-block padding-60-y">
+                        <!-- Content library -->
+                        <section class="video-block padding-60-y">
                             <div class="container">
                                  <div class="text-center">
                                      <h1  class="resource-section-title"> <span>Content</span> Library</h1>
                                  </div>
                                 <div class="row mt-5">
-                                    <div class="col-md-4 mb-3 px-3 px-md-4">
-                                        <div class="resource-box h-100">
+
+                                        <t t-foreach="blog_post" t-as="c">
+                                            <div class="col-md-4 mb-3 px-3 px-md-4">
+                                                <div class="resource-box h-100">
                                              <div class="images-wrapper m-0 border-0 no-shadow">
                                                  <img src="/sps_theme/static/src/images/surgical.jpg" class="img-fluid"/>
                                             </div>
                                             <div class="resource-detail p-3">
                                                 <div class="section-description">
-                                                    <p class="mb-0"><span>Blog Post</span></p>
-                                                    <p class="mb-0">Quo intiis atiusa dolorum qui adis eius et aut archit et ipiet harum quis dero eiur, te sunt hicimus</p>
+                                                    <p class="mb-0"><span><t t-esc="c.name"/></span></p>
+                                                    <p class="mb-0"><t t-esc="c.subtitle"/></p>
                                                 </div>
                                                  <div class="link-wrapper mb-3 mt-2">
-                                                   <a href="avascript:void(0)" class="link-btn">READ MORE ></a>
+                                                   <a t-att-href="c.website_url"  class="link-btn">READ MORE ></a>
                                                  </div>
                                             </div>
                                         </div>
-                                    </div>
+                                            </div>
+
+                            </t>
+
                                 </div>
                             </div>
                          </section>
@@ -267,8 +224,6 @@
                           </div>
                         </div>
                     </div>
-
-
                 </t>
             </t>
         </t>

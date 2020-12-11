@@ -28,18 +28,18 @@ class Website_Resource(http.Controller):
     @http.route('/resource', type='http', auth="public", website=True)
     def home(self, **kw):
         video = request.env['resource.webresource'].sudo().search(
-            [('active', '=', True)])
+            [])
 
         edu = request.env['slide.slide'].sudo().search([])
         educational = []
         for x in edu:
-            if x.category_id.name =='Award':
+            if x.category_id.name =='Educational':
                 educational.append(x)
 
         aw = request.env['slide.slide'].sudo().search([])
         awards = []
         for x in aw:
-            if x.category_id.name == 'Educational':
+            if x.category_id.name == 'Award':
                 awards.append(x)
 
         blogPost = request.env['blog.post'].sudo().search([])

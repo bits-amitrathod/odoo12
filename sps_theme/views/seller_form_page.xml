@@ -20,60 +20,60 @@
               <p class="hawk-title ft-32 text-center regular-font">Seller Form</p>
           </div>
 
-          <form action="/website_form/" method="post" class="s_website_form container-fluid mt32" enctype="multipart/form-data" data-model_name="mail.mail" data-success_page="">
-            <div class="container">
+          <form action="/website_form/" method="post" class="s_website_form container-fluid mt32" enctype="multipart/form-data" data-model_name="mail.mail" data-success_page="/thank-you">
+              <div class="container">
               <div class="row">
                 <div class="col-md-12">
-                  <div class="form-group has-float-label">
+                  <div class="form-group has-float-label form-field o_website_form_required_custom">
                       <input type="text" class="form-control o_website_form_input" placeholder="Business Name" id="bussines_name" name="bussines_name" required=""/>
                       <label for="bussines_name" class="control-label">Business Name</label>
                   </div>
                 </div>
                 <div class="col-md-6">
-                   <div class="form-group has-float-label">
+                   <div class="form-group has-float-label form-field o_website_form_required_custom">
                       <input type="text" class="form-control o_website_form_input" placeholder="Business Address" id="bussines_address" name="bussines_address" required=""/>
                       <label for="bussines_address" class="control-label">Business Address</label>
                   </div>
                 </div>
                 <div class="col-md-6">
-                   <div class="form-group has-float-label">
+                   <div class="form-group has-float-label form-field o_website_form_required_custom">
                       <input type="text" class="form-control o_website_form_input" placeholder="City" id="City" name="City" required=""/>
                       <label for="City" class="control-label">City</label>
                   </div>
                 </div>
                 <div class="col-md-6">
-                   <div class="form-group has-float-label">
+                   <div class="form-group has-float-label form-field o_website_form_required_custom">
                       <input type="text" class="form-control o_website_form_input" placeholder="State / Province" id="State" name="State" required=""/>
                       <label for="State" class="control-label">State / Province</label>
                   </div>
                 </div>
                 <div class="col-md-6">
-                   <div class="form-group has-float-label">
+                   <div class="form-group has-float-label form-field o_website_form_required_custom">
                       <input type="text" class="form-control o_website_form_input" placeholder="Zip Code" id="zip_code" name="zip_code" required=""/>
                       <label for="zip_code" class="control-label">Zip Code</label>
                   </div>
                 </div>
                 <div class="col-md-6">
                    <div class="form-group has-float-label">
-                      <input type="text" class="form-control o_website_form_input" placeholder="First Name" id="first_name" name="first_name" required=""/>
+                      <input type="text" class="form-control o_website_form_input" placeholder="First Name" id="first_name" name="first_name" />
                       <label for="first_name" class="control-label">First Name</label>
                   </div>
                 </div>
                 <div class="col-md-6">
                    <div class="form-group has-float-label">
-                      <input type="text" class="form-control o_website_form_input" placeholder="Last Name" id="last_name" name="last_name" required=""/>
+                      <input type="text" class="form-control o_website_form_input" placeholder="Last Name" id="last_name" name="last_name" />
                       <label for="last_name" class="control-label">Last Name</label>
                   </div>
                 </div>
                 <div class="col-md-6">
                    <div class="form-group has-float-label">
-                      <input type="text" class="form-control o_website_form_input" placeholder="Phone" id="Phone" name="Phone" required=""/>
+                      <input type="text" class="form-control o_website_form_input" placeholder="Phone" id="Phone" name="Phone" />
                       <label for="Phone" class="control-label">Phone</label>
                   </div>
                 </div>
                 <div class="col-md-6">
                    <div class="form-group has-float-label">
-                      <input type="text" class="form-control o_website_form_input" placeholder="Email" id="Email" name="Email" required=""/>
+                      <input type="text" class="form-control o_website_form_input" placeholder="Email" id="Email" name="Email"/>
                       <label for="Email" class="control-label">Email</label>
                   </div>
                 </div>
@@ -83,31 +83,31 @@
 
                 <div class="col-md-6">
                    <div class="form-group has-float-label">
-                      <input type="text" class="form-control o_website_form_input" placeholder="First Name" id="first_name2" name="first_name2" required=""/>
+                      <input type="text" class="form-control o_website_form_input" placeholder="First Name" id="first_name2" name="first_name2" />
                       <label for="first_name2" class="control-label">First Name</label>
                   </div>
                 </div>
                 <div class="col-md-6">
                    <div class="form-group has-float-label">
-                      <input type="text" class="form-control o_website_form_input" placeholder="Last Name" id="last_name2" name="last_name2" required=""/>
+                      <input type="text" class="form-control o_website_form_input" placeholder="Last Name" id="last_name2" name="last_name2" />
                       <label for="last_name2" class="control-label">Last Name</label>
                   </div>
                 </div>
                 <div class="col-md-6">
                    <div class="form-group has-float-label">
-                      <input type="text" class="form-control o_website_form_input" placeholder="Manufacturer" id="Manufacturer" name="Manufacturer" required=""/>
+                      <input type="text" class="form-control o_website_form_input" placeholder="Manufacturer" id="Manufacturer" name="Manufacturer" />
                       <label for="Manufacturer" class="control-label">Manufacturer</label>
                   </div>
                 </div>
                 <div class="col-md-6">
                    <div class="form-group has-float-label">
-                      <input type="text" class="form-control o_website_form_input" placeholder="Part Number" id="PartNumber" name="PartNumber" required=""/>
+                      <input type="text" class="form-control o_website_form_input" placeholder="Part Number" id="PartNumber" name="PartNumber" />
                       <label for="PartNumber" class="control-label">Part Number</label>
                   </div>
                 </div>
                  <div class="col-12">
                       <div class="form-group has-float-label">
-                            <textarea id="description" placeholder="Description" class="form-control o_website_form_input" name="description"  required="" rows="5"><t t-esc="request.params.get('description', '')" /></textarea>
+                            <textarea id="description" placeholder="Description" class="form-control o_website_form_input" name="description"   rows="5"><t t-esc="request.params.get('description', '')" /></textarea>
                             <label class="control-label" for="description">Description</label>
                       </div>
                  </div>
@@ -125,13 +125,13 @@
                  </div>
                 <div class="col-md-5">
                    <div class="form-group has-float-label">
-                      <input type="text" class="form-control o_website_form_input" placeholder="Condition" id="Condition" name="Condition" required=""/>
+                      <input type="text" class="form-control o_website_form_input" placeholder="Condition" id="Condition" name="Condition" />
                       <label for="Condition" class="control-label">Condition </label>
                   </div>
                 </div>
                 <div class="col-md-5">
                    <div class="form-group has-float-label">
-                      <input type="text" class="form-control o_website_form_input" placeholder="Quantity(Ea)" id="Quantity" name="Quantity" required=""/>
+                      <input type="text" class="form-control o_website_form_input" placeholder="Quantity(Ea)" id="Quantity" name="Quantity" />
                       <label for="Quantity" class="control-label">Quantity(Ea) </label>
                   </div>
                 </div>
