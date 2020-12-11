@@ -820,7 +820,9 @@
                                 <table class="table">
                                     <tr>
                                                 <td style="width:10%"></td>
+                                                <td style="width:50%"><strong>Ref #</strong> </td>
                                                 <td style="width:50%"><strong>Product</strong> </td>
+                                                <td style="width:50%"><strong>Expiration</strong> </td>
                                                  <td style="width:15%"><strong>Unit Price</strong> </td>
                                                  <td style="width:10%"><strong>Quantity</strong></td>
                                                  <td style="width:15%"><strong>Subtotal</strong></td>
@@ -834,9 +836,13 @@
                                         <td>
                                         <span t-field="ol.product_image"
                                               t-options="{'widget': 'image', 'class': 'img-rounded', 'style':'width: 48px;height:48px'}"/>
-                                              </td><td>
+                                              </td>
+                                        <td><span t-esc="ol.product_id.product_tmpl_id.sku_code"/></td>
+                                            <td>
                                         <span t-esc="ol.product_id.name"/>
-                                        </td><td>
+                                        </td>
+                                        <td><span t-esc="ol.product_min_max_exp_date"/></td>
+                                            <td>
                                         <span t-field="ol.price_unit"
                                               t-options='{"widget": "monetary", "display_currency": sale_order.pricelist_id.currency_id}'/>
                                               </td>

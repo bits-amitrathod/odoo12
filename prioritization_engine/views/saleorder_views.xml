@@ -231,7 +231,9 @@
             <table class="table table-condensed">
                     <thead>
                         <tr>
+                            <th>Ref #</th>
                             <th>Description</th>
+                            <th>Expiration</th>
                             <th>Requisition No</th>
                             <th class="text-right">Quantity</th>
                             <th class="text-right">Unit Price</th>
@@ -249,7 +251,9 @@
 
                              <tr t-att-class="'bg-200 font-weight-bold o_line_section' if line.display_type == 'line_section' else 'font-italic o_line_note' if line.display_type == 'line_note' else ''" style="page-break-inside: avoid">
                                 <t t-if="not line.display_type">
+                                    <td><span t-field="line.product_id.product_tmpl_id.sku_code"/></td>
                                     <td><span t-field="line.name"/></td>
+                                    <td><span t-field="line.product_min_max_exp_date"/></td>
                                     <td><span t-field="line.req_no"/></td>
                                     <td class="text-right">
                                         <span t-field="line.product_uom_qty"/>
