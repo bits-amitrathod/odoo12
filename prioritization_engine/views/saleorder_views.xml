@@ -234,7 +234,7 @@
                             <th t-if="any([line.order_id.team_id.team_type=='engine' for line in doc.order_line])">Ref #</th>
                             <th>Description</th>
                             <th t-if="any([line.order_id.team_id.team_type=='engine' for line in doc.order_line])">Expiration</th>
-                            <th>Requisition No</th>
+                            <th t-if="any([line.req_no for line in doc.order_line])">Requisition No</th>
                             <th class="text-right">Quantity</th>
                             <th class="text-right">Unit Price</th>
                             <th t-if="display_discount" class="text-right" groups="sale.group_discount_per_so_line">Disc.(%)</th>
@@ -251,10 +251,10 @@
 
                              <tr t-att-class="'bg-200 font-weight-bold o_line_section' if line.display_type == 'line_section' else 'font-italic o_line_note' if line.display_type == 'line_note' else ''" style="page-break-inside: avoid">
                                 <t t-if="not line.display_type">
-                                    <td><span t-if="line.order_id.team_id.team_type=='engine'" t-field="line.product_id.product_tmpl_id.sku_code"/></td>
+                                    <td t-if="line.order_id.team_id.team_type=='engine'"><span t-field="line.product_id.product_tmpl_id.sku_code"/></td>
                                     <td><span t-field="line.name"/></td>
-                                    <td><span t-if="line.order_id.team_id.team_type=='engine'" t-field="line.product_min_max_exp_date"/></td>
-                                    <td><span t-field="line.req_no"/></td>
+                                    <td t-if="line.order_id.team_id.team_type=='engine'"><span t-field="line.product_min_max_exp_date"/></td>
+                                    <td t-if="line.req_no"><span t-field="line.req_no"/></td>
                                     <td class="text-right">
                                         <span t-field="line.product_uom_qty"/>
                                         <span t-field="line.product_uom" groups="product.group_uom"/>
