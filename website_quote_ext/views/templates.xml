@@ -820,12 +820,12 @@
                                 <table class="table">
                                     <tr>
                                                 <td style="width:10%"></td>
-                                                <td style="width:50%"><strong>Ref #</strong> </td>
-                                                <td style="width:50%"><strong>Product</strong> </td>
-                                                <td style="width:50%"><strong>Expiration</strong> </td>
-                                                 <td style="width:15%"><strong>Unit Price</strong> </td>
+                                                <td style="width:10%"><strong>Ref #</strong> </td>
+                                                <td style="width:35%"><strong>Product</strong> </td>
+                                                <td style="width:15%"><strong>Expiration</strong> </td>
+                                                 <td style="width:10%"><strong>Unit Price</strong> </td>
                                                  <td style="width:10%"><strong>Quantity</strong></td>
-                                                 <td style="width:15%"><strong>Subtotal</strong></td>
+                                                 <td style="width:10%"><strong>Subtotal</strong></td>
 
 
                                     </tr>
