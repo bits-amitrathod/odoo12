@@ -146,7 +146,7 @@ class ApprisalTracker(http.Controller):
 
                     select  pof1.id as order_id,
 
-                    sum(case when (   ( (rpf1.is_wholesaler != true  or rpf1.is_wholesaler is null ) and rpf1.is_broker != true and ttf1.code='1' )
+                    sum(case when (   ( (rpf1.is_wholesaler != true  or rpf1.is_wholesaler is null ) and rpf1.is_broker != true and rpf1.charity != true and ttf1.code='1' )
 
                        or
                          ((rpf1.is_wholesaler = true or rpf1.is_broker = true or rpf1.charity = true ) and ttf1.code='1' and polf1.product_unit_price!=0 and
