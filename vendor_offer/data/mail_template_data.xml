@@ -52,8 +52,9 @@
             <field name="subject">${object.company_id.name} Order (Ref ${object.name or 'n/a' })</field>
             <!--<field name="email_from">${object.super_user_email}</field>-->
              <field name="email_from">${object.sudo().create_uid.email_formatted | safe}</field>
-            <field name="email_to"><![CDATA[${ctx['vendor_email']}]]></field>
-            <field name="email_cc"><![CDATA[${ctx['acq_mgr']}]]></field>
+            <field name="partner_to">${(object.partner_id.id if object.partner_id.vendor_email==False)}</field>
+            <field name="email_to">${(object.partner_id.vendor_email if object.partner_id.vendor_email!=False)}</field>
+            <field name="email_cc">${object.acq_user_id.partner_id.email | safe}</field>
              <field name="body_html"><![CDATA[
                 % set access_url = object.get_mail_url() or ''
 
