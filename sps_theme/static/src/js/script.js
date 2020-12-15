@@ -2,6 +2,15 @@ $(document).ready(function () {
     $( "#birthdate" ).datepicker({
         inline: true
     });
+
+    $('.close').click(function(){
+          $('.myVideoClass').each(function(){
+            $(this)[0].contentWindow.postMessage('{"event":"command","func":"' + 'stopVideo' + '","args":""}', '*');
+
+          });
+        });
+
+
 });
 
    function getFileNameWithExt(event) {
