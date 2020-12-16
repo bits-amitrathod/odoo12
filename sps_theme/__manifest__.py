@@ -39,6 +39,8 @@
         'views/porduct_catalog_page.xml',
         'views/terms_and_conditions_page.xml',
         'views/policy_page.xml',
+        'views/terms_of_sale_page.xml',
+        'views/terms_of_purchase_page.xml',
 
 
         'views/menu.xml'

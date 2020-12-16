@@ -81,6 +81,14 @@ class ThemeController(http.Controller):
     def seller_form_method(self):
         return http.request.render('sps_theme.seller_form_template')
 
+    @http.route('/terms_of_sale', type='http', auth="public", website=True)
+    def terms_of_sale(self):
+        return http.request.render('sps_theme.terms_of_sales_template')
+
+    @http.route('/terms_of_purchase', type='http', auth="public", website=True)
+    def terms_of_purchase(self):
+        return http.request.render('sps_theme.terms_of_purchase_template')
+
     @http.route('/downloadCatalog', type='http', auth="public", website=True)
     def downloadCatalog(self):
         result = request.env['sps_theme.product_download_catelog'].search([('status', '=', 'active')], limit=1)
