@@ -13,12 +13,17 @@
             ]"/>
             <t t-set="website_sale_sortable_current" t-value="[sort for sort in website_sale_sortable if sort[1]==request.params.get('order', '')]"/>
         </xpath>
+
+       <xpath expr="//div[hasclass('products_pager')]" position="before">
+           <span>Surgical Products - <b>Shop</b> </span>
+        </xpath>
     </template>
 
 
     <!--  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Product Item List ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
     <template id="products_item_cstm" name="Products item" inherit_id="website_sale.products">
+
         <xpath expr="//table" position="replace">
             <div class="row" t-foreach="porductRows" t-as="tr_product">
                 <t t-foreach="tr_product" t-as="td_product">
