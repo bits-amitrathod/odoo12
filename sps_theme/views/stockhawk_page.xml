@@ -112,7 +112,7 @@
 						<div class="container pb-5 pt-5 ">
 							<h3 class="section-title mt-0 pt-5 pb-5">HOW STOCKHAWK WORKS</h3>
 							<div class="row">
-								<div class="col-md-3">
+								<div class="col-lg-3 col-md-6">
 									<div class="work-box p-0">
 										<div class="img-wrapper">
 											<img src="/sps_theme/static/src/images/customer.png" class="img-fluid"/>
@@ -128,7 +128,7 @@
 										</div>
 									</div>
 								</div>
-								<div class="col-md-3">
+								<div class="col-lg-3 col-md-6">
 									<div class="work-box p-0">
 										<div class="img-wrapper">
 											<img src="/sps_theme/static/src/images/purchase.png" class="img-fluid" style="width:270px"/>
@@ -144,7 +144,7 @@
 										</div>
 									</div>
 								</div>
-								<div class="col-md-3">
+								<div class="col-lg-3 col-md-6">
 									<div class="work-box p-0">
 										<div class="img-wrapper">
 											<img src="/sps_theme/static/src/images/report.png" class="img-fluid"/>
@@ -159,7 +159,7 @@
 										</div>
 									</div>
 								</div>
-								<div class="col-md-3">
+								<div class="col-lg-3 col-md-6">
 									<div class="work-box p-0">
 										<div class="img-wrapper">
 											<img src="/sps_theme/static/src/images/demand.png" class="img-fluid"/>

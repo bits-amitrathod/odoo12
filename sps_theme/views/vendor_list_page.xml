@@ -20,7 +20,7 @@
       <section class="s_text_block pt32 pb32 bg-white oe_custom_bg" style="">
         <div class="container">
           <div class="row">
-            <div class="pt32 pb32 col-lg-6 order-listing">
+            <div class="pt32 pb32 col-md-6 order-listing">
               <p class="hawk-title mb-3">ENDO / FIXATION</p>
               <ul>
                 <li>Auto Suture / Covidien</li>
@@ -57,7 +57,7 @@
                 <li>Ethicon Realize</li>
               </ul>
             </div>
-            <div class="pt32 pb32 col-lg-6  order-listing">
+            <div class="pt32 pb32 col-md-6  order-listing">
               <p class="hawk-title mb-3">WOUND</p>
               <ul>
                 <li>Dermabond</li>
