@@ -74,7 +74,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     -->
 
 
-    <template id="footer_cstm" inherit_id="website.footer_custom" customize_show="True" name="Automatic Footer">
+    <template id="footer_cstm3" inherit_id="website.footer_custom" customize_show="True" name="Automatic Footer">
         <xpath expr="//div[@id='footer']" position="replace">
             <footer>
             <div id="footer" class="container hidden-print " t-if="not no_footer">
@@ -163,7 +163,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                                 </a>
                             </li>-->
                             <li>
-                                <a href="/terms" title="Terms">Terms</a>
+                                <a href="/terms_of_sale" title="Terms Of Sale">Terms Of Sale</a>
+                            </li>
+                            <li>
+                                <a href="/terms_of_purchase" title="Terms Of Purchase">Terms Of Purchase</a>
                             </li>
                         </ul>
                     </div>

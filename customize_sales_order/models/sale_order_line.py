@@ -1,12 +1,55 @@
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
+import datetime
 
 
 class SaleOrderLineInherit(models.Model):
     _inherit = 'sale.order.line'
+    _order = 'req_no ASC'
 
     salesman_id = fields.Many2one(related='order_id.user_id', store=True, string='Business Development', readonly=True)
+
+    product_min_max_exp_date = fields.Char('Product Min-Max Expiration Date',
+                                           compute='_calculate_max_min_lot_expiration')
+
+    @api.multi
+    def _calculate_max_min_lot_expiration(self):
+        for record in self:
+            if record.product_id and record.product_id.id:
+                for picking_id in record.order_id.picking_ids:
+                    if picking_id.picking_type_id.id == 1 and picking_id.state != 'cancel':
+                        for move_line in picking_id.move_lines:
+                            if move_line.state != 'cancel':
+                                if record.product_id.id == move_line.product_id.id:
+                                    self.env.cr.execute(
+                                        """
+                                        SELECT
+                                        sum(quantity), min(use_date), max(use_date)
+                                        FROM
+                                            stock_quant
+                                        INNER JOIN
+                                            stock_production_lot
+                                        ON
+                                            (
+                                                stock_quant.lot_id = stock_production_lot.id)
+                                        INNER JOIN
+                                            stock_location
+                                        ON
+                                            (
+                                                stock_quant.location_id = stock_location.id)
+                                        WHERE
+                                            stock_location.usage in('internal', 'transit') and stock_production_lot.product_id  = %s and
+                                            stock_production_lot.id in (select lot_id from public.stock_move_line sml where move_id = %s )
+                                            """, (move_line.product_id.id, move_line.id))
+                                    query_result = self.env.cr.dictfetchone()
+                                    if query_result['min'] == query_result['max']:
+                                        record.product_min_max_exp_date = str(
+                                            datetime.datetime.strptime(str(query_result['min']),
+                                                                       '%Y-%m-%d %H:%M:%S').strftime('%m/%d/%Y'))
+                                    else:
+                                        record.product_min_max_exp_date = str(datetime.datetime.strptime(str(query_result['min']), '%Y-%m-%d %H:%M:%S').strftime('%m/%d/%Y')) \
+                                            + str("-") + str(datetime.datetime.strptime(str(query_result['max']), '%Y-%m-%d %H:%M:%S').strftime('%m/%d/%Y'))
 
     # @api.multi
     # def unlink(self):

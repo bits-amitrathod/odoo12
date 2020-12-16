@@ -7,7 +7,7 @@ class BdAccountClosedReportPopup(models.TransientModel):
     _name = 'popup.bd.account.closed'
 
     start_date = fields.Date('Start Date', default=fields.date.today(), required=True,
-                             help="Choose a date to get the Accounts Closed and Revenue in 12 Months By Business Development at that End date")
+                             help="Choose a date to get the Revenue From Accounts Closed In 12 Months By BD at that End date")
     business_development = fields.Many2one('res.users', string='Business Development', index=True)
 
     delivery_start_date = fields.Date('Revenue Start Date')
@@ -31,7 +31,7 @@ class BdAccountClosedReportPopup(models.TransientModel):
             'type': 'ir.actions.act_window',
             'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
             'view_mode': 'tree',
-            'name': 'Accounts Closed And Revenue in 12 Months By Business Development',
+            'name': 'Revenue From Accounts Closed In 12 Months By BD',
             'res_model': res_model,
             'domain': [],
             'context': {'group_by': group_by_domain}

@@ -97,13 +97,13 @@
                             <span>Call for Pricing 412-564-1280</span>
                         </t>
 
-                        <button type="button" class="btn btn-xs"
+                       <!-- <button type="button" class="btn btn-xs"
                                 data-toggle="modal"
                                 style="background: transparent;"
                                 t-att-data-target="'#product_view'+str(product.id)">
                             <i class="fa fa-search-plus" style="color:  #666666; font-size: 15px;" data-toggle="tooltip"
                                data-placement="right" title="Quick Shop"/>
-                        </button>
+                        </button>-->
 
                     </div>
 

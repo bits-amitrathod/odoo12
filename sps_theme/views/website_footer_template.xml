@@ -55,6 +55,12 @@
                              <li>
                                 <a href="/equipment-repair" title="Surgical Equipment Repair">REPAIR</a>
                             </li>
+                              <li>
+                                    <a href="/terms_of_sale" title="Terms Of Sale">Terms Of Sale</a>
+                                </li>
+                                <li>
+                                    <a href="/terms_of_purchase" title="Terms Of Purchase">Terms Of Purchase</a>
+                                </li>
                         </ul>
                     </div>
                      <div class="col-md">
@@ -91,6 +97,7 @@
                                 <li>
                                     <a href="/policy" title=""> Privacy Policy</a>
                                 </li>
+
                             </ul>
 
                         </div>

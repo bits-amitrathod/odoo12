@@ -44,7 +44,6 @@ class PaymentAquirerCstm(http.Controller):
     @http.route(['/shop/cart/updatePurchaseOrderNumber'], type='json', auth="public", methods=['POST'], website=True,
                 csrf=False)
     def cart_update(self, purchase_order, **kw):
-
         order = request.env['sale.order'].sudo().browse(request.session['sale_order_id'])
         order.client_order_ref = purchase_order
         value = {'success': True}
@@ -57,6 +56,21 @@ class PaymentAquirerCstm(http.Controller):
     def expedited_shipping(self, expedited_shipping, **kw):
         request.session['expedited_shipping'] = expedited_shipping
         return request.redirect('/shop/payment')
+
+    @http.route('/checkHavingCarrierWithAccountNo', type='json', auth="public", methods=['POST'], website=True, csrf=False)
+    def check_having_carrier_with_account_no(self):
+        order = request.website.sale_get_order()
+        if request.env.user.partner_id.having_carrier and request.env.user.partner_id.carrier_acc_no:
+            return {'carrier_acc_no': True}
+        else:
+            currency = order.currency_id
+            return {'carrier_acc_no': False, 'error_message': order.delivery_message, 'amount_delivery': self._format_amount(order.amount_delivery, currency), 'status': order.delivery_rating_success}
+
+    def _format_amount(self, amount, currency):
+        fmt = "%.{0}f".format(currency.decimal_places)
+        lang = request.env['res.lang']._lang_get(request.env.context.get('lang') or 'en_US')
+        return lang.format(fmt, currency.round(amount), grouping=True, monetary=True)\
+            .replace(r' ', u'\N{NO-BREAK SPACE}').replace(r'-', u'-\N{ZERO WIDTH NO-BREAK SPACE}')
 
 
 class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.WebsiteSale):
@@ -107,7 +121,6 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
     def payment_confirmation(self, **post):
         responce = super(WebsiteSalesPaymentAquirerCstm, self).payment_confirmation(**post)
         order = responce.qcontext['order']
-
         if 'expedited_shipping' in request.session:
             expedited_shipping = request.session['expedited_shipping']
             if expedited_shipping:
