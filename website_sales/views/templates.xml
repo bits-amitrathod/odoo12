@@ -57,7 +57,7 @@
     <template id="products_categories" name="eCommerce Categories" inherit_id="website_sale.products_categories">
         <xpath expr="//div[@id='products_grid_before']/ul" position="replace">
             <!-- products categories Filter -->
-            <div class="sidebar-accordion mt-5" id="categories">
+            <div class="sidebar-accordion" id="categories">
               <div class="card">
                 <div class="card-header" id="allcategories">
                   <h2 class="mb-0">
