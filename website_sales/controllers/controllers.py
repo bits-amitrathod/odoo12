@@ -2,6 +2,7 @@
 import odoo
 from odoo import fields, http
 from odoo.http import request
+from odoo.addons.http_routing.models.ir_http import slug
 
 
 class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
@@ -18,11 +19,19 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
     def shop(self, page=0, category=None, search='', brand= None, ppg=False, **post):
         product_template = request.env['product.template'].search([('actual_quantity', '=', False)])
         product_brands = request.env['product.brand'].search([])
-        if brand :
-            product_brand_list = request.env['product.template'].search([('product_brand_id', '=', brand.id)])
+
         if len(product_template)>0:
             for product in product_template:
                 product.update({'actual_quantity':0})
+
+        if ppg:
+            try:
+                ppg = int(ppg)
+                post['ppg'] = ppg
+            except ValueError:
+                ppg = False
+        if not ppg:
+            ppg = 20
 
         if not 'order' in post:
             post.update({'order': 'actual_quantity desc'})
@@ -40,8 +49,17 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         responce = super(WebsiteSales, self).shop(page, category, search, ppg, **post)
 
         payload = responce.qcontext
-        if brand :
-            payload['products'] = request.env['product.template'].search([('product_brand_id', '=', brand.id)])
+
+        if brand:
+            url = "/shop/brand/%s" % slug(brand)
+            search_product = request.env['product.template'].search([('product_brand_id', '=', brand.id)])
+            product_count = len(search_product)
+            pager = request.website.pager(url=url, total=product_count, page=page, step=ppg, scope=7, url_args=post)
+            payload['pager'] = pager
+            offset = pager['offset']
+            products = search_product[offset: offset + ppg]
+            payload['products'] = products
+
         irConfig = request.env['ir.config_parameter'].sudo()
         payload['isVisibleWebsiteExpirationDate'] = irConfig.get_param('website_sales.website_expiration_date')
         if payload['products'] and payload['isVisibleWebsiteExpirationDate']:
@@ -65,9 +83,9 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         i = 1
         for val in payload['products']:
             porductRows[-1].append(val)
-            if i % 4 == 0:
-                porductRows.append([])
-            i += 1
+            # if i % 4 == 0:
+            #     porductRows.append([])
+            # i += 1
 
         payload['porductRows'] = porductRows
         payload['brands'] = product_brands
