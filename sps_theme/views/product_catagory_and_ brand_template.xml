@@ -13,10 +13,11 @@
             ]"/>
             <t t-set="website_sale_sortable_current" t-value="[sort for sort in website_sale_sortable if sort[1]==request.params.get('order', '')]"/>
         </xpath>
-
-       <xpath expr="//div[hasclass('products_pager')]" position="before">
-           <span>Surgical Products - <b>Shop</b> </span>
-        </xpath>
+            <xpath expr="//div[hasclass('products_pager')]" position="before">
+                   <div class="text-center pt32">
+                        <h1  class="about-header"> Surgical Products - <strong>Shop</strong> </h1>
+                    </div>
+            </xpath>
     </template>
 
 
