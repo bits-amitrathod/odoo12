@@ -83,7 +83,7 @@
                                         <div class="col-md-4 mb-3 px-3 px-md-4">
                                         <div class="resource-box h-100 bg-white">
                                              <div class="images-wrapper m-0 border-0 p-4">
-                                                 <img src="/sps_theme/static/src/images/surgical.jpg" class="img-fluid"/>
+                                                 <img t-attf-src="/web/image/slide.slide/#{e.id}/image_thumb" class="img-fluid img-thumbnail oe_slides_grid_thumbnail" alt="a.name"/>
                                             </div>
                                             <div class="resource-detail px-3 pb-3">
                                                 <div class="section-description mb-2">
@@ -114,7 +114,7 @@
                                              <div class="col-md-4 mb-3 px-3 px-md-4">
                                             <div class="resource-box h-100 bg-white">
                                                  <div class="images-wrapper m-0 border-0 p-4">
-                                                     <img src="/sps_theme/static/src/images/surgical.jpg" class="img-fluid"/>
+                                                    <img t-attf-src="/web/image/slide.slide/#{a.id}/image_thumb" class="img-fluid img-thumbnail oe_slides_grid_thumbnail" alt="a.name"/>
                                                 </div>
                                                 <div class="resource-detail px-3 pb-3">
                                                     <div class="section-description mb-2">
@@ -122,6 +122,7 @@
 
                                                     </div>
                                                     <div class="btn-wrapper text-center mb-3">
+
                                                         <a t-att-href="a.url" class="btn btn-info btn-sm">Download PDF</a>
                                                     </div>
                                                 </div>
