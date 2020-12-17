@@ -10,6 +10,7 @@
     'depends': ['base_setup', 'mail','website_blog'],
     'data': [
         'security/ir.model.access.csv',
+        'views/blog_post_form.xml',
     ],
     'installable': True,
     'auto_install': False,
