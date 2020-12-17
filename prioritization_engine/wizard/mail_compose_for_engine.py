@@ -10,23 +10,17 @@ class MailComposeForEngine(models.TransientModel):
     def send_mail(self, auto_commit=False):
         if self.template_id.name == 'Vendor Offer - Send by Email' and self._context.get('default_model') == 'purchase.order' \
                 and self._context.get('default_res_id'):
-            for wizard in self:
-                if wizard.attachment_ids and wizard.composition_mode != 'mass_mail' and wizard.template_id:
-                    new_attachment_ids = []
-                    for attachment in wizard.attachment_ids:
-                        if attachment in wizard.template_id.attachment_ids:
-                            new_attachment_ids.append(
-                                attachment.copy({'res_model': 'mail.compose.message', 'res_id': wizard.id}).id)
-                        else:
-                            new_attachment_ids.append(attachment.id)
-                    wizard.write({'attachment_ids': [(6, 0, new_attachment_ids)]})
-            local_context = {'vendor_email': self._context.get('vendor_email'), 'acq_mgr': self._context.get('acq_mgr')}
-            template = self.env.ref('vendor_offer.email_template_edi_vendor_offer_done').sudo()
-            try:
-                template.with_context(local_context).send_mail(self._context.get('default_res_id'), force_send=True,
-                                                               raise_exception=True)
-            except Exception as exc:
-                print("getting error while sending email")
+
+            for record in self:
+                template = self.env.ref("vendor_offer.email_template_edi_vendor_offer_done_cstm")
+                values = {'notification': True}
+                values['attachment_ids'] = [(6, 0, [att.id for att in record.attachment_ids])]
+                try:
+                    template_id = template.with_context().sudo().send_mail(self._context.get('default_res_id'), raise_exception=True)
+                    self.env['mail.mail'].sudo().browse(template_id).write(values)
+                except Exception as exc:
+                    print("getting error while sending email- Vendor Offer - Send by Email - Custom")
+
         elif self._context.get('default_model') == 'sale.order' and self._context.get('default_res_id') and self._context.get('mark_so_as_sent'):
             order = self.env['sale.order'].browse([self._context['default_res_id']])
             print('Team Type : %r', order.team_id.team_type)
