@@ -1140,6 +1140,9 @@ background: #fafafa;
                                             box-shadow:none;
                                             border-color: @blue;
                                         }
+                                        &[readonly]{
+                                            background: #fff;
+                                        }
                                      }
                                 }
                             }
@@ -1189,14 +1192,14 @@ background: #fafafa;
         &.btn-secondary{
             font-size: 15px;
             line-height: 18px;
-            font-family: 'robotobold';
+            font-family: @medium-font;
             background: @blue;
             border-color: @blue;
         }
         &.btn-primary{
             font-size: 15px;
             line-height: 18px;
-            font-family: 'robotobold';
+            font-family: @medium-font;
             background: #a32624;
             border-color: #a32624;
         }
@@ -1704,7 +1707,7 @@ background: #fafafa;
             a{
                 color: @red;
                 padding: 0;
-                margin-top: -3px;
+                margin-top: 7px;
                 text-decoration: none;
             }
         }
@@ -1717,7 +1720,7 @@ background: #fafafa;
             a{
                 color: @red;
                 padding: 0;
-                margin-top: -3px;
+                margin-top: 7px;
                 text-decoration: none;
             }
         }
@@ -1995,6 +1998,28 @@ background: #fafafa;
             position: relative;
             top: 7px;
             left: 6px;
+        }
+    }
+}
+
+#delivery_method{
+    .list-group{
+        .list-group-item{
+            display: flex;
+            input {
+                margin-top: 1px;
+                margin-right: 5px;
+                }
+                label{
+                    font-family: 'robotolight';
+                    font-size: 16px;
+                    line-height: 16px;
+                    margin-right: 5px;
+                    flex: 2;
+                }
+                span{
+                    align-self: flex-start;
+                }
         }
     }
 }
