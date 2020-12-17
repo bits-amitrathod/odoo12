@@ -449,4 +449,6 @@
         <xpath expr="//div[hasclass('container')]/div[1]" position="replace">
         </xpath>
         </template>
+
+
 </odoo>
