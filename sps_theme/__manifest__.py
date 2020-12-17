@@ -23,6 +23,7 @@
         'views/career_page.xml',
         'views/vendor_list_page.xml',
         'views/faqs_page.xml',
+        'views/cart_page.xml',
         'views/login_page.xml',
         'views/equipment_repair_and_service_page.xml',
         'views/quality_assurance_page.xml',
