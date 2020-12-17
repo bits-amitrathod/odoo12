@@ -3,6 +3,35 @@
     font-family: @regular-font !important;
     font-size: 41px;
     color: @title-color;
+    .btn{
+        &.btn-primary{
+            font-size: 15px;
+            line-height: 18px;
+            font-family: 'robotomedium';
+            background: #a32624;
+            border-color: #a32624;
+            }
+            &.btn-log{
+                font-family: 'robotobold' !important;
+                font-size: 41px;
+                color: #273345;
+                padding: 0;
+                background: transparent;
+                border: 0;
+                display: inline-block;
+                position: relative;
+                top: -4px;
+
+                 &:focus,
+                 &:not(:disabled):not(.disabled):active:focus
+                 {
+                    outline:none;
+                    box-shadow:none;
+                    background: transparent;
+                    color: @title-color;
+                 }
+            }
+        }
     }
 
 .banner-wrapper{
@@ -1000,6 +1029,7 @@ background: #fafafa;
 
 .oe_website_sale {
     padding-bottom: 50px !important;
+    padding-top: 30px !important;
     .wizard{
         .progress-wizard{
             .progress-wizard-step{

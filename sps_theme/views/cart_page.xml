@@ -1,20 +1,27 @@
 <odoo>
      <template id="cart" inherit_id="website_sale.address"  name="Address Management">
             <xpath expr="//div[hasclass('container')]" position="replace">
-                    <div class="container oe_website_sale py-2">
-                        <div>
-                            <t t-if="mode == ('new', 'billing')">
-                                    <h2 class="o_page_header mt8">Your Address
-                                        <small> or </small>
-                                        <a role="button" href='/web/login?redirect=/shop/checkout' class='btn btn-primary' style="margin-top: -11px">Log In</a>
-                                    </h2>
+                    <section class="bg-white py-5">
+                         <t t-if="mode == ('new', 'billing')">
+                                <div class="text-center">
+                                        <h1  class="about-header"> Your Address or <a role="button" href='/web/login?redirect=/shop/checkout' class='btn btn-primary btn-log'><strong>Log In</strong></a> </h1>
+                                </div>
                                 </t>
                                 <t t-if="mode == ('edit', 'billing')">
-                                    <h2 class="o_page_header mt8">Your Address</h2>
+                                    <!--<h2 class="o_page_header mt8">Your Address</h2>-->
+                                    <div class="text-center">
+                                        <h1  class="about-header"> Your Address </h1>
+                                     </div>
                                 </t>
                                 <t t-if="mode[1] == 'shipping'">
-                                    <h2 class="o_page_header mt8">Shipping Address </h2>
+                                    <div class="text-center">
+                                        <h1  class="about-header"> Shipping Address </h1>
+                                     </div>
                                 </t>
+                    </section>
+                    <div class="container oe_website_sale py-2">
+                        <div>
+
                                 <t t-if="partner_id == website_sale_order.partner_shipping_id.id == website_sale_order.partner_invoice_id.id">
                                     <div class="alert alert-warning" role="alert">
                                         <h4 class="alert-heading">Be aware!</h4>
