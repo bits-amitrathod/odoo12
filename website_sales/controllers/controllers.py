@@ -46,7 +46,7 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
             if result:
                 category = result.id
 
-        responce = super(WebsiteSales, self).shop(page, category, search, ppg, **post)
+        responce = super(WebsiteSales, self).shop(page, category, search, None, **post)
 
         payload = responce.qcontext
 
