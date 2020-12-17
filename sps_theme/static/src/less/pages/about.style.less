@@ -1195,6 +1195,10 @@ background: #fafafa;
             font-family: @medium-font;
             background: @blue;
             border-color: @blue;
+            &:focus{
+                outline:none;
+                box-shadow:none;
+            }
         }
         &.btn-primary{
             font-size: 15px;
@@ -1202,6 +1206,10 @@ background: #fafafa;
             font-family: @medium-font;
             background: #a32624;
             border-color: #a32624;
+            &:focus{
+                outline:none;
+                box-shadow:none;
+            }
         }
     }
     .js_cart_summary{
@@ -1325,8 +1333,9 @@ background: #fafafa;
            padding-right: 20px;
         .products_pager {
              justify-content: space-around !important;
-             margin: 40px 0;
+             margin: 30px 0;
             .o_website_sale_search{
+            width:200px;
             padding-bottom: 20px;
                 .input-group{
                     .form-control{
@@ -1417,6 +1426,9 @@ background: #fafafa;
                             font-size: 16px;
                             font-family: @medium-font;
                             color: #616e79;
+                            max-width: 230px;
+                            overflow: hidden;
+                            padding-right: 10px;
                             &:after{
                                 position: absolute;
                                 right: 10px;
@@ -1424,6 +1436,7 @@ background: #fafafa;
                                 bottom: 0;
                                 margin: auto;
                                 color: #fff;
+                                border-top: 0.3em solid @white;
                             }
                             &:before{
                                 content: ' ';
@@ -2022,4 +2035,64 @@ background: #fafafa;
                 }
         }
     }
+}
+
+.mycart-popover{
+    .popover-header{
+        font-size:17px;
+        font-family: @medium-font !important;
+        line-height: 20px;
+        color: @title-color;
+    }
+    .popover-body{
+        .cart_line{
+         > div{
+            font-size: 14px;
+            font-family: 'robotoregular';
+            color: #9399a2;
+            font-weight: 400;
+            border: none;
+         }
+            a{
+                font-size: 14px;
+                line-height: 16px;
+                font-family: 'robotobold';
+                color: #000000;
+                .h6{
+                 font-size: 14px;
+                line-height: 16px;
+                font-family: 'robotobold';
+                color: #000000;
+                }
+            }
+        }
+    }
+     #cart_total{
+                .table{
+                margin-top: 20px;
+                    tr{
+                        td{
+                            padding: 0;
+                            font-size: 18px;
+                            line-height:18px;
+                            font-family: @regular-font;
+                            color: @black;
+                            padding: 10px;
+                        }
+                    }
+                }
+            }
+            .btn{
+                &.btn-primary{
+                font-size: 15px;
+                line-height: 18px;
+                font-family: 'robotomedium';
+                background: #3d9cca;
+                border-color: #3d9cca;
+                &:focus{
+                        outline:none;
+                        box-shadow:none;
+                    }
+                }
+            }
 }
