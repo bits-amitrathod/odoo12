@@ -375,7 +375,7 @@
                                 <p class="mb-0 regular-font gray-color">Phone: 412-281-4186 Fax: 412-774-2345</p>
                                 <p class="mb-0 regular-font gray-color">repair@surgicalproductsolutions.com</p>
                                  <div class="text-center btn-wrapper pt-4 mb-4">
-                                    <button class="btn btn-info btn-sm">Downloadable Form (Fax/Scan)</button>
+                                    <a href="/slides/slide/repair-service-request-form-3" class="btn btn-info btn-sm">Downloadable Form (Fax/Scan)</a>
                                 </div>
                                 <p class="regular-font gray-color">Thank you for choosing Surgical Product Solutions. Ask us about our Repair/Exchange Program!</p>
                             </div>
