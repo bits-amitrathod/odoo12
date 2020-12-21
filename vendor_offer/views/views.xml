@@ -947,6 +947,9 @@
                 <xpath expr="//field[@name='property_supplier_payment_term_id']" position="after">
                   <field name="acq_manager"/>
                 </xpath>
+                <xpath expr="//sheet/group/group[2]/field[@name='website']" position="before">
+                    <field name="vendor_email" widget="email"/>
+                </xpath>
             </field>
         </record>
 
