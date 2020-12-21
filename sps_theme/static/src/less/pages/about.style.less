@@ -574,6 +574,10 @@ background: #fafafa;
         &:hover{
             text-decoration: none;
         }
+        &:focus{
+            outline: none;
+            box-shadow: none;
+        }
     }
 }
 
@@ -1966,6 +1970,8 @@ background: #fafafa;
         .images-wrapper{
             img{
              box-shadow: 6px 7px 0px #ced2d5;
+             object-fit: contain;
+             object-position: center;
              }
              &.no-shadow{
                 img{

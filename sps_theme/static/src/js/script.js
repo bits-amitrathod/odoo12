@@ -10,7 +10,11 @@ $(document).ready(function () {
           });
         });
 
-
+    $(".scrolltoform").click(function() {
+        $('html, body').animate({
+            scrollTop: $("#requestform").offset().top - 250
+        }, 1500);
+    });
 });
 
    function getFileNameWithExt(event) {
