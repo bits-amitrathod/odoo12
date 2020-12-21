@@ -4,6 +4,9 @@ from odoo import models, fields, api
 from odoo import _
 from odoo.exceptions import UserError, Warning
 import odoo.addons.decimal_precision as dp
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 class CustomerContract(models.Model):
@@ -94,19 +97,24 @@ class sale_order(models.Model):
         for so in self:
             so.national_account = so.partner_id.national_account_rep.id
 
+    @api.onchange('client_order_ref', 'x_studio_allow_duplicate_po')
+    @api.depends('client_order_ref', 'x_studio_allow_duplicate_po')
+    def onchange_client_order_ref(self):
+        if self.client_order_ref and self.client_order_ref is not None and self.client_order_ref.strip() != '' and self.name:
+            records = self.env['sale.order'].search([('client_order_ref', '=', self.client_order_ref)])
+            if records:
+                for record in records:
+                    if self.name != record.name and (self.x_studio_allow_duplicate_po is False or
+                                                 record.x_studio_allow_duplicate_po is False):
+                        raise Warning(_("Duplicate PO number is not allowed.\n"
+                                        "The PO number of this Sales Order is already present on Sales Order %s.\n "
+                                        "If you want to add Duplicate PO against Sales Order, Set 'Allow Duplicate PO' "
+                                        "setting ON for both Sales Order.") % record.name)
+                    else:
+                        _logger.info('This is unique PO')
+
     @api.model
     def create(self, vals):
-        # check #PO and Allow duplicate PO - validation
-        if 'client_order_ref' in vals and vals['client_order_ref'] is not None and vals['client_order_ref'] and \
-                vals['client_order_ref'].strip() != '':
-            sales = self.env['sale.order'].search([('client_order_ref', '=', vals['client_order_ref'])])
-            if sales:
-                for sale in sales:
-                    if sale.x_studio_allow_duplicate_po is False:
-                        raise Warning(_("Duplicate PO number is not allowed.\nThe PO number of this Sales Order is already "
-                              "present on Sales Order %s.\n If you want to add Duplicate PO against Sales Order, "
-                              "Set 'Allow Duplicate PO' setting ON for both Sales Order.") % sale.name)
-
         # add account manager
         if 'partner_id' in vals and vals['partner_id'] is not None:
             res_partner = self.env['res.partner'].search([('id', '=', vals['partner_id'])])
@@ -163,18 +171,6 @@ class sale_order(models.Model):
                     'author_id': self.env.user.partner_id.id,
                 }
                 self.env['mail.message'].sudo().create(stock_picking_val)
-
-        # check #PO and Allow duplicate PO - validation
-        if self.team_id and self.team_id.team_type in ('sales', 'engine') and self.client_order_ref and \
-                self.client_order_ref is not None and self.client_order_ref.strip() != '' and self.name:
-            sales = self.env['sale.order'].search([('client_order_ref', '=', self.client_order_ref)])
-            if sales:
-                for sale in sales:
-                    if self.id != sale.id and sale.x_studio_allow_duplicate_po is False:
-                        raise Warning(_("Duplicate PO number is not allowed.\n"
-                                        "The PO number on Sales Order %s is already present on Sales Order %s.\n "
-                                        "If you want to add Duplicate PO against Sales Order, Set 'Allow Duplicate PO' "
-                                        "setting ON for both Sales Order.") % (self.name, sale.name))
 
     @api.one
     def _get_carrier_tracking_ref(self):
