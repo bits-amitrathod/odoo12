@@ -453,7 +453,7 @@
                                                     <div class="card-body">
                                                         <p class="card-text">
                                                             <span>You can download our </span>
-                                                            <a href="https://www.shopsps.com/downloadCatalog" style="color: rgb(232, 19, 30); "> product catalog</a>
+                                                            <a href="/downloadCatalog" style="color: rgb(232, 19, 30); "> product catalog</a>
                                                             <span>
                                                                 which is broken down by manufacturer, outfit
                                                                 with all necessary product information. You can also
