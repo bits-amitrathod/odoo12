@@ -64,8 +64,10 @@
                         </ul>
                     </div>
                      <div class="col-md">
-                          <h6 class="footer-title">STOCKHAWK</h6>
                          <ul class="footer-menu titles">
+                             <li>
+                                <a href="/stockhawk" title="Resources">STOCKHAWK</a>
+                            </li>
                             <li>
                                 <a href="/resource" title="Resources">RESOURCES</a>
                             </li>
