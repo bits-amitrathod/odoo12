@@ -18,7 +18,7 @@
                                         <a  class="btn btn-info btn-sm"  itemprop="url" href="/seller-form" >Contact a Sales Expert</a>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-6" id="requestform">
                                     <div class="video-section-wrapper">
                                         <div class="video-wrapper">
                                              <a href="javascript:void(0)"  data-toggle="modal" data-target="#sellsps"><span class="sr-only">play</span></a>
@@ -235,7 +235,7 @@
                                         <p>Discover the benefits of selling your surplus surgical products with SPS. This short video will walk you through the details of the complete process.</p>
                                     </div>
                                      <div class="text-center btn-wrapper pt-4">
-                                        <button class="btn btn-info btn-sm">Watch the Video</button>
+                                        <button class="btn btn-info btn-sm scrolltoform">Watch the Video</button>
                                     </div>
                                 </div>
                             </div>
