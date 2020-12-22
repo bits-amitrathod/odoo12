@@ -4,7 +4,7 @@
 
     <t t-call="web.external_layout">
         <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})"/>
-         <h2 style="font-size:20px;" align="center" ><strong>SURGICAL SURPLUS PURCHASE OFFER</strong></h2>
+         <h2 style="font-size:20px;" align="center" ><strong>PURCHASE OFFER</strong></h2>
         <div class="page" style="margin-top:8px">
             <div class="oe_structure"/>
              <h2 style="font-size:12px;color:red" align="center" ><strong>TO ENSURE SAFE DELIVERY PLEASE INCLUDE A HARD COPY OF THIS PURCHASE OFFER IN EACH SHIPMENT BOX</strong></h2>
@@ -71,8 +71,8 @@
             <div><p style="margin: 3px 0;font-size:14px;">This offer must be accepted within 3 business days of delivery date unless otherwise noted.</p></div>
               <div><p style="margin: 3px 0;font-size:14px;">Once the offer is accepted, the offer price is contingent upon requirements detailed below.</p></div>
               <div><p style="margin: 3px 0;font-size:14px;"><strong>OFFER PRICE CONDITIONAL UPON</strong>:</p></div>
-              <div><p style="margin: 3px 0;font-size:14px;">Speedy Delivery to Buyer within 5 days  Please included this purchase offer inside each shipment</p></div>
-              <div><p style="margin: 3px 0;font-size:14px;">Quality Control Inspection within 10 days upon receipt of goods</p></div>
+              <div><p style="margin: 3px 0;font-size:14px;">Speedy Delivery to Buyer within 5 business days  Please included this purchase offer inside each shipment</p></div>
+              <div><p style="margin: 3px 0;font-size:14px;">Quality Control Inspection within 10 business days upon receipt of goods</p></div>
 
             <!--<div><p style="margin: 5px 0;font-size:14px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>-->
                 <!--<span t-if="(o.offer_type =='credit' or o.offer_type =='cashcredit')"> <strong>Credit issued immediately </strong> after completion of SPS quality control inspection.</span>-->
@@ -128,9 +128,12 @@
 <!--                 <span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" >0 Days </span>-->
 <!--                 after completion of SPS quality control inspection</p></div>-->
 
-
-              <div><p style="margin: 3px 0;font-size:13px;"><strong>SPS RESERVES THE RIGHT TO ADJUST THIS PURCHASE OFFER IN THE EVENT THAT THE SPS QUALITY CONTROL PROCESS INDENTIFIES ANY DAMAGES OR DISCREPENCIES WITH THE PRODUCT FURNISHED. SELLER WILL BE NOTIFIED IMMEDIATELY IF AND WHEN THIS OFFER IS ADJUSTED.</strong></p></div>
-              <div><p style="margin: 3px 0;font-size:13px;"><strong>ALL ITEMS MUST BE IN THE ORIGINAL MANUFACTURERS PACKAGING AND NOT REPROCESSED. NO SALES SAMPLES OR CPT PRODUCTS.</strong></p></div>
+              <br></br>
+              <div><p style="margin: 3px 0;font-size:13px;"><strong><u>SURGICAL DISPOSABLES:</u>ALL ITEMS MUST BE IN THE ORIGINAL MANUFACTURERS PACKAGING AND NOT REPROCESSED. NO SALES SAMPLES OR CPT PRODUCTS.</strong></p></div>
+              <div><p style="margin: 3px 0;font-size:13px;"><strong><u>SURGICAL EQUIPMENT:</u>OFFER IS BASED UPON SELLER’S LISTED CONDITION OF EQUIPMENT. </strong></p></div>
+              <br></br>
+              <div><p style="margin: 3px 0;font-size:13px;"><strong>SPS RESERVES THE RIGHT TO ADJUST THIS PURCHASE OFFER IN THE EVENT THAT SPS’S QUALITY CONTROL PROCESS INDENTIFIES ANY DAMAGES OR DISCREPENCIES IN THE SELLER’S STATED CONDITION AND/OR EXPIRATION OF ITEM(S).</strong></p></div>
+              <br></br>
               <div><p style="margin: 3px 0;font-size:13px;"><strong>YOU WARRANT THAT YOU ARE THE LAWFUL OWNER OF THE AFOREMENTIONED GOODS, THAT THEY ARE FREE FROM ALL ENCUMBRANCES, AND THAT WE HAVE THE RIGHT TO SELL THESE GOODS. SELLER BINDS ITSELF, ITS SUCCESSORS AND ASSIGNS, TO WARRANT AND DEFEND SPS TITLE TO THESE GOODS AGAINST CLAIMS AND DEMANDS OF ALL PERSONS.</strong></p></div>
               <div><p style="margin: 3px 0;font-size:13px;"><img src ='/vendor_offer/static/img/unchecked.png' style="height:10px;width:10px;margin-right:8px;"/><strong></strong>By checking the box to the left, you agree that: (1) you are a licensed facility with legitimate title ownership of the merchandise being sold; (2) you have quality system procedures to ensure the maintenance of safety, storage and distribution is properly being enforced; and (3) you are willing to demonstrate this to SPS upon request.</p></div>
             <table class="table table-condensed" style="width:850px;">
@@ -167,7 +170,7 @@
                     <tr>
                         <th class="text-center"><strong>Manufacturer</strong></th>
                         <th class="text-center"><strong>Catalog Number</strong></th>
-                         <th class="text-center"><strong>Expiration Date</strong></th>
+                         <th class="text-center"><strong>Expiration Date or Condition</strong></th>
                         <th class="text-right"><strong>Qty</strong></th>
                         <th class="text-right"><strong>Offer</strong></th>
                       <!--    <th class="text-right"><strong>Untaxed Offer</strong></th>
@@ -271,7 +274,7 @@
 
     <t t-call="web.external_layout">
         <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})"/>
-         <h2 style="font-size:20px;" align="center" ><strong>SURGICAL SURPLUS PURCHASE OFFER</strong></h2>
+         <h2 style="font-size:20px;" align="center" ><strong>PURCHASE OFFER</strong></h2>
         <div class="page" style="margin-top:8px">
             <div class="oe_structure"/>
              <h2 style="font-size:12px;color:red" align="center" ><strong>TO ENSURE SAFE DELIVERY PLEASE INCLUDE A HARD COPY OF THIS PURCHASE OFFER IN EACH SHIPMENT BOX</strong></h2>
@@ -327,8 +330,8 @@
             <div><p style="margin: 3px 0;font-size:14px;">This offer must be accepted within 3 business days of delivery date unless otherwise noted.</p></div>
               <div><p style="margin: 3px 0;font-size:14px;">Once the offer is accepted, the offer price is contingent upon requirements detailed below.</p></div>
               <div><p style="margin: 3px 0;font-size:14px;"><strong>OFFER PRICE CONDITIONAL UPON</strong>:</p></div>
-              <div><p style="margin: 3px 0;font-size:14px;">Speedy Delivery to Buyer within 5 days  Please included this purchase offer inside each shipment</p></div>
-              <div><p style="margin: 3px 0;font-size:14px;">Quality Control Inspection within 10 days upon receipt of goods</p></div>
+              <div><p style="margin: 3px 0;font-size:14px;">Speedy Delivery to Buyer within 5 business days  Please included this purchase offer inside each shipment</p></div>
+              <div><p style="margin: 3px 0;font-size:14px;">Quality Control Inspection within 10 business days upon receipt of goods</p></div>
 
             <div t-if="o.offer_type =='cashcredit' or not o.offer_type">
                     <p style="margin: 5px 0;font-size:14px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>
@@ -397,11 +400,14 @@
                  <!--<span t-if="not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.payment_term_id.name"/>-->
                  <!--<span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" >0 Days </span>-->
                 <!--after completion of SPS quality control inspection</p></div>-->
-
-         <div><p style="margin: 3px 0;font-size:13px;"><strong>SPS RESERVES THE RIGHT TO ADJUST THIS PURCHASE OFFER IN THE EVENT THAT THE SPS QUALITY CONTROL PROCESS INDENTIFIES ANY DAMAGES OR DISCREPENCIES WITH THE PRODUCT FURNISHED. SELLER WILL BE NOTIFIED IMMEDIATELY IF AND WHEN THIS OFFER IS ADJUSTED.</strong></p></div>
-              <div><p style="margin: 3px 0;font-size:13px;"><strong>ALL ITEMS MUST BE IN THE ORIGINAL MANUFACTURERS PACKAGING AND NOT REPROCESSED. NO SALES SAMPLES OR CPT PRODUCTS.</strong></p></div>
-              <div><p style="margin: 3px 0;font-size:13px;"><strong>YOU WARRANT THAT YOU ARE THE LAWFUL OWNER OF THE AFOREMENTIONED GOODS, THAT THEY ARE FREE FROM ALL ENCUMBRANCES, AND THAT WE HAVE THE RIGHT TO SELL THESE GOODS. SELLER BINDS ITSELF, ITS SUCCESSORS AND ASSIGNS, TO WARRANT AND DEFEND SPS TITLE TO THESE GOODS AGAINST CLAIMS AND DEMANDS OF ALL PERSONS.</strong></p></div>
-              <div><p style="margin: 3px 0;font-size:13px;"><img src ='/vendor_offer/static/img/unchecked.png' style="height:10px;width:10px;margin-right:8px;"/><strong></strong>By checking the box to the left, you agree that: (1) you are a licensed facility with legitimate title ownership of the merchandise being sold; (2) you have quality system procedures to ensure the maintenance of safety, storage and distribution is properly being enforced; and (3) you are willing to demonstrate this to SPS upon request.</p></div>
+            <br></br>
+            <div><p style="margin: 3px 0;font-size:13px;"><strong><u>SURGICAL DISPOSABLES:</u>ALL ITEMS MUST BE IN THE ORIGINAL MANUFACTURERS PACKAGING AND NOT REPROCESSED. NO SALES SAMPLES OR CPT PRODUCTS.</strong></p></div>
+            <div><p style="margin: 3px 0;font-size:13px;"><strong><u>SURGICAL EQUIPMENT:</u>OFFER IS BASED UPON SELLER’S LISTED CONDITION OF EQUIPMENT. </strong></p></div>
+            <br></br>
+            <div><p style="margin: 3px 0;font-size:13px;"><strong>SPS RESERVES THE RIGHT TO ADJUST THIS PURCHASE OFFER IN THE EVENT THAT SPS’S QUALITY CONTROL PROCESS INDENTIFIES ANY DAMAGES OR DISCREPENCIES IN THE SELLER’S STATED CONDITION AND/OR EXPIRATION OF ITEM(S).</strong></p></div>
+            <br></br>
+            <div><p style="margin: 3px 0;font-size:13px;"><strong>YOU WARRANT THAT YOU ARE THE LAWFUL OWNER OF THE AFOREMENTIONED GOODS, THAT THEY ARE FREE FROM ALL ENCUMBRANCES, AND THAT WE HAVE THE RIGHT TO SELL THESE GOODS. SELLER BINDS ITSELF, ITS SUCCESSORS AND ASSIGNS, TO WARRANT AND DEFEND SPS TITLE TO THESE GOODS AGAINST CLAIMS AND DEMANDS OF ALL PERSONS.</strong></p></div>
+            <div><p style="margin: 3px 0;font-size:13px;"><img src ='/vendor_offer/static/img/unchecked.png' style="height:10px;width:10px;margin-right:8px;"/><strong></strong>By checking the box to the left, you agree that: (1) you are a licensed facility with legitimate title ownership of the merchandise being sold; (2) you have quality system procedures to ensure the maintenance of safety, storage and distribution is properly being enforced; and (3) you are willing to demonstrate this to SPS upon request.</p></div>
             <table class="table table-condensed" style="width:850px;">
             <tbody>
                 <tr>
@@ -436,7 +442,7 @@
                     <tr>
                         <th class="text-center"><strong>Manufacturer</strong></th>
                         <th class="text-center"><strong>Catalog Number</strong></th>
-                         <th class="text-center"><strong>Expiration Date</strong></th>
+                         <th class="text-center"><strong>Expiration Date or Condition</strong></th>
                         <th class="text-right"><strong>Qty</strong></th>
                         <th class="text-right"><strong>Offer</strong></th>
                       <!--    <th class="text-right"><strong>Untaxed Offer</strong></th>
