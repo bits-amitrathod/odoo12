@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import odoo
+import json
 from odoo import fields, http
 from odoo.http import request
 
@@ -128,6 +129,52 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
 
 
         return responce
+
+    @http.route(['/shop/quote_my_report'], type='http', auth="public", website=True, methods=['POST'], csrf=False)
+    def quote_my_report(self, **kw):
+        print('In quote my report custom')
+        partner_id = kw.get('partner_id')
+        print(kw.get('partner_id'))
+        # products = request.env['product.product'].search([('active', '=', True)], limit=5)
+        # print(products)
+        sales = request.env['sale.order'].sudo().search([('partner_id', '=', partner_id)])
+        # _logger.info("sales  :%r", sales)
+        products = {}
+        for sale in sales:
+            sale_order_lines = request.env['sale.order.line'].sudo().search([('order_id', '=', sale.id)])
+            for line in sale_order_lines:
+                # _logger.info(" product_id qty_available %r", line.product_id.actual_quantity)
+                if line.product_id.actual_quantity and line.product_id.actual_quantity is not None and line.product_id.actual_quantity > 0 and line.product_id.product_tmpl_id.sale_ok:
+                    products[line.product_id] = line.product_id
+
+        for product in products:
+            self.cart_update(product.id)
+        return request.redirect("/shop/cart")
+
+    def cart_update(self, product_id, add_qty=1, set_qty=0, **kw):
+        print('IN cart_update custom ************')
+        """This route is called when adding a product to cart (no options)."""
+        sale_order = request.website.sale_get_order(force_create=True)
+        if sale_order.state != 'draft':
+            request.session['sale_order_id'] = None
+            sale_order = request.website.sale_get_order(force_create=True)
+
+        product_custom_attribute_values = None
+        if kw.get('product_custom_attribute_values'):
+            product_custom_attribute_values = json.loads(kw.get('product_custom_attribute_values'))
+
+        no_variant_attribute_values = None
+        if kw.get('no_variant_attribute_values'):
+            no_variant_attribute_values = json.loads(kw.get('no_variant_attribute_values'))
+
+        sale_order._cart_update(
+            product_id=int(product_id),
+            add_qty=add_qty,
+            set_qty=set_qty,
+            product_custom_attribute_values=product_custom_attribute_values,
+            no_variant_attribute_values=no_variant_attribute_values
+        )
+
 
 
 class WebsiteSaleOptionsCstm(odoo.addons.website_sale.controllers.main.WebsiteSale):
