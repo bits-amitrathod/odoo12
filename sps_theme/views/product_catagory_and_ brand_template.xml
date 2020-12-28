@@ -81,7 +81,6 @@
 
     <!--  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Product Item List ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
-<!--
     <template id="products_item_cstm" name="Products item" inherit_id="website_sale.products">
 
         <xpath expr="//table" position="replace">
@@ -102,7 +101,6 @@
         </xpath>
     </template>
 
--->
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Product Item on list ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
