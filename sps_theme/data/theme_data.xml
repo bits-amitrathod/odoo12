@@ -2,5 +2,18 @@
 <odoo>
     <data>
 
+        <record id="category_1" model="slide.category">
+            <field name="name">Award</field>
+            <field name="channel_id" ref="website_slides.channel_public"/>
+            <field name="sequence">10</field>
+        </record>
+        <record id="category_2" model="slide.category">
+            <field name="name">Educational</field>
+            <field name="channel_id" ref="website_slides.channel_public"/>
+            <field name="sequence">20</field>
+        </record>
+
+
+
     </data>
 </odoo>
