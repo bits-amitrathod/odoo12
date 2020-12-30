@@ -20,6 +20,11 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         product_template = request.env['product.template'].search([('actual_quantity', '=', False)])
         product_brands = request.env['product.brand'].search([])
 
+        title = "Shop"
+        if request.httprequest.path == "/shop/featured":
+            title = "Sale"
+
+
         if len(product_template)>0:
             for product in product_template:
                 product.update({'actual_quantity':0})
@@ -89,6 +94,7 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
 
         payload['porductRows'] = porductRows
         payload['brands'] = product_brands
+        payload['title'] = title
         return request.render("website_sale.products", payload)
 
     @http.route(['/shop/product/<model("product.template"):product>'], type='http', auth="public", website=True)
