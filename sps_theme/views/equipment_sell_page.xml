@@ -79,12 +79,7 @@
                         <div class="col-md-6 align-self-center">
                            <p class="hawk-title ft-32 regular-font">About SPS Surgical Equipment</p>
                            <div class="section-description">
-                              <p>Launched in 2018, the SPS Surgical Equipment Division was
-                                 created to complement our disposable goods services by
-                                 offering customers solutions for their used medical equipment.
-                                 This reinforces our mission to provide cost-saving solutions
-                                 for healthcare facilities across the United States who choose to
-                                 save money without sacrificing quality of care.
+                              <p>In 2018, SPS launched the Surgical Equipment Division to complement our surgical disposable services. By offering customers solutions for their used medical equipment, we reinforce our mission to provide cost-saving solutions to healthcare facilities across the United States who choose to save money without sacrificing their quality of care.
                               </p>
                            </div>
                         </div>
@@ -114,8 +109,7 @@
                                  depreciated medical equipment. If you’re a buyer, we remarket our
                                  equipment and provide it to you at a reduced cost, saving healthcare
                                  facilities thousands. Equipment that is older technology, but still
-                                 valued in other countries, is donated to medical missions, therefore
-                                 supporting sustainability in 2nd and 3rd world markets. Let us find
+                                 valued in other countries, is donated to medical missions, supporting sustainability in 2nd and 3rd world markets. Let us find
                                  cost savings solutions that work for you.
                               </p>
                            </div>
@@ -263,7 +257,7 @@
                   <div class="container">
                      <div class="row">
                         <div class="col-md-7 align-self-center pl-3 pl-md-5">
-                           <p class="hawk-title ft-32 regular-font">When Buying Equipment From Us You Can Be Assured That You Will Receive:</p>
+                           <p class="hawk-title ft-32 regular-font">When Buying Equipment From Us, You Will Receive:</p>
                            <div class="assured mt-3">
                               <ul>
                                  <li><span class="bold-font">Quality</span> customer service and support</li>
@@ -290,100 +284,100 @@
                         <div class="container p-0" id="requestform">
                              <p class="hawk-title ft-32 regular-font text-center">Sell Your Surgical Equipment</p>
                              <div class="section-description text-center">
-                                 <p>Please fill out the form below in order to submit an item for valuation.</p>
+                                 <p>Please fill out the form below to submit an item for valuation.</p>
                              </div>
-                             <div class="row" >
+                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group has-float-label form-field o_website_form_required_custom">
-                                        <input type="text" class="form-control o_website_form_input" placeholder="Business Name" id="bussiness_name" name="bussiness_name" required=""/>
-                                        <label class="control-label" for="bussiness_name">Business Name</label>
+                                        <input type="text" class="form-control o_website_form_input" placeholder="Business Name *" id="bussiness_name" name="bussiness_name" required=""/>
+<!--                                        <label class="control-label" for="bussiness_name">Business Name</label>-->
                                     </div>
                                 </div>
                                   <div class="col-md-6">
                                     <div class="form-group has-float-label form-field o_website_form_required_custom">
-                                        <input type="text" class="form-control o_website_form_input" placeholder="Business Address" id="bussiness_address" name="bussiness_address" required=""/>
-                                        <label class="control-label" for="bussiness_address">Business Address</label>
+                                        <input type="text" class="form-control o_website_form_input" placeholder="Business Address *" id="bussiness_address" name="bussiness_address" required=""/>
+<!--                                        <label class="control-label" for="bussiness_address">Business Address</label>-->
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group has-float-label form-field o_website_form_required_custom">
-                                        <input type="text" class="form-control o_website_form_input" placeholder="City" id="City" name="City" required=""/>
-                                        <label class="control-label" for="City">City</label>
+                                        <input type="text" class="form-control o_website_form_input" placeholder="City *" id="City" name="City" required=""/>
+<!--                                        <label class="control-label" for="City">City</label>-->
                                     </div>
                                 </div>
                                  <div class="col-md-6">
                                     <div class="form-group has-float-label form-field o_website_form_required_custom">
-                                        <input type="text" class="form-control o_website_form_input" placeholder="State/Province" id="state" name="state" required=""/>
-                                        <label class="control-label" for="state">State/Province</label>
+                                        <input type="text" class="form-control o_website_form_input" placeholder="State/Province *" id="state" name="state" required=""/>
+<!--                                        <label class="control-label" for="state">State/Province</label>-->
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group has-float-label form-field o_website_form_required_custom">
-                                        <input type="text" class="form-control o_website_form_input" placeholder="Zip Code" id="zipcode" name="zipcode" required=""/>
-                                        <label class="control-label" for="zipcode">Zip Code</label>
+                                        <input type="text" class="form-control o_website_form_input" placeholder="Zip Code *" id="zipcode" name="zipcode" required=""/>
+<!--                                        <label class="control-label" for="zipcode">Zip Code</label>-->
                                     </div>
                                 </div>
                                  <div class="col-md-6">
                                     <div class="form-group has-float-label ">
                                         <input type="text" class="form-control o_website_form_input" placeholder="First Name" id="first_name" name="first_name"/>
-                                        <label class="control-label" for="first_name">First Name</label>
+<!--                                        <label class="control-label" for="first_name">First Name</label>-->
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group has-float-label">
                                         <input type="text" class="form-control o_website_form_input" placeholder="Last Name" id="last_name" name="last_name"/>
-                                        <label class="control-label" for="last_name">Last Name</label>
+<!--                                        <label class="control-label" for="last_name">Last Name</label>-->
                                     </div>
                                 </div>
 
                                  <div class="col-md-6">
                                     <div class="form-group has-float-label form-field ">
                                         <input type="text" class="form-control o_website_form_input" placeholder="Phone" id="Phone" name="Phone"/>
-                                        <label class="control-label" for="Phone">Phone</label>
+<!--                                        <label class="control-label" for="Phone">Phone</label>-->
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group has-float-label form-field ">
                                         <input type="text" class="form-control o_website_form_input" placeholder="Email" id="Email" name="Email"/>
-                                        <label class="control-label" for="Email">Email</label>
+<!--                                        <label class="control-label" for="Email">Email</label>-->
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group has-float-label form-field ">
                                         <input type="text" class="form-control o_website_form_input" placeholder="Contact Name (for final signature) First Name" id="contact_first_name" name="contact_first_name"/>
-                                        <label class="control-label" for="contact_first_name">Contact Name (for final signature) First Name</label>
+<!--                                        <label class="control-label" for="contact_first_name">Contact Name (for final signature) First Name</label>-->
                                     </div>
                                 </div>
                                  <div class="col-md-6">
                                     <div class="form-group has-float-label form-field ">
                                         <input type="text" class="form-control o_website_form_input" placeholder="Contact Name (for final signature) First Name" id="contact_last_name" name="contact_last_name"/>
-                                        <label class="control-label" for="contact_last_name">Contact Name (for final signature) Last Name</label>
+<!--                                        <label class="control-label" for="contact_last_name">Contact Name (for final signature) Last Name</label>-->
                                     </div>
                                 </div>
 
                                  <div class="col-md-6">
                                     <div class="form-group has-float-label form-field ">
                                         <input type="text" class="form-control o_website_form_input" placeholder="Manufacturer" id="Manufacturer" name="Manufacturer"/>
-                                        <label class="control-label" for="Manufacturer">Manufacturer</label>
+<!--                                        <label class="control-label" for="Manufacturer">Manufacturer</label>-->
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group has-float-label form-field ">
                                         <input type="text" class="form-control o_website_form_input" placeholder="Part Number" id="part_number" name="part_number"/>
-                                        <label class="control-label" for="part_number">Part Number</label>
+<!--                                        <label class="control-label" for="part_number">Part Number</label>-->
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                      <div class="form-group has-float-label form-field ">
                                         <textarea id="description" placeholder="Description" class="form-control o_website_form_input" name="description"  rows="1"></textarea>
-                                        <label class="control-label" for="description">Description</label>
+<!--                                        <label class="control-label" for="description">Description</label>-->
                                      </div>
                                 </div>
                                  <div class="col-md-5">
                                     <div class="form-group  has-float-label">
                                          <div class="input-group">
                                             <input id="birthdate" type="text" placeholder="Birthdate" name="birth_date" class="form-control o_website_form_input o_website_form_input o_website_form_date"/>
-                                             <label class="control-label" for="birthdate">Purchase Date</label>
+<!--                                             <label class="control-label" for="birthdate">Purchase Date</label>-->
                                             <div class="input-group-append">
                                                 <span class="input-group-text" id="birthdate"><i class="icon-calendars"></i></span>
                                             </div>
@@ -393,13 +387,13 @@
                                 <div class="col-md-5">
                                     <div class="form-group has-float-label form-field ">
                                         <input type="text" class="form-control o_website_form_input" placeholder="Condition" id="Condition" name="Condition"/>
-                                        <label class="control-label" for="Condition">Condition</label>
+<!--                                        <label class="control-label" for="Condition">Condition</label>-->
                                     </div>
                                 </div>
                                 <div class="col-md-5">
                                     <div class="form-group has-float-label form-field ">
                                         <input type="text" class="form-control o_website_form_input" placeholder="Quantity (Ea)" id="quantity" name="quantity"/>
-                                        <label class="control-label" for="quantity">Quantity (Ea)</label>
+<!--                                        <label class="control-label" for="quantity">Quantity (Ea)</label>-->
                                     </div>
                                 </div>
 

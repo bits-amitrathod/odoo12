@@ -8,7 +8,7 @@
                         <section class="padding-80-y">
                             <div class="container">
                                 <div class="text-center pb32">
-                                    <h1  class="about-header"> Equipment <strong>Repair &amp; Service</strong> </h1>
+                                    <h1  class="about-header"> Equipment <span class="bold-font">Repair &amp; Service</span> </h1>
                                 </div>
                                 <div class="banner-wrapper">
                                     <img src="/sps_theme/static/src/images/equipement-repair.jpg" class="img-fluid"/>
@@ -19,16 +19,14 @@
                                             <h3 class="sub-title">SPS Equipment Repair</h3>
                                             <p>
                                                At SPS, we provide you with a repair service that allows you to save money without
-                                                sacrificing quality. SPS operates out of a world class, ISO13485:2016 certified laboratory
-                                                and is dedicated to providing you cost-savings in the equipment repair market.
+                                                sacrificing quality. SPS operates out of a world-class, ISO13485:2016 certified laboratory dedicated to providing you cost-savings in the equipment repair market.
+
                                             </p>
                                             <h3 class="sub-title ft-18 medium-font">What does ISO Certified mean?</h3>
                                             <p>
-                                                It means that we consistently meet customer and applicable regulatory requirements.
-                                                We are set on a course of continuous improvement for ourselves, for you, and for
-                                                the patients at the end of every medical device that we repair. In addition, the quality
-                                                management system we use to inspect and repair your equipment is held to the highest
-                                                standard.
+                                                It means we consistently meet customer and applicable regulatory requirements.
+                                                We are set on a course of continuous improvement for ourselves, for you, and for the patients at the end of every medical device we repair. We hold the highest standards for quality management when inspecting and repairing your equipment.
+
                                             </p>
                                         </div>
                                     </div>
@@ -88,7 +86,7 @@
                                          <div><i class="fa fa-plus"></i></div>
                                       </div>
                                       <div class="list-description">
-                                         <p><span>IN ORDER TO BRING YOUR EQUIPMENT TO LIKE-NEW CONDITION, OUR HIGHLY-SKILLED TECHNICIANS USE A 35-POINT INSPECTION PROCESS</span> </p>
+                                         <p><span>IN ORDER TO BRING YOUR EQUIPMENT TO LIKE-NEW CONDITION, OUR HIGHLY-SKILLED TECHNICIANS USE A 35-POINT INSPECTION PROCESS.</span> </p>
                                       </div>
                                    </div>
                                    <div class="story-list white-plus">
@@ -153,10 +151,7 @@
                                               </div>
                                               <p class="box-title">RETURN</p>
                                               <p class="box-content">
-                                                   Once repair is complete, your item
-                                                    is shipped and you will receive an
-                                                    invoice. Payment is due in accordance
-                                                    to the agreed upon terms.
+                                                   Once the repair is complete, your item is shipped, and you will receive an invoice. Payment is due in accordance with the agreed upon terms.
                                               </p>
                                           </div>
                                       </div>
@@ -190,7 +185,7 @@
                                    </div>
 
                                 </div>
-                                <div class="row mt-5">
+                                <div class="row mt-5 pt-5">
                                      <div class="col-md-6 mb-3">
                                         <img src="/sps_theme/static/src/images/process.jpg" class="img-fluid"/>
                                    </div>

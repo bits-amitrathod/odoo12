@@ -7,11 +7,9 @@
                         <div class="container">
                             <div class="row">
                                 <div class="col-md-6 pb-3">
-                                    <h3 class="video-title"><strong>Sell</strong> Your Surplus Surgical Products.</h3>
+                                    <h3 class="video-title"><span class="bold-font">Sell</span> Your Surplus Surgical Products.</h3>
                                     <div class="section-description mt-3 mb-4">
-                                        <p>If you have a surplus inventory of surgical products, why not sell
-                                            them so they don’t go to waste. SPS would like to purchase your
-                                            unused, in-date surgical supplies.
+                                        <p>If you have a surplus inventory of surgical products, why not sell them so they don’t go to waste? SPS will purchase your unused, in-date surgical supplies.
                                         </p>
                                     </div>
                                     <div class="text-left btn-wrapper">
@@ -36,8 +34,7 @@
                                 <div class="col-md-8 m-auto">
                                     <p class="hawk-title ft-32 text-center regular-font">How the Buy Back Process Works</p>
                                     <div class="section-description">
-                                        <p>The process of selling your products to SPS is simple and straight forward. We have
-                                            outlined the following 5 steps of the selling process below. </p>
+                                        <p>The process of selling your products to SPS is simple and straightforward. We have outlined the 5 steps of the selling process below. </p>
                                     </div>
                                 </div>
                                 <div class="col-12 pt-5">
@@ -48,9 +45,7 @@
                                  <div class="col-md-8 m-auto">
                                     <p class="hawk-title ft-32 text-center regular-font">Identify and Isolate Your Surplus Inventory</p>
                                     <div class="section-description">
-                                        <p>First identify and isolate your surplus inventory from our list of targeted products below.
-                                            This list includes vendors and subspecialties that we frequently purchase based on the
-                                            market place demand. </p>
+                                        <p>First, identify and isolate your surplus inventory from our list of targeted products below. This list includes vendors and subspecialties that we frequently purchase based on market demand. </p>
                                     </div>
                                 </div>
                                 <div class="col-12 pt-3">
@@ -151,7 +146,7 @@
                                 <div class="col-md-11 m-auto">
                                     <p class="hawk-title ft-32 text-center regular-font">We Evaluate and Appraise Your Item List</p>
                                     <div class="section-description text-center">
-                                        <p>Our appraiser will evaluate your product list. Then your SPS representative will deliver an offer within 48 – 72 hours.</p>
+                                        <p>Our appraisal team  will evaluate your product list. Your SPS representative will then deliver an offer within 48 – 72 hours.</p>
                                     </div>
                                 </div>
                                  <div class="col-md-12 m-auto py-4  ">
@@ -169,9 +164,9 @@
                                         <p>
                                             Within 72 hours, your SPS Account Manager will present you
                                             with an offer to buy back your surplus inventory. That offer will
-                                            take into consideration the following factors: <strong>demand from our
+                                            take into consideration the following factors: <span class="medium-font">demand from our
                                             customers, expiration dates, quantities in stock, condition of
-                                            product (cases/eaches).</strong>
+                                            product (cases/eaches).</span>
                                         </p>
                                     </div>
                                 </div>
@@ -181,7 +176,7 @@
                                     </div>
                                      <p class="hawk-title text-left bold-font pt-3">Depreciation of Value Analysis</p>
                                     <div class="section-description">
-                                        <p>Unfortunately, the surplus inventory you are selling does not
+                                        <p>Unfortunately, the surplus you are selling does not
                                             have the same value it did when you originally purchased the
                                             inventory due to depreciation. These items devalue over time as
                                             they near expiration. </p>
@@ -197,7 +192,7 @@
                                 </div>
 
                                 <div class="col-md-11 m-auto">
-                                    <p class="hawk-title ft-32 text-center regular-font">You Ship Your Items for <strong>FREE</strong> to SPS</p>
+                                    <p class="hawk-title ft-32 text-center regular-font">You Ship Your Items for <span class="bold-font">FREE</span> to SPS</p>
                                     <div class="section-description">
                                         <p>After the offer is accepted, we will send prepaid shipping labels. We ship the product at no cost to you.</p>
                                     </div>
