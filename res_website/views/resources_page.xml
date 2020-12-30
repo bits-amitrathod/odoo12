@@ -23,7 +23,7 @@
                         <section class="video-block padding-60-y">
                             <div class="container">
                                  <div class="text-center">
-                                     <h1  class="resource-section-title"> <span>Video</span> Resources</h1>
+                                     <h1  class="resource-section-title"> <span>Video</span> Library</h1>
                                  </div>
                                 <div class="row mt-5">
                                     <t t-foreach="video" t-as="v">
@@ -75,7 +75,7 @@
                         <section class="video-block bg-grey padding-60-y">
                             <div class="container">
                                  <div class="text-center">
-                                     <h1  class="resource-section-title"> <span>Educational</span> Resources</h1>
+                                     <h1  class="resource-section-title"> <span>Educational</span> Downloads</h1>
                                  </div>
                                 <div class="col-md-11 m-auto">
                                 <div class="row mt-5">

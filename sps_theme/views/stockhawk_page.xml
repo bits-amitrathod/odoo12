@@ -78,7 +78,7 @@
 											</div>
 										</div>
 										<div class="list-description">
-											<p>PINPOINT LOW PRICES ON HIGH COST PRODUCTS YOU BUY</p>
+											<p>PINPOINT LOW PRICES ON HIGH-COST PRODUCTS YOU BUY</p>
 										</div>
 									</div>
 									<div class="story-list white-plus">
@@ -98,7 +98,7 @@
 											</div>
 										</div>
 										<div class="list-description">
-											<p>ORDER AND SHIP SAME DAY WITH NO CONTRACTS REQUIRED</p>
+											<p>ORDER AND SHIP SAME-DAY WITH NO CONTRACTS REQUIRED</p>
 										</div>
 									</div>
 								</div>
@@ -122,7 +122,7 @@
 											<p>Our program specialists gather
                                                 customer data from purchase
                                                 histories and previous product
-                                                requests to facility specific
+                                                requests to facility-specific
                                                 preferences and shipping
                                                 requirements. </p>
 										</div>
@@ -190,7 +190,7 @@
 									<p class="hawk-title ft-32 medium-font">Request Your Complimentary Savings Impact Quote.</p>
 									<div class="section-description">
 										<p>
-											<strong>Fill out the form below </strong> and an Inventory Savings Specialist will contact you to coordinate your quote.
+											<strong>Fill out the form below, </strong> and an Inventory Savings Specialist will contact you to coordinate your quote.
 
 										</p>
 									</div>
@@ -204,38 +204,38 @@
 							<div class="row mt-5" id="requestform">
 								<div class="col-md-6">
 									<div class="form-group has-float-label form-field o_website_form_required_custom">
-										<input type="text" placeholder="First Name" id="first_name" class="form-control o_website_form_input" name="first_name" required=""/>
-										<label class="control-label" for="first_name">First Name</label>
+										<input type="text" placeholder="First Name *" id="first_name" class="form-control o_website_form_input" name="first_name" required=""/>
+<!--										<label class="control-label" for="first_name">First Name</label>-->
 									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="form-group has-float-label form-field o_website_form_required_custom">
-										<input type="text" placeholder="Last Name" id="last_name" class="form-control o_website_form_input" name="last_name" required=""/>
-										<label class="control-label" for="last_name">Last Name</label>
+										<input type="text" placeholder="Last Name *" id="last_name" class="form-control o_website_form_input" name="last_name" required=""/>
+<!--										<label class="control-label" for="last_name">Last Name</label>-->
 									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="form-group has-float-label form-field o_website_form_required_custom">
-										<input type="text" placeholder="Phone" id="phone" class="form-control o_website_form_input" name="phone" required=""/>
-										<label class="control-label" for="phone">Phone</label>
+										<input type="text" placeholder="Phone *" id="phone" class="form-control o_website_form_input" name="phone" required=""/>
+<!--										<label class="control-label" for="phone">Phone</label>-->
 									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="form-group has-float-label form-field o_website_form_required_custom">
-										<input type="text" placeholder="Email" id="email" class="form-control o_website_form_input" name="email" required=""/>
-										<label class="control-label" for="email">Email</label>
+										<input type="text" placeholder="Email *" id="email" class="form-control o_website_form_input" name="email" required=""/>
+<!--										<label class="control-label" for="email">Email</label>-->
 									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="form-group has-float-label form-field o_website_form_required_custom">
-										<input type="text" placeholder="Company Name" id="Company" class="form-control o_website_form_input" name="Company" required=""/>
-										<label class="control-label" for="Company">Company Name</label>
+										<input type="text" placeholder="Company Name *" id="Company" class="form-control o_website_form_input" name="Company" required=""/>
+<!--										<label class="control-label" for="Company">Company Name</label>-->
 									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="form-group has-float-label form-field o_website_form_required_custom">
-										<input type="text" placeholder="# of Reps" id="Reps" class="form-control o_website_form_input" name="Reps" required=""/>
-										<label class="control-label" for="Reps"># of Reps</label>
+										<input type="text" placeholder="# of Reps *" id="Reps" class="form-control o_website_form_input" name="Reps" required=""/>
+<!--										<label class="control-label" for="Reps"># of Reps</label>-->
 									</div>
 								</div>
 								<div class="col-12 text-center btn-wrapper mt-5">

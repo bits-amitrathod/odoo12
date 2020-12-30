@@ -171,6 +171,7 @@ header{
                             width: 230px;
                             text-transform: uppercase;
                             letter-spacing: 1px;
+                            color: #616f79;
                             &:focus{
                                 outline: none;
                                 box-shadow: none;
@@ -213,7 +214,7 @@ header{
                             font-size: 14px;
                             line-height: 26px;
                             font-family: @medium-font;
-                            color: #394957 !important;
+                            color: @text-color !important;
                             text-transform: uppercase;
                             letter-spacing: 1px;
                             margin-top: 0 !important;
@@ -246,7 +247,7 @@ header{
                                 font-size: 14px;
                                 line-height: 26px;
                                 font-family: 'robotomedium';
-                                color: #394957 !important;
+                                color: @text-color !important;
                                 text-transform: uppercase;
                                 letter-spacing: 1px;
                                 margin-top: 0 !important;
@@ -427,7 +428,7 @@ footer{
   margin-bottom: 2rem;
   .form-control{
      height: 50px;
-     padding-top: 20px;
+     padding-top: 5px;
      border-radius: 0;
      font-family: @regular-font !important;
      color: #808081;
@@ -462,31 +463,56 @@ footer{
     z-index: 5;
   }
   .form-control::-webkit-input-placeholder {
-    -webkit-transition: all 0.2s;
+      -webkit-transition: all 0.2s;
     transition: all 0.2s;
+    color:#9ca4ac;
+    font-family: @regular-font;
+    cursor: text;
+    font-size: 16px;
+    color: #9ca4ac;
+    font-weight: 500;
   }
 
   .form-control::-moz-placeholder {
-    -webkit-transition: all 0.2s;
+      -webkit-transition: all 0.2s;
     transition: all 0.2s;
+    color:#9ca4ac;
+    font-family: @regular-font;
+    cursor: text;
+    font-size: 16px;
+    color: #9ca4ac;
+    font-weight: 500;
   }
 
   .form-control:-ms-input-placeholder {
     -webkit-transition: all 0.2s;
     transition: all 0.2s;
+    color:#9ca4ac;
+    font-family: @regular-font;
+    cursor: text;
+    font-size: 16px;
+    color: #9ca4ac;
+    font-weight: 500;
+
   }
 
   .form-control::placeholder {
-    -webkit-transition: all 0.2s;
+      -webkit-transition: all 0.2s;
     transition: all 0.2s;
+    color:#9ca4ac;
+    font-family: @regular-font;
+    cursor: text;
+    font-size: 16px;
+    color: #9ca4ac;
+    font-weight: 500;
   }
 
   .form-control:placeholder-shown:not(:focus)::-webkit-input-placeholder {
-    opacity: 0;
+    opacity: 1;
   }
 
   .form-control:placeholder-shown:not(:focus)::-moz-placeholder {
-    opacity: 0;
+    opacity: 1;
   }
 
   .form-control:placeholder-shown:not(:focus) + * {
@@ -874,7 +900,7 @@ footer{
         }
         .form-control{
             height: 50px;
-            padding-top: 20px;
+            padding-top: 5px;
             padding-left: 8px;
             border-radius: 0;
             font-family: 'robotoregular' !important;

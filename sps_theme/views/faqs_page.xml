@@ -22,13 +22,21 @@
                                                      id="myCollapseTab1573497996797" style="">
                                                     <div class="card-body">
                                                         <p class="card-text">
-                                                                Simply browse through our inventory and add any items to your
-                                                                shopping cart and hit "checkout". You will then be given
-                                                                a total including shipping charges. You may then pay
-                                                                using a credit card, PayPal, or Purchase Order number if
-                                                                you are an approved customer.
-                                                            <br/>
+                                                              There are 3 ways to place an order with us:
                                                         </p>
+                                                        <ul>
+                                                            <li>
+                                                                <span class="bold-font">Contact a Sales Representative –</span>  Call or email an SPS team member to place your order.
+
+                                                            </li>
+                                                            <li>
+                                                                <span class="bold-font">Shop Online –</span> Browse, fill a cart, and checkout online. You can pay using a credit card, PayPal, or Purchase Order number if you are an approved customer.
+
+                                                            </li>
+                                                            <li>
+                                                                <span class="bold-font">Stockhawk –</span> Easily create, edit, and submit same-day orders with SPS’s inventory savings program.
+                                                            </li>
+                                                        </ul>
                                                     </div>
                                                 </div>
                                             </div>

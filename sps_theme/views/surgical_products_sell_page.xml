@@ -7,7 +7,7 @@
                         <div class="container">
                             <div class="row">
                                 <div class="col-md-6 pb-3">
-                                    <h3 class="video-title"><strong>Sell</strong> Your Surplus Surgical Products.</h3>
+                                    <h3 class="video-title"><span class="bold-font">Sell</span> Your Surplus Surgical Products.</h3>
                                     <div class="section-description mt-3 mb-4">
                                         <p>If you have a surplus inventory of surgical products, why not sell them so they don’t go to waste? SPS will purchase your unused, in-date surgical supplies.
                                         </p>
@@ -164,9 +164,9 @@
                                         <p>
                                             Within 72 hours, your SPS Account Manager will present you
                                             with an offer to buy back your surplus inventory. That offer will
-                                            take into consideration the following factors: <strong>demand from our
+                                            take into consideration the following factors: <span class="medium-font">demand from our
                                             customers, expiration dates, quantities in stock, condition of
-                                            product (cases/eaches).</strong>
+                                            product (cases/eaches).</span>
                                         </p>
                                     </div>
                                 </div>
@@ -192,7 +192,7 @@
                                 </div>
 
                                 <div class="col-md-11 m-auto">
-                                    <p class="hawk-title ft-32 text-center regular-font">You Ship Your Items for <strong>FREE</strong> to SPS</p>
+                                    <p class="hawk-title ft-32 text-center regular-font">You Ship Your Items for <span class="bold-font">FREE</span> to SPS</p>
                                     <div class="section-description">
                                         <p>After the offer is accepted, we will send prepaid shipping labels. We ship the product at no cost to you.</p>
                                     </div>
