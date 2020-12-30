@@ -21,12 +21,8 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         product_brands = request.env['product.brand'].search([])
 
         title = "Shop"
-        # if request.httprequest.path == "/shop/capital-equipment":
-        #     title = ""
         if request.httprequest.path == "/shop/featured":
             title = "Sale"
-        # elif request.httprequest.path == "/shop":
-        #     title = "Shop"
 
 
         if len(product_template)>0:
