@@ -42,7 +42,7 @@ class Website_Resource(http.Controller):
             if x.category_id.name == 'Award':
                 awards.append(x)
 
-        blogPost = request.env['blog.post'].sudo().search([])
+        blogPost = request.env['blog.post'].sudo().search([('website_published', '=', True)])
 
         return request.render('res_website.resouces_page_template', {
             'teachers': ["Diana Padilla", "Jody Caroll  aa", "Lester Vaughn"],
