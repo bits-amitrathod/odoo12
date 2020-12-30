@@ -60,7 +60,7 @@
             <field name="sequence" type="int">40</field>
         </record>
         <record id="surgical_products_sale_page_link" model="website.menu">
-            <field name="name">Sale</field>
+            <field name="name">Sale Items</field>
             <field name="url">shop/featured</field>
             <field name="parent_id" ref="website.main_menu"/>
             <field name="sequence" type="int">40</field>
@@ -80,7 +80,7 @@
             <field name="sequence" type="int">40</field>
         </record>
         <record id="surgical_equipment_sale_page_link" model="website.menu">
-            <field name="name">Sale</field>
+            <field name="name">Sell</field>
             <field name="url">/equipment-sell</field>
             <field name="parent_id" ref="website.main_menu"/>
             <field name="sequence" type="int">40</field>

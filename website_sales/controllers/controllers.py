@@ -22,7 +22,7 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
 
         title = "Shop"
         if request.httprequest.path == "/shop/featured":
-            title = "Sale"
+            title = "Sale Items"
 
 
         if len(product_template)>0:

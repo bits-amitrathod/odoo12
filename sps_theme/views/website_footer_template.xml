@@ -34,10 +34,10 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="/shop/featured" title="Surgical product Sale">SALE ITEMS</a>
-                            </li>
-                             <li>
                                 <a href="/surgical-products-sell" title="Surgical product Sell">SELL</a>
+                            </li>
+                            <li>
+                                <a href="/shop/featured" title="Surgical product Sale">SALE ITEMS</a>
                             </li>
                         </ul>
                     </div>
