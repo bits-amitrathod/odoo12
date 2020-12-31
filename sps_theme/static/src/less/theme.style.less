@@ -172,7 +172,6 @@ header{
                             height: 40px;
                             border-radius: 0;
                             width: 230px;
-                            text-transform: uppercase;
                             letter-spacing: 1px;
                             color: #616f79;
                             &:focus{
@@ -188,6 +187,13 @@ header{
                                 i{
                                     color: #ced4da;
                                     font-size: 22px;
+                                }
+                            }
+                        }
+                        .btn{
+                        &.btn-link{
+                                &:hover, &:active, .active{
+                                    text-decoration: none;
                                 }
                             }
                         }
@@ -960,4 +966,17 @@ footer{
         border-top: 0.3em solid @red;
         position: relative;
         top: 2px;
+}
+
+.search-input::-webkit-input-placeholder { /* Chrome */
+   text-transform: uppercase;
+}
+.search-input:-ms-input-placeholder { /* IE 10+ */
+  text-transform: uppercase;
+}
+.search-input::-moz-placeholder { /* Firefox 19+ */
+  text-transform: uppercase;
+}
+.search-input:-moz-placeholder { /* Firefox 4 - 18 */
+  text-transform: uppercase;
 }
