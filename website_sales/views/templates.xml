@@ -93,7 +93,7 @@
                      <ul class="sub-category">
                         <t t-foreach="brands" t-as="c">
                             <li t-att-class="'active' if c.id == int(category or 0) else None">
-                                <a t-att-href="keep('/shop/brand/' + slug(c), category=0)" t-field="c.name" class="linkCstm"></a>
+                                <a t-att-href="keep('/shop/category/'+slug(category)+'/brand/' + slug(c), category=0)" t-field="c.name" class="linkCstm"></a>
                             </li>
                             <!--<h5><t t-esc="c.name"/></h5>-->
                             <!--<t t-call="website_sales.brand_recursive"/>-->

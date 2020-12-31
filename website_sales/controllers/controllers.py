@@ -13,17 +13,19 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         '/shop/page/<int:page>',
         '/shop/category/<model("product.public.category"):category>',
         '/shop/category/<model("product.public.category"):category>/page/<int:page>',
+        '/shop/category/<model("product.public.category"):category>/brand/<model("product.brand"):brand>',
+        '/shop/category/<model("product.public.category"):category>/brand/<model("product.brand"):brand>/page/<int:page>',
         '/shop/brand/<model("product.brand"):brand>',
         '/shop/brand/<model("product.brand"):brand>/page/<int:page>'
     ], type='http', auth="public", website=True)
-    def shop(self, page=0, category=None, search='', brand= None, ppg=False, **post):
+    def shop(self, page=0, category=None,search='', brand= None, ppg=False, **post):
         product_template = request.env['product.template'].search([('actual_quantity', '=', False)])
-        product_brands = request.env['product.brand'].search([])
+        product_brands = []
 
         title = "Shop"
-        if request.httprequest.path == "/shop/featured":
-            title = "Sale Items"
 
+        if request.httprequest.path == "/shop":
+            product_brands = []
 
         if len(product_template)>0:
             for product in product_template:
@@ -42,22 +44,40 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
             post.update({'order': 'actual_quantity desc'})
 
         if request.httprequest.path == "/shop/featured":
+            title = "Sale Items"
             result = request.env['product.public.category'].search([('name', 'ilike', 'featured')], limit=1)
             if result:
-                category = result.id
+                category = result
 
         if request.httprequest.path == "/shop/capital-equipment":
             result = request.env['product.public.category'].search([('name', 'ilike', 'capital equipment')], limit=1)
             if result:
-                category = result.id
+                category = result
+
+        #  after category id Found the find Brand List
+        if category:
+            request.env.cr.execute("SELECT product_template_id FROM product_public_category_product_template_rel where product_public_category_id = "+str(category.id))
+            r = request.env.cr.fetchall()
+            pt_list = request.env['product.template'].sudo().search([('id', 'in', r)])
+            for b in pt_list:
+                if b.product_brand_id:
+                    if not b.product_brand_id in product_brands:
+                        product_brands.append(b.product_brand_id)
 
         responce = super(WebsiteSales, self).shop(page, category, search, None, **post)
 
         payload = responce.qcontext
 
         if brand:
-            url = "/shop/brand/%s" % slug(brand)
-            search_product = request.env['product.template'].search([('product_brand_id', '=', brand.id)])
+            search_product =[]
+            url = "/shop/category/"+slug(category)+"/brand/%s" % slug(brand)
+            if category:
+                request.env.cr.execute(
+                    "SELECT product_template_id FROM product_public_category_product_template_rel where product_public_category_id = " + str(
+                        category.id))
+                r = request.env.cr.fetchall()
+                pt_list_b = request.env['product.template'].sudo().search([('id', 'in', r),('product_brand_id','=',brand.id)])
+            search_product = pt_list_b
             product_count = len(search_product)
             pager = request.website.pager(url=url, total=product_count, page=page, step=ppg, scope=7, url_args=post)
             payload['pager'] = pager
