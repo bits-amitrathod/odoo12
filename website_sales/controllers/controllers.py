@@ -56,7 +56,8 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
 
         #  after category id Found the find Brand List
         if category:
-            request.env.cr.execute("SELECT product_template_id FROM product_public_category_product_template_rel where product_public_category_id = "+ category if isinstance(category, str) else str(category.id))
+            s = str(category) if isinstance(category, str) else str(category.id)
+            request.env.cr.execute("SELECT product_template_id FROM product_public_category_product_template_rel where product_public_category_id = "+ s)
             r = request.env.cr.fetchall()
             pt_list = request.env['product.template'].sudo().search([('id', 'in', r)])
             for b in pt_list:
