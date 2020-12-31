@@ -49,6 +49,9 @@ background: @white !important;
 .bold-font{
     font-family: @bold-font !important;
 }
+.black-font{
+    font-family: @black-font !important;
+}
 .padding-60-y{
   padding: 60px 0;
     @media (max-width: 767px){
@@ -152,7 +155,7 @@ header{
                         margin-right: 15px;
                         a{
                             font-size: 16px;
-                            color: #394a58;
+                            color: #616e79;
                             line-height: 40px;
                             letter-spacing: 1px;
                             text-decoration: none;
@@ -219,6 +222,9 @@ header{
                             letter-spacing: 1px;
                             margin-top: 0 !important;
                             font-weight: 500;
+                            &:hover{
+                                color:@red !important;
+                            }
                         }
                         &.divider{
                         display: none;
@@ -254,6 +260,9 @@ header{
                                 font-weight: 500;
                                 width: auto;
                                 background: transparent;
+                                &:hover{
+                                    color:@red !important;
+                                }
                             }
                         }
                     }
@@ -390,6 +399,9 @@ footer{
             color:#fff;
             font-family: @medium-font;
             letter-spacing: 1px;
+            &:hover{
+                opacity: 0.8;
+            }
         }
         &.btn-danger{
             padding: 8px 20px;
@@ -401,6 +413,9 @@ footer{
             color:#fff;
             font-family: @medium-font;
             letter-spacing: 1px;
+            &:hover{
+                opacity: 0.8;
+            }
         }
         &:focus,
         &:not(:disabled):not(.disabled):active:focus{
