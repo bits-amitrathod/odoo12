@@ -6,7 +6,7 @@
                     <section class="pt32 pb32">
                         <div class="container pb-3">
                             <div class="text-center pt-3 pb-3">
-                                <h1  class="about-header"> <strong>Equipment</strong> Service Request </h1>
+                                <h1  class="about-header"> <span class="black-font">Equipment</span> Service Request </h1>
                             </div>
 
                             <div class="section-description pt-5">
@@ -31,39 +31,39 @@
                                 <div class="row pt-5 no-gutters">
                                     <div class="col-md-2 px-1" style="">
                                         <div class="form-group has-float-label form-field o_website_form_required_custom">
-                                             <input type="text" class="form-control  o_website_form_input" name="Service" placeholder="Service Type" id="Service" required=""/>
-                                            <label class="control-label" for="Service">Service Type</label>
+                                             <input type="text" class="form-control  o_website_form_input" name="Service" placeholder="Service Type *" id="Service" required=""/>
+<!--                                            <label class="control-label" for="Service">Service Type</label>-->
                                         </div>
                                     </div>
 
                                     <div class="col-md-3 px-1" style="">
                                         <div class="form-group has-float-label">
                                             <input type="text" placeholder="Large Diameter Scope " id="Diameter" class="form-control" name="Diameter" required=""/>
-                                            <label class="control-label" for="Diameter">Large Diameter Scope</label>
+<!--                                            <label class="control-label" for="Diameter">Large Diameter Scope</label>-->
                                         </div>
                                     </div>
                                     <div class="col-md-3 px-1">
                                          <div class="form-group has-float-label">
                                             <input type="text" placeholder="Small Diameter Scope" id="Scope" class="form-control" name="Scope" required=""/>
-                                            <label class="control-label" for="Scope">Small Diameter Scope</label>
+<!--                                            <label class="control-label" for="Scope">Small Diameter Scope</label>-->
                                         </div>
                                     </div>
                                     <div class="col-md px-1">
                                          <div class="form-group has-float-label">
                                             <input type="text" placeholder="Rigid Scope" id="Rigid" class="form-control" name="Rigid" required=""/>
-                                            <label class="control-label" for="Rigid">Rigid Scope</label>
+<!--                                            <label class="control-label" for="Rigid">Rigid Scope</label>-->
                                         </div>
                                     </div>
                                     <div class="col-md px-1">
                                         <div class="form-group has-float-label">
                                             <input type="text" placeholder="Power" id="Power" class="form-control" name="Power" required=""/>
-                                            <label class="control-label" for="Power">Power</label>
+<!--                                            <label class="control-label" for="Power">Power</label>-->
                                         </div>
                                     </div>
                                      <div class="col-md px-1">
                                          <div class="form-group has-float-label">
                                             <input type="text" placeholder="Electronics" id="Electronics" class="form-control" name="Electronics" required=""/>
-                                            <label class="control-label" for="Electronics">Electronics</label>
+<!--                                            <label class="control-label" for="Electronics">Electronics</label>-->
                                         </div>
                                     </div>
                                 </div>
@@ -71,28 +71,28 @@
 
                                      <div class="col-md-12">
                                         <div class="form-group has-float-label form-field o_website_form_required_custom">
-                                            <input type="text" placeholder="Purchase Order Number" id="Purchase" class="form-control o_website_form_input" name="Purchase" required=""/>
-                                            <label class="control-label" for="Purchase">Purchase Order Number</label>
+                                            <input type="text" placeholder="Purchase Order Number *" id="Purchase" class="form-control o_website_form_input" name="Purchase" required=""/>
+<!--                                            <label class="control-label" for="Purchase">Purchase Order Number</label>-->
                                         </div>
                                     </div>
                                      <div class="col-md-12">
                                         <div class="form-group has-float-label form-field o_website_form_required_custom">
-                                            <input type="text" placeholder="Model Number" id="Model" class="form-control  o_website_form_input" name="Model" required=""/>
-                                            <label class="control-label" for="Model">Model Number</label>
+                                            <input type="text" placeholder="Model Number *" id="Model" class="form-control  o_website_form_input" name="Model" required=""/>
+<!--                                            <label class="control-label" for="Model">Model Number</label>-->
                                         </div>
                                     </div>
                                       <div class="col-md-12">
                                         <div class="form-group has-float-label form-field o_website_form_required_custom">
-                                            <input type="text" placeholder="Serial Number" id="Serial" class="form-control o_website_form_input" name="Serial" required=""/>
-                                            <label class="control-label" for="Serial">Serial Number</label>
+                                            <input type="text" placeholder="Serial Number *" id="Serial" class="form-control o_website_form_input" name="Serial" required=""/>
+<!--                                            <label class="control-label" for="Serial">Serial Number</label>-->
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group  has-float-label form-field o_website_form_required_custom">
                                            <div class="o_website_form_date input-group" id="datepicker3" data-target-input="nearest">
                       <!--                        <input id="birthdate" type="text" placeholder="Date Shipped" name="Date" class="form-control o_website_form_input o_website_form_date"/>-->
-                                             <input type="text" id="birthdate2" class="form-control datetimepicker-input o_website_form_input"  placeholder="Date Shipped" data-toggle="datetimepicker" data-target="#datepicker3" name=""/>
-                                             <label class="control-label" for="birthdate2" >Date Shipped </label>
+                                             <input type="text" id="birthdate2" class="form-control datetimepicker-input o_website_form_input"  placeholder="Date Shipped *" data-toggle="datetimepicker" data-target="#datepicker3" name=""/>
+<!--                                             <label class="control-label" for="birthdate2" >Date Shipped </label>-->
                                               <div class="input-group-append" data-target="#datepicker3" data-toggle="datetimepicker">
                                                   <span class="input-group-text" id="birthdate2"><i class="icon-calendars"></i></span>
                                               </div>
@@ -112,14 +112,14 @@
 <!--                                    </div>-->
                                     <div class="col-md-12">
                                         <div class="form-group has-float-label  form-field o_website_form_required_custom">
-                                            <input type="text" placeholder="Return Shipping Account Number" id="Shipping" class="form-control o_website_form_input" name="Shipping" required=""/>
-                                            <label class="control-label" for="Shipping">Return Shipping Account Number</label>
+                                            <input type="text" placeholder="Return Shipping Account Number *" id="Shipping" class="form-control o_website_form_input" name="Shipping" required=""/>
+<!--                                            <label class="control-label" for="Shipping">Return Shipping Account Number</label>-->
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group has-float-label  form-field o_website_form_required_custom">
-                                            <input type="text" placeholder="Loaner Requested?" id="Loaner" class="form-control o_website_form_input" name="Loaner" required=""/>
-                                            <label class="control-label" for="Loaner">Loaner Requested?</label>
+                                            <input type="text" placeholder="Loaner Requested?  *" id="Loaner" class="form-control o_website_form_input" name="Loaner" required=""/>
+<!--                                            <label class="control-label" for="Loaner">Loaner Requested?</label>-->
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -137,8 +137,8 @@
                                     <div class="w-100"></div>
                                     <div class="col-md-2">
                                         <div class="form-group has-float-label  form-field o_website_form_required_custom">
-                                            <input type="text" placeholder="Damage Waiver" id="Damage" class="form-control o_website_form_input" name="Damage" required=""/>
-                                            <label class="control-label" for="Damage">Damage Waiver</label>
+                                            <input type="text" placeholder="Damage Waiver *" id="Damage" class="form-control o_website_form_input" name="Damage" required=""/>
+<!--                                            <label class="control-label" for="Damage">Damage Waiver</label>-->
                                         </div>
                                     </div>
                                    <div class="col-md-3">
@@ -180,8 +180,8 @@
                                     </div>
                                      <div class="col-12">
                                           <div class="form-group has-float-label   form-field o_website_form_required_custom">
-                                                <textarea id="description" placeholder="Problem Description (Please be specific)" class="form-control o_website_form_input" name="description"  required="" rows="5"><t t-esc="request.params.get('description', '')" /></textarea>
-                                                <label class="control-label" for="description">Problem Description (Please be specific)</label>
+                                                <textarea id="description" placeholder="Problem Description (Please be specific) *" class="form-control o_website_form_input" name="description"  required="" rows="5"><t t-esc="request.params.get('description', '')" /></textarea>
+<!--                                                <label class="control-label" for="description">Problem Description (Please be specific)</label>-->
                                           </div>
                                      </div>
                                     <div class="col-12">
@@ -193,31 +193,31 @@
                                     <div class="col-md-12">
                                         <div class="form-group has-float-label">
                                             <input type="text" placeholder="Title" id="Title" class="form-control" name="Title" required=""/>
-                                            <label class="control-label" for="Title">Title</label>
+<!--                                            <label class="control-label" for="Title">Title</label>-->
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group has-float-label form-field o_website_form_required_custom">
-                                            <input type="text" placeholder="First Name" id="first_name" class="form-control o_website_form_input" name="first_name" required=""/>
-                                            <label class="control-label" for="first_name">First Name</label>
+                                            <input type="text" placeholder="First Name *" id="first_name" class="form-control o_website_form_input" name="first_name" required=""/>
+<!--                                            <label class="control-label" for="first_name">First Name</label>-->
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group has-float-label form-field o_website_form_required_custom">
-                                            <input type="text" placeholder="Last Name" id="last_name" class="form-control o_website_form_input" name="last_name" required=""/>
-                                            <label class="control-label" for="last_name">Last Name</label>
+                                            <input type="text" placeholder="Last Name *" id="last_name" class="form-control o_website_form_input" name="last_name" required=""/>
+<!--                                            <label class="control-label" for="last_name">Last Name</label>-->
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group has-float-label form-field o_website_form_required_custom">
-                                            <input type="text" placeholder="Direct Line" id="Direct" class="form-control o_website_form_input" name="Direct" required=""/>
-                                            <label class="control-label" for="Direct">Direct Line</label>
+                                            <input type="text" placeholder="Direct Line *" id="Direct" class="form-control o_website_form_input" name="Direct" required=""/>
+<!--                                            <label class="control-label" for="Direct">Direct Line</label>-->
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group has-float-label form-field o_website_form_required_custom">
-                                            <input type="text" placeholder="Email" id="Email" class="form-control o_website_form_input" name="Email" required=""/>
-                                            <label class="control-label" for="Email">Email</label>
+                                            <input type="text" placeholder="Email *" id="Email" class="form-control o_website_form_input" name="Email" required=""/>
+<!--                                            <label class="control-label" for="Email">Email</label>-->
                                         </div>
                                     </div>
                                     <div class="col-12">
@@ -225,32 +225,32 @@
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group has-float-label form-field o_website_form_required_custom">
-                                            <input type="text" placeholder="Facility Name" id="Facility" class="form-control o_website_form_input" name="Facility" required=""/>
-                                            <label class="control-label" for="Facility">Facility Name</label>
+                                            <input type="text" placeholder="Facility Name *" id="Facility" class="form-control o_website_form_input" name="Facility" required=""/>
+<!--                                            <label class="control-label" for="Facility">Facility Name</label>-->
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group has-float-label form-field o_website_form_required_custom">
-                                            <input type="text" placeholder="Address" id="Address" class="form-control o_website_form_input" name="Address" required=""/>
-                                            <label class="control-label" for="Address">Address</label>
+                                            <input type="text" placeholder="Address *" id="Address" class="form-control o_website_form_input" name="Address" required=""/>
+<!--                                            <label class="control-label" for="Address">Address</label>-->
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group has-float-label">
                                             <input type="text" placeholder="City" id="City" class="form-control" name="City" required=""/>
-                                            <label class="control-label" for="City">City</label>
+<!--                                            <label class="control-label" for="City">City</label>-->
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group has-float-label">
                                             <input type="text" placeholder="State" id="State" class="form-control" name="State" required=""/>
-                                            <label class="control-label" for="State">State</label>
+<!--                                            <label class="control-label" for="State">State</label>-->
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group has-float-label">
                                             <input type="text" placeholder="Zip Code" id="ZipCode" class="form-control" name="ZipCode" required=""/>
-                                            <label class="control-label" for="ZipCode">Zip Code</label>
+<!--                                            <label class="control-label" for="ZipCode">Zip Code</label>-->
                                         </div>
                                     </div>
                                     <div class="col-md-12">
@@ -322,7 +322,7 @@
                                      <div class="col-md-12">
                                         <div class="form-group has-float-label">
                                             <input type="text" placeholder="Other Amount" id="Other" class="form-control" name="Other" required=""/>
-                                            <label class="control-label" for="Other">Other Amount</label>
+<!--                                            <label class="control-label" for="Other">Other Amount</label>-->
                                         </div>
                                     </div>
                                      <div class="col-12">
@@ -331,26 +331,26 @@
 
                                     <div class="col-md-12">
                                         <div class="form-group has-float-label  form-field o_website_form_required_custom">
-                                            <input type="text" placeholder="Your Title" id="your_title" class="form-control o_website_form_input" name="your_title" required=""/>
-                                            <label class="control-label" for="your_title">Your Title</label>
+                                            <input type="text" placeholder="Your Title *" id="your_title" class="form-control o_website_form_input" name="your_title" required=""/>
+<!--                                            <label class="control-label" for="your_title">Your Title</label>-->
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group has-float-label  form-field o_website_form_required_custom">
-                                            <input type="text" placeholder="Your Name" id="your_name" class="form-control o_website_form_input" name="your_name" required=""/>
-                                            <label class="control-label" for="your_name">Your Name</label>
+                                            <input type="text" placeholder="Your Name *" id="your_name" class="form-control o_website_form_input" name="your_name" required=""/>
+<!--                                            <label class="control-label" for="your_name">Your Name</label>-->
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group has-float-label  form-field o_website_form_required_custom">
-                                            <input type="text" placeholder="Direct Line" id="direct_line" class="form-control o_website_form_input" name="direct_line" required=""/>
-                                            <label class="control-label" for="direct_line">Direct Line</label>
+                                            <input type="text" placeholder="Direct Line *" id="direct_line" class="form-control o_website_form_input" name="direct_line" required=""/>
+<!--                                            <label class="control-label" for="direct_line">Direct Line</label>-->
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group has-float-label  form-field o_website_form_required_custom">
-                                            <input type="text" placeholder="Email" id="Email2" class="form-control o_website_form_input" name="Email2" required=""/>
-                                            <label class="control-label" for="Email2">Email</label>
+                                            <input type="text" placeholder="Email *" id="Email2" class="form-control o_website_form_input" name="Email2" required=""/>
+<!--                                            <label class="control-label" for="Email2">Email</label>-->
                                         </div>
                                     </div>
 

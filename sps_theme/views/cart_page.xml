@@ -4,7 +4,7 @@
                     <section class="bg-white py-5">
                          <t t-if="mode == ('new', 'billing')">
                                 <div class="text-center">
-                                        <h1  class="about-header"> Your Address or <a role="button" href='/web/login?redirect=/shop/checkout' class='btn btn-primary btn-log'><strong>Log In</strong></a> </h1>
+                                        <h1  class="about-header"> Your Address or <a role="button" href='/web/login?redirect=/shop/checkout' class='btn btn-primary btn-log'><span class="black-font">Log In</span></a> </h1>
                                 </div>
                                 </t>
                                 <t t-if="mode == ('edit', 'billing')">
