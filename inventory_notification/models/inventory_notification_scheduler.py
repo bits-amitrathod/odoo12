@@ -417,7 +417,12 @@ class InventoryNotificationScheduler(models.TransientModel):
                 columnProps = ['product_brand_id.name','sku_code', 'name', 'customer_price_list', 'actual_quantity', 'minExDate',
                                'maxExDate', 'uom_id.name']
                 closing_content = """
-                                    Please reply to this email or contact your Account Manager to hold product or place an order.
+                                    Please reply to this email or contact your Account Manager to hold product or place an order here.
+                                    <center>
+                                        <br>
+                                            <a target="_blank" href="/shop/quote_my_report/""" + str(customr.id) + """" style="background-color:#1abc9c; padding:20px; text-decoration:none; color:#fff; border-radius:5px; font-size:16px" class="o_default_snippet_text">Quote My Report</a>
+                                        <br>
+                                   </center>
                                     <br/> Many Thanks,
                                     <br/> SPS Customer Care <br/>
                                     <table style="height: 96px; width: 601px; float: left;" border="0">
