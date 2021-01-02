@@ -59,7 +59,7 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
             s = str(category) if isinstance(category, str) else str(category.id)
             request.env.cr.execute("SELECT product_template_id FROM product_public_category_product_template_rel where product_public_category_id = "+ s)
             r = request.env.cr.fetchall()
-            pt_list = request.env['product.template'].sudo().search([('id', 'in', r)])
+            pt_list = request.env['product.template'].sudo().search([('id', 'in', r)],order=self._get_search_order(post))
             for b in pt_list:
                 if b.product_brand_id:
                     if not b.product_brand_id in product_brands:
@@ -77,7 +77,7 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
                     "SELECT product_template_id FROM product_public_category_product_template_rel where product_public_category_id = " + str(
                         category.id))
                 r = request.env.cr.fetchall()
-                pt_list_b = request.env['product.template'].sudo().search([('id', 'in', r),('product_brand_id','=',brand.id)])
+                pt_list_b = request.env['product.template'].sudo().search([('id', 'in', r),('product_brand_id','=',brand.id)],order=self._get_search_order(post))
             search_product = pt_list_b
             product_count = len(search_product)
             pager = request.website.pager(url=url, total=product_count, page=page, step=ppg, scope=7, url_args=post)
@@ -177,9 +177,12 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         template.send_mail(order.id, force_send=True)
         msg = "Quotation Email Sent to: " + order.user_id.login
         order.message_post(body=msg)
-
-
         return responce
+
+    def _get_search_order(self, post):
+        # OrderBy will be parsed in orm and so no direct sql injection
+        # id is added to be sure that order is a unique sort key
+        return 'is_published desc,%s , id desc' % post.get('order', 'website_sequence desc')
 
 
 class WebsiteSaleOptionsCstm(odoo.addons.website_sale.controllers.main.WebsiteSale):
