@@ -20,11 +20,19 @@
             <form string="Resource">
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                            <button class="oe_stat_button" name="website_publish_button"
-                                    type="object" icon="fa-globe">
-                                <field name="website_published" widget="website_button"/>
+                        <button name="toggle_website_published" type="object" class="oe_stat_button"
+                                     icon="fa-globe">
+                                <field name="website_published" widget="boolean_button"
+                                    options='{"terminology":
+                                    {
+                                    "string_true": "Published On Website",
+                                    "hover_true": "Published On Website",
+                                    "string_false": "UnPublished On Website",
+                                    "hover_false": "UnPublished On Website"
+                                    }}'/>
                             </button>
-                            <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
                                 <field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>
                             </button>
                     </div>
