@@ -38,6 +38,7 @@
                     </div>
 				    <group>
                         <field name="title" string="Title"/>
+                        <field name="category" />
                         <field name="description" string="Description"/>
                         <field name="url" string="URL"/>
 				</group>

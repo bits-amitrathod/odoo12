@@ -11,6 +11,11 @@ class WebResource(models.Model):
     active = fields.Boolean(string='Active', default=True)
     website_published = fields.Boolean(string='website_published', default=False)
 
+    category = fields.Selection([
+        ('award', 'Awards and Achievements'),
+        ('video', 'Video'),
+    ], default='award', string='Category', required=True )
+
     @api.multi
     def toggle_website_published(self):
         ''' When clicking on the website publish toggle button, the website_published is reversed and
