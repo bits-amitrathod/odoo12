@@ -180,6 +180,9 @@
                         Temporarily out of stock
                     </div>
 
+                    <a id="add_to_cart" class="btn btn-info btn-lg mt8 js_check_product a-submit"
+                           t-att-href="keep('/shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']&gt;1 else None))">Shop Now</a>
+
 
                 </section>
             </div>
