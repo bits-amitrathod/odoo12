@@ -36,6 +36,7 @@
                                 <field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>
                             </button>
                     </div>
+                    <field name="image" widget="image" class="oe_avatar" options="{&quot;preview_image&quot;: &quot;image_thumb&quot;}"/>
 				    <group>
                         <field name="title" string="Title"/>
                         <field name="category" />
