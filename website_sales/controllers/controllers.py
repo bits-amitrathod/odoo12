@@ -148,19 +148,21 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         _logger.info('In quote my report authentication %s', partner_id)
         if request.session.uid:
             _logger.info('Login successfully')
-            # user = request.env['res.users'].search([('id', '=', request.session.uid)])
-            # if user and user.partner_id and user.partner_id.id == partner_id:
-            sales = request.env['sale.order'].sudo().search([('partner_id', '=', partner_id)])
-            products = {}
-            for sale in sales:
-                sale_order_lines = request.env['sale.order.line'].sudo().search([('order_id', '=', sale.id)])
-                for line in sale_order_lines:
-                    # _logger.info(" product_id qty_available %r", line.product_id.actual_quantity)
-                    if line.product_id.actual_quantity and line.product_id.actual_quantity is not None and line.product_id.actual_quantity > 0 and line.product_id.product_tmpl_id.sale_ok:
-                        products[line.product_id] = line.product_id
+            user = request.env['res.users'].search([('id', '=', request.session.uid)])
+            if user and user.partner_id and user.partner_id.id == partner_id:
+                sales = request.env['sale.order'].sudo().search([('partner_id', '=', partner_id)])
+                products = {}
+                for sale in sales:
+                    sale_order_lines = request.env['sale.order.line'].sudo().search([('order_id', '=', sale.id)])
+                    for line in sale_order_lines:
+                        # _logger.info(" product_id qty_available %r", line.product_id.actual_quantity)
+                        if line.product_id.actual_quantity and line.product_id.actual_quantity is not None and line.product_id.actual_quantity > 0 and line.product_id.product_tmpl_id.sale_ok:
+                            products[line.product_id] = line.product_id
 
-            for product in products:
-                self.cart_update_custom(product.id)
+                for product in products:
+                    self.cart_update_custom(product.id)
+            else:
+                request.session['invalid_url_message'] = 'The requested URL is not valid for logged in user.'
         return request.redirect("/shop/cart")
 
     def cart_update_custom(self, product_id, add_qty=1, set_qty=0, **kw):
@@ -185,6 +187,15 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
             product_custom_attribute_values=product_custom_attribute_values,
             no_variant_attribute_values=no_variant_attribute_values
         )
+
+    @http.route(['/shop/cart'], type='http', auth="public", website=True, sitemap=False)
+    def cart(self, access_token=None, revive='', **post):
+        responce = super(WebsiteSales, self).cart(access_token=None, revive='', **post)
+        values = responce.qcontext
+        if request.session.get('invalid_url_message') != '':
+            values['invalid_url'] = request.session.get('invalid_url_message')
+            request.session.pop('invalid_url_message')
+        return request.render("website_sale.cart", values)
 
 
 class WebsiteSaleOptionsCstm(odoo.addons.website_sale.controllers.main.WebsiteSale):
