@@ -28,7 +28,7 @@ class Website_Resource(http.Controller):
     @http.route('/resource', type='http', auth="public", website=True)
     def home(self, **kw):
         video = request.env['resource.webresource'].sudo().search(
-            [])
+            ['website_published','=',True])
 
         edu = request.env['slide.slide'].sudo().search([])
         educational = []
