@@ -25,7 +25,9 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         title = "Shop"
 
         if request.httprequest.path == "/shop":
-            product_brands = []
+            result = request.env['product.public.category'].search([('name', 'ilike', 'All')], limit=1)
+            if result:
+                category = result
 
         if len(product_template)>0:
             for product in product_template:
