@@ -192,7 +192,7 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
     def cart(self, access_token=None, revive='', **post):
         responce = super(WebsiteSales, self).cart(access_token=None, revive='', **post)
         values = responce.qcontext
-        if request.session.get('invalid_url_message') != '':
+        if 'invalid_url_message' in request.session and request.session.get('invalid_url_message') != '':
             values['invalid_url'] = request.session.get('invalid_url_message')
             request.session.pop('invalid_url_message')
         return request.render("website_sale.cart", values)
