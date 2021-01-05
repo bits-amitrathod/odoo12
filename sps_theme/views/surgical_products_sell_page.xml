@@ -91,15 +91,17 @@
                                                        <ul>
                                                            <li> Acclarent <i>(ENT)</i></li>
                                                            <li> Allergan <i>(Bariatrics)</i></li>
+                                                           <li> Atrium <i>(Mesh)</i></li>
                                                            <li> Boston Scientific <i>(Urology, Stents)</i></li>
                                                            <li> Conmed <i>(Orthopedics)</i></li>
                                                            <li> Cook <i>(Urology)</i></li>
                                                            <li> Covidien <i>(Suture)</i></li>
-                                                           <li> Ethicon <i>(Suture)</i></li>
+
                                                        </ul>
                                                     </div>
                                                    <div class="col-md-4">
                                                        <ul>
+                                                          <li> Ethicon <i>(Suture)</i></li>
                                                            <li> Gyrus <i>(ENT, Energy, Gynecology)</i></li>
                                                            <li> Intuitive Surgical <i>(Robotic Instruments, Stapling, Energy)</i></li>
                                                            <li>  Karl Storz <i>(Urology)</i></li>
