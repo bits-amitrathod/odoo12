@@ -28,7 +28,7 @@ class Website_Resource(http.Controller):
     @http.route('/resource', type='http', auth="public", website=True)
     def home(self, **kw):
         video = request.env['resource.webresource'].sudo().search(
-            [('website_published', '=', True)])
+            [('website_published', '=', True), ('category', '=', 'video')])
 
         edu = request.env['slide.slide'].sudo().search([('website_published', '=', True)])
         educational = []
@@ -37,10 +37,12 @@ class Website_Resource(http.Controller):
                 educational.append(x)
 
         aw = request.env['slide.slide'].sudo().search([('website_published', '=', True)])
-        awards = []
-        for x in aw:
-            if x.category_id.name == 'Award':
-                awards.append(x)
+        awards = request.env['resource.webresource'].sudo().search(
+            [('website_published', '=', True), ('category', '=', 'award')])
+        # awards = []
+        # for x in aw:
+        #     if x.category_id.name == 'Award':
+        #         awards.append(x)
 
         blogPost = request.env['blog.post'].sudo().search([('website_published', '=', True)])
 
