@@ -135,13 +135,29 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
     @http.route(['/shop/quote_my_report/<int:partner_id>'], type='http', auth="public", website=True)
     def quote_my_report(self, partner_id):
         _logger.info('In quote my report')
-        try:
-            if not request.session.uid:
-                return request.redirect('/web/login?redirect=/shop/quote_my_report_authentication/'+str(partner_id))
-            else:
-                return request.redirect('/shop/quote_my_report_authentication/' + str(partner_id))
-        except Exception as e:
-            _logger.info('Page not found!')
+        # request.env['temp.product.list'].sudo().delete_and_create()
+        # partner = request.env['res.partner'].sudo().search([('id', '=', partner_id)])
+        sales = request.env['sale.order'].sudo().search([('partner_id', '=', partner_id)])
+        products = {}
+        for sale in sales:
+            sale_order_lines = request.env['sale.order.line'].sudo().search([('order_id', '=', sale.id)])
+            for line in sale_order_lines:
+                # _logger.info(" product_id qty_available %r", line.product_id.actual_quantity)
+                if line.product_id.actual_quantity and line.product_id.actual_quantity is not None and line.product_id.actual_quantity > 0 and line.product_id.product_tmpl_id.sale_ok:
+                    products[line.product_id] = line.product_id
+
+        for product in products:
+            print(product.name)
+            sps_customer_request = dict(product=product.id, partner=partner_id, quantity=1)
+            request.env['temp.product.list'].sudo().create(sps_customer_request)
+
+        product_list = request.env['temp.product.list'].sudo().search([('partner', '=', partner_id)])
+        for res in product_list:
+            print(res.product)
+
+
+        return http.request.render('website_sales.quote_my_report', {'products': product_list})
+
 
     @http.route(['/shop/quote_my_report_authentication/<int:partner_id>'], type='http', auth="public", website=True)
     def quote_my_report_authentication(self, partner_id):
@@ -164,6 +180,8 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
             else:
                 request.session['invalid_url_message'] = 'The requested URL is not valid for logged in user.'
         return request.redirect("/shop/cart")
+
+    # share_link = partner._get_signup_url_for_action(action='/mail/view', res_id=self.res_id, model=self.model)[partner.id]
 
     def cart_update_custom(self, product_id, add_qty=1, set_qty=0, **kw):
         """This route is called when adding a product to cart (no options)."""

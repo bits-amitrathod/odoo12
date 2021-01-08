@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="quote_my_report" name="Quote My Report">
+        <t t-call="website.layout">
+            <!--<span t-esc="products"/>-->
+            <div id="wrap">
+                <div class="container oe_website_sale py-2">
+                    <div t-if="not products" class="js_cart_lines alert alert-info">
+                        Products not available!
+                    </div>
+                    <table class="mb16 table table-striped table-sm js_cart_lines" id="quote_products" t-if="products">
+                    <thead>
+                        <tr>
+                            <th class="td-img">Product</th>
+                            <th></th>
+                            <th class="text-center td-av-qty">Available Quantity</th>
+                            <th class="text-center td-qty">Quantity</th>
+                            <th class="text-center td-price">Price</th>
+                            <th class="text-center td-action"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="products" t-as="product">
+                            <tr t-att-class="'optional_product info' ">
+                                <td colspan="2" t-if="not product.product.product_tmpl_id" class='td-img'></td>
+                                <td align="center" t-if="product.product.product_tmpl_id" class='td-img'>
+                                    <span t-field="product.product.image_small" t-options="{'widget': 'image', 'class': 'rounded'}" />
+                                </td>
+                                <td t-if="product.product.product_tmpl_id" class='td-product_name'>
+                                    <div>
+                                        <t t-call="website_sales.cart_line_product_link">
+                                            <strong t-field="product.product.product_tmpl_id.name" />
+                                        </t>
+                                    </div>
+                                </td>
+                                <td class="text-center td-av-qty">
+                                    <div>
+                                        <strong t-field="product.product.actual_quantity"/>
+                                    </div>
+                                </td>
+                                <td class="text-center td-qty">
+                                    <div class="css_quantity input-group mx-auto oe_website_spinner">
+                                        <div class="input-group-prepend">
+                                            <a t-attf-href="#" class="btn btn-link js_add_cart_json d-none d-md-inline-block" aria-label="Remove one" title="Remove one">
+                                                <i class="fa fa-minus"></i>
+                                            </a>
+                                        </div>
+                                        <input type="text" class="js_quantity form-control quantity" t-att-data-product-id="product.product.id" t-att-value="1" />
+                                        <div class="input-group-append">
+                                            <a t-attf-href="#" class="btn btn-link float_left js_add_cart_json d-none d-md-inline-block" aria-label="Add one" title="Add one">
+                                                <i class="fa fa-plus"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-center td-price" name="price">
+                                    <span t-field="product.product.product_tmpl_id.list_price" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'display_currency': product.product.product_tmpl_id.company_id.currency_id}" />
+                                </td>
+                                <td class="td-action">
+                                    <a href='#' aria-label="Remove from cart" title="Remove from cart"> <small><i class='fa fa-trash-o'></i></small></a>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="cart_line_product_link" name="Shopping Cart Line Product Link">
+        <a t-attf-href="/shop/product/#{ slug(product.product.product_tmpl_id) }">
+            <t t-raw="0"/>
+        </a>
+    </template>
+</odoo>
