@@ -13,6 +13,11 @@
             <field name="sequence">20</field>
         </record>
 
+        <record id="category_all" model="product.public.category">
+            <field name="name">All</field>
+            <field name="sequence">0</field>
+        </record>
+
 
 
     </data>
