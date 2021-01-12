@@ -5,3 +5,5 @@ access_stock_move_web_cstm_user,product.stock_move web.cstm.user,stock.model_sto
 access_product_uom_web_cstm_user,product.product_uom.web.cstm.user,uom.model_uom_uom,,1,0,0,0
 access_product_template_web_cstm_user,product.template.web.cstm.user,product.model_product_template,,1,0,0,0
 access_stock_quant_web_cstm_user,product.stock_quant.web.cstm.user,stock.model_stock_quant,,1,0,0,0
+access_quotation_product_list_usr,quotation_product_list user,model_quotation_product_list,,1,1,0,0
+access_quotation_product_list_mgr,quotation_product_list manager,model_quotation_product_list,,1,1,1,1

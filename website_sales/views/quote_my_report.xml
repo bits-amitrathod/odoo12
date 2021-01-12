@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="quote_my_report" name="Quote My Report">
-        <t t-call="website.layout">
-            <!--<span t-esc="products"/>-->
-            <div id="wrap">
+    <data>
+        <template id="assets_frontend" inherit_id="website.assets_frontend" name="Shop">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/website_sales/static/src/js/quote_my_report.js"></script>
+            </xpath>
+        </template>
+
+        <template id="quote_my_report" name="Quote My Report">
+            <t t-call="website.layout">
+                <section id="quote" class="engine">
                 <div class="container oe_website_sale py-2">
                     <div t-if="not products" class="js_cart_lines alert alert-info">
                         Products not available!
@@ -45,9 +51,9 @@
                                                 <i class="fa fa-minus"></i>
                                             </a>
                                         </div>
-                                        <input type="text" class="js_quantity form-control quantity" t-att-data-product-id="product.product.id" t-att-value="1" />
+                                        <input type="text" class="js_quantity form-control quantity" t-att-data-product-id="product.product.id" t-att-value="product.quantity" />
                                         <div class="input-group-append">
-                                            <a t-attf-href="#" class="btn btn-link float_left js_add_cart_json d-none d-md-inline-block" aria-label="Add one" title="Add one">
+                                            <a t-attf-href="#" class="btn btn-link float_left d-none d-md-inline-block js_add_cart_json" aria-label="Add one" title="Add one">
                                                 <i class="fa fa-plus"></i>
                                             </a>
                                         </div>
@@ -56,21 +62,25 @@
                                 <td class="text-center td-price" name="price">
                                     <span t-field="product.product.product_tmpl_id.list_price" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'display_currency': product.product.product_tmpl_id.company_id.currency_id}" />
                                 </td>
-                                <td class="td-action">
-                                    <a href='#' aria-label="Remove from cart" title="Remove from cart"> <small><i class='fa fa-trash-o'></i></small></a>
+                                <td>
+                                    <input type="hidden" t-att-data-product-id="product.product.id"
+                                                         t-att-data-partner-id="product.partner.id" t-att-value="product.product.id"/>
+                                    <a href='#' aria-label="Remove" title="Remove" class='delete_product'> <large><i class='fa fa-trash-o'></i></large></a>
                                 </td>
                             </tr>
                         </t>
                     </tbody>
                 </table>
+                    <a href="/add/product/cart" style="background-color:#1abc9c; padding:20px; text-decoration:none; color:#fff; border-radius:5px; font-size:16px" class="o_default_snippet_text">Add to cart</a>
                 </div>
-            </div>
-        </t>
-    </template>
+            </section>
+            </t>
+        </template>
 
-    <template id="cart_line_product_link" name="Shopping Cart Line Product Link">
+        <template id="cart_line_product_link" name="Shopping Cart Line Product Link">
         <a t-attf-href="/shop/product/#{ slug(product.product.product_tmpl_id) }">
             <t t-raw="0"/>
         </a>
-    </template>
+        </template>
+    </data>
 </odoo>

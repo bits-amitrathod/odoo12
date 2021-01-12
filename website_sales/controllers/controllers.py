@@ -132,31 +132,44 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
 
         return responce
 
+    @http.route(['/shop/quote_my_report/update_json'], type='json', auth="public", methods=['POST'], website=True)
+    def update_quote_my_report_json(self, product_id, partner_id, set_qty=None):
+        count = 1
+        print('In update_quote_my_report_json')
+        print(product_id)
+        print(partner_id)
+        print(set_qty)
+
+        product_list = request.env['quotation.product.list'].sudo().search([('partner', '=', int(partner_id))])
+        print('product_list')
+        print(product_list)
+        for res in product_list:
+            print(res.product)
+        request.env['quotation.product.list'].update_record(int(product_id), int(partner_id), int(set_qty))
+        return count
+
     @http.route(['/shop/quote_my_report/<int:partner_id>'], type='http', auth="public", website=True)
     def quote_my_report(self, partner_id):
         _logger.info('In quote my report')
-        # request.env['temp.product.list'].sudo().delete_and_create()
-        # partner = request.env['res.partner'].sudo().search([('id', '=', partner_id)])
-        sales = request.env['sale.order'].sudo().search([('partner_id', '=', partner_id)])
-        products = {}
-        for sale in sales:
-            sale_order_lines = request.env['sale.order.line'].sudo().search([('order_id', '=', sale.id)])
-            for line in sale_order_lines:
-                # _logger.info(" product_id qty_available %r", line.product_id.actual_quantity)
-                if line.product_id.actual_quantity and line.product_id.actual_quantity is not None and line.product_id.actual_quantity > 0 and line.product_id.product_tmpl_id.sale_ok:
-                    products[line.product_id] = line.product_id
+        margins_context = {'quote_my_report_partner_id': partner_id}
+        request.env['quotation.product.list'].with_context(margins_context).sudo().delete_and_create()
 
-        for product in products:
-            print(product.name)
-            sps_customer_request = dict(product=product.id, partner=partner_id, quantity=1)
-            request.env['temp.product.list'].sudo().create(sps_customer_request)
-
-        product_list = request.env['temp.product.list'].sudo().search([('partner', '=', partner_id)])
+        product_list = request.env['quotation.product.list'].sudo().search([('partner', '=', partner_id)])
         for res in product_list:
             print(res.product)
 
-
         return http.request.render('website_sales.quote_my_report', {'products': product_list})
+
+    @http.route(['/add/product/cart'], type='http', auth="public", website=True)
+    def add_product_in_cart(self):
+        print('add product in cart')
+        product_list = request.env['quotation.product.list'].sudo().search([('partner', '=', 26717)])
+        print('product list')
+        print(product_list)
+        for product in product_list:
+            print(product.product.id)
+            self.cart_update_custom(product.product.id)
+        return request.redirect("/shop/cart")
 
 
     @http.route(['/shop/quote_my_report_authentication/<int:partner_id>'], type='http', auth="public", website=True)
