@@ -51,7 +51,7 @@
             <field name="model_id" ref="purchase.model_purchase_order"/>
             <field name="subject">${object.company_id.name} Offer (Ref ${object.name or 'n/a' })</field>
             <!--<field name="email_from">${object.super_user_email}</field>-->
-             <field name="email_from">${object.acq_user_id.partner_id.email | safe}</field>
+             <field name="email_from">${(object.acq_user_id.partner_id.email if object.acq_user_id.partner_id.email != False else object.sudo().create_uid.email_formatted | safe)}</field>
             <field name="partner_to">${(object.partner_id.id if object.partner_id.vendor_email==False)}</field>
             <field name="email_to">${(object.partner_id.vendor_email if object.partner_id.vendor_email!=False)}</field>
             <field name="email_cc">${object.acq_user_id.partner_id.email | safe}</field>
@@ -106,7 +106,7 @@
         <record id="email_template_edi_vendor_offer_done_cstm" model="mail.template">
             <field name="name">Vendor Offer - Send by Email</field>
             <field name="model_id" ref="purchase.model_purchase_order"/>
-            <field name="email_from">${object.acq_user_id.partner_id.email | safe}</field>
+            <field name="email_from">${(object.acq_user_id.partner_id.email if object.acq_user_id.partner_id.email != False else object.sudo().create_uid.email_formatted | safe)}</field>
             <field name="partner_to">${(object.partner_id.id if object.partner_id.vendor_email==False)}</field>
             <field name="email_to">${(object.partner_id.vendor_email if object.partner_id.vendor_email!=False)}</field>
             <field name="email_cc">${object.acq_user_id.partner_id.email | safe}</field>
