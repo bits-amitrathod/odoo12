@@ -437,8 +437,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                                     <p>412-745-0324&nbsp;</p>
                                     </td>
                                     <td style="width: 157px; height: 78px;">
-                                    <p style="text-align: left;"><strong>Kacie Gerboc</strong></p>
-                                    <p style="text-align: left;">412-745-1325</p>
+                                    <p style="text-align: left;"><strong>Kendall Mitchell</strong></p>
+                                    <p style="text-align: left;">412-745-0340</p>
                                     </td>
                                     <td style="width: 123px; height: 78px;">&nbsp;</td>
                                     </tr>
@@ -448,8 +448,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                                     <p>412-564-1048</p>
                                     </td>
                                     <td style="width: 157px; height: 76px;">
-                                    <p style="text-align: left;"><strong>Andrew Marnoch&nbsp;</strong></p>
-                                    <p style="text-align: left;">412-745-2331&nbsp;&nbsp;</p>
+                                    <p style="text-align: left;"><strong>Nicole Folino&nbsp;</strong></p>
+                                    <p style="text-align: left;">412-564-1279&nbsp;&nbsp;</p>
                                     </td>
                                     <td style="width: 123px; height: 76px;">
                                     <p style="text-align: left;"><strong>Nikki Testa</strong></p>
@@ -474,7 +474,15 @@ class InventoryNotificationScheduler(models.TransientModel):
                                     <td style="width: 156px; height: 76px;">
                                     <p><strong>Chelsea Cernigliaro</strong></p>
                                     <p>412-564-1281</p>
-                                    </td>                     
+                                    </td>
+                                    <td style="width: 123px; height: 92px;">
+                                    <p style="text-align: left;"><strong>Kristin Brown</strong></p>
+                                    <p style="text-align: left;">412-564-9011</p>
+                                    </td>
+                                    <td style="width: 154px; height: 76px;">
+                                    <p style="text-align: left;"><strong>Phil Kemp</strong></p>
+                                    <p style="text-align: left;">412-745-1327&nbsp;</p>
+                                    </td>                   
                                     </tr>
                                     </tbody>
                                     </table>
@@ -524,17 +532,20 @@ class InventoryNotificationScheduler(models.TransientModel):
              (weekday, '=', True), ('todays_notification', '=', False)])
 
         for customer in customers:
-            if (customer.start_date == False and customer.end_date == False) \
-                    or (customer.end_date != False and InventoryNotificationScheduler.string_to_date(
-                customer.end_date) >= today_start) \
-                    or (customer.start_date != False and InventoryNotificationScheduler.string_to_date(
-                customer.start_date) <= today_start) \
-                    or (
-                    customer.start_date != False and customer.end_date != False and InventoryNotificationScheduler.string_to_date(
-                customer.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
-                customer.end_date) >= today_start) \
-                    or (customer.end_date is None):
-                customer.write({'todays_notification': True})
+            try:
+                if (customer.start_date == False and customer.end_date == False) \
+                        or (customer.end_date != False and InventoryNotificationScheduler.string_to_date(
+                    customer.end_date) >= today_start) \
+                        or (customer.start_date != False and InventoryNotificationScheduler.string_to_date(
+                    customer.start_date) <= today_start) \
+                        or (
+                        customer.start_date != False and customer.end_date != False and InventoryNotificationScheduler.string_to_date(
+                    customer.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
+                    customer.end_date) >= today_start) \
+                        or (customer.end_date is None):
+                    customer.write({'todays_notification': True})
+            except Exception as e:
+                _logger.exception(e)
 
     def process_new_product_scheduler(self):
         today_date = datetime.now() - timedelta(days=1)
