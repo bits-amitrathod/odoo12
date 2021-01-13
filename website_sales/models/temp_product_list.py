@@ -9,11 +9,50 @@ class TempProductList(models.Model):
 
     product = fields.Many2one('product.product', string='Product')
     partner = fields.Many2one('res.partner', string="Partner")
+    product_brand_id = fields.Many2one('product.brand', string='Manufacturer')
     quantity = fields.Integer(string='Quantity')
+    min_expiration_date = fields.Date("Min Expiration Date", compute='_calculate_max_min_lot_expiration')
+    max_expiration_date = fields.Date("Max Expiration Date")
+    price_list = fields.Float("Sales Price", compute='_calculate_max_min_lot_expiration')
+    partn_name = fields.Char()
 
     # _sql_constraints = [
     #     ('product_uniq', 'unique(product, partner)', 'product must be unique per partner!'),
     # ]
+
+    @api.multi
+    def _calculate_max_min_lot_expiration(self):
+        for record in self:
+            # record.actual_quantity = record.product_tmpl_id.actual_quantity
+            if record.partner.property_product_pricelist.id:
+                record.price_list = record.partner.property_product_pricelist.get_product_price(
+                    record.product, record.product.product_tmpl_id.actual_quantity, record.partner)
+            else:
+                record.price_list = 0
+
+            self.env.cr.execute(
+                """
+                SELECT
+                sum(quantity), min(use_date), max(use_date)
+            FROM
+                stock_quant
+            INNER JOIN
+                stock_production_lot
+            ON
+                (
+                    stock_quant.lot_id = stock_production_lot.id)
+            INNER JOIN
+                stock_location
+            ON
+                (
+                    stock_quant.location_id = stock_location.id)
+            WHERE
+                stock_location.usage in('internal', 'transit') and stock_production_lot.product_id  = %s
+                """,
+                (record.product.id,))
+            query_result = self.env.cr.dictfetchone()
+            record.min_expiration_date = fields.Date.from_string(query_result['min'])
+            record.max_expiration_date = fields.Date.from_string(query_result['max'])
 
     @api.model_cr
     def init(self):
@@ -31,7 +70,10 @@ class TempProductList(models.Model):
                         ROW_NUMBER () OVER (ORDER BY sale_order.partner_id) as id,
                         sale_order.partner_id AS partner,
                         product_product.id AS product,
-                        product_product.dummy_qty as quantity                                     
+                        product_template.product_brand_id,
+                        null as min_expiration_date,
+                        null as max_expiration_date,
+                        1 as quantity                                     
                         FROM
                         sale_order
                         INNER JOIN
@@ -59,7 +101,8 @@ class TempProductList(models.Model):
             groupby = """
                     
                      group by partn_name, public.sale_order.partner_id,
-                            public.product_product.id
+                            public.product_product.id,
+                            public.product_template.product_brand_id
                             """
 
             sql_query = "CREATE OR REPLACE VIEW " + self._name.replace(".", "_") + " AS ( " + sql_query + where + groupby + " )"

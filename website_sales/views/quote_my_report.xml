@@ -17,8 +17,12 @@
                     <table class="mb16 table table-striped table-sm js_cart_lines" id="quote_products" t-if="products">
                     <thead>
                         <tr>
+                            <th>Select</th>
                             <th class="td-img">Product</th>
                             <th></th>
+                            <th class="text-center td-manufacturer">Manufacturer</th>
+                            <th class="text-center td-min-exp">Min Exp. Date</th>
+                            <th class="text-center td-max-exp">Max Exp. Date</th>
                             <th class="text-center td-av-qty">Available Quantity</th>
                             <th class="text-center td-qty">Quantity</th>
                             <th class="text-center td-price">Price</th>
@@ -28,6 +32,9 @@
                     <tbody>
                         <t t-foreach="products" t-as="product">
                             <tr t-att-class="'optional_product info' ">
+                                <td>
+                                    <input type="checkbox" name="product.partn_name" t-att-value="'%s' % (product.id)"/>
+                                </td>
                                 <td colspan="2" t-if="not product.product.product_tmpl_id" class='td-img'></td>
                                 <td align="center" t-if="product.product.product_tmpl_id" class='td-img'>
                                     <span t-field="product.product.image_small" t-options="{'widget': 'image', 'class': 'rounded'}" />
@@ -39,9 +46,24 @@
                                         </t>
                                     </div>
                                 </td>
+                                <td class="text-center td-manufacturer">
+                                    <div>
+                                        <span t-field="product.product_brand_id"/>
+                                    </div>
+                                </td>
+                                <td class="text-center td-min-exp">
+                                    <div>
+                                        <span t-field="product.min_expiration_date"/>
+                                    </div>
+                                </td>
+                                <td class="text-center td-max-exp">
+                                    <div>
+                                        <span t-field="product.max_expiration_date"/>
+                                    </div>
+                                </td>
                                 <td class="text-center td-av-qty">
                                     <div>
-                                        <strong t-field="product.product.actual_quantity"/>
+                                        <span t-field="product.product.actual_quantity"/>
                                     </div>
                                 </td>
                                 <td class="text-center td-qty">
@@ -60,7 +82,7 @@
                                     </div>
                                 </td>
                                 <td class="text-center td-price" name="price">
-                                    <span t-field="product.product.product_tmpl_id.list_price" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'display_currency': product.product.product_tmpl_id.company_id.currency_id}" />
+                                    <span t-field="product.price_list" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'display_currency': product.product.product_tmpl_id.company_id.currency_id}" />
                                 </td>
                                 <td>
                                     <input type="hidden" t-att-data-product-id="product.product.id"
@@ -71,7 +93,7 @@
                         </t>
                     </tbody>
                 </table>
-                    <a href="/add/product/cart" style="background-color:#1abc9c; padding:20px; text-decoration:none; color:#fff; border-radius:5px; font-size:16px" class="o_default_snippet_text">Add to cart</a>
+                    <!--<a href="/add/product/cart" style="background-color:#1abc9c; padding:20px; text-decoration:none; color:#fff; border-radius:5px; font-size:16px" class="o_default_snippet_text">Add to cart</a>-->
                 </div>
             </section>
             </t>
