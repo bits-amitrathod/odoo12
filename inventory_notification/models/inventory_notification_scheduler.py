@@ -527,17 +527,20 @@ class InventoryNotificationScheduler(models.TransientModel):
              (weekday, '=', True), ('todays_notification', '=', False)])
 
         for customer in customers:
-            if (customer.start_date == False and customer.end_date == False) \
-                    or (customer.end_date != False and InventoryNotificationScheduler.string_to_date(
-                customer.end_date) >= today_start) \
-                    or (customer.start_date != False and InventoryNotificationScheduler.string_to_date(
-                customer.start_date) <= today_start) \
-                    or (
-                    customer.start_date != False and customer.end_date != False and InventoryNotificationScheduler.string_to_date(
-                customer.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
-                customer.end_date) >= today_start) \
-                    or (customer.end_date is None):
-                customer.write({'todays_notification': True})
+            try:
+                if (customer.start_date == False and customer.end_date == False) \
+                        or (customer.end_date != False and InventoryNotificationScheduler.string_to_date(
+                    customer.end_date) >= today_start) \
+                        or (customer.start_date != False and InventoryNotificationScheduler.string_to_date(
+                    customer.start_date) <= today_start) \
+                        or (
+                        customer.start_date != False and customer.end_date != False and InventoryNotificationScheduler.string_to_date(
+                    customer.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
+                    customer.end_date) >= today_start) \
+                        or (customer.end_date is None):
+                    customer.write({'todays_notification': True})
+            except Exception as e:
+                _logger.exception(e)
 
     def process_new_product_scheduler(self):
         today_date = datetime.now() - timedelta(days=1)
