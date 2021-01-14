@@ -140,12 +140,12 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         print(partner_id)
         print(set_qty)
 
-        product_list = request.env['quotation.product.list'].sudo().search([('partner', '=', int(partner_id))])
-        print('product_list')
-        print(product_list)
-        for res in product_list:
-            print(res.product)
-        request.env['quotation.product.list'].update_record(int(product_id), int(partner_id), int(set_qty))
+        # product_list = request.env['quotation.product.list'].sudo().search([('partner', '=', int(partner_id))])
+        # print('product_list')
+        # print(product_list)
+        # for res in product_list:
+        #     print(res.product)
+        # request.env['quotation.product.list'].update_record(int(product_id), int(partner_id), int(set_qty))
         return count
 
     @http.route(['/shop/quote_my_report/<int:partner_id>'], type='http', auth="public", website=True)
@@ -154,11 +154,11 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         margins_context = {'quote_my_report_partner_id': partner_id}
         request.env['quotation.product.list'].with_context(margins_context).sudo().delete_and_create()
 
-        product_list = request.env['quotation.product.list'].sudo().search([('partner', '=', partner_id)])
-        for res in product_list:
-            print(res.product)
-
-        return http.request.render('website_sales.quote_my_report', {'products': product_list})
+        # product_list = request.env['quotation.product.list'].sudo().search([('partner', '=', partner_id)])
+        # for res in product_list:
+        #     print(res.product)
+        #
+        # return http.request.render('website_sales.quote_my_report', {'products': product_list})
 
     @http.route(['/add/product/cart'], type='http', auth="public", website=True)
     def add_product_in_cart(self):

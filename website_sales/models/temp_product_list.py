@@ -5,7 +5,7 @@ from odoo import api, fields, models, tools
 
 class TempProductList(models.Model):
     _name = 'quotation.product.list'
-    _auto = False
+    # _auto = False
 
     product = fields.Many2one('product.product', string='Product')
     partner = fields.Many2one('res.partner', string="Partner")
@@ -22,6 +22,7 @@ class TempProductList(models.Model):
 
     @api.multi
     def _calculate_max_min_lot_expiration(self):
+        print('In _calculate_max_min_lot_expiration')
         for record in self:
             # record.actual_quantity = record.product_tmpl_id.actual_quantity
             if record.partner.property_product_pricelist.id:
@@ -54,6 +55,9 @@ class TempProductList(models.Model):
             record.min_expiration_date = fields.Date.from_string(query_result['min'])
             record.max_expiration_date = fields.Date.from_string(query_result['max'])
 
+            print(record.min_expiration_date)
+            print(record.max_expiration_date)
+
     @api.model_cr
     def init(self):
         print('In init')
@@ -61,7 +65,7 @@ class TempProductList(models.Model):
 
     def init_table(self):
         print('In table')
-        tools.drop_view_if_exists(self._cr, self._name.replace(".", "_"))
+        # tools.drop_view_if_exists(self._cr, self._name.replace(".", "_"))
         partner_id = self.env.context.get('quote_my_report_partner_id')
         if partner_id and partner_id is not None:
             sql_query = """
@@ -70,9 +74,9 @@ class TempProductList(models.Model):
                         ROW_NUMBER () OVER (ORDER BY sale_order.partner_id) as id,
                         sale_order.partner_id AS partner,
                         product_product.id AS product,
-                        product_template.product_brand_id,
+                        product_template.product_brand_id AS product_brand_id,      
                         null as min_expiration_date,
-                        null as max_expiration_date,
+                        null as max_expiration_date,                  
                         1 as quantity                                     
                         FROM
                         sale_order
@@ -105,16 +109,48 @@ class TempProductList(models.Model):
                             public.product_template.product_brand_id
                             """
 
-            sql_query = "CREATE OR REPLACE VIEW " + self._name.replace(".", "_") + " AS ( " + sql_query + where + groupby + " )"
-            self._cr.execute(sql_query)
+            sql_query = sql_query + where + groupby
 
-            # rule = """
-            #         CREATE RULE quotation_product_list_UPDATE AS ON UPDATE TO quotation_product_list DO INSTEAD (
-            #         UPDATE sale_order SET partner_id=partner_id WHERE id=id;
-            #         UPDATE product_product SET id=id WHERE id=id;
-            #         );
-            # """
-            # self._cr.execute(rule)
+            self._cr.execute(sql_query)
+            product_list = self.env['quotation.product.list'].search([('partner', '=', partner_id)])
+            for res in product_list:
+                print(res.product)
+                print(res.min_expiration_date)
+
+            # records = self._cr.dictfetchall()
+            # query_results = self.env.cr.dictfetchall()
+            # for query_result in query_results:
+            #     print(query_result)
+            #     self.env.cr.execute(
+            #         """
+            #         SELECT
+            #         sum(quantity), min(use_date), max(use_date)
+            #     FROM
+            #         stock_quant
+            #     INNER JOIN
+            #         stock_production_lot
+            #     ON
+            #         (
+            #             stock_quant.lot_id = stock_production_lot.id)
+            #     INNER JOIN
+            #         stock_location
+            #     ON
+            #         (
+            #             stock_quant.location_id = stock_location.id)
+            #     WHERE
+            #         stock_location.usage in('internal', 'transit') and stock_production_lot.product_id  = %s
+            #         """,
+            #         (query_result['product'],))
+            #     result = self.env.cr.dictfetchone()
+            #     print(result['min'])
+            #     print(result['max'])
+            #     print('----')
+
+
+
+
+
+
 
     @api.model_cr
     def delete_and_create(self):
