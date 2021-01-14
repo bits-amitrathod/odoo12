@@ -77,30 +77,7 @@ class BlogPost(models.Model):
                                             </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
-                                    <div class="popular-post">
-                                        <h3 class="side-title">Popular Posts</h3>
-                                    </div>
-                                    <div class="section-description">
-                                        <div class="story-list">
-                                            <div class="bulleted-list">
-                                                <span>01</span>
-                                            </div>
-                                            <div class="list-description">
-                                                <p class="mb-2 lh-25"><a href="javascript:void(0)"><span class="medium-font">Choose to save money without sacrificing quality of care</span></a></p>
-                                                <div class="user-info">
-                                                    <p class="f14 mb-0 "><span class="medium-font">Joan Grayson</span> in <span class="medium-font">News</span></p>
-                                                    <p  class="f14 mb-0">Jun 14 • 3 min read</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="see-all">
-                                            <a class="btn btn-link">
-                                               SEE ALL POPULAR  <i class="fa fa-angle-right"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
+                                
                             </div>
 
                         </div>

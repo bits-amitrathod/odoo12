@@ -11,6 +11,8 @@
     'data': [
         'security/ir.model.access.csv',
         'views/blog_post_form.xml',
+        'views/popular_post_template.xml',
+
     ],
     'installable': True,
     'auto_install': False,

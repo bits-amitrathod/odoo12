@@ -54,7 +54,7 @@
         </xpath>
     </template>-->
 
-    <template id="products_categories" name="eCommerce Categories" inherit_id="website_sale.products_categories">
+    <template id="products_categories" name="eCommerce Categories" inherit_id="website_sale.products_categories" active="False" customize_show="True">
         <xpath expr="//div[@id='products_grid_before']/ul" position="replace">
             <!-- products categories Filter -->
             <div class="sidebar-accordion pt-5" id="categories">
