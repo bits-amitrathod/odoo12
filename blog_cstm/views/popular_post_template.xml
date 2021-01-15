@@ -5,11 +5,11 @@
 				<section class="blog pt-3 pb-5">
     <div class="container">
         <div class="row">
-			<div class="col-12">
+			<!--<div class="col-12">
                                      <div class="btn-wrapper">
                                         <a href ="/" class="btn btn-info">Resources Home</a>
                                     </div>
-                                </div>
+                                </div>-->
 <div class="col-md-9">
 
                                 <div id="blog_content" t-field="blog_post.content" class="blog_content"/>
