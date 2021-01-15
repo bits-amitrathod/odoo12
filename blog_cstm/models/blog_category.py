@@ -29,15 +29,7 @@ class BlogPost(models.Model):
 
     def _default_content(self):
         return '''  
-                    <section class="blog pt-3 pb-5">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-12">
-                                     <div class="btn-wrapper">
-                                        <button class="btn btn-info">Resources Home</button>
-                                    </div>
-                                </div>
-                                <div class="col-md-9">
+                   
 
                                     <div class="banner-wrapper py-3">
                                         <img src="/sps_theme/static/src/images/blog.png" class="img-fluid"/>
@@ -76,12 +68,7 @@ class BlogPost(models.Model):
                                                 fugita que nobistorem velibus, to dolorit mi, officae nonem sum</p>
                                             </div>
                                     </div>
-                                </div>
                                 
-                            </div>
-
-                        </div>
-                    </section>
         '''
 
     content = fields.Html('Content', default=_default_content, translate=html_translate, sanitize=False)

@@ -1,49 +1,76 @@
 <odoo>
-
-    <template id="popular_post" name="Popular Post" inherit_id="website_blog.blog_post_complete" active="True" customize_show="True">
-
-        <xpath expr="//div[@id='blog_content']" position="replace">
-            <div id="blog_content_pop"  class="blog_content mt32">
-<!--                <xpath expr="//div[hasclass('o_blog_post_complete','o_sharing_links')]" position="after">-->
-            <section id="popular" class="read_width">
-                <t t-call="blog_cstm.blog_post_complete">
-                  <t t-set="object" t-value="popular_post"/>
-                </t>
-            </section>
-<!--        </xpath>-->
-                <div id="blog_content" t-field="blog_post.content" class="blog_content mt32"/>
-            </div>
-            </xpath>
-    </template>
-
-	<template id="blog_post_complete">
-
-        <div class="popular-post">
-                                        <h3 class="side-title">Popular Posts</h3>
+	<template id="popular_post" name="Popular Post" inherit_id="website_blog.blog_post_complete" active="True" customize_show="True">
+		<xpath expr="//div[@id='blog_content']" position="replace">
+			<div id="blog_content_pop"  class="blog_content mt32">
+				<section class="blog pt-3 pb-5">
+    <div class="container">
+        <div class="row">
+			<div class="col-12">
+                                     <div class="btn-wrapper">
+                                        <a href ="/" class="btn btn-info">Resources Home</a>
                                     </div>
-        <t t-set="count" t-value='1'/>
-        <t t-foreach="popular_post" t-as="post">
-            <div class="section-description">
-                <div class="story-list">
-                    <div class="bulleted-list">
-                        <span><t t-esc="count" /></span>
-                        <t t-set="count" t-value="count+1"/>
-                    </div>
-                    <div class="list-description">
-                        <p class="mb-2 lh-25"><a t-att-href="post.website_url"><span class="medium-font"><t t-esc="post.display_name"/></span></a></p>
-                        <div class="user-info">
-                            <p class="f14 mb-0 "><span class="medium-font"> <t t-esc="post.author_id.name"/> </span></p>
-<!--                                                   <p  class="f14 mb-0">Jun 14 • 3 min read</p>-->
-                        </div>
-                    </div>
-                </div>
-<!--                                       <div class="see-all">-->
-<!--                                            <a class="btn btn-link">-->
-<!--                                               SEE ALL POPULAR  <i class="fa fa-angle-right"></i>-->
-<!--                                            </a>-->
-<!--                                        </div>-->
-            </div>
-        </t>
+                                </div>
+<div class="col-md-9">
 
+                                <div id="blog_content" t-field="blog_post.content" class="blog_content"/>
+</div>
+                                <div class="col-md-3">
+                                    <t t-call="blog_cstm.blog_post_complete"/>
+                                </div>
+        </div>
+
+    </div>
+</section>
+			</div>
+
+<!--				<t t-call="blog_cstm.blog_post_complete"/>-->
+			<!--<div id="blog_content" t-field="blog_post.content" class="blog_content mt32"/>-->
+
+		</xpath>
+	</template>
+	<template id="blog_post_complete">
+		<div class="popular-post">
+			<h3 class="side-title">Popular Posts</h3>
+		</div>
+		<t t-set="count" t-value='1'/>
+		<t t-foreach="popular_post" t-as="post">
+			<div class="section-description">
+				<div class="story-list">
+					<div class="bulleted-list">
+						<span>
+							<t t-esc="count" />
+						</span>
+						<t t-set="count" t-value="count+1"/>
+					</div>
+					<div class="list-description">
+						<p class="mb-2 lh-25">
+							<a t-att-href="post.website_url">
+								<span class="medium-font">
+									<t t-esc="post.display_name"/>
+								</span>
+							</a>
+						</p>
+						<div class="user-info">
+							<p class="f14 mb-0 ">
+								<span class="medium-font">
+									<t t-esc="post.author_id.name"/>
+								</span>
+							</p>
+							<!--                                                   <p  class="f14 mb-0">Jun 14 • 3 min read</p>-->
+						</div>
+					</div>
+				</div>
+				<!--                                       <div class="see-all">-->
+				<!--                                            <a class="btn btn-link">-->
+				<!--                                               SEE ALL POPULAR  <i class="fa fa-angle-right"></i>-->
+				<!--                                            </a>-->
+				<!--                                        </div>-->
+			</div>
+		</t>
+		<div class="see-all">
+                                            <a class="btn btn-link" href="/resource">
+                                               SEE ALL POPULAR  <i class="fa fa-angle-right"></i>
+                                            </a>
+                                        </div>
 	</template>
 </odoo>
