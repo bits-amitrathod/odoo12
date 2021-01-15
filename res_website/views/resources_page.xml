@@ -115,15 +115,15 @@
                                              <div class="col-md-4 mb-3 px-3 px-md-4">
                                             <div class="resource-box h-100 bg-white">
                                                  <div class="images-wrapper m-0 border-0 p-4">
-                                                    <img t-attf-src="/web/image/resource.webresource/#{a.id}/image" class="img-fluid img-thumbnail oe_slides_grid_thumbnail" alt="a.name"/>
+                                                    <img t-attf-src="/web/image/slide.slide/#{a.id}/image" class="img-fluid img-thumbnail oe_slides_grid_thumbnail" alt="a.name"/>
                                                 </div>
                                                 <div class="resource-detail px-3 pb-3">
                                                     <div class="section-description mb-2">
-                                                        <p class="text-center"><span><t t-esc="a.title"/></span></p>
+                                                        <p class="text-center"><span><t t-esc="a.name"/></span></p>
 
                                                     </div>
                                                     <div class="btn-wrapper text-center mb-3">
-                                                        <a t-att-href="a.url"  target="_blank" class="btn btn-info btn-sm">Downloads</a>
+                                                        <a t-attf-href="/web/content/slide.slide/#{a.id}/datas?download=true"  target="_blank" class="btn btn-info btn-sm">Downloads</a>
                                                     </div>
                                                 </div>
                                             </div>
