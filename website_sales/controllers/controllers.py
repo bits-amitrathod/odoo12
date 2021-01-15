@@ -133,13 +133,12 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         return responce
 
     @http.route(['/shop/quote_my_report/update_json'], type='json', auth="public", methods=['POST'], website=True)
-    def update_quote_my_report_json(self, product_id, partner_id, set_qty=None):
+    def update_quote_my_report_json(self, product_id, new_qty=None):
         count = 1
         print('In update_quote_my_report_json')
         print(product_id)
-        print(partner_id)
-        print(set_qty)
-
+        print(new_qty)
+        request.env['quotation.product.list'].sudo().update_quantity(product_id, new_qty)
         # product_list = request.env['quotation.product.list'].sudo().search([('partner', '=', int(partner_id))])
         # print('product_list')
         # print(product_list)
@@ -151,24 +150,25 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
     @http.route(['/shop/quote_my_report/<int:partner_id>'], type='http', auth="public", website=True)
     def quote_my_report(self, partner_id):
         _logger.info('In quote my report')
-        margins_context = {'quote_my_report_partner_id': partner_id}
-        request.env['quotation.product.list'].with_context(margins_context).sudo().delete_and_create()
-
-        # product_list = request.env['quotation.product.list'].sudo().search([('partner', '=', partner_id)])
-        # for res in product_list:
-        #     print(res.product)
+        return request.redirect('/web/login')
+        # margins_context = {'quote_my_report_partner_id': partner_id}
+        # request.env['quotation.product.list'].with_context(margins_context).sudo().delete_and_create()
         #
-        # return http.request.render('website_sales.quote_my_report', {'products': product_list})
+        # product_list = request.env['quotation.product.list'].sudo().get_product_list()
+        #
+        # return http.request.render('website_sales.quote_my_report', {'product_list': product_list})
 
     @http.route(['/add/product/cart'], type='http', auth="public", website=True)
     def add_product_in_cart(self):
         print('add product in cart')
-        product_list = request.env['quotation.product.list'].sudo().search([('partner', '=', 26717)])
+        product_list = request.env['quotation.product.list'].sudo().get_product_list()
         print('product list')
         print(product_list)
-        for product in product_list:
-            print(product.product.id)
-            self.cart_update_custom(product.product.id)
+        for product_id in product_list:
+            if product_list.get(product_id)[0]['quantity'] > 0:
+                print(product_list.get(product_id)[0]['product'].id)
+                self.cart_update_custom(product_list.get(product_id)[0]['product'].id,
+                                    product_list.get(product_id)[0]['quantity'])
         return request.redirect("/shop/cart")
 
 
@@ -196,7 +196,7 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
 
     # share_link = partner._get_signup_url_for_action(action='/mail/view', res_id=self.res_id, model=self.model)[partner.id]
 
-    def cart_update_custom(self, product_id, add_qty=1, set_qty=0, **kw):
+    def cart_update_custom(self, product_id, add_qty, set_qty=0, **kw):
         """This route is called when adding a product to cart (no options)."""
         sale_order = request.website.sale_get_order(force_create=True)
         if sale_order.state != 'draft':

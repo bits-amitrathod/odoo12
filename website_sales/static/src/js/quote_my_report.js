@@ -11,7 +11,7 @@ odoo.define('website_sales.quote_my_report_cart', function (require) {
     var _t = core._t;
 
 
-	$('.engine').each(function () {
+	$('.report').each(function () {
 	    var engine = this;
         $(engine).on('click', 'a.delete_product', function (ev) {
             console.log('In client_order_ref');
@@ -39,9 +39,25 @@ odoo.define('website_sales.quote_my_report_cart', function (require) {
         });
 
 
-//        $(engine).on('click', 'a.add_cart_json', function (ev) {
-//            console.log('In add quantity');
-//
-//        });
+        $(engine).on('click', 'a.js_add_cart_json', function (ev) {
+            console.log('In add quantity');
+            ev.preventDefault();
+            var $link = $(ev.currentTarget);
+            console.log($link);
+            var $input = $link.parent().find("input");
+            console.log($input);
+            var product_id = parseInt($input[0]['attributes']['data-product-id']['value']);
+            var new_qty = parseInt($input.val());
+            console.log(product_id);
+            console.log(new_qty);
+            ajax.jsonRpc("/shop/quote_my_report/update_json", 'call', {
+                        'product_id': product_id,
+                        'new_qty': new_qty,
+                    }).then(function (data) {
+//                        window.location.reload();
+                        console.log('return');
+                        console.log(data);
+                    });
+        });
    });
 });

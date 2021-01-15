@@ -5,7 +5,9 @@ from odoo import api, fields, models, tools
 
 class TempProductList(models.Model):
     _name = 'quotation.product.list'
-    # _auto = False
+    _auto = False
+
+    product_list = {}
 
     product = fields.Many2one('product.product', string='Product')
     partner = fields.Many2one('res.partner', string="Partner")
@@ -15,10 +17,6 @@ class TempProductList(models.Model):
     max_expiration_date = fields.Date("Max Expiration Date")
     price_list = fields.Float("Sales Price", compute='_calculate_max_min_lot_expiration')
     partn_name = fields.Char()
-
-    # _sql_constraints = [
-    #     ('product_uniq', 'unique(product, partner)', 'product must be unique per partner!'),
-    # ]
 
     @api.multi
     def _calculate_max_min_lot_expiration(self):
@@ -55,9 +53,6 @@ class TempProductList(models.Model):
             record.min_expiration_date = fields.Date.from_string(query_result['min'])
             record.max_expiration_date = fields.Date.from_string(query_result['max'])
 
-            print(record.min_expiration_date)
-            print(record.max_expiration_date)
-
     @api.model_cr
     def init(self):
         print('In init')
@@ -65,7 +60,7 @@ class TempProductList(models.Model):
 
     def init_table(self):
         print('In table')
-        # tools.drop_view_if_exists(self._cr, self._name.replace(".", "_"))
+        self.product_list.clear()
         partner_id = self.env.context.get('quote_my_report_partner_id')
         if partner_id and partner_id is not None:
             sql_query = """
@@ -112,73 +107,40 @@ class TempProductList(models.Model):
             sql_query = sql_query + where + groupby
 
             self._cr.execute(sql_query)
-            product_list = self.env['quotation.product.list'].search([('partner', '=', partner_id)])
-            for res in product_list:
-                print(res.product)
-                print(res.min_expiration_date)
-
-            # records = self._cr.dictfetchall()
-            # query_results = self.env.cr.dictfetchall()
-            # for query_result in query_results:
-            #     print(query_result)
-            #     self.env.cr.execute(
-            #         """
-            #         SELECT
-            #         sum(quantity), min(use_date), max(use_date)
-            #     FROM
-            #         stock_quant
-            #     INNER JOIN
-            #         stock_production_lot
-            #     ON
-            #         (
-            #             stock_quant.lot_id = stock_production_lot.id)
-            #     INNER JOIN
-            #         stock_location
-            #     ON
-            #         (
-            #             stock_quant.location_id = stock_location.id)
-            #     WHERE
-            #         stock_location.usage in('internal', 'transit') and stock_production_lot.product_id  = %s
-            #         """,
-            #         (query_result['product'],))
-            #     result = self.env.cr.dictfetchone()
-            #     print(result['min'])
-            #     print(result['max'])
-            #     print('----')
-
-
-
-
-
-
+            records = self.env['quotation.product.list'].search([('partner', '=', partner_id)])
+            for record in records:
+                product_dict = {'product': record.product,
+                                'partner': record.partner,
+                                'product_brand': record.product_brand_id,
+                                'min_expiration_date': record.min_expiration_date,
+                                'max_expiration_date': record.max_expiration_date,
+                                'price_list': record.price_list,
+                                'quantity': record.quantity}
+                product = {record.product.id: [product_dict]}
+                self.product_list.update(product)
+            print('Product List')
+            print(self.product_list)
 
     @api.model_cr
     def delete_and_create(self):
         print('In delete and create')
         self.init_table()
 
-    def update_record(self, product_id, partner_id, set_qty):
+    def update_quantity(self, product_id, set_qty):
         print('In update_record')
-        print(product_id)
-        print(partner_id)
         print(set_qty)
+        if product_id in self.product_list.keys():
+            self.product_list.get(product_id)[0]['quantity'] = set_qty
+        print('quantity updated')
+        print(self.product_list)
 
-        # result = self.env['quotation.product.list'].search([('product', '=', product_id)]).write({'quantity': set_qty})
-        # print('record updated')
-        # print(result)
-
-        sql_query = """
-                
-                UPDATE quotation_product_list SET quantity=0 WHERE product = 10246
-        """
-        self._cr.execute(sql_query)
-        print('records')
-        records = self.env['quotation.product.list'].search([('partner', '=', partner_id)])
-        print(records)
-        for record in records:
-            print(str(record.product.id) + "  " + str(record.quantity))
-
-    # def get_saved_record(self):
-    #     print('In get_saved_record')
-    #     for ss in self:
-    #         print(ss)
+    def get_product_list(self):
+        print('In get_product_list')
+        # print(self.product_list)
+        if bool(self.product_list):
+            print('Yes')
+        else:
+            print('No')
+        for product_id in self.product_list:
+            print(self.product_list.get(product_id)[0]['product'].product_tmpl_id.name)
+        return self.product_list
