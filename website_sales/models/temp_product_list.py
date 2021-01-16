@@ -115,7 +115,8 @@ class TempProductList(models.Model):
                                 'min_expiration_date': record.min_expiration_date,
                                 'max_expiration_date': record.max_expiration_date,
                                 'price_list': record.price_list,
-                                'quantity': record.quantity}
+                                'quantity': record.quantity,
+                                'select': False}
                 product = {record.product.id: [product_dict]}
                 self.product_list.update(product)
             print('Product List')
@@ -126,12 +127,18 @@ class TempProductList(models.Model):
         print('In delete and create')
         self.init_table()
 
-    def update_quantity(self, product_id, set_qty):
+    def update_quantity(self, product_id, set_qty, select):
         print('In update_record')
-        print(set_qty)
-        if product_id in self.product_list.keys():
+        if product_id is not None and product_id in self.product_list.keys() and set_qty is not None:
             self.product_list.get(product_id)[0]['quantity'] = set_qty
-        print('quantity updated')
+            print('quantity updated')
+        elif product_id is not None and product_id in self.product_list.keys() and select is not None:
+            self.product_list.get(product_id)[0]['select'] = select
+            print('product selected')
+        elif product_id is None and select is not None:
+            for product_id in self.product_list:
+                self.product_list.get(product_id)[0]['select'] = select
+            print('all products updated')
         print(self.product_list)
 
     def get_product_list(self):

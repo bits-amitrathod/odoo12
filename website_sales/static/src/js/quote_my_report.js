@@ -10,54 +10,55 @@ odoo.define('website_sales.quote_my_report_cart', function (require) {
     require("website.content.zoomodoo");
     var _t = core._t;
 
+    $('#selectAll').click(function (ev) {
+        console.log('checked all');
+        $(this).closest('table').find('td input:checkbox').prop('checked', this.checked);
+        var $link = $(ev.currentTarget);
+        var $input = $link.parent().find("input");
+        var val = $input.prop('checked')
+        ajax.jsonRpc("/shop/quote_my_report/update_json", 'call', {
+                        'select': val
+                    }).then(function (data) {
+                        console.log('return');
+                        console.log(data);
+            });
+    });
 
 	$('.report').each(function () {
 	    var engine = this;
-        $(engine).on('click', 'a.delete_product', function (ev) {
-            console.log('In client_order_ref');
-            ev.preventDefault();
-            var $link = $(ev.currentTarget);
-            var $input = $link.parent().find("input");
-            var product_id = $input[0]['attributes']['data-product-id']['value'];
-            var partner_id = $input[0]['attributes']['data-partner-id']['value'];
-            console.log(product_id)
-            var r = confirm("Are You Sure, You want to remove product?");
-              if (r == true) {
-                     ajax.jsonRpc("/shop/quote_my_report/update_json", 'call', {
-                        'product_id': product_id,
-                        'partner_id': partner_id,
-                        'set_qty': 0,
-                    }).then(function (data) {
-//                        window.location.reload();
-                        console.log('return');
-                        console.log(data);
-                    });
-              } else {
-                    console.log("inside false block")
-                    return false;
-              }
-        });
-
 
         $(engine).on('click', 'a.js_add_cart_json', function (ev) {
             console.log('In add quantity');
             ev.preventDefault();
             var $link = $(ev.currentTarget);
-            console.log($link);
             var $input = $link.parent().find("input");
-            console.log($input);
             var product_id = parseInt($input[0]['attributes']['data-product-id']['value']);
             var new_qty = parseInt($input.val());
-            console.log(product_id);
-            console.log(new_qty);
             ajax.jsonRpc("/shop/quote_my_report/update_json", 'call', {
                         'product_id': product_id,
                         'new_qty': new_qty,
                     }).then(function (data) {
-//                        window.location.reload();
                         console.log('return');
                         console.log(data);
-                    });
+            });
         });
+
+        $(engine).on('click', 'input:checkbox', function (ev) {
+            console.log('checked one');
+            var $link = $(ev.currentTarget);
+            var $input = $link.parent().find("input");
+            if ('data-product-id' in $input[0]['attributes']){
+                var product_id = parseInt($input[0]['attributes']['data-product-id']['value']);
+                var val = $input.prop('checked')
+                ajax.jsonRpc("/shop/quote_my_report/update_json", 'call', {
+                            'product_id': product_id,
+                            'select': val
+                        }).then(function (data) {
+                            console.log('return');
+                            console.log(data);
+                });
+            }
+        });
+
    });
 });
