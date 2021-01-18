@@ -11,17 +11,6 @@
         </xpath>
     </template>
 
-    <!--<template id="cart_lines_cstm" name="Shopping Cart Lines" inherit_id="website_sale.cart_lines">
-        <xpath expr="//div[@class='js_cart_lines alert alert-info']" position="replace">
-            <div t-if="invalid_url and invalid_url != ''" class="js_cart_lines alert alert-info">
-                <t t-esc="invalid_url" />
-            </div>
-            <div t-elif="not website_sale_order or not website_sale_order.website_order_line" class="js_cart_lines alert alert-info">
-                Your cart is empty!
-            </div>
-        </xpath>
-    </template>-->
-
     <template id="productExpirationDate" name="Product Expiration Date">
         <t t-if="isVisibleWebsiteExpirationDate and product.actual_quantity &gt; 0">
             <div style="padding-bottom: 5px;">
