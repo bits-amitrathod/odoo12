@@ -1,6 +1,8 @@
 <odoo>
 	<template id="popular_post" name="Popular Post" inherit_id="website_blog.blog_post_complete" active="True" customize_show="True">
-		<xpath expr="//div[@id='blog_content']" position="replace">
+        <xpath expr="//h1[@id='blog_post_name']" position="replace"> </xpath>
+        <xpath expr="//h2" position="replace"> </xpath>
+        <xpath expr="//div[@id='blog_content']" position="replace">
 			<div id="blog_content_pop"  class="blog_content mt32">
 				<section class="blog pt-3 pb-5">
     <div class="container">
@@ -12,7 +14,55 @@
                                 </div>-->
 <div class="col-md-9">
 
-                                <div id="blog_content" t-field="blog_post.content" class="blog_content"/>
+<!--                                <div id="blog_content" t-field="blog_post.content" class="blog_content"/>-->
+	<div id="blog_content" class="blog_content">
+		<div class="banner-wrapper py-3">
+                                        <img src="/sps_theme/static/src/images/blog.png" class="img-fluid"/>
+                                    </div>
+                                    <div class="text-left py-3">
+                                        <h1  class="about-header ft-32"> <t t-esc="blog_post.name"/> </h1>
+                                     </div>
+                                    <div class="blog-detail">
+                                        <div class="d-flex">
+                                            <div class="profile-img-wrapper align-self-center">
+                                                <div class="profile-img">
+                                                     <img t-attf-src="/web/image/res.partner/#{author_info.id}/image" class="img-fluid"/>
+                                                </div>
+                                            </div>
+
+                                            <div class="user-info section-description">
+                                                <p class="lh-25">
+                                                    <span class="medium-font">
+                                                        <t t-esc="author_info.sudo().name"/></span> in <span class="medium-font">News</span>
+                                                </p>
+<!--                                                <p  class="lh-25" t-field="blog_post.post_date" t-options='{"format": "MMMM yyyy"}'/>-->
+<!--                                                <p  class="lh-25" t-field="blog_post.post_date" t-options='{"format": "MMM d"}'/>-->
+                                                <span class="lh-25" t-field="blog_post.post_date" t-options='{"format": "MMM d, yyyy"}'/>
+                                                <span >• <t t-esc="blog_post.visits"/> <span>Views</span></span>
+
+                                            </div>
+                                        </div>
+                                            <div class="section-description mt-4">
+                                                <p>Omni berest officiate secea nume vellabori con nos experum ex et dolupta temqui idem quis
+                                                    ipiento tet alitatem quae nos dolent.
+                                                </p>
+                                                <p>Untuscid ut fuga. Ducimintia nat ut quissi il iderfer umquamendam adi netur reicips andita sapit,
+                                                    nost, que et velendi tatinus si nimus esequam, sed mi, ut omnis aut reicil in resendendem. Adiat
+                                                    quatum et ped evenienitate quiam et quam nitatem rem facerum fugita que nobistorem velibus, to
+                                                    dolorit mi, officae nonem sum nobit ex etur?Omni berest officiate secea nume vellabori con nos
+                                                    experum ex et dolupta temqui idem quis ipiento tet alitatem quae nos dolent.</p>
+                                                <p>Untuscid ut fuga. Ducimintia nat ut quissi il iderfer umquamendam adi netur reicips andita sapit,
+                                                nost, que et velendi tatinus si nimus esequam, sed mi, ut omnis aut reicil in resendendem. Adiat
+                                                quatum et ped evenienitate quiami tatinus si nimus esequam, sed mi, ut omnis aut reicil in
+                                                resendendem. Adiat quatum et ped evenienitate quiam et quam nitatem rem facerum fugita que
+                                                nobistorem velibus, to dolorit mi, officae nonem sum i tatinus si nimus esequam, sed mi, ut omnis
+                                                aut reicil in resendendem. Adiat quatum et ped evenienitate quiam et quam nitatem rem facerum
+                                                fugita que nobistorem velibus, to dolorit mi, officae nonem sum</p>
+                                            </div>
+                                    </div>
+
+	</div>
+
 </div>
                                 <div class="col-md-3">
                                     <t t-call="blog_cstm.blog_post_complete"/>
@@ -46,16 +96,18 @@
 						<p class="mb-2 lh-25">
 							<a t-att-href="post.website_url">
 								<span class="medium-font">
-									<t t-esc="post.display_name"/>
+									<t t-esc="post.sudo().display_name"/>
 								</span>
 							</a>
 						</p>
 						<div class="user-info">
 							<p class="f14 mb-0 ">
 								<span class="medium-font">
-									<t t-esc="post.author_id.sudo().name"/>
-								</span>
-							</p>
+									<t t-esc="post.author_id.sudo().name"/> </span>in <span class="medium-font">News</span>
+                                <span t-field="post.post_date" t-options='{"format": "MMM d, yyyy"}'/>
+                                <span>• <t t-esc="post.visits"/></span> Views
+                               </p>
+
 							<!--                                                   <p  class="f14 mb-0">Jun 14 • 3 min read</p>-->
 						</div>
 					</div>
@@ -68,7 +120,7 @@
 			</div>
 		</t>
 		<div class="see-all">
-                                            <a class="btn btn-link" href="/resource">
+                                            <a class="btn btn-link" href="/blog">
                                                SEE ALL POPULAR  <i class="fa fa-angle-right"></i>
                                             </a>
                                         </div>
