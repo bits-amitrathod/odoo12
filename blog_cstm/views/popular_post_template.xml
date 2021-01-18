@@ -2,6 +2,7 @@
 	<template id="popular_post" name="Popular Post" inherit_id="website_blog.blog_post_complete" active="True" customize_show="True">
         <xpath expr="//h1[@id='blog_post_name']" position="replace"> </xpath>
         <xpath expr="//h2" position="replace"> </xpath>
+        <xpath  expr="//div[hasclass('o_sharing_links')]" position="replace"></xpath>
         <xpath expr="//div[@id='blog_content']" position="replace">
 			<div id="blog_content_pop"  class="blog_content mt32">
 				<section class="blog pt-3 pb-5">
