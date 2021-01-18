@@ -23,9 +23,9 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         product_brands = []
 
         title = "Shop"
-
+        c_all_id = request.env['product.public.category'].search([('name', 'ilike', 'All')], limit=1)
         if request.httprequest.path == "/shop":
-            result = request.env['product.public.category'].search([('name', 'ilike', 'All')], limit=1)
+            result = c_all_id
             if result:
                 category = result
 
@@ -58,14 +58,17 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
 
         #  after category id Found the find Brand List
         if category:
-            s = str(category) if isinstance(category, str) else str(category.id)
-            request.env.cr.execute("SELECT product_template_id FROM product_public_category_product_template_rel where product_public_category_id = "+ s)
-            r = request.env.cr.fetchall()
-            pt_list = request.env['product.template'].sudo().search([('id', 'in', r)])
-            for b in pt_list:
-                if b.product_brand_id:
-                    if not b.product_brand_id in product_brands:
-                        product_brands.append(b.product_brand_id)
+            if str(c_all_id.id) == str(category) if isinstance(category, str) else str(category.id) :
+                product_brands = request.env['product.brand'].search([])
+            else:
+                s = str(category) if isinstance(category, str) else str(category.id)
+                request.env.cr.execute("SELECT product_template_id FROM product_public_category_product_template_rel where product_public_category_id = "+ s)
+                r = request.env.cr.fetchall()
+                pt_list = request.env['product.template'].sudo().search([('id', 'in', r)])
+                for b in pt_list:
+                    if b.product_brand_id:
+                        if not b.product_brand_id in product_brands:
+                            product_brands.append(b.product_brand_id)
 
         responce = super(WebsiteSales, self).shop(page, category, search, None, **post)
 
