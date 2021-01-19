@@ -136,6 +136,13 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         request.env['quotation.product.list'].sudo().update_quantity(product_id, new_qty, select)
         return count
 
+    @http.route(['/shop/my_in_stock_report'], type='http', auth="public", website=True)
+    def my_in_stock_report(self):
+        if request.session.uid:
+            user = request.env['res.users'].search([('id', '=', request.session.uid)])
+            if user and user.partner_id and user.partner_id.id:
+                return request.redirect("/shop/quote_my_report/%s" % user.partner_id.id)
+
     @http.route(['/shop/quote_my_report/<int:partner_id>'], type='http', auth="public", website=True)
     def quote_my_report(self, partner_id):
         _logger.info('In quote my report')

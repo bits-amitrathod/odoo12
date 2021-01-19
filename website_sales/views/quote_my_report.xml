@@ -10,6 +10,11 @@
         <template id="quote_my_report" name="Quote My Report">
             <t t-call="website.layout">
                 <section id="quote" class="report">
+                    <div>
+                        <center>
+                            <h3 class="text-center">My In-Stock Reports</h3>
+                        </center>
+                    </div>
                 <div class="container oe_website_sale py-2">
                     <div t-if="invalid_url and invalid_url != ''" class="js_cart_lines alert alert-info">
                         <t t-esc="invalid_url" />
@@ -101,11 +106,17 @@
                     </tbody>
                 </table>
                     <div t-if="bool(product_list)">
-                        <a href="/add/product/cart" style="margin-bottom: 10px;float: right;background-color:#1abc9c; padding:15px; text-decoration:none; color:#fff; border-radius:5px; font-size:16px" class="o_default_snippet_text">Add to cart</a>
+                        <a href="/add/product/cart" style="margin-bottom: 10px;float: right;background-color:#1abc9c; padding:15px; text-decoration:none; color:#fff; border-radius:5px; font-size:16px" class="o_default_snippet_text">Add to Cart</a>
                     </div>
                 </div>
             </section>
             </t>
+        </template>
+
+        <template id="my_in_stock_report_link" name="Link to frontend portal" inherit_id="portal.frontend_layout">
+            <xpath expr="//a[@id='o_logout']" position="before">
+                <a href="/shop/my_in_stock_report" role="menuitem" class="dropdown-item">My In-Stock Reports</a>
+            </xpath>
         </template>
 
         <!--<template id="cart_line_product_link" name="Shopping Cart Line Product Link">
