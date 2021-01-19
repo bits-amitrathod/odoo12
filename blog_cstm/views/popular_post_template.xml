@@ -1,8 +1,8 @@
 <odoo>
 	<template id="popular_post" name="Popular Post" inherit_id="website_blog.blog_post_complete" active="True" customize_show="True">
         <xpath expr="//h1[@id='blog_post_name']" position="replace"> </xpath>
-        <xpath expr="//h2" position="replace"> </xpath>
-        <xpath  expr="//div[hasclass('o_sharing_links')]" position="replace"></xpath>
+        <xpath expr="//h2" position="replace"/>
+        <xpath expr="//div[hasclass('o_sharing_links')]" position="replace"/>
         <xpath expr="//div[@id='blog_content']" position="replace">
 			<div id="blog_content_pop"  class="blog_content mt32">
 				<section class="blog pt-3 pb-5">
@@ -33,8 +33,13 @@
 
                                             <div class="user-info section-description">
                                                 <p class="lh-25">
-                                                    <span class="medium-font">
-                                                        <t t-esc="author_info.sudo().name"/></span> in <span class="medium-font">News</span>
+                                                    <span class="medium-font"><t t-esc="author_info.sudo().name"/></span>
+                                                    <span class="post-meta text-muted text-center regular-font" t-if="len(blog_post.tag_ids)">
+                                                        in<i class="fa fa-tags ml-2" role="img" aria-label="Tags" title="Tags"/>
+                                                        <t t-foreach="blog_post.tag_ids" t-as="one_tag">
+                                                            <a class="badge badge-primary mr8" t-attf-href="#{blog_url(tag=slug(one_tag))}" t-esc="one_tag.name"/>
+                                                        </t>
+                                                    </span>
                                                 </p>
 <!--                                                <p  class="lh-25" t-field="blog_post.post_date" t-options='{"format": "MMMM yyyy"}'/>-->
 <!--                                                <p  class="lh-25" t-field="blog_post.post_date" t-options='{"format": "MMM d"}'/>-->
@@ -78,6 +83,10 @@
 			<!--<div id="blog_content" t-field="blog_post.content" class="blog_content mt32"/>-->
 
 		</xpath>
+        <xpath expr="//div[@id='title']//div[hasclass('blog_title')]" position="attributes">
+            <attribute name="class" add="none" separator=" "/>
+        </xpath>
+
 	</template>
 	<template id="blog_post_complete">
 		<div class="popular-post">
@@ -103,8 +112,13 @@
 						</p>
 						<div class="user-info">
 							<p class="f14 mb-0 ">
-								<span class="medium-font">
-									<t t-esc="post.author_id.sudo().name"/> </span>in <span class="medium-font">News</span>
+								<span class="medium-font"><t t-esc="post.author_id.sudo().name"/> </span>
+                                <span class="post-meta text-muted text-center regular-font" t-if="len(blog_post.tag_ids)">
+                                    in<i class="fa fa-tags ml-2" role="img" aria-label="Tags" title="Tags"/>
+                                    <t t-foreach="blog_post.tag_ids" t-as="one_tag">
+                                        <a class="badge badge-primary mr8" t-attf-href="#{blog_url(tag=slug(one_tag))}" t-esc="one_tag.name"/>
+                                    </t>
+                                </span>
                                 <span class="regular-font" t-field="post.post_date" t-options='{"format": "MMM d, yyyy"}'/>
                                 <span class="regular-font" >• <t t-esc="post.visits"/></span> Views
                                </p>
@@ -128,11 +142,59 @@
 	</template>
 
     <template id="blog_post_list" name="Post list UI update" inherit_id="website_blog.latest_blogs">
-           <xpath expr="//div[@id='wrap']/section[3]" position="after">
-               <section>
-                   <div></div>
-               </section>
+
+
+        <xpath expr="//div[@id='wrap']" position="replace">
+            <div class="oe_structure" id="oe_structure_website_blog_latest_blogs_1"/>
+            <section class="resource-page video-block padding-60-y">
+                <div class="alert alert-warning alert-dismissable mt16" groups="website.group_website_publisher" role="status">
+                   <button type="button" class="close" data-dismiss="alert" aria-label="Close">&amp;times;</button>
+                   <p>
+                   This page is great to improve your <strong>Search Engine Optimization</strong>;
+                   You can review titles, keywords and descriptions of all blogs at once.
+                   </p><p>
+                   You should <strong>add a banner on the top</strong> as it is a frequent landing page for new visitors.
+                   <span class="text-muted">This box will not be visible to your visitors.</span>
+                   </p>
+                </div>
+
+                            <div class="container">
+                                 <div class="text-center">
+                                     <h1  class="resource-section-title"> <span>Latest</span> Posts</h1>
+                                     <div class="pad-bot">
+                    <t t-call="website.pager" >
+                        <t t-set="classname">float-right</t>
+                    </t>
+                </div>
+                                 </div>
+                                <div class="row mt-5">
+
+                                        <t t-foreach="posts" t-as="post">
+                                            <div class="col-md-4 mb-3 px-3 px-md-4">
+                                                <div class="resource-box h-100">
+                                             <div class="images-wrapper m-0 border-0 no-shadow">
+                                                  <img t-attf-src="/web/image/blog.post/#{post.id}/image" class="img-fluid img-thumbnail oe_slides_grid_thumbnail"/>
+                                            </div>
+                                            <div class="resource-detail p-3">
+                                                <div class="section-description">
+                                                    <p class="mb-0"><span><t t-esc="post.name"/></span></p>
+                                                    <p class="mb-0"><t t-esc="post.subtitle"/></p>
+                                                </div>
+                                                 <div class="link-wrapper mb-3 mt-2">
+                                                   <a t-att-href="post.website_url"  class="link-btn">READ MORE ></a>
+                                                 </div>
+                                            </div>
+                                        </div>
+                                            </div>
+
+                            </t>
+
+                                </div>
+                            </div>
+                         </section>
+            <div class="oe_structure" id="oe_structure_website_blog_latest_blogs_2"/>
            </xpath>
+
     </template>
 
 </odoo>
