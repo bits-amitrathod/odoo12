@@ -105,8 +105,8 @@
 							<p class="f14 mb-0 ">
 								<span class="medium-font">
 									<t t-esc="post.author_id.sudo().name"/> </span>in <span class="medium-font">News</span>
-                                <span t-field="post.post_date" t-options='{"format": "MMM d, yyyy"}'/>
-                                <span>• <t t-esc="post.visits"/></span> Views
+                                <span class="regular-font" t-field="post.post_date" t-options='{"format": "MMM d, yyyy"}'/>
+                                <span class="regular-font" >• <t t-esc="post.visits"/></span> Views
                                </p>
 
 							<!--                                                   <p  class="f14 mb-0">Jun 14 • 3 min read</p>-->
@@ -126,4 +126,13 @@
                                             </a>
                                         </div>
 	</template>
+
+    <template id="blog_post_list" name="Post list UI update" inherit_id="website_blog.latest_blogs">
+           <xpath expr="//div[@id='wrap']/section[3]" position="after">
+               <section>
+                   <div></div>
+               </section>
+           </xpath>
+    </template>
+
 </odoo>
