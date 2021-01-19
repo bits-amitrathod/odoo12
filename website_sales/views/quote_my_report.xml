@@ -55,12 +55,12 @@
                                 </td>
                                 <td class="text-center td-min-exp">
                                     <div>
-                                        <span t-esc="product_list.get(product)[0]['min_expiration_date']"/>
+                                        <span t-esc="product_list.get(product)[0]['min_expiration_date']" t-options="{'widget': 'date'}"/>
                                     </div>
                                 </td>
                                 <td class="text-center td-max-exp">
                                     <div>
-                                        <span t-esc="product_list.get(product)[0]['max_expiration_date']"/>
+                                        <span t-esc="product_list.get(product)[0]['max_expiration_date']" t-options="{'widget': 'date'}"/>
                                     </div>
                                 </td>
                                 <td class="text-center td-av-qty">

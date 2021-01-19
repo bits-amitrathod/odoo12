@@ -140,6 +140,7 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
     def quote_my_report(self, partner_id):
         _logger.info('In quote my report')
         partner = request.env['res.partner'].sudo().search([('id', '=', partner_id)])
+        _logger.info(partner)
         if request.session.uid:
             _logger.info('Login successfully')
             user = request.env['res.users'].search([('id', '=', request.session.uid)])
@@ -157,13 +158,9 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
 
     @http.route(['/add/product/cart'], type='http', auth="public", website=True)
     def add_product_in_cart(self):
-        print('add product in cart')
         product_list = request.env['quotation.product.list'].sudo().get_product_list()
-        print('product list')
-        print(product_list)
         for product_id in product_list:
             if product_list.get(product_id)[0]['quantity'] > 0 and product_list.get(product_id)[0]['select']:
-                print(product_list.get(product_id)[0]['product'].id)
                 self.cart_update_custom(product_list.get(product_id)[0]['product'].id,
                                     product_list.get(product_id)[0]['quantity'])
         return request.redirect("/shop/cart")
