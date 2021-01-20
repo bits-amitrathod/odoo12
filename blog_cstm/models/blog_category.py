@@ -29,45 +29,15 @@ class BlogPost(models.Model):
 
     def _default_content(self):
         return '''  
-                   
-
-                                    <div class="banner-wrapper py-3">
-                                        <img src="/sps_theme/static/src/images/blog.png" class="img-fluid"/>
-                                    </div>
-                                    <div class="text-left py-3">
-                                        <h1  class="about-header ft-32"> Choose to save money without sacrificing quality of care </h1>
-                                     </div>
-                                    <div class="blog-detail">
-                                        <div class="d-flex">
-                                            <div class="profile-img-wrapper align-self-center">
-                                                <div class="profile-img">
-                                                     <img src="/sps_theme/static/src/images/profile.png" class="img-fluid"/>
-                                                </div>
-                                            </div>
-
-                                            <div class="user-info section-description">
-                                                <p class="lh-25"><span class="medium-font">Joan Grayson</span> in <span class="medium-font">News</span></p>
-                                                <p  class="lh-25">Jun 14 • 3 min read</p>
-                                            </div>
-                                        </div>
-                                            <div class="section-description mt-4">
-                                                <p>Omni berest officiate secea nume vellabori con nos experum ex et dolupta temqui idem quis
+                   <p>Omni berest officiate secea nume vellabori con nos experum ex et dolupta temqui idem quis
                                                     ipiento tet alitatem quae nos dolent.
                                                 </p>
-                                                <p>Untuscid ut fuga. Ducimintia nat ut quissi il iderfer umquamendam adi netur reicips andita sapit,
+				<p>Untuscid ut fuga. Ducimintia nat ut quissi il iderfer umquamendam adi netur reicips andita sapit,
                                                     nost, que et velendi tatinus si nimus esequam, sed mi, ut omnis aut reicil in resendendem. Adiat
                                                     quatum et ped evenienitate quiam et quam nitatem rem facerum fugita que nobistorem velibus, to
                                                     dolorit mi, officae nonem sum nobit ex etur?Omni berest officiate secea nume vellabori con nos
                                                     experum ex et dolupta temqui idem quis ipiento tet alitatem quae nos dolent.</p>
-                                                <p>Untuscid ut fuga. Ducimintia nat ut quissi il iderfer umquamendam adi netur reicips andita sapit,
-                                                nost, que et velendi tatinus si nimus esequam, sed mi, ut omnis aut reicil in resendendem. Adiat
-                                                quatum et ped evenienitate quiami tatinus si nimus esequam, sed mi, ut omnis aut reicil in
-                                                resendendem. Adiat quatum et ped evenienitate quiam et quam nitatem rem facerum fugita que
-                                                nobistorem velibus, to dolorit mi, officae nonem sum i tatinus si nimus esequam, sed mi, ut omnis
-                                                aut reicil in resendendem. Adiat quatum et ped evenienitate quiam et quam nitatem rem facerum
-                                                fugita que nobistorem velibus, to dolorit mi, officae nonem sum</p>
-                                            </div>
-                                    </div>
+				<p>Untuscid ut fuga. Ducimintia nat ut quissi il iderfer umquamendam adi netur reicips andita sapit,
                                 
         '''
 
