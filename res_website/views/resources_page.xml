@@ -139,7 +139,7 @@
                             </div>
                           </section>
                         <!-- Content library -->
-                        <section class="video-block padding-60-y">
+                        <section class="video-block padding-60-y ">
                             <div class="container">
                                  <div class="text-center">
                                      <h1  class="resource-section-title"> <span>Content</span> Library</h1>
@@ -167,6 +167,12 @@
                             </t>
 
                                 </div>
+
+                            </div>
+                            <div class ="products_pager form-inline justify-content-center">
+                                <t t-call="website.pager">
+                                <t t-set="_classes">ml-2</t>
+                            </t>
                             </div>
                          </section>
 

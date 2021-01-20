@@ -25,11 +25,18 @@ from odoo.addons.portal.controllers.web import Home
 from odoo.addons.http_routing.models.ir_http import slug, _guess_mimetype
 
 class Website_Resource(http.Controller):
-    @http.route('/resource', type='http', auth="public", website=True)
-    def home(self, **kw):
+    @http.route([
+        '/resource',
+        '/resource/page/<int:page>'
+    ], type='http', auth="public", website=True)
+    def home(self,page=0, **kw):
         video = request.env['resource.webresource'].sudo().search(
             [('website_published', '=', True), ('category', '=', 'video')])
-
+        limit = 9
+        if page == 0:
+            offset = 0
+        else:
+            offset = (page-1) * limit
         edu = request.env['slide.slide'].sudo().search([('website_published', '=', True)])
         educational = []
         for x in edu:
@@ -43,15 +50,24 @@ class Website_Resource(http.Controller):
         for x in aw:
             if x.category_id.name == 'Award':
                 awards.append(x)
+        total_post = request.env['blog.post'].sudo().search([('website_published', '=', True)])
+        blogPost = request.env['blog.post'].sudo().search([('website_published', '=', True)],offset=offset, limit=limit)
 
-        blogPost = request.env['blog.post'].sudo().search([('website_published', '=', True)])
+        pager = request.website.pager(
+            url="/resource",
+            url_args={},
+            total=len(total_post),
+            page=page,
+            step=limit
+        )
 
         return request.render('res_website.resouces_page_template', {
             'teachers': ["Diana Padilla", "Jody Caroll  aa", "Lester Vaughn"],
             'video': video,
             'blog_post' : blogPost,
             'educational':educational,
-            'awards':awards
+            'awards':awards,
+            'pager':pager
 
         })
 class blog_resource(odoo.addons.website_blog.controllers.main.WebsiteBlog):
