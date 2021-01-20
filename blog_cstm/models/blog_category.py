@@ -41,7 +41,13 @@ class BlogPost(models.Model):
                                 
         '''
 
+    def _default_html(self):
+        return '''  
+                 <img src="/sps_theme/static/src/images/blog.png" class="img-fluid"/>     
+            '''
+
     content = fields.Html('Content', default=_default_content, translate=html_translate, sanitize=False)
+    title_img = fields.Html('Content', default=_default_html, translate=html_translate, sanitize=False)
     image = fields.Binary('Image', attachment=True)
     image_medium = fields.Binary('Medium', compute="_get_image", store=True, attachment=True)
     image_thumb = fields.Binary('Thumbnail', compute="_get_image", store=True, attachment=True)
