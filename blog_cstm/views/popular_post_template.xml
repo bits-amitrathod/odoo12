@@ -11,13 +11,8 @@
 							<div class="col-md-9">
 								<div id="blog_content" class="blog_content">
 									<div t-field="blog_post.title_img" class=" banner-wrapper py-3 section-description mt-4"/>
-									<!--<div class="banner-wrapper py-3">
-										<img src="/sps_theme/static/src/images/blog.png" class="img-fluid"/>
-									</div>-->
 									<div class="text-left py-3">
-										<h1  class="about-header ft-32">
-											<t t-esc="blog_post.name"/>
-										</h1>
+										<h1 class="about-header ft-32" t-field="blog_post.name" id="blog_post_name" t-att-data-blog-id="blog_post.id" placeholder="Blog Post Title"/>
 									</div>
 									<div class="blog-detail">
 										<div class="d-flex">
