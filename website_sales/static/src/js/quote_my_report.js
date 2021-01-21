@@ -16,6 +16,7 @@ odoo.define('website_sales.quote_my_report_cart', function (require) {
         var $link = $(ev.currentTarget);
         var $input = $link.parent().find("input");
         var val = $input.prop('checked');
+
         ajax.jsonRpc("/shop/quote_my_report/update_json", 'call', {
                         'select': val
                     }).then(function (data) {
@@ -61,7 +62,15 @@ odoo.define('website_sales.quote_my_report_cart', function (require) {
             console.log('checked one');
             var $link = $(ev.currentTarget);
             var $input = $link.parent().find("input");
-            var partn_name_id = parseInt($input[0]['attributes']['data-partn-name-id']['value']);
+            //var partn_name_id = parseInt($input[0]['attributes']['data-partn-name-id']['value']);
+
+            if ($('td input:checked').length > 0){
+                console.log('leangth is greater than 0');
+                $("#add_product_in_to_cart").attr('disabled', false);
+            } else {
+                console.log('leangth is equal to 0');
+                $("#add_product_in_to_cart").attr('disabled', true);
+            }
 
             if ('data-product-id' in $input[0]['attributes']){
                 var product_id = parseInt($input[0]['attributes']['data-product-id']['value']);

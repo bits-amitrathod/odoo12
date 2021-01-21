@@ -163,7 +163,7 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
             portal_url = partner.with_context(signup_force_type_in_url='', lang=partner.lang)._get_signup_url_for_action()[partner.id]
             return request.redirect(portal_url+'&redirect=/shop/quote_my_report/%s' % partner.id)
 
-    @http.route(['/add/product/cart'], type='http', auth="public", website=True)
+    @http.route(['/add/product/cart'], type='http', auth="public", methods=['POST'], website=True, csrf=False)
     def add_product_in_cart(self):
         product_list = request.env['quotation.product.list'].sudo().get_product_list()
         for product_id in product_list:
