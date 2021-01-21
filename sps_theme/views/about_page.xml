@@ -49,12 +49,12 @@
                         </section>
 
                     </div>
-                    <section class="our-mission padding-100-y">
+                    <section class="our-mission padding-60-y">
                         <div class="container">
-                            <div class="banner-wrapper">
+                            <!--<div class="banner-wrapper">
                                 <img src="/sps_theme/static/src/images/our-mission.jpg" class="img-fluid"/>
-                            </div>
-                            <p>
+                            </div>-->
+                            <p class ="pt-0">
                                 OUR MISSION is to bring revenue back to hospitals for
                                 their surplus, un-used surgical products, while offering
                                 them discounts on high-volume products they are

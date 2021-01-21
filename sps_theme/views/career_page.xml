@@ -5,12 +5,12 @@
 				<div id="wrap" class="oe_structure oe_empty">
 					<section class="py-5">
 						<div class="container">
-						  	<div class="text-center pb32">
+						  	<div class="text-center">
 								<h1  class="about-header"> Careers </h1>
 							</div>
-							 <div class="banner-wrapper">
+							 <!--<div class="banner-wrapper">
 								<img src="/sps_theme/static/src/images/career.jpg" class="img-fluid"/>
-							</div>
+							</div>-->
 							 <div class="section-description pt-5 contact-us-section">
                                     <div class="row">
                                         <div class="col-md-6 align-self-center">

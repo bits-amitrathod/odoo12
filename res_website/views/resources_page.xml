@@ -148,7 +148,7 @@
 
                                         <t t-foreach="blog_post" t-as="c">
                                             <div class="col-md-4 mb-3 px-3 px-md-4">
-                                                <div class="resource-box h-100">
+                                                <div class="resource-box content-lib h-100">
                                              <div class="images-wrapper m-0 border-0 no-shadow">
                                                   <img t-attf-src="/web/image/blog.post/#{c.id}/image" class="img-fluid img-thumbnail oe_slides_grid_thumbnail"/>
                                             </div>
