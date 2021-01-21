@@ -93,13 +93,8 @@
 										<a class="badge badge-primary mr8" t-attf-href="#{blog_url(tag=slug(one_tag))}" t-esc="one_tag.name"/>
 									</t>
 								</span>
-								<span class="regular-font" t-field="post.post_date" t-options='{"format": "MMM d, yyyy"}'/>
-								<span class="regular-font" >•
-
-									<t t-esc="post.visits"/>
-								</span> Views
-
-
+								<br/><span class="regular-font" t-field="post.post_date" t-options='{"format": "MMM d, yyyy"}'/>
+								<span class="regular-font" >•<t t-esc="post.visits"/></span> Views
 							</p>
 							<!--                                                   <p  class="f14 mb-0">Jun 14 • 3 min read</p>-->
 						</div>
