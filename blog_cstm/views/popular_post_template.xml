@@ -238,4 +238,11 @@
 		</xpath>
 		<xpath expr="//h3[hasclass('text-muted')]" position="replace"></xpath>
 	</template>
+
+	<template id="opt_blog_rc_tags1" name="Tags" inherit_id="website_blog.opt_blog_rc_tags" active="False" customize_show="True"></template>
+	<template id="opt_blog_rc_history" name="Archives" inherit_id="website_blog.opt_blog_rc_history" active="False" customize_show="True"></template>
+	<template id="opt_blog_rc_about_us" name="About Us" priority="2" inherit_id="website_blog.opt_blog_rc_about_us" active="False" customize_show="True"></template>
+	<template id="opt_blog_rc_follow_us" name="Subscription" priority="4" inherit_id="website_blog.opt_blog_rc_follow_us" active="False" customize_show="True"></template>
+	<template id="opt_blog_rc_status" name="Status" priority="5" inherit_id="website_blog.opt_blog_rc_status" active="False" customize_show="True"></template>
+	<template id="opt_blog_rc_blogs" name="Our Blogs" priority="6" inherit_id="website_blog.opt_blog_rc_blogs" active="False" customize_show="True"></template>
 </odoo>
