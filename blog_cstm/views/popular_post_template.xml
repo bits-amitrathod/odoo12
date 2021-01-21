@@ -118,7 +118,7 @@
 	<template id="blog_post_list" name="Post list UI update" inherit_id="website_blog.latest_blogs">
 		<xpath expr="//div[@id='wrap']" position="replace">
 			<div class="oe_structure" id="oe_structure_website_blog_latest_blogs_1"/>
-			<section class="resource-page video-block padding-60-y">
+			<section class="resource-page content-lib video-block padding-60-y">
 				<div class="alert alert-warning alert-dismissable mt16" groups="website.group_website_publisher" role="status">
 					<button type="button" class="close" data-dismiss="alert" aria-label="Close">&amp;times;</button>
 					<p>
@@ -209,7 +209,7 @@
 					<div class="row">
 						<t t-foreach="blog_posts" t-as="post">
 							<div class="col-md-4 mb-3 px-3 px-md-4">
-								<div class="resource-box h-100">
+								<div class="resource-box content-lib h-100">
 									<div class="images-wrapper m-0 border-0 no-shadow">
 										<img t-attf-src="/web/image/blog.post/#{post.id}/image" class="img-fluid img-thumbnail oe_slides_grid_thumbnail"/>
 									</div>
