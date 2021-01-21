@@ -16,3 +16,19 @@ class WebsiteBlog(odoo.addons.website_blog.controllers.main.WebsiteBlog):
         payload['popular_post'] = popular
         response = request.render("website_blog.blog_post_complete", payload)
         return response
+
+    @http.route([
+        '''/blog/<model("blog.blog", "[('website_id', 'in', (False, current_website_id))]"):blog>''',
+        '''/blog/<model("blog.blog"):blog>/page/<int:page>''',
+        '''/blog/<model("blog.blog"):blog>/tag/<string:tag>''',
+        '''/blog/<model("blog.blog"):blog>/tag/<string:tag>/page/<int:page>''',
+    ], type='http', auth="public", website=True)
+    def blog(self, blog=None, tag=None, page=1, **opt):
+        response = super(WebsiteBlog, self).blog(blog, tag, page, **opt)
+        payload = response.qcontext
+        sep = '-'
+        stripped = tag.split(sep, 1)[0]
+        payload['tag_name'] = stripped
+        response = request.render("website_blog.blog_post_short", payload)
+        return response
+

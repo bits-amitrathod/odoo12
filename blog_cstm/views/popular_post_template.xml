@@ -86,11 +86,10 @@
 								<span class="medium-font">
 									<t t-esc="post.author_id.sudo().name"/>
 								</span>
-								<span class="post-meta text-muted text-center regular-font" t-if="len(blog_post.tag_ids)">
+								<span class="post-meta text-muted text-center regular-font" t-if="len(post.tag_ids)">
                                     in
-
 									<i class="fa fa-tags ml-2" role="img" aria-label="Tags" title="Tags"/>
-									<t t-foreach="blog_post.tag_ids" t-as="one_tag">
+									<t t-foreach="post.tag_ids" t-as="one_tag">
 										<a class="badge badge-primary mr8" t-attf-href="#{blog_url(tag=slug(one_tag))}" t-esc="one_tag.name"/>
 									</t>
 								</span>
@@ -235,6 +234,9 @@
 				</div>
 			</section>
 
+		</xpath>
+		<xpath expr="//h1" position="replace">
+			<h1 t-esc="tag_name"/>
 		</xpath>
 		<xpath expr="//h3[hasclass('text-muted')]" position="replace"></xpath>
 	</template>

@@ -29,9 +29,7 @@ class BlogPost(models.Model):
 
     def _default_content(self):
         return '''  
-                   <p>Omni berest officiate secea nume vellabori con nos experum ex et dolupta temqui idem quis
-                                                    ipiento tet alitatem quae nos dolent.
-                                                </p>
+                   <p>Omni berest officiate secea nume vellabori con nos experum ex et dolupta temqui idem quis ipiento tet alitatem quae nos dolent.</p>
 				<p>Untuscid ut fuga. Ducimintia nat ut quissi il iderfer umquamendam adi netur reicips andita sapit,
                                                     nost, que et velendi tatinus si nimus esequam, sed mi, ut omnis aut reicil in resendendem. Adiat
                                                     quatum et ped evenienitate quiam et quam nitatem rem facerum fugita que nobistorem velibus, to
