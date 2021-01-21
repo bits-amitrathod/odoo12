@@ -61,3 +61,15 @@ class BlogPost(models.Model):
             else:
                 record.image_medium = False
                 record.iamge_thumb = False
+
+    def description_content(self):
+        s3 =''
+        data = self.content
+        if data !='':
+            s3 = re.sub("[\<\[].*?[\>\]]", "", re.search('>(.*)', re.search('<p(.*)</p>',data).group(1)).group(1))
+            if 14 < len(s3.split()):
+                s3 =" ".join((s3.split()[:14]))
+                s3 = s3 + ' ...'
+
+
+        return s3

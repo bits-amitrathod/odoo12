@@ -155,7 +155,7 @@
                                             <div class="resource-detail p-3">
                                                 <div class="section-description">
                                                     <p class="mb-0"><span><t t-esc="c.name"/></span></p>
-                                                    <p class="mb-0"><t t-esc="c.subtitle"/></p>
+                                                    <p class="mb-0"><t t-esc="c.description_content()"/></p>
                                                 </div>
                                                  <div class="link-wrapper mb-3 mt-2">
                                                    <a t-att-href="c.website_url"  class="link-btn">READ MORE ></a>
