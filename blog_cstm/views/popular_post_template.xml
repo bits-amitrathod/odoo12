@@ -165,8 +165,7 @@
 									</div>
 									<div class="resource-detail p-3">
 										<div class="section-description">
-											<p class="mb-0"><span><t t-esc="post.name"/></span></p>
-											<p class="mb-0"><t t-esc="post.subtitle"/></p>
+											<p class="mb-0"><span t-field="post.name"></span></p>
 											<p class="mb-0"><t t-esc="post.description_content()"/></p>
 										</div>
 										<div class="link-wrapper mb-3 mt-2">
@@ -181,5 +180,62 @@
 			</section>
 			<div class="oe_structure" id="oe_structure_website_blog_latest_blogs_2"/>
 		</xpath>
+	</template>
+	<template id="blog_post_short1" name="Blog Posts" customize_show="True" active="True" inherit_id="website_blog.blog_post_short">
+		<xpath expr="//div[hasclass('container')][2]" position="replace">
+			<section class="resource-page video-block">
+				<div class="alert alert-warning alert-dismissable " groups="website.group_website_publisher" role="status">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">&amp;times;</button>
+					<p>
+                   This page is great to improve your
+
+						<strong>Search Engine Optimization</strong>;
+                   You can review titles, keywords and descriptions of all blogs at once.
+
+
+					</p>
+					<p>
+                   You should
+
+						<strong>add a banner on the top</strong> as it is a frequent landing page for new visitors.
+
+
+						<span class="text-muted">This box will not be visible to your visitors.</span>
+					</p>
+				</div>
+				<div class="container">
+					<div t-if="not blog_posts" class="container mb64">
+                    <p class="css_editable_hidden">
+                        <h1>No blog post yet.</h1>
+                    </p>
+                  <p groups="website.group_website_designer">
+                        Click on "New Page" in the top-right corner to write your first blog post.
+                    </p>
+                </div>
+					<div class="row">
+						<t t-foreach="blog_posts" t-as="post">
+							<div class="col-md-4 mb-3 px-3 px-md-4">
+								<div class="resource-box h-100">
+									<div class="images-wrapper m-0 border-0 no-shadow">
+										<img t-attf-src="/web/image/blog.post/#{post.id}/image" class="img-fluid img-thumbnail oe_slides_grid_thumbnail"/>
+									</div>
+									<div class="resource-detail p-3">
+										<div class="section-description">
+											<p class="mb-0"><span t-field="post.name"/></p>
+											<p class="mb-0"><t t-esc="post.description_content()"/></p>
+										</div>
+										<div class="link-wrapper mb-3 mt-2">
+											<a t-att-href="post.website_url"  class="link-btn">READ MORE ></a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</t>
+					</div>
+				</div>
+			</section>
+
+		</xpath>
+		<xpath expr="//h3[hasclass('text-muted')]" position="replace"></xpath>
 	</template>
 </odoo>
