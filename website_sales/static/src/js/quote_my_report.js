@@ -15,7 +15,7 @@ odoo.define('website_sales.quote_my_report_cart', function (require) {
         $(this).closest('table').find('td input:checkbox').prop('checked', this.checked);
         var $link = $(ev.currentTarget);
         var $input = $link.parent().find("input");
-        var val = $input.prop('checked')
+        var val = $input.prop('checked');
         ajax.jsonRpc("/shop/quote_my_report/update_json", 'call', {
                         'select': val
                     }).then(function (data) {
@@ -66,6 +66,10 @@ odoo.define('website_sales.quote_my_report_cart', function (require) {
             if ('data-product-id' in $input[0]['attributes']){
                 var product_id = parseInt($input[0]['attributes']['data-product-id']['value']);
                 var val = $input.prop('checked')
+
+                if(val === false){
+                    $('#selectAll').prop('checked', false);
+                }
 
                 ajax.jsonRpc("/shop/quote_my_report/update_json", 'call', {
                             'product_id': product_id,
