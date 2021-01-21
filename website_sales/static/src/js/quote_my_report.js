@@ -33,7 +33,21 @@ odoo.define('website_sales.quote_my_report_cart', function (require) {
             var $link = $(ev.currentTarget);
             var $input = $link.parent().find("input");
             var product_id = parseInt($input[0]['attributes']['data-product-id']['value']);
+            var available_qty = parseInt($input[0]['attributes']['data-available-qty']['value']);
+            var partn_name_id = $input[0]['attributes']['data-partn-name-id']['value'];
             var new_qty = parseInt($input.val());
+            console.log(partn_name_id);
+            var ele1 = $link.parent().find("#allow_qty_plus_"+partn_name_id);
+            var ele2 = $link.parent().find("#not_allow_qty_pluss_"+partn_name_id);
+            if (available_qty === new_qty) {
+                console.log('In');
+                ele1.hide();
+                ele2.show();
+            }else{
+                ele1.show();
+                ele2.hide();
+            }
+
             ajax.jsonRpc("/shop/quote_my_report/update_json", 'call', {
                         'product_id': product_id,
                         'new_qty': new_qty,
@@ -47,9 +61,12 @@ odoo.define('website_sales.quote_my_report_cart', function (require) {
             console.log('checked one');
             var $link = $(ev.currentTarget);
             var $input = $link.parent().find("input");
+            var partn_name_id = parseInt($input[0]['attributes']['data-partn-name-id']['value']);
+
             if ('data-product-id' in $input[0]['attributes']){
                 var product_id = parseInt($input[0]['attributes']['data-product-id']['value']);
                 var val = $input.prop('checked')
+
                 ajax.jsonRpc("/shop/quote_my_report/update_json", 'call', {
                             'product_id': product_id,
                             'select': val

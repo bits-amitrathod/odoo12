@@ -98,6 +98,7 @@ class TempProductList(models.Model):
 
                 product_dict = {'product': product,
                                 'partner': partner,
+                                'partn_name': query_result['partn_name'],
                                 'product_brand': product_brand,
                                 'min_expiration_date': result['min'],
                                 'max_expiration_date': result['max'],
