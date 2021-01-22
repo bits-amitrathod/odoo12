@@ -17,8 +17,8 @@
                             <t t-set="_classes">ml-2</t>
                         </t>
 
-                       <t t-set="list_price_desc_label">Catalog price: High to Low</t>
-                        <t t-set="list_price_asc_label">Catalog price: Low to High</t>
+                       <t t-set="list_price_desc_label">Catalog Price: High to Low</t>
+                        <t t-set="list_price_asc_label">Catalog Price: Low to High</t>
                         <t t-set="name_asc_label">Name - A to Z</t>
                         <t t-set="name_desc_label">Name - Z to A</t>
                         <t t-set="qty_available_desc_label">Quantity: High to Low</t>
@@ -41,7 +41,7 @@
                                     </span>
                                 </t>
                                 <t t-else='1'>
-                                    <span>Sort by</span>
+                                    <span>Sort By</span>
                                     <span class="caret"></span>
                                 </t>
                             </a>
