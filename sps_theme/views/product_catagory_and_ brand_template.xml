@@ -36,7 +36,7 @@
                         <div class="dropdown btn-group dropdown_sorty_by">
                             <a href="#" class="dropdown-toggle btn btn-default" data-toggle="dropdown">
                                 <t t-if='len(website_sale_sortable_current)'>
-                                    <span>Sorting by :
+                                    <span>Sorting By :
                                         <t t-raw='website_sale_sortable_current[0][0]'/>
                                     </span>
                                 </t>
@@ -99,6 +99,10 @@
                 </t>
             </div>
         </xpath>
+        <xpath expr="//h3[hasclass('css_editable_display')]" position="replace">
+            <h3 class="css_editable_display mt8">No Product Defined.</h3>
+        </xpath>
+
     </template>
 
 

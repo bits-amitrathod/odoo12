@@ -144,7 +144,7 @@
 							<span>Latest</span> Posts
 
 						</h1>
-						<div class="pad-bot">
+						<div class="products_pager form-inline justify-content-center">
 							<t t-call="website.pager" >
 								<t t-set="classname">float-right</t>
 							</t>
