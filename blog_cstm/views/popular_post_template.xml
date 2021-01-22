@@ -180,6 +180,9 @@
 		</xpath>
 	</template>
 	<template id="blog_post_short1" name="Blog Posts" customize_show="True" active="True" inherit_id="website_blog.blog_post_short">
+		<xpath expr="//div[hasclass('container')][1]" position="replace">
+			<div class="container"></div>
+		</xpath>
 		<xpath expr="//div[hasclass('container')][2]" position="replace">
 			<section class="resource-page video-block">
 				<!--<div class="alert alert-warning alert-dismissable " groups="website.group_website_publisher" role="status">
@@ -231,6 +234,16 @@
 						</t>
 					</div>
 				</div>
+				<div class="js_sale">
+							<div class="oe_website_sale">
+								<div class="products_pager form-inline justify-content-center">
+									<t t-call="website.pager" >
+										<t t-set="classname">float-right</t>
+									</t>
+								</div>
+							</div>
+						</div>
+
 			</section>
 
 		</xpath>
