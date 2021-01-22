@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 import odoo
+import json
+import logging
 from odoo import fields, http
 from odoo.http import request
 from odoo.addons.http_routing.models.ir_http import slug
 
+_logger = logging.getLogger(__name__)
 
 class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
     @http.route([
@@ -183,9 +186,72 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         template.send_mail(order.id, force_send=True)
         msg = "Quotation Email Sent to: " + order.user_id.login
         order.message_post(body=msg)
-
-
         return responce
+
+    @http.route(['/shop/quote_my_report/update_json'], type='json', auth="public", methods=['POST'], website=True)
+    def update_quote_my_report_json(self, product_id=None, new_qty=None, select=None):
+        count = 1
+        request.env['quotation.product.list'].sudo().update_quantity(product_id, new_qty, select)
+        return count
+
+    @http.route(['/shop/my_in_stock_report'], type='http', auth="public", website=True)
+    def my_in_stock_report(self):
+        if request.session.uid:
+            user = request.env['res.users'].search([('id', '=', request.session.uid)])
+            if user and user.partner_id and user.partner_id.id:
+                return request.redirect("/shop/quote_my_report/%s" % user.partner_id.id)
+
+    @http.route(['/shop/quote_my_report/<int:partner_id>'], type='http', auth="public", website=True)
+    def quote_my_report(self, partner_id):
+        _logger.info('In quote my report')
+        partner = request.env['res.partner'].sudo().search([('id', '=', partner_id)])
+        _logger.info(partner)
+        if request.session.uid:
+            _logger.info('Login successfully')
+            user = request.env['res.users'].search([('id', '=', request.session.uid)])
+            if user and user.partner_id and user.partner_id.id == partner_id:
+                context = {'quote_my_report_partner_id': partner_id}
+                request.env['quotation.product.list'].with_context(context).sudo().delete_and_create()
+                product_list = request.env['quotation.product.list'].sudo().get_product_list()
+                return http.request.render('website_sales.quote_my_report', {'product_list': product_list})
+            else:
+                invalid_url = 'The requested URL is not valid for logged in user.'
+                return http.request.render('website_sales.quote_my_report', {'invalid_url': invalid_url})
+        else:
+            portal_url = partner.with_context(signup_force_type_in_url='', lang=partner.lang)._get_signup_url_for_action()[partner.id]
+            return request.redirect(portal_url+'&redirect=/shop/quote_my_report/%s' % partner.id)
+
+    @http.route(['/add/product/cart'], type='http', auth="public", methods=['POST'], website=True, csrf=False)
+    def add_product_in_cart(self):
+        product_list = request.env['quotation.product.list'].sudo().get_product_list()
+        for product_id in product_list:
+            if product_list.get(product_id)[0]['quantity'] > 0 and product_list.get(product_id)[0]['select']:
+                self.cart_update_custom(product_list.get(product_id)[0]['product'].id,
+                                    product_list.get(product_id)[0]['quantity'])
+        return request.redirect("/shop/cart")
+
+    def cart_update_custom(self, product_id, add_qty, set_qty=0, **kw):
+        """This route is called when adding a product to cart (no options)."""
+        sale_order = request.website.sale_get_order(force_create=True)
+        if sale_order.state != 'draft':
+            request.session['sale_order_id'] = None
+            sale_order = request.website.sale_get_order(force_create=True)
+
+        product_custom_attribute_values = None
+        if kw.get('product_custom_attribute_values'):
+            product_custom_attribute_values = json.loads(kw.get('product_custom_attribute_values'))
+
+        no_variant_attribute_values = None
+        if kw.get('no_variant_attribute_values'):
+            no_variant_attribute_values = json.loads(kw.get('no_variant_attribute_values'))
+
+        sale_order._cart_update(
+            product_id=int(product_id),
+            add_qty=add_qty,
+            set_qty=set_qty,
+            product_custom_attribute_values=product_custom_attribute_values,
+            no_variant_attribute_values=no_variant_attribute_values
+        )
 
 
 class WebsiteSaleOptionsCstm(odoo.addons.website_sale.controllers.main.WebsiteSale):

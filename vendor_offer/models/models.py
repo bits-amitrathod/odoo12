@@ -507,6 +507,14 @@ class VendorOffer(models.Model):
             'force_email': True
         })
 
+        if self.partner_id and self.partner_id.vendor_email:
+            ctx['vendor_email'] = self.partner_id.vendor_email
+        elif self.partner_id and self.partner_id.email:
+            ctx['vendor_email'] = self.partner_id.email
+
+        if self.acq_user_id and self.acq_user_id.partner_id and self.acq_user_id.partner_id.email:
+            ctx['acq_mgr'] = self.acq_user_id.partner_id.email
+
         lang = self.env.context.get('lang')
         if {'default_template_id', 'default_model', 'default_res_id'} <= ctx.keys():
             template = self.env['mail.template'].browse(ctx['default_template_id'])
@@ -2431,6 +2439,8 @@ class CustomerACQManager(models.Model):
 
     acq_manager = fields.Many2one('res.users', string="ACQ Manager", domain="[('active', '=', True)"""
                                                                             ",('share','=',False)]")
+
+    vendor_email = fields.Char(string="Vendor Email", track_visibility='onchange')
 
 class MailComposer(models.TransientModel):
     _inherit = 'mail.compose.message'
