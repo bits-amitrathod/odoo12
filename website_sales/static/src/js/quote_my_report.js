@@ -17,6 +17,14 @@ odoo.define('website_sales.quote_my_report_cart', function (require) {
         var $input = $link.parent().find("input");
         var val = $input.prop('checked');
 
+        if (val === true){
+            $('[id^=allow_qty_plus_]').css({'pointer-events':'', 'color':'#1b1717'});
+            $('[id^=allow_qty_minus_]').css({'pointer-events':'', 'color':'#1b1717'});
+        } else {
+            $('[id^=allow_qty_plus_]').css({'pointer-events':'none', 'color':'#cacaca'});
+            $('[id^=allow_qty_minus_]').css({'pointer-events':'none', 'color':'#cacaca'});
+        }
+
         ajax.jsonRpc("/shop/quote_my_report/update_json", 'call', {
                         'select': val
                     }).then(function (data) {
