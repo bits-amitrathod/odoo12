@@ -178,7 +178,7 @@
 	<template id="blog_post_short1" name="Blog Posts" customize_show="True" active="True" inherit_id="website_blog.blog_post_short">
 		<xpath expr="//div[hasclass('container')][2]" position="replace">
 			<section class="resource-page video-block">
-				<div class="alert alert-warning alert-dismissable " groups="website.group_website_publisher" role="status">
+				<!--<div class="alert alert-warning alert-dismissable " groups="website.group_website_publisher" role="status">
 					<button type="button" class="close" data-dismiss="alert" aria-label="Close">&amp;times;</button>
 					<p>
                    This page is great to improve your
@@ -196,7 +196,7 @@
 
 						<span class="text-muted">This box will not be visible to your visitors.</span>
 					</p>
-				</div>
+				</div>-->
 				<div class="container">
 					<div t-if="not blog_posts" class="container mb64">
                     <p class="css_editable_hidden">
@@ -231,7 +231,7 @@
 
 		</xpath>
 		<xpath expr="//h1" position="replace">
-			<h1 t-esc="tag_name"/>
+			<h1><t t-esc="tag_name.name"/></h1>
 		</xpath>
 		<xpath expr="//h3[hasclass('text-muted')]" position="replace"></xpath>
 	</template>
