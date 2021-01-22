@@ -144,11 +144,6 @@
 							<span>Latest</span> Posts
 
 						</h1>
-						<div class="products_pager form-inline justify-content-center">
-							<t t-call="website.pager" >
-								<t t-set="classname">float-right</t>
-							</t>
-						</div>
 					</div>
 					<div class="row mt-5">
 						<t t-foreach="posts" t-as="post">
@@ -171,6 +166,15 @@
 						</t>
 					</div>
 				</div>
+				<div class="js_sale">
+							<div class="oe_website_sale">
+								<div class="products_pager form-inline justify-content-center">
+									<t t-call="website.pager" >
+										<t t-set="classname">float-right</t>
+									</t>
+								</div>
+							</div>
+						</div>
 			</section>
 			<div class="oe_structure" id="oe_structure_website_blog_latest_blogs_2"/>
 		</xpath>
