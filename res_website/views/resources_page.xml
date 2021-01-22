@@ -169,10 +169,14 @@
                                 </div>
 
                             </div>
-                            <div class ="products_pager form-inline justify-content-center">
-                                <t t-call="website.pager">
-                                <t t-set="_classes">ml-2</t>
-                            </t>
+                            <div class="js_sale">
+                                <div class="oe_website_sale">
+                                    <div class ="products_pager form-inline justify-content-center">
+                                        <t t-call="website.pager">
+                                            <t t-set="_classes">ml-2</t>
+                                        </t>
+                                    </div>
+                                </div>
                             </div>
                          </section>
 
