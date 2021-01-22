@@ -43,7 +43,8 @@
                                 <td class="text-center td-checkbox">
                                     <input type="checkbox" id="product_list.get(product)[0]['product'].id"
                                            t-att-data-partn-name-id="product_list.get(product)[0]['partn_name']"
-                                           t-att-data-product-id="product_list.get(product)[0]['product'].id"/>
+                                           t-att-data-product-id="product_list.get(product)[0]['product'].id"
+                                           t-att-data-available-qty="product_list.get(product)[0]['product'].actual_quantity"/>
                                 </td>
                                 <td colspan="2" t-if="not product_list.get(product)[0]['product'].product_tmpl_id" class='td-img'></td>
                                 <td align="center" t-if="product_list.get(product)[0]['product'].product_tmpl_id" class='td-img'>
@@ -77,33 +78,24 @@
                                 <td class="text-center td-qty">
                                     <div class="css_quantity input-group oe_website_spinner">
                                         <a t-attf-id="allow_qty_minus_{{product_list.get(product)[0]['partn_name']}}" aria-label="Remove one" title="Remove one" t-attf-href="#"
-                                           class="mb8 input-group-addon js_add_cart_json ">
+                                            style="pointer-events: none;color: #cacaca;" class="mb8 input-group-addon js_add_cart_json ">
                                             <i class="fa fa-minus"></i>
                                         </a>
 
-                                        <input type="text" class="js_quantity form-control quantity"
+                                        <input t-attf-id="input_qty_{{product_list.get(product)[0]['partn_name']}}"
+                                               type="text" class="js_quantity form-control quantity"
                                                t-att-data-product-id="product_list.get(product)[0]['product'].id"
                                                t-att-data-partn-name-id="product_list.get(product)[0]['partn_name']"
                                                t-att-data-available-qty="product_list.get(product)[0]['product'].actual_quantity"
                                                t-att-value="product_list.get(product)[0]['quantity']" readonly="True"
                                                style="background-color: white;"/>
 
-                                        <t t-if="int(product_list.get(product)[0]['product'].actual_quantity) > int(product_list.get(product)[0]['quantity'])">
-                                            <a t-attf-id="allow_qty_plus_{{product_list.get(product)[0]['partn_name']}}" aria-label="Add one" title="Add one" t-attf-href="#"
-                                               class="mb8 input-group-addon float_left js_add_cart_json">
-                                                <i class="fa fa-plus"></i>
-                                            </a>
-                                        </t>
-                                        <t t-else="">
-                                            <lable t-attf-id="not_allow_qty_plus_{{product_list.get(product)[0]['partn_name']}}" style="cursor: not-allowed;" title="Out of Stock" t-attf-href="#"
-                                                   class="mb8 input-group-addon float_left js_add_cart_json">
-                                                <i class="fa fa-plus" style="readonly:true;color: #cacaca;"></i>
-                                            </lable>
-                                        </t>
-                                        <lable t-attf-id="not_allow_qty_pluss_{{product_list.get(product)[0]['partn_name']}}" style="display:none;cursor: not-allowed;" title="Out of Stock" t-attf-href="#"
-                                                   class="mb8 input-group-addon float_left js_add_cart_json">
-                                                <i class="fa fa-plus" style="readonly:true;color: #cacaca;"></i>
-                                        </lable>
+
+                                        <a t-attf-id="allow_qty_plus_{{product_list.get(product)[0]['partn_name']}}" aria-label="Add one" title="Add one" t-attf-href="#"
+                                           style="pointer-events: none;color: #cacaca;" class="mb8 input-group-addon float_left js_add_cart_json">
+                                            <i class="fa fa-plus"></i>
+                                        </a>
+
                                     </div>
                                 </td>
                                 <td class="text-center td-price" name="price">

@@ -39,14 +39,10 @@ odoo.define('website_sales.quote_my_report_cart', function (require) {
             var new_qty = parseInt($input.val());
             console.log(partn_name_id);
             var ele1 = $link.parent().find("#allow_qty_plus_"+partn_name_id);
-            var ele2 = $link.parent().find("#not_allow_qty_pluss_"+partn_name_id);
             if (available_qty === new_qty) {
-                console.log('In');
-                ele1.hide();
-                ele2.show();
+                $('#allow_qty_plus_'+partn_name_id).css({'pointer-events':'none'});
             }else{
-                ele1.show();
-                ele2.hide();
+                $('#allow_qty_plus_'+partn_name_id).css({'pointer-events':''});
             }
 
             ajax.jsonRpc("/shop/quote_my_report/update_json", 'call', {
@@ -62,13 +58,27 @@ odoo.define('website_sales.quote_my_report_cart', function (require) {
             console.log('checked one');
             var $link = $(ev.currentTarget);
             var $input = $link.parent().find("input");
-            //var partn_name_id = parseInt($input[0]['attributes']['data-partn-name-id']['value']);
+            if ('data-partn-name-id' in $input[0]['attributes']) {
+                var partn_name_id = parseInt($input[0]['attributes']['data-partn-name-id']['value']);
+                var available_qty = parseInt($input[0]['attributes']['data-available-qty']['value']);
+                var new_qty = parseInt($('#input_qty_'+partn_name_id).val());
+                var val = $input.prop('checked');
 
-            if ($('td input:checked').length > 0){
-                console.log('leangth is greater than 0');
+                if(val === true){
+                    if (available_qty != new_qty) {
+                        $('#allow_qty_plus_'+partn_name_id).css({'pointer-events':'', 'color':'#1b1717'});
+                    }
+                    $('#allow_qty_minus_'+partn_name_id).css({'pointer-events':'', 'color':'#1b1717'});
+
+                }else{
+                    $('#allow_qty_plus_'+partn_name_id).css({'pointer-events':'none', 'color':'#cacaca'});
+                    $('#allow_qty_minus_'+partn_name_id).css({'pointer-events':'none', 'color':'#cacaca'});
+                }
+            }
+
+            if ($('td input:checked').length > 0) {
                 $("#add_product_in_to_cart").attr('disabled', false);
             } else {
-                console.log('leangth is equal to 0');
                 $("#add_product_in_to_cart").attr('disabled', true);
             }
 
