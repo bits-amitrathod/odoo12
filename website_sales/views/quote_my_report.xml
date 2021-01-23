@@ -135,5 +135,18 @@
             <t t-raw="0"/>
         </a>
         </template>-->
+
+        <template id="add_new_column" inherit_id="website_sale.cart_lines">
+            <xpath expr="//th[@class='text-center td-qty']" position="before">
+                <th class="text-center td-available-qty">Available Quantity</th>
+            </xpath>
+            <xpath expr="//td[@class='text-center td-qty']" position="before">
+                <td t-if="line.product_id.actual_quantity" class="text-center td-available-qty">
+                    <div>
+                        <strong t-field="line.product_id.actual_quantity" />
+                    </div>
+                </td>
+            </xpath>
+        </template>
     </data>
 </odoo>
