@@ -224,11 +224,12 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
     @http.route(['/add/product/cart'], type='http', auth="public", methods=['POST'], website=True, csrf=False)
     def add_product_in_cart(self):
         product_list = request.env['quotation.product.list'].sudo().get_product_list()
+        user = request.env['res.users'].search([('id', '=', request.session.uid)])
         for product_id in product_list:
             if product_list.get(product_id)[0]['quantity'] > 0 and product_list.get(product_id)[0]['select']:
                 self.cart_update_custom(product_list.get(product_id)[0]['product'].id,
                                     product_list.get(product_id)[0]['quantity'])
-        return request.redirect("/shop/cart")
+        return request.redirect("/shop/cart?flag=True&partner=%s" % user.partner_id.id)
 
     def cart_update_custom(self, product_id, add_qty, set_qty=0, **kw):
         """This route is called when adding a product to cart (no options)."""

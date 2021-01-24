@@ -60,7 +60,7 @@
                                 </td>
                                 <td class="text-center td-manufacturer align-middle">
                                     <div>
-                                        <span t-esc="product_list.get(product)[0]['product_brand'].name"/>
+                                        <span t-esc="product_list.get(product)[0]['product_brand_name']"/>
                                     </div>
                                 </td>
                                 <td class="text-center td-min-exp align-middle">
@@ -148,6 +148,19 @@
                         <strong t-field="line.product_id.actual_quantity" />
                     </div>
                 </td>
+            </xpath>
+        </template>
+
+        <template id="continue_shopping_button_custom" inherit_id="website_sale.cart">
+            <xpath expr="//div/a[@class='btn btn-secondary mb32 d-none d-xl-inline-block']" position="replace">
+                <a t-if="request.params.get('flag')" role="button" t-att-href="'/shop/quote_my_report/%s' % request.params.get('partner')" class="btn btn-secondary mb32 d-none d-xl-inline-block">
+                                        <span class="fa fa-chevron-left" />
+                                        <span class="">Continue Shopping</span>
+                </a>
+                <a t-else="" role="button" href="/shop" class="btn btn-secondary mb32 d-none d-xl-inline-block">
+                                        <span class="fa fa-chevron-left" />
+                                        <span class="">Continue Shopping</span>
+                </a>
             </xpath>
         </template>
     </data>

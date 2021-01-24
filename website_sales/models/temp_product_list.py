@@ -99,7 +99,7 @@ class TempProductList(models.Model):
                 product_dict = {'product': product,
                                 'partner': partner,
                                 'partn_name': query_result['partn_name'],
-                                'product_brand': product_brand,
+                                'product_brand_name': product_brand.name,
                                 'min_expiration_date': result['min'],
                                 'max_expiration_date': result['max'],
                                 'price_list': price_list,
@@ -108,6 +108,7 @@ class TempProductList(models.Model):
 
                 product_data = {product.id: [product_dict]}
                 self.product_list.update(product_data)
+            print(self.product_list)
 
     @api.model_cr
     def delete_and_create(self):
