@@ -5,6 +5,7 @@ from odoo import models, fields, api, _
 class StockMoveOfferPrice(models.Model):
     _description = "Stock Move Offer Price"
     _inherit = "stock.move"
+    _order = 'product_id asc'
 
     re_product_offer_price = fields.Monetary(string="Offer Price", compute='_set_offer_price_re')
     re_total_product_retail = fields.Monetary(string="Total Retail Price", compute='_set_offer_price_re')

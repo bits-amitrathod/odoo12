@@ -2,8 +2,11 @@
 import re
 from odoo import models, fields, api
 from odoo import _
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, Warning
 import odoo.addons.decimal_precision as dp
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 class CustomerContract(models.Model):
@@ -94,6 +97,22 @@ class sale_order(models.Model):
         for so in self:
             so.national_account = so.partner_id.national_account_rep.id
 
+    @api.onchange('client_order_ref', 'x_studio_allow_duplicate_po')
+    @api.depends('client_order_ref', 'x_studio_allow_duplicate_po')
+    def onchange_client_order_ref(self):
+        if self.client_order_ref and self.client_order_ref is not None and self.client_order_ref.strip() != '' and self.name:
+            records = self.env['sale.order'].search([('client_order_ref', '=', self.client_order_ref)])
+            if records:
+                for record in records:
+                    if self.name != record.name and (self.x_studio_allow_duplicate_po is False or
+                                                 record.x_studio_allow_duplicate_po is False):
+                        raise Warning(_("Duplicate PO number is not allowed.\n"
+                                        "The PO number of this Sales Order is already present on Sales Order %s.\n "
+                                        "If you want to add Duplicate PO against Sales Order, Set 'Allow Duplicate PO' "
+                                        "setting ON for both Sales Order.") % record.name)
+                    else:
+                        _logger.info('This is unique PO')
+
     @api.model
     def create(self, vals):
         # add account manager
@@ -112,6 +131,7 @@ class sale_order(models.Model):
             elif res_partner and res_partner.parent_id and res_partner.parent_id.national_account_rep and res_partner.parent_id.national_account_rep.id:
                 vals['national_account'] = res_partner.parent_id.national_account_rep.id
         return super(sale_order, self).create(vals)
+
     @api.depends('order_line.price_total')
     def _amount_all(self):
         """
