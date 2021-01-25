@@ -118,7 +118,7 @@
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group has-float-label  form-field o_website_form_required_custom">
-                                            <input type="text" placeholder="Loaner Requested?  *" id="Loaner" class="form-control o_website_form_input" name="Loaner" required=""/>
+                                            <input type="text" placeholder="Loaner Requested?  * " disabled="True" id="Loaner" class="form-control o_website_form_input" name="Loaner" required=""/>
 <!--                                            <label class="control-label" for="Loaner">Loaner Requested?</label>-->
                                         </div>
                                     </div>
@@ -137,18 +137,18 @@
                                     <div class="w-100"></div>
                                     <div class="col-md-2">
                                         <div class="form-group has-float-label  form-field o_website_form_required_custom">
-                                            <input type="text" placeholder="Damage Waiver *" id="Damage" class="form-control o_website_form_input" name="Damage" required=""/>
+                                            <input type="text" placeholder="Damage Waiver *" disabled="True" id="Damage" class="form-control o_website_form_input" name="Damage" required=""/>
 <!--                                            <label class="control-label" for="Damage">Damage Waiver</label>-->
                                         </div>
                                     </div>
                                    <div class="col-md-3">
                                         <label class="custom-radio-buttons">
-                                          <input type="radio"  name="radio" />
+                                          <input type="radio"  name="radioo" />
                                           <span class="checkmark"></span>
                                            <span class="radio-label">Opt-In</span>
                                         </label>
                                          <label class="custom-radio-buttons">
-                                          <input type="radio"  name="radio" />
+                                          <input type="radio"  name="radioo" />
                                           <span class="checkmark"></span>
                                            <span class="radio-label">Opt-Out</span>
                                         </label>

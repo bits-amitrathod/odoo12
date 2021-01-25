@@ -1,7 +1,7 @@
 $(document).ready(function () {
-    $( "#birthdate" ).datepicker({
+    /*$( "#birthdate" ).datepicker({
         inline: true
-    });
+    });*/
 
     $('.close').click(function(){
           $('.myVideoClass').each(function(){

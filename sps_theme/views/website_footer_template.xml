@@ -5,9 +5,9 @@
                           <div class="red"></div>
                           <div class="black"></div>
                      </div>
-            <footer class="padding-100-y">
+            <footer class="padding-100-y" t-if="not no_footer">
 
-            <div id="footer" class="container hidden-print " t-if="not no_footer">
+            <div id="footer" class="container hidden-print " >
                 <div class="row border-bottom pb-4 mb-4">
                     <div class="col-md newsletter">
                         <div class="footer-logo">
