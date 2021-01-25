@@ -46,6 +46,7 @@ odoo.define('website_sales.quote_my_report_cart', function (require) {
              console.log("after link");
             var $input = $link.parent().find("input");
               console.log("after input");
+              console.log($input);
             var product_id = parseInt($input[0]['attributes']['data-product-id']['value']);
              console.log("after product id");
              console.log(product_id);
