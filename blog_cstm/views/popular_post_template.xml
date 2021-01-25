@@ -35,8 +35,8 @@
 														</t>
 													</span>
 												</p>
-												<span class="lh-25" t-field="blog_post.post_date" t-options='{"format": "MMM d, yyyy"}'/>
-												<span >•
+												<!--<span class="lh-25" t-field="blog_post.post_date" t-options='{"format": "MMM d, yyyy"}'/>  •-->
+												<span >
 
 													<t t-esc="blog_post.visits"/>
 													<span>Views</span>
@@ -93,8 +93,10 @@
 										<a class="badge badge-primary mr8" t-attf-href="#{blog_url(tag=slug(one_tag))}" t-esc="one_tag.name"/>
 									</t>
 								</span>
-								<br/><span class="regular-font" t-field="post.post_date" t-options='{"format": "MMM d, yyyy"}'/>
-								<span class="regular-font" >•<t t-esc="post.visits"/></span> Views
+								<br/>
+								<!--<span class="regular-font" t-field="post.post_date" t-options='{"format": "MMM d, yyyy"}'/>-->
+								<span class="regular-font" ><t t-esc="post.visits"/></span>
+								Views
 							</p>
 							<!--                                                   <p  class="f14 mb-0">Jun 14 • 3 min read</p>-->
 						</div>

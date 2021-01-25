@@ -375,9 +375,9 @@
                                 </div>
                                  <div class="col-md-5">
                                         <div class="form-group  has-float-label form-field o_website_form_required_custom">
-                                           <div class="o_website_form_date input-group" id="datepicker3">
+                                           <div class="o_website_form_date input-group" id="datepicker3" data-target-input="nearest">
                                              <input type="text" id="birthdate2" class="form-control datetimepicker-input o_website_form_input"  placeholder="Birthdate" data-toggle="datetimepicker" data-target="#datepicker3" name=""/>
-                                              <div class="input-group-append" data-target="#datepicker3" data-toggle="datetimepicker">
+                                              <div class="input-group-append" data-target="#datepicker3"  data-toggle="datetimepicker">
                                                   <span class="input-group-text" id="birthdate2"><i class="icon-calendars"></i></span>
                                               </div>
                                           </div>
