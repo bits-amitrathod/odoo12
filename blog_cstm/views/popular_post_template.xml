@@ -35,7 +35,7 @@
 														</t>
 													</span>
 												</p>
-												<!--<span class="lh-25" t-field="blog_post.post_date" t-options='{"format": "MMM d, yyyy"}'/>  •-->
+												<!-- <span class="lh-25" t-field="blog_post.post_date" t-options='{"format": "MMM d, yyyy"}'/>  •-->
 												<span >
 
 													<t t-esc="blog_post.visits"/>
