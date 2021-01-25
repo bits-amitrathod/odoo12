@@ -47,7 +47,7 @@ odoo.define('website_sales.quote_my_report_cart', function (require) {
             var $input = $link.parent().find("input");
               console.log("after input");
               console.log($input);
-            var product_id = parseInt($input[0]['attributes']['data-product-id']['value']);
+            var product_id = parseInt($input[0].attributes['data-product-id']['value']);
              console.log("after product id");
              console.log(product_id);
             var available_qty = parseInt($input[0]['attributes']['data-available-qty']['value']);
