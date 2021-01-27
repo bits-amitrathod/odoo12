@@ -410,6 +410,8 @@
                                 </div>
                             </div>
                         </div>
+                       <input class="form-field" type="hidden" name="email_to" value="info@surgicalproductsolutions.com"/>
+                       <input class="form-field" type="hidden" name="subject" value="Sell Your Surgical Equipment"/>
                     </form>
                 </section>
                  <!--<div class="seprator">
