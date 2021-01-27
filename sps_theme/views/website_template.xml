@@ -1,0 +1,26 @@
+<odoo>
+    <template id="assets_frontend" inherit_id="web.assets_frontend" name="Website Assets">
+        <xpath expr="//link[last()]" position="after">
+            <!-- Font  -->
+            <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,600i,700,700i,800" rel="stylesheet"/>
+            <link href="https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i,700,700i,900" rel="stylesheet"/>
+
+            <!-- less -->
+            <link rel="stylesheet" href="/sps_theme/static/src/less/common/variable.style.less"/>
+            <link rel="stylesheet" href="/sps_theme/static/src/less/common/font.style.less"/>
+            <link rel="stylesheet" href="/sps_theme/static/src/less/pages/about.style.less"/>
+            <link rel="stylesheet" href="/sps_theme/static/src/less/theme.style.less"/>
+<!--            <link rel="stylesheet" href="/sps_theme/static/src/less/jquery-ui.css"/>-->
+        </xpath>
+
+        <xpath expr="//script[last()]" position="after">
+            <!-- .js -->
+
+            <script type="text/javascript" src="/sps_theme/static/src/js/script.js"/>
+
+             <!--<script type="text/javascript" src="/sps_theme/static/src/js/jquery.js"/>-->
+<!--             <script type="text/javascript" src="/sps_theme/static/src/js/jquery-ui.js"/>-->
+        </xpath>
+    </template>
+
+</odoo>

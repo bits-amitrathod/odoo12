@@ -1,0 +1,264 @@
+<odoo>
+	<template id="popular_post" name="Popular Post" inherit_id="website_blog.blog_post_complete" active="True" customize_show="True">
+		<xpath expr="//h1[@id='blog_post_name']" position="replace"></xpath>
+		<xpath expr="//h2" position="replace"/>
+		<xpath expr="//div[hasclass('o_sharing_links')]" position="replace"/>
+		<xpath expr="//div[@id='blog_content']" position="replace">
+			<div id="blog_content_pop"  class="blog_content mt32">
+				<section class="blog pt-3 pb-5">
+					<div class="container">
+						<div class="row">
+							<div class="col-md-9">
+								<div id="blog_content" class="blog_content">
+									<div t-field="blog_post.title_img" class=" banner-wrapper py-3 section-description mt-4"/>
+									<div class="text-left py-3">
+										<h1 class="about-header ft-32" t-field="blog_post.name" id="blog_post_name" t-att-data-blog-id="blog_post.id" placeholder="Blog Post Title"/>
+									</div>
+									<div class="blog-detail">
+										<div class="d-flex">
+											<div class="profile-img-wrapper align-self-center">
+												<div class="profile-img">
+													<img t-attf-src="/web/image/res.partner/#{author_info.id}/image" class="img-fluid"/>
+												</div>
+											</div>
+											<div class="user-info section-description">
+												<p class="lh-25">
+													<span class="medium-font">
+														<t t-esc="author_info.sudo().name"/>
+													</span>
+													<span class="post-meta text-muted text-center regular-font" t-if="len(blog_post.tag_ids)">
+                                                        in
+
+														<i class="fa fa-tags ml-2" role="img" aria-label="Tags" title="Tags"/>
+														<t t-foreach="blog_post.tag_ids" t-as="one_tag">
+															<a class="badge badge-primary mr8" t-attf-href="#{blog_url(tag=slug(one_tag))}" t-esc="one_tag.name"/>
+														</t>
+													</span>
+												</p>
+												<!-- <span class="lh-25" t-field="blog_post.post_date" t-options='{"format": "MMM d, yyyy"}'/>  •-->
+												<span >
+
+													<t t-esc="blog_post.visits"/>
+													<span>Views</span>
+												</span>
+											</div>
+										</div>
+									</div>
+									<div t-field="blog_post.content" class="section-description mt-4"/>
+                                </div>
+							</div>
+							<div class="col-md-3">
+								<t t-call="blog_cstm.blog_post_complete"/>
+							</div>
+						</div>
+					</div>
+				</section>
+			</div>
+		</xpath>
+		<xpath expr="//div[@id='title']//div[hasclass('blog_title')]" position="attributes">
+			<attribute name="class" add="none" separator=" "/>
+		</xpath>
+	</template>
+	<template id="blog_post_complete">
+		<div class="popular-post">
+			<h3 class="side-title">Popular Posts</h3>
+		</div>
+		<t t-set="count" t-value='1'/>
+		<t t-foreach="popular_post" t-as="post">
+			<div class="section-description">
+				<div class="story-list">
+					<div class="bulleted-list">
+						<span>
+							<t t-esc="count" />
+						</span>
+						<t t-set="count" t-value="count+1"/>
+					</div>
+					<div class="list-description">
+						<p class="mb-2 lh-25">
+							<a t-att-href="post.website_url">
+								<span class="medium-font">
+									<t t-esc="post.sudo().display_name"/>
+								</span>
+							</a>
+						</p>
+						<div class="user-info">
+							<p class="f14 mb-0 ">
+								<span class="medium-font">
+									<t t-esc="post.author_id.sudo().name"/>
+								</span>
+								<span class="post-meta text-muted text-center regular-font" t-if="len(post.tag_ids)">
+                                    in
+									<i class="fa fa-tags ml-2" role="img" aria-label="Tags" title="Tags"/>
+									<t t-foreach="post.tag_ids" t-as="one_tag">
+										<a class="badge badge-primary mr8" t-attf-href="#{blog_url(tag=slug(one_tag))}" t-esc="one_tag.name"/>
+									</t>
+								</span>
+								<br/>
+								<!--<span class="regular-font" t-field="post.post_date" t-options='{"format": "MMM d, yyyy"}'/>-->
+								<span class="regular-font" ><t t-esc="post.visits"/></span>
+								Views
+							</p>
+							<!--                                                   <p  class="f14 mb-0">Jun 14 • 3 min read</p>-->
+						</div>
+					</div>
+				</div>
+				<!--                                       <div class="see-all">-->
+				<!--                                            <a class="btn btn-link">-->
+				<!--                                               SEE ALL POPULAR  <i class="fa fa-angle-right"></i>-->
+				<!--                                            </a>-->
+				<!--                                        </div>-->
+			</div>
+		</t>
+		<div class="see-all">
+			<a class="btn btn-link" href="/resource">
+                                               SEE ALL POPULAR
+
+				<i class="fa fa-angle-right"></i>
+			</a>
+		</div>
+	</template>
+	<template id="blog_post_list" name="Post list UI update" inherit_id="website_blog.latest_blogs">
+		<xpath expr="//div[@id='wrap']" position="replace">
+			<div class="oe_structure" id="oe_structure_website_blog_latest_blogs_1"/>
+			<section class="resource-page content-lib video-block padding-60-y">
+				<div class="alert alert-warning alert-dismissable mt16" groups="website.group_website_publisher" role="status">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">&amp;times;</button>
+					<p>
+                   This page is great to improve your
+
+						<strong>Search Engine Optimization</strong>;
+                   You can review titles, keywords and descriptions of all blogs at once.
+
+
+					</p>
+					<p>
+                   You should
+
+						<strong>add a banner on the top</strong> as it is a frequent landing page for new visitors.
+
+
+						<span class="text-muted">This box will not be visible to your visitors.</span>
+					</p>
+				</div>
+				<div class="container">
+					<div class="text-center">
+						<h1  class="resource-section-title">
+							<span>Latest</span> Posts
+
+						</h1>
+					</div>
+					<div class="row mt-5">
+						<t t-foreach="posts" t-as="post">
+							<div class="col-md-4 mb-3 px-3 px-md-4">
+								<div class="resource-box h-100">
+									<div class="images-wrapper m-0 border-0 no-shadow">
+										<img t-attf-src="/web/image/blog.post/#{post.id}/image" class="img-fluid img-thumbnail oe_slides_grid_thumbnail"/>
+									</div>
+									<div class="resource-detail p-3">
+										<div class="section-description">
+											<p class="mb-0"><span t-field="post.name"></span></p>
+											<p class="mb-0"><t t-esc="post.description_content()"/></p>
+										</div>
+										<div class="link-wrapper mb-3 mt-2">
+											<a t-att-href="post.website_url"  class="link-btn">READ MORE ></a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</t>
+					</div>
+				</div>
+				<div class="js_sale">
+							<div class="oe_website_sale">
+								<div class="products_pager form-inline justify-content-center">
+									<t t-call="website.pager" >
+										<t t-set="classname">float-right</t>
+									</t>
+								</div>
+							</div>
+						</div>
+			</section>
+			<div class="oe_structure" id="oe_structure_website_blog_latest_blogs_2"/>
+		</xpath>
+	</template>
+	<template id="blog_post_short1" name="Blog Posts" customize_show="True" active="True" inherit_id="website_blog.blog_post_short">
+		<xpath expr="//div[hasclass('container')][1]" position="replace">
+			<div class="container"></div>
+		</xpath>
+		<xpath expr="//div[hasclass('container')][2]" position="replace">
+			<section class="resource-page video-block">
+				<!--<div class="alert alert-warning alert-dismissable " groups="website.group_website_publisher" role="status">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">&amp;times;</button>
+					<p>
+                   This page is great to improve your
+
+						<strong>Search Engine Optimization</strong>;
+                   You can review titles, keywords and descriptions of all blogs at once.
+
+
+					</p>
+					<p>
+                   You should
+
+						<strong>add a banner on the top</strong> as it is a frequent landing page for new visitors.
+
+
+						<span class="text-muted">This box will not be visible to your visitors.</span>
+					</p>
+				</div>-->
+				<div class="container">
+					<div t-if="not blog_posts" class="container mb64">
+                    <p class="css_editable_hidden">
+                        <h1>No blog post yet.</h1>
+                    </p>
+                  <p groups="website.group_website_designer">
+                        Click on "New Page" in the top-right corner to write your first blog post.
+                    </p>
+                </div>
+					<div class="row">
+						<t t-foreach="blog_posts" t-as="post">
+							<div class="col-md-4 mb-3 px-3 px-md-4">
+								<div class="resource-box content-lib h-100">
+									<div class="images-wrapper m-0 border-0 no-shadow">
+										<img t-attf-src="/web/image/blog.post/#{post.id}/image" class="img-fluid img-thumbnail oe_slides_grid_thumbnail"/>
+									</div>
+									<div class="resource-detail p-3">
+										<div class="section-description">
+											<p class="mb-0"><span t-field="post.name"/></p>
+											<p class="mb-0"><t t-esc="post.description_content()"/></p>
+										</div>
+										<div class="link-wrapper mb-3 mt-2">
+											<a t-att-href="post.website_url"  class="link-btn">READ MORE ></a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</t>
+					</div>
+				</div>
+				<div class="js_sale">
+							<div class="oe_website_sale">
+								<div class="products_pager form-inline justify-content-center">
+									<t t-call="website.pager" >
+										<t t-set="classname">float-right</t>
+									</t>
+								</div>
+							</div>
+						</div>
+
+			</section>
+
+		</xpath>
+		<xpath expr="//h1" position="replace">
+			<h1><t t-esc="tag_name.name"/></h1>
+		</xpath>
+		<xpath expr="//h3[hasclass('text-muted')]" position="replace"></xpath>
+	</template>
+
+	<template id="opt_blog_rc_tags1" name="Tags" inherit_id="website_blog.opt_blog_rc_tags" active="False" customize_show="True"></template>
+	<template id="opt_blog_rc_history" name="Archives" inherit_id="website_blog.opt_blog_rc_history" active="False" customize_show="True"></template>
+	<template id="opt_blog_rc_about_us" name="About Us" priority="2" inherit_id="website_blog.opt_blog_rc_about_us" active="False" customize_show="True"></template>
+	<template id="opt_blog_rc_follow_us" name="Subscription" priority="4" inherit_id="website_blog.opt_blog_rc_follow_us" active="False" customize_show="True"></template>
+	<template id="opt_blog_rc_status" name="Status" priority="5" inherit_id="website_blog.opt_blog_rc_status" active="False" customize_show="True"></template>
+	<template id="opt_blog_rc_blogs" name="Our Blogs" priority="6" inherit_id="website_blog.opt_blog_rc_blogs" active="False" customize_show="True"></template>
+</odoo>

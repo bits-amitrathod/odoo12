@@ -1,0 +1,225 @@
+<odoo>
+    <template id="quality_assurance_template" name="Quality Assurance Page">
+        <t name="Quality Assurance Page" t-name="website.qualityassurance_page">
+            <t t-name="website.quality-assurance">
+                <t t-call="website.layout">
+                    <div id="wrap" class="oe_structure oe_empty"/>
+
+                    <section class="quality-assurance py-5">
+                        <div class="text-center pb32">
+                            <h1  class="about-header"> Quality Assurance and Service Guarantee </h1>
+                        </div>
+                        <div class="container ">
+                            <div class="section-description quality-assurance-details">
+                                <p>Surgical Product Solutions (SPS) is a solution-based company that partners with healthcare facilities to recover significant budget costs by purchasing their un-used, in-date surgical
+                                    surplus. At the same time, SPS provides supplemental cost savings and flexibility when purchasing the same high volume surgical products they are currently utilizing.
+                                </p>
+                                <p>SPS’s focus is simple: helping customers become higher quality healthcare providers without compromise.  In order to maintain a high level of integrity, Surgical Product Solutions upholds
+                                    strict record and business practices when it comes to quality control, accuracy, and attention to detail.
+                                </p>
+                                <p>
+                                    Hospitals are in critical need of medical device solutions that deliver long-term fiscal and patient- focused value. SPS believes suppliers of healthcare products and services must deliver
+                                    these cost saving solutions that the hospitals need without added risk to the patient.  For this reason, SPS’s business serves a valuable purpose.
+                                </p>
+                                <p>The FDA has made a regulatory decision to limit the tracking, registration and listing requirements for distributors of PMDs. As a result, SPS institutes a compliance program that includes
+                                    specific purchasing and quality control protocols.  The program was designed to eliminate or significantly reduce the likelihood that SPS could unintentionally purchase products from a
+                                    seller that could not demonstrate its legitimate ownership. SPS only purchases inventory from licensed facilities, including hospitals, surgery centers, and medical device distributors. The
+                                    purchasing protocols include the following: (i) restrictions on eligible vendors; (ii) required paperwork for all transactions including purchase order, invoice and bill of sale; (iii) restrictions as
+                                    to payment method and; (iv) quality systems procedures to ensure the maintenance of safety and efficacy upon receipt, storage and distribution.
+                                </p>
+                                <p>In addition, SPS operates as a viable enterprise that has established stringent quality control systems and technology to assure product integrity and accuracy. The company’s facility is a
+                                    climate controlled, hygienic warehouse equipped with backup generators and 24-hour video / security surveillance.   SPS strives to provide the best possible service through advanced
+                                    inventory tracking software that resides on enterprise-class servers in an offsite data center where data is backed up daily. Moreover, the SPS staff exudes a level of professionalism and
+                                    personal attention rarely found in today’s healthcare distributor environment.  SPS distributes inventory of surgical disposables to health systems, community hospitals, rural hospitals, as
+                                    well as ambulatory and same-day surgery centers on a daily basis that trust in the quality of product provided.  The staff at SPS is always available to accommodate tours of our facility
+                                    upon request.
+                                </p>
+                                <div class="red-title">
+                                    <p class="mb-0">Processes</p>
+                                    <em>Selling Protocols</em>
+                                </div>
+                                <p>SPS enforces the following “Selling Protocols” to ensure the safety and efficacy of secondary market PMDs in an unregulated market:</p>
+                                <ul class="ol1">
+                                    <li class="li2"> <p>The customer must be a person or entity with authority to own the merchandise – pursuant to Title 21, United States Code.</p>
+                                        <ol class="ol2">
+                                            <li class="li2"> <p>The customer may be a provider of medical services (ex. hospital, clinic, surgical center).</p></li>
+                                            <li class="li2"><p>If the customer is a remanufacturer of the PMDs, SPS obtains the customer’s FDA registration number.</p></li>
+                                            <li class="li2"><p>If the customer is a repackager, SPS obtains the customer’s FDA registration number.</p></li>
+                                            <li class="li2"><p>SPS does not sell any merchandise to a manufacturer’s representative/agent.</p></li>
+                                        </ol>
+                                    </li>
+                                </ul>
+                                <ul class="ol1">
+                                    <li class="li2"><p>All sellers must be able to prove they have good and marketable title to the merchandise being sold and that the product being sold has been stored and maintained
+                                        properly. To establish this, facilities must be willing to demonstrate to SPS upon request:</p>
+                                    <ol class="ol2">
+                                        <li class="li2"><p>A record of the purchase of the merchandise together with a copy of the invoice and evidence of payment for the merchandise.</p>
+                                            <ol>
+                                                <li>  <p>The record must show that the merchandise was purchased from a person or entity with authority to own the merchandise – pursuant to Title 21 of the
+                                                    United States Code.</p>
+                                                </li>
+                                                <li><p>The party from whom SPS purchases merchandise must have paid for the merchandise in a routine business way – typically a company check. The payee
+                                                    of the check must match the name of the party who sold the goods to the seller. If payment is made by credit card, the credit card must be in the name of the party
+                                                    from whom you are purchasing the merchandise.</p>
+                                                </li>
+                                                 <li><p>An inventory control sheet of the seller printed on the stationery of the seller from whom the merchandise was purchased and bearing all marks typical of
+                                                     such documents - such as inventory control numbers, storage locations, purchase dates, manufacturer name, expiration dates. Any indication that the document is
+                                                     not authentic or not prepared by an authorized person of the seller must be identified and inquired about to eliminate the possibility that the seller’s agent/employee is
+                                                     selling merchandise that does not belong to or not part of the inventory being disposed of by the seller. The document must be provided to SPS by the employee/agent of the seller.</p>
+                                                </li>
+                                                 <li><p>If the merchandise is capital equipment it should bear the manufacturer’s original serial number in all places where the serial number is engraved,
+                                                     embossed or attached to the device.</p>
+                                                </li>
+                                            </ol>
+                                        </li>
+                                    </ol>
+                                  </li>
+                                </ul>
+                                <ul starts="3" class="ol1">
+                                    <li class="li2"><p>All sales made by SPS must include the following documentation:</p>
+                                        <ol class="ol2">
+                                            <li class="li2"><p>A purchase order addressed to SPS for the merchandise. The purchase order must bear the customer’s name and full business address.</p></li>
+                                            <li class="li2"><p>All SPS sales are concluded with an invoice on SPS company stationery.</p>
+                                             <ol>
+                                                 <li><p>The SPS invoice bears SPS’s federal tax identification number.</p></li>
+                                             </ol>
+                                            </li>
+                                            <li><p>All SPS sales must be paid by company check or cashier’s check of or by the customer and the check payable to SPS. SPS also accepts wire transfers.</p></li>
+                                        </ol>
+                                    </li>
+                                </ul>
+
+                                <div class="red-title">
+                                    <em>Quality Control</em>
+                                </div>
+
+                                <p>To ensure product integrity, SPS has dedicated procedures for a thorough receipt and delivery process:</p>
+                                <ul class="ol1">
+                                    <li class="li2"><p>Upon receipt, each unit is individually inspected to ensure it meets quality assurance standards.
+                                        Our inspection process includes but is not limited to:</p>
+                                        <ol class="ol2">
+                                            <li class="li2">
+                                                <p>Visual Package Integrity Inspection:  Each unit is checked for visual OEM package integrity. SPS carefully inspects each package to ensure that the
+                                                contents accurately reflect the appropriate product code, lot number, and expiration date.  Each package is inspected to make sure that it is clear from any blemishes and/or
+                                                    damage.</p>
+                                            </li>
+                                            <li class="li2">
+                                                <p>Visual Product Integrity Inspection:  SPS physically inspects each unit to ensure that the product has not been compromised prior to receipt.</p>
+                                            </li>
+                                            <li class="li2">
+                                                <p>Sterile Seal Inspection: SPS inspects each sterile unit to ensure that the sterile seal has not been compromised.</p>
+                                            </li>
+                                              <li class="li2">
+                                                  <p>Lot Number and Expiration Date Inspection:  SPS inspects each unit to ensure that the product is in-date.  In addition, SPS inspects and records each individual lot number to ensure the product received is not subject to recall.</p>
+                                            </li>
+                                            <li class="li2">
+                                                <p>Temperature Gauge Inspection:  Upon receipt and delivery, temperature indicators that are located on climate-controlled disposables are verified to ensure product integrity.</p>
+                                            </li>
+                                        </ol>
+                                    </li>
+                                    <li class="li2">
+                                         <p>Upon completion of the quality control process, each individual unit is logged into an advanced inventory tracking software with lot number and expiration date.  The software provides systematical management of the
+                                             Recall and FIFO picking processes to guarantee complete accuracy when picking orders.</p>
+                                    </li>
+                                </ul>
+                                <div class="red-title">
+                                     <em>Storage Requirements</em>
+                                </div>
+                                <p>Product is separated by vendor and category using the industry standard, healthcare grade AkroBins.  All product is shelved from the ground and suitably spaced for proper cleaning and
+                                    inspection.  All expired, rejected, damaged, recalled, and/or returned medical devices are immediately quarantined and destroyed.
+                                </p>
+                                 <div class="red-title">
+                                     <p>Temperature</p>
+                                </div>
+                                <p>Once products are logged into the tracking software and shelved, a daily temperature monitoring system is implemented to safeguard the product against humidity and temperature
+                                    fluctuation.  SPS maintains a temperature and humidity log where storage climate conditions are measured and recorded on a regular basis.  The storage facility temperature requirements
+                                    are maintained in the temperature range of 68°– 72°F.
+                                </p>
+                                <div class="red-title">
+                                     <p>Cleanliness</p>
+                                </div>
+                                <p>The storage facility is cleaned and free of waste on a daily basis.  The frequency of cleaning is recorded daily.  No smoking, eating, or drinking is permitted in areas used for storage and
+                                    handling.  The storage area is designed and equipped to prevent the entry of insects and other pests.
+                                </p>
+                                 <div class="red-title">
+                                     <p>Exposure to Outside Elements</p>
+                                </div>
+                                <p>The storage facility is designed to protect products from water infiltration as well as sunlight exposure.  The reception and packing areas are segregated from the storage site to eliminate
+                                    unnecessary exposure.
+                                </p>
+                                 <div class="red-title">
+                                     <p>Stock Rotation</p>
+                                </div>
+                                <p>To avoid product deterioration, SPS practices first in first out (FIFO) distribution system.  The state-of-the-art software directs which specific lot number / expiration date should be picked
+                                    each order to maintain proper stock rotation
+                                </p>
+                                 <div class="red-title">
+                                    <em>Data Integrity</em>
+                                </div>
+                                <p>Although not required within the FDA best practices, the SPS quality assurance program exceeds these requirements by voluntarily tracking and recording lot numbers.  SPS’s inventory
+                                    system tracks Expiration, Product Number, LOT number, as well as package care requirements for each product. This real time fulfillment system guarantees accurate order completion.
+                                </p>
+                                <p>SPS data is kept offsite in a top-of-the-line data center that provides enterprise-class scale and reliability. SPS data is protected by encrypted communication, firewalls, multi-layer access
+                                    controls, and encrypted backups. In addition, SPS data is automatically scanned using enterprise-class anti-virus technology. The SPS sever is backs-up data nightly and retains it for 90 days.
+                                </p>
+                                <div class="red-title">
+                                    <em>Recall</em>
+                                </div>
+                                <p>SPS continuously reviews products for recall. In the event of a recall, the product is identified, segregated, and destroyed.
+                                </p>
+                                <p>When a recall alert is received at SPS both voluntary from a seller and involuntary through the F.D.A. through MAUDE Database (<a class="word-break red-color" href="http://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfmaude/search.cfm">http://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfmaude/search.cfm</a>) SPS immediately contacts appropriate parties.
+                                </p>
+                                <p>For all surgical facilities, any item(s) that are subject to a voluntary or involuntary recall from a Manufacturer or the Food and Drug Administration (FDA) will be replaced with identical product
+                                    not under the recall at no charge. If supply is not available, SPS will give the facility equal dollar credit towards any other device(s) in our inventory.
+                                </p>
+                                <p>SPS utilizes the FDA searchable recall database for all products distributed by SPS by accessing the following publicly available FDA databases:
+                                </p>
+                                <p>FDA Searchable Recall Database: <a class="word-break red-color" href="http://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfRES/res.cfm"> http://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfRES/res.cfm</a>
+                                </p>
+                                <p>Link to RSS feeds for Email Alerts regarding Recalls <a  class="word-break red-color" href="http://www.fda.gov/MedicalDevices/Safety/RecallsCorrectionsRemovals/ListofRecalls/default.ht"> http://www.fda.gov/MedicalDevices/Safety/RecallsCorrectionsRemovals/ListofRecalls/default.ht</a>
+                                </p>
+                                <p>When a recall alert is received at SPS both voluntary from a seller and involuntary through the F.D.A. through MAUDE Database
+                                    (<a class="word-break red-color" href="http://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfmaude/search.cfm"> http://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfmaude/search.cfm </a>)   we immediately load it into our system to contact our second party buyers.
+                                </p>
+                                <p>Please contact SPS for instructions on returning recalled products.</p>
+                                 <div class="red-title">
+                                      <em>Shipping &amp; Delivery</em>
+                                </div>
+                                <p>All orders are shipped UPS Ground unless expedited shipment is requested or required. UPS Ground shipments are 2-5 day delivery.
+                                    Customers who have provide or will be providing FedEx or UPS account numbers will be billed directly by the carrier.
+                                    SPS does not charge a handling fee. Facilities using their own shipping accounts are responsible for the fees
+                                    and under no circumstances is SPS responsible for any charges or fees. All orders ship F.O.B. – SPS
+                                </p>
+                                <p>All orders after 4:30PM Eastern Standard Time will be shipped next day unless noted.
+                                    SPS is not responsible for delays in shipping due to orders arriving after 4:30PM Eastern Standard Time.
+                                </p>
+                                <p>Each order is packaged with care and proper provisions in such a way that:</p>
+                                <ol>
+                                    <li><p>Item identifications are not lost.</p></li>
+                                    <li><p>Items are not contaminated.</p></li>
+                                    <li><p>Items are insulated from breakage.</p></li>
+                                    <li><p>Items are not subjected to unacceptable degrees of heat, cold, light, moisture,
+                                        or other adverse influences.</p>
+                                    </li>
+                                </ol>
+                                <div class="red-title">
+                                     <em>Returns &amp; Replacements</em>
+                                </div>
+                                <p>Surgical facilities can return items upon request, including orderin g errors; however, returns will only be accepted if unopened
+                                    and in the same packaging in which it was originally received from SPS. Returns will not be
+                                    accepted for any items that have expired since date of purchase or for any opened Multi-use products.
+                                </p>
+                                 <p>Any facility not satisfied with any device upon receipt will have that device replaced at no charge. If that specific product is not available,
+                                     SPS will give the facility equal dollar credit towards any other device(s) in inventory. Should any product sold reach
+                                     its expiration date prior to receipt of that product, SPS will replace the product at no charge and if that specific
+                                     product is not available, equal dollar credit towards any other device(s) in inventory will be issued.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

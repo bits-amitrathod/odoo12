@@ -1,0 +1,270 @@
+<odoo>
+    <template id="surgical_products_sell_page_template" name="Surgical Products Sell">
+        <t t-name="website.surgical_products_sell">
+            <t t-call="website.layout">
+                <div id="wrap" class="surgical-product-sell">
+                     <section class="video-section padding-80-y">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-6 pb-3">
+                                    <h3 class="video-title"><span class="bold-font">Sell</span> Your Surplus Surgical Products.</h3>
+                                    <div class="section-description mt-3 mb-4">
+                                        <p>If you have a surplus inventory of surgical products, why not sell them so they don’t go to waste? SPS will purchase your unused, in-date surgical supplies.
+                                        </p>
+                                    </div>
+                                    <div class="text-left btn-wrapper">
+                                        <a  class="btn btn-info btn-sm"  itemprop="url" href="/seller-form" >Contact a Sales Expert</a>
+                                    </div>
+                                </div>
+                                <div class="col-md-6" id="requestform">
+                                    <div class="video-section-wrapper">
+                                        <div class="video-wrapper">
+                                             <!--<a href="javascript:void(0)"  data-toggle="modal" data-target="#sellsps"><span class="sr-only">play</span></a>-->
+                                            <iframe width="560" height="315" src="https://www.youtube.com/embed/L7dMasrhDFA?rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="seprator"><div class="red"></div><div class="black"></div></div>
+                    <section class="bg-grey works-steps-process padding-80-y">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-8 m-auto">
+                                    <p class="hawk-title ft-32 text-center regular-font">How the Buy Back Process Works</p>
+                                    <div class="section-description">
+                                        <p>The process of selling your products to SPS is simple and straightforward. We have outlined the 5 steps of the selling process below. </p>
+                                    </div>
+                                </div>
+                                <div class="col-12 pt-5">
+                                    <div class="no-seperated">
+                                        <div class="no-circle">1</div>
+                                    </div>
+                                </div>
+                                 <div class="col-md-8 m-auto">
+                                    <p class="hawk-title ft-32 text-center regular-font">Identify and Isolate Your Surplus Inventory</p>
+                                    <div class="section-description">
+                                        <p>First, identify and isolate your surplus inventory from our list of targeted products below. This list includes vendors and subspecialties that we frequently purchase based on market demand. </p>
+                                    </div>
+                                </div>
+                                <div class="col-12 pt-3">
+                                    <div class="targeted-products">
+                                        <div class="card">
+                                          <div class="card-header">
+                                            TARGETED PRODUCTS
+                                          </div>
+                                          <div class="card-body">
+                                            <div class="title-seperater">
+                                                <div class="title">First Tier</div>
+                                            </div>
+                                              <div class="row order-listing">
+                                                    <div class="col-md-4">
+                                                       <ul>
+                                                           <li> Applied Medical <i>(Endomechanicals)</i></li>
+                                                           <li> Arthrocare <i>(Orthopedics, ENT)</i></li>
+                                                           <li> Arthrex <i>(Arthroscopy, Orthopedics)</i></li>
+                                                           <li> Bard / Davol <i>(Mesh, Fixation, Urology, Gynecology)</i></li>
+                                                       </ul>
+                                                    </div>
+                                                   <div class="col-md-4">
+                                                       <ul>
+                                                           <li> Covidien <i>(Mesh, Endomechanicals, Fixation, Energy)</i></li>
+                                                           <li> Ethicon <i>(Mesh, Endomechanicals, Fixation, Energy, Gynecology, Wound Closure, Bariatrics)</i></li>
+                                                           <li> Genzyme <i>(Soft Tissue)</i></li>
+                                                       </ul>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                       <ul>
+                                                           <li> Hologic <i>(Gynecology)</i></li>
+                                                           <li> Medtronic <i>(Energy)</i></li>
+                                                           <li> Olympus <i>(Energy)</i></li>
+                                                           <li> Smith &amp; Nephew <i>(Sports Medicine)</i></li>
+                                                       </ul>
+                                                    </div>
+                                                </div>
+                                               <div class="title-seperater mt-0 mt-md-5">
+                                                    <div class="title">Second Tier</div>
+                                                </div>
+                                               <div class="row order-listing">
+                                                    <div class="col-md-4">
+                                                       <ul>
+                                                           <li> Acclarent <i>(ENT)</i></li>
+                                                           <li> Allergan <i>(Bariatrics)</i></li>
+                                                           <li> Atrium <i>(Mesh)</i></li>
+                                                           <li> Boston Scientific <i>(Urology, Stents)</i></li>
+                                                           <li> Conmed <i>(Orthopedics)</i></li>
+                                                           <li> Cook <i>(Urology)</i></li>
+                                                           <li> Covidien <i>(Suture)</i></li>
+
+                                                       </ul>
+                                                    </div>
+                                                   <div class="col-md-4">
+                                                       <ul>
+                                                          <li> Ethicon <i>(Suture)</i></li>
+                                                           <li> Gyrus <i>(ENT, Energy, Gynecology)</i></li>
+                                                           <li> Intuitive Surgical <i>(Robotic Instruments, Stapling, Energy)</i></li>
+                                                           <li>  Karl Storz <i>(Urology)</i></li>
+                                                           <li>  Medtronic <i>(Orthopedics, Spine, Otolaryngology, ENT)</i></li>
+                                                           <li>  Mitek <i>(Orthopedics)</i></li>
+                                                       </ul>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                       <ul>
+                                                           <li> Olympus <i>(Endoscopy, Gynecology, Urology)</i></li>
+                                                           <li> Smith &amp; Nephew <i>(Orthopedics)</i></li>
+                                                           <li> Stryker <i>(Orthopedics)</i></li>
+                                                           <li> Synthes <i>(Orthopedics – Trauma Implants)</i></li>
+                                                       </ul>
+                                                    </div>
+                                                </div>
+                                          </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 pt-5">
+                                    <div class="no-seperated">
+                                        <div class="no-circle">2</div>
+                                    </div>
+                                </div>
+                                 <div class="col-md-11 m-auto">
+                                    <p class="hawk-title ft-32 text-center regular-font">Download, Complete, and Return an Item List Template</p>
+                                    <div class="section-description">
+                                        <p>Once you’ve figured out what products you would like to sell, download the Item List Template from the link provided. Upon
+                                        completing the Item List Template, email it to your SPS representative for appraisal. </p>
+                                    </div>
+                                </div>
+                                 <div class="col-md-12 text-center btn-wrapper pt-4">
+                                    <a  class="btn btn-info btn-sm" href="https://surgicalproductsolutions.com/wp-content/uploads/2016/07/SPS-Item-List-Template-2018-05.xlsx?_ga=2.252554889.1044020520.1573065283-120006612.1572717783">Download Item List Template</a>
+                                </div>
+
+                                <div class="col-12 pt-4">
+                                    <div class="no-seperated">
+                                        <div class="no-circle">3</div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-11 m-auto">
+                                    <p class="hawk-title ft-32 text-center regular-font">We Evaluate and Appraise Your Item List</p>
+                                    <div class="section-description text-center">
+                                        <p>Our appraisal team  will evaluate your product list. Your SPS representative will then deliver an offer within 48 – 72 hours.</p>
+                                    </div>
+                                </div>
+                                 <div class="col-md-12 m-auto py-4  ">
+                                    <p class="hawk-title text-center bold-font">How the Appraisal Process Works</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="chart-wrapper mb-4">
+                                      <img src="/sps_theme/static/src/images/pie-chart.png" class="img-fluid"/>
+                                    </div>
+                                     <p class="hawk-title text-left bold-font pt-3">Product Evaluation and Comparison</p>
+                                    <div class="section-description">
+                                        <p>By evaluating and comparing your surplus list to the product
+                                            demand from our active customers, we can provide you a fast &amp;
+                                            easy solution to move those products out of your facility.</p>
+                                        <p>
+                                            Within 72 hours, your SPS Account Manager will present you
+                                            with an offer to buy back your surplus inventory. That offer will
+                                            take into consideration the following factors: <span class="medium-font">demand from our
+                                            customers, expiration dates, quantities in stock, condition of
+                                            product (cases/eaches).</span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="chart-wrapper  mb-4">
+                                      <img src="/sps_theme/static/src/images/linechart.png" class="img-fluid"/>
+                                    </div>
+                                     <p class="hawk-title text-left bold-font pt-3">Depreciation of Value Analysis</p>
+                                    <div class="section-description">
+                                        <p>Unfortunately, the surplus you are selling does not
+                                            have the same value it did when you originally purchased the
+                                            inventory due to depreciation. These items devalue over time as
+                                            they near expiration. </p>
+                                        <p>
+                                            The earlier you can discover the surplus and notify us, the more value we can place on the inventory.
+                                        </p>
+                                    </div>
+                                </div>
+                                 <div class="col-12 pt-4">
+                                    <div class="no-seperated">
+                                        <div class="no-circle">4</div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-11 m-auto">
+                                    <p class="hawk-title ft-32 text-center regular-font">You Ship Your Items for <span class="bold-font">FREE</span> to SPS</p>
+                                    <div class="section-description">
+                                        <p>After the offer is accepted, we will send prepaid shipping labels. We ship the product at no cost to you.</p>
+                                    </div>
+                                </div>
+
+                                 <div class="col-12 pt-4">
+                                    <div class="no-seperated">
+                                        <div class="no-circle">5</div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-11 m-auto">
+                                    <p class="hawk-title ft-32 text-center regular-font">Terms of Payment</p>
+                                    <div class="section-description">
+                                        <p>Our payment terms are net 30 from when the product is received in house and has completed the quality control process.</p>
+                                    </div>
+                                </div>
+                                 <div class="col-md-12 text-center btn-wrapper pt-4">
+                                    <a class="btn btn-info btn-sm" itemprop="url" href="/seller-form" >Contact a Sales Expert</a>
+                                </div>
+                            </div>
+
+                        </div>
+                    </section>
+                     <div class="seprator">
+                          <div class="red"></div>
+                          <div class="black"></div>
+                     </div>
+                    <section class="padding-80-y">
+                        <div class="container">
+                            <div class="row">
+                                 <div class="col-md-11 m-auto">
+                                    <p class="hawk-title ft-32 text-center regular-font">Learn More About Selling with SPS</p>
+                                    <div class="section-description">
+                                        <p>Discover the benefits of selling your surplus surgical products with SPS. This short video will walk you through the details of the complete process.</p>
+                                    </div>
+                                     <div class="text-center btn-wrapper pt-4">
+                                        <button class="btn btn-info btn-sm scrolltoform">Watch the Video</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                     <!--<div class="seprator">
+                          <div class="red"></div>
+                          <div class="black"></div>
+                     </div>-->
+
+                    <!--<div class="modal fade video-modal" id="sellsps" tabindex="-1" role="dialog" aria-hidden="true">
+                      <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">SPS</h5>
+                            <button type="button" class="close" data-dismiss="modal" id="close" aria-label="Close">
+                                <i class="icon-x"></i>
+                            </button>
+                          </div>
+                          <div class="modal-body p-0">
+                            <div class="video-section-wrapper m-0 border-0">
+                                <div class="video-wrapper">
+                                    <iframe width="100%" height="200" src="https://www.youtube.com/embed/L7dMasrhDFA??rel=0&amp;enablejsapi=1&amp;version=3&amp;playerapiid=ytplayer" autoplay="1"  class="myVideoClass" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+                                </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>-->
+               </div>
+            </t>
+        </t>
+
+    </template>
+</odoo>
