@@ -154,6 +154,7 @@ class sale_order(models.Model):
     def write(self, val):
         super(sale_order, self).write(val)
         # Add note in pick delivery
+
         if self.state and self.state in 'sale':
             for pick in self.picking_ids:
                 pick.note = val['sale_note'] if ('sale_note' in val.keys()) else self.sale_note

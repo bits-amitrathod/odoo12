@@ -1,0 +1,24 @@
+<odoo>
+    <template id="thank_you_page_template" name="Thank You">
+        <t t-name="website.thank-you">
+            <t t-call="website.layout">
+                <div id="wrap" class="thank-you-page">
+                    <section class="padding-80-y">
+                        <div class="container">
+                             <div class="text-center">
+                                 <h1  class="about-header"> <strong>Thank</strong> you!</h1>
+                             </div>
+                            <div class="thanks-you text-center">
+                                <p>Your request is important to us. Someone from our team will contact you within 24 hours!</p>
+                            </div>
+                        </div>
+                    </section>
+                    <!--<div class="seprator"><div class="red"></div><div class="black"></div></div>-->
+
+
+               </div>
+            </t>
+        </t>
+
+    </template>
+</odoo>

@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 import odoo
+import json
+import logging
 from odoo import fields, http
 from odoo.http import request
+from odoo.addons.http_routing.models.ir_http import slug
 
+_logger = logging.getLogger(__name__)
 
 class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
     @http.route([
@@ -11,30 +15,85 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         '/shop/capital-equipment',
         '/shop/page/<int:page>',
         '/shop/category/<model("product.public.category"):category>',
-        '/shop/category/<model("product.public.category"):category>/page/<int:page>'
+        '/shop/category/<model("product.public.category"):category>/page/<int:page>',
+        '/shop/category/<model("product.public.category"):category>/brand/<model("product.brand"):brand>',
+        '/shop/category/<model("product.public.category"):category>/brand/<model("product.brand"):brand>/page/<int:page>',
+        '/shop/brand/<model("product.brand"):brand>',
+        '/shop/brand/<model("product.brand"):brand>/page/<int:page>'
     ], type='http', auth="public", website=True)
-    def shop(self, page=0, category=None, search='', ppg=False, **post):
+    def shop(self, page=0, category=None,search='', brand= None, ppg=False, **post):
         product_template = request.env['product.template'].search([('actual_quantity', '=', False)])
+        product_brands = []
+
+        title = "Shop"
+        c_all_id = request.env['product.public.category'].search([('name', 'ilike', 'All')], limit=1)
+        if request.httprequest.path == "/shop":
+            result = c_all_id
+            if result:
+                category = result
+
         if len(product_template)>0:
             for product in product_template:
                 product.update({'actual_quantity':0})
+
+        if ppg:
+            try:
+                ppg = int(ppg)
+                post['ppg'] = ppg
+            except ValueError:
+                ppg = False
+        if not ppg:
+            ppg = 20
 
         if not 'order' in post:
             post.update({'order': 'actual_quantity desc'})
 
         if request.httprequest.path == "/shop/featured":
+            title = "Sale Items"
             result = request.env['product.public.category'].search([('name', 'ilike', 'featured')], limit=1)
             if result:
-                category = result.id
+                category = result
 
         if request.httprequest.path == "/shop/capital-equipment":
             result = request.env['product.public.category'].search([('name', 'ilike', 'capital equipment')], limit=1)
             if result:
-                category = result.id
+                category = result
 
-        responce = super(WebsiteSales, self).shop(page, category, search, ppg, **post)
+        #  after category id Found the find Brand List
+        if category:
+            if str(c_all_id.id) == str(category) if isinstance(category, str) else str(category.id) :
+                product_brands = request.env['product.brand'].search([])
+            else:
+                s = str(category) if isinstance(category, str) else str(category.id)
+                request.env.cr.execute("SELECT product_template_id FROM product_public_category_product_template_rel where product_public_category_id = "+ s)
+                r = request.env.cr.fetchall()
+                pt_list = request.env['product.template'].sudo().search([('id', 'in', r)])
+                for b in pt_list:
+                    if b.product_brand_id:
+                        if not b.product_brand_id in product_brands:
+                            product_brands.append(b.product_brand_id)
+
+        responce = super(WebsiteSales, self).shop(page, category, search, None, **post)
 
         payload = responce.qcontext
+
+        if brand:
+            search_product =[]
+            url = "/shop/category/"+slug(category)+"/brand/%s" % slug(brand)
+            if category:
+                request.env.cr.execute(
+                    "SELECT product_template_id FROM product_public_category_product_template_rel where product_public_category_id = " + str(
+                        category.id))
+                r = request.env.cr.fetchall()
+                pt_list_b = request.env['product.template'].sudo().search([('id', 'in', r),('product_brand_id','=',brand.id)])
+            search_product = pt_list_b
+            product_count = len(search_product)
+            pager = request.website.pager(url=url, total=product_count, page=page, step=ppg, scope=7, url_args=post)
+            payload['pager'] = pager
+            offset = pager['offset']
+            products = search_product[offset: offset + ppg]
+            payload['products'] = products
+
         irConfig = request.env['ir.config_parameter'].sudo()
         payload['isVisibleWebsiteExpirationDate'] = irConfig.get_param('website_sales.website_expiration_date')
         if payload['products'] and payload['isVisibleWebsiteExpirationDate']:
@@ -58,12 +117,14 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         i = 1
         for val in payload['products']:
             porductRows[-1].append(val)
-            if i % 4 == 0:
-                porductRows.append([])
-            i += 1
+            # if i % 4 == 0:
+            #     porductRows.append([])
+            # i += 1
 
         payload['porductRows'] = porductRows
-
+        payload['brands'] = product_brands
+        payload['brand_id']= int(brand.id) if brand else 0
+        payload['title'] = title
         return request.render("website_sale.products", payload)
 
     @http.route(['/shop/product/<model("product.template"):product>'], type='http', auth="public", website=True)
@@ -125,9 +186,73 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         template.send_mail(order.id, force_send=True)
         msg = "Quotation Email Sent to: " + order.user_id.login
         order.message_post(body=msg)
-
-
         return responce
+
+    @http.route(['/shop/quote_my_report/update_json'], type='json', auth="public", methods=['POST'], website=True)
+    def update_quote_my_report_json(self, product_id=None, new_qty=None, select=None):
+        count = 1
+        request.env['quotation.product.list'].sudo().update_quantity(product_id, new_qty, select)
+        return count
+
+    @http.route(['/shop/my_in_stock_report'], type='http', auth="public", website=True)
+    def my_in_stock_report(self):
+        if request.session.uid:
+            user = request.env['res.users'].search([('id', '=', request.session.uid)])
+            if user and user.partner_id and user.partner_id.id:
+                return request.redirect("/shop/quote_my_report/%s" % user.partner_id.id)
+
+    @http.route(['/shop/quote_my_report/<int:partner_id>'], type='http', auth="public", website=True)
+    def quote_my_report(self, partner_id):
+        _logger.info('In quote my report')
+        partner = request.env['res.partner'].sudo().search([('id', '=', partner_id)])
+        _logger.info(partner)
+        if request.session.uid:
+            _logger.info('Login successfully')
+            user = request.env['res.users'].search([('id', '=', request.session.uid)])
+            if user and user.partner_id and user.partner_id.id == partner_id:
+                context = {'quote_my_report_partner_id': partner_id}
+                request.env['quotation.product.list'].with_context(context).sudo().delete_and_create()
+                product_list = request.env['quotation.product.list'].sudo().get_product_list()
+                return http.request.render('website_sales.quote_my_report', {'product_list': product_list})
+            else:
+                invalid_url = 'The requested URL is not valid for logged in user.'
+                return http.request.render('website_sales.quote_my_report', {'invalid_url': invalid_url})
+        else:
+            portal_url = partner.with_context(signup_force_type_in_url='', lang=partner.lang)._get_signup_url_for_action()[partner.id]
+            return request.redirect(portal_url+'&redirect=/shop/quote_my_report/%s' % partner.id)
+
+    @http.route(['/add/product/cart'], type='http', auth="public", methods=['POST'], website=True, csrf=False)
+    def add_product_in_cart(self):
+        product_list = request.env['quotation.product.list'].sudo().get_product_list()
+        user = request.env['res.users'].search([('id', '=', request.session.uid)])
+        for product_id in product_list:
+            if product_list.get(product_id)[0]['quantity'] > 0 and product_list.get(product_id)[0]['select']:
+                self.cart_update_custom(product_list.get(product_id)[0]['product'].id,
+                                    product_list.get(product_id)[0]['quantity'])
+        return request.redirect("/shop/cart?flag=True&partner=%s" % user.partner_id.id)
+
+    def cart_update_custom(self, product_id, add_qty, set_qty=0, **kw):
+        """This route is called when adding a product to cart (no options)."""
+        sale_order = request.website.sale_get_order(force_create=True)
+        if sale_order.state != 'draft':
+            request.session['sale_order_id'] = None
+            sale_order = request.website.sale_get_order(force_create=True)
+
+        product_custom_attribute_values = None
+        if kw.get('product_custom_attribute_values'):
+            product_custom_attribute_values = json.loads(kw.get('product_custom_attribute_values'))
+
+        no_variant_attribute_values = None
+        if kw.get('no_variant_attribute_values'):
+            no_variant_attribute_values = json.loads(kw.get('no_variant_attribute_values'))
+
+        sale_order._cart_update(
+            product_id=int(product_id),
+            add_qty=add_qty,
+            set_qty=set_qty,
+            product_custom_attribute_values=product_custom_attribute_values,
+            no_variant_attribute_values=no_variant_attribute_values
+        )
 
 
 class WebsiteSaleOptionsCstm(odoo.addons.website_sale.controllers.main.WebsiteSale):

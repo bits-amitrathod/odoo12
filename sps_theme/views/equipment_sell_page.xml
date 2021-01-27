@@ -1,0 +1,423 @@
+<odoo>
+   <template id="equipment_sell_template" name="Sell Page">
+      <t t-name="website.equipment">
+         <t t-call="website.layout">
+            <div id="wrap" class="oe_structure oe_empty">
+               <section class="pt32 pb32">
+                  <div class="container">
+                     <div class="text-center pt32 pb32">
+                        <h1  class="about-header"> <span class="black-font">Sell</span> Your Used Surgical Equipment </h1>
+                     </div>
+                     <div class="manufacturer">
+                        <h3 class="section-title">Featured Manufacturers We Carry</h3>
+                        <div class="row flex-wrap mt-5">
+                           <div class="offset-md-1"></div>
+                           <div class="col-md-2 col-sm-3 mb-4">
+                              <div class="manfaturer-box">
+                                 <img src="/sps_theme/static/src/images/manufacturer/stryker.png" class="img-fluid"/>
+                              </div>
+                           </div>
+                           <div class="col-md-2 col-sm-3 mb-4">
+                              <div class="manfaturer-box">
+                                 <img src="/sps_theme/static/src/images/manufacturer/Aesculap-Logo.png" class="img-fluid"/>
+                              </div>
+                           </div>
+                           <div class="col-md-2 col-sm-3 mb-4">
+                              <div class="manfaturer-box">
+                                 <img src="/sps_theme/static/src/images/manufacturer/ethicon.png" class="img-fluid"/>
+                              </div>
+                           </div>
+                           <div class="col-md-2 col-sm-3 mb-4">
+                              <div class="manfaturer-box">
+                                 <img src="/sps_theme/static/src/images/manufacturer/Karl_Storz_Endoskope_logo.png" class="img-fluid"/>
+                              </div>
+                           </div>
+                           <div class="col-md-2 col-sm-3 mb-4">
+                              <div class="manfaturer-box">
+                                 <img src="/sps_theme/static/src/images/manufacturer/medtronic-logo.png" class="img-fluid"/>
+                              </div>
+                           </div>
+                           <div class="offset-md-1"></div>
+                           <div class="offset-md-1"></div>
+                           <div class="col-md-2 col-sm-3 mb-4">
+                              <div class="manfaturer-box">
+                                 <img src="/sps_theme/static/src/images/manufacturer/smith-nephew-vector-logo.png" class="img-fluid"/>
+                              </div>
+                           </div>
+                           <div class="col-md-2 col-sm-3 mb-4">
+                              <div class="manfaturer-box">
+                                 <img src="/sps_theme/static/src/images/manufacturer/depuysynthes.jpg" class="img-fluid"/>
+                              </div>
+                           </div>
+                           <div class="col-md-2 col-sm-3 mb-4">
+                              <div class="manfaturer-box">
+                                 <img src="/sps_theme/static/src/images/manufacturer/2178678.jpg" class="img-fluid"/>
+                              </div>
+                           </div>
+                           <div class="col-md-2 col-sm-3 mb-4">
+                              <div class="manfaturer-box">
+                                 <img src="/sps_theme/static/src/images/manufacturer/Arthrex-Logo-blue.png" class="img-fluid"/>
+                              </div>
+                           </div>
+                           <div class="col-md-2 col-sm-3 mb-4">
+                              <div class="manfaturer-box">
+                                 <img src="/sps_theme/static/src/images/manufacturer/Olympus-Logo.png" class="img-fluid"/>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="row mt-5">
+                           <div class="col-md-12 text-center btn-wrapper">
+                              <button class="btn btn-info btn-sm scrolltoform">Sell Your Surgical Equipment</button>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </section>
+               <section class="padding-100-y bg-grey">
+                  <div class="container">
+                     <div class="row">
+                        <div class="col-md-6 align-self-center">
+                           <p class="hawk-title ft-32 regular-font">About SPS Surgical Equipment</p>
+                           <div class="section-description">
+                              <p>In 2018, SPS launched the Surgical Equipment Division to complement our surgical disposable services. By offering customers solutions for their used medical equipment, we reinforce our mission to provide cost-saving solutions to healthcare facilities across the United States who choose to save money without sacrificing their quality of care.
+                              </p>
+                           </div>
+                        </div>
+                        <div class="col-md-6">
+                           <img src="/sps_theme/static/src/images/surgical.jpg" class="img-fluid"/>
+                        </div>
+                     </div>
+                  </div>
+               </section>
+               <div class="seprator">
+                  <div class="red"></div>
+                  <div class="black"></div>
+               </div>
+               <section class="padding-100-y">
+                  <div class="container">
+                     <div class="row">
+                        <div class="col-md-6 mb-3">
+                           <img src="/sps_theme/static/src/images/we_do.jpg" class="img-fluid"/>
+                        </div>
+                        <div class="col-md-6 align-self-center pl-3 pl-md-5">
+                           <p class="hawk-title ft-32 regular-font">What We Do</p>
+                           <div class="section-description">
+                              <p>
+                                 Reductions in reimbursements for health care services drive the
+                                 need for cost savings from every angle. SPS can provide you with
+                                 solutions to return revenue to your facility by purchasing your used,
+                                 depreciated medical equipment. If you’re a buyer, we remarket our
+                                 equipment and provide it to you at a reduced cost, saving healthcare
+                                 facilities thousands. Equipment that is older technology, but still
+                                 valued in other countries, is donated to medical missions, supporting sustainability in 2nd and 3rd world markets. Let us find
+                                 cost savings solutions that work for you.
+                              </p>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </section>
+               <section class="bg-black-with-img-2 padding-60-y our-process">
+                  <div class="container">
+                     <div class="row">
+                        <div class="col-md-5">
+                           <div class="additonal">
+                              <h3>Our Process</h3>
+                              <p class="pt-4">
+                                 When selling us your equipment, we evaluate several different factors.
+                              </p>
+                           </div>
+                        </div>
+                        <div class="col-md-7 section-description pl-3 pl-md-5">
+                           <div class="story-list white-plus">
+                              <div class="bulleted-list">
+                                 <div><i class="fa fa-plus"></i></div>
+                              </div>
+                              <div class="list-description">
+                                 <p><span>Age of the Equipment:</span> We offer the most value for items that are less than 10 years old.</p>
+                              </div>
+                           </div>
+                           <div class="story-list white-plus">
+                              <div class="bulleted-list">
+                                 <div><i class="fa fa-plus"></i></div>
+                              </div>
+                              <div class="list-description">
+                                 <p><span>Condition of the Equipment:</span> We look at the physical condition (overall
+                                    health of the internal and external parts and attachments) and the
+                                    cosmetic condition (visible signs of wear, tear, defects, and damage).
+                                 </p>
+                              </div>
+                           </div>
+                           <div class="story-list white-plus">
+                              <div class="bulleted-list">
+                                 <div><i class="fa fa-plus"></i></div>
+                              </div>
+                              <div class="list-description">
+                                 <p><span>Age of the Technology:</span> We look at where the equipment stands in
+                                    comparison to the state-of-the-art technology on the market.
+                                 </p>
+                              </div>
+                           </div>
+                           <div class="story-list white-plus">
+                              <div class="bulleted-list">
+                                 <div><i class="fa fa-plus"></i></div>
+                              </div>
+                              <div class="list-description">
+                                 <p><span>Logistics:</span> The difficulty of de-installation and logistics</p>
+                              </div>
+                           </div>
+                           <div class="story-list white-plus">
+                              <div class="bulleted-list">
+                                 <div><i class="fa fa-plus"></i></div>
+                              </div>
+                              <div class="list-description">
+                                 <p><span>Servicing:</span> The difficulty of re-installation, sales service, and sales support</p>
+                              </div>
+                           </div>
+                           <div class="story-list white-plus">
+                              <div class="bulleted-list">
+                                 <div><i class="fa fa-plus"></i></div>
+                              </div>
+                              <div class="list-description">
+                                 <p><span>Demand:</span> Is it equipment that will sell quickly, or will it be put into storage?</p>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="col-12 text-center btn-wrapper mt-5">
+                           <button class="btn btn-info btn-sm scrolltoform">Sell Your Surgical Equipment</button>
+                        </div>
+                     </div>
+                  </div>
+               </section>
+               <section class="padding-80-y bg-grey">
+                  <div class="container">
+                     <p class="hawk-title ft-32 regular-font text-center">Surgical Equipment Categories</p>
+                     <div class="row order-listing pt-5">
+                        <div class="col-md-3">
+                           <p class="list-title">
+                              VIDEO EQUIPMENT
+                           </p>
+                           <ul>
+                              <li> Video Towers</li>
+                              <li> Monitors</li>
+                              <li> Light Sources</li>
+                              <li> CPUs</li>
+                              <li> Printers</li>
+                              <li> Camera Heads</li>
+                              <li> Accessories</li>
+                              <li> Surgical Monitors</li>
+                           </ul>
+                        </div>
+                        <div class="col-md-3">
+                           <p class="list-title">POWER EQUIPMENT</p>
+                           <ul>
+                              <li> Drills</li>
+                              <li> Saws</li>
+                              <li> Reamers</li>
+                              <li> Battery Powered</li>
+                              <li> Pneumatic Powered</li>
+                              <li> Electric Powered</li>
+                              <li> Power Sources</li>
+                              <li> Electrosurgical Units</li>
+                              <li> Attachments and Accessories</li>
+                              <li> Chargers</li>
+                           </ul>
+                        </div>
+                        <div class="col-md-3">
+                           <p class="list-title">SCOPES</p>
+                           <ul>
+                              <li> Flexible or Rigid</li>
+                              <li> Endoscopes</li>
+                              <li> Laparoscopes</li>
+                              <li> Cystoscopes</li>
+                              <li> Arthroscopes</li>
+                              <li> Bronchoscopes</li>
+                              <li> Gastroscopes</li>
+                              <li> Colonoscopes</li>
+                           </ul>
+                        </div>
+                        <div class="col-md-3">
+                           <p class="list-title">ORTHOPEDIC TRAUMA</p>
+                           <ul>
+                              <li> Synthes Instrument and Implant Sets</li>
+                           </ul>
+                           <p class="list-title">INSTRUMENTATION</p>
+                           <ul>
+                              <li> Arthroscopy Instruments</li>
+                           </ul>
+                        </div>
+                     </div>
+                  </div>
+               </section>
+               <div class="seprator">
+                  <div class="red"></div>
+                  <div class="black"></div>
+               </div>
+               <section class="padding-80-y">
+                  <div class="container">
+                     <div class="row">
+                        <div class="col-md-7 align-self-center pl-3 pl-md-5">
+                           <p class="hawk-title ft-32 regular-font">When Buying Equipment From Us, You Will Receive:</p>
+                           <div class="assured mt-3">
+                              <ul>
+                                 <li><span class="bold-font">Quality</span> customer service and support</li>
+                                 <li><span class="bold-font">Options</span> for warranty</li>
+                                 <li><span class="bold-font">No minimum</span> order required</li>
+                                 <li><span class="bold-font">No contracts</span> necessary</li>
+                                 <li><span class="bold-font">Fast</span> and reliable shipping</li>
+                              </ul>
+                           </div>
+                        </div>
+                        <div class="col-md-5">
+                           <img src="/sps_theme/static/src/images/buy.jpg" class="img-fluid"/>
+                        </div>
+                           <div class="col-md-12 text-center btn-wrapper mt-5">
+                               <a itemprop="url" href="/shop/capital-equipment" class="btn btn-info btn-sm">Shop Equipment</a>
+                                <!--<button class="btn btn-info btn-sm">Shop Equipment</button>-->
+                            </div>
+                     </div>
+                  </div>
+               </section>
+
+                <section class="padding-80-y bg-grey">
+                    <form action="/website_form/" method="post" class="s_website_form container-fluid mt32" enctype="multipart/form-data" data-model_name="mail.mail" data-success_page="/thank-you">
+                        <div class="container p-0" id="requestform">
+                             <p class="hawk-title ft-32 regular-font text-center">Sell Your Surgical Equipment</p>
+                             <div class="section-description text-center">
+                                 <p>Please fill out the form below to submit an item for valuation.</p>
+                             </div>
+                             <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group has-float-label form-field o_website_form_required_custom">
+                                        <input type="text" class="form-control o_website_form_input" placeholder="Business Name *" id="bussiness_name" name="bussiness_name" required=""/>
+<!--                                        <label class="control-label" for="bussiness_name">Business Name</label>-->
+                                    </div>
+                                </div>
+                                  <div class="col-md-6">
+                                    <div class="form-group has-float-label form-field o_website_form_required_custom">
+                                        <input type="text" class="form-control o_website_form_input" placeholder="Business Address *" id="bussiness_address" name="bussiness_address" required=""/>
+<!--                                        <label class="control-label" for="bussiness_address">Business Address</label>-->
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group has-float-label form-field o_website_form_required_custom">
+                                        <input type="text" class="form-control o_website_form_input" placeholder="City *" id="City" name="City" required=""/>
+<!--                                        <label class="control-label" for="City">City</label>-->
+                                    </div>
+                                </div>
+                                 <div class="col-md-6">
+                                    <div class="form-group has-float-label form-field o_website_form_required_custom">
+                                        <input type="text" class="form-control o_website_form_input" placeholder="State/Province *" id="state" name="state" required=""/>
+<!--                                        <label class="control-label" for="state">State/Province</label>-->
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group has-float-label form-field o_website_form_required_custom">
+                                        <input type="text" class="form-control o_website_form_input" placeholder="Zip Code *" id="zipcode" name="zipcode" required=""/>
+<!--                                        <label class="control-label" for="zipcode">Zip Code</label>-->
+                                    </div>
+                                </div>
+                                 <div class="col-md-6">
+                                    <div class="form-group has-float-label ">
+                                        <input type="text" class="form-control o_website_form_input" placeholder="First Name" id="first_name" name="first_name"/>
+<!--                                        <label class="control-label" for="first_name">First Name</label>-->
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group has-float-label">
+                                        <input type="text" class="form-control o_website_form_input" placeholder="Last Name" id="last_name" name="last_name"/>
+<!--                                        <label class="control-label" for="last_name">Last Name</label>-->
+                                    </div>
+                                </div>
+
+                                 <div class="col-md-6">
+                                    <div class="form-group has-float-label form-field ">
+                                        <input type="text" class="form-control o_website_form_input" placeholder="Phone" id="Phone" name="Phone"/>
+<!--                                        <label class="control-label" for="Phone">Phone</label>-->
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group has-float-label form-field ">
+                                        <input type="text" class="form-control o_website_form_input" placeholder="Email" id="Email" name="Email"/>
+<!--                                        <label class="control-label" for="Email">Email</label>-->
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group has-float-label form-field ">
+                                        <input type="text" class="form-control o_website_form_input" placeholder="Contact Name (for final signature) First Name" id="contact_first_name" name="contact_first_name"/>
+<!--                                        <label class="control-label" for="contact_first_name">Contact Name (for final signature) First Name</label>-->
+                                    </div>
+                                </div>
+                                 <div class="col-md-6">
+                                    <div class="form-group has-float-label form-field ">
+                                        <input type="text" class="form-control o_website_form_input" placeholder="Contact Name (for final signature) First Name" id="contact_last_name" name="contact_last_name"/>
+<!--                                        <label class="control-label" for="contact_last_name">Contact Name (for final signature) Last Name</label>-->
+                                    </div>
+                                </div>
+
+                                 <div class="col-md-6">
+                                    <div class="form-group has-float-label form-field ">
+                                        <input type="text" class="form-control o_website_form_input" placeholder="Manufacturer" id="Manufacturer" name="Manufacturer"/>
+<!--                                        <label class="control-label" for="Manufacturer">Manufacturer</label>-->
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group has-float-label form-field ">
+                                        <input type="text" class="form-control o_website_form_input" placeholder="Part Number" id="part_number" name="part_number"/>
+<!--                                        <label class="control-label" for="part_number">Part Number</label>-->
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                     <div class="form-group has-float-label form-field ">
+                                        <textarea id="description" placeholder="Description" class="form-control o_website_form_input" name="description"  rows="1"></textarea>
+<!--                                        <label class="control-label" for="description">Description</label>-->
+                                     </div>
+                                </div>
+                                 <div class="col-md-5">
+                                        <div class="form-group  has-float-label form-field o_website_form_required_custom">
+                                           <div class="o_website_form_date input-group" id="datepicker3" data-target-input="nearest">
+                                             <input type="text" id="birthdate2" class="form-control datetimepicker-input o_website_form_input"  placeholder="Birthdate" data-toggle="datetimepicker" data-target="#datepicker3" name=""/>
+                                              <div class="input-group-append" data-target="#datepicker3"  data-toggle="datetimepicker">
+                                                  <span class="input-group-text" id="birthdate2"><i class="icon-calendars"></i></span>
+                                              </div>
+                                          </div>
+                                        </div>
+                                     </div>
+                                <div class="col-md-5">
+                                    <div class="form-group has-float-label form-field ">
+                                        <input type="text" class="form-control o_website_form_input" placeholder="Condition" id="Condition" name="Condition"/>
+<!--                                        <label class="control-label" for="Condition">Condition</label>-->
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <div class="form-group has-float-label form-field ">
+                                        <input type="text" class="form-control o_website_form_input" placeholder="Quantity (Ea)" id="quantity" name="quantity"/>
+<!--                                        <label class="control-label" for="quantity">Quantity (Ea)</label>-->
+                                    </div>
+                                </div>
+
+                                <div class="col-md-10 offset-md-2">
+                                    <div class="form-group file-input">
+                                        <label class="control-label" for="Condition">Item Picture Upload</label>
+                                        <label for="file" class="file-control">Choose File</label>
+                                        <input type="file" onChange='getFileNameWithExt(event)' class="file-upload-control" id="file" name="file"/>
+
+                                        <input id='outputfile' type='text' name='outputfile' class="selected-file" placeholder="No File Chosen" disabled="true"/>
+                                    </div>
+                                </div>
+                                 <div class="col-md-12 text-center btn-wrapper mt-5">
+                                     <span class="btn btn-info btn-sm action_button o_website_form_send">Submit</span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </section>
+                 <!--<div class="seprator">
+                  <div class="red"></div>
+                  <div class="black"></div>
+               </div>-->
+            </div>
+         </t>
+      </t>
+   </template>
+</odoo>

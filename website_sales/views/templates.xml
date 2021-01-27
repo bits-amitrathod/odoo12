@@ -13,29 +13,30 @@
 
     <template id="productExpirationDate" name="Product Expiration Date">
         <t t-if="isVisibleWebsiteExpirationDate and product.actual_quantity &gt; 0">
-            <div style="padding-bottom: 5px;">
-                <strong>Expiration :</strong>
-                <br/>
+            <div class="expiration-section">
+                <p class="expiration-title">Expiration :</p>
+                <p>
+                    <span>Min -</span>
+                    <t t-if="product.product_variant_id.id in productExpiration and productExpiration[product.product_variant_id.id]['min'] is not None">
+                        <span t-esc="productExpiration[product.product_variant_id.id]['min']"
+                              t-options="{'widget': 'date'}"/>
+                    </t>
 
-                Min -
-                <t t-if="product.product_variant_id.id in productExpiration and productExpiration[product.product_variant_id.id]['min'] is not None">
-                    <span t-esc="productExpiration[product.product_variant_id.id]['min']"
-                          t-options="{'widget': 'date'}"/>
-                </t>
-                <t t-else="">
-                    N/A
-                </t>
+                    <t t-else="">
+                       <span> N/A</span>
+                    </t>
+                 </p>
+                <p>
+                    <span>Max -</span>
+                    <t t-if="product.product_variant_id.id in productExpiration and productExpiration[product.product_variant_id.id]['max'] is not None">
+                        <span t-esc="productExpiration[product.product_variant_id.id]['max']"
+                              t-options="{'widget': 'date'}"/>
+                    </t>
 
-                <br/>
-
-                Max -
-                <t t-if="product.product_variant_id.id in productExpiration and productExpiration[product.product_variant_id.id]['max'] is not None">
-                    <span t-esc="productExpiration[product.product_variant_id.id]['max']"
-                          t-options="{'widget': 'date'}"/>
-                </t>
-                <t t-else="">
-                    N/A
-                </t>
+                    <t t-else="">
+                        <span>N/A</span>
+                    </t>
+                </p>
                 <!--<span t-esc="productExpiration"/>-->
                 <!--product-->
                 <!--<span t-esc="product.id"/> <span t-esc="product.product_variant_id.id"/>-->
@@ -43,7 +44,7 @@
         </t>
     </template>
 
-    <template id="sort" inherit_id="website_sale.sort" active="True" customize_show="True" name="Show Sort by">
+    <!--<template id="sort" inherit_id="website_sale.sort" active="True" customize_show="True" name="Show Sort by">
         <xpath expr="//div[hasclass('dropdown_sorty_by')]" position="after">
             <button type="button" class="categoriesCollapseBtn btn btn-default" data-toggle="collapse"
                     data-target="#categories-collapse">
@@ -51,19 +52,58 @@
                 <span class="caret"/>
             </button>
         </xpath>
-    </template>
+    </template>-->
 
-    <template id="products_categories" name="eCommerce Categories" inherit_id="website_sale.products_categories">
+    <template id="products_categories" name="eCommerce Categories" inherit_id="website_sale.products_categories" active="False" customize_show="True">
         <xpath expr="//div[@id='products_grid_before']/ul" position="replace">
+            <!-- products categories Filter -->
+            <div class="sidebar-accordion pt-5" id="categories">
+              <div class="card">
+                <div class="card-header" id="allcategories">
+                  <h2 class="mb-0">
+                    <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#all_categories" aria-expanded="false" aria-controls="all_categories">
+                      PRODUCT CATEGORY <i class="fa fa-plus"></i>
+                    </button>
+                  </h2>
+                </div>
 
-            <ul id="categories-collapse" class="nav nav-pills nav-stacked mt16 collapse">
-                <li t-att-class=" '' if category else 'active' ">
-                    <a t-att-href="keep('/shop',category=0)" class="o_not_editable">ALL CATEGORIES</a>
-                </li>
-                <t t-foreach="categories" t-as="c">
-                    <t t-call="website_sale.categories_recursive"/>
-                </t>
-            </ul>
+                <div id="all_categories" class="collapse" aria-labelledby="headingOne" data-parent="#categories">
+                  <div class="card-body">
+                      <ul class="sub-category">
+                        <t t-foreach="categories" t-as="c">
+                            <t t-call="website_sale.categories_recursive"/>
+                        </t>
+                      </ul>
+                  </div>
+                </div>
+              </div>
+
+            <!-- products Brand Filter -->
+                  <div class="card">
+                    <div class="card-header" id="brand">
+                      <h2 class="mb-0">
+                        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                          BRANDS <i class="fa fa-plus"></i>
+                        </button>
+                      </h2>
+                    </div>
+
+                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#categories">
+                      <div class="card-body">
+                     <ul class="sub-category">
+                        <t t-foreach="brands" t-as="c">
+                            <li t-att-class="'active' if c.id == int(brand_id or 0) else None">
+                                <a t-att-href="keep('/shop/category/'+slug(category)+'/brand/' + slug(c), category=0)" t-field="c.name" class="linkCstm"></a>
+                            </li>
+                            <!--<h5><t t-esc="c.name"/></h5>-->
+                            <!--<t t-call="website_sales.brand_recursive"/>-->
+                        </t>
+                     </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
         </xpath>
         <xpath expr="//div[@id='products_grid_before']" position="attributes">
             <attribute name="class">col-md-3 col-sm-4</attribute>
@@ -102,31 +142,33 @@
     -->
 
     <template id="category_vender" name="category Vender">
-        <div class="row">
-            <div class="col-sm-12">
-                <strong class="pull-left" style="padding-right: 5px;">Category:</strong>
-                <ul class="list-inline">
-                    <t t-set="commas" t-value="len(product.public_categ_ids)"/>
-                    <t t-set="commaCount" t-value="1"/>
-                    <t t-foreach="product.public_categ_ids" t-as="c">
-                        <li t-att-class="'active' if c.id == int(category or 0) else None" style="padding: 0px;">
-                            <a t-att-href="keep('/shop/category/' + slug(c), category=0)" class="linkCstm">
-                                <span t-field="c.name"/>
-                                <t t-if="commas &gt; commaCount">,</t>
-                            </a>
-                        </li>
-                        <t t-set="commaCount" t-value="commaCount+1"/>
-                    </t>
-                </ul>
+        <div class="row category-wrapper">
+            <div class="col-md">
+                <div class="category-detail">
+                    <span class="pull-left" style="padding-right: 5px;">Category:</span>
+                    <ul class="list-inline mb-0">
+                        <t t-set="commas" t-value="len(product.public_categ_ids)"/>
+                        <t t-set="commaCount" t-value="1"/>
+                            <li  style="padding: 0px;">
+                        <t t-foreach="product.public_categ_ids" t-as="c">
+                            <span t-att-class="'active' if c.id == int(category or 0) else None">
+                                <a t-att-href="keep('/shop/category/' + slug(c), category=0)" class="linkCstm">
+                                    <span t-field="c.name"/>
+                                    <t t-if="commas &gt; commaCount">,</t>
+                                </a>
+                            </span>
+                            <t t-set="commaCount" t-value="commaCount+1"/>
+                        </t>
+                            </li>
+                    </ul>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <p>
-                    <strong>Vendor:</strong>
+            <div class="col-md">
+                 <div class="category-detail  mb-3">
+                    <span>Vendor:</span>
                     <a t-att-href="keep('/shop/brands', brand=product.product_brand_id.id)"
                        t-field="product.product_brand_id.name" class="linkCstm"></a>
-                </p>
+                 </div>
             </div>
         </div>
     </template>
@@ -138,6 +180,15 @@
                 <t t-foreach="c.child_id" t-as="c">
                     <t t-call="website_sales.categories_recursive"/>
                 </t>
+            </ul>
+        </li>
+    </template>
+
+    <template id="brand_recursive" name="brand list">
+        <li>
+            <a t-att-href="keep('/shop/brand/')" t-field="c.name" class="linkCstm"></a>
+            <ul t-if="c.child_id" class="nav nav-pills nav-stacked nav-hierarchy">
+
             </ul>
         </li>
     </template>

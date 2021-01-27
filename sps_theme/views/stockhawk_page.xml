@@ -1,0 +1,252 @@
+<odoo>
+	<template id="stockhawk_page_template" name="Stockhawk">
+		<t t-name="website.stockhawk">
+			<t t-call="website.layout">
+				<div id="wrap" class="stockhawk-page">
+					<section class="stockhawk-section pt-5">
+						<div class="container">
+							<div class="row">
+								<div class="col-md-6">
+									<div class="stock-hwak">
+										<img src="/sps_theme/static/src/images/StockHawk_Logo_white.png" class="img-fluid"/>
+										<p class="section-subtitle">Inventory Savings Engine
+											<sup>TM</sup>
+										</p>
+									</div>
+									<div class="hwak-img">
+										<img src="/sps_theme/static/src/images/hawk.png" class="img-fluid"/>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="video-section-wrapper">
+										<div class="video-wrapper">
+											<iframe width="100%" height="315" src="https://www.youtube.com/embed/s2-rl39eAjI?rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</section>
+					<div class="seprator">
+						<div class="red"></div>
+						<div class="black"></div>
+					</div>
+					<section class="padding-100-y">
+						<div class="container">
+							<div class="row">
+								<div class="col-md-6 mb-3">
+									<img src="/sps_theme/static/src/images/assistant.jpg" class="img-fluid"/>
+								</div>
+								<div class="col-md-6 align-self-center">
+									<p class="hawk-title ft-32 medium-font">Your Inventory Savings Assistant.</p>
+									<div class="section-description">
+										<p>When it comes to Surgical Product re-orders, do you wish you
+                                            had a quick way to ensure you’re getting the best price? At SPS,
+                                            we’ve created a semi-automated inventory savings program called
+                                            Stockhawk to do just that.</p>
+										<p>Stockhawk gives you keen insight into real-time savings opportunities
+                                            on hundreds of overstock premium and non-premium products
+                                            you use, so you can capture all of the best prices on a wide variety
+                                            of items.</p>
+									</div>
+								</div>
+								<div class="col-md-12 text-center btn-wrapper pt-5">
+									<button class="btn btn-info btn-sm scrolltoform">Contact an Inventory Savings Specialist</button>
+								</div>
+							</div>
+						</div>
+					</section>
+					<section class="bg-black-with-img-2 padding-100-y">
+						<div class="container">
+							<div class="row">
+								<div class="col-md-5">
+									<div class="additonal">
+										<h3>Cost Savings-Without Compromise</h3>
+										<p class="pt-4">
+												In addition to allowing SPS customers to see what products
+                                                are in stock in real-time, it gives insight into savings
+                                                opportunities on hundreds of surplus brand name products.
+                                                Stockhawk puts the ordering process right in your hands.
+											 </p>
+									</div>
+								</div>
+								<div class="col-md-7 section-description pl-3 pl-md-5">
+									<div class="story-list white-plus">
+										<div class="bulleted-list">
+											<div>
+												<i class="fa fa-plus"></i>
+											</div>
+										</div>
+										<div class="list-description">
+											<p>PINPOINT LOW PRICES ON HIGH-COST PRODUCTS YOU BUY</p>
+										</div>
+									</div>
+									<div class="story-list white-plus">
+										<div class="bulleted-list">
+											<div>
+												<i class="fa fa-plus"></i>
+											</div>
+										</div>
+										<div class="list-description">
+											<p>AVOID BULK REORDERS WITH BY THE "EACH" OR BOX OPTIONS</p>
+										</div>
+									</div>
+									<div class="story-list white-plus">
+										<div class="bulleted-list">
+											<div>
+												<i class="fa fa-plus"></i>
+											</div>
+										</div>
+										<div class="list-description">
+											<p>ORDER AND SHIP SAME-DAY WITH NO CONTRACTS REQUIRED</p>
+										</div>
+									</div>
+								</div>
+								<div class="col-12 text-center btn-wrapper mt-5">
+									<button class="btn btn-info btn-sm scrolltoform">Contact an Inventory Savings Specialist</button>
+								</div>
+							</div>
+						</div>
+					</section>
+					<section class="work-section bg-white">
+						<div class="container pb-5 pt-5 ">
+							<h3 class="section-title mt-0 pt-5 pb-5">HOW STOCKHAWK WORKS</h3>
+							<div class="row">
+								<div class="col-lg-3 col-md-6">
+									<div class="work-box p-0">
+										<div class="img-wrapper">
+											<img src="/sps_theme/static/src/images/customer.png" class="img-fluid"/>
+										</div>
+										<p class="box-title">1. CUSTOMER DATA COLLECTION</p>
+										<div class="section-description">
+											<p>Our program specialists gather
+                                                customer data from purchase
+                                                histories and previous product
+                                                requests to facility-specific
+                                                preferences and shipping
+                                                requirements. </p>
+										</div>
+									</div>
+								</div>
+								<div class="col-lg-3 col-md-6">
+									<div class="work-box p-0">
+										<div class="img-wrapper">
+											<img src="/sps_theme/static/src/images/purchase.png" class="img-fluid" style="width:270px"/>
+										</div>
+										<p class="box-title">2. THE PURCHASING PLATFORM</p>
+										<div class="section-description">
+											<p>Send Stockhawk an email of all
+                                                of the codes you need to reorder,
+                                                and you’ll receive a quote with all
+                                                of the products that are in stock.
+                                                You can then edit, confirm and
+                                                place your order.</p>
+										</div>
+									</div>
+								</div>
+								<div class="col-lg-3 col-md-6">
+									<div class="work-box p-0">
+										<div class="img-wrapper">
+											<img src="/sps_theme/static/src/images/report.png" class="img-fluid"/>
+										</div>
+										<p class="box-title">3. REPORTING AND ANALYTICS</p>
+										<div class="section-description">
+											<p>Stockhawk gives you the ability
+                                                to review past orders and share
+                                                detailed reports with your
+                                                colleagues that show black and
+                                                white savings.</p>
+										</div>
+									</div>
+								</div>
+								<div class="col-lg-3 col-md-6">
+									<div class="work-box p-0">
+										<div class="img-wrapper">
+											<img src="/sps_theme/static/src/images/demand.png" class="img-fluid"/>
+										</div>
+										<p class="box-title">3. YOU INFLUENCE DEMAND</p>
+										<div class="section-description">
+											<p>We stock up on what you need.
+                                                Every time you request the
+                                                products you need, we get a
+                                                better understanding of what
+                                                products to stock, and can
+                                                proactively anticipate what you
+                                                need for future purchases.</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</section>
+					<section class="position-relative padding-80-y bg-grey">
+						<form action="/website_form/" method="post" class="s_website_form container-fluid mt32" enctype="multipart/form-data" data-model_name="mail.mail" data-success_page="/thank-you">
+						<div class="top-plus">
+							<i class="fa fa-plus"></i>
+						</div>
+						<div class="container">
+							<div class="row">
+								<div class="col-md-6 align-self-center">
+									<p class="hawk-title ft-32 medium-font">Request Your Complimentary Savings Impact Quote.</p>
+									<div class="section-description">
+										<p>
+											<strong>Fill out the form below, </strong> and an Inventory Savings Specialist will contact you to coordinate your quote.
+
+										</p>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="box-shadow">
+										<img src="/sps_theme/static/src/images/Savings-impact-estimate.png" class="img-fluid"/>
+									</div>
+								</div>
+							</div>
+							<div class="row mt-5" id="requestform">
+								<div class="col-md-6">
+									<div class="form-group has-float-label form-field o_website_form_required_custom">
+										<input type="text" placeholder="First Name *" id="first_name" class="form-control o_website_form_input" name="first_name" required=""/>
+<!--										<label class="control-label" for="first_name">First Name</label>-->
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group has-float-label form-field o_website_form_required_custom">
+										<input type="text" placeholder="Last Name *" id="last_name" class="form-control o_website_form_input" name="last_name" required=""/>
+<!--										<label class="control-label" for="last_name">Last Name</label>-->
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group has-float-label form-field o_website_form_required_custom">
+										<input type="text" placeholder="Phone *" id="phone" class="form-control o_website_form_input" name="phone" required=""/>
+<!--										<label class="control-label" for="phone">Phone</label>-->
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group has-float-label form-field o_website_form_required_custom">
+										<input type="text" placeholder="Email *" id="email" class="form-control o_website_form_input" name="email" required=""/>
+<!--										<label class="control-label" for="email">Email</label>-->
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group has-float-label form-field o_website_form_required_custom">
+										<input type="text" placeholder="Company Name *" id="Company" class="form-control o_website_form_input" name="Company" required=""/>
+<!--										<label class="control-label" for="Company">Company Name</label>-->
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group has-float-label form-field o_website_form_required_custom">
+										<input type="text" placeholder="# of Reps *" id="Reps" class="form-control o_website_form_input" name="Reps" required=""/>
+<!--										<label class="control-label" for="Reps"># of Reps</label>-->
+									</div>
+								</div>
+								<div class="col-12 text-center btn-wrapper mt-5">
+									<span class="btn btn-info btn-sm action_button o_website_form_send">Submit</span>
+								</div>
+							</div>
+						</div>
+						</form>
+					</section>
+				</div>
+			</t>
+		</t>
+	</template>
+</odoo>

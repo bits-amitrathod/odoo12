@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- About menus -->
+        <record id="about_page_link" model="website.menu">
+            <field name="name">Our Story</field>
+            <field name="url">/aboutus</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">50</field>
+        </record>
+        <record id="careers_page_link" model="website.menu">
+            <field name="name">Careers</field>
+            <field name="url">/careers</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">50</field>
+        </record>
+
+        <!--Stockhawk menus -->
+        <record id="stockhawk_page_link" model="website.menu">
+            <field name="name">Stockhawk</field>
+            <field name="url">/stockhawk</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">40</field>
+        </record>
+
+        <!--resources menus -->
+        <record id="faq_page_link" model="website.menu">
+            <field name="name">FAQ's</field>
+            <field name="url">/faqs</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">40</field>
+        </record>
+        <record id="resources_page_link" model="website.menu">
+            <field name="name">Resources</field>
+            <field name="url">/resource</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">40</field>
+        </record>
+
+        <!--contact menus -->
+        <record id="contactus_page_link" model="website.menu">
+            <field name="name">Contact Us</field>
+            <field name="url">/contact-us</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">40</field>
+        </record>
+        <record id="request_a_quote_page_link" model="website.menu">
+            <field name="name">Request Quote</field>
+            <field name="url">/request-a-quote</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">40</field>
+        </record>
+
+        <!--Surgical Products menus -->
+        <record id="surgical_products_shop_page_link" model="website.menu">
+            <field name="name">Shop</field>
+            <field name="url">/shop</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">40</field>
+        </record>
+        <record id="surgical_products_sale_page_link" model="website.menu">
+            <field name="name">Sale Items</field>
+            <field name="url">shop/featured</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">40</field>
+        </record>
+        <record id="surgical_products_sell_page_link" model="website.menu">
+            <field name="name">Sell</field>
+            <field name="url">/surgical-products-sell</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">40</field>
+        </record>
+
+        <!--Surgical Equipment menus -->
+        <record id="surgical_equipment_shop_page_link" model="website.menu">
+            <field name="name">Shop</field>
+            <field name="url">/shop/capital-equipment</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">40</field>
+        </record>
+        <record id="surgical_equipment_sale_page_link" model="website.menu">
+            <field name="name">Sell</field>
+            <field name="url">/equipment-sell</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">40</field>
+        </record>
+        <record id="surgical_equipment_repair_page_link" model="website.menu">
+            <field name="name">repair</field>
+            <field name="url">/equipment-repair</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">40</field>
+        </record>
+
+
+
+    </data>
+</odoo>

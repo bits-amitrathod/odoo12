@@ -222,11 +222,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         </xpath>
     </template>
 
-    <template id="layout_footer_copyright" inherit_id="website.layout" name="Footer Copyright">
+   <!-- <template id="layout_footer_copyright" inherit_id="website.layout" name="Footer Copyright">
         <xpath expr="//footer//div[hasclass('o_footer_copyright')]" position="replace">
             <div class="container mt16 mb8"></div>
         </xpath>
     </template>
-
+-->
 
 </odoo>
