@@ -350,7 +350,7 @@
                                 </div>
                                  <div class="col-md-6">
                                     <div class="form-group has-float-label form-field ">
-                                        <input type="text" class="form-control o_website_form_input" placeholder="Contact Name (for final signature) First Name" id="contact_last_name" name="contact_last_name"/>
+                                        <input type="text" class="form-control o_website_form_input" placeholder="Contact Name (for final signature) Last Name" id="contact_last_name" name="contact_last_name"/>
 <!--                                        <label class="control-label" for="contact_last_name">Contact Name (for final signature) Last Name</label>-->
                                     </div>
                                 </div>
