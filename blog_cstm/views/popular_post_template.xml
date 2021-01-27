@@ -263,5 +263,5 @@
 	<template id="opt_blog_rc_follow_us" name="Subscription" priority="4" inherit_id="website_blog.opt_blog_rc_follow_us" active="False" customize_show="True"></template>
 	<template id="opt_blog_rc_status" name="Status" priority="5" inherit_id="website_blog.opt_blog_rc_status" active="False" customize_show="True"></template>
 	<template id="opt_blog_rc_blogs" name="Our Blogs" priority="6" inherit_id="website_blog.opt_blog_rc_blogs" active="False" customize_show="True"></template>
-	<template id="opt_blog_post_complete_read_next" name="Read next article" inherit_id="website_blog.blog_post_complete" active="False" customize_show="True"></template>
+	<template id="opt_blog_post_complete_read_next" name="Read next article" inherit_id="website_blog.opt_blog_post_complete_read_next" active="False" customize_show="True"></template>
 </odoo>
