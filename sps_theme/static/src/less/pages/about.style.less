@@ -1617,13 +1617,13 @@ background: #fafafa;
             margin-top: 15px;
             .attribute_name{
                 position: absolute;
-                left: 13px;
+                left: 0px;
                 top: -1.2rem;
-                font-weight: 500;
+                font-weight: 600;
                 font-family: 'robotoregular';
                 cursor: text;
                 font-size: 13px;
-                color: @black;
+                color: @text-color;
                 opacity: 1;
                 -webkit-transition: all 0.2s;
                 transition: all 0.2s;
@@ -2223,4 +2223,17 @@ background-color: #ffffff;
             font-weight: 500 !important;
         }
     }
+}
+
+#wrap.o_portal_wrap{
+margin-top: 40px;
+background-color:@white !important;
+}
+
+.js_blog {
+   .o_blog_cover_container{
+   &.cover_footer{
+    display:none !important;
+}
+}
 }

@@ -359,6 +359,8 @@
                                         </div>
                                 </div>
                             </div>
+                            <input class="form-field" type="hidden" name="email_to" value="info@surgicalproductsolutions.com"/>
+                            <input class="form-field" type="hidden" name="subject" value="Received New 'Equipment Service Request' Form"/>
                         </form>
 
                      </section>
