@@ -250,7 +250,9 @@
 
 		</xpath>
 		<xpath expr="//h1" position="replace">
+			<t t-if="tag_name">
 			<h1><t t-esc="tag_name.name"/></h1>
+			</t>
 		</xpath>
 		<xpath expr="//h3[hasclass('text-muted')]" position="replace"></xpath>
 	</template>
