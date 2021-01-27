@@ -142,7 +142,7 @@
 
     <template id="layout_footer_copyright_template" inherit_id="website.layout" name="Footer Copyright">
         <xpath expr="//footer//div[hasclass('o_footer_copyright')]" position="replace">
-            <div class="container mt16 mb8"></div>
+
         </xpath>
     </template>
 </odoo>
