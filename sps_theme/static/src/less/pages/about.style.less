@@ -1113,6 +1113,9 @@ background: #fafafa;
                         color: #9399a2;
                         font-weight: 400;
                         border: none;
+                        &.td-qty{
+                            text-align:center;
+                        }
                     }
                 }
             }
@@ -1122,6 +1125,9 @@ background: #fafafa;
                     td{
                         border:none;
                         padding: 0.3rem 0.8rem;
+                        &.td-qty{
+                            text-align:center;
+                        }
                         &.td-img{
                             width: 15%;
                             text-align: left;
@@ -2182,6 +2188,7 @@ background-color: #ffffff;
     > h4{
         font-size: 24px;
         line-height: 28px;
+        text-transform: capitalize;
         color: #273345;
         padding-bottom: 15px;
         margin-bottom: 15px;
@@ -2236,4 +2243,122 @@ background-color:@white !important;
     display:none !important;
 }
 }
+}
+
+
+.shop-by-manufacturer{
+    	padding: 32px 0;
+	.header-label{
+	    padding-bottom: 32px;
+		margin-bottom: 0;
+		text-transform: capitalize;
+		font-family: 'robotoregular' !important;
+		font-size: 41px;
+		color: #273345;
+		text-align:center;
+	}
+	.col-md-6{
+		margin:auto;
+	}
+	form{
+		text-align:center;
+		.form-group{
+			text-align: left;
+		}
+		.form-control{
+			height: 50px;
+			padding-top: 5px;
+			padding-left: 8px;
+			border-radius: 0;
+			font-family: 'robotoregular' !important;
+			color: #808081;
+		}
+		.btn{
+			&.btn-default{
+				padding: 8px 15px;
+				font-size: 15px;
+				line-height: 18px;
+				background-color: #3d9cca;
+				border-radius: 8px;
+				color: #fff;
+				font-family: 'robotomedium';
+				letter-spacing: 1px;
+				border-color: #3d9cca;
+				margin-top: 15px;
+				&:hover{
+					opacity: 0.8;
+				}
+			}
+		}
+	}
+}
+
+
+#delivery_carrier, #payment_method{
+	h3{
+		text-transform: capitalize;
+	}
+}
+
+.modal {
+	.modal-dialog{
+		.modal-header{
+			.modal-title{
+				padding: 0;
+			}
+		}
+		.modal-body{
+		p {
+		    color: #394a58;
+			font-size: 17px;
+			font-family: 'robotolight';
+			line-height: 33px;
+			letter-spacing: 1px;
+		}
+			textarea{
+				height:auto !important;
+			}
+			.form-control{
+				height: 50px;
+				padding-top: 5px;
+				padding-left: 8px;
+				border-radius: 0;
+				font-family: 'robotoregular' !important;
+				color: #808081;
+			}
+		}
+		.modal-footer{
+			.btn{
+				&.btn-primary{
+					padding: 8px 15px;
+					font-size: 15px;
+					line-height: 18px;
+					background-color: #3d9cca;
+					border-radius: 8px;
+					color: #fff;
+					font-family: 'robotomedium';
+					letter-spacing: 1px;
+					border-color: #3d9cca;
+					&:hover{
+						opacity: 0.8;
+					}
+				}
+			}
+		}
+	}
+}
+
+#editShippingNote{
+	padding: 8px 15px;
+    font-size: 15px;
+    line-height: 18px;
+    background-color: #3d9cca;
+    border-radius: 8px;
+    color: #fff;
+    font-family: 'robotomedium';
+    letter-spacing: 1px;
+    border-color: #3d9cca;
+	&:hover{
+		opacity: 0.8;
+	}
 }
