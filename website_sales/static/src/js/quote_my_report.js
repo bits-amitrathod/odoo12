@@ -39,14 +39,26 @@ odoo.define('website_sales.quote_my_report_cart', function (require) {
 	    var engine = this;
 
         $(engine).on('click', 'a.js_add_cart_json', function (ev) {
-            console.log('In add quantity');
+            console.log('In add quantity test123');
             ev.preventDefault();
+            console.log("after ev preventDefault");
             var $link = $(ev.currentTarget);
+             console.log("after link");
             var $input = $link.parent().find("input");
-            var product_id = parseInt($input[0]['attributes']['data-product-id']['value']);
-            var available_qty = parseInt($input[0]['attributes']['data-available-qty']['value']);
+              console.log("after input");
+              console.log($input);
+            var product_id = $input[0]['attributes']['data-product-id']['value'];
+             console.log("after product id");
+             console.log(product_id);
+            var available_qty = $input[0]['attributes']['data-available-qty']['value'];
+              console.log("after available_qty");
+                console.log(available_qty);
             var partn_name_id = $input[0]['attributes']['data-partn-name-id']['value'];
+              console.log("after partn_name_id");
+              console.log(partn_name_id);
             var new_qty = parseInt($input.val());
+              console.log("after new_qty");
+                console.log(new_qty);
             console.log(partn_name_id);
             var ele1 = $link.parent().find("#allow_qty_plus_"+partn_name_id);
             if (available_qty === new_qty) {
