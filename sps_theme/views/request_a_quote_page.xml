@@ -60,7 +60,7 @@
                                     </div>
                                     <div class="col-md-1">
                                         <div class="form-group has-float-label form-field o_website_form_required_custom">
-                                            <input type="text" placeholder="Suffix *" id="Suffix" class="form-control o_website_form_input" name="" required=""/>
+                                            <input type="text" placeholder="Suffix *" id="Suffix" class="form-control o_website_form_input" name="Suffix" required=""/>
 <!--                                            <label class="control-label" for="Suffix">Suffix</label>-->
                                         </div>
                                     </div>
