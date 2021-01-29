@@ -150,6 +150,9 @@
              </div>
 
         </xpath>
+        <xpath expr="//div[@id='delivery_carrier']/h3" position="replace">
+            <h3 t-if="delivery_nb &gt; 1" class="mb24">Choose a Delivery Method</h3>
+        </xpath>
     </template>
 
 
