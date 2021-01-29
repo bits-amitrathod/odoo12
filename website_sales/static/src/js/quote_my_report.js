@@ -39,32 +39,20 @@ odoo.define('website_sales.quote_my_report_cart', function (require) {
 	    var engine = this;
 
         $(engine).on('click', 'a.js_add_cart_json', function (ev) {
-            console.log('In add quantity test123');
+            console.log('In add quantity');
             ev.preventDefault();
-            console.log("after ev preventDefault");
             var $link = $(ev.currentTarget);
-             console.log("after link");
-            var $input = $link.parent().find("input");
-              console.log("after input");
-              console.log($input);
-            var product_id = $input[0]['attributes']['data-product-id']['value'];
-             console.log("after product id");
-             console.log(product_id);
-            var available_qty = $input[0]['attributes']['data-available-qty']['value'];
-              console.log("after available_qty");
-                console.log(available_qty);
+            var $input = $link.parent().parent().find("input");
+            var product_id = parseInt($input[0]['attributes']['data-product-id']['value']);
+            var available_qty = parseInt($input[0]['attributes']['data-available-qty']['value']);
             var partn_name_id = $input[0]['attributes']['data-partn-name-id']['value'];
-              console.log("after partn_name_id");
-              console.log(partn_name_id);
             var new_qty = parseInt($input.val());
-              console.log("after new_qty");
-                console.log(new_qty);
             console.log(partn_name_id);
             var ele1 = $link.parent().find("#allow_qty_plus_"+partn_name_id);
-            if (available_qty === new_qty) {
-                $('#allow_qty_plus_'+partn_name_id).css({'pointer-events':'none'});
+            if (new_qty>=available_qty) {
+               $('#allow_qty_plus_'+partn_name_id).css({'pointer-events':'none', 'color':'#cacaca'});
             }else{
-                $('#allow_qty_plus_'+partn_name_id).css({'pointer-events':''});
+               $('#allow_qty_plus_'+partn_name_id).css({'pointer-events':'', 'color':'#3d9cca'});
             }
 
             ajax.jsonRpc("/shop/quote_my_report/update_json", 'call', {
@@ -88,8 +76,11 @@ odoo.define('website_sales.quote_my_report_cart', function (require) {
 
                 if(val === true){
                     $('#row_checked_'+partn_name_id).addClass('row-checked')
-                    if (available_qty != new_qty) {
-                        $('#allow_qty_plus_'+partn_name_id).css({'pointer-events':'', 'color':'#3d9cca'});
+                    if (new_qty >= available_qty) {
+                        $('#allow_qty_plus_'+partn_name_id).css({'pointer-events':'none', 'color':'#cacaca'});
+                    }
+                    else{
+                    $('#allow_qty_plus_'+partn_name_id).css({'pointer-events':'', 'color':'#3d9cca'});
                     }
                     $('#allow_qty_minus_'+partn_name_id).css({'pointer-events':'', 'color':'#3d9cca'});
 

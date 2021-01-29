@@ -11,9 +11,10 @@
             <t t-call="website.layout">
                 <section id="quote" class="report">
                         <div class="text-center pt32 pb32">
-                            <h1  class="about-header"> My In-Stock Report </h1>
+                            <h1  class="about-header mb0"> My In-Stock Report </h1>
+                            <img src="/website_sales/static/src/images/StockHawk_Logo_TM_R1.png" class="img-fluid"/>
                         </div>
-                <div class="container oe_website_sale py-2">
+                <div class="container oe_website_sale py-2" style="padding-top: 0px !important;">
                     <div t-if="invalid_url and invalid_url != ''" class="js_cart_lines alert alert-info">
                         <t t-esc="invalid_url" />
                     </div>
@@ -117,7 +118,7 @@
                     <div t-if="bool(product_list)">
                         <form t-attf-action="/add/product/cart" method="POST">
                             <button type="submit" disabled="true" id="add_product_in_to_cart"
-                                    title="Select at least one product" style="float: right; margin-bottom: 10px;"
+                                    title="Select at least one product" style="float: right; margin-top: 50px !important; margin-bottom: 100px;"
                                     class="btn btn-primary btn-lg mt8 js_check_product a-submit">Add to Cart</button>
                         </form>
                     </div>
