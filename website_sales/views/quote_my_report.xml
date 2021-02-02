@@ -10,9 +10,9 @@
         <template id="quote_my_report" name="Quote My Report">
             <t t-call="website.layout">
                 <section id="quote" class="report">
-                        <div class="text-center pt32 pb32">
-                            <h1  class="about-header mb0"> My In-Stock Report </h1>
+                        <div class="text-center pt32 pb32 in-stock-title">
                             <img src="/website_sales/static/src/images/StockHawk_Logo_TM_R1.png" class="img-fluid"/>
+                            <h1  class="about-header mb0"> My In-Stock Report </h1>
                         </div>
                 <div class="container oe_website_sale py-2" style="padding-top: 0px !important;">
                     <div t-if="invalid_url and invalid_url != ''" class="js_cart_lines alert alert-info">
@@ -76,7 +76,7 @@
                                 </td>
                                 <td class="text-center td-av-qty align-middle">
                                     <div>
-                                        <span t-esc="product_list.get(product[0])['product'].actual_quantity"/>
+                                        <strong><span t-esc="product_list.get(product[0])['product'].actual_quantity"/></strong>
                                     </div>
                                 </td>
                                 <td class="text-center td-qty align-middle">
