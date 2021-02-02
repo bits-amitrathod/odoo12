@@ -38,19 +38,19 @@
 
                                     <div class="col-md-3 px-1" style="">
                                         <div class="form-group has-float-label">
-                                            <input type="text" placeholder="Large Diameter Scope " id="Diameter" class="form-control" name="Diameter" required=""/>
+                                            <input type="text" placeholder="Large Diameter Scope " id="Diameter" class="form-control" name="Large Diameter Scope" required=""/>
 <!--                                            <label class="control-label" for="Diameter">Large Diameter Scope</label>-->
                                         </div>
                                     </div>
                                     <div class="col-md-3 px-1">
                                          <div class="form-group has-float-label">
-                                            <input type="text" placeholder="Small Diameter Scope" id="Scope" class="form-control" name="Scope" required=""/>
+                                            <input type="text" placeholder="Small Diameter Scope" id="Scope" class="form-control" name="Small Diameter Scope" required=""/>
 <!--                                            <label class="control-label" for="Scope">Small Diameter Scope</label>-->
                                         </div>
                                     </div>
                                     <div class="col-md px-1">
                                          <div class="form-group has-float-label">
-                                            <input type="text" placeholder="Rigid Scope" id="Rigid" class="form-control" name="Rigid" required=""/>
+                                            <input type="text" placeholder="Rigid Scope" id="Rigid" class="form-control" name="Rigid Scope" required=""/>
 <!--                                            <label class="control-label" for="Rigid">Rigid Scope</label>-->
                                         </div>
                                     </div>
@@ -71,19 +71,19 @@
 
                                      <div class="col-md-12">
                                         <div class="form-group has-float-label form-field o_website_form_required_custom">
-                                            <input type="text" placeholder="Purchase Order Number *" id="Purchase" class="form-control o_website_form_input" name="Purchase" required=""/>
+                                            <input type="text" placeholder="Purchase Order Number *" id="Purchase" class="form-control o_website_form_input" name="Purchase Order Number" required=""/>
 <!--                                            <label class="control-label" for="Purchase">Purchase Order Number</label>-->
                                         </div>
                                     </div>
                                      <div class="col-md-12">
                                         <div class="form-group has-float-label form-field o_website_form_required_custom">
-                                            <input type="text" placeholder="Model Number *" id="Model" class="form-control  o_website_form_input" name="Model" required=""/>
+                                            <input type="text" placeholder="Model Number *" id="Model" class="form-control  o_website_form_input" name="Model Number" required=""/>
 <!--                                            <label class="control-label" for="Model">Model Number</label>-->
                                         </div>
                                     </div>
                                       <div class="col-md-12">
                                         <div class="form-group has-float-label form-field o_website_form_required_custom">
-                                            <input type="text" placeholder="Serial Number *" id="Serial" class="form-control o_website_form_input" name="Serial" required=""/>
+                                            <input type="text" placeholder="Serial Number *" id="Serial" class="form-control o_website_form_input" name="Serial Number" required=""/>
 <!--                                            <label class="control-label" for="Serial">Serial Number</label>-->
                                         </div>
                                     </div>
@@ -91,7 +91,7 @@
                                         <div class="form-group  has-float-label form-field o_website_form_required_custom">
                                            <div class="o_website_form_date input-group" id="datepicker3" data-target-input="nearest">
                       <!--                        <input id="birthdate" type="text" placeholder="Date Shipped" name="Date" class="form-control o_website_form_input o_website_form_date"/>-->
-                                             <input type="text" id="birthdate2" class="form-control datetimepicker-input o_website_form_input"  placeholder="Date Shipped *" data-toggle="datetimepicker" data-target="#datepicker3" name=""/>
+                                             <input type="text" id="birthdate2" class="form-control datetimepicker-input o_website_form_input"  placeholder="Date Shipped *" data-toggle="datetimepicker" data-target="#datepicker3" name="Date Shipped"/>
 <!--                                             <label class="control-label" for="birthdate2" >Date Shipped </label>-->
                                               <div class="input-group-append" data-target="#datepicker3" data-toggle="datetimepicker">
                                                   <span class="input-group-text" id="birthdate2"><i class="icon-calendars"></i></span>
@@ -112,24 +112,24 @@
 <!--                                    </div>-->
                                     <div class="col-md-12">
                                         <div class="form-group has-float-label  form-field o_website_form_required_custom">
-                                            <input type="text" placeholder="Return Shipping Account Number *" id="Shipping" class="form-control o_website_form_input" name="Shipping" required=""/>
+                                            <input type="text" placeholder="Return Shipping Account Number *" id="Shipping" class="form-control o_website_form_input" name="Return Shipping Account Number " required=""/>
 <!--                                            <label class="control-label" for="Shipping">Return Shipping Account Number</label>-->
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group has-float-label  form-field o_website_form_required_custom">
-                                            <input type="text" placeholder="Loaner Requested?  *" id="Loaner" class="form-control o_website_form_input" name="Loaner" required=""/>
+                                            <input type="text" placeholder="Loaner Requested?  * " disabled="True" id="Loaner" class="form-control o_website_form_input" name="Loaner" required=""/>
 <!--                                            <label class="control-label" for="Loaner">Loaner Requested?</label>-->
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <label class="custom-radio-buttons">
-                                          <input type="radio"  name="radio" />
+                                          <input type="radio"  name="Loaner Requested" />
                                           <span class="checkmark"></span>
                                            <span class="radio-label">Yes</span>
                                         </label>
                                          <label class="custom-radio-buttons">
-                                          <input type="radio"  name="radio" />
+                                          <input type="radio"  name="Loaner Requested" />
                                           <span class="checkmark"></span>
                                            <span class="radio-label">No</span>
                                         </label>
@@ -137,18 +137,18 @@
                                     <div class="w-100"></div>
                                     <div class="col-md-2">
                                         <div class="form-group has-float-label  form-field o_website_form_required_custom">
-                                            <input type="text" placeholder="Damage Waiver *" id="Damage" class="form-control o_website_form_input" name="Damage" required=""/>
+                                            <input type="text" placeholder="Damage Waiver *" disabled="True" id="Damage" class="form-control o_website_form_input" name="Damage" required=""/>
 <!--                                            <label class="control-label" for="Damage">Damage Waiver</label>-->
                                         </div>
                                     </div>
                                    <div class="col-md-3">
                                         <label class="custom-radio-buttons">
-                                          <input type="radio"  name="radio" />
+                                          <input type="radio"  name="Damage Waiver" />
                                           <span class="checkmark"></span>
                                            <span class="radio-label">Opt-In</span>
                                         </label>
                                          <label class="custom-radio-buttons">
-                                          <input type="radio"  name="radio" />
+                                          <input type="radio"  name="Damage Waiver" />
                                           <span class="checkmark"></span>
                                            <span class="radio-label">Opt-Out</span>
                                         </label>
@@ -210,7 +210,7 @@
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group has-float-label form-field o_website_form_required_custom">
-                                            <input type="text" placeholder="Direct Line *" id="Direct" class="form-control o_website_form_input" name="Direct" required=""/>
+                                            <input type="text" placeholder="Direct Line *" id="Direct" class="form-control o_website_form_input" name="Direct Line" required=""/>
 <!--                                            <label class="control-label" for="Direct">Direct Line</label>-->
                                         </div>
                                     </div>
@@ -225,7 +225,7 @@
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group has-float-label form-field o_website_form_required_custom">
-                                            <input type="text" placeholder="Facility Name *" id="Facility" class="form-control o_website_form_input" name="Facility" required=""/>
+                                            <input type="text" placeholder="Facility Name *" id="Facility" class="form-control o_website_form_input" name="Facility Name" required=""/>
 <!--                                            <label class="control-label" for="Facility">Facility Name</label>-->
                                         </div>
                                     </div>
@@ -321,7 +321,7 @@
                                     </div>
                                      <div class="col-md-12">
                                         <div class="form-group has-float-label">
-                                            <input type="text" placeholder="Other Amount" id="Other" class="form-control" name="Other" required=""/>
+                                            <input type="text" placeholder="Other Amount" id="Other" class="form-control" name="Other Amount" required=""/>
 <!--                                            <label class="control-label" for="Other">Other Amount</label>-->
                                         </div>
                                     </div>
@@ -359,6 +359,8 @@
                                         </div>
                                 </div>
                             </div>
+                            <input class="form-field" type="hidden" name="email_to" value="info@surgicalproductsolutions.com"/>
+                            <input class="form-field" type="hidden" name="subject" value="Received New 'Equipment Service Request' Form"/>
                         </form>
 
                      </section>

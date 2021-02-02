@@ -17,6 +17,7 @@
 
         'views/about_page.xml',
         'views/contact_page.xml',
+        'views/portal_my_details.xml',
         'views/stockhawk_page.xml',
         'views/seller_form_page.xml',
         'views/equipment_service_request_page.xml',

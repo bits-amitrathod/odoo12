@@ -35,8 +35,8 @@
 														</t>
 													</span>
 												</p>
-												<span class="lh-25" t-field="blog_post.post_date" t-options='{"format": "MMM d, yyyy"}'/>
-												<span >•
+												<!-- <span class="lh-25" t-field="blog_post.post_date" t-options='{"format": "MMM d, yyyy"}'/>  •-->
+												<span >
 
 													<t t-esc="blog_post.visits"/>
 													<span>Views</span>
@@ -93,8 +93,10 @@
 										<a class="badge badge-primary mr8" t-attf-href="#{blog_url(tag=slug(one_tag))}" t-esc="one_tag.name"/>
 									</t>
 								</span>
-								<br/><span class="regular-font" t-field="post.post_date" t-options='{"format": "MMM d, yyyy"}'/>
-								<span class="regular-font" >•<t t-esc="post.visits"/></span> Views
+								<br/>
+								<!--<span class="regular-font" t-field="post.post_date" t-options='{"format": "MMM d, yyyy"}'/>-->
+								<span class="regular-font" ><t t-esc="post.visits"/></span>
+								Views
 							</p>
 							<!--                                                   <p  class="f14 mb-0">Jun 14 • 3 min read</p>-->
 						</div>
@@ -248,7 +250,9 @@
 
 		</xpath>
 		<xpath expr="//h1" position="replace">
+			<t t-if="tag_name">
 			<h1><t t-esc="tag_name.name"/></h1>
+			</t>
 		</xpath>
 		<xpath expr="//h3[hasclass('text-muted')]" position="replace"></xpath>
 	</template>
@@ -259,4 +263,5 @@
 	<template id="opt_blog_rc_follow_us" name="Subscription" priority="4" inherit_id="website_blog.opt_blog_rc_follow_us" active="False" customize_show="True"></template>
 	<template id="opt_blog_rc_status" name="Status" priority="5" inherit_id="website_blog.opt_blog_rc_status" active="False" customize_show="True"></template>
 	<template id="opt_blog_rc_blogs" name="Our Blogs" priority="6" inherit_id="website_blog.opt_blog_rc_blogs" active="False" customize_show="True"></template>
+	<template id="opt_blog_post_complete_read_next" name="Read next article" inherit_id="website_blog.opt_blog_post_complete_read_next" active="False" customize_show="True"></template>
 </odoo>

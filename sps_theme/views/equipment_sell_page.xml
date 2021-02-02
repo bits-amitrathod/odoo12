@@ -350,7 +350,7 @@
                                 </div>
                                  <div class="col-md-6">
                                     <div class="form-group has-float-label form-field ">
-                                        <input type="text" class="form-control o_website_form_input" placeholder="Contact Name (for final signature) First Name" id="contact_last_name" name="contact_last_name"/>
+                                        <input type="text" class="form-control o_website_form_input" placeholder="Contact Name (for final signature) Last Name" id="contact_last_name" name="contact_last_name"/>
 <!--                                        <label class="control-label" for="contact_last_name">Contact Name (for final signature) Last Name</label>-->
                                     </div>
                                 </div>
@@ -369,21 +369,20 @@
                                 </div>
                                 <div class="col-md-12">
                                      <div class="form-group has-float-label form-field ">
-                                        <textarea id="description" placeholder="Description" class="form-control o_website_form_input" name="description"  rows="1"></textarea>
+                                        <textarea id="description" placeholder="Description" class="form-control o_website_form_input" name="description"  rows="1"><t t-esc="request.params.get('description', '')" /></textarea>
 <!--                                        <label class="control-label" for="description">Description</label>-->
                                      </div>
                                 </div>
                                  <div class="col-md-5">
-                                    <div class="form-group  has-float-label">
-                                         <div class="input-group">
-                                            <input id="birthdate" type="text" placeholder="Birthdate" name="birth_date" class="form-control o_website_form_input o_website_form_input o_website_form_date"/>
-<!--                                             <label class="control-label" for="birthdate">Purchase Date</label>-->
-                                            <div class="input-group-append">
-                                                <span class="input-group-text" id="birthdate"><i class="icon-calendars"></i></span>
-                                            </div>
+                                        <div class="form-group  has-float-label form-field o_website_form_required_custom">
+                                           <div class="o_website_form_date input-group" id="datepicker3" data-target-input="nearest">
+                                             <input type="text" id="birthdate2" class="form-control datetimepicker-input o_website_form_input"  placeholder="Purchase Date" data-toggle="datetimepicker" data-target="#datepicker3" name="Purchase Date"/>
+                                              <div class="input-group-append" data-target="#datepicker3"  data-toggle="datetimepicker">
+                                                  <span class="input-group-text" id="birthdate2"><i class="icon-calendars"></i></span>
+                                              </div>
+                                          </div>
                                         </div>
-                                    </div>
-                                </div>
+                                     </div>
                                 <div class="col-md-5">
                                     <div class="form-group has-float-label form-field ">
                                         <input type="text" class="form-control o_website_form_input" placeholder="Condition" id="Condition" name="Condition"/>
@@ -411,6 +410,8 @@
                                 </div>
                             </div>
                         </div>
+                       <input class="form-field" type="hidden" name="email_to" value="info@surgicalproductsolutions.com"/>
+                       <input class="form-field" type="hidden" name="subject" value="Received New 'Sell Your Surgical Equipment' Form"/>
                     </form>
                 </section>
                  <!--<div class="seprator">
