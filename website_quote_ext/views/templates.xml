@@ -343,7 +343,10 @@
                             <th class="text-left"><span t-if="any([line.order_id.team_id.team_type=='engine' for line in sale_order.order_line])">Ref #</span></th>
                             <th class="text-left">Products</th>
                             <th class="text-left"><span t-if="any([line.order_id.team_id.team_type=='engine' for line in sale_order.order_line])">Expiration</span></th>
-                             <th><span t-if="any([line.req_no for line in sale_order.order_line])">Requisition No</span></th>
+                            <th><span t-if="any([line.req_date for line in sale_order.order_line])">Requisition Date</span></th>
+                            <th><span t-if="any([line.req_no for line in sale_order.order_line])">Requisition No</span></th>
+                            <th><span t-if="any([line.vendor for line in sale_order.order_line])">Vendor</span></th>
+                            <th><span t-if="any([line.item_no for line in sale_order.order_line])">Item No.</span></th>
                             <th class="text-right">Quantity</th>
                             <th t-attf-class="text-right {{ '' if report_type == 'html' else '' }}">Unit Price</th>
                             <th t-if="display_discount" t-attf-class="text-right {{ '' if report_type == 'html' else '' }}">
@@ -356,6 +359,7 @@
                                 <span groups="account.group_show_line_subtotals_tax_excluded">Amount</span>
                                 <span groups="account.group_show_line_subtotals_tax_included">Total Price</span>
                             </th>
+                            <th><span t-if="any([line.deliver_to_location for line in sale_order.order_line])">Deliver-to Location</span></th>
                         </tr>
                     </thead>
                     <tbody class="sale_tbody">
@@ -372,9 +376,10 @@
                                     <td id="product_sku_code"><span t-if="line.order_id.team_id.team_type=='engine'" t-field="line.product_id.product_tmpl_id.sku_code"/> </td>
                                     <td id="product_name"><span t-field="line.name"/> </td>
                                     <td id="product_name"><span t-if="line.order_id.team_id.team_type=='engine'" t-field="line.product_min_max_exp_date"/> </td>
-                                  <td>
-                                      <span t-if="line.req_no" t-field="line.req_no"/>
-                                  </td>
+                                    <td><span t-if="line.req_date" t-field="line.req_date"/></td>
+                                    <td><span t-if="line.req_no" t-field="line.req_no"/></td>
+                                    <td><span t-if="line.vendor" t-field="line.vendor"/></td>
+                                    <td><span t-if="line.item_no" t-field="line.item_no"/></td>
                                     <td class="text-right">
                                         <div id="quote_qty">
                                             <span t-field="line.product_uom_qty"/>
@@ -404,6 +409,7 @@
                                         <span class="oe_order_line_price_subtotal" t-field="line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
                                         <span class="oe_order_line_price_total" t-field="line.price_total" groups="account.group_show_line_subtotals_tax_included"/>
                                     </td>
+                                    <td><span t-if="line.deliver_to_location" t-field="line.deliver_to_location"/></td>
                                 </t>
                                 <t t-if="line.display_type == 'line_section'">
                                     <td colspan="99">

@@ -187,6 +187,10 @@ class SaleOrderLinePrioritization(models.Model):
     # customer_request_count = fields.Boolean(string='Request count', compute="_get_customer_request_count")
     customer_request_id = fields.Many2one('sps.customer.requests', string='Request')
     req_no = fields.Char(string='Requisition Number')
+    req_date = fields.Char(string='Requisition Date')
+    vendor = fields.Char(string='Vendor')
+    item_no = fields.Char(string='Item No.')
+    deliver_to_location = fields.Char(string='Deliver-to Location')
     default_code = fields.Char("SKU", store=False, readonly=True, related='product_id.product_tmpl_id.default_code')
     ex_product_desc = fields.Char("Product Description", store=False, readonly=True,
                                   related='product_id.product_tmpl_id.name')
