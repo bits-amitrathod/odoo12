@@ -76,7 +76,7 @@
                                 </td>
                                 <td class="text-center td-av-qty align-middle">
                                     <div>
-                                        <strong><span t-esc="product_list.get(product[0])['product'].actual_quantity"/></strong>
+                                        <strong><span t-esc="product_list.get(product[0])['product'].actual_quantity" t-options='{"widget": "integer"}'/></strong>
                                     </div>
                                 </td>
                                 <td class="text-center td-qty align-middle">
@@ -146,7 +146,7 @@
             <xpath expr="//td[@class='text-center td-qty']" position="before">
                 <td t-if="line.product_id.actual_quantity" class="text-center td-available-qty">
                     <div>
-                        <strong t-field="line.product_id.actual_quantity" />
+                        <strong t-field="line.product_id.actual_quantity" t-options='{"widget": "integer"}'/>
                     </div>
                 </td>
             </xpath>
