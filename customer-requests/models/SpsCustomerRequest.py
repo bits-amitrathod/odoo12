@@ -56,7 +56,7 @@ class SpsCustomerRequest(models.Model):
     available_qty = fields.Integer("Available Quantity")
     duplicate_product = fields.Boolean('Duplicate Product')
 
-    req_date = fields.Char(string='Requisition Date')
+    req_date = fields.Date(string='Requisition Date')
     vendor = fields.Char(string='Vendor')
     item_no = fields.Char(string='Item No.')
     deliver_to_location = fields.Char(string='Deliver-to Location')
