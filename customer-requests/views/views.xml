@@ -125,10 +125,16 @@
                     <field name="file_name"/>
                     <field name="template_status"/>
                     <field name="template_type"/>
+                    <field name="mf_req_date"/>
+                    <field name="mf_req_no"/>
+                    <field name="mf_vendor"/>
+                    <field name="mf_item_no"/>
                     <field name="mf_customer_sku"/>
                     <field name="mf_quantity"/>
                     <field name="mf_uom"/>
                     <field name="mf_required_quantity"/>
+                    <field name="mf_gl_account"/>
+                    <field name="mf_deliver_to_location"/>
                 </tree>
             </field>
         </record>
