@@ -33,6 +33,7 @@ class PaymentAquirerCstm(http.Controller):
                                 return http.request.render('payment_aquirer_cstm.purchase_order_page', vals)
                             else:
                                 order.client_order_ref = kwargs['purchase_order']
+                                order.action_confirm()
                     return request.redirect('/shop/payment/validate')
                 else:
                     request.redirect('/shop')
