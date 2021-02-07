@@ -104,6 +104,10 @@
                     Edit additional shipping notes
                 </a>
 
+                <textarea style="margin-bottom: 0px;margin-top: 10px;" rows="3" name="sales_team_message"
+                          placeholder="Leave message for the sales team..." class="form-control"/>
+
+
             <div class="modal" id="accept" role="dialog" aria-hidden="true">
                 <div class="modal-dialog">
                     <form id="accept" method="POST"

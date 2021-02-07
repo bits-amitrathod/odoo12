@@ -4,6 +4,7 @@ odoo.define('payment_aquirer_cstm.payment_aquirer_cstm', function(require) {
     var ajax = require('web.ajax');
     var $carrier_badge = $('#delivery_carrier input[name="delivery_type"][value=3] ~ .badge:not(.o_delivery_compute)');
     var $compute_badge = $('#delivery_carrier input[name="delivery_type"][value=3] ~ .o_delivery_compute');
+    var salesTeamMessage = $('textarea[name="sales_team_message"]');
 
     $(document).ready(function() {
         ajax.jsonRpc("/checkHavingCarrierWithAccountNo", 'call', {
@@ -134,6 +135,13 @@ odoo.define('payment_aquirer_cstm.payment_aquirer_cstm', function(require) {
                 document.getElementById("noteText").value = value;
                 document.getElementById("noteText").setAttribute('readonly', true);
             }
+        });
+    });
+
+
+    salesTeamMessage.on("change", function(event) {
+        ajax.jsonRpc("/salesTeamMessage", 'call', {
+            'sales_team_message': salesTeamMessage.val()
         });
     });
 });

@@ -121,18 +121,33 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
     def payment_confirmation(self, **post):
         responce = super(WebsiteSalesPaymentAquirerCstm, self).payment_confirmation(**post)
         order = responce.qcontext['order']
+        sale_note = ""
+
+        if 'sales_team_message' in request.session:
+            if request.session['sales_team_message']:
+                sale_note = request.session['sales_team_message']
+                request.session.pop('sales_team_message')
+
         if 'expedited_shipping' in request.session:
-            expedited_shipping = request.session['expedited_shipping']
-            if expedited_shipping:
-                order.sudo().write({'sale_note': expedited_shipping})
+            if request.session['expedited_shipping']:
+                if sale_note:
+                    sale_note = sale_note + "\n" + request.session['expedited_shipping']
+                else:
+                    sale_note = request.session['expedited_shipping']
+                request.session.pop('expedited_shipping')
                 #order_sudo = self._document_check_access('sale.order', order.id, access_token=order.access_token)
                 # _message_post_helper(res_model='sale.order', res_id=order.id,
                 #                      message="<strong>Expedited Shipping:</strong> " + expedited_shipping,
                 #                      token=order.access_token,
                 #                      message_type='notification', subtype="mail.mt_note",
                 #                      partner_ids=order.user_id.sudo().partner_id.ids)
-                request.session['expedited_shipping'] = ""
 
+        if sale_note:
+            order.sudo().write({'sale_note': sale_note})
         return responce
+
+    @http.route('/salesTeamMessage', type='json', auth="public", methods=['POST'], website=True, csrf=False)
+    def salesTeamMessage(self, sales_team_message):
+        request.session['sales_team_message'] = sales_team_message
 
 
