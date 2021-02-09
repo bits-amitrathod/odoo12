@@ -50,12 +50,9 @@ class PaymentAquirerCstm(http.Controller):
 
         return value
 
-
-    @http.route(['/shop/cart/expeditedShipping'], type='http', auth="public", methods=['POST'], website=True,
-                csrf=False)
-    def expedited_shipping(self, expedited_shipping, **kw):
+    @http.route(['/shop/cart/expeditedShipping'], type='json', auth="public", methods=['POST'], website=True,csrf=False)
+    def expedited_shipping(self, expedited_shipping):
         request.session['expedited_shipping'] = expedited_shipping
-        return request.redirect('/shop/payment')
 
     @http.route('/checkHavingCarrierWithAccountNo', type='json', auth="public", methods=['POST'], website=True, csrf=False)
     def check_having_carrier_with_account_no(self):

@@ -10,16 +10,14 @@ odoo.define('payment_aquirer_cstm.payment_aquirer_cstm', function(require) {
         ajax.jsonRpc("/checkHavingCarrierWithAccountNo", 'call', {
             }).then(function(data) {
                 var carrier_acc_no = data['carrier_acc_no']
+                console.log(carrier_acc_no);
                 if (carrier_acc_no) {
                     $("#delivery_35").prop('checked', true);
-                    $("#hasShippingNote").prop('checked', true);
+                    $("#expedited_shipping_div").parent().show();
                 } else {
-                    $("#hasShippingNote").prop('checked', false);
                     $("#delivery_35").prop('checked', false);
                     $("#delivery_3").prop('checked', true);
-                    $("#hasShippingNote").parent().hide();
-                    $("#expedited_shipping").hide();
-                    $("#editShippingNote").hide();
+                    $("#expedited_shipping_div").parent().hide();
                     $("#delivery_35").parent().hide();
                     console.log('Error message');
                     console.log(data['error_message']);
@@ -39,102 +37,87 @@ odoo.define('payment_aquirer_cstm.payment_aquirer_cstm', function(require) {
                 }
          });
 
-          var default_e = document.getElementById("selectDeliveryMethod");
-          var default_value = default_e.options[default_e.selectedIndex].value;
-          document.getElementById("noteText").value = default_value;
-          var $pay_button = $('#o_payment_form_pay');
-
-        $("#hasShippingNote").change(function() {
-            if ( $(this).is(':checked') ) {
-                $("#expedited_shipping").show();
-                $("#editShippingNote").show();
-                $("#delivery_35").prop('checked', true);
-                $pay_button.attr('disabled', false);
-            } else {
-                $("#expedited_shipping").hide();
-                $("#editShippingNote").hide();
-                $("#delivery_35").prop('checked', false);
-                $pay_button.attr('disabled', true);
-            }
-        });
-
         $("#delivery_35").change(function() {
             if ( $(this).is(':checked') ) {
-                $("#hasShippingNote").prop('checked', true);
-                $("#editShippingNote").show();
-                $("#expedited_shipping").show();
-
-
+                $("#expedited_shipping_div").parent().show();
+                var e = document.getElementById("selectDeliveryMethod");
+                var value = e.options[e.selectedIndex].value;
+                ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
+                    'expedited_shipping': value
+                });
             }
         });
 
         $("#delivery_3").change(function() {
             if ( $(this).is(':checked') ) {
-                $("#hasShippingNote").prop('checked', false);
-                $("#editShippingNote").hide();
-                $("#expedited_shipping").hide();
+                $("#expedited_shipping_div").parent().hide();
+                ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
+                    'expedited_shipping': ""
+                });
             }
         });
 
         $("#delivery_4").change(function() {
             if ( $(this).is(':checked') ) {
-                $("#hasShippingNote").prop('checked', false);
-                $("#editShippingNote").hide();
-                $("#expedited_shipping").hide();
+                $("#expedited_shipping_div").parent().hide();
+                ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
+                    'expedited_shipping': ""
+                });
             }
         });
 
         $("#delivery_5").change(function() {
             if ( $(this).is(':checked') ) {
-                $("#hasShippingNote").prop('checked', false);
-                $("#editShippingNote").hide();
-                $("#expedited_shipping").hide();
+                $("#expedited_shipping_div").parent().hide();
+                ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
+                    'expedited_shipping': ""
+                });
             }
         });
 
         $("#delivery_6").change(function() {
             if ( $(this).is(':checked') ) {
-                $("#hasShippingNote").prop('checked', false);
-                $("#editShippingNote").hide();
-                $("#expedited_shipping").hide();
+                $("#expedited_shipping_div").parent().hide();
+                ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
+                    'expedited_shipping': ""
+                });
             }
         });
 
         $("#delivery_7").change(function() {
             if ( $(this).is(':checked') ) {
-                $("#hasShippingNote").prop('checked', false);
-                $("#editShippingNote").hide();
-                $("#expedited_shipping").hide();
+                $("#expedited_shipping_div").parent().hide();
+                ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
+                    'expedited_shipping': ""
+                });
             }
         });
 
         $("#delivery_8").change(function() {
             if ( $(this).is(':checked') ) {
-                $("#hasShippingNote").prop('checked', false);
-                $("#editShippingNote").hide();
-                $("#expedited_shipping").hide();
+                $("#expedited_shipping_div").parent().hide();
+                ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
+                    'expedited_shipping': ""
+                });
             }
         });
 
         $("#delivery_16").change(function() {
             if ( $(this).is(':checked') ) {
-                $("#hasShippingNote").prop('checked', false);
-                $("#editShippingNote").hide();
-                $("#expedited_shipping").hide();
+                $("#expedited_shipping_div").parent().hide();
+                ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
+                    'expedited_shipping': ""
+                });
             }
         });
 
         $("#selectDeliveryMethod").change(function() {
             var e = document.getElementById("selectDeliveryMethod");
             var value = e.options[e.selectedIndex].value;
-            if(value === "other"){
-                document.getElementById("noteText").value = "";
-                document.getElementById("noteText").removeAttribute('readonly');
-                document.getElementById("noteText").setAttribute('required', true);
-            } else {
-                document.getElementById("noteText").value = value;
-                document.getElementById("noteText").setAttribute('readonly', true);
-            }
+            console.log(value);
+            ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
+                'expedited_shipping': value
+            });
         });
     });
 

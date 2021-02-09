@@ -92,69 +92,29 @@
     <template id="payment_sale_note" inherit_id="website_sale_delivery.payment_delivery" name="Purchase Order">
         <xpath expr="//div[@class='card']" position="after">
             <script type="text/javascript" src="/payment_aquirer_cstm/static/src/js/script.js"></script>
-            <div class="col-sm-12 col-md-12" t-if="showShippingNote">
+            <div class="col-sm-12 col-md-12" style="padding: 0px;" t-if="showShippingNote">
                 <input type="hidden" value="" id="freeShipingLabel"  t-att-value="freeShipingLabel" />
-                <label class="mt-3"><input type="checkbox" value="" id="hasShippingNote" style="margin-right: 10px;"/> Please click here to ship using your Account.</label>
-                <br/>
-
-                <div  class="well" id="expedited_shipping" style="margin-bottom: 0px;margin-top: 10px;"><t t-esc="expedited_shipping"/></div>
-                <br/>
-
-                <a class="btn btn-success" data-toggle="modal" data-target="#accept" id="editShippingNote" style="color:#fff;">
-                    Edit additional shipping notes
-                </a>
-
-                <textarea style="margin-bottom: 0px;margin-top: 10px;" rows="3" name="sales_team_message"
-                          placeholder="Leave message for the sales team..." class="form-control"/>
-
-
-            <div class="modal" id="accept" role="dialog" aria-hidden="true">
-                <div class="modal-dialog">
-                    <form id="accept" method="POST"
-                          t-attf-action="/shop/cart/expeditedShipping"
-                          class="modal-content">
-                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                                &amp;times;
-                            </button>
-                            <h4 class="modal-title">Expedited Shipping</h4>
-                        </div>
-                        <div class="modal-body">
-                            <p>
-                                Your Order will be shipped Ground unless otherwise stated. If expedited shipping is
-                                needed,
-                                Please indicate below:
-                                (First Overnight by 8:30AM / Priority Overnight by 10:30AM /2nd day AM by 10:30 AM /2nd
-                                Day
-                                /3rd
-                                Day)
-                            </p>
-                            <h3 class="mb24">Select a delivery method</h3>
-                            <select class="form-control" id="selectDeliveryMethod">
-                                <!--<option value="">Select  delivery method</option>-->
-                                <option value="Ground" selected="true">Ground</option>
-                                <option value="2nd day">2nd day</option>
-                                <option value="Overnight">Overnight</option>
-                                <option value="other">Other</option>
-                            </select>
-                            <br/>
-                            <textarea rows="4" name="expedited_shipping" placeholder="Expedited Shipping" id="noteText" readonly="readonly"
-                                      class="form-control"><t t-esc="expedited_shipping"/></textarea>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" t-object="order" class="btn btn-primary">Save</button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                        </div>
-                    </form>
+                <div class="well" id="expedited_shipping_div" style="margin-bottom: 0px;margin-top: 10px;">
+                    <b class="modal-title" style="font-family: 'robotobold';">Expedited Shipping:</b>
+                    <p style="font-family: 'robotolight';">
+                        Your Order will be shipped Ground unless otherwise stated. If expedited shipping is needed,
+                        Please indicate below:
+                        (First Overnight by 8:30AM / Priority Overnight by 10:30AM /2nd day AM by 10:30 AM /2nd Day
+                        /3rd Day)
+                    </p>
+                    <b class="mb24" style="font-family: 'robotobold';">Select a delivery method:</b>
+                    <select class="form-control" id="selectDeliveryMethod">
+                        <option value="Ground" selected="true">Ground</option>
+                        <option value="2nd day">2nd day</option>
+                        <option value="Overnight">Overnight</option>
+                    </select>
                 </div>
             </div>
 
-             </div>
-
+            <div class="col-sm-12 col-md-12" style="padding: 0px;">
+                <textarea style="margin-bottom: 0px;margin-top: 10px;" rows="3" name="sales_team_message"
+                          placeholder="Leave message for the sales team..." class="form-control"/>
+            </div>
         </xpath>
     </template>
-
-
 </odoo>
