@@ -172,6 +172,10 @@
                 </li>
             </xpath>
 
+            <xpath expr="//div[@id='quote_content']" position="attributes">
+                <attribute name="class">col-12 col-lg justify-content-end stockhawk-quotation-div-inline-grid</attribute>
+            </xpath>
+
         </template>
 
         <template id="cart_lines" name="Shopping Cart Lines">
