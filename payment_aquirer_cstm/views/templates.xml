@@ -103,7 +103,7 @@
                         /3rd Day)
                     </p>
                     <b class="mb24" style="font-family: 'robotobold';font-size:16px;">Select a Delivery Method:</b>
-                    <select class="form-control" id="selectDeliveryMethod" style="font-family: 'robotolight';font-size:16px;">
+                    <select class="form-control" id="selectDeliveryMethod" style="font-family: 'robotolight';font-size: 16px;">
                         <option value="Ground" selected="true">Ground</option>
                         <option value="2nd day">2nd day</option>
                         <option value="Overnight">Overnight</option>
