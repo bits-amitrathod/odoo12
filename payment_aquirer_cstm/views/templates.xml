@@ -95,14 +95,14 @@
             <div class="col-sm-12 col-md-12" style="padding: 0px;" t-if="showShippingNote">
                 <input type="hidden" value="" id="freeShipingLabel"  t-att-value="freeShipingLabel" />
                 <div class="well" id="expedited_shipping_div" style="margin-bottom: 0px;margin-top: 10px;">
-                    <b class="modal-title" style="font-family: 'robotobold';">Expedited Shipping:</b>
+                    <b class="modal-title" style="font-family: 'robotobold';font-size:16px;">Expedited Shipping:</b>
                     <p style="font-family: 'robotolight';">
                         Your Order will be shipped Ground unless otherwise stated. If expedited shipping is needed,
                         Please indicate below:
                         (First Overnight by 8:30AM / Priority Overnight by 10:30AM /2nd day AM by 10:30 AM /2nd Day
                         /3rd Day)
                     </p>
-                    <b class="mb24" style="font-family: 'robotobold';">Select a Delivery Method:</b>
+                    <b class="mb24" style="font-family: 'robotobold';font-size:16px;">Select a Delivery Method:</b>
                     <select class="form-control" id="selectDeliveryMethod">
                         <option value="Ground" selected="true">Ground</option>
                         <option value="2nd day">2nd day</option>
