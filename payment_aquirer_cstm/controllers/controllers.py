@@ -125,7 +125,7 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
                 sale_note = request.session['sales_team_message']
                 request.session.pop('sales_team_message')
 
-        if 'expedited_shipping' in request.session:
+        if order.carrier_id.id == 35 and 'expedited_shipping' in request.session:
             if request.session['expedited_shipping']:
                 if sale_note:
                     sale_note = sale_note + "\n" + request.session['expedited_shipping']
