@@ -35,13 +35,17 @@ class CustomerTemplate(models.Model):
     template_status = fields.Char(string='Template Status')
 
     mf_customer_sku = fields.Char(string='SKU')
-    mf_req_no = fields.Char(string='Requisition Number')
+    mf_req_no = fields.Char(string='Req No.')
     mf_mfr_catalog_no = fields.Char(string='Manufacturer SKU')
     mf_required_quantity = fields.Char(string='Required Quantity')
     mf_quantity = fields.Char(string='Stock')
     mf_uom = fields.Char(string='Unit Of Measurement')
-    mf_product_description = fields.Char(string='Product Name')
-    mf_gl_account = fields.Char(string='GL Account')
+    mf_product_description = fields.Char(string='Description/Product Name')
+    mf_gl_account = fields.Char(string='General Ledger')
+    mf_req_date = fields.Char(string='Req Date')
+    mf_vendor = fields.Char(string='Vendor')
+    mf_item_no = fields.Char(string='Item No.')
+    mf_deliver_to_location = fields.Char(string='Deliver-to Location')
 
     COL_SELECTION = []
 
