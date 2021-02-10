@@ -119,16 +119,15 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
         responce = super(WebsiteSalesPaymentAquirerCstm, self).payment_confirmation(**post)
         order = responce.qcontext['order']
         sale_note = ""
-
         if 'sales_team_message' in request.session:
             if request.session['sales_team_message']:
                 sale_note = request.session['sales_team_message']
                 request.session.pop('sales_team_message')
+                order_sudo = order.sudo()
                 body = _(sale_note)
-                _message_post_helper(res_model='sale.order', res_id=order.sudo().id, message=body,
-                                     token=order.access_token,
+                _message_post_helper(res_model='sale.order', res_id=order_sudo.id, message=body,
                                      message_type='notification', subtype="mail.mt_note",
-                                     partner_ids=order.user_id.sudo().partner_id.ids)
+                                     **({'token': order.access_token} if order.access_token else {}))
 
         if order.carrier_id.id == 35 and 'expedited_shipping' in request.session:
             if request.session['expedited_shipping']:
