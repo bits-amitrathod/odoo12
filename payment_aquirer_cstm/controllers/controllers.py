@@ -124,6 +124,11 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
             if request.session['sales_team_message']:
                 sale_note = request.session['sales_team_message']
                 request.session.pop('sales_team_message')
+                body = _(sale_note)
+                _message_post_helper(res_model='sale.order', res_id=order.sudo().id, message=body,
+                                     token=order.access_token,
+                                     message_type='notification', subtype="mail.mt_note",
+                                     partner_ids=order.user_id.sudo().partner_id.ids)
 
         if order.carrier_id.id == 35 and 'expedited_shipping' in request.session:
             if request.session['expedited_shipping']:
@@ -132,12 +137,6 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
                 else:
                     sale_note = request.session['expedited_shipping']
                 request.session.pop('expedited_shipping')
-                #order_sudo = self._document_check_access('sale.order', order.id, access_token=order.access_token)
-                # _message_post_helper(res_model='sale.order', res_id=order.id,
-                #                      message="<strong>Expedited Shipping:</strong> " + expedited_shipping,
-                #                      token=order.access_token,
-                #                      message_type='notification', subtype="mail.mt_note",
-                #                      partner_ids=order.user_id.sudo().partner_id.ids)
 
         if sale_note:
             order.sudo().write({'sale_note': sale_note})
