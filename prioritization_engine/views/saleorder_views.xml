@@ -234,7 +234,11 @@
                             <th t-if="any([line.order_id.team_id.team_type=='engine' for line in doc.order_line])">Ref #</th>
                             <th>Description</th>
                             <th t-if="any([line.order_id.team_id.team_type=='engine' for line in doc.order_line])">Expiration</th>
+                            <th t-if="any([line.req_date for line in doc.order_line])">Requisition Date</th>
                             <th t-if="any([line.req_no for line in doc.order_line])">Requisition No</th>
+                            <th t-if="any([line.vendor for line in doc.order_line])">Vendor</th>
+                            <th t-if="any([line.item_no for line in doc.order_line])">Item No.</th>
+                            <th t-if="any([line.deliver_to_location for line in doc.order_line])">Deliver-to Location</th>
                             <th class="text-right">Quantity</th>
                             <th class="text-right">Unit Price</th>
                             <th t-if="display_discount" class="text-right" groups="sale.group_discount_per_so_line">Disc.(%)</th>
@@ -254,7 +258,11 @@
                                     <td t-if="line.order_id.team_id.team_type=='engine'"><span t-field="line.product_id.product_tmpl_id.sku_code"/></td>
                                     <td><span t-field="line.name"/></td>
                                     <td t-if="line.order_id.team_id.team_type=='engine'"><span t-field="line.product_min_max_exp_date"/></td>
+                                    <td t-if="line.req_date"><span t-field="line.req_date" t-options='{"widget": "date"}'/></td>
                                     <td t-if="line.req_no"><span t-field="line.req_no"/></td>
+                                    <td t-if="line.vendor"><span t-field="line.vendor"/></td>
+                                    <td t-if="line.item_no"><span t-field="line.item_no"/></td>
+                                    <td t-if="line.deliver_to_location"><span t-field="line.deliver_to_location"/></td>
                                     <td class="text-right">
                                         <span t-field="line.product_uom_qty"/>
                                         <span t-field="line.product_uom" groups="product.group_uom"/>
