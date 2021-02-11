@@ -1,0 +1,53 @@
+<odoo>
+    <data>
+        <!-- Email template -->
+        <record id="mail_template_product_instock_notification_email" model="mail.template">
+                <field name="name">eCommerce: Product Availability Email</field>
+                <field name="model_id" ref="website_sale.model_product_template"/>
+                <field name="email_from">
+                    <![CDATA["${object.company_id.name|safe}" <${(object.company_id.email or user.email)|safe}>]]></field>
+                <field name="email_to">${ctx['email']}</field>
+                <field name="subject">Your product is available</field>
+                <field name="body_html">
+                    <![CDATA[
+                    % set products = ctx.get('products', [])
+                    <div style="margin:auto;width:100%;background-color: #f6f6f6;  padding-left: 60px;">
+                        <!--<img src="/web/image/res.company/${user.company_id.id}/logo"-->
+                        <img src="/website_cstm/static/src/img/logo.png"
+                             style="height: auto; width: 80px; margin-top:30px;" alt="${user.company_id.name}"/>
+                        <br/>
+                        <br/>
+                        <p>Would you like to complete your purchase?</p>
+
+                        <table width="100%">
+                         % for product in products:
+                            <tr>
+                                    <td style="width:50px;padding-top: 16px;">
+                                        <!--<img src="/web/image/product.product/${object.product_variant_id.id}/image"-->
+                                        <img src="/website_cstm/static/src/img/product-image.jpg"
+                                             height="50px"
+                                             width="50px"></img>
+                                    </td>
+                                    <td valign="top">
+                                        <a href="/shop/product/${product.product_tmpl_id.id}" target="_blank">
+                                            <!--<strong>${object.product_variant_id.display_name}</strong>-->
+                                            <br/>${product.product_tmpl_id.product_variant_id.name}
+                                        </a>
+                                    </td>
+                            </tr>
+                             % endfor
+                        </table>
+                        <br/>
+                        <br/>
+                        <center style="padding-bottom: 60px;">
+                            <p>
+                                <b>Thank you for shopping with ${user.company_id.name}!</b>
+                            </p>
+                        </center>
+                    </div>
+                    ]]>
+                </field>
+                <field name="user_signature" eval="False"/>
+            </record>
+    </data>
+</odoo>
