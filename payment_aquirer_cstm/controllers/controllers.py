@@ -23,7 +23,7 @@ class PaymentAquirerCstm(http.Controller):
                 if tx_id:
                     transaction = request.env['payment.transaction'].sudo().browse(tx_id)
                     transaction.state = 'pending'
-                    order.state = 'sent'
+                    # order.state = 'sent'
                     if not order.client_order_ref:
                         if not order.x_studio_allow_duplicate_po:
                             result = request.env['sale.order'].sudo().search(
@@ -32,7 +32,9 @@ class PaymentAquirerCstm(http.Controller):
                                 vals = {'error': "The PO number is already present on another Sales Order."}
                                 return http.request.render('payment_aquirer_cstm.purchase_order_page', vals)
                             else:
+                                order.state = 'sent'
                                 order.client_order_ref = kwargs['purchase_order']
+                                order.action_confirm()
                     return request.redirect('/shop/payment/validate')
                 else:
                     request.redirect('/shop')
