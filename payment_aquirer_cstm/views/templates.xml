@@ -113,7 +113,7 @@
 
             <div class="col-sm-12 col-md-12" style="padding: 0px;">
                 <textarea style="margin-bottom: 0px;margin-top: 10px;" rows="3" name="sales_team_message"
-                          placeholder="Leave message for the sales team..." class="form-control"/>
+                          placeholder="Please specify additional comments or specific instructions for this order..." class="form-control"/>
             </div>
         </xpath>
     </template>
