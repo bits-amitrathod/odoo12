@@ -1,0 +1,111 @@
+<odoo>
+    <data>
+
+        <!-- Menu -->
+
+        <record id="action_product_instock_notification" model="ir.actions.act_window">
+            <field name="name">Product In-stock Notification</field>
+            <field name="res_model">sps_theme.product_instock_notify</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <menuitem id="menu_product_instock_notification" name="Website Product Notification"
+                  action="action_product_instock_notification"
+                  parent="stock.menu_stock_warehouse_mgmt" sequence="10"/>
+
+        <!-- LIST VIEW -->
+        <record model="ir.ui.view" id="sps_theme.list">
+            <field name="name">websiteCSTM list</field>
+            <field name="model">sps_theme.product_instock_notify</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="email"/>
+                    <field name="product_tmpl_id" string="Product"/>
+                    <field name="status"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Email template -->
+        <record id="mail_template_product_instock_notification_email" model="mail.template">
+                <field name="name">eCommerce: Product Availability Email</field>
+                <field name="model_id" ref="website_sale.model_product_template"/>
+                <field name="email_from">
+                    <![CDATA["${object.company_id.name|safe}" <${(object.company_id.email or user.email)|safe}>]]></field>
+                <field name="email_to">${ctx['email']}</field>
+                <field name="subject">Your product is available</field>
+                <field name="body_html">
+                    <![CDATA[
+                    % set products = ctx.get('products', [])
+                    <div style="margin:auto;width:100%;background-color: #f6f6f6;  padding-left: 60px;">
+                        <!--<img src="/web/image/res.company/${user.company_id.id}/logo"-->
+                        <img src="/website_cstm/static/src/img/logo.png"
+                             style="height: auto; width: 80px; margin-top:30px;" alt="${user.company_id.name}"/>
+                        <br/>
+                        <br/>
+                        <p>Would you like to complete your purchase?</p>
+
+                        <table width="100%">
+                         % for product in products:
+                            <tr>
+                                    <td style="width:50px;padding-top: 16px;">
+                                        <!--<img src="/web/image/product.product/${object.product_variant_id.id}/image"-->
+                                        <img src="/website_cstm/static/src/img/product-image.jpg"
+                                             height="50px"
+                                             width="50px"></img>
+                                    </td>
+                                    <td valign="top">
+                                        <a href="/shop/product/${product.product_tmpl_id.id}" target="_blank">
+                                            <!--<strong>${object.product_variant_id.display_name}</strong>-->
+                                            <br/>${product.product_tmpl_id.product_variant_id.name}
+                                        </a>
+                                    </td>
+                            </tr>
+                             % endfor
+                        </table>
+                        <br/>
+                        <br/>
+                        <center style="padding-bottom: 60px;">
+                            <p>
+                                <b>Thank you for shopping with ${user.company_id.name}!</b>
+                            </p>
+                        </center>
+                    </div>
+                    ]]>
+                </field>
+                <field name="user_signature" eval="False"/>
+            </record>
+
+         <!-- CRON -->
+        <record id="product_in_stock_notification" model="ir.cron">
+            <field name="name">Mail: Website Product Notification</field>
+            <field name="model_id" ref="model_sps_theme_product_instock_notify"/>
+            <field name="state">code</field>
+            <field name="code">model.send_email_product_instock()</field>
+            <field name='interval_number'>4</field>
+            <field name='interval_type'>hours</field>
+            <field name="numbercall">-1</field>
+        </record>
+
+        <record id="product_template_form_view_custom" model="ir.ui.view">
+            <field name="name">product.template.form.inherit.email.template</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product_email_template.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='email_template_id']" position="replace">
+                    <field name="email_template_id" string="Email Template" help="Send a product-specific email once the invoice is validated"
+                        domain="[('model','=','product.template'), ('name', '!=', 'eCommerce: Product Availability Email')]"
+                        context="{
+                            'form_view_ref':'product_email_template.email_template_form_simplified',
+                            'default_model': 'product.template',
+                            'default_subject': name,
+                            'default_name': name,
+                        }"/>
+                </xpath>
+            </field>
+        </record>
+
+
+    </data>
+</odoo>
