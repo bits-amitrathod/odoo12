@@ -55,6 +55,12 @@ class SpsCustomerRequest(models.Model):
     partial_UOM = fields.Boolean("Allow Partial UOM")
     available_qty = fields.Integer("Available Quantity")
     duplicate_product = fields.Boolean('Duplicate Product')
+
+    req_date = fields.Date(string='Requisition Date')
+    vendor = fields.Char(string='Vendor')
+    item_no = fields.Char(string='Item No.')
+    deliver_to_location = fields.Char(string='Deliver-to Location')
+
     documents = set()
 
     # Get Customer Requests

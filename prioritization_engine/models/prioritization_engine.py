@@ -263,6 +263,10 @@ class PrioritizationEngine(models.TransientModel):
 
             self.allocated_product_to_customer(customer_request.customer_id.id,
                                                customer_request.req_no,
+                                               customer_request.req_date,
+                                               customer_request.vendor,
+                                               customer_request.item_no,
+                                               customer_request.deliver_to_location,
                                                customer_request.gl_account,
                                                customer_request.id,
                                                required_quantity,
@@ -279,6 +283,10 @@ class PrioritizationEngine(models.TransientModel):
 
             self.allocated_product_to_customer(customer_request.customer_id.id,
                                                customer_request.req_no,
+                                               customer_request.req_date,
+                                               customer_request.vendor,
+                                               customer_request.item_no,
+                                               customer_request.deliver_to_location,
                                                customer_request.gl_account,
                                                customer_request.id,
                                                required_quantity,
@@ -372,9 +380,12 @@ class PrioritizationEngine(models.TransientModel):
             return None
 
     # allocated product to customer
-    def allocated_product_to_customer(self, customer_id, req_no, gl_account, customer_request_id, required_quantity,
+    def allocated_product_to_customer(self, customer_id, req_no, req_date, vendor, item_no, deliver_to_location,
+                                      gl_account, customer_request_id, required_quantity,
                                       product_id, allocated_product_from_lot, cust_req_status):
         allocated_product = {'customer_request_id': customer_request_id, 'req_no': req_no,
+                             'req_date': req_date, 'vendor': vendor, 'item_no': item_no,
+                             'deliver_to_location': deliver_to_location,
                              'customer_required_quantity': required_quantity,
                              'product_id': product_id, 'allocated_product_quantity': allocated_product_from_lot,
                              'cust_req_status': cust_req_status}
@@ -439,6 +450,10 @@ class PrioritizationEngine(models.TransientModel):
 
                     sale_order_line_dict = {'customer_request_id': allocated_product['customer_request_id'],
                                             'req_no': allocated_product['req_no'], 'order_id': sale_order['id'],
+                                            'req_date': allocated_product['req_date'],
+                                            'vendor': allocated_product['vendor'],
+                                            'item_no': allocated_product['item_no'],
+                                            'deliver_to_location': allocated_product['deliver_to_location'],
                                             'product_id': allocated_product['product_id'],
                                             'order_partner_id': partner_id_key,
                                             'product_uom_qty': allocated_product['allocated_product_quantity']}

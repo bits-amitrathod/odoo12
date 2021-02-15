@@ -1,3 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_sps_theme_product_download_catelog,access.sps_theme.product_download_catelog,model_sps_theme_product_download_catelog,base.group_user,1,1,1,1
 access_sps_theme_product_download_catelog_u,access.sps_theme.product_download_catelog,model_sps_theme_product_download_catelog,,1,0,0,0
+access_sps_theme_product_instock_notify,access.sps_theme.product_instock_notify,model_sps_theme_product_instock_notify,,1,0,0,0

@@ -2,7 +2,7 @@
     <template id="thank_you_page_template" name="Thank You">
         <t t-name="website.thank-you">
             <t t-call="website.layout">
-                <div id="wrap" class="thank-you-page">
+                <div id="wrap" class="thank-you-page oe_structure oe_empty">
                     <section class="padding-80-y">
                         <div class="container">
                              <div class="text-center">

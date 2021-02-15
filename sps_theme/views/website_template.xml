@@ -17,7 +17,7 @@
             <!-- .js -->
 
             <script type="text/javascript" src="/sps_theme/static/src/js/script.js"/>
-
+            <script type="text/javascript" src="/sps_theme/static/src/js/notify_me.js"/>
              <!--<script type="text/javascript" src="/sps_theme/static/src/js/jquery.js"/>-->
 <!--             <script type="text/javascript" src="/sps_theme/static/src/js/jquery-ui.js"/>-->
         </xpath>

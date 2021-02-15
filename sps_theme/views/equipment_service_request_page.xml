@@ -2,7 +2,7 @@
     <template id="equipment_service_request_form_template" name="Equipment Service request">
         <t t-name="website.Equipment Service request">
             <t t-call="website.layout">
-                <div id="wrap" class="equipment">
+                <div id="wrap" class="equipment oe_structure oe_empty">
                     <section class="pt32 pb32">
                         <div class="container pb-3">
                             <div class="text-center pt-3 pb-3">
