@@ -148,6 +148,11 @@
                         <strong t-field="line.product_id.actual_quantity" />
                     </div>
                 </td>
+                <td t-else="1" class="text-center td-available-qty">
+                    <div>
+                        <span>-</span>
+                    </div>
+                </td>
             </xpath>
         </template>
 
