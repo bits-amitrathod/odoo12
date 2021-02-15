@@ -91,7 +91,7 @@
                         <div class="copy-right">
                             <ul>
                                 <li>
-                                    <a href="#" title=""> <![CDATA[&copy;]]> 2020 Surgical Product Solutions.</a>
+                                    <a href="#" title=""> <![CDATA[&copy;]]> 2021 Surgical Product Solutions.</a>
                                 </li>
                                 <li>
                                     <a href="/terms-and-condition" title=""> Terms and Conditions</a>
@@ -140,9 +140,9 @@
         </xpath>
     </template>
 
-    <!--<template id="layout_footer_copyright_template" inherit_id="website.layout" name="Footer Copyright">
+    <template id="layout_footer_copyright_template" inherit_id="website.layout" name="Footer Copyright">
         <xpath expr="//footer//div[hasclass('o_footer_copyright')]" position="replace">
-            <div class="container mt16 mb8"></div>
+
         </xpath>
-    </template>-->
+    </template>
 </odoo>

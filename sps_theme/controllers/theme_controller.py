@@ -113,3 +113,40 @@ class ThemeController(http.Controller):
             response.status = str(status)
             return response
         raise werkzeug.exceptions.NotFound()
+
+    @http.route('/notifyme', type='json', auth="public", methods=['POST'], website=True, csrf=False)
+    def notifyme(self, product_id, email):
+        StockNotifcation = request.env['sps_theme.product_instock_notify'].sudo()
+        isSubcribed = StockNotifcation.search([
+            ('product_tmpl_id', '=', int(product_id)),
+            ('email', '=', email.lower()),
+            ('status', '=', 'pending'),
+        ], limit=1)
+        if not isSubcribed:
+            StockNotifcation.create({'status': 'pending', 'email': email.lower(), 'product_tmpl_id': product_id})
+            return True
+        else:
+            return False
+
+
+class Website(Home):
+    @http.route(['/website/add/', '/website/add/<path:path>'], type='http', auth="user", website=True)
+    def pagenew(self, path="", noredirect=False, add_menu=False, template=False, **kwargs):
+        # for supported mimetype, get correct default template
+        _, ext = os.path.splitext(path)
+        ext_special_case = ext and ext in _guess_mimetype() and ext != '.html'
+
+        if not template and ext_special_case:
+            default_templ = 'website.default_%s' % ext.lstrip('.')
+            if request.env.ref(default_templ, False):
+                template = default_templ
+
+        template = template and dict(template=template) or {}
+        page = request.env['website'].new_page_test(path, add_menu=add_menu, **template)
+        url = page['url']
+        if noredirect:
+            return werkzeug.wrappers.Response(url, mimetype='text/plain')
+
+        if ext_special_case:  # redirect non html pages to backend to edit
+            return werkzeug.utils.redirect('/web#id=' + str(page.get('view_id')) + '&view_type=form&model=ir.ui.view')
+        return werkzeug.utils.redirect(url + "?enable_editor=1")

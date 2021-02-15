@@ -2,7 +2,7 @@
 	<template id="stockhawk_page_template" name="Stockhawk">
 		<t t-name="website.stockhawk">
 			<t t-call="website.layout">
-				<div id="wrap" class="stockhawk-page">
+				<div id="wrap" class="stockhawk-page oe_structure oe_empty">
 					<section class="stockhawk-section pt-5">
 						<div class="container">
 							<div class="row">
@@ -243,6 +243,8 @@
 								</div>
 							</div>
 						</div>
+						<input class="form-field" type="hidden" name="email_to" value="info@surgicalproductsolutions.com"/>
+                        <input class="form-field" type="hidden" name="subject" value="Received New 'Savings Impact Quote' Form"/>
 						</form>
 					</section>
 				</div>

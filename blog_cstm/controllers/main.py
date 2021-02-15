@@ -27,9 +27,10 @@ class WebsiteBlog(odoo.addons.website_blog.controllers.main.WebsiteBlog):
         response = super(WebsiteBlog, self).blog(blog, tag, page, **opt)
         payload = response.qcontext
         sep = '-'
-        tag_id = int(tag.split(sep, 1)[1])
-        tag_name=request.env['blog.tag'].search([('id', '=',tag_id)],limit=1)
-        payload['tag_name'] = tag_name
+        if tag:
+            tag_id = int(tag.split(sep, 1)[1])
+            tag_name=request.env['blog.tag'].search([('id', '=',tag_id)],limit=1)
+            payload['tag_name'] = tag_name
         response = request.render("website_blog.blog_post_short", payload)
         return response
 

@@ -23,6 +23,7 @@
         'views/equipment_service_request_page.xml',
         'views/career_page.xml',
         'views/vendor_list_page.xml',
+        'views/notify_me_template.xml',
         'views/faqs_page.xml',
         'views/cart_page.xml',
         'views/login_page.xml',

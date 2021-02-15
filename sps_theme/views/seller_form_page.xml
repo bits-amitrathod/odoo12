@@ -115,7 +115,7 @@
                     <div class="form-group  has-float-label">
                        <div class="o_website_form_date input-group" id="datepicker3" data-target-input="nearest">
   <!--                        <input id="birthdate" type="text" placeholder="Date Shipped" name="Date" class="form-control o_website_form_input o_website_form_date"/>-->
-                         <input type="text" id="birthdate2" class="form-control datetimepicker-input o_website_form_input"  placeholder="Purchase Date " data-toggle="datetimepicker" data-target="#datepicker3" name=""/>
+                         <input type="text" id="birthdate2" class="form-control datetimepicker-input o_website_form_input"  placeholder="Purchase Date " data-toggle="datetimepicker" data-target="#datepicker3" name="Purchase Date"/>
 <!--                         <label class="control-label" for="birthdate2" >Purchase Date </label>-->
                           <div class="input-group-append" data-target="#datepicker3" data-toggle="datetimepicker">
                               <span class="input-group-text" id="birthdate2"><i class="icon-calendars"></i></span>
@@ -151,6 +151,8 @@
                 </div>
               </div>
             </div>
+              <input class="form-field" type="hidden" name="email_to" value="info@surgicalproductsolutions.com"/>
+              <input class="form-field" type="hidden" name="subject" value="Received New 'Seller Form' "/>
           </form>
         </div>
       </section>
