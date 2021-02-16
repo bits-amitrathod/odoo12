@@ -127,11 +127,11 @@
             </t>
         </template>
 
-        <!--<template id="my_in_stock_report_link" name="Link to frontend portal" inherit_id="portal.frontend_layout">
+        <template id="my_in_stock_report_link" name="Link to frontend portal" inherit_id="portal.frontend_layout">
             <xpath expr="//a[@id='o_logout']" position="before">
                 <a href="/shop/my_in_stock_report" role="menuitem" class="dropdown-item">My In-Stock Report</a>
             </xpath>
-        </template>-->
+        </template>
 
         <template id="cart_line_product_link" name="Shopping Cart Line Product Link">
             <a t-attf-href="/shop/product/#{ slug(product_list.get(product[0])['product'].product_tmpl_id) }">
