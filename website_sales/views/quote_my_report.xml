@@ -50,7 +50,7 @@
                                 </td>
                                 <td colspan="2" t-if="not product_list.get(product[0])['product'].product_tmpl_id" class='td-img align-middle'></td>
                                 <td align="center" t-if="product_list.get(product[0])['product'].product_tmpl_id" class='td-img align-middle'>
-                                    <span t-esc="product_list.get(product[0])['product'].image_small" t-options="{'widget': 'image', 'class': 'rounded'}" />
+                                    <span t-field="product_list.get(product[0])['product'].image_small" t-options="{'widget': 'image', 'class': 'rounded'}" />
                                 </td>
                                 <td t-if="product_list.get(product[0])['product'].product_tmpl_id" class='td-product_name align-middle'>
                                     <div>

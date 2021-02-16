@@ -220,7 +220,11 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
                 return http.request.render('website_sales.quote_my_report', {'invalid_url': invalid_url})
         else:
             portal_url = partner.with_context(signup_force_type_in_url='', lang=partner.lang)._get_signup_url_for_action()[partner.id]
-            return request.redirect(portal_url+'&redirect=/shop/quote_my_report/%s' % partner.id)
+            if portal_url:
+                return request.redirect(portal_url+'&redirect=/shop/quote_my_report/%s' % partner.id)
+            else:
+                return request.redirect('/')
+
 
     @http.route(['/add/product/cart'], type='http', auth="public", methods=['POST'], website=True, csrf=False)
     def add_product_in_cart(self):
