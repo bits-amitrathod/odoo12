@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import api, fields, models, tools
+import operator
 
 
 class TempProductList(models.Model):
@@ -100,15 +101,15 @@ class TempProductList(models.Model):
                                 'partner': partner,
                                 'partn_name': query_result['partn_name'],
                                 'product_brand_name': product_brand.name,
+                                'product_sku': product.product_tmpl_id.sku_code,
                                 'min_expiration_date': result['min'],
                                 'max_expiration_date': result['max'],
                                 'price_list': price_list,
                                 'quantity': query_result['quantity'],
                                 'select': False}
 
-                product_data = {product.id: [product_dict]}
+                product_data = {product.id: product_dict}
                 self.product_list.update(product_data)
-            print(self.product_list)
 
     @api.model_cr
     def delete_and_create(self):
@@ -116,12 +117,14 @@ class TempProductList(models.Model):
 
     def update_quantity(self, product_id, set_qty, select):
         if product_id is not None and product_id in self.product_list.keys() and set_qty is not None:
-            self.product_list.get(product_id)[0]['quantity'] = set_qty
+            self.product_list.get(product_id)['quantity'] = set_qty
         elif product_id is not None and product_id in self.product_list.keys() and select is not None:
-            self.product_list.get(product_id)[0]['select'] = select
+            self.product_list.get(product_id)['select'] = select
         elif product_id is None and select is not None:
             for product_id in self.product_list:
-                self.product_list.get(product_id)[0]['select'] = select
+                self.product_list.get(product_id)['select'] = select
 
     def get_product_list(self):
-        return self.product_list
+        product_list_sorted = sorted(self.product_list.items(), key=lambda x: (x[1]['product_brand_name'],
+                                                                               x[1]['product_sku']))
+        return self.product_list, product_list_sorted
