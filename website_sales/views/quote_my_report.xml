@@ -154,6 +154,11 @@
                         <span>-</span>
                     </div>
                 </td>
+                <td t-else="1" class="text-center td-available-qty">
+                    <div>
+                        <span>-</span>
+                    </div>
+                </td>
             </xpath>
         </template>
 
