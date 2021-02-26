@@ -64,7 +64,7 @@ class MailActivityCustom(models.Model):
 
 
 
-    # @api.multi
+    # #@api.multi
     # def action_create_calendar_event(self):
     #     self.ensure_one()
     #     action = self.env.ref('calendar.action_calendar_event').read()[0]
@@ -78,7 +78,7 @@ class MailActivityCustom(models.Model):
     #     }
     #     return action
     #
-    # @api.multi
+    # #@api.multi
     # def action_close_dialog(self):
     #     return {'type': 'ir.actions.act_window_close'}
     #

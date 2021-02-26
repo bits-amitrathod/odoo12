@@ -25,7 +25,7 @@ class KaRevenueReportPopup(models.TransientModel):
     key_account = fields.Many2one('res.users', string="Key Account", domain="[('active', '=', True), "
                                                                             "('share','=',False)]")
 
-    # @api.multi
+    # #@api.multi
     def open_table(self):
         start_date = datetime.datetime.strptime(str(self.start_year) + "-" + str(self.start_month) + "-01", "%Y-%m-%d").date()
 

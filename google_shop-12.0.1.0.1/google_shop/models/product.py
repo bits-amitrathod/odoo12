@@ -11,7 +11,7 @@ _logger = logging.getLogger(__name__)
 class ProductUpdates(models.Model):
     _inherit = 'product.template'
 
-    @api.multi
+    #@api.multi
     def write(self, vals):
         res = super(ProductUpdates, self).write(vals)
         fields_dict=self.env['field.mappning.line'].sudo().search([('fixed','=',False)])

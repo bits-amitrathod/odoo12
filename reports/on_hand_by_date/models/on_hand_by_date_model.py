@@ -27,7 +27,6 @@ class OnHandByDate(models.Model):
     currency_id = fields.Many2one("res.currency", string="Currency", readonly=True)
     _rec_name = 'product_name'
 
-    @api.model_cr
     def init(self):
         self.init_table()
 
@@ -116,13 +115,11 @@ class OnHandByDate(models.Model):
         sql_query = "CREATE VIEW " + res_model_cost + " AS ( " + cost_columns + from_query + " )"
         self._cr.execute(sql_query)
 
-
 class OnHandByDateCost(models.Model):
     _name = "report.on.hand.by.date.cost"
     _inherit = 'report.on.hand.by.date'
     _auto = False
 
-    @api.model_cr
     def init(self):
         self.init_table()
 

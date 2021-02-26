@@ -32,7 +32,7 @@ class WebsiteSeoRewriteSettings(models.TransientModel):
             related="website_id.use_server_rewrites", readonly=False
         )
 
-    # @api.multi
+    # #@api.multi
     # def set_values(self):
     #     super(WebsiteSeoRewriteSettings, self).set_values()
     #     IrDefault = self.env['ir.default'].sudo()
@@ -46,7 +46,7 @@ class WebsiteSeoRewriteSettings(models.TransientModel):
     #     IrDefault.set('website.seo.rewrite.settings','use_category_url', self.use_category_url)
     #     return True
     #
-    # @api.multi
+    # #@api.multi
     # def get_values(self):
     #     res = super(WebsiteSeoRewriteSettings, self).get_values()
     #     IrDefault = self.env['ir.default'].sudo()

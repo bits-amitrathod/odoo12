@@ -29,7 +29,7 @@
         <record id="action_on_hand_by_expiry" model="ir.actions.act_window">
             <field name="name">On Hand By Expiration</field>
             <field name="res_model">on_hand_by_expiry.popup</field>
-            <field name="view_type">form</field>
+<!--            <field name="view_type">form</field>-->
             <field name="view_mode">form</field>
             <field name="view_id" ref="view_on_hand_by_expiry_popup"/>
             <field name="target">new</field>
@@ -83,6 +83,6 @@
         </record>
 
         <menuitem name="On Hand By Expiration" id="on_hand_by_expiry_menu" parent="stock.menu_warehouse_report"
-                  action="on_hand_by_expiry.action_on_hand_by_expiry"/>
+                  action="on_hand_by_expiry.action_on_hand_by_expiry" sequence="6" />
     </data>
 </odoo>

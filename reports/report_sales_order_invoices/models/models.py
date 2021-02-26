@@ -33,7 +33,7 @@ class report_sales_order_invoices(models.TransientModel):
             'view_type': 'form',
             'view_mode': 'tree,form',
             'name': _('Sales Order Invoice'),
-            'res_model': 'account.invoice',
+            #'res_model': 'account.invoice',
             # 'context': {'search_default_product': 1}
         }
 

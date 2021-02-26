@@ -77,7 +77,7 @@ class SpsTransientBaseImport(models.TransientModel):
         cell_values = data[1:]
         return cell_values, import_fields, cols
 
-    @api.multi
+    #@api.multi
     def do(self, fields, columns,options, parent_model, customer_id, template_type, upload_document, dryrun=False):
         self.ensure_one()
         import_result = {'messages': []}
@@ -142,7 +142,7 @@ class SpsTransientBaseImport(models.TransientModel):
             }
         return import_result
 
-    @api.multi
+    #@api.multi
     def parse_preview(self, options, count=10):
         self.ensure_one()
         fields = self.get_fields(self.res_model)

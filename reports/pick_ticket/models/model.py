@@ -23,7 +23,6 @@ class PickTicketReport(models.Model):
     scheduled_date = fields.Datetime(stirng='Scheduled Date')
     picking_type = fields.Char(string='Type', )
 
-    @api.model_cr
     def init(self):
         self.init_table()
 
@@ -91,6 +90,5 @@ class PickTicketReport(models.Model):
         sql_query = "CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + select_query + where_clause + " )"
         self._cr.execute(sql_query)
 
-    @api.model_cr
     def delete_and_create(self):
         self.init_table()

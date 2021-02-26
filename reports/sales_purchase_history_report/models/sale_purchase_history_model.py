@@ -34,7 +34,7 @@ class SalePurchaseHistory(models.Model):
     # currency_id = fields.Many2one("res.currency", string="Currency",readonly=True)
     # product_uom = fields.Char(string='UOM', store=False)
 
-    @api.multi
+    #@api.multi
     def _compare_data(self):
         for sale_order_line in self:
             sale_order_line.customer_name = sale_order_line.order_id.partner_id.name

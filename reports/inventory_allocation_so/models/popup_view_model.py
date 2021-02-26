@@ -11,9 +11,9 @@ class TrendingReportListPopUp(models.TransientModel):
     product_sku = fields.Many2one('product.product', string='Product SKU',
                                domain="[('active','=',True),('product_tmpl_id.type','=','product')]")
     compute_at_date = fields.Selection([
-        (0, 'Show All '),
-        (1, 'Date Range ')
-    ], string="Compute", help="Choose to analyze the Show Summary or from a specific date in the past.",default=0)
+        ('0', 'Show All '),
+        ('1', 'Date Range ')
+    ],default='0', string="Compute", help="Choose to analyze the Show Summary or from a specific date in the past.")
     order_id = fields.Many2one('sale.order', string='Sale', domain=[('state','=', 'sale')])
     partner_id = fields.Many2many('res.partner',string='Users', required=True)
     customer_by = fields.Selection([

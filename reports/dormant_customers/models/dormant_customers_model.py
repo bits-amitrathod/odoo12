@@ -13,7 +13,7 @@ class DormantCustomer(models.Model):
     sale_order=fields.Char("Sales Order#", store=False,compute='_compute_last_purchase')
     # last_purchased_product = fields.Char('Last Purchased Product', store=False)
 
-    @api.multi
+    #@api.multi
     def _compute_last_purchase(self):
         for customer in self:
             confirmed_sales_orders = self.env['sale.order'].search(

@@ -65,7 +65,7 @@
     <record id="Inv_allow_so_report_list_id" model="ir.actions.act_window">
         <field name="name">Inventory Allocation For SO</field>
         <field name="res_model">inventory.so_popup</field>
-        <field name="view_type">form</field>
+<!--        <field name="view_type">form</field>-->
         <field name="view_mode">form</field>
         <field name="view_id" ref="inventory_for_so_list_view"/>
         <field name="target">new</field>

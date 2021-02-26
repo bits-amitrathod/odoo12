@@ -63,7 +63,7 @@ ATTACHMENT_DIR = "/home/odoo/Documents/attachments/"
 class IncomingMailCronModel(models.Model):
     _inherit = 'fetchmail.server'
 
-    @api.multi
+    #@api.multi
     def fetch_mail(self):
         """ WARNING: meant for cron usage only - will commit() after each email! """
         start_time = time.time()

@@ -23,7 +23,7 @@ class ProductMapping(models.Model):
     google_product_id = fields.Char(string="Google Product Id")
     message = fields.Char(string="Message")
 
-    @api.multi
+    #@api.multi
     @api.depends('google_shop_id', 'product_id')
     def name_get(self):
         result = []

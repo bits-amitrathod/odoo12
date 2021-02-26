@@ -64,10 +64,10 @@
                            <!--string="Margin Detail"-->
                            <!--attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"></field>-->
                     <field name="status_ven_app" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"/>
-                    <field name="color" invisible="1"/>
-                      <field name="t1color" invisible="1"/>
-                      <field name="t2color" invisible="1"/>
-                      <field name="lscolor" invisible="1"/>
+                    <!--<field name="color" invisible="1"/>-->
+                      <!--<field name="t1color" invisible="1"/>-->
+                      <!--<field name="t2color" invisible="1"/>-->
+                      <!--<field name="lscolor" invisible="1"/>-->
 
                     <field name="currency_id" invisible="1"/>
                     <field name="message_unread" invisible="1"/>
@@ -80,7 +80,7 @@
         <record id="appraisal_tracker_offer_form" model="ir.ui.view">
             <field name="name">purchase.order.form</field>
             <field name="model">purchase.order</field>
-            <field name="context">[status: 'purchase']</field>
+            <!--<field name="context">[status: 'purchase']</field>-->
             <field name="arch" type="xml">
 
 
@@ -176,8 +176,8 @@
                                                 <field name="margin"/>
                                                 <field name="multiplier"/>
                                                 <field name="product_note" readonly="1"/>
-                                                <field name="date_planned" invisible="1"/>
-                                                <field name="product_uom" invisible="1"/>
+                                                <!--<field name="date_planned" invisible="1"/>-->
+                                                <!--<field name="product_uom" invisible="1"/>-->
                                             </group>
                                         </group>
                                     </form>
@@ -220,8 +220,8 @@
                                           <field name="rt_price_subtotal"   widget="monetary" />-->
                                         <field name="margin"/>
                                         <field name="multiplier"/>
-                                        <field name="date_planned" invisible="1"/>
-                                        <field name="product_uom" invisible="1"/>
+                                        <!--<field name="date_planned" invisible="1"/>-->
+                                        <!--<field name="product_uom" invisible="1"/>-->
                                         <field name="order_id" invisible="1"/>
 
                                     </tree>
@@ -391,13 +391,13 @@
             </field>
         </record>
 
-        <act_window name="Export Appraisal Tracker"
-                    res_model="appraisaltracker.export"
-                    src_model="purchase.order"
-                    view_mode="form"
-                    target="new"
-                    key2="client_action_multi"
-                    id="appraisal_tracker_act_window"/>
+        <!--<act_window name="Export Appraisal Tracker"-->
+                    <!--res_model="appraisaltracker.export"-->
+                    <!--src_model="purchase.order"-->
+                    <!--view_mode="form"-->
+                    <!--target="new"-->
+                    <!--key2="client_action_multi"-->
+                    <!--id="appraisal_tracker_act_window"/>-->
 
         <menuitem id="menu_procurement_management_appraisal_tracker" name="Appraisal Tracker"
                   parent="purchase.menu_procurement_management" action="appraisal_tracker.action_window" sequence="15"

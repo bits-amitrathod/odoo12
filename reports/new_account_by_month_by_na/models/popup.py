@@ -9,7 +9,7 @@ class NaNewAccountByMonthReportPopup(models.TransientModel):
     end_date = fields.Date('End Date', default=fields.date.today(), required=True, help="Choose a date to get the New Account By Month By National Account at that  End date")
     national_account = fields.Many2one('res.users', string="National Account", index=True)
 
-    # @api.multi
+    # #@api.multi
     def open_table(self):
         e_date = self.string_to_date(str(self.end_date))
         e_date = e_date + datetime.timedelta(days=1)

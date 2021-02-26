@@ -109,7 +109,7 @@ class VendorOfferImportTransientModel(models.TransientModel):
         cell_values = data[1:]
         return cell_values, import_fields, cols
 
-    @api.multi
+    #@api.multi
     def do(self, fields, columns,options, parent_model, customer_id, offer_id, import_type_ven,dryrun=False):
         self.ensure_one()
         import_result = {'messages': []}
@@ -173,7 +173,7 @@ class VendorOfferImportTransientModel(models.TransientModel):
 
         return import_result
 
-    @api.multi
+    #@api.multi
     def parse_preview(self, options, import_type_ven, count=10):
         self.ensure_one()
         fields = self.get_fields(self.res_model,import_type_ven)
@@ -269,7 +269,7 @@ class VendorOfferImportTransientModel(models.TransientModel):
             matches[index] = match_field or None
         return headers, matches
 
-    @api.multi
+    #@api.multi
     def _read_xls(self, options):
         """ Read file content, using xlrd lib """
         book = xlrd.open_workbook(file_contents=self.file or b'')
@@ -378,7 +378,7 @@ class VendorOfferImportTransientModel(models.TransientModel):
         # TODO: cache on model?
         return importable_fields
 
-    @api.multi
+    #@api.multi
     def _parse_import_data(self,parent_model, data, import_fields, options):
         """ Lauch first call to _parse_import_data_recursive with an
         empty prefix. _parse_import_data_recursive will be run
@@ -386,7 +386,7 @@ class VendorOfferImportTransientModel(models.TransientModel):
         """
         return self._parse_import_data_recursive(parent_model, '', data, import_fields, options)
 
-    @api.multi
+    #@api.multi
     def _parse_import_data_recursive(self, model, prefix, data, import_fields, options):
         # Get fields of type date/datetime
         all_fields = self.env[model].fields_get()
@@ -547,7 +547,7 @@ class VendorOfferImportTransientModel(models.TransientModel):
     #         row_index = row_index + 1
     #     return data
 
-    # @api.multi
+    # #@api.multi
     # def get_product_sales_count(self, product_id):
     #     product_sales_count = product_sales_count_month = product_sales_count_90 = product_sales_count_yrs = None
     #     try:

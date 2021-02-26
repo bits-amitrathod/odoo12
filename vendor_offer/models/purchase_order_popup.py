@@ -24,7 +24,7 @@ class PurchaseOrderPopUp(models.TransientModel):
     package_count = fields.Integer("Packages Count", default=1)
 
     @api.constrains('package_count')
-    @api.one
+    #@api.one
     def _check_package_count(self):
         if self.package_count:
             package_count = self.package_count

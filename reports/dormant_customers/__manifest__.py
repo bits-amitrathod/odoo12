@@ -14,7 +14,7 @@
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'views/views.xml',
         'report/dormant_customers_report.xml',
         'report/dormant_customers_report_template.xml'

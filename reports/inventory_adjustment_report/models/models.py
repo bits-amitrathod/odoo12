@@ -21,7 +21,7 @@ class inventory_adjustment_report(models.Model):
     product_name = fields.Char("Product Name", store=False)
     adj_status = fields.Char("Adjustment Status", store=False)
 
-    @api.multi
+    #@api.multi
     def _calculateSKU(self):
         ACTIONS = {
             "product": "Storable Product",

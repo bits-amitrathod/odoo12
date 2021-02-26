@@ -13,6 +13,7 @@
 
     # always loaded
     'data': [
+        'security/ir.model.access.csv',
         'views/views.xml',
         'report/pick_report.xml',
         'report/pick_report_template.xml'

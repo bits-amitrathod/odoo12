@@ -8,7 +8,6 @@ log = logging.getLogger(__name__)
 class ReportCompareSaleByMonthWise(models.AbstractModel):
     _name = 'report.report_compare_sale_by_month.compsalebymonth_template'
 
-    @api.model
     def _get_report_values(self, docids, data=None):
 
         popup = self.env['compbysale.popup'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")

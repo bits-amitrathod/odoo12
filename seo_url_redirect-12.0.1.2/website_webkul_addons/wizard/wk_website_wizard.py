@@ -28,7 +28,7 @@ class WebsiteMessageWizard(models.TransientModel):
 
 	message = fields.Text(string="Message")
 
-	@api.multi
+	#@api.multi
 	def update_latest_record(self):
 		active_model = self.env[self._context.get('active_model')]
 		active_id = self._context.get('active_id') or self._context.get('active_ids')[0]
@@ -39,7 +39,7 @@ class WebsiteMessageWizard(models.TransientModel):
 			active_record.write({'is_active':True})
 		return True
 
-	@api.multi
+	#@api.multi
 	def cancel(self):
 		active_model = self.env[self._context.get('active_model')]
 		active_id = self._context.get('active_id') or self._context.get('active_ids')[0]

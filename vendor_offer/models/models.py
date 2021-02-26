@@ -18,7 +18,7 @@ from odoo.tools import pdf
 from odoo.tools import pycompat
 from werkzeug.urls import url_encode
 
-from .fedex_request import FedexRequest
+#from .fedex_request import FedexRequest
 
 _logger = logging.getLogger(__name__)
 # Why using standardized ISO codes? It's way more fun to use made up codes...
@@ -74,6 +74,7 @@ class VendorOffer(models.Model):
     _inherit = "purchase.order"
 
     vendor_offer_data = fields.Boolean()
+    partner_id1 = fields.Many2one('res.partner', string='Vendor1', required=True)
     status_ven = fields.Char(store=True, string="Status", copy=False)
     carrier_info = fields.Char("Carrier Info", related='partner_id.carrier_info', readonly=True)
     carrier_acc_no = fields.Char("Carrier Account No", related='partner_id.carrier_acc_no', readonly=True)
@@ -266,7 +267,7 @@ class VendorOffer(models.Model):
         temp = self.offer_type
         self.super_user_email = super_user.email
 
-    @api.multi
+    #@api.multi
     def _compute_show_validate(self):
         multi = self.env['stock.picking'].search([('purchase_id', '=', self.id)])
         if len(multi) == 1 and self.picking_count == 1:
@@ -286,13 +287,13 @@ class VendorOffer(models.Model):
         if len(multi) >= 1:
             return multi.action_assign()
 
-    @api.multi
+    #@api.multi
     def do_unreserve(self):
         multi = self.env['stock.picking'].search([('purchase_id', '=', self.id)])
         if len(multi) >= 1:
             return multi.do_unreserve()
 
-    @api.multi
+    #@api.multi
     def action_duplicate_vendor_offer(self):
         new_po = self.copy()
         return {
@@ -306,7 +307,7 @@ class VendorOffer(models.Model):
             'target': 'main',
         }
 
-    @api.multi
+    #@api.multi
     def copy(self, default=None):
         if self.vendor_offer_data:
             self = self.with_context({'vendor_offer_data': True, 'disable_export': True})
@@ -472,7 +473,7 @@ class VendorOffer(models.Model):
 
                 super(VendorOffer, self)._amount_all()
 
-    @api.multi
+    #@api.multi
     def action_send_offer_email(self):
         '''
         This function opens a window to compose an email, with the edi purchase template message loaded by default
@@ -540,7 +541,7 @@ class VendorOffer(models.Model):
             'context': ctx,
         }
 
-    @api.multi
+    #@api.multi
     def action_print_vendor_offer(self):
         self.temp_payment_term = self.payment_term_id.name
         if (self.payment_term_id.name == False):
@@ -554,7 +555,7 @@ class VendorOffer(models.Model):
         self.write({'status': 'ven_sent', 'state': 'ven_sent'})
         return self.env.ref('vendor_offer.action_report_vendor_offer').report_action(self)
 
-    @api.multi
+    #@api.multi
     def action_confirm_vendor_offer(self):
         self.write({
             'accepted_date': fields.date.today(),
@@ -568,7 +569,7 @@ class VendorOffer(models.Model):
 
         return super(VendorOffer, self).button_confirm()
 
-    @api.multi
+    #@api.multi
     def action_button_confirm(self):
         print('in   action_button_confirm ')
         if self.env.context.get('vendor_offer_data'):
@@ -597,7 +598,7 @@ class VendorOffer(models.Model):
 
             self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
 
-    @api.multi
+    #@api.multi
     def action_button_confirm_api_cash(self, product_id):
         # purchase = self.env['purchase.order'].search([('id', '=', product_id)])
         self.amount_untaxed = math.floor(round(self.cash_amount_untaxed, 2))
@@ -618,7 +619,7 @@ class VendorOffer(models.Model):
 
         self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
 
-    @api.multi
+    #@api.multi
     def action_button_confirm_api_credit(self, product_id):
         # purchase = self.env['purchase.order'].search([('id', '=', product_id)])
 
@@ -640,7 +641,7 @@ class VendorOffer(models.Model):
 
         self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
 
-    @api.multi
+    #@api.multi
     def button_confirm(self):
         for order in self:
             if order.state not in ['ven_draft', 'draft', 'sent', 'ven_sent']:
@@ -657,7 +658,7 @@ class VendorOffer(models.Model):
                 order.write({'state': 'to approve'})
         return True
 
-    @api.multi
+    #@api.multi
     def action_confirm_offer_both(self):
 
         # if self.offer_type == 'cashcredit':
@@ -686,7 +687,7 @@ class VendorOffer(models.Model):
         else:
             self.action_button_confirm()
 
-    @api.multi
+    #@api.multi
     def popup_confirm_vendor_offer(self):
 
         if self.offer_type_popup is False:
@@ -696,7 +697,7 @@ class VendorOffer(models.Model):
         else:
             self.action_button_confirm_api_credit(1)
 
-    @api.multi
+    #@api.multi
     def action_cancel_vendor_offer(self):
 
         if self.offer_type == 'cash' or (not self.offer_type) or 'cashcredit':
@@ -714,7 +715,7 @@ class VendorOffer(models.Model):
         self.write({'status_ven': 'Declined'})
         self.write({'declined_date': fields.date.today()})
 
-    @api.multi
+    #@api.multi
     def action_cancel_vendor_offer_api(self, product_id):
         purchase = self.env['purchase.order'].search([('id', '=', product_id)])
 
@@ -734,7 +735,7 @@ class VendorOffer(models.Model):
         purchase.write({'status_ven': 'Declined'})
         purchase.write({'declined_date': fields.date.today()})
 
-    @api.multi
+    #@api.multi
     def button_cancel(self):
         if (self.vendor_offer_data == True):
 
@@ -764,11 +765,13 @@ class VendorOffer(models.Model):
             vals['vendor_offer_data'] = True
             vals['revision'] = '1'
             vals['revision_date'] = fields.Datetime.now()
+            if 'partner_id1' in vals:
+                vals['partner_id'] = vals['partner_id1']
             if 'partner_id' in vals:
                 fetch_id = vals['partner_id']
                 user_fetch = self.env['res.partner'].search([('id', '=', fetch_id), ])
-                if user_fetch:
-                    vals['vendor_cust_id'] = user_fetch.saleforce_ac
+                # if user_fetch:
+                #     vals['vendor_cust_id'] = user_fetch.saleforce_ac
             record = super(VendorOffer, self).create(vals)
             return record
         else:
@@ -777,7 +780,7 @@ class VendorOffer(models.Model):
             #     record.button_confirm()
             return record
 
-    @api.multi
+    #@api.multi
     def write(self, values):
         if (self.state == 'ven_draft' or self.state == 'ven_sent'):
             # Fix for revion change on send button email template
@@ -825,7 +828,7 @@ class VendorOffer(models.Model):
         else:
             return '%s?%s' % ('/mail/view' if redirect else self.access_url, url_encode(params))
 
-    @api.multi
+    #@api.multi
     def _get_share_url(self, redirect=False, signup_partner=False, pid=None):
 
         self.ensure_one()
@@ -888,14 +891,14 @@ class VendorOfferProduct(models.Model):
     billed_product_retail_price = fields.Monetary("Total Billed Qty Retail Price", store=False,
                                                      compute="_calculat_bill_price")
 
-    @api.multi
+    #@api.multi
     def _calculat_delv_price(self):
         for order in self:
             for p in order:
                 order.delivered_product_offer_price = round(p.qty_received * p.product_offer_price, 2)
                 order.delivered_product_retail_price = round(p.qty_received * p.product_unit_price, 2)
 
-    @api.multi
+    #@api.multi
     def _calculat_bill_price(self):
         for order in self:
             for p in order:
@@ -1199,8 +1202,9 @@ class ProductTemplateTire(models.Model):
     actual_quantity = fields.Float(string='Qty Available For Sale', digits=dp.get_precision('Product Unit of Measure'),
                                    compute="_compute_qty_available", store=True)
 
-    @api.depends('product_variant_ids.stock_quant_ids.reserved_quantity',
-                 'product_variant_ids.stock_move_ids.remaining_qty')
+    # @api.depends('product_variant_ids.stock_quant_ids.reserved_quantity',
+    #              'product_variant_ids.stock_move_ids.remaining_qty')
+    @api.depends('product_variant_ids.stock_quant_ids.reserved_quantity')
     def _compute_qty_available(self):
         for template in self:
 
@@ -1257,18 +1261,18 @@ class ProductNotesActivity(models.Model):
     note_date = fields.Datetime(string="Note Date", default=fields.Datetime.now, )
 
 
-class VendorOfferInvoice(models.Model):
-    _inherit = "account.invoice"
-
-    is_vender_offer_invoice = fields.Boolean(string='Is Vendor Offer')
-
-    @api.onchange('purchase_id')
-    def purchase_order_change(self):
-        if not self.purchase_id:
-            return {}
-        self.is_vender_offer_invoice = self.purchase_id.vendor_offer_data
-        record = super(VendorOfferInvoice, self).purchase_order_change()
-        return record
+# class VendorOfferInvoice(models.Model):
+#     _inherit = "account.invoice"
+#
+#     is_vender_offer_invoice = fields.Boolean(string='Is Vendor Offer')
+#
+#     @api.onchange('purchase_id')
+#     def purchase_order_change(self):
+#         if not self.purchase_id:
+#             return {}
+#         self.is_vender_offer_invoice = self.purchase_id.vendor_offer_data
+#         record = super(VendorOfferInvoice, self).purchase_order_change()
+#         return record
 
 
 class FedexDelivery(models.Model):
@@ -1473,7 +1477,7 @@ class FedexDelivery(models.Model):
         return res
 
         # // Below method is override for sales order fedex shipping Label PO
-    @api.multi
+    #@api.multi
     def fedex_send_shipping(self, pickings):
         _logger.info('Override fedex_send_shipping method call')
         res = []
@@ -1752,7 +1756,7 @@ class StockPicking(models.Model):
                 order.arrival_date_grp = pick.arrival_date
         return record
 
-    @api.multi
+    #@api.multi
     def write(self, vals):
         record = super(StockPicking, self).write(vals)
         if 'arrival_date' in vals:
@@ -1764,7 +1768,7 @@ class StockPicking(models.Model):
         return record
 
 
-    @api.multi
+    #@api.multi
     def send_to_shipper(self):
         self.ensure_one()
         res = self.carrier_id.send_shipping(self)[0]
@@ -1839,14 +1843,14 @@ class VendorPricingList(models.Model):
             ''' state = sale condition added in all sales amount to match the value of sales amount to 
             clients PPvendorpricing file '''
 
-            sale_all_query = "SELECT  sum(sol.price_total) as total_sales " \
-                             "                   from  product_product pp   " \
-                             "                    INNER JOIN sale_order_line sol ON sol.product_id=pp.id " \
-                             "                    INNER JOIN product_template pt ON  pt.id=pp.product_tmpl_id " \
-                             "                    INNER JOIN sale_order so ON so.id=sol.order_id   " \
-                             "        where pp.id =%s and so.confirmation_date>= %s   	and so.state in ('sale')"
-
-            self.env.cr.execute(sale_all_query, (line.id, last_yr))
+            # sale_all_query = "SELECT  sum(sol.price_total) as total_sales " \
+            #                  "                   from  product_product pp   " \
+            #                  "                    INNER JOIN sale_order_line sol ON sol.product_id=pp.id " \
+            #                  "                    INNER JOIN product_template pt ON  pt.id=pp.product_tmpl_id " \
+            #                  "                    INNER JOIN sale_order so ON so.id=sol.order_id   " \
+            #                  "        where pp.id =%s and so.confirmation_date>= %s   	and so.state in ('sale')"
+            #
+            # self.env.cr.execute(sale_all_query, (line.id, last_yr))
 
             sales_all_value = 0
             sales_all_val = self.env.cr.fetchone()
@@ -1948,7 +1952,7 @@ class VendorPricingList(models.Model):
 
         line.expired_inventory = expired_lot_count
 
-    @api.multi
+    #@api.multi
     def return_tree_vendor_pri(self):
         tree_view_id = self.env.ref('vendor_offer.vendor_pricing_list').id
         action = {
@@ -2037,6 +2041,7 @@ class VendorPricingExport(models.TransientModel):
         #                         $$ LANGUAGE plpgsql;
         #                                 """
 
+        # WHERE  so.confirmation_date >= %s         add this fields
         str_query = """
                         SELECT pt.sku_code, 
                            pt.name, 
@@ -2117,7 +2122,7 @@ class VendorPricingExport(models.TransientModel):
                                                      ON pt.id = ppi.product_tmpl_id 
                                              inner join sale_order so 
                                                      ON so.id = sol.order_id 
-                                      WHERE  so.confirmation_date >= %s 
+                                     
                                              AND so.state IN ( 'sale' ) 
                                       GROUP  BY ppi.id) AS all_sales_amount 
                                   ON all_sales_amount.id = pp.id 
@@ -2445,7 +2450,7 @@ class CustomerACQManager(models.Model):
 class MailComposer(models.TransientModel):
     _inherit = 'mail.compose.message'
 
-    @api.multi
+    #@api.multi
     def onchange_template_id(self, template_id, composition_mode, model, res_id):
         """ - mass_mailing: we cannot render, so return the template values
             - normal mode: return rendered values

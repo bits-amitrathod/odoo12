@@ -74,10 +74,11 @@ class ResPartnerExtension(models.Model):
     sales_person = fields.Integer(default=0, compute='_check_sales_person', store=True)
 
 
-    @api.multi
+    #@api.multi
     def _check_sales_person(self):
         for record in self:
-            if record.sale_team_id and record.sale_team_id.team_type == 'sales':
-                record.sales_person = 1
-            else:
-                record.sales_person = 0
+            pass
+            # if record.sale_team_id and record.sale_team_id.team_type == 'sales':
+            #     record.sales_person = 1
+            # else:
+            #     record.sales_person = 0

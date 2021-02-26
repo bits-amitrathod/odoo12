@@ -14,7 +14,7 @@ class ScrapScheduler(models.TransientModel):
     _name = 'stock.scrap.scheduler'
 
     @api.model
-    @api.multi
+    #@api.multi
     def process_scrap_scheduler(self):
         today_date = datetime.datetime.now()
         today_start = fields.Date.to_string(today_date)

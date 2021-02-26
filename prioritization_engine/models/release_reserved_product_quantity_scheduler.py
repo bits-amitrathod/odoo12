@@ -10,7 +10,7 @@ class ReleaseReservedProductQuantityScheduler(models.Model):
     _name = 'release.reserved.product.quantity.cron.scheduler'
 
     @api.model
-    @api.multi
+    #@api.multi
     def process_release_reserved_product_quantity_scheduler(self):
         _logger.info('In Release Reserved Product Quantity Scheduler')
         self.env['prioritization.engine.model'].release_reserved_product_quantity()

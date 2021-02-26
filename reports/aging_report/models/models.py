@@ -31,7 +31,7 @@ class AgingReport(models.Model):
     days = fields.Integer("Days", compute='get_quantity_byorm', store=False)
     avg_day = fields.Integer("AVG Days")
 
-    @api.multi
+    #@api.multi
     def get_quantity_byorm(self):
         for order in self:
             order.sku_code=order.product_id.sku_code
@@ -186,7 +186,7 @@ class AgingReport(models.Model):
     def delete_and_create(self):
         self.init_table()
 
-    # @api.multi
+    # #@api.multi
     # def _get_Data(self):
     #     for order in self:
     #          order.tracking = 'Lot#:' + str(order.name)

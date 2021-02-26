@@ -18,7 +18,7 @@ class website_product_download_catelog_cstm(models.Model):
         self.setActive(vals)
         return super(website_product_download_catelog_cstm, self).create(vals)
 
-    @api.multi
+    #@api.multi
     def write(self, vals):
         self.setActive(vals)
         return super(website_product_download_catelog_cstm, self).write(vals)

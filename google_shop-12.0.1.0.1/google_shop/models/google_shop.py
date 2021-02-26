@@ -368,7 +368,7 @@ class GoogleMerchantShop(models.Model):
 
 
 
-    @api.multi
+    #@api.multi
     # @ api.constrains ('channel', 'target_country', 'content_language')
     def _criteria (self):
         same_record=self.search(
@@ -389,7 +389,7 @@ class GoogleMerchantShop(models.Model):
     ]
 
 
-    @api.one
+    #@api.one
     def unlink(self):
 
         if self.mapping_count<=0:
@@ -404,7 +404,7 @@ class GoogleMerchantShop(models.Model):
         action['domain'] = [('id', 'in', mappings)]
         return action
 
-    @api.multi
+    #@api.multi
     def _mapping_count(self):
         self.mapping_count=self.env['product.mapping'].search_count([('google_shop_id','=',self.id)])
 

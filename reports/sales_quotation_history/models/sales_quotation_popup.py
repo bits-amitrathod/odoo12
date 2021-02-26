@@ -14,7 +14,7 @@ class SaleQuotationExport(models.TransientModel):
     order_account_manager_cust = fields.Many2one('res.users', string="Key Account", domain="[('active', '=', True)"
                                                                                                ",('share','=',False)]")
 
-    @api.multi
+    #@api.multi
     def open_table(self):
         tree_view_id = self.env.ref('sales_quotation_history.sale_quotation_export_list_view').id
         form_view_id = self.env.ref('sales_quotation_history.view_sales_quotation_export_cstm').id

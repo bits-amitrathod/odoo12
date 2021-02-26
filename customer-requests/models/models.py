@@ -16,13 +16,13 @@ class SpsCustomer(models.Model):
 
     is_parent_assigned = fields.Boolean(store=False, compute="_get_parent_id")
 
-    @api.multi
+    #@api.multi
     @api.depends('email')
     def _get_username(self):
         for record in self:
             record.api_username = record.email
 
-    @api.multi
+    #@api.multi
     @api.depends('parent_id')
     @api.onchange('parent_id')
     def _get_parent_id(self):

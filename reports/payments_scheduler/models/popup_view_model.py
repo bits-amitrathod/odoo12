@@ -12,16 +12,16 @@ class  AcquisitionReportPopUp(models.TransientModel):
         tree_view_id = self.env.ref('payments_scheduler.form_list').id
         form_view_id = self.env.ref('payments_scheduler.form_view').id
 
-        ai = self.env['account.invoice'].search([('date_due','<=',self.end_date)]).ids
-
-        action = {
-            'type': 'ir.actions.act_window',
-            'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
-            'view_mode': 'tree,form',
-            'name': _('Payments Scheduled'),
-            'res_model': 'account.invoice',
-            'domain': [('type', '=', 'in_invoice'),('id', 'in', ai)],
-            "context" : {'default_type': 'in_invoice', 'type': 'in_invoice','search_default_unpaid': 1}  #, 'journal_type': 'purchase'
-        }
-
-        return action
+        # ai = self.env['account.invoice'].search([('date_due','<=',self.end_date)]).ids
+        #
+        # action = {
+        #     'type': 'ir.actions.act_window',
+        #     'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
+        #     'view_mode': 'tree,form',
+        #     'name': _('Payments Scheduled'),
+        #     'res_model': 'account.invoice',
+        #     'domain': [('type', '=', 'in_invoice'),('id', 'in', ai)],
+        #     "context" : {'default_type': 'in_invoice', 'type': 'in_invoice','search_default_unpaid': 1}  #, 'journal_type': 'purchase'
+        # }
+        #
+        # return action

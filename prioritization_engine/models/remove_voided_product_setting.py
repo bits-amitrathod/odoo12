@@ -36,7 +36,7 @@ class ResConfigSettingsForVoidedProducts(models.TransientModel):
                    remove_voided_product_count=remove_voided_product_count)
         return res
 
-    @api.multi
+    #@api.multi
     def set_values(self):
         super(ResConfigSettingsForVoidedProducts, self).set_values()
 

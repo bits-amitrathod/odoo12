@@ -32,7 +32,7 @@ class WebResource(models.Model):
                 record.image_medium = False
                 record.iamge_thumb = False
 
-    @api.multi
+    #@api.multi
     def toggle_website_published(self):
         ''' When clicking on the website publish toggle button, the website_published is reversed and
         the acquirer journal is set or not in favorite on the dashboard.

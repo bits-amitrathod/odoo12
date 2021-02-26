@@ -13,9 +13,9 @@ class ReceivingListPopUp(models.TransientModel):
     _name = 'popup.receiving.list'
 
     order_type = fields.Selection([
-        (1, 'PO'),
-        (0, 'SO'),
-    ], string="Order Type", default=1, help="Choose to analyze the Show Summary or from a specific date in the past.",
+        ('1', 'PO'),
+        ('0', 'SO'),
+    ], string="Order Type", default='1', help="Choose to analyze the Show Summary or from a specific date in the past.",
         required=True)
 
     sale_order_id = fields.Many2one('sale.order', string='Order Number',
@@ -63,7 +63,6 @@ class ReceivingListPoReport(models.Model):
         ('assigned', 'Available'),
         ('done', 'Done')], string='Status')
 
-    @api.model_cr
     def init(self):
         self.init_table()
 
@@ -142,7 +141,6 @@ class ReceivingListPoReport(models.Model):
         sql_query = "CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + select_query + " )"
         self._cr.execute(sql_query)
 
-    @api.model_cr
     def delete_and_create(self):
         self.init_table()
 
@@ -170,7 +168,6 @@ class ReceivingListReport(models.Model):
         ('assigned', 'Available'),
         ('done', 'Done')], string='Status')
 
-    @api.model_cr
     def init(self):
         self.init_table()
 
@@ -228,6 +225,5 @@ class ReceivingListReport(models.Model):
         sql_query = "CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + select_query + " )"
         self._cr.execute(sql_query)
 
-    @api.model_cr
     def delete_and_create(self):
         self.init_table()

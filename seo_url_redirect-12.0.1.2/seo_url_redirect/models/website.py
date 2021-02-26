@@ -56,7 +56,7 @@ class WebsiteRedirect(models.Model):
         res = super(WebsiteRedirect, self).create(vals)
         return res
 
-    @api.multi
+    #@api.multi
     def write(self, vals):
         redirectObjs = []
         if 'url_from' in vals and 'url_to' in vals:
@@ -257,7 +257,7 @@ class Website(models.Model):
             default=True
         )
 
-    @api.multi
+    #@api.multi
     def enumerate_pages(self, query_string=None, force=False):
         res = super(Website, self).enumerate_pages(query_string, force)
         useServerRewrites = self.use_server_rewrites

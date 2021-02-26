@@ -27,7 +27,7 @@
         <record id="action_discount_summary_valuation" model="ir.actions.act_window">
             <field name="name">Discount Summary</field>
             <field name="res_model">popup.discount.summary</field>
-            <field name="view_type">form</field>
+<!--            <field name="view_type">form</field>-->
             <field name="view_mode">form</field>
             <field name="view_id" ref="view_popup_view"/>
             <field name="target">new</field>
@@ -43,7 +43,7 @@
                     <field name="name" string="Sales Order#"/>
                     <field name="partner_id"/>
                    <!-- <field name="r_line_item"/>-->
-                    <field name="confirmation_date" widget="date"/>
+                    <field name="date_order" widget="date"/>
                     <field name="r_discount" widget="monetary"/>
                     <field name="r_amount" widget="monetary"/>
                     <!--<field name="r_total" widget="monetary"/>-->

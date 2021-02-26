@@ -30,9 +30,9 @@ class InvoicePrintBankChequeWizard(models.TransientModel):
     def _get_partner_id(self):
         customer = False
         if self._context.get("active_id"):
-            if self._context.get("active_model") == "account.invoice":
-                active_obj = self.env["account.invoice"].browse(self._context.get("active_id"))
-                customer = active_obj.partner_id.id
+            # if self._context.get("active_model") == "account.invoice":
+            #     active_obj = self.env["account.invoice"].browse(self._context.get("active_id"))
+            #     customer = active_obj.partner_id.id
             if self._context.get("active_model") == "account.payment":
                 active_obj = self.env["account.payment"].browse(
                     self._context.get("active_id"))
@@ -43,10 +43,10 @@ class InvoicePrintBankChequeWizard(models.TransientModel):
     def _get_pay_name(self):
         customer_name = ""
         if self._context.get("active_id"):
-            if self._context.get("active_model") == "account.invoice":
-                active_obj = self.env["account.invoice"].browse(
-                    self._context.get("active_id"))
-                customer_name = active_obj.partner_id.name
+            # if self._context.get("active_model") == "account.invoice":
+            #     active_obj = self.env["account.invoice"].browse(
+            #         self._context.get("active_id"))
+            #     customer_name = active_obj.partner_id.name
             if self._context.get("active_model") == "account.payment":
                 active_obj = self.env["account.payment"].browse(
                     self._context.get("active_id"))
@@ -57,10 +57,10 @@ class InvoicePrintBankChequeWizard(models.TransientModel):
     def _get_currency(self):
         amount = self.env.user.company_id.currency_id.id
         if self._context.get("active_id"):
-            if self._context.get("active_model") == "account.invoice":
-                active_obj = self.env["account.invoice"].browse(
-                    self._context.get("active_id"))
-                amount = active_obj.currency_id.id
+            # if self._context.get("active_model") == "account.invoice":
+            #     active_obj = self.env["account.invoice"].browse(
+            #         self._context.get("active_id"))
+            #     amount = active_obj.currency_id.id
             if self._context.get("active_model") == "account.payment":
                 active_obj = self.env["account.payment"].browse(
                     self._context.get("active_id"))
@@ -71,9 +71,9 @@ class InvoicePrintBankChequeWizard(models.TransientModel):
     def _get_amount(self):
         amount = 0.0
         if self._context.get("active_id"):
-            if self._context.get("active_model") == "account.invoice":
-                active_obj = self.env["account.invoice"].browse(self._context.get("active_id"))
-                amount = active_obj.amount_total
+            # if self._context.get("active_model") == "account.invoice":
+            #     active_obj = self.env["account.invoice"].browse(self._context.get("active_id"))
+            #     amount = active_obj.amount_total
             if self._context.get("active_model") == "account.payment":
                 active_obj = self.env["account.payment"].browse(
                     self._context.get("active_id"))
@@ -84,11 +84,11 @@ class InvoicePrintBankChequeWizard(models.TransientModel):
     def _get_amount_in_words(self):
         amount_total_words = ""
         if self._context.get("active_id"):
-            if self._context.get("active_model") == "account.invoice":
-                active_obj = self.env["account.invoice"].browse(
-                    self._context.get("active_id"))
-                amount_total_words = active_obj.currency_id.amount_to_text(
-                        active_obj.amount_total)
+            # if self._context.get("active_model") == "account.invoice":
+            #     active_obj = self.env["account.invoice"].browse(
+            #         self._context.get("active_id"))
+            #     amount_total_words = active_obj.currency_id.amount_to_text(
+            #             active_obj.amount_total)
             if self._context.get("active_model") == "account.payment":
                 active_obj = self.env["account.payment"].browse(
                     self._context.get("active_id"))
@@ -113,7 +113,7 @@ class InvoicePrintBankChequeWizard(models.TransientModel):
     cheque_has_amount_line2 = fields.Boolean(compute="_check_cheque_attributes")
     is_preview = fields.Boolean("Preview")
 
-    @api.one
+    #@api.one
     @api.depends("cheque_book_id")
     def _check_cheque_attributes(self):
         if self.cheque_book_id:
@@ -151,7 +151,7 @@ class InvoicePrintBankChequeWizard(models.TransientModel):
             }
         return {}
 
-    @api.multi
+    #@api.multi
     def set_amount_lines_in_word(self):
         self.ensure_one()
         if self.amount_in_words:
@@ -172,13 +172,13 @@ class InvoicePrintBankChequeWizard(models.TransientModel):
                         break
                 self.amount_in_words = line1
                 self.amount_in_words_line2 = line2
-    @api.multi
+    #@api.multi
     def print_cheque_preview(self):
         self.ensure_one()
         self.is_preview = True
         return self.env.ref('odoo_cheque_management.bank_cheque_leaf_print_report').report_action(self)
 
-    @api.multi
+    #@api.multi
     def print_cheque(self):
         self.ensure_one()
         self.is_preview = False

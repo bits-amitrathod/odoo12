@@ -629,7 +629,7 @@ class vendor_offer_automation(models.Model):
             return False
         return multiplier_list.id
 
-    @api.multi
+    #@api.multi
     def get_product_sales_count(self, product_id):
         product_sales_count = product_sales_count_month = product_sales_count_90 = product_sales_count_yrs = None
         try:
@@ -733,7 +733,7 @@ class vendor_offer_automation(models.Model):
         return data
 
 
-    @api.multi
+    #@api.multi
     def write(self, vals):
         res = super(vendor_offer_automation, self).write(vals)
         if 'document' in vals:

@@ -4,7 +4,7 @@ from collections import Counter
 from odoo import api, fields, models, _
 from odoo.addons import decimal_precision as dp
 from odoo.exceptions import UserError, ValidationError
-from odoo.tools.pycompat import izip
+
 from odoo import models, fields, api
 import logging
 import datetime
@@ -212,7 +212,7 @@ class inventory_exe(models.Model):
 class ProductionLotNameAppendDate(models.Model):
     _inherit = 'stock.production.lot'
 
-    @api.multi
+    #@api.multi
     def name_get(self):
         result = []
         if self.env.context is None:

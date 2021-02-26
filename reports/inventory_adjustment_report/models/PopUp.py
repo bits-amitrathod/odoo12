@@ -18,9 +18,9 @@ class PopUp(models.TransientModel):
     # product_id = fields.Many2many('product.product', string="Products")
 
     compute_at_date = fields.Selection([
-        (0, 'Show All'),
-        (1, 'Date Range')
-    ], string="Compute", help="Choose to analyze the current inventory or from a specific date in the past.")
+        ('0', 'Show All'),
+        ('1', 'Date Range')
+    ],default='0', string="Compute", help="Choose to analyze the current inventory or from a specific date in the past.")
 
     product_sku_code = fields.Many2one('product.product', string='Product SKU',
                                domain="[('active','=',True),('product_tmpl_id.type','=','product')]")

@@ -69,7 +69,7 @@ class Detail_oauth2(models.Model):
             message = "No Data in Authentication Token, Please Check the Entered Detail and Try again"
         return message
 
-    @api.multi
+    #@api.multi
     @api.onchange('domain_uri','sequence_no')
     def _comute_callback(self):
         if self.domain_uri and self.sequence_no:

@@ -1,3 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_on_hand_by_expiry_user,on_hand_by_expiry user,model_on_hand_by_expiry,stock.group_stock_user,1,0,0,0
-access_on_hand_by_expiry_mng,on_hand_by_expiry manager,model_on_hand_by_expiry,stock.group_stock_manager,1,1,1,1
+on_hand_by_expiry_popup,on_hand_by_expiry.popup,model_on_hand_by_expiry_popup,,1,1,1,1
+access_on_hand_by_expiry_user,on_hand_by_expiry,model_on_hand_by_expiry,stock.group_stock_user,1,1,1,1
+access_on_hand_by_expiry_mng,on_hand_by_expiry,model_on_hand_by_expiry,stock.group_stock_manager,1,1,1,1

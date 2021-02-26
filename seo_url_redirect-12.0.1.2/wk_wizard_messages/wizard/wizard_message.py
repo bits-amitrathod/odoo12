@@ -13,7 +13,7 @@ class WkWizardMessage(models.TransientModel):
 	_description = "Message Wizard"
 
 	text = fields.Text(string='Message')
-	@api.multi
+	#@api.multi
 	def genrated_message(self,message,name='Message/Summary'):
 		partial_id = self.create({'text':message}).id
 		return {

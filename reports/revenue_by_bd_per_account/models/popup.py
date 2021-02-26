@@ -15,7 +15,7 @@ class BdRevenuePerAccountReportPopup(models.TransientModel):
     ], string="Compute", help="Choose to analyze the Show Summary or from a specific date in the past.")
 
 
-    # @api.multi
+    # #@api.multi
     def open_table(self):
         tree_view_id = self.env.ref('revenue_by_bd_per_account.revenue_by_bd_per_account_list_view').id
         form_view_id = self.env.ref('revenue_by_bd_per_account.revenue_by_bd_per_account_form_view').id

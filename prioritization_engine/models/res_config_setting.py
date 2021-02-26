@@ -23,7 +23,7 @@
 #             raise ValidationError(_('Document Processing Count at least 1'))
 #
 #     @api.constrains('document_processing_count')
-#     @api.one
+#     #@api.one
 #     def _check_document_processing_count(self):
 #         if self.document_processing_count == 0:
 #             raise ValidationError(_('Document Processing Count at least 1'))
@@ -39,7 +39,7 @@
 #                    document_processing_count=document_processing_count)
 #         return res
 #
-#     @api.multi
+#     #@api.multi
 #     def set_values(self):
 #         super(ResConfigSettingsForPr, self).set_values()
 #         self.env['ir.config_parameter'].sudo().set_param("prioritization_engine.document_processing_count",

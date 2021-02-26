@@ -8,7 +8,7 @@
             <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false">
                     <field name="name" string="Sales Order #"/>
-                    <field name="confirmation_date" string="Order Date" widget="date"/>
+                    <field name="date_order" string="Order Date" widget="date"/>
                     <field name="partner_id" string="Customer Name"/>
                     <field name="user_id"/>
                     <field name="amount_total" sum="Total Tax Included" widget="monetary"/>
@@ -45,7 +45,7 @@
         <record id="action_gross_sale_valuation" model="ir.actions.act_window">
             <field name="name">Gross Sales By Business Development</field>
             <field name="res_model">popup.gross.sales.by.person</field>
-            <field name="view_type">form</field>
+<!--            <field name="view_type">form</field>-->
             <field name="view_mode">form</field>
             <field name="view_id" ref="view_popup_view"/>
             <field name="target">new</field>

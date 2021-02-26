@@ -17,7 +17,7 @@ class ProductPublicCategory(models.Model):
         default='', translate=True,
         help="SEO Url Key for Product Category")
 
-    @api.multi
+    #@api.multi
     def __check_url_key_uniq(self):
         for obj in self:
             if obj.url_key:
@@ -41,14 +41,14 @@ class ProductPublicCategory(models.Model):
             self.env['website.redirect'].setSeoUrlKey('pattern_category', res)
         return res
 
-    @api.multi
+    #@api.multi
     def write(self, vals):
         for catObj in self:
             vals = self.env['website.redirect'].createRedirectForRewrite(vals, catObj, 'product.public.category', 'pattern_category')
         res = super(ProductPublicCategory, self).write(vals)
         return res
 
-    @api.multi
+    #@api.multi
     def update_seo_url(self):
         categoryIds = self._context.get('active_ids')
         categoryObjs = self.search([('id', 'in', categoryIds)])

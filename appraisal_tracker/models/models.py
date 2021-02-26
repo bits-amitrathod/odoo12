@@ -21,11 +21,11 @@ class apprisal_tracker_vendor(models.Model):
     tier2_margin = fields.Char(compute="_value_broker_margin", store=False, string="Tier 2 Margin")
     less_than_40_margin = fields.Char(compute="_value_broker_margin", store=False, string="< 40% Margin")
 
-    color = fields.Integer(compute="_value_broker_margin", store=False)
-
-    t1color = fields.Integer(compute="_value_broker_margin", store=False)
-    t2color = fields.Integer(compute="_value_broker_margin", store=False)
-    lscolor = fields.Integer(compute="_value_broker_margin", store=False)
+    # color = fields.Integer(compute="_value_broker_margin", store=False)
+    #
+    # t1color = fields.Integer(compute="_value_broker_margin", store=False)
+    # t2color = fields.Integer(compute="_value_broker_margin", store=False)
+    # lscolor = fields.Integer(compute="_value_broker_margin", store=False)
 
     status_ven_app = fields.Char(string="Status",store=False)
     vendor_cust_id_app = fields.Char(string="Customer ID", store=False ,compute="_value_broker_margin")
@@ -57,13 +57,13 @@ class apprisal_tracker_vendor(models.Model):
                 if order.state == 'cancel':
                     order.status_ven_app = 'Declined'
 
-                account_invoice = self.env['account.invoice'].search([('origin', '=', order.name)])
-                for acc in account_invoice:
-                    if acc.number:
-                        account_payment = self.env['account.payment'].search([('communication', '=', acc.number)])
-                        for acc_p in account_payment:
-                            if acc_p.state and acc_p.state == 'sent':
-                                order.status_ven_app = 'Check Sent'
+                # account_invoice = self.env['account.invoice'].search([('origin', '=', order.name)])
+                # for acc in account_invoice:
+                #     if acc.number:
+                #         account_payment = self.env['account.payment'].search([('communication', '=', acc.number)])
+                #         for acc_p in account_payment:
+                #             if acc_p.state and acc_p.state == 'sent':
+                #                 order.status_ven_app = 'Check Sent'
 
                 tier1_retail_temp = 0
                 tier2_retail_temp = 0

@@ -77,7 +77,7 @@ class ReportInStockReport(models.Model):
     # actual_quantity = fields.Float(string='Qty Available For Sale', compute='_calculate_max_min_lot_expiration', digits=dp.get_precision('Product Unit of Measure'))
     partn_name=fields.Char()
 
-    @api.multi
+    #@api.multi
     def _calculate_max_min_lot_expiration(self):
         for record in self:
             record.actual_quantity = record.product_tmpl_id.actual_quantity

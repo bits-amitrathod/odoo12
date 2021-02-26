@@ -27,7 +27,7 @@
         <record id="action_products_on_order" model="ir.actions.act_window">
             <field name="name">Products On Order</field>
             <field name="res_model">popup.product.on.order</field>
-            <field name="view_type">form</field>
+<!--            <field name="view_type">form</field>-->
             <field name="view_mode">form</field>
             <field name="view_id" ref="view_products_on_order_popup"/>
             <field name="target">new</field>

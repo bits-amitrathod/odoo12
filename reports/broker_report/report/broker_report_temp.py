@@ -21,7 +21,7 @@ class Discount():
         else:
             return " "
 
-    @api.multi
+    #@api.multi
     def addObject(self, filtered_by_current_month):
         dict = {}
         log.info(" inside addObject ")

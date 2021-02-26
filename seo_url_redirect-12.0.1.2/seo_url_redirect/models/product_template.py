@@ -17,7 +17,7 @@ class ProductTemplate(models.Model):
         default='', translate=True,
         help="SEO Url Key for Product")
 
-    @api.multi
+    #@api.multi
     def __check_url_key_uniq(self):
         for obj in self:
             if obj.url_key:
@@ -41,7 +41,7 @@ class ProductTemplate(models.Model):
             self.env['website.redirect'].setSeoUrlKey('pattern_product', res)
         return res
 
-    @api.multi
+    #@api.multi
     def write(self, vals):
         for proObj in self:
             if vals.get('url_key'):
@@ -49,7 +49,7 @@ class ProductTemplate(models.Model):
         res = super(ProductTemplate, self).write(vals)
         return res
 
-    @api.multi
+    #@api.multi
     def update_seo_url(self):
         productIds = self._context.get('active_ids')
         productObjs = self.search([('id', 'in', productIds)])

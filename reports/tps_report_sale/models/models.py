@@ -23,7 +23,7 @@ class tps_report_sale(models.Model):
     _rec_name = 'product_name'
 
 
-    @api.multi
+    #@api.multi
     def _compare_data(self):
         popup = self.env['tps.popup.view'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
         start_date = popup.start_date

@@ -29,7 +29,7 @@ class PurchaseHistory(models.Model):
 
 
 
-    @api.multi
+    #@api.multi
     def _calculateSKU1(self):
         for order in self:
             for p in order:

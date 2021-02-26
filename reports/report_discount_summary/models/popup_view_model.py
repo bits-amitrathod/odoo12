@@ -7,8 +7,8 @@ class DiscountSummaryPopUp(models.TransientModel):
     # _description = 'Discount Summary PopUp'
 
     compute_at_date = fields.Selection([
-        (0, 'Show All '),
-        (1, 'Date Range ')
+        ('0', 'Show All '),
+        ('1', 'Date Range ')
     ], string="Compute", help="Choose to analyze the Show Summary or from a specific date in the past.")
 
     partner_id = fields.Many2one('res.partner', string='Customer')

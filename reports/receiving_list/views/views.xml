@@ -25,7 +25,7 @@
         <record id="action_receiving_list" model="ir.actions.act_window">
             <field name="name">Receiving List</field>
             <field name="res_model">popup.receiving.list</field>
-            <field name="view_type">form</field>
+<!--            <field name="view_type">form</field>-->
             <field name="view_mode">form</field>
             <field name="view_id" ref="view_receiving_list_popup"/>
             <field name="target">new</field>

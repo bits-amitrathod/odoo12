@@ -24,7 +24,7 @@ class sh_mso_merge_sale_order_wizard(models.TransientModel):
             self.sale_order_id = False
     
     
-    @api.multi
+    #@api.multi
     def action_merge_sale_order(self):
         order_list = []
         if self and self.partner_id and self.sale_order_ids:

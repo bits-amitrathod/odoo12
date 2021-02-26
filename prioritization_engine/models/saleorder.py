@@ -39,7 +39,7 @@ class SaleOrder(models.Model):
 
     gl_account = fields.Char("GL Account", store=False, compute='_get_gl_account', readonly=True)
 
-    @api.multi
+    #@api.multi
     def _get_gl_account(self):
         for order in self:
             if order.partner_id and order.partner_id.gl_account:
@@ -50,15 +50,15 @@ class SaleOrder(models.Model):
                         else:
                             order.gl_account = gl_acnt.name
 
-    @api.onchange('client_order_ref')
-    def update_account_invoice_purchase_order(self):
-        self.env['account.invoice'].search([('origin', '=', self.name)]).write({'name': self.client_order_ref})
+    # @api.onchange('client_order_ref')
+    # def update_account_invoice_purchase_order(self):
+    #     self.env['account.invoice'].search([('origin', '=', self.name)]).write({'name': self.client_order_ref})
 
-    @api.multi
+    #@api.multi
     def action_void(self):
         return self.write({'state': 'void'})
 
-    @api.multi
+    #@api.multi
     def unlink(self):
         for order in self:
             if order.state not in ('draft', 'cancel', 'void'):
@@ -71,13 +71,13 @@ class SaleOrder(models.Model):
         if len(multi) >= 1:
             return multi.action_assign()
 
-    @api.multi
+    #@api.multi
     def do_unreserve(self):
         multi = self.env['stock.picking'].search([('sale_id', '=', self.id)])
         if len(multi) >= 1:
             return multi.do_unreserve()
 
-    @api.multi
+    #@api.multi
     def action_quotation_send(self):
         _logger.info('saleorder -> action_quotation_send()')
         """
@@ -122,37 +122,37 @@ class SaleOrder(models.Model):
             'context': ctx,
         }
 
-    @api.multi
+    #@api.multi
     def action_confirm(self):
         res = super(SaleOrder, self).action_confirm()
-        if self.team_id.team_type == 'engine':
-            user = None
-            current_user = self.env['res.users'].browse(self._context.get('uid'))
-            sale_order_customer = self.partner_id
-            super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID)])
-            user_sale_person = current_user.user_id
-            user = sale_order_customer.user_id if sale_order_customer.user_id else super_user
-            self.update({'user_id': user.id})
-
-            # Send email to Salesperson and Admin when sales order accepted(Confirm)
-            upload_type = None
-            salesperson_email = None
-            if self.order_line[0].customer_request_id and self.order_line[0].customer_request_id.document_id and \
-                    self.order_line[0].customer_request_id.document_id.source:
-                upload_type = self.order_line[0].customer_request_id.document_id.source
-            if self.user_id and self.user_id.partner_id and self.user_id.partner_id.email:
-                salesperson_email = self.user_id.partner_id.email
-            elif self.partner_id and self.partner_id.parent_id and self.partner_id.parent_id.user_id \
-                    and self.partner_id.parent_id.user_id.partner_id and self.partner_id.parent_id.user_id.partner_id.email:
-                salesperson_email = self.partner_id.parent_id.user_id.partner_id.email
-            if self.sale_note:
-                note = self.sale_note
-            else:
-                note = ""
-            # self._send_sales_order_accepted_email(self.partner_id.display_name, self.name, self.state,
-            #                                       salesperson_email, upload_type, note)
-
-        return res
+        # if self.team_id.team_type == 'engine':
+        #     user = None
+        #     current_user = self.env['res.users'].browse(self._context.get('uid'))
+        #     sale_order_customer = self.partner_id
+        #     super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID)])
+        #     user_sale_person = current_user.user_id
+        #     user = sale_order_customer.user_id if sale_order_customer.user_id else super_user
+        #     self.update({'user_id': user.id})
+        #
+        #     # Send email to Salesperson and Admin when sales order accepted(Confirm)
+        #     upload_type = None
+        #     salesperson_email = None
+        #     if self.order_line[0].customer_request_id and self.order_line[0].customer_request_id.document_id and \
+        #             self.order_line[0].customer_request_id.document_id.source:
+        #         upload_type = self.order_line[0].customer_request_id.document_id.source
+        #     if self.user_id and self.user_id.partner_id and self.user_id.partner_id.email:
+        #         salesperson_email = self.user_id.partner_id.email
+        #     elif self.partner_id and self.partner_id.parent_id and self.partner_id.parent_id.user_id \
+        #             and self.partner_id.parent_id.user_id.partner_id and self.partner_id.parent_id.user_id.partner_id.email:
+        #         salesperson_email = self.partner_id.parent_id.user_id.partner_id.email
+        #     if self.sale_note:
+        #         note = self.sale_note
+        #     else:
+        #         note = ""
+        #     # self._send_sales_order_accepted_email(self.partner_id.display_name, self.name, self.state,
+        #     #                                       salesperson_email, upload_type, note)
+        #
+        # return res
 
     def _send_sales_order_accepted_email(self, customer_name, sales_order_name, sales_order_status, salespersonEmail,
                                          upload_type, note):
@@ -168,7 +168,7 @@ class SaleOrder(models.Model):
             _logger.error("getting error while sending email of sales order : %r", exc)
             response = {'message': 'Unable to connect to SMTP Server'}
 
-    @api.multi
+    #@api.multi
     def get_share_url(self, redirect=False, signup_partner=False, pid=None):
         """Override for sales order.
 
@@ -196,8 +196,8 @@ class SaleOrderLinePrioritization(models.Model):
                                   related='product_id.product_tmpl_id.name')
     ex_sale_order_customer = fields.Char("Customer", store=False, readonly=True, related='order_id.partner_id.name')
     ex_sale_order_name = fields.Char("#Sale Order", store=False, readonly=True, related='order_id.name')
-    ex_sale_order_confirm_date = fields.Datetime("Date Sold", store=False, readonly=True,
-                                                 related='order_id.confirmation_date')
+    # ex_sale_order_confirm_date = fields.Datetime("Date Sold", store=False, readonly=True,
+    #                                              related='order_id.confirmation_date')
     ex_product_oem = fields.Char("Product OEM", store=False, readonly=True, related='product_id.product_brand_id.name')
     # manufacturer_uom = fields.Char('Manufacturer Unit of Measure',related='product_id.product_tmpl_id.manufacturer_uom.name')
     manufacturer_uom = fields.Many2one('uom.uom',
@@ -205,7 +205,7 @@ class SaleOrderLinePrioritization(models.Model):
                                        readonly=True)
     product_uom = fields.Many2one('uom.uom', string='Unit of Measure')
 
-    '''@api.multi
+    '''#@api.multi
     def _get_customer_request_count(self):
         print(self)
         print(self.customer_request_id)
@@ -219,7 +219,7 @@ class SaleOrderLinePrioritization(models.Model):
         elif self.order_id.delivery_count > 1:
             raise ValidationError(_('Picking is not possible for multiple delivery please do picking inside Delivery'))
 
-    @api.multi
+    #@api.multi
     @api.onchange('product_id')
     def product_id_change(self):
         if not self.product_id:
@@ -316,7 +316,7 @@ class SaleOrderLinePrioritization(models.Model):
 class StockPicking(models.Model):
     _inherit = "stock.picking"
 
-    @api.multi
+    #@api.multi
     def button_validate(self):
         _logger.info("stock :stock_picking_prioritization  button_validate called.....")
         _logger.info("stock :stock_picking_prioritization parnter hold status %r :", self.partner_id)
@@ -380,7 +380,7 @@ class StockPicking(models.Model):
 
         return
 
-    @api.multi
+    #@api.multi
     def send_to_shipper(self):
         print("inside send to shipper")
         print(self.carrier_tracking_ref)
@@ -400,49 +400,49 @@ class StockPicking(models.Model):
             self.message_post(body="Already tracking created")
 
 
-class AccountInvoice(models.Model):
-    _inherit = 'account.invoice'
-    expiration_date = fields.Date("Expiration Date")
-    note = fields.Char("Customer Message")
-    memo = fields.Char("Memo")
-    shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
-    is_share = fields.Boolean(string='Is Shared', related='partner_id.is_share', readonly=True)
-    sale_margine = fields.Selection([
-        ('gifted', 'Gifted'),
-        ('legacy', 'Legacy')], string='Sales Level', related='partner_id.sale_margine', readonly=True)
-    preferred_method = fields.Selection(string='Preferred Invoice Delivery Method',
-                                        related='partner_id.preferred_method', readonly=True)
-
-    '''name = fields.Char(string='Purchase Order#', index=True,
-                       readonly=True, states={'draft': [('readonly', False)]},
-                       help='The name that will be used on account move lines')  
-
-      origin = fields.Char(string='Sale Order#',
-                         help="Reference of the document that produced this invoice.",
-                         readonly=True, states={'draft': [('readonly', False)]})'''
-
-    purchase_order = fields.Char(string='Purchase Order#', store=False, compute="_setInvoicePurchaseOrder",
-                                 readonly=True)
-    tracking_reference = fields.Char(string=' TrackingReference', store=False,
-                                     compute='_getSalesOerderPickingOutTrackingReference', readonly=True)
-
-    @api.multi
-    def _setInvoicePurchaseOrder(self):
-        for order in self:
-            if order.origin == order.name:
-                order.purchase_order = ""
-            else:
-                order.purchase_order = order.name
-
-    @api.multi
-    def _getSalesOerderPickingOutTrackingReference(self):
-        for order in self:
-            if order.origin:
-                order.env.cr.execute(
-                    "select carrier_tracking_ref from stock_picking WHERE origin like '" + order.origin + "' and state like 'done' and name like 'WH/OUT/%' limit 1")
-                query_result = order.env.cr.dictfetchone()
-                if query_result and query_result['carrier_tracking_ref']:
-                    order.tracking_reference = query_result['carrier_tracking_ref']
+# class AccountInvoice(models.Model):
+#     _inherit = 'account.invoice'
+#     expiration_date = fields.Date("Expiration Date")
+#     note = fields.Char("Customer Message")
+#     memo = fields.Char("Memo")
+#     shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
+#     is_share = fields.Boolean(string='Is Shared', related='partner_id.is_share', readonly=True)
+#     sale_margine = fields.Selection([
+#         ('gifted', 'Gifted'),
+#         ('legacy', 'Legacy')], string='Sales Level', related='partner_id.sale_margine', readonly=True)
+#     preferred_method = fields.Selection(string='Preferred Invoice Delivery Method',
+#                                         related='partner_id.preferred_method', readonly=True)
+#
+#     '''name = fields.Char(string='Purchase Order#', index=True,
+#                        readonly=True, states={'draft': [('readonly', False)]},
+#                        help='The name that will be used on account move lines')
+#
+#       origin = fields.Char(string='Sale Order#',
+#                          help="Reference of the document that produced this invoice.",
+#                          readonly=True, states={'draft': [('readonly', False)]})'''
+#
+#     purchase_order = fields.Char(string='Purchase Order#', store=False, compute="_setInvoicePurchaseOrder",
+#                                  readonly=True)
+#     tracking_reference = fields.Char(string=' TrackingReference', store=False,
+#                                      compute='_getSalesOerderPickingOutTrackingReference', readonly=True)
+#
+#     #@api.multi
+#     def _setInvoicePurchaseOrder(self):
+#         for order in self:
+#             if order.origin == order.name:
+#                 order.purchase_order = ""
+#             else:
+#                 order.purchase_order = order.name
+#
+#     #@api.multi
+#     def _getSalesOerderPickingOutTrackingReference(self):
+#         for order in self:
+#             if order.origin:
+#                 order.env.cr.execute(
+#                     "select carrier_tracking_ref from stock_picking WHERE origin like '" + order.origin + "' and state like 'done' and name like 'WH/OUT/%' limit 1")
+#                 query_result = order.env.cr.dictfetchone()
+#                 if query_result and query_result['carrier_tracking_ref']:
+#                     order.tracking_reference = query_result['carrier_tracking_ref']
 
 
 class SaleOrderReport(models.Model):

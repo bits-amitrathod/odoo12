@@ -85,7 +85,7 @@
           <record id="revenue_report_action_dashboard" model="ir.actions.act_window">
             <field name="name">Dashboard KA/BD/NA</field>
             <field name="res_model">sale.report.revenue</field>
-               <field name="view_type">form</field>
+<!--               <field name="view_type">form</field>-->
             <field name="view_mode">graph</field>
             <field name="search_view_id" ref="sale_revenue_dashboard.view_order_product_search_revenue"/>
             <field name="context" eval="{'search_default_Sales': 1, 'time_ranges': {'field':'delivery_date', 'range':'last_30_days'}}"/>

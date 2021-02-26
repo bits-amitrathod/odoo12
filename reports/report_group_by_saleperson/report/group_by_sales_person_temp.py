@@ -11,7 +11,7 @@ class SaleSalespersonReport(models.TransientModel):
         else:
             return " "
 
-    @api.multi
+    #@api.multi
     def _get_report_values(self, docids, data):
         sale_orders = self.env['sale.order'].search([('state', '=', 'sale'), ('id', 'in', docids)])
 

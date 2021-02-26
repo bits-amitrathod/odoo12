@@ -19,7 +19,7 @@ class RemoveDocumentScheduler(models.Model):
     _name = 'remove.document.cron.scheduler'
 
     @api.model
-    @api.multi
+    #@api.multi
     def process_remove_document_scheduler(self):
         _logger.info('In Remove document Scheduler')
 

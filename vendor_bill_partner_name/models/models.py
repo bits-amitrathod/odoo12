@@ -26,7 +26,7 @@ class VendorBillPartnerName(models.Model):
         default='contact',
         help="Used to select automatically the right address according to the context in sales and purchases documents.")
 
-    @api.multi
+    #@api.multi
     def name_get(self):
 
         res = []
@@ -77,7 +77,7 @@ class VendorBillPartnerName(models.Model):
             res.append((partner.id, name))
         return res
 
-    # @api.multi
+    # #@api.multi
     # def write(self, vals):
     #     super_return = super(VendorBillPartnerName, self).write(vals)
     #
@@ -143,23 +143,23 @@ class VendorBillPartnerName(models.Model):
     #
     #     return tools.image_resize_image_big(base64.b64encode(image)) if image and colorize else super_return
 
-class account_invoice(models.Model):
-    _inherit = "account.invoice"
-
-    @api.model
-    def create(self, values):
-        # Override the original create function for the res.partner model
-        record = super(account_invoice, self).create(values)
-
-        # Change the values of a variable in this super function
-        # record['passed_override_write_function'] = True
-
-        return record
+# class account_invoice(models.Model):
+#     _inherit = "account.invoice"
+#
+#     @api.model
+#     def create(self, values):
+#         # Override the original create function for the res.partner model
+#         record = super(account_invoice, self).create(values)
+#
+#         # Change the values of a variable in this super function
+#         # record['passed_override_write_function'] = True
+#
+#         return record
 
 class account_register_payments(models.TransientModel):
     _inherit = 'account.register.payments'
 
-    @api.multi
+    #@api.multi
     def _prepare_payment_vals(self, invoices):
         '''Create the payment values.
 
@@ -195,7 +195,7 @@ class account_register_payments(models.TransientModel):
 class hide_state_code(models.Model):
     _inherit = 'res.country.state'
 
-    @api.multi
+    #@api.multi
     def name_get(self):
         # super(hide_state_code,self).name_get()
         result = []

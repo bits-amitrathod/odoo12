@@ -74,7 +74,7 @@ class ResConfigSettings(models.TransientModel):
                    module_product_expiry=module_product_expiry)
         return res
 
-    @api.multi
+    #@api.multi
     def set_values(self):
         super(ResConfigSettings, self).set_values()
         self.env['ir.config_parameter'].sudo().set_param("inventory_extension.production_lot_alert_days",

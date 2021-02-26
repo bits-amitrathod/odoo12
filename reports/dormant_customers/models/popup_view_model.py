@@ -15,9 +15,9 @@ class ProductSaleByCountPopUp(models.TransientModel):
     _description = 'Dormant Customers'
 
     compute_at_date = fields.Selection([
-        (0, 'Last 1 Month '),
-        (1, 'Date Range ')
-    ], string="Compute", default=0, help="Choose to analyze the Show Summary or from a specific date in the past.")
+        ('0', 'Last 1 Month '),
+        ('1', 'Date Range ')
+    ], default='0', help="Choose to analyze the Show Summary or from a specific date in the past.")
 
     start_date = fields.Date('Start Date', default=( fields.date.today() - datetime.timedelta(days=30) ), required=True)
 

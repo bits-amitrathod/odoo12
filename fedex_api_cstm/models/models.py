@@ -282,7 +282,7 @@ class tracking_popup(models.TransientModel):
             order = self
         return self.carrier_id.fedex_track_request(order, [int(self.tracking_number)])
 
-    @api.multi
+    #@api.multi
     def track_fedex(self):
         client_action = {
             'type': 'ir.actions.act_url',
@@ -296,7 +296,7 @@ class tracking_popup(models.TransientModel):
 class VendorOfferTrack(models.Model):
     _inherit = "purchase.order"
 
-    @api.multi
+    #@api.multi
     def action_fedex_track_request(self):
         if self.carrier_id:
             return self.carrier_id.get_tracking(self, self.shipping_number.split(","))
@@ -305,7 +305,7 @@ class VendorOfferTrack(models.Model):
 class sale_order_track(models.Model):
     _inherit = 'sale.order'
 
-    @api.multi
+    #@api.multi
     def action_fedex_track_request(self):
         if self.carrier_id:
             return self.carrier_id.get_tracking(self, [self.carrier_track_ref])
