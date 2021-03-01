@@ -86,7 +86,6 @@
         <record id="action_sales_by_count" model="ir.actions.act_window">
             <field name="name">Sales By Count</field>
             <field name="res_model">popup.sales.by.count</field>
-            <field name="view_type">form</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="view_popup_for_sales_by_count"/>
             <field name="target">new</field>

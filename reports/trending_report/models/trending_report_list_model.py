@@ -170,7 +170,7 @@ class TrendingReportListView(models.Model):
                     customer.average_sale=(customer.total_sale *30 / self.get_day_from_purchase(customer.id))
                 else:
                     customer.average_sale=customer.total_sale
-    @api.model
+
     def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
 
         View = self.env['ir.ui.view']
