@@ -239,6 +239,8 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
     def cart_update_custom(self, product_id, add_qty, set_qty=0, **kw):
         """This route is called when adding a product to cart (no options)."""
         sale_order = request.website.sale_get_order(force_create=True)
+        crm_team = request.env['crm.team'].sudo().search([('team_type', '=', 'my_in_stock_report')])
+        sale_order.team_id = crm_team.id
         if sale_order.state != 'draft':
             request.session['sale_order_id'] = None
             sale_order = request.website.sale_get_order(force_create=True)
