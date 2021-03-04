@@ -9,6 +9,13 @@
             <field name="team_type" eval="'engine'"/>
         </record>
 
+        <record id="salesteam_my_in_stock_report" model="crm.team">
+            <field name="name">My In-Stock Report</field>
+            <field name="company_id" eval="False"/>
+            <field name="active" eval="True"/>
+            <field name="team_type" eval="'my_in_stock_report'"/>
+        </record>
+
         <!--Email template -->
         <record id="email_template_sale_custom" model="mail.template">
             <field name="name">Sales Order - Send by Email</field>
