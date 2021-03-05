@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Tree view -->
+        <record model="ir.ui.view" id="new_account_bonus_report_list_view">
+              <field name="name">new.account.bonus.report.view.list</field>
+              <field name="model">new.account.bonus.report</field>
+              <field name="priority">20</field>
+              <field name="arch" type="xml">
+                <tree create="false" edit="false" delete="false">
+                    <field name="currency_id" invisible="1"/>
+                    <field name="customer"/>
+                    <field name="business_development"/>
+                    <field name="sale_order_id"/>
+                    <field name="date_invoice" widget="date"/>
+                    <field name="amount_total" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    <field name="months"/>
+                    <field name="invoice_status"/>
+                </tree>
+              </field>
+        </record>
+
+        <!-- Tree view ends here -->
+
+        <!-- Form view-->
+        <record id="new_account_bonus_report_form_view" model="ir.ui.view">
+          <field name="name">new.account.bonus.report.form</field>
+          <field name="model">new.account.bonus.report</field>
+          <field name="priority">20</field>
+          <field name="arch" type="xml">
+              <form create="false" edit="false" delete="false">
+                  <sheet>
+                      <group>
+                            <group>
+                                <field name="customer"/>
+                                <field name="business_development"/>
+                                <field name="sale_order_id"/>
+                                <field name="date_invoice" widget="date"/>
+                            </group>
+                            <group>
+                                <field name="currency_id" invisible="1"/>
+                                <field name="amount_total" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <field name="months"/>
+                                <field name="invoice_status"/>
+                            </group>
+                      </group>
+                  </sheet>
+              </form>
+          </field>
+        </record>
+
+        <!-- Form view ends here -->
+
+
+        <!-- Popup code -->
+        <record id="new_account_bonus_report_popup_view" model="ir.ui.view">
+            <field name="name">New Account Bonus Report</field>
+            <field name="model">popup.new.account.bonus.report</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="business_development"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Popup code ends here-->
+
+
+        <!-- Action code -->
+        <record id="action_new_account_bonus_report" model="ir.actions.act_window">
+            <field name="name">New Account Bonus Report</field>
+            <field name="res_model">popup.new.account.bonus.report</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="new_account_bonus_report_popup_view"/>
+            <field name="target">new</field>
+            <field name="context">{'valuation': True}</field>
+        </record>
+
+        <!-- Action code ends here -->
+
+        <!-- Export popup code -->
+        <record id="export_new_account_by_month_by_bd_popup" model="ir.ui.view">
+            <field name="name">new.account.bonus.report.export.popup</field>
+            <field name="model">new.account.bonus.report.export</field>
+            <field name="arch" type="xml">
+                <form string="Export New Account Bonus Report">
+                    <group>
+                        <group>
+                            <field name="business_development"/>
+                        </group>
+                        <group>
+                            <div>Click On ' Export To File ' button to export New Account Bonus Report file</div>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="download_excel_bd_new_account" string="Export To File" type="object"
+                                class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Export popup code ends here -->
+
+        <!-- Filter's code -->
+        <record id="new_account_by_month_by_bd_filter" model="ir.ui.view">
+            <field name="name">new.account.bonus.report.filter</field>
+            <field name="model">new.account.bonus.report</field>
+            <field name="arch" type="xml">
+                <search string="Search">
+                    <field name="customer"/>
+                    <field name="business_development"/>
+                    <group expand="0" string="Group By">
+                        <filter name="customer" string="Customer Name" domain="[]" context="{'group_by':'customer'}"/>
+                        <!--<filter name="business_development" string="Business Development" domain="[]" context="{'group_by':'business_development'}"/>-->
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Filter's code ends here -->
+
+        <!-- Export Action code -->
+        <act_window name="Export New Account Bonus Report"
+                    res_model="new.account.bonus.report.export"
+                    src_model="new.account.bonus.report"
+                    view_mode="form"
+                    target="new"
+                    key2="client_action_multi"
+                    id="new_account_by_month_by_bd_export_act_window"/>
+
+        <!-- Export Action code ends here -->
+
+        <!-- Menus declaration -->
+        <menuitem id="sale.new_account_bonus_report_menu"
+                  name="New Account Bonus Report"
+                  action="action_new_account_bonus_report"
+                  parent="sale.menu_sale_report"
+                  sequence="2"/>
+
+                <!--parent="sale.menu_sale_report"-->
+
+        <!-- Menus declaration ends here -->
+
+    </data>
+</odoo>
