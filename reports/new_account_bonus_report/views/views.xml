@@ -43,6 +43,7 @@
                                 <field name="amount_total" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                                 <field name="months"/>
                                 <field name="invoice_status"/>
+                                <field name="date_of_first_order"/>
                             </group>
                       </group>
                   </sheet>
