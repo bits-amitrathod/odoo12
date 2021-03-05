@@ -11,7 +11,7 @@ _logger = logging.getLogger(__name__)
 class NewAccountBonusReport(models.Model):
     _name = 'new.account.bonus.report'
     _auto = False
-    _order = 'business_development'
+    _order = 'date_invoice asc'
 
     customer = fields.Many2one('res.partner', 'Customer Name')
     business_development = fields.Many2one('res.users', 'Business Development')
@@ -21,6 +21,16 @@ class NewAccountBonusReport(models.Model):
     amount_total = fields.Float('Total')
     months = fields.Integer('Month', group_operator="max")
     currency_id = fields.Many2one('res.currency', string='Currency')
+    date_of_first_order = fields.Date('Date of First Order')
+
+    @api.model
+    def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=False):
+        fields = ['customer', 'business_development', 'sale_order_id', 'date_invoice', 'invoice_status', 'amount_total',
+                  'months', 'currency_id', 'date_of_first_order']
+        res = super(NewAccountBonusReport, self).read_group(domain, fields, groupby, offset, limit=limit,
+                                                            orderby='amount_total desc', lazy=lazy)
+
+        return res
 
     @api.model_cr
     def init(self):
@@ -43,7 +53,8 @@ class NewAccountBonusReport(models.Model):
                         CASE WHEN so.invoice_status = 'invoiced' then 'Fully Invoiced' END AS invoice_status, 
                         ai.amount_total                     AS amount_total, 
                         X.months                            AS months,
-                        ai.currency_id                      AS currency_id
+                        ai.currency_id                      AS currency_id,
+                        X.first_occurence                   AS date_of_first_order
                 FROM public.sale_order so
                 INNER JOIN
                     (
@@ -53,17 +64,17 @@ class NewAccountBonusReport(models.Model):
                         INNER JOIN 
                             public.account_invoice aii ON sos.name = aii.origin
                         GROUP BY sos.partner_id
-                        Having MIN(aii.date_invoice) >= '""" + str(end_date) + """ ') X
+                        Having MIN(aii.date_invoice) > '""" + str(end_date) + """ ') X
                         ON so.partner_id = X.partner_id
                     INNER JOIN 
-                        public.account_invoice ai ON so.name = ai.origin AND ai.date_invoice >= X.first_occurence
-                WHERE so.invoice_status = 'invoiced' AND ai.state = 'paid' AND ai.date_invoice >= '                
-                   """ + str(end_date) + """'"""
+                        public.account_invoice ai ON so.name = ai.origin AND ai.state = 'paid'
+                WHERE so.invoice_status = 'invoiced'                
+                   """
 
             if business_development_id:
                 select_query = select_query + "AND so.user_id = '" + str(business_development_id) + "'"
 
-            order_by = " ORDER BY ai.date_invoice desc"
+            order_by = " ORDER BY ai.date_invoice asc"
 
             select_query = select_query + order_by
 
@@ -92,7 +103,7 @@ class NewAccountBonusReportExport(models.TransientModel):
 
         start_date = self.string_to_date(str(self.start_date))
         end_date = start_date - datetime.timedelta(days=365)
-        start_date = start_date + datetime.timedelta(days=1)
+        # start_date = start_date + datetime.timedelta(days=1)
 
         if self.business_development and self.business_development is not None:
             return {

@@ -100,15 +100,14 @@ class ExportNewAccountBonusReport(http.Controller):
                         INNER JOIN 
                             public.account_invoice aii ON sos.name = aii.origin
                         GROUP BY sos.partner_id
-                        Having MIN(aii.date_invoice) >= '""" + str(end_date) + """ ') X
+                        Having MIN(aii.date_invoice) > '""" + str(end_date) + """ ') X
                         ON so.partner_id = X.partner_id
                     INNER JOIN 
-                        public.account_invoice ai ON so.name = ai.origin AND ai.date_invoice >= X.first_occurence
+                        public.account_invoice ai ON so.name = ai.origin AND ai.state = 'paid'
                     INNER JOIN public.res_partner RPS ON so.partner_id = RPS.id
                     INNER JOIN public.res_users RU ON so.user_id = RU.id
                     INNER JOIN public.res_partner RPSS ON RU.partner_id = RPSS.id
-                WHERE so.invoice_status = 'invoiced' AND ai.state = 'paid' AND ai.date_invoice >= '                
-                   """ + str(end_date) + """'"""
+                WHERE so.invoice_status = 'invoiced' """
 
         if business_development_id != "none":
             select_query = select_query + "AND so.user_id = '" + str(business_development_id) + "'"

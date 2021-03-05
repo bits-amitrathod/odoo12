@@ -15,7 +15,7 @@ class NewAccountBonusReportPopup(models.TransientModel):
     def open_table(self):
         start_date = self.string_to_date(str(self.start_date))
         end_date = start_date - datetime.timedelta(days=365)
-        start_date = start_date + datetime.timedelta(days=1)
+        # start_date = start_date + datetime.timedelta(days=1)
 
         tree_view_id = self.env.ref('new_account_bonus_report.new_account_bonus_report_list_view').id
         form_view_id = self.env.ref('new_account_bonus_report.new_account_bonus_report_form_view').id
