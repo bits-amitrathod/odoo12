@@ -29,7 +29,6 @@ class NewAccountBonusReport(models.Model):
                   'months', 'currency_id', 'date_of_first_order']
         res = super(NewAccountBonusReport, self).read_group(domain, fields, groupby, offset, limit=limit,
                                                             orderby='amount_total desc', lazy=lazy)
-
         return res
 
     @api.model_cr
