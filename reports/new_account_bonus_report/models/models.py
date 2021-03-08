@@ -27,8 +27,13 @@ class NewAccountBonusReport(models.Model):
     def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=False):
         fields = ['customer', 'business_development', 'sale_order_id', 'date_invoice', 'invoice_status', 'amount_total',
                   'months', 'currency_id', 'date_of_first_order']
+        
+        if orderby == '' or orderby is False:
+            order_by = 'amount_total desc'
+        else:
+            order_by = orderby
         res = super(NewAccountBonusReport, self).read_group(domain, fields, groupby, offset, limit=limit,
-                                                            orderby='amount_total desc', lazy=lazy)
+                                                            orderby=order_by, lazy=lazy)
         return res
 
     @api.model_cr
