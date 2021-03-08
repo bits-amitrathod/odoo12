@@ -19,7 +19,7 @@ class NewAccountBonusReport(models.Model):
     date_invoice = fields.Date('Invoice Date')
     invoice_status = fields.Char('Status')
     amount_total = fields.Float('Total')
-    months = fields.Integer('Month', group_operator="max")
+    months = fields.Integer('Months Ago First Order', group_operator="max")
     currency_id = fields.Many2one('res.currency', string='Currency')
     date_of_first_order = fields.Date('Date of First Order')
 
