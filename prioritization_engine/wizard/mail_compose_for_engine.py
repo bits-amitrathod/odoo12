@@ -10,12 +10,13 @@ class MailComposeForEngine(models.TransientModel):
     def send_mail(self, auto_commit=False):
         if self.template_id.name == 'Vendor Offer - Send by Email' and self._context.get('default_model') == 'purchase.order' \
                 and self._context.get('default_res_id'):
-
             for record in self:
                 template = self.env.ref("vendor_offer.email_template_edi_vendor_offer_done_cstm")
                 values = {'notification': True}
                 values['attachment_ids'] = [(6, 0, [att.id for att in record.attachment_ids])]
                 try:
+                    values['subject'] = record.subject
+                    values['body_html'] = record.body
                     template_id = template.with_context().sudo().send_mail(self._context.get('default_res_id'), raise_exception=True)
                     self.env['mail.mail'].sudo().browse(template_id).write(values)
                 except Exception as exc:
