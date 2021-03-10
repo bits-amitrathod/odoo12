@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import api, models
+from odoo import fields, api, models
 
 class MailComposeForEngine(models.TransientModel):
     _inherit = 'mail.compose.message'
@@ -15,9 +15,17 @@ class MailComposeForEngine(models.TransientModel):
                 values = {'notification': True}
                 values['attachment_ids'] = [(6, 0, [att.id for att in record.attachment_ids])]
                 try:
-                    values['subject'] = record.subject
-                    values['body_html'] = record.body
-                    template_id = template.with_context().sudo().send_mail(self._context.get('default_res_id'), raise_exception=True)
+                    email_list = ''
+                    for partner in record.partner_ids:
+                        if 'vendor_email' in record._context:
+                            if partner.email != record._context.get('vendor_email'):
+                                if email_list == '':
+                                    email_list = partner.email
+                                else:
+                                    email_list = email_list + ',' + partner.email
+
+                    local_context = {'subject_details': record.subject, 'body_details': record.body, 'email_cc': email_list}
+                    template_id = template.with_context(local_context).sudo().send_mail(self._context.get('default_res_id'), raise_exception=True)
                     self.env['mail.mail'].sudo().browse(template_id).write(values)
                 except Exception as exc:
                     print("getting error while sending email- Vendor Offer - Send by Email - Custom")
