@@ -75,7 +75,7 @@
     <record model="ir.actions.act_window" id="oauth2_detail_action">
         <field name="name">Account</field>
         <field name="res_model">oauth2.detail</field>
-        <field name="view_type">form</field>
+        <!-- <field name="view_type">form</field> -->
         <field name="view_mode">form,tree</field>
         <field name="view_id" ref="oauth2_detail_tree" />
     </record>

@@ -13,19 +13,19 @@
                          <div class="row mt16 o_settings_container" id="production_lot_info">
                             <div class="col-xs-12 col-md-6 o_setting_box">
                                <div class="o_setting_left_pane">
-                                <field name="max_inventory_level"/>
+<!--                                <field name="max_inventory_level"/>-->
                                </div>
                                 <div class="o_setting_right_pane">
-                                    <label for="max_inventory_level"/>
+<!--                                    <label for="max_inventory_level"/>-->
                                     <div class="text-muted">
                                        Manage max inventory level based on sales made
                                     </div>
                                      <div class="content-group">
-                                        <div class="mt16" attrs="{'invisible': [('max_inventory_level', '=', False)]}">
-                                            <field name="max_inventory_level_duration" class="oe_inline"/>
-                                            <span>days</span>
-                                             <p style="color: #025325;" >Duration of max inventory level should be less than 365 days</p>
-                                        </div>
+<!--                                        <div class="mt16" attrs="{'invisible': [('max_inventory_level', '=', False)]}">-->
+<!--                                            <field name="max_inventory_level_duration" class="oe_inline"/>-->
+<!--                                            <span>days</span>-->
+<!--                                             <p style="color: #025325;" >Duration of max inventory level should be less than 365 days</p>-->
+<!--                                        </div>-->
                                     </div>
                                 </div>
                             </div>
@@ -82,33 +82,33 @@
                     ]"/>
             </search>
         </field>
-    </record>
+    </record>  -->
     <record id="view_inventory_moniter_line_tree" model="ir.ui.view">
         <field name="name">product.template.tree</field>
         <field name="model">product.template</field>
-        <field name="context">{"inventory_monitor":1}</field>
+<!--        <field name="context">{"inventory_monitor":1}</field>-->
         <field name="arch" type="xml">
             <tree string="Inventory Monitor">
                 <field name="product_brand_id"/>
                 <field name="sku_code"/>
                 <field name="name" string="Product Name"/>
-                <field name="max_inventory_level" />
+<!--                <field name="max_inventory_level" />-->
                 <field name="inventory_percent_color" invisible="1" />
-                <field name="max_inventory_percent" options='{"bg_color": "#c9f3c9:inventory_percent_color&lt;=75;#f3b8b4:inventory_percent_color&lt;45;#f5e5b8:inventory_percent_color&gt;=125"}'/>
-                <field name="qty_in_stock"/>
-                <field name="future_percent_color" invisible="1"/>
-                <field name="max_inventory_future_percent"  options='{"bg_color": "#c9f3c9:future_percent_color&lt;=75;#f3b8b4:future_percent_color&lt;45;#f5e5b8:future_percent_color&gt;=125"}'/>
-                <field name="qty_on_order"/>
-                <field name="inventory_monitor" invisible="1" eval="True"/>
-                <field name="type"/>
+<!--                <field name="max_inventory_percent" options='{"bg_color": "#c9f3c9:inventory_percent_color&lt;=75;#f3b8b4:inventory_percent_color&lt;45;#f5e5b8:inventory_percent_color&gt;=125"}'/>-->
+<!--                <field name="qty_in_stock"/>-->
+<!--                <field name="future_percent_color" invisible="1"/>-->
+<!--                <field name="max_inventory_future_percent"  options='{"bg_color": "#c9f3c9:future_percent_color&lt;=75;#f3b8b4:future_percent_color&lt;45;#f5e5b8:future_percent_color&gt;=125"}'/>-->
+<!--                <field name="qty_on_order"/>-->
+<!--                <field name="inventory_monitor" invisible="1" eval="True"/>-->
+<!--                <field name="type"/>-->
             </tree>
         </field>
     </record>
-    <record id="product_normal_action_puchased_ext" model="ir.actions.act_window">
+   <!-- <record id="product_normal_action_puchased_ext" model="ir.actions.act_window">
         <field name="name">Inventory Monitor</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">product.template</field>
-        <field name="view_type">form</field>
+        &lt;!&ndash; <field name="view_type">form</field> &ndash;&gt;
         <field name="view_mode">tree,form,search</field>
         <field name="domain">[('type', '=', 'product')]</field>
         <field name="context">{"search_default_filter_to_monitor":1}</field>
@@ -127,22 +127,22 @@
             available vendors, etc.
           </p>
         </field>
-    </record>-->
-
+    </record>
+-->
     <record id="view_inventory_moniter_line_tree_test" model="ir.ui.view">
         <field name="name">inventory.monitor.tree</field>
         <field name="model">inventory.monitor</field>
-        <field name="context">{"inventory_monitor":1}</field>
+<!--        <field name="context">{"inventory_monitor":1}</field>-->
         <field name="arch" type="xml">
             <tree string="Inventory Monitor" create="false" edit="false" delete="false">
                 <field name="sku_code" />
                 <field name="product_id" />
-                <field name="max_inventory_level" />
+<!--                <field name="max_inventory_level" />-->
                 <field name="inventory_percent_color" invisible="1" />
-                <field name="max_inventory_percent" options='{"bg_color": "#e86a61:inventory_percent_color&lt;=75;#f7fa4b:inventory_percent_color&gt;75 and inventory_percent_color&lt;125 ;#c9f3c9:inventory_percent_color&gt;125"}' widget = "Percent"/>
-                <field name="qty_in_stock"/>
-                <field name="future_percent_color" invisible="1"/>
-                <field name="max_inventory_future_percent"  options='{"bg_color": "#e86a61:future_percent_color&lt;=75;#f7fa4b:future_percent_color&gt;75 and inventory_percent_color&lt;125 ;#c9f3c9:future_percent_color&gt;125"}' widget = "Percent"/>
+<!--                <field name="max_inventory_percent" options='{"bg_color": "#e86a61:inventory_percent_color&lt;=75;#f7fa4b:inventory_percent_color&gt;75 and inventory_percent_color&lt;125 ;#c9f3c9:inventory_percent_color&gt;125"}' widget = "Percent"/>-->
+<!--                <field name="qty_in_stock"/>-->
+<!--                <field name="future_percent_color" invisible="1"/>-->
+<!--                <field name="max_inventory_future_percent"  options='{"bg_color": "#e86a61:future_percent_color&lt;=75;#f7fa4b:future_percent_color&gt;75 and inventory_percent_color&lt;125 ;#c9f3c9:future_percent_color&gt;125"}' widget = "Percent"/>-->
                 <field name="qty_on_order"/>
                 <field name="inventory_monitor" invisible="1" eval="True"/>
                 <field name="type" />
@@ -155,25 +155,25 @@
     <record id="view_inventory_moniter_line_form_test" model="ir.ui.view">
         <field name="name">inventory.monitor.tree</field>
         <field name="model">inventory.monitor</field>
-        <field name="context">{"inventory_monitor":1}</field>
+<!--        <field name="context">{"inventory_monitor":1}</field>-->
         <field name="arch" type="xml">
             <form string="Inventory Monitor" create="false" edit="false" delete="false">
                <sheet>
                    <group>
                        <field name="sku_code" />
                        <field name="product_id" />
-                       <field name="max_inventory_level" />
-                       <label for="max_inventory_percent"/>
+<!--                       <field name="max_inventory_level" />-->
+<!--                       <label for="max_inventory_percent"/>-->
                        <div>
-                            <field name="max_inventory_percent" options='{"bg_color": "#c9f3c9:inventory_percent_color&lt;=75;#f3b8b4:inventory_percent_color&lt;45;#f5e5b8:inventory_percent_color&gt;=125"}'/>
+<!--                            <field name="max_inventory_percent" options='{"bg_color": "#c9f3c9:inventory_percent_color&lt;=75;#f3b8b4:inventory_percent_color&lt;45;#f5e5b8:inventory_percent_color&gt;=125"}'/>-->
                             <span>%</span>
                        </div>
                    </group>
                    <group>
-                       <field name="qty_in_stock"/>
-                       <label for="max_inventory_future_percent"/>
+<!--                       <field name="qty_in_stock"/>-->
+<!--                       <label for="max_inventory_future_percent"/>-->
                        <div>
-                            <field name="max_inventory_future_percent" options='{"bg_color": "#c9f3c9:future_percent_color&lt;=75;#f3b8b4:future_percent_color&lt;45;#f5e5b8:future_percent_color&gt;=125"}'/>
+<!--                            <field name="max_inventory_future_percent" options='{"bg_color": "#c9f3c9:future_percent_color&lt;=75;#f3b8b4:future_percent_color&lt;45;#f5e5b8:future_percent_color&gt;=125"}'/>-->
                             <span>%</span>
                        </div>
                        <field name="qty_on_order"/>
@@ -230,7 +230,7 @@
     <record id="max_inventory_level_duration" model="ir.actions.act_window">
         <field name="name"> Max Inventory Level Duration </field>
         <field name="res_model">max.inventory.popup</field>
-        <field name="view_type">form</field>
+        <!-- <field name="view_type">form</field> -->
         <field name="view_mode">form</field>
         <field name="view_id" ref="max_inventory_level_duration_popup"/>
         <field name="target">new</field>

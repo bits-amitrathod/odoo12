@@ -74,7 +74,7 @@
         <record id="action_new_account_by_month_by_bd" model="ir.actions.act_window">
             <field name="name">New Account By Month By BD</field>
             <field name="res_model">popup.bd.new.account</field>
-            <field name="view_type">form</field>
+            <!-- <field name="view_type">form</field> -->
             <field name="view_mode">form</field>
             <field name="view_id" ref="bd_new_account_popup_view"/>
             <field name="target">new</field>

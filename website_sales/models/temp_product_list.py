@@ -10,7 +10,7 @@ class TempProductList(models.Model):
 
     product_list = {}
 
-    @api.model_cr
+
     def init(self):
         self.init_table()
 
@@ -111,7 +111,7 @@ class TempProductList(models.Model):
                 product_data = {product.id: product_dict}
                 self.product_list.update(product_data)
 
-    @api.model_cr
+    #  @api.model_cr
     def delete_and_create(self):
         self.init_table()
 

@@ -74,7 +74,7 @@
                     </div>
                     ]]>
                 </field>
-                <field name="user_signature" eval="False"/>
+<!--                <field name="user_signature" eval="False"/>-->
             </record>
 
          <!-- CRON -->

@@ -6,7 +6,7 @@
             <field name="name">Prioritization</field>
             <field name="company_id" eval="False"/>
             <field name="active" eval="True"/>
-            <field name="team_type" eval="'engine'"/>
+<!--            <field name="team_type" eval="'engine'"/>-->
         </record>
 
         <!--Email template -->

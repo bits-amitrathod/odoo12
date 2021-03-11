@@ -22,7 +22,7 @@
         <record id="action_sales_by_month" model="ir.actions.act_window">
             <field name="name">Sales By Month</field>
             <field name="res_model">salesbymonth.popup</field>
-            <field name="view_type">form</field>
+            <!-- <field name="view_type">form</field> -->
             <field name="view_mode">form</field>
             <field name="view_id" ref="view_popup_for_sales_by_month"/>
             <field name="target">new</field>

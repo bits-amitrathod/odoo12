@@ -31,7 +31,7 @@ class MarginsReport(models.Model):
     currency_id = fields.Many2one("res.currency", string="Currency",
                                    readonly=True)
 
-    @api.model_cr
+    #  @api.model_cr
     def init(self):
         self.init_table()
 
@@ -106,6 +106,6 @@ class MarginsReport(models.Model):
 
         self._cr.execute(sql_query)
 
-    @api.model_cr
+    #  @api.model_cr
     def delete_and_create(self):
         self.init_table()

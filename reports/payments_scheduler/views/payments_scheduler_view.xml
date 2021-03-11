@@ -20,7 +20,7 @@
             </field>
         </record>
 
-        <record id="form_list" model="ir.ui.view">
+        <!--<record id="form_list" model="ir.ui.view">
             <field name="name">Payments Scheduled Report</field>
             <field name="model">account.invoice</field>
             <field name="arch" type="xml">
@@ -42,9 +42,9 @@
                     <field name="currency_id" invisible="1"/>
                 </tree>
             </field>
-        </record>
+        </record>-->
 
-        <record id="form_view" model="ir.ui.view">
+        <!--<record id="form_view" model="ir.ui.view">
             <field name="name">Payments Scheduled Report</field>
             <field name="model">account.invoice</field>
             <field name="arch" type="xml">
@@ -73,12 +73,12 @@
 
                 </form>
             </field>
-        </record>
+        </record>-->
 
         <record id="payments_scheduler_action" model="ir.actions.act_window">
             <field name="name">Payments Scheduled Report</field>
             <field name="res_model">payments_scheduler.report.summary</field>
-            <field name="view_type">form</field>
+            <!-- <field name="view_type">form</field> -->
             <field name="view_mode">form</field>
             <field name="view_id" ref="view_popup_view"/>
             <field name="target">new</field>

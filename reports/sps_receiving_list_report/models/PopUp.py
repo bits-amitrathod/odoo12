@@ -16,9 +16,9 @@ class PopUp(models.TransientModel):
     purchase_order = fields.Many2many('purchase.order', string="Receiving",domain="[('state','=','purchase')]",)
 
     compute_at_date = fields.Selection([
-        (0, 'Show All'),
-        (1, 'Date Range'),
-        (2, 'Receiving')
+        ('0', 'Show All'),
+        ('1', 'Date Range'),
+        ('2', 'Receiving')
     ], string="Compute", help="Choose to analyze the current inventory or from a specific date in the past.")
 
     def open_table(self):

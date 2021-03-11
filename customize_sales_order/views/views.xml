@@ -59,7 +59,7 @@
         <field name="inherit_id" ref="website_sale.sale_order_view_form"/>
         <field name="arch" type="xml">
             <field name="partner_id" position="replace">
-                <field name="partner_id" widget="res_partner_many2one" domain="[('customer','=',True)]" context="{'search_default_customer':1, 'show_address': 1, 'show_vat': True}" options="{&quot;always_reload&quot;: True}"/>
+                <field name="partner_id" widget="res_partner_many2one"  context="{'search_default_customer':1, 'show_address': 1, 'show_vat': True}" options="{&quot;always_reload&quot;: True}"/>
             </field>
         </field>
     </record>
@@ -84,13 +84,13 @@
             <field name="inherit_id" ref="delivery.view_order_form_with_carrier"/>
             <field name="arch" type="xml">
                 <data>
-                  <xpath expr="//div[@name='carrier_selection']/div[1]" position="replace">
+                  <!--<xpath expr="//div[@name='carrier_selection']/div[1]" position="replace">
                       <div>
                           <field name="delivery_method_readonly_flag" invisible="1"/>
                           <field name="carrier_id" context="{'order_id': id}" class="oe_inline" options="{'no_create': True, 'no_open': True}" attrs="{'readonly':[('delivery_method_readonly_flag','=',0)]}"/> <i class="fa fa-check text-success" aria-hidden="true" attrs="{'invisible':['|','|',('carrier_id','=',False),('state','not in',('draft','sent')),('delivery_rating_success','=',False)]}"></i>
                       </div>
-                  </xpath>
-                  <xpath expr="//div[@name='carrier_selection']/div[2]" position="replace">
+                  </xpath>-->
+                  <!--<xpath expr="//div[@name='carrier_selection']/div[2]" position="replace">
                       <div>
                           <field name="delivery_method_readonly_flag" invisible="1"/>
                           <field name='delivery_price' widget='monetary' class="oe_inline" options="{'currency_field': 'currency_id'}" nolabel="1" attrs="{'invisible': [('carrier_id','=', False)]}" force_save="1"/>
@@ -98,7 +98,7 @@
                           <button name="set_delivery_line" type="object" class="oe_inline oe_link" attrs="{'invisible':['|','|','|',('carrier_id','=',False),('state','not in',('draft','sent','sale')),('delivery_rating_success','=',False),('delivery_method_readonly_flag','=',0)]}"><i class="fa fa-arrow-right"/> Add to order</button>
                           <field name='delivery_rating_success' invisible="1" force_save="1"/>
                       </div>
-                  </xpath>
+                  </xpath>-->
                 </data>
             </field>
       </record>

@@ -89,7 +89,7 @@
     <record id="action_stock_inventory_valuation_summary" model="ir.actions.act_window">
         <field name="name">Inventory Valuation Summary</field>
         <field name="res_model">popup.inventory.valuation.summary</field>
-        <field name="view_type">form</field>
+        <!-- <field name="view_type">form</field> -->
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>
