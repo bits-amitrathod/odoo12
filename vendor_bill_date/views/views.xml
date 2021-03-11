@@ -1,6 +1,6 @@
 <odoo>
   <data>
-      <record id="view_bill_date" model="ir.ui.view">
+      <!--<record id="view_bill_date" model="ir.ui.view">
             <field name="name">Bill date</field>
             <field name="model">account.invoice</field>
             <field name="inherit_id" ref="account.invoice_supplier_form"/>
@@ -12,9 +12,9 @@
                 </xpath>
 
             </field>
-      </record>
+      </record>-->
 
-      <record id="view_memo" model="ir.ui.view">
+     <!-- <record id="view_memo" model="ir.ui.view">
             <field name="name">Memo</field>
             <field name="model">account.payment</field>
             <field name="inherit_id" ref="account.view_account_supplier_payment_tree"/>
@@ -26,6 +26,6 @@
                 </xpath>
 
             </field>
-      </record>
+      </record>-->
   </data>
 </odoo>

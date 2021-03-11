@@ -20,7 +20,7 @@
     <record model="ir.actions.act_window" id="google_fields_action">
         <field name="name">Google Fields</field>
         <field name="res_model">google.fields</field>
-        <field name="view_type">form</field>
+        <!-- <field name="view_type">form</field> -->
         <field name="view_mode">tree,form</field>
         <field name="view_id" ref="google_fields_tree" />
     </record>

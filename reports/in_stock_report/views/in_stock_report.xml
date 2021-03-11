@@ -39,7 +39,7 @@
     <record id="action_popup_in_stock_report" model="ir.actions.act_window">
     <field name="name">In Stock Report</field>
     <field name="res_model">popup.report.in.stock.report</field>
-    <field name="view_type">form</field>
+    <!-- <field name="view_type">form</field> -->
             <field name="view_mode">form</field>
             <field name="target">new</field>
     </record>

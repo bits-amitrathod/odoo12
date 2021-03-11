@@ -62,7 +62,7 @@
     <record id="run_purchase_notification" model="ir.actions.act_window">
         <field name="name">Run Scheduler</field>
         <field name="res_model">inventory.notification.scheduler</field>
-        <field name="view_type">form</field>
+        <!-- <field name="view_type">form</field> -->
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>

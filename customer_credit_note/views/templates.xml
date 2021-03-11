@@ -26,39 +26,39 @@
         </template>
 
         <record id="invoice_supplier_form_credit_note_label_update" model="ir.ui.view">
-            <field name="name">account.invoice.supplier.form</field>
-            <field name="model">account.invoice</field>
-            <field name="inherit_id" ref="account.invoice_supplier_form"></field>
+            <field name="name">account.move.form</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"></field>
             <field name="arch" type="xml">
                 <xpath expr="//form/sheet/div" position="replace">
                   <div>
-                        <label for="draft_vendor_bill" string="Draft Vendor Bill" attrs="{'invisible': ['|',('state','!=','draft'), ('type','!=','in_invoice')]}"/>
+<!--                        <label for="draft_vendor_bill" string="Draft Vendor Bill" attrs="{'invisible': ['|',('state','!=','draft'), ('type','!=','in_invoice')]}"/>-->
                         <label for="first_number" string="- First Number:" attrs="{'invisible': [('sequence_number_next_prefix','=',False)]}"/>
                         <label for="draft_vendor_credit_note" string="Draft Vendor Credit Note" attrs="{'invisible': ['|',('state','!=','draft'), ('type','!=','in_refund')]}"/>
                         <label for="vendor_bill_payment" string="Vendor Bill Payment" attrs="{'invisible': ['|',('state', '=', 'draft'), ('type','!=','in_invoice')]}"/>
                         <label for="vendor_credit_note" string="Vendor Credit Note" attrs="{'invisible': ['|',('state', '=', 'draft'), ('type','!=','in_refund')]}"/>
-                        <h1 class="mt0">
+                        <!--<h1 class="mt0">
                             <field name="number" class="oe_inline"  attrs="{'invisible': [('state', '=', 'draft')]}"/>
                             <div  attrs="{'invisible': [('sequence_number_next_prefix','=',False)]}">
                                 <field name="sequence_number_next_prefix" class="oe_inline"/>
                                 <field name="sequence_number_next" class="oe_inline"/>
                             </div>
-                        </h1>
+                        </h1>-->
                     </div>
                 </xpath>
             </field>
         </record>
 
-        <record id="invoice_form_credit_note_label_update" model="ir.ui.view">
+        <!--<record id="invoice_form_credit_note_label_update" model="ir.ui.view">
             <field name="name">account.invoice.form</field>
-            <field name="model">account.invoice</field>
-            <field name="inherit_id" ref="account.invoice_form"></field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"></field>
             <field name="arch" type="xml">
                 <xpath expr="//form/sheet/span[1]" position="replace">
                     <span class="o_form_label" attrs="{'invisible': ['|',('state','=','draft'), ('type','!=','out_refund')]}">Customer Credit Note</span>
                      <span class="o_form_label" attrs="{'invisible': ['|',('state','=','draft'), ('type','!=','out_invoice')]}">Customer Invoice</span>
-                    <!--<label string="Customer Credit Note" attrs="{'invisible': ['|',('state','=','draft'), ('type','!=','out_refund')]}"/>-->
-                    <!--<label string="Customer Invoice" attrs="{'invisible': ['|',('state','=','draft'), ('type','!=','out_invoice')]}"/>-->
+                    &lt;!&ndash;<label string="Customer Credit Note" attrs="{'invisible': ['|',('state','=','draft'), ('type','!=','out_refund')]}"/>&ndash;&gt;
+                    &lt;!&ndash;<label string="Customer Invoice" attrs="{'invisible': ['|',('state','=','draft'), ('type','!=','out_invoice')]}"/>&ndash;&gt;
                 </xpath>
                 <xpath expr="//form/sheet/h1[@class='mt0']/div[1]" position="replace">
                     <div attrs="{'invisible': [('sequence_number_next_prefix','!=',False)]}">
@@ -66,33 +66,31 @@
                             <label for="number" string="Draft Customer Credit Note" attrs="{'invisible': ['|',('state','not in',('draft',)), ('type','!=','out_refund')]}"/>
                             <field name="number" readonly="1" class="oe_inline" attrs="{'invisible': [('state','in',('draft',))]}"/>
                         </div>
-                    <!--<div attrs="{'invisible': [('sequence_number_next_prefix','!=',False)]}">-->
-                        <!--<label string="Draft Customer Invoice" attrs="{'invisible': ['|',('state','not in',('draft',)), ('type','!=','out_invoice')]}"/>-->
-                        <!--<label string="Draft Customer Credit Note" attrs="{'invisible': ['|',('state','not in',('draft',)), ('type','!=','out_refund')]}"/>-->
-                        <!--<field name="number" readonly="1" class="oe_inline" attrs="{'invisible': [('state','in',('draft',))]}"/>-->
-                    <!--</div>-->
+                    &lt;!&ndash;<div attrs="{'invisible': [('sequence_number_next_prefix','!=',False)]}">&ndash;&gt;
+                        &lt;!&ndash;<label string="Draft Customer Invoice" attrs="{'invisible': ['|',('state','not in',('draft',)), ('type','!=','out_invoice')]}"/>&ndash;&gt;
+                        &lt;!&ndash;<label string="Draft Customer Credit Note" attrs="{'invisible': ['|',('state','not in',('draft',)), ('type','!=','out_refund')]}"/>&ndash;&gt;
+                        &lt;!&ndash;<field name="number" readonly="1" class="oe_inline" attrs="{'invisible': [('state','in',('draft',))]}"/>&ndash;&gt;
+                    &lt;!&ndash;</div>&ndash;&gt;
                 </xpath>
             </field>
-        </record>
-
+        </record>-->
         <record id="invoice_tree_inherited" model="ir.ui.view">
             <field name="name">account.invoice.tree</field>
-            <field name="model">account.invoice</field>
-            <field name="inherit_id" ref="account.invoice_tree"></field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_invoice_tree"></field>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='origin']" position="after">
+                <xpath expr="//field[@name='name']" position="after">
                     <field name="preferred_method"/>
                 </xpath>
             </field>
         </record>
-
-        <record id="view_account_invoice_report_search_inherit" model="ir.ui.view">
+       <!-- <record id="view_account_invoice_report_search_inherit" model="ir.ui.view">
         <field name="name">account.invoice.report.search</field>
         <field name="model">account.invoice.report</field>
         <field name="inherit_id" ref="account.view_account_invoice_report_search"></field>
         <field name="arch" type="xml">
             <search string="Invoices Analysis">
-                <filter string="My Invoices" name="my_invoice" domain="[('user_id', '=', uid)]"/>
+&lt;!&ndash;                <filter string="My Invoices" name="my_invoice" domain="[('user_id', '=', uid)]"/>&ndash;&gt;
                 <separator/>
                 <field name="date"/>
                 <filter string="This Year" name="thisyear" domain="['|', ('date', '=', False), '&amp;',('date','&lt;=', time.strftime('%%Y-12-31')),('date','&gt;=',time.strftime('%%Y-01-01')                  )]" help="Journal invoices with period in current year"/>
@@ -126,7 +124,7 @@
             </search>
         </field>
     </record>
-
+-->
     <template id="report_invoice_document_inherited" inherit_id="account.report_invoice_document">
         <xpath expr="//div[@class='page']/h2" position="replace">
             <h2>

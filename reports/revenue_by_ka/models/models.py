@@ -43,7 +43,7 @@ class RevenueByKa(models.Model):
                     line['progress_revenue_quota'] = (line['total_revenue'] / line['revenue_quota'])*100
         return res
 
-    @api.model_cr
+    #  @api.model_cr
     def init(self):
         self.init_table()
 
@@ -115,7 +115,7 @@ class RevenueByKa(models.Model):
 
             self._cr.execute("CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + sql_query + " )")
 
-    @api.model_cr
+    #  @api.model_cr
     def delete_and_create(self):
         self.init_table()
 

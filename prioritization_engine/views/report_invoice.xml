@@ -2,7 +2,7 @@
 <odoo>
     <data>
         <template id="report_invoice_document_ext" inherit_id="sale.report_invoice_document_inherit_sale">
-            <xpath expr="//div[@name='description']" position="replace">
+           <!-- <xpath expr="//div[@name='description']" position="replace">
                  <div class="col-auto mw-100 mb-2" t-if="o.purchase_order">
                    <strong t-if="o.type == 'out_invoice' and (o.state == 'open' or o.state == 'paid')">Purchase Order #</strong>
                     <strong t-if="o.type == 'in_invoice'">Sale Order #</strong>
@@ -12,7 +12,7 @@
                      <strong t-if="o.type == 'in_refund'">Sale Order #</strong>
                     <p t-field="o.purchase_order"/>
                 </div>
-            </xpath>
+            </xpath>-->
              <xpath expr="//div[@name='invoice_date']" position="replace">
                  <div class="col-auto mw-100 mb-2" t-if="o.date_invoice">
                     <strong t-if="o.type == 'out_invoice' and (o.state == 'open' or o.state == 'paid')">Invoice Date</strong>

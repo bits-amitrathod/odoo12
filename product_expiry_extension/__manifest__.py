@@ -17,12 +17,12 @@
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
-        'views/scrap_scheduler_views.xml',
-        'views/views.xml',
-        'views/templates.xml',
-        'views/production_lot.xml',
-        'views/stock_move_line_extension.xml',
-        'views/stock_quant_ext.xml'
+        # 'views/scrap_scheduler_views.xml',
+        # 'views/views.xml',
+        # 'views/templates.xml',
+        # 'views/production_lot.xml',
+        # 'views/stock_move_line_extension.xml',
+        # 'views/stock_quant_ext.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

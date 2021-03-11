@@ -28,7 +28,7 @@
     <record id="action_packing_list_customer" model="ir.actions.act_window">
           <field name="name">Packing List</field>
           <field name="res_model">sale.packing_list_popup</field>
-          <field name="view_type">form</field>
+          <!-- <field name="view_type">form</field> -->
           <field name="view_mode">form</field>
           <field name="view_id" ref="inventory_for_packing_list_id"/>
           <field name="target">new</field>

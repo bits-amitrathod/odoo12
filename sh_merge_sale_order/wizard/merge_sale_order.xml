@@ -32,7 +32,7 @@
                 src_model="sale.order"
                 view_mode="form"
                 target="new"
-                view_type="form"
+<!--                view_type="form"-->
                 />            
                 
                 

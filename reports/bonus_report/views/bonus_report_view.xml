@@ -25,7 +25,7 @@
         <record id="bonus_report_list" model="ir.actions.act_window">
             <field name="name">Bonus Report</field>
             <field name="res_model">bonusreport.popup</field>
-            <field name="view_type">form</field>
+            <!-- <field name="view_type">form</field> -->
             <field name="view_mode">form</field>
             <field name="view_id" ref="bonus_view_popup_view"/>
             <field name="target">new</field>

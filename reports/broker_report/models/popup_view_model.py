@@ -8,9 +8,9 @@ class BrokerReportPopUp(models.TransientModel):
     _description = 'Broker Report PopUp'
 
     compute_at_date = fields.Selection([
-        (0, 'Show All '),
-        (1, 'Date Range ')
-    ], string="Compute", help="Choose to analyze the Show Summary or from a specific date in the past.",default=0)
+        ('0', 'Show All '),
+        ('1', 'Date Range ')
+    ], string="Compute", help="Choose to analyze the Show Summary or from a specific date in the past.",default='0')
     start_date = fields.Date('Start Date', help="Choose a date to get the Discount Summary at that  Start date",
                              default=(fields.date.today() - datetime.timedelta(days=31)))
     end_date = fields.Date('End Date', help="Choose a date to get the Discount Summary at that  End date",

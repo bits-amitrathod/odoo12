@@ -112,7 +112,7 @@
         <record id="action_short_date_and_over_stocked_product_sold_by_ka" model="ir.actions.act_window">
             <field name="name">Short date and over stocked product sold by KA</field>
             <field name="res_model">popup.product.sold.by.ka</field>
-            <field name="view_type">form</field>
+            <!-- <field name="view_type">form</field> -->
             <field name="view_mode">form</field>
             <field name="view_id" ref="view_popup_for_product_sold_by_ka"/>
             <field name="target">new</field>

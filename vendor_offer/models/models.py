@@ -508,10 +508,10 @@ class VendorOffer(models.Model):
             'force_email': True
         })
 
-        if self.partner_id and self.partner_id.vendor_email:
-            ctx['vendor_email'] = self.partner_id.vendor_email
-        elif self.partner_id and self.partner_id.email:
-            ctx['vendor_email'] = self.partner_id.email
+        # if self.partner_id and self.partner_id.vendor_email:
+        #     ctx['vendor_email'] = self.partner_id.vendor_email
+        # elif self.partner_id and self.partner_id.email:
+        #     ctx['vendor_email'] = self.partner_id.email
 
         if self.acq_user_id and self.acq_user_id.partner_id and self.acq_user_id.partner_id.email:
             ctx['acq_mgr'] = self.acq_user_id.partner_id.email
@@ -2464,9 +2464,9 @@ class MailComposer(models.TransientModel):
                 values['attachment_ids'] = [att.id for att in template.attachment_ids]
             if template.mail_server_id:
                 values['mail_server_id'] = template.mail_server_id.id
-            if template.user_signature and 'body_html' in values:
-                signature = self.env.user.signature
-                values['body_html'] = tools.append_content_to_html(values['body_html'], signature, plaintext=False)
+            # if template.user_signature and 'body_html' in values:
+            #     signature = self.env.user.signature
+            #     values['body_html'] = tools.append_content_to_html(values['body_html'], signature, plaintext=False)
         elif template_id:
             values = self.generate_email_for_composer(template_id, [res_id])[res_id]
             # transform attachments into attachment_ids; not attached to the document because this will

@@ -111,7 +111,7 @@ class ReportInStockReport(models.Model):
             record.min_expiration_date = fields.Date.from_string(query_result['min'])
             record.max_expiration_date = fields.Date.from_string(query_result['max'])
 
-    @api.model_cr
+    #  @api.model_cr
     def init(self):
         self.init_table()
 
@@ -170,7 +170,7 @@ class ReportInStockReport(models.Model):
             sql_query = "CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + sql_query +  groupby +" )"
             self._cr.execute(sql_query)
 
-    @api.model_cr
+    #  @api.model_cr
     def delete_and_create(self):
         self.init_table()
 

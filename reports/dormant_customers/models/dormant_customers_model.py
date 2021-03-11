@@ -17,11 +17,11 @@ class DormantCustomer(models.Model):
     def _compute_last_purchase(self):
         for customer in self:
             confirmed_sales_orders = self.env['sale.order'].search(
-                [('partner_id', '=', customer.id), ('confirmation_date', '!=', False)]).sorted(
-                key=lambda o: o.confirmation_date)
+                [('partner_id', '=', customer.id), ('date_order', '!=', False)]).sorted(
+                key=lambda o: o.date_order)
             if len(confirmed_sales_orders) > 0:
                 length=len(confirmed_sales_orders)-1
-                customer.last_purchase_date = confirmed_sales_orders[length].confirmation_date
+                customer.last_purchase_date = confirmed_sales_orders[length].date_order
                 customer.sale_order= confirmed_sales_orders[length].name
                 # sales_order_lines = confirmed_sales_orders[0].order_line
                 # for order_line in sales_order_lines:

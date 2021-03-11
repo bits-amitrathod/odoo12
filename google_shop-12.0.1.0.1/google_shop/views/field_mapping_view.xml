@@ -55,7 +55,7 @@
     <record model="ir.actions.act_window" id="field_mappning_action">
         <field name="name">Field Mapping</field>
         <field name="res_model">field.mappning</field>
-        <field name="view_type">form</field>
+        <!-- <field name="view_type">form</field> -->
         <field name="view_mode">tree,form</field>
         <field name="view_id" ref="field_mappning_tree" />
     </record>

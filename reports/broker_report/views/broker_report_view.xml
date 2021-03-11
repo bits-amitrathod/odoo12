@@ -23,7 +23,7 @@
         <record id="broker_report_id" model="ir.actions.act_window">
             <field name="name">Broker Report</field>
             <field name="res_model">brokerreport.popup</field>
-            <field name="view_type">form</field>
+            <!-- <field name="view_type">form</field> -->
             <field name="view_mode">form</field>
             <field name="view_id" ref="broker_view_popup_view"/>
             <field name="target">new</field>

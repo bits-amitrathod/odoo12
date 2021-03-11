@@ -78,7 +78,7 @@
     <record model="ir.actions.act_window" id="google_shop_action">
         <field name="name">Google Shop</field>
         <field name="res_model">google.shop</field>
-        <field name="view_type">form</field>
+        <!-- <field name="view_type">form</field> -->
         <field name="view_mode">tree,form</field>
         <field name="view_id" ref="google_shop_tree" />
     </record>

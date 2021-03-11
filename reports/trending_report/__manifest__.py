@@ -9,6 +9,7 @@
     'website': "http://www.benchmarkitsolutions.com",
     'depends': ['base', 'sale_management'],
     'data': [
+        'security/ir.model.access.csv',
         'views/trending_report_list.xml',
         'report/trending_report_list_report.xml',
         'report/trending_report_list_temp.xml'

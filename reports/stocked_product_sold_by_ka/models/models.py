@@ -27,7 +27,7 @@ class StockedProductSoldByKa(models.Model):
     total_amount = fields.Float('Total')
     currency_id = fields.Many2one('res.currency', string='Currency')
 
-    @api.model_cr
+    #  @api.model_cr
     def init(self):
         self.init_table()
 
@@ -142,7 +142,7 @@ class StockedProductSoldByKa(models.Model):
 
         self._cr.execute("CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + sql_query + " )")
 
-    @api.model_cr
+    #  @api.model_cr
     def delete_and_create(self):
         self.init_table()
 
@@ -156,9 +156,9 @@ class StockedProductSoldByKaExport(models.TransientModel):
     _description = 'Short date and over stocked product sold by KA export'
 
     compute_at_date = fields.Selection([
-        (0, 'Show All'),
-        (1, 'Date Range ')
-    ], string="Compute", default=0, help="Choose to analyze the Show Summary or from a specific date in the past.")
+        ('0', 'Show All'),
+        ('1', 'Date Range ')
+    ], string="Compute", default='0', help="Choose to analyze the Show Summary or from a specific date in the past.")
 
     start_date = fields.Date(string="Start Date", default=(fields.date.today() - datetime.timedelta(days=31)))
     end_date = fields.Date(string="End Date", default=fields.date.today())

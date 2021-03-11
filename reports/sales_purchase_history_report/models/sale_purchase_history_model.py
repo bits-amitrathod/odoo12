@@ -74,9 +74,9 @@ class SalePurchaseHistoryExport(models.TransientModel):
     _description = 'salepuchasehistory export'
 
     compute_at_date = fields.Selection([
-        (0, 'Show All'),
-        (1, 'Date Range ')
-    ], string="Compute", default=0, help="Choose Show All or from a specific date in the past.")
+        ('0', 'Show All'),
+        ('1', 'Date Range ')
+    ], string="Compute", default='0', help="Choose Show All or from a specific date in the past.")
 
     start_date = fields.Date(string="Start Date", required=True)
     end_date = fields.Date(string="End Date", required=True)

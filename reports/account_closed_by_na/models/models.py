@@ -21,7 +21,7 @@ class AccountClosedByNa(models.Model):
     total_amount = fields.Float('Total', digits=dp.get_precision('Product Price'))
     currency_id = fields.Many2one('res.currency', string='Currency')
 
-    @api.model_cr
+    #  @api.model_cr
     def init(self):
         self.init_table()
 
@@ -115,7 +115,7 @@ class AccountClosedByNa(models.Model):
 
             self._cr.execute("CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + select_query + " )")
 
-    @api.model_cr
+    #  @api.model_cr
     def delete_and_create(self):
         self.init_table()
 

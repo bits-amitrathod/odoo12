@@ -22,7 +22,7 @@
     <record id="action_price_rule_customer" model="ir.actions.act_window">
           <field name="name">Price Rules</field>
           <field name="res_model">inventory.pricing_rules_popup</field>
-          <field name="view_type">form</field>
+          <!-- <field name="view_type">form</field> -->
           <field name="view_mode">form</field>
           <field name="view_id" ref="inventory_for_pricing_rule_list_id"/>
           <field name="target">new</field>

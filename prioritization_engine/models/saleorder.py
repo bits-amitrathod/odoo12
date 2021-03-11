@@ -400,49 +400,49 @@ class StockPicking(models.Model):
             self.message_post(body="Already tracking created")
 
 
-# class AccountInvoice(models.Model):
-#     _inherit = 'account.invoice'
-#     expiration_date = fields.Date("Expiration Date")
-#     note = fields.Char("Customer Message")
-#     memo = fields.Char("Memo")
-#     shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
-#     is_share = fields.Boolean(string='Is Shared', related='partner_id.is_share', readonly=True)
-#     sale_margine = fields.Selection([
-#         ('gifted', 'Gifted'),
-#         ('legacy', 'Legacy')], string='Sales Level', related='partner_id.sale_margine', readonly=True)
-#     preferred_method = fields.Selection(string='Preferred Invoice Delivery Method',
-#                                         related='partner_id.preferred_method', readonly=True)
-#
-#     '''name = fields.Char(string='Purchase Order#', index=True,
-#                        readonly=True, states={'draft': [('readonly', False)]},
-#                        help='The name that will be used on account move lines')
-#
-#       origin = fields.Char(string='Sale Order#',
-#                          help="Reference of the document that produced this invoice.",
-#                          readonly=True, states={'draft': [('readonly', False)]})'''
-#
-#     purchase_order = fields.Char(string='Purchase Order#', store=False, compute="_setInvoicePurchaseOrder",
-#                                  readonly=True)
-#     tracking_reference = fields.Char(string=' TrackingReference', store=False,
-#                                      compute='_getSalesOerderPickingOutTrackingReference', readonly=True)
-#
-#     #@api.multi
-#     def _setInvoicePurchaseOrder(self):
-#         for order in self:
-#             if order.origin == order.name:
-#                 order.purchase_order = ""
-#             else:
-#                 order.purchase_order = order.name
-#
-#     #@api.multi
-#     def _getSalesOerderPickingOutTrackingReference(self):
-#         for order in self:
-#             if order.origin:
-#                 order.env.cr.execute(
-#                     "select carrier_tracking_ref from stock_picking WHERE origin like '" + order.origin + "' and state like 'done' and name like 'WH/OUT/%' limit 1")
-#                 query_result = order.env.cr.dictfetchone()
-#                 if query_result and query_result['carrier_tracking_ref']:
-#                     order.tracking_reference = query_result['carrier_tracking_ref']
+class AccountInvoice(models.Model):
+    _inherit = 'account.move'
+    expiration_date = fields.Date("Expiration Date")
+    note = fields.Char("Customer Message")
+    memo = fields.Char("Memo")
+    shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
+    is_share = fields.Boolean(string='Is Shared', related='partner_id.is_share', readonly=True)
+    sale_margine = fields.Selection([
+        ('gifted', 'Gifted'),
+        ('legacy', 'Legacy')], string='Sales Level', related='partner_id.sale_margine', readonly=True)
+    preferred_method = fields.Selection(string='Preferred Invoice Delivery Method',
+                                        related='partner_id.preferred_method', readonly=True)
+
+    '''name = fields.Char(string='Purchase Order#', index=True,
+                       readonly=True, states={'draft': [('readonly', False)]},
+                       help='The name that will be used on account move lines')
+
+      origin = fields.Char(string='Sale Order#',
+                         help="Reference of the document that produced this invoice.",
+                         readonly=True, states={'draft': [('readonly', False)]})'''
+
+    # purchase_order = fields.Char(string='Purchase Order#', store=False, compute="_setInvoicePurchaseOrder",
+    #                              readonly=True)
+    # tracking_reference = fields.Char(string=' TrackingReference', store=False,
+    #                                  compute='_getSalesOerderPickingOutTrackingReference', readonly=True)
+    #
+    # #@api.multi
+    # def _setInvoicePurchaseOrder(self):
+    #     for order in self:
+    #         if order.origin == order.name:
+    #             order.purchase_order = ""
+    #         else:
+    #             order.purchase_order = order.name
+    #
+    # #@api.multi
+    # def _getSalesOerderPickingOutTrackingReference(self):
+    #     for order in self:
+    #         if order.origin:
+    #             order.env.cr.execute(
+    #                 "select carrier_tracking_ref from stock_picking WHERE origin like '" + order.origin + "' and state like 'done' and name like 'WH/OUT/%' limit 1")
+    #             query_result = order.env.cr.dictfetchone()
+    #             if query_result and query_result['carrier_tracking_ref']:
+    #                 order.tracking_reference = query_result['carrier_tracking_ref']
 
 
 class SaleOrderReport(models.Model):

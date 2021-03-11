@@ -13,9 +13,9 @@ class ProductSaleByCountPopUp(models.TransientModel):
     _name = 'popup.returned.sales'
 
     compute_at_date = fields.Selection([
-        (0, 'All '),
-        (1, 'Date Range ')
-    ], string="Compute", default=0, help="Choose to analyze the Show Summary or from a specific date in the past.")
+        ('0', 'All '),
+        ('1', 'Date Range ')
+    ], string="Compute", default='0', help="Choose to analyze the Show Summary or from a specific date in the past.")
 
     start_date = fields.Date('Start Date', default=fields.date.today())
 
