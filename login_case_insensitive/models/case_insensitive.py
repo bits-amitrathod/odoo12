@@ -71,7 +71,7 @@ class LoginCaseInsensitive(models.Model):
         return user
 
     @classmethod
-    def _login(cls, db, login, password):
+    def _login(cls, db, login, password,user_agent_env):
         if not password:
             raise AccessDenied()
         ip = request.httprequest.environ['REMOTE_ADDR'] if request else 'n/a'
@@ -83,7 +83,7 @@ class LoginCaseInsensitive(models.Model):
                     if not user:
                         raise AccessDenied()
                     user = user.sudo(user.id)
-                    user._check_credentials(password)
+                    user._check_credentials(password,user_agent_env)
                     user._update_last_login()
         except AccessDenied:
             _logger.info("Login failed for db:%s login:%s from %s", db, login, ip)

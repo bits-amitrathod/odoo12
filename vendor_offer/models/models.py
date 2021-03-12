@@ -486,9 +486,11 @@ class VendorOffer(models.Model):
         ir_model_data = self.env['ir.model.data']
         try:
             if self.env.context.get('send_rfq', False):
-                template_id = ir_model_data.get_object_reference('vendor_offer', 'email_template_edi_vendor_offer_done')[1]
+                template_id = \
+                ir_model_data.get_object_reference('vendor_offer', 'email_template_edi_vendor_offer_done')[1]
             else:
-                template_id = ir_model_data.get_object_reference('vendor_offer', 'email_template_edi_vendor_offer_done')[1]
+                template_id = \
+                ir_model_data.get_object_reference('vendor_offer', 'email_template_edi_vendor_offer_done')[1]
 
         except ValueError:
             template_id = False
@@ -508,19 +510,12 @@ class VendorOffer(models.Model):
             'force_email': True
         })
 
-        if self.partner_id and self.partner_id.vendor_email:
-            ctx['vendor_email'] = self.partner_id.vendor_email
-        elif self.partner_id and self.partner_id.email:
-            ctx['vendor_email'] = self.partner_id.email
-
-        if self.acq_user_id and self.acq_user_id.partner_id and self.acq_user_id.partner_id.email:
-            ctx['acq_mgr'] = self.acq_user_id.partner_id.email
-
         lang = self.env.context.get('lang')
         if {'default_template_id', 'default_model', 'default_res_id'} <= ctx.keys():
             template = self.env['mail.template'].browse(ctx['default_template_id'])
             if template and template.lang:
-                lang = template._render_template(template.lang, ctx['default_model'], ctx['default_res_id'])
+                # lang = template._render_template(template.lang,[ctx['default_model'], ctx['default_res_id']])
+                lang = template._render_lang([ctx['default_res_id']])[ctx['default_res_id']]
 
         self = self.with_context(lang=lang)
         if self.temp_payment_term != temp_payment_term or self.status != 'ven_sent':
@@ -2468,7 +2463,12 @@ class MailComposer(models.TransientModel):
                 signature = self.env.user.signature
                 values['body_html'] = tools.append_content_to_html(values['body_html'], signature, plaintext=False)
         elif template_id:
-            values = self.generate_email_for_composer(template_id, [res_id])[res_id]
+            #values = self.generate_email_for_composer(template_id, [res_id])[res_id]
+            values = self.generate_email_for_composer(
+                template_id, [res_id],
+                ['subject', 'body_html', 'email_from', 'email_to', 'partner_to', 'email_cc', 'reply_to',
+                 'attachment_ids', 'mail_server_id']
+            )[res_id]
             # transform attachments into attachment_ids; not attached to the document because this will
             # be done further in the posting process, allowing to clean database if email not send
             attachment_ids = []
@@ -2477,24 +2477,24 @@ class MailComposer(models.TransientModel):
                 data_attach = {
                     'name': attach_fname,
                     'datas': attach_datas,
-                    'datas_fname': attach_fname,
+
                     'res_model': 'mail.compose.message',
                     'res_id': 0,
                     'type': 'binary',  # override default_type from context, possibly meant for another model!
                 }
                 attachment_ids.append(Attachment.create(data_attach).id)
-            ship_label = self.env['ir.attachment'].search(
-                [('res_id', '=', res_id), ('res_model_name', '=', 'Vendor Offer Automation')], order="id desc")
-            if values.get('attachment_ids', []) or attachment_ids:
-                values['attachment_ids'] = [(5,)] + values.get('attachment_ids', []) + attachment_ids + ([ship_label[0].id] if ship_label else [])
-        else:
-            default_values = self.with_context(default_composition_mode=composition_mode, default_model=model,
-                                               default_res_id=res_id).default_get(
-                ['composition_mode', 'model', 'res_id', 'parent_id', 'partner_ids', 'subject', 'body', 'email_from',
-                 'reply_to', 'attachment_ids', 'mail_server_id'])
-            values = dict((key, default_values[key]) for key in
-                          ['subject', 'body', 'partner_ids', 'email_from', 'reply_to', 'attachment_ids',
-                           'mail_server_id'] if key in default_values)
+        #     ship_label = self.env['ir.attachment'].search(
+        #         [('res_id', '=', res_id), ('res_model_name', '=', 'Vendor Offer Automation')], order="id desc")
+        #     if values.get('attachment_ids', []) or attachment_ids:
+        #         values['attachment_ids'] = [(5,)] + values.get('attachment_ids', []) + attachment_ids + ([ship_label[0].id] if ship_label else [])
+        # else:
+        #     default_values = self.with_context(default_composition_mode=composition_mode, default_model=model,
+        #                                        default_res_id=res_id).default_get(
+        #         ['composition_mode', 'model', 'res_id', 'parent_id', 'partner_ids', 'subject', 'body', 'email_from',
+        #          'reply_to', 'attachment_ids', 'mail_server_id'])
+        #     values = dict((key, default_values[key]) for key in
+        #                   ['subject', 'body', 'partner_ids', 'email_from', 'reply_to', 'attachment_ids',
+        #                    'mail_server_id'] if key in default_values)
 
         if values.get('body_html'):
             values['body'] = values.pop('body_html')
