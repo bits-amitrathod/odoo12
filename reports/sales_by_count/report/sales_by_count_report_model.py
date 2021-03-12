@@ -8,7 +8,6 @@ log = logging.getLogger(__name__)
 class ReportProductSaleByCount(models.AbstractModel):
     _name = 'report.sales_by_count.sales_by_count_template'
 
-    @api.model
     def _get_report_values(self, docids, data=None):
         records = self.env['report.sales.by.count'].browse(docids)
 

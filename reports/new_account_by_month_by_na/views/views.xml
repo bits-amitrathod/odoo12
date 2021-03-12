@@ -74,7 +74,7 @@
         <record id="action_new_account_by_month_by_na" model="ir.actions.act_window">
             <field name="name">New Account By Month By NA</field>
             <field name="res_model">popup.na.new.account</field>
-            <field name="view_type">form</field>
+            <!-- <field name="view_type">form</field> -->
             <field name="view_mode">form</field>
             <field name="view_id" ref="na_new_account_popup_view"/>
             <field name="target">new</field>

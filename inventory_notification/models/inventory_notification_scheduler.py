@@ -33,6 +33,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         _logger.info("process_manual_notification_scheduler called..")
         self.process_notification_scheduler()
 
+
     @api.model
     #@api.multi
     def process_notification_scheduler(self):

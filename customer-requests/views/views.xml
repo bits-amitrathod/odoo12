@@ -2,7 +2,7 @@
     <data>
 
         <record id="view_tree_documents_normal" model="ir.ui.view">
-            <field name="sequence" eval="1"/>
+<!--            <field name="sequence" eval="1"/>-->
             <field name="name">Import Document normal tree</field>
             <field name="model">sps.cust.uploaded.documents</field>
             <field name="mode">primary</field>
@@ -19,7 +19,7 @@
         </record>
 
         <record id="view_tree_requests_normal" model="ir.ui.view">
-            <field name="sequence" eval="1"/>
+<!--            <field name="sequence" eval="1"/>-->
             <field name="name">Import Document normal tree</field>
             <field name="model">sps.customer.requests</field>
             <field name="mode">primary</field>
@@ -90,7 +90,7 @@
         </record>
 
         <record id="view_form_template_normal" model="ir.ui.view">
-            <field name="sequence" eval="1"/>
+<!--            <field name="sequence" eval="1"/>-->
             <field name="name">Customer Template Form</field>
             <field name="model">sps.customer.template</field>
             <field name="mode">primary</field>
@@ -115,7 +115,7 @@
         </record>
 
         <record id="view_tree_templates_normal" model="ir.ui.view">
-            <field name="sequence" eval="1"/>
+<!--            <field name="sequence" eval="1"/>-->
             <field name="name">Imported Templates normal tree</field>
             <field name="model">sps.customer.template</field>
             <field name="mode">primary</field>
@@ -145,8 +145,8 @@
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet/notebook/page[@name='internal_notes']" position="after">
-                    <page name="importdocument" string="Import Document"
-                          attrs="{'invisible':['|', '|', '|', ('customer', '==', False), ('is_parent_assigned', '==', False),  ('prioritization', '==', False)]}">
+                    <page name="importdocument" string="Import Document">
+<!--                          attrs="{'invisible':['|', '|', '|', ('customer', '==', False), ('is_parent_assigned', '==', False),  ('prioritization', '==', False)]}">-->
                         <field name="document_ids"/>
                         <field name="is_parent_assigned" string="Username" invisible="1"/>
                     </page>
@@ -160,8 +160,8 @@
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet/notebook/page[@name='internal_notes']" position="after">
-                    <page name="apicredentials" string="API Credentials"
-                          attrs="{'invisible':['|', '|', '|', ('customer', '==', False), ('is_parent_assigned', '==', False), ('prioritization', '==', False)]}">
+                    <page name="apicredentials" string="API Credentials">
+<!--                          attrs="{'invisible':['|', '|', '|', ('customer', '==', False), ('is_parent_assigned', '==', False), ('prioritization', '==', False)]}">-->
                         <group>
                             <field name="api_username" string="Username"/>
                             <field name="api_secret" string="Password" password="True"/>
@@ -178,8 +178,8 @@
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet/notebook/page[@name='internal_notes']" position="after">
-                    <page name="importedtemplate" string="Imported Templates"
-                          attrs="{'invisible':['|',('customer', '==', False), '|', ('is_parent_assigned', '==', False), '|', ('prioritization', '==', False)]}">
+                    <page name="importedtemplate" string="Imported Templates">
+<!--                          attrs="{'invisible':['|',('customer', '==', False), '|', ('is_parent_assigned', '==', False), '|', ('prioritization', '==', False)]}">-->
                         <field name="template_ids"/>
                         <field name="is_parent_assigned" string="Username" invisible="1"/>
                     </page>
@@ -261,7 +261,7 @@
                 </p>
 
             ]]></field>
-            <field name="user_signature" eval="False"/>
+<!--            <field name="user_signature" eval="False"/>-->
         </record>
 
         <!-- Email template for new users -->
@@ -300,7 +300,7 @@
                 </p>
 
             ]]></field>
-            <field name="user_signature" eval="False"/>
+<!--            <field name="user_signature" eval="False"/>-->
         </record>
 
         <record id="set_log_email_response" model="mail.template">
@@ -343,7 +343,7 @@
                 </p>
 
             ]]></field>
-            <field name="user_signature" eval="False"/>
+<!--            <field name="user_signature" eval="False"/>-->
         </record>
 
         <record id="email_response_on_uploaded_document" model="mail.template">
@@ -375,7 +375,7 @@
                     412-564-1280
                 </p>
             ]]></field>
-            <field name="user_signature" eval="False"/>
+<!--            <field name="user_signature" eval="False"/>-->
         </record>
 
         <record id="final_email_response_on_uploaded_document" model="mail.template">
@@ -407,7 +407,7 @@
                     412-564-1280
                 </p>
             ]]></field>
-            <field name="user_signature" eval="False"/>
+<!--            <field name="user_signature" eval="False"/>-->
         </record>
 
        <record id="view_res_partner_filter_inherit" model="ir.ui.view">

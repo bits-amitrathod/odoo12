@@ -14,15 +14,15 @@ class VoidedProductPopup(models.TransientModel):
     _description = 'Voided Product Filter'
 
     compute_at_product_selection = fields.Selection([
-        (0, 'All Voided Products[Products not in SPS Inventory]'),
-        (1, 'All Unprocessed Products[Low/Out of stock products at the time of request]')
-    ], string="Products", default=0, help="Choose Voided Products which are not in inventory or Unprocessed Products "
+        ('0', 'All Voided Products[Products not in SPS Inventory]'),
+        ('1', 'All Unprocessed Products[Low/Out of stock products at the time of request]')
+    ], string="Products", default='0', help="Choose Voided Products which are not in inventory or Unprocessed Products "
                                          "which were not allocated because of some reason")
 
     compute_at_date = fields.Selection([
-        (0, 'Show All'),
-        (1, 'Date Range ')
-    ], string="Compute", default=0, help="Choose Show All or from a specific date in the past.")
+        ('0', 'Show All'),
+        ('1', 'Date Range ')
+    ], string="Compute", default='0', help="Choose Show All or from a specific date in the past.")
 
     start_date = fields.Date('Start Date', default=fields.date.today())
 

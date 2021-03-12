@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 from odoo import models, fields, api,_
 from odoo.exceptions import UserError,Warning
@@ -133,10 +132,10 @@ class CustomerCreditNote(models.Model):
             'currency_id': self.currency_id != self.company_id.currency_id and self.currency_id.id or False,
         }
 
-#
-# class AccountInvoiceVendorCredit(models.Model):
-#     _inherit = "account.invoice"
-#     vendor_credit_flag = fields.Boolean('Credit Note Flag', default=False)
-#     user_id = fields.Many2one('res.users', string='Business Development', track_visibility='onchange',
-#                               readonly=True, states={'draft': [('readonly', False)]},
-#                               default=lambda self: self.env.user, copy=False)
+
+class AccountInvoiceVendorCredit(models.Model):
+    _inherit = "account.move"
+    vendor_credit_flag = fields.Boolean('Credit Note Flag', default=False)
+    user_id = fields.Many2one('res.users', string='Business Development', track_visibility='onchange',
+                              readonly=True, states={'draft': [('readonly', False)]},
+                              default=lambda self: self.env.user, copy=False)

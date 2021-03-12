@@ -30,7 +30,7 @@ class CustomerPriceList(models.Model):
 
 
 
-    @api.model_cr
+    #  @api.model_cr
     def init(self):
         self.init_table()
 
@@ -85,7 +85,7 @@ class CustomerPriceList(models.Model):
                     final_query=insert_query + " " + values
                     self._cr.execute(final_query,(str(part.display_name),str(product.product_tmpl_id.sku_code),str(product.product_tmpl_id.name),str(product_price),str(product.product_tmpl_id.company_id.currency_id.id),str(product.product_tmpl_id.company_id.currency_id.symbol),str(product.product_tmpl_id.id)))
 
-    @api.model_cr
+    #  @api.model_cr
     def delete_and_create(self):
         self.init_table()
 

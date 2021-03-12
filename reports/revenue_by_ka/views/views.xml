@@ -139,7 +139,7 @@
         <record id="action_revenue_by_ka" model="ir.actions.act_window">
             <field name="name">Revenue By Key Account</field>
             <field name="res_model">popup.ka.revenue</field>
-            <field name="view_type">form</field>
+            <!-- <field name="view_type">form</field> -->
             <field name="view_mode">form</field>
             <field name="view_id" ref="ka_revenue_popup_view"/>
             <field name="target">new</field>

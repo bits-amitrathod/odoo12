@@ -83,7 +83,7 @@
         <record id="action_account_closed_by_na" model="ir.actions.act_window">
             <field name="name">Revenue From Accounts Closed In 12 Months By NA</field>
             <field name="res_model">popup.na.account.closed</field>
-            <field name="view_type">form</field>
+            <!-- <field name="view_type">form</field> -->
             <field name="view_mode">form</field>
             <field name="view_id" ref="bd_account_closed_popup_view"/>
             <field name="target">new</field>

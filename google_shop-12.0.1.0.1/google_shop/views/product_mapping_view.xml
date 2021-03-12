@@ -65,7 +65,7 @@
     <record model="ir.actions.act_window" id="product_mapping_action">
         <field name="name">Product Mapping</field>
         <field name="res_model">product.mapping</field>
-        <field name="view_type">form</field>
+        <!-- <field name="view_type">form</field> -->
         <field name="context">{'search_default_google_shop': 1}</field>
         <field name="view_mode">tree,form</field>
         <field name="view_id" ref="product_mapping_tree" />
@@ -74,7 +74,7 @@
     <record model="ir.actions.act_window" id="product_mapping_action_button_click">
         <field name="name">Product Mapping</field>
         <field name="res_model">product.mapping</field>
-        <field name="view_type">form</field>
+        <!-- <field name="view_type">form</field> -->
         <field name="context">{'search_default_google_shop': 1}</field>
         <field name="view_mode">tree,form</field>
         <field name="view_id" ref="product_mapping_tree" />

@@ -32,7 +32,7 @@
     <record id="scrap_run_scheduler" model="ir.actions.act_window">
         <field name="name">Run Scheduler</field>
         <field name="res_model">stock.scrap.scheduler</field>
-        <field name="view_type">form</field>
+<!--      <field name="view_type">form</field> -->
         <field name="view_mode">form</field>
           <field name="target">new</field>
     </record>

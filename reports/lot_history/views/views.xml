@@ -75,7 +75,7 @@
         <record id="action_lot_history_popup" model="ir.actions.act_window">
             <field name="name">Lot History</field>
             <field name="res_model">popup.lot.history</field>
-            <field name="view_type">form</field>
+            <!-- <field name="view_type">form</field> -->
             <field name="view_mode">form</field>
             <field name="view_id" ref="view_lot_history_popup"/>
             <field name="target">new</field>

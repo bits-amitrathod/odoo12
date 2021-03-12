@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 {
-
     'name': "Dormant Customers",
     'summary':'Report',
     'author': "Benchmark IT Solutions",
     'website': "http://www.benchmarkitsolutions.com",
-
     'category': 'report',
     'version': '0.1',
 

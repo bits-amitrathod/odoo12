@@ -183,21 +183,21 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">res.bank</field>
         <field name="view_mode">tree,form</field>
-        <field name="view_type">form</field>
+        <!-- <field name="view_type">form</field> -->
     </record>
     <record id="bank_cheque_attribute_action" model="ir.actions.act_window">
         <field name="name">Bank Cheque Attributes</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">bank.cheque.attribute</field>
         <field name="view_mode">tree,form</field>
-        <field name="view_type">form</field>
+        <!-- <field name="view_type">form</field> -->
     </record>
     <record id="bank_cheque_book_action" model="ir.actions.act_window">
         <field name="name">Bank Cheque Books</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">bank.cheque.book</field>
         <field name="view_mode">tree,form</field>
-        <field name="view_type">form</field>
+        <!-- <field name="view_type">form</field> -->
     </record>
 
     <menuitem

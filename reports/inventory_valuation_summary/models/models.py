@@ -73,7 +73,7 @@ class ReportInventoryValuationSummary(models.Model):
     currency_id = fields.Many2one('res.currency', string='Currency', store=False)
     cost_method = fields.Char(string="Cost Method", store=False)
 
-    @api.model_cr
+    #  @api.model_cr
     def init(self):
         self.init_table()
         # pass

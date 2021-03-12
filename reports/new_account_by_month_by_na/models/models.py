@@ -17,7 +17,7 @@ class NewAccountByMonthByNa(models.Model):
     customer = fields.Many2one('res.partner', 'Customer Name')
     national_account = fields.Many2one('res.users', 'National Account')
 
-    @api.model_cr
+    #  @api.model_cr
     def init(self):
         self.init_table()
 
@@ -121,7 +121,7 @@ class NewAccountByMonthByNa(models.Model):
 
             self._cr.execute("CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + select_query + " )")
 
-    @api.model_cr
+    #  @api.model_cr
     def delete_and_create(self):
         self.init_table()
 

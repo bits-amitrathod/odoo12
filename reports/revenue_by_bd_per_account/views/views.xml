@@ -78,7 +78,7 @@
         <record id="action_revenue_by_bd_per_account" model="ir.actions.act_window">
             <field name="name">Revenue By Business Development Per Account</field>
             <field name="res_model">popup.bd.revenue.per.account</field>
-            <field name="view_type">form</field>
+            <!-- <field name="view_type">form</field> -->
             <field name="view_mode">form</field>
             <field name="view_id" ref="bd_revenue_per_account_popup_view"/>
             <field name="target">new</field>

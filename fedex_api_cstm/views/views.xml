@@ -1,6 +1,6 @@
 <odoo>
     <data>
-        <record id="cstm_popup_message" model="ir.ui.view">
+       <!-- <record id="cstm_popup_message" model="ir.ui.view">
             <field name="name">cstm.popup.message</field>
             <field name="model">cstm.popup.message</field>
             <field name="arch" type="xml">
@@ -11,17 +11,17 @@
                     </footer>
                 </form>
             </field>
-        </record>
+        </record>-->
 
 
-        <record id="tracing_number_popup" model="ir.ui.view">
+       <!-- <record id="tracing_number_popup" model="ir.ui.view">
             <field name="name">Select Tracking Number</field>
             <field name="model">tracking.popup</field>
             <field name="arch" type="xml">
                 <form string="Select Tracking Number">
                     <group>
                         <group>
-                            <field name="tracking_number"/>
+&lt;!&ndash;                            <field name="tracking_number"/>&ndash;&gt;
                         </group>
                         <group>
                             <button name="track_fedex" string="Track on Fedex" type="object" class="btn-default" invisible="not context.get('isFedEx', True)" attrs="{'invisible': [('tracking_number', '==', False)]}"/>
@@ -34,7 +34,7 @@
                 </form>
             </field>
         </record>
-
+-->
 
         <record id="sale_order_form_view_track_shipment" model="ir.ui.view">
             <field name="name">sale.order.form.view.track.shipment</field>
@@ -52,7 +52,7 @@
         <record id="sale_order_form_view_vendor_track_shipment" model="ir.ui.view">
             <field name="name">purchase.order.vendor.form.track.shipment</field>
             <field name="model">purchase.order</field>
-            <field name="context">{state: 'ven_draft'}</field>
+<!--            <field name="context">{state: 'ven_draft'}</field>-->
             <field name="inherit_id" ref="vendor_offer.view_vendor_offer_form"/>
             <field name="arch" type="xml">
 

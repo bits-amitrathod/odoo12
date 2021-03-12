@@ -78,7 +78,7 @@
         <record id="action_revenue_by_na_per_account" model="ir.actions.act_window">
             <field name="name">Revenue By National Account Per Account</field>
             <field name="res_model">popup.na.revenue.per.account</field>
-            <field name="view_type">form</field>
+            <!-- <field name="view_type">form</field> -->
             <field name="view_mode">form</field>
             <field name="view_id" ref="na_revenue_per_account_popup_view"/>
             <field name="target">new</field>

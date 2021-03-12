@@ -9,8 +9,8 @@ class ReportSaleOrdersGroupbyProduct(models.TransientModel):
     # _log_access = True
 
     compute_at_date = fields.Selection([
-        (0, 'Show All '),
-        (1, 'Date Range ')
+        ('0', 'Show All '),
+        ('1', 'Date Range ')
     ], string="Compute", help="Choose to analyze the Show Summary or from a specific date in the past.")
     start_date = fields.Date('Start Date', help="Choose report Start date", default = (fields.date.today() - datetime.timedelta(days = 31)))
     end_date = fields.Date('End Date', help="Choose report End date",

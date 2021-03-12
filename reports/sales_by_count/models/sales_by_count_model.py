@@ -17,7 +17,6 @@ class ProductSaleByCountReport(models.Model):
     product_uom = fields.Char(string="UOM")
     quantity = fields.Integer(string='Quantity')
 
-    @api.model_cr
     def init(self):
         self.init_table()
 
@@ -64,7 +63,7 @@ class ProductSaleByCountReport(models.Model):
         isWhereClauseAdded = False
         if compute_at:
             if start_date and not start_date is None and end_date and not end_date is None:
-                select_query = select_query + " where sale_order.confirmation_date  BETWEEN '" + str(
+                select_query = select_query + " where sale_order.date_order  BETWEEN '" + str(
                     start_date) + "'" + " and '" + str(self.string_to_date(end_date) + datetime.timedelta(days=1)) + "'"
                 isWhereClauseAdded = True
         if user_id:
@@ -85,7 +84,6 @@ class ProductSaleByCountReport(models.Model):
 
         self._cr.execute("CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + sql_query + " )")
 
-    @api.model_cr
     def delete_and_create(self):
         self.init_table()
 

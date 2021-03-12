@@ -51,7 +51,7 @@
         <record id="resource_menu_action" model="ir.actions.act_window">
         	<field name="name">Resource</field>
         	<field name="res_model">resource.webresource</field>
-        	<field name="view_type">form</field>
+        	<!-- <field name="view_type">form</field> -->
 <!--            <field name="view_id" ref="resource_tree"/>-->
         	<field name="view_mode">tree,form</field>
         </record>

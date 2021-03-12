@@ -104,7 +104,7 @@
         	<!--<field name="act_window_id" ref="revenue_report_action_dashboard"/>-->
         <!--</record>-->
         <record id="revenue_report_action_dashboard_graph" model="ir.actions.act_window.view">
-        	<field name="sequence" eval="3"/>
+<!--        	<field name="sequence" eval="3"/>-->
         	<field name="view_mode">graph</field>
         	<field name="view_id" ref="revenue_graph_ka_list_view"/>
         	<field name="act_window_id" ref="revenue_report_action_dashboard"/>

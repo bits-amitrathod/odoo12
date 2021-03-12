@@ -29,13 +29,13 @@
         </field>
      </record>
 
-    <record id="product_expiry.view_move_form_expiry" model="ir.ui.view">
+    <!--<record id="product_expiry.view_move_form_expiry" model="ir.ui.view">
         <field name="name">stock.production.lot.tree</field>
         <field name="model">stock.production.lot</field>
 
         <field name="view_id" ref="product_expiry.view_move_form_expiry"/>
         <field name="arch" type="xml">
-         <xpath expr="//group[@name='main_group']" position="after">
+            <xpath expr="//group[@name='main_group']" position="after">
             <group string="Dates">
                 <group>
                     <field name="use_date" string="Expiration Date" attrs="{'required': True}" />
@@ -47,13 +47,13 @@
                 </group>
             </group>
         </xpath>
-        <xpath expr="//div[hasclass('oe_title')]" position="inside">
+            <xpath expr="//div[hasclass('oe_title')]" position="inside">
             <field name="product_expiry_alert" invisible="1"/>
             <span class="label label-danger" attrs="{'invisible': [('product_expiry_alert', '=', False)]}">Expiration Alert</span>
         </xpath>
         </field>
-    </record>
-     <record id="product_expiry.view_move_form_expiry_simple" model="ir.ui.view">
+    </record>-->
+    <!-- <record id="product_expiry.view_move_form_expiry_simple" model="ir.ui.view">
         <field name="name">stock.production.lot.inherit.form</field>
         <field name="model">stock.production.lot</field>
           <field name="view_id" ref="product_expiry.view_move_form_expiry_simple"/>
@@ -75,6 +75,6 @@
             <span class="label label-danger" attrs="{'invisible': [('product_expiry_alert', '=', False)]}">Expiration Alert</span>
         </xpath>
         </field>
-    </record>
+    </record>-->
 
 </odoo>

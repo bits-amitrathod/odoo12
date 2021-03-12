@@ -28,7 +28,7 @@ class MarginsReport(models.Model):
     currency_id = fields.Many2one("res.currency", string="Currency",
                                    readonly=True,store=False)
 
-    @api.model_cr
+    #  @api.model_cr
     def init(self):
         self.init_table()
 
@@ -74,7 +74,7 @@ class MarginsReport(models.Model):
             INNER JOIN product_template t ON p.product_tmpl_id = t.id
             LEFT JOIN res_partner r ON o.partner_id = r.id """
 
-        where_clause = """ WHERE o.confirmation_date IS NOT NULL  """
+        where_clause = """ WHERE o.date_order IS NOT NULL  """
 
         AND = " AND "
         date_range = ""
@@ -101,6 +101,6 @@ class MarginsReport(models.Model):
 
         self._cr.execute(sql_query)
 
-    @api.model_cr
+    #  @api.model_cr
     def delete_and_create(self):
         self.init_table()
