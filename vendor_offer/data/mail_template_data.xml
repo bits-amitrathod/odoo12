@@ -46,273 +46,212 @@
         <!--</record>-->
 
 
-        <!--<record id="email_template_edi_vendor_offer_done" model="mail.template">-->
-            <!--<field name="name">Vendor Offer - Send by Email</field>-->
-            <!--<field name="model_id" ref="purchase.model_purchase_order"/>-->
-            <!--<field name="subject">${object.company_id.name} Offer (Ref ${object.name or 'n/a' })</field>-->
-            <!--&lt;!&ndash;<field name="email_from">${object.super_user_email}</field>&ndash;&gt;-->
-             <!--<field name="email_from">${(object.acq_user_id.partner_id.email if object.acq_user_id.partner_id.email != False else object.sudo().create_uid.email_formatted | safe)}</field>-->
-            <!--<field name="partner_to">${(object.partner_id.id if object.partner_id.vendor_email==False)}</field>-->
-            <!--<field name="email_to">${(object.partner_id.vendor_email if object.partner_id.vendor_email!=False)}</field>-->
-            <!--<field name="email_cc">${object.acq_user_id.partner_id.email | safe}</field>-->
-             <!--<field name="body_html"><![CDATA[-->
-                <!--% set access_url = object.get_mail_url() or ''-->
-
-                <!--<p>Dear ${object.partner_id.name}-->
-                <!--% if object.partner_id.parent_id:-->
-                    <!--(<i>${object.partner_id.parent_id.name}</i>)-->
-                <!--% endif-->
-                <!--,</p>-->
-                <!--<p>-->
-                <!--Please find in attachment a <strong>${object.state in ('draft', 'sent') and 'request for vendor draft' or 'vendor offer confirmation'} ${object.name}</strong>-->
-                <!--% if object.partner_ref:-->
-                    <!--with reference: ${object.partner_ref}-->
-                <!--% endif-->
-                <!--% if object.origin:-->
-                    <!--(RFQ origin: ${object.origin})-->
-                <!--% endif-->
-                 <!--% if object.offer_type=='cash':-->
-                    <!--Cash amounting <strong>${format_amount(object.cash_amount_total, object.currency_id)}</strong>-->
-
-                <!--% elif object.offer_type=='credit':-->
-                    <!--Credit amounting <strong>${format_amount(object.credit_amount_total, object.currency_id)}</strong>-->
-                 <!--% elif object.offer_type=='cashcredit':-->
-                    <!--Credit amounting <strong>${format_amount(object.credit_amount_total, object.currency_id)}</strong>-->
-                    <!--Cash amounting <strong>${format_amount(object.cash_amount_total, object.currency_id)}</strong>-->
-                  <!--% else:-->
-                   <!--Credit amounting <strong>${format_amount(object.credit_amount_total, object.currency_id)}</strong>-->
-                     <!--Cash amounting <strong>${format_amount(object.cash_amount_total, object.currency_id)}</strong>-->
-                 <!--% endif-->
-
-                <!--from ${object.company_id.name}.-->
-                <!--</p>-->
-                <!--<br/><br/>-->
-                <!--<center>-->
-                    <!--<a href="${access_url}" style="background-color: #1abc9c; padding: 20px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">View Offer</a>-->
-                    <!--<br/><br/><br/>-->
-                    <!--<span style="color:#888888">(or view attached PDF)</span>-->
-                <!--</center>-->
-                <!--<p>You can reply to this email if you have any questions.</p>-->
-                <!--<p>Thank you,</p>-->
-                <!--]]>-->
-            <!--</field>-->
-            <!--<field name="report_template" ref="action_report_vendor_offer"/>-->
-            <!--<field name="report_name">OFFER_${(object.name or '').replace('/','_')}</field>-->
-            <!--<field name="lang">${object.partner_id.lang}</field>-->
+        <record id="email_template_edi_vendor_offer_done" model="mail.template">
+            <field name="name">Vendor Offer - Send by Email</field>
+            <field name="model_id" ref="purchase.model_purchase_order"/>
+            <field name="subject">${object.company_id.name} Order (Ref ${object.name or 'n/a' })</field>
+            <!--<field name="email_from">${object.super_user_email}</field>-->
+             <field name="email_from">${object.sudo().create_uid.email_formatted | safe}</field>
+            <field name="partner_to">${object.partner_id.id}</field>
+           <field name="body_html"><![CDATA[
+                % set access_url = object.get_mail_url() or ''
+                <p>Dear ${object.partner_id.name}
+                % if object.partner_id.parent_id:
+                    (<i>${object.partner_id.parent_id.name}</i>)
+                % endif
+                ,</p>
+                <p>
+                Please find in attachment a <strong>${object.state in ('draft', 'sent') and 'request for vendor draft' or 'vendor offer confirmation'} ${object.name}</strong>
+                % if object.partner_ref:
+                    with reference: ${object.partner_ref}
+                % endif
+                % if object.origin:
+                    (RFQ origin: ${object.origin})
+                % endif
+                 % if object.offer_type=='cash':
+                    Cash amounting <strong>${format_amount(object.cash_amount_total, object.currency_id)}</strong>
+                % elif object.offer_type=='credit':
+                    Credit amounting <strong>${format_amount(object.credit_amount_total, object.currency_id)}</strong>
+                 % elif object.offer_type=='cashcredit':
+                    Credit amounting <strong>${format_amount(object.credit_amount_total, object.currency_id)}</strong>
+                    Cash amounting <strong>${format_amount(object.cash_amount_total, object.currency_id)}</strong>
+                  % else:
+                   Credit amounting <strong>${format_amount(object.credit_amount_total, object.currency_id)}</strong>
+                     Cash amounting <strong>${format_amount(object.cash_amount_total, object.currency_id)}</strong>
+                 % endif
+                from ${object.company_id.name}.
+                </p>
+                <br/><br/>
+                <center>
+                    <a href="${access_url}" style="background-color: #1abc9c; padding: 20px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">View Offer</a>
+                    <br/><br/><br/>
+                    <span style="color:#888888">(or view attached PDF)</span>
+                </center>
+                <p>You can reply to this email if you have any questions.</p>
+                <p>Thank you,</p>
+                ]]>
+            </field>
+            <field name="report_template" ref="action_report_vendor_offer"/>
+            <field name="report_name">OFFER_${(object.name or '').replace('/','_')}</field>
+            <field name="lang">${object.partner_id.lang}</field>
             <!--<field name="user_signature" eval="False"/>-->
-            <!--<field name="auto_delete" eval="True"/>-->
-        <!--</record>-->
+            <field name="auto_delete" eval="True"/>
+        </record>
 
-        <!--<record id="email_template_edi_vendor_offer_done_cstm" model="mail.template">-->
-            <!--<field name="name">Vendor Offer - Send by Email</field>-->
-            <!--<field name="model_id" ref="purchase.model_purchase_order"/>-->
-            <!--<field name="email_from">${(object.acq_user_id.partner_id.email if object.acq_user_id.partner_id.email != False else object.sudo().create_uid.email_formatted | safe)}</field>-->
-            <!--<field name="partner_to">${(object.partner_id.id if object.partner_id.vendor_email==False)}</field>-->
-            <!--<field name="email_to">${(object.partner_id.vendor_email if object.partner_id.vendor_email!=False)}</field>-->
-            <!--<field name="email_cc">${object.acq_user_id.partner_id.email | safe}</field>-->
-            <!--<field name="subject">${object.company_id.name} Offer (Ref ${object.name or 'n/a' })</field>-->
-            <!--<field name="body_html"><![CDATA[-->
-                <!--% set access_url = object.get_mail_url() or ''-->
+        <!--&lt;!&ndash;Default Notification Email template for invoices&ndash;&gt;-->
+        <!--&lt;!&ndash;<record id="vendor_offer.mail_template_data_notification_email_vendor_offer" model="mail.template">&ndash;&gt;-->
+            <!--&lt;!&ndash;<field name="name">Vendor Offer Notification Email</field>&ndash;&gt;-->
+            <!--&lt;!&ndash;<field name="subject">${object.subject}</field>&ndash;&gt;-->
+            <!--&lt;!&ndash;<field name="model_id" ref="mail.model_mail_message"/>&ndash;&gt;-->
+            <!--&lt;!&ndash;<field name="auto_delete" eval="True"/>&ndash;&gt;-->
+            <!--&lt;!&ndash;<field name="body_html"><![CDATA[<html>&ndash;&gt;-->
+                <!--&lt;!&ndash;<head></head>&ndash;&gt;-->
+                <!--&lt;!&ndash;% set company = record and record.company_id or ctx.get('company')&ndash;&gt;-->
+                <!--&lt;!&ndash;<body style="margin: 0; padding: 0;">&ndash;&gt;-->
+                                <!--&lt;!&ndash;<table border="0" width="100%" cellpadding="0" bgcolor="#ededed" style="padding: 20px; background-color: #ededed" summary="o_mail_notification">&ndash;&gt;-->
+                    <!--&lt;!&ndash;<tbody>&ndash;&gt;-->
 
-                <!--<p>Dear ${object.partner_id.name}-->
-                <!--% if object.partner_id.parent_id:-->
-                    <!--(<i>${object.partner_id.parent_id.name}</i>)-->
-                <!--% endif-->
-                <!--,</p>-->
-                <!--<p>-->
-                <!--Please find in attachment a <strong>${object.state in ('draft', 'sent') and 'request for vendor draft' or 'vendor offer confirmation'} ${object.name}</strong>-->
-                <!--% if object.partner_ref:-->
-                    <!--with reference: ${object.partner_ref}-->
-                <!--% endif-->
-                <!--% if object.origin:-->
-                    <!--(RFQ origin: ${object.origin})-->
-                <!--% endif-->
-                 <!--% if object.offer_type=='cash':-->
-                    <!--Cash amounting <strong>${format_amount(object.cash_amount_total, object.currency_id)}</strong>-->
+                      <!--&lt;!&ndash;&lt;!&ndash; HEADER &ndash;&gt;&ndash;&gt;-->
+                      <!--&lt;!&ndash;<tr>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<td align="center" style="min-width: 590px;">&ndash;&gt;-->
+                          <!--&lt;!&ndash;<table width="590" border="0" cellpadding="0" bgcolor="#875A7B" style="min-width: 590px; background-color: rgb(135,90,123); padding: 20px;">&ndash;&gt;-->
+                            <!--&lt;!&ndash;<tr>&ndash;&gt;-->
+                              <!--&lt;!&ndash;<td valign="middle">&ndash;&gt;-->
+                                  <!--&lt;!&ndash;<span style="font-size:20px; color:white; font-weight: bold;">&ndash;&gt;-->
+                                      <!--&lt;!&ndash;${object.record_name}&ndash;&gt;-->
+                                  <!--&lt;!&ndash;</span>&ndash;&gt;-->
+                              <!--&lt;!&ndash;</td>&ndash;&gt;-->
+                              <!--&lt;!&ndash;<td valign="middle" align="right">&ndash;&gt;-->
+                                  <!--&lt;!&ndash;<img src="/logo.png?company=${company.id}" style="padding: 0px; margin: 0px; height: auto; width: 80px;" alt="${company.name}">&ndash;&gt;-->
+                              <!--&lt;!&ndash;</td>&ndash;&gt;-->
+                            <!--&lt;!&ndash;</tr>&ndash;&gt;-->
+                          <!--&lt;!&ndash;</table>&ndash;&gt;-->
+                        <!--&lt;!&ndash;</td>&ndash;&gt;-->
+                      <!--&lt;!&ndash;</tr>&ndash;&gt;-->
 
-                <!--% elif object.offer_type=='credit':-->
-                    <!--Credit amounting <strong>${format_amount(object.credit_amount_total, object.currency_id)}</strong>-->
-                 <!--% elif object.offer_type=='cashcredit':-->
-                    <!--Credit amounting <strong>${format_amount(object.credit_amount_total, object.currency_id)}</strong>-->
-                    <!--Cash amounting <strong>${format_amount(object.cash_amount_total, object.currency_id)}</strong>-->
-                  <!--% else:-->
-                   <!--Credit amounting <strong>${format_amount(object.credit_amount_total, object.currency_id)}</strong>-->
-                     <!--Cash amounting <strong>${format_amount(object.cash_amount_total, object.currency_id)}</strong>-->
-                 <!--% endif-->
+                      <!--&lt;!&ndash;&lt;!&ndash; CONTENT &ndash;&gt;&ndash;&gt;-->
+                      <!--&lt;!&ndash;<tr>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<td align="center" style="min-width: 590px;">&ndash;&gt;-->
+                          <!--&lt;!&ndash;<table width="590" border="0" cellpadding="0" bgcolor="#ffffff" style="min-width: 590px; background-color: rgb(255, 255, 255); padding: 20px;">&ndash;&gt;-->
+                            <!--&lt;!&ndash;<tbody>&ndash;&gt;-->
+                              <!--&lt;!&ndash;<td valign="top" style="font-family:Arial,Helvetica,sans-serif; color: #555; font-size: 14px;">&ndash;&gt;-->
+                                <!--&lt;!&ndash;${object.body | safe}&ndash;&gt;-->
+                              <!--&lt;!&ndash;</td>&ndash;&gt;-->
+                            <!--&lt;!&ndash;</tbody>&ndash;&gt;-->
+                          <!--&lt;!&ndash;</table>&ndash;&gt;-->
+                        <!--&lt;!&ndash;</td>&ndash;&gt;-->
+                      <!--&lt;!&ndash;</tr>&ndash;&gt;-->
 
-                <!--from ${object.company_id.name}.-->
-                <!--</p>-->
-                <!--<br/><br/>-->
-                <!--<center>-->
-                    <!--<a href="${access_url}" style="background-color: #1abc9c; padding: 20px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">View Offer</a>-->
-                    <!--<br/><br/><br/>-->
-                    <!--<span style="color:#888888">(or view attached PDF)</span>-->
-                <!--</center>-->
-                <!--<p>You can reply to this email if you have any questions.</p>-->
-                <!--<p>Thank you,</p>-->
-                <!--]]>-->
-            <!--</field>-->
-            <!--<field name="report_template" ref="action_report_vendor_offer"/>-->
-            <!--<field name="report_name">OFFER_${(object.name or '').replace('/','_')}</field>-->
-            <!--<field name="lang">${object.partner_id.lang}</field>-->
-            <!--<field name="user_signature" eval="False"/>-->
-            <!--<field name="auto_delete" eval="True"/>-->
-        <!--</record>-->
+                      <!--&lt;!&ndash;&lt;!&ndash; FOOTER &ndash;&gt;&ndash;&gt;-->
+                      <!--&lt;!&ndash;<tr>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<td align="center" style="min-width: 590px;">&ndash;&gt;-->
+                          <!--&lt;!&ndash;<table width="590" border="0" cellpadding="0" bgcolor="#875A7B" style="min-width: 590px; background-color: rgb(135,90,123); padding: 20px;">&ndash;&gt;-->
+                            <!--&lt;!&ndash;<tr>&ndash;&gt;-->
+                              <!--&lt;!&ndash;<td valign="middle" align="left" style="color: #fff; padding-top: 10px; padding-bottom: 10px; font-size: 12px;">&ndash;&gt;-->
+                                <!--&lt;!&ndash;${company.name}<br/>&ndash;&gt;-->
+                                <!--&lt;!&ndash;${company.phone or ''}&ndash;&gt;-->
+                              <!--&lt;!&ndash;</td>&ndash;&gt;-->
+                              <!--&lt;!&ndash;<td valign="middle" align="right" style="color: #fff; padding-top: 10px; padding-bottom: 10px; font-size: 12px;">&ndash;&gt;-->
+                                <!--&lt;!&ndash;% if company.email:&ndash;&gt;-->
+                                <!--&lt;!&ndash;<a href="mailto:${company.email}" style="text-decoration:none; color: white;">${company.email}</a><br/>&ndash;&gt;-->
+                                <!--&lt;!&ndash;% endif&ndash;&gt;-->
+                                <!--&lt;!&ndash;% if company.website:&ndash;&gt;-->
+                                    <!--&lt;!&ndash;<a href="${company.website}" style="text-decoration:none; color: white;">&ndash;&gt;-->
+                                        <!--&lt;!&ndash;${company.website}&ndash;&gt;-->
+                                    <!--&lt;!&ndash;</a>&ndash;&gt;-->
+                                <!--&lt;!&ndash;% endif&ndash;&gt;-->
+                              <!--&lt;!&ndash;</td>&ndash;&gt;-->
+                            <!--&lt;!&ndash;</tr>&ndash;&gt;-->
+                          <!--&lt;!&ndash;</table>&ndash;&gt;-->
+                        <!--&lt;!&ndash;</td>&ndash;&gt;-->
+                      <!--&lt;!&ndash;</tr>&ndash;&gt;-->
+                      <!--&lt;!&ndash;<tr>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<td align="center">&ndash;&gt;-->
+                            <!--&lt;!&ndash;Powered by <a href="https://www.odoo.com">Odoo</a>.&ndash;&gt;-->
+                        <!--&lt;!&ndash;</td>&ndash;&gt;-->
+                      <!--&lt;!&ndash;</tr>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</tbody>&ndash;&gt;-->
+                <!--&lt;!&ndash;</table>&ndash;&gt;-->
+                <!--&lt;!&ndash;</body>&ndash;&gt;-->
+                <!--&lt;!&ndash;</html>&ndash;&gt;-->
+            <!--&lt;!&ndash;]]></field>&ndash;&gt;-->
+        <!--&lt;!&ndash;</record>&ndash;&gt;-->
 
-        <!--Default Notification Email template for invoices-->
-        <!--<record id="vendor_offer.mail_template_data_notification_email_vendor_offer" model="mail.template">-->
-            <!--<field name="name">Vendor Offer Notification Email</field>-->
-            <!--<field name="subject">${object.subject}</field>-->
-            <!--<field name="model_id" ref="mail.model_mail_message"/>-->
-            <!--<field name="auto_delete" eval="True"/>-->
-            <!--<field name="body_html"><![CDATA[<html>-->
-                <!--<head></head>-->
-                <!--% set company = record and record.company_id or ctx.get('company')-->
-                <!--<body style="margin: 0; padding: 0;">-->
-                                <!--<table border="0" width="100%" cellpadding="0" bgcolor="#ededed" style="padding: 20px; background-color: #ededed" summary="o_mail_notification">-->
-                    <!--<tbody>-->
-
-                      <!--&lt;!&ndash; HEADER &ndash;&gt;-->
-                      <!--<tr>-->
-                        <!--<td align="center" style="min-width: 590px;">-->
-                          <!--<table width="590" border="0" cellpadding="0" bgcolor="#875A7B" style="min-width: 590px; background-color: rgb(135,90,123); padding: 20px;">-->
-                            <!--<tr>-->
-                              <!--<td valign="middle">-->
-                                  <!--<span style="font-size:20px; color:white; font-weight: bold;">-->
-                                      <!--${object.record_name}-->
-                                  <!--</span>-->
-                              <!--</td>-->
-                              <!--<td valign="middle" align="right">-->
-                                  <!--<img src="/logo.png?company=${company.id}" style="padding: 0px; margin: 0px; height: auto; width: 80px;" alt="${company.name}">-->
-                              <!--</td>-->
-                            <!--</tr>-->
-                          <!--</table>-->
-                        <!--</td>-->
-                      <!--</tr>-->
-
-                      <!--&lt;!&ndash; CONTENT &ndash;&gt;-->
-                      <!--<tr>-->
-                        <!--<td align="center" style="min-width: 590px;">-->
-                          <!--<table width="590" border="0" cellpadding="0" bgcolor="#ffffff" style="min-width: 590px; background-color: rgb(255, 255, 255); padding: 20px;">-->
-                            <!--<tbody>-->
-                              <!--<td valign="top" style="font-family:Arial,Helvetica,sans-serif; color: #555; font-size: 14px;">-->
-                                <!--${object.body | safe}-->
-                              <!--</td>-->
-                            <!--</tbody>-->
-                          <!--</table>-->
-                        <!--</td>-->
-                      <!--</tr>-->
-
-                      <!--&lt;!&ndash; FOOTER &ndash;&gt;-->
-                      <!--<tr>-->
-                        <!--<td align="center" style="min-width: 590px;">-->
-                          <!--<table width="590" border="0" cellpadding="0" bgcolor="#875A7B" style="min-width: 590px; background-color: rgb(135,90,123); padding: 20px;">-->
-                            <!--<tr>-->
-                              <!--<td valign="middle" align="left" style="color: #fff; padding-top: 10px; padding-bottom: 10px; font-size: 12px;">-->
-                                <!--${company.name}<br/>-->
-                                <!--${company.phone or ''}-->
-                              <!--</td>-->
-                              <!--<td valign="middle" align="right" style="color: #fff; padding-top: 10px; padding-bottom: 10px; font-size: 12px;">-->
-                                <!--% if company.email:-->
-                                <!--<a href="mailto:${company.email}" style="text-decoration:none; color: white;">${company.email}</a><br/>-->
-                                <!--% endif-->
-                                <!--% if company.website:-->
-                                    <!--<a href="${company.website}" style="text-decoration:none; color: white;">-->
-                                        <!--${company.website}-->
-                                    <!--</a>-->
-                                <!--% endif-->
-                              <!--</td>-->
-                            <!--</tr>-->
-                          <!--</table>-->
-                        <!--</td>-->
-                      <!--</tr>-->
-                      <!--<tr>-->
-                        <!--<td align="center">-->
-                            <!--Powered by <a href="https://www.odoo.com">Odoo</a>.-->
-                        <!--</td>-->
-                      <!--</tr>-->
-                    <!--</tbody>-->
-                <!--</table>-->
-                <!--</body>-->
-                <!--</html>-->
-            <!--]]></field>-->
-        <!--</record>-->
-
-        <!--<template id="mail_notification_vendor_offer" name="Mail: Vendor Offer Notification Email">-->
-<!--<table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;"><tr><td align="center">-->
-<!--<table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 24px; background-color: white; color: #454748; border-collapse:separate;">-->
-<!--<tbody>-->
-    <!--&lt;!&ndash; HEADER &ndash;&gt;-->
-    <!--<tr>-->
-        <!--<td align="center" style="min-width: 590px;">-->
-            <!--&lt;!&ndash;<t t-set="access_action" t-value="record.with_context(force_website=True).get_access_action()"/>&ndash;&gt;-->
-            <!--<t t-set="is_online" t-value="access_action and access_action['type'] == 'ir.actions.act_url'"/>-->
-            <!--<t t-set="base_url" t-value="record.get_base_url()"/>-->
-            <!--<t t-set="share_url" t-value="record._get_share_url(redirect=True, signup_partner=True)"/>-->
-            <!--<t t-set="access_url" t-value="is_online and share_url and base_url + share_url or ''"/>-->
-            <!--<t t-set="access_name">-->
-                <!--View <t t-esc="model_description or 'document'"/>-->
-            <!--</t>-->
-            <!--<table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: white; padding: 0; border-collapse:separate;">-->
-                <!--<tr><td valign="middle">-->
-                    <!--<span style="font-size: 10px;">Your <t t-esc="model_description or 'document'"/></span><br/>-->
-                    <!--<span style="font-size: 20px; font-weight: bold;">-->
-                        <!--<t t-esc="message.record_name"/>-->
-                    <!--</span>-->
-                <!--</td><td valign="middle" align="right">-->
-                    <!--<img t-att-src="'/logo.png?company=%s' % company.id" style="padding: 0px; margin: 0px; height: 48px;" t-att-alt="'%s' % company.name"/>-->
-                <!--</td></tr>-->
-                <!--<tr><td colspan="2" style="text-align:center;">-->
-                  <!--<hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:4px 0px 32px 0px;"/>-->
-                <!--</td></tr>-->
-            <!--</table>-->
-        <!--</td>-->
-    <!--</tr>-->
-    <!--&lt;!&ndash; CONTENT &ndash;&gt;-->
-    <!--<tr>-->
-        <!--<td style="padding: 0">-->
-            <!--<t t-raw="message.body"/>-->
-            <!--<div t-if="is_online and not record._context.get('proforma')" style="margin: 32px 0px 32px 0px; text-align: center;">-->
-                <!--<a t-att-href="access_url"-->
-                    <!--style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">-->
-                    <!--<t t-esc="access_name"/>-->
-                <!--</a>-->
-            <!--</div>-->
-            <!--<div style="margin: 0px; padding: 0px; font-size:13px;">-->
-                <!--Best regards,-->
-            <!--</div>-->
-            <!--<div>&amp;nbsp;</div>-->
-            <!--<div t-if="record.user_id and record.user_id.sudo().signature" style="font-size: 13px;">-->
-                <!--<div t-raw="record.user_id.sudo().signature"/>-->
-            <!--</div>-->
-        <!--</td>-->
-    <!--</tr>-->
-    <!--&lt;!&ndash; FOOTER &ndash;&gt;-->
-    <!--<tr>-->
-        <!--<td style="padding: 0; font-size:11px;">-->
-            <!--<hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 32px 0px 4px 0px;"/>-->
-            <!--<b t-esc="company.name"/><br/>-->
-            <!--<div style="color: #999999">-->
-                <!--<t t-esc="company.phone"/>-->
-                <!--<t t-if="company.email"> |-->
-                    <!--<a t-att-href="'mailto:%s' % company.email" style="text-decoration:none; color: #999999;"><t t-esc="company.email"/></a>-->
-                <!--</t>-->
-                <!--<t t-if="company.website"> |-->
-                    <!--<a t-att-href="'%s' % company.website" style="text-decoration:none; color: #999999;">-->
-                        <!--<t t-esc="company.website"/>-->
-                    <!--</a>-->
-                <!--</t>-->
-            <!--</div>-->
-        <!--</td>-->
-    <!--</tr>-->
-<!--</tbody>-->
-<!--</table>-->
+        <template id="mail_notification_vendor_offer" name="Mail: Vendor Offer Notification Email">
+<table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;"><tr><td align="center">
+<table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 24px; background-color: white; color: #454748; border-collapse:separate;">
+<tbody>
+    <!-- HEADER -->
+    <tr>
+        <td align="center" style="min-width: 590px;">
+            <!--<t t-set="access_action" t-value="record.with_context(force_website=True).get_access_action()"/>-->
+            <t t-set="is_online" t-value="access_action and access_action['type'] == 'ir.actions.act_url'"/>
+            <t t-set="base_url" t-value="record.get_base_url()"/>
+            <t t-set="share_url" t-value="record._get_share_url(redirect=True, signup_partner=True)"/>
+            <t t-set="access_url" t-value="is_online and share_url and base_url + share_url or ''"/>
+            <t t-set="access_name">
+                View <t t-esc="model_description or 'document'"/>
+            </t>
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: white; padding: 0; border-collapse:separate;">
+                <tr><td valign="middle">
+                    <span style="font-size: 10px;">Your <t t-esc="model_description or 'document'"/></span><br/>
+                    <span style="font-size: 20px; font-weight: bold;">
+                        <t t-esc="message.record_name"/>
+                    </span>
+                </td><td valign="middle" align="right">
+                    <img t-att-src="'/logo.png?company=%s' % company.id" style="padding: 0px; margin: 0px; height: 48px;" t-att-alt="'%s' % company.name"/>
+                </td></tr>
+                <tr><td colspan="2" style="text-align:center;">
+                  <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:4px 0px 32px 0px;"/>
+                </td></tr>
+            </table>
+        </td>
+    </tr>
+    <!-- CONTENT -->
+    <tr>
+        <td style="padding: 0">
+            <t t-raw="message.body"/>
+            <div t-if="is_online and not record._context.get('proforma')" style="margin: 32px 0px 32px 0px; text-align: center;">
+                <a t-att-href="access_url"
+                    style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                    <t t-esc="access_name"/>
+                </a>
+            </div>
+            <div style="margin: 0px; padding: 0px; font-size:13px;">
+                Best regards,
+            </div>
+            <div>&amp;nbsp;</div>
+            <div t-if="record.user_id and record.user_id.sudo().signature" style="font-size: 13px;">
+                <div t-raw="record.user_id.sudo().signature"/>
+            </div>
+        </td>
+    </tr>
+    <!-- FOOTER -->
+    <tr>
+        <td style="padding: 0; font-size:11px;">
+            <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 32px 0px 4px 0px;"/>
+            <b t-esc="company.name"/><br/>
+            <div style="color: #999999">
+                <t t-esc="company.phone"/>
+                <t t-if="company.email"> |
+                    <a t-att-href="'mailto:%s' % company.email" style="text-decoration:none; color: #999999;"><t t-esc="company.email"/></a>
+                </t>
+                <t t-if="company.website"> |
+                    <a t-att-href="'%s' % company.website" style="text-decoration:none; color: #999999;">
+                        <t t-esc="company.website"/>
+                    </a>
+                </t>
+            </div>
+        </td>
+    </tr>
+</tbody>
+</table>
+</td></tr>
+<!-- POWERED BY -->
+<!--<tr><td align="center" style="min-width: 590px; padding: 8px; font-size:11px;">-->
+    <!--Powered by <a target="_blank" href="https://www.odoo.com?utm_source=db&amp;utm_medium=email" style="color: #875A7B;">Odoo</a>-->
 <!--</td></tr>-->
-<!--&lt;!&ndash; POWERED BY &ndash;&gt;-->
-<!--&lt;!&ndash;<tr><td align="center" style="min-width: 590px; padding: 8px; font-size:11px;">&ndash;&gt;-->
-    <!--&lt;!&ndash;Powered by <a target="_blank" href="https://www.odoo.com?utm_source=db&amp;utm_medium=email" style="color: #875A7B;">Odoo</a>&ndash;&gt;-->
-<!--&lt;!&ndash;</td></tr>&ndash;&gt;-->
-<!--</table>-->
-        <!--</template>-->
+</table>
+        </template>
     </data>
 </odoo>

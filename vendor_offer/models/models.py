@@ -486,9 +486,11 @@ class VendorOffer(models.Model):
         ir_model_data = self.env['ir.model.data']
         try:
             if self.env.context.get('send_rfq', False):
-                template_id = ir_model_data.get_object_reference('vendor_offer', 'email_template_edi_vendor_offer_done')[1]
+                template_id = \
+                ir_model_data.get_object_reference('vendor_offer', 'email_template_edi_vendor_offer_done')[1]
             else:
-                template_id = ir_model_data.get_object_reference('vendor_offer', 'email_template_edi_vendor_offer_done')[1]
+                template_id = \
+                ir_model_data.get_object_reference('vendor_offer', 'email_template_edi_vendor_offer_done')[1]
 
         except ValueError:
             template_id = False
@@ -508,6 +510,7 @@ class VendorOffer(models.Model):
             'force_email': True
         })
 
+
         # if self.partner_id and self.partner_id.vendor_email:
         #     ctx['vendor_email'] = self.partner_id.vendor_email
         # elif self.partner_id and self.partner_id.email:
@@ -520,7 +523,8 @@ class VendorOffer(models.Model):
         if {'default_template_id', 'default_model', 'default_res_id'} <= ctx.keys():
             template = self.env['mail.template'].browse(ctx['default_template_id'])
             if template and template.lang:
-                lang = template._render_template(template.lang, ctx['default_model'], ctx['default_res_id'])
+                # lang = template._render_template(template.lang,[ctx['default_model'], ctx['default_res_id']])
+                lang = template._render_lang([ctx['default_res_id']])[ctx['default_res_id']]
 
         self = self.with_context(lang=lang)
         if self.temp_payment_term != temp_payment_term or self.status != 'ven_sent':
@@ -1280,440 +1284,440 @@ class FedexDelivery(models.Model):
 
     def fedex_send_shipping_label(self, order, popup):
         res = []
-        srm = FedexRequest(self.log_xml, request_type="shipping", prod_environment=self.prod_environment)
-        superself = self.sudo()
-        srm.web_authentication_detail(superself.fedex_developer_key, superself.fedex_developer_password)
-        srm.client_detail(superself.fedex_account_number, superself.fedex_meter_number)
-        srm.transaction_detail(order.id)
-        package_type = popup.product_packaging.shipper_package_code or self.fedex_default_packaging_id.shipper_package_code
-        srm.shipment_request(self.fedex_droppoff_type, self.fedex_service_type, package_type, self.fedex_weight_unit,
-                             self.fedex_saturday_delivery)
-        srm.shipment_request_email(order)
-        srm.set_currency(_convert_curr_iso_fdx(order.currency_id.name))
-        srm.set_shipper(order.partner_id, order.partner_id)
-        # srm.set_recipient(order.company_id.partner_id)
-        super_user = self.env['res.users'].browse(1)
-        # print(super_user.partner_id.name)
-        srm.set_recipient(super_user.partner_id)
-        srm.shipping_charges_payment(superself.fedex_account_number)
-        srm.shipment_label('COMMON2D', self.fedex_label_file_type, self.fedex_label_stock_type,
-                           'TOP_EDGE_OF_TEXT_FIRST', 'SHIPPING_LABEL_FIRST')
-        order_currency = order.currency_id
-        net_weight = _convert_weight(popup.weight, 'LB')
-
-        # Commodities for customs declaration (international shipping)
-        if self.fedex_service_type in ['INTERNATIONAL_ECONOMY', 'INTERNATIONAL_PRIORITY'] or (
-                order.partner_id.country_id.code == 'IN' and order.company_id.partner_id.country_id.code == 'IN'):
-            commodity_currency = order_currency
-            total_commodities_amount = 0.0
-            commodity_country_of_manufacture = order.company_id.partner_id.country_id.code
-
-            '''for operation in picking.move_line_ids:
-                commodity_amount = order_currency.compute(operation.product_id.list_price, commodity_currency)
-                total_commodities_amount += (commodity_amount * operation.qty_done)
-                commodity_description = operation.product_id.name
-                commodity_number_of_piece = '1'
-                commodity_weight_units = self.fedex_weight_unit
-                commodity_weight_value = _convert_weight(operation.product_id.weight * operation.qty_done, self.fedex_weight_unit)
-                commodity_quantity = operation.qty_done
-                commodity_quantity_units = 'EA'
-            srm.commodities(_convert_curr_iso_fdx(currency.name), commodity_amount, commodity_number_of_piece, commodity_weight_units, commodity_weight_value, commodity_description, commodity_country_of_manufacture, commodity_quantity, commodity_quantity_units)
-            #srm.commodities(_convert_curr_iso_fdx('LB'), 0, '1',
-                            'LB', 10, 'test',
-                            commodity_country_of_manufacture, 1, 'EA')'''
-            srm.customs_value(_convert_curr_iso_fdx(commodity_currency.name), total_commodities_amount, "NON_DOCUMENTS")
-            srm.duties_payment(order.company_id.partner_id.country_id.code, superself.fedex_account_number)
-
-        package_count = popup.package_count
-
-        # TODO RIM master: factorize the following crap
-
-        ################
-        # Multipackage #
-        ################
-        if package_count > 1:
-            # Note: Fedex has a complex multi-piece shipping interface
-            # - Each package has to be sent in a separate request
-            # - First package is called "master" package and holds shipping-
-            #   related information, including addresses, customs...
-            # - Last package responses contains shipping price and code
-            # - If a problem happens with a package, every previous package
-            #   of the shipping has to be cancelled separately
-            # (Why doing it in a simple way when the complex way exists??)
-
-            master_tracking_id = False
-            package_labels = []
-            carrier_tracking_ref = ""
-
-            for sequence in range(1, package_count + 1):
-                package_weight = _convert_weight(popup.weight, self.fedex_weight_unit)
-                srm.add_package(package_weight, sequence_number=sequence)
-                _add_customer_references(srm, order)
-                srm.set_master_package(net_weight, package_count, master_tracking_id=master_tracking_id)
-                request = srm.process_shipment()
-                package_name = sequence
-
-                warnings = request.get('warnings_message')
-                if warnings:
-                    _logger.info(warnings)
-
-                # First package
-                if sequence == 1:
-                    if not request.get('errors_message'):
-                        master_tracking_id = request['master_tracking_id']
-                        package_labels.append((package_name, srm.get_label()))
-                        carrier_tracking_ref = request['tracking_number']
-                        print("first")
-                        print(carrier_tracking_ref)
-                    else:
-                        raise UserError(request['errors_message'])
-
-                # Intermediary packages
-                elif sequence > 1 and sequence < package_count:
-                    if not request.get('errors_message'):
-                        package_labels.append((package_name, srm.get_label()))
-                        carrier_tracking_ref = carrier_tracking_ref + "," + request['tracking_number']
-                        print("Intermediary packages")
-                        print(carrier_tracking_ref)
-                    else:
-                        raise UserError(request['errors_message'])
-
-                # Last package
-                elif sequence == package_count:
-                    # recuperer le label pdf
-                    if not request.get('errors_message'):
-                        package_labels.append((package_name, srm.get_label()))
-
-                        if _convert_curr_iso_fdx(order_currency.name) in request['price']:
-                            carrier_price = request['price'][_convert_curr_iso_fdx(order_currency.name)]
-                        else:
-                            _logger.info("Preferred currency has not been found in FedEx response")
-                            company_currency = order.company_id.currency_id
-                            if _convert_curr_iso_fdx(company_currency.name) in request['price']:
-                                carrier_price = company_currency.compute(
-                                    request['price'][_convert_curr_iso_fdx(company_currency.name)], order_currency)
-                            else:
-                                carrier_price = company_currency.compute(request['price']['USD'], order_currency)
-
-                        carrier_tracking_ref = carrier_tracking_ref + "," + request['tracking_number']
-                        order.update({
-                            'carrier_id': self,
-                            'shipping_number': carrier_tracking_ref.replace(request['master_tracking_id'], request['master_tracking_id']+'*')
-                        })
-
-                        logmessage = _("Shipment created into Fedex<br/>"
-                                       "<b>Tracking Numbers:</b> %s<br/>"
-                                       "<b>Packages:</b> %s") % (
-                                         carrier_tracking_ref, ','.join([str(pl[0]) for pl in package_labels]))
-                        if self.fedex_label_file_type != 'PDF':
-                            attachments = [('FedEx_Label-%s-%s.%s' % (self.fedex_service_type,order.name, self.fedex_label_file_type), pl[1]) for pl in
-                                           package_labels]
-                        if self.fedex_label_file_type == 'PDF':
-                            attachments = [('FedEx_Label-%s-%s.%s' % (self.fedex_service_type,order.name, self.fedex_label_file_type), pdf.merge_pdf([pl[1] for pl in package_labels]))]
-                        order.message_post(body=logmessage, attachments=attachments)
-                        shipping_data = {'exact_price': carrier_price,
-                                         'tracking_number': carrier_tracking_ref}
-                        res = res + [shipping_data]
-                        print("Last package")
-                        print(carrier_tracking_ref)
-                    else:
-                        raise UserError(request['errors_message'])
-
-        # TODO RIM handle if a package is not accepted (others should be deleted)
-
-        ###############
-        # One package #
-        ###############
-        elif package_count == 1:
-
-            srm.add_package(net_weight)
-            srm.set_master_package(net_weight, 1)
-            _add_customer_references(srm, order)
-
-            # Ask the shipping to fedex
-            request = srm.process_shipment()
-
-            warnings = request.get('warnings_message')
-            if warnings:
-                _logger.info(warnings)
-
-            if not request.get('errors_message'):
-
-                if _convert_curr_iso_fdx(order_currency.name) in request['price']:
-                    carrier_price = request['price'][_convert_curr_iso_fdx(order_currency.name)]
-                else:
-                    _logger.info("Preferred currency has not been found in FedEx response")
-                    company_currency = order.company_id.currency_id
-                    if _convert_curr_iso_fdx(company_currency.name) in request['price']:
-                        carrier_price = company_currency.compute(
-                            request['price'][_convert_curr_iso_fdx(company_currency.name)], order_currency)
-                    else:
-                        carrier_price = company_currency.compute(request['price']['USD'], order_currency)
-
-                carrier_tracking_ref = request['tracking_number']
-                order.update({
-                    'carrier_id': self,
-                    'shipping_number': carrier_tracking_ref
-                })
-                logmessage = (
-                        _("Shipment created into Fedex <br/> <b>Tracking Number : </b>%s") % (carrier_tracking_ref))
-
-                fedex_labels = [
-                    ('FedEx_Label-%s-%s-%s.%s' % (self.fedex_service_type,order.name, index, self.fedex_label_file_type), label)
-                    for index, label in enumerate(srm._get_labels(self.fedex_label_file_type))]
-                order.message_post(body=logmessage, attachments=fedex_labels)
-
-                shipping_data = {'exact_price': carrier_price,
-                                 'tracking_number': carrier_tracking_ref}
-                res = res + [shipping_data]
-            else:
-                raise UserError(request['errors_message'])
-
-        ##############
-        # No package #
-        ##############
-        else:
-            raise UserError(_('Please provide packages count'))
-        return res
+        # srm = FedexRequest(self.log_xml, request_type="shipping", prod_environment=self.prod_environment)
+        # superself = self.sudo()
+        # srm.web_authentication_detail(superself.fedex_developer_key, superself.fedex_developer_password)
+        # srm.client_detail(superself.fedex_account_number, superself.fedex_meter_number)
+        # srm.transaction_detail(order.id)
+        # package_type = popup.product_packaging.shipper_package_code or self.fedex_default_packaging_id.shipper_package_code
+        # srm.shipment_request(self.fedex_droppoff_type, self.fedex_service_type, package_type, self.fedex_weight_unit,
+        #                      self.fedex_saturday_delivery)
+        # srm.shipment_request_email(order)
+        # srm.set_currency(_convert_curr_iso_fdx(order.currency_id.name))
+        # srm.set_shipper(order.partner_id, order.partner_id)
+        # # srm.set_recipient(order.company_id.partner_id)
+        # super_user = self.env['res.users'].browse(1)
+        # # print(super_user.partner_id.name)
+        # srm.set_recipient(super_user.partner_id)
+        # srm.shipping_charges_payment(superself.fedex_account_number)
+        # srm.shipment_label('COMMON2D', self.fedex_label_file_type, self.fedex_label_stock_type,
+        #                    'TOP_EDGE_OF_TEXT_FIRST', 'SHIPPING_LABEL_FIRST')
+        # order_currency = order.currency_id
+        # net_weight = _convert_weight(popup.weight, 'LB')
+        #
+        # # Commodities for customs declaration (international shipping)
+        # if self.fedex_service_type in ['INTERNATIONAL_ECONOMY', 'INTERNATIONAL_PRIORITY'] or (
+        #         order.partner_id.country_id.code == 'IN' and order.company_id.partner_id.country_id.code == 'IN'):
+        #     commodity_currency = order_currency
+        #     total_commodities_amount = 0.0
+        #     commodity_country_of_manufacture = order.company_id.partner_id.country_id.code
+        #
+        #     '''for operation in picking.move_line_ids:
+        #         commodity_amount = order_currency.compute(operation.product_id.list_price, commodity_currency)
+        #         total_commodities_amount += (commodity_amount * operation.qty_done)
+        #         commodity_description = operation.product_id.name
+        #         commodity_number_of_piece = '1'
+        #         commodity_weight_units = self.fedex_weight_unit
+        #         commodity_weight_value = _convert_weight(operation.product_id.weight * operation.qty_done, self.fedex_weight_unit)
+        #         commodity_quantity = operation.qty_done
+        #         commodity_quantity_units = 'EA'
+        #     srm.commodities(_convert_curr_iso_fdx(currency.name), commodity_amount, commodity_number_of_piece, commodity_weight_units, commodity_weight_value, commodity_description, commodity_country_of_manufacture, commodity_quantity, commodity_quantity_units)
+        #     #srm.commodities(_convert_curr_iso_fdx('LB'), 0, '1',
+        #                     'LB', 10, 'test',
+        #                     commodity_country_of_manufacture, 1, 'EA')'''
+        #     srm.customs_value(_convert_curr_iso_fdx(commodity_currency.name), total_commodities_amount, "NON_DOCUMENTS")
+        #     srm.duties_payment(order.company_id.partner_id.country_id.code, superself.fedex_account_number)
+        #
+        # package_count = popup.package_count
+        #
+        # # TODO RIM master: factorize the following crap
+        #
+        # ################
+        # # Multipackage #
+        # ################
+        # if package_count > 1:
+        #     # Note: Fedex has a complex multi-piece shipping interface
+        #     # - Each package has to be sent in a separate request
+        #     # - First package is called "master" package and holds shipping-
+        #     #   related information, including addresses, customs...
+        #     # - Last package responses contains shipping price and code
+        #     # - If a problem happens with a package, every previous package
+        #     #   of the shipping has to be cancelled separately
+        #     # (Why doing it in a simple way when the complex way exists??)
+        #
+        #     master_tracking_id = False
+        #     package_labels = []
+        #     carrier_tracking_ref = ""
+        #
+        #     for sequence in range(1, package_count + 1):
+        #         package_weight = _convert_weight(popup.weight, self.fedex_weight_unit)
+        #         srm.add_package(package_weight, sequence_number=sequence)
+        #         _add_customer_references(srm, order)
+        #         srm.set_master_package(net_weight, package_count, master_tracking_id=master_tracking_id)
+        #         request = srm.process_shipment()
+        #         package_name = sequence
+        #
+        #         warnings = request.get('warnings_message')
+        #         if warnings:
+        #             _logger.info(warnings)
+        #
+        #         # First package
+        #         if sequence == 1:
+        #             if not request.get('errors_message'):
+        #                 master_tracking_id = request['master_tracking_id']
+        #                 package_labels.append((package_name, srm.get_label()))
+        #                 carrier_tracking_ref = request['tracking_number']
+        #                 print("first")
+        #                 print(carrier_tracking_ref)
+        #             else:
+        #                 raise UserError(request['errors_message'])
+        #
+        #         # Intermediary packages
+        #         elif sequence > 1 and sequence < package_count:
+        #             if not request.get('errors_message'):
+        #                 package_labels.append((package_name, srm.get_label()))
+        #                 carrier_tracking_ref = carrier_tracking_ref + "," + request['tracking_number']
+        #                 print("Intermediary packages")
+        #                 print(carrier_tracking_ref)
+        #             else:
+        #                 raise UserError(request['errors_message'])
+        #
+        #         # Last package
+        #         elif sequence == package_count:
+        #             # recuperer le label pdf
+        #             if not request.get('errors_message'):
+        #                 package_labels.append((package_name, srm.get_label()))
+        #
+        #                 if _convert_curr_iso_fdx(order_currency.name) in request['price']:
+        #                     carrier_price = request['price'][_convert_curr_iso_fdx(order_currency.name)]
+        #                 else:
+        #                     _logger.info("Preferred currency has not been found in FedEx response")
+        #                     company_currency = order.company_id.currency_id
+        #                     if _convert_curr_iso_fdx(company_currency.name) in request['price']:
+        #                         carrier_price = company_currency.compute(
+        #                             request['price'][_convert_curr_iso_fdx(company_currency.name)], order_currency)
+        #                     else:
+        #                         carrier_price = company_currency.compute(request['price']['USD'], order_currency)
+        #
+        #                 carrier_tracking_ref = carrier_tracking_ref + "," + request['tracking_number']
+        #                 order.update({
+        #                     'carrier_id': self,
+        #                     'shipping_number': carrier_tracking_ref.replace(request['master_tracking_id'], request['master_tracking_id']+'*')
+        #                 })
+        #
+        #                 logmessage = _("Shipment created into Fedex<br/>"
+        #                                "<b>Tracking Numbers:</b> %s<br/>"
+        #                                "<b>Packages:</b> %s") % (
+        #                                  carrier_tracking_ref, ','.join([str(pl[0]) for pl in package_labels]))
+        #                 if self.fedex_label_file_type != 'PDF':
+        #                     attachments = [('FedEx_Label-%s-%s.%s' % (self.fedex_service_type,order.name, self.fedex_label_file_type), pl[1]) for pl in
+        #                                    package_labels]
+        #                 if self.fedex_label_file_type == 'PDF':
+        #                     attachments = [('FedEx_Label-%s-%s.%s' % (self.fedex_service_type,order.name, self.fedex_label_file_type), pdf.merge_pdf([pl[1] for pl in package_labels]))]
+        #                 order.message_post(body=logmessage, attachments=attachments)
+        #                 shipping_data = {'exact_price': carrier_price,
+        #                                  'tracking_number': carrier_tracking_ref}
+        #                 res = res + [shipping_data]
+        #                 print("Last package")
+        #                 print(carrier_tracking_ref)
+        #             else:
+        #                 raise UserError(request['errors_message'])
+        #
+        # # TODO RIM handle if a package is not accepted (others should be deleted)
+        #
+        # ###############
+        # # One package #
+        # ###############
+        # elif package_count == 1:
+        #
+        #     srm.add_package(net_weight)
+        #     srm.set_master_package(net_weight, 1)
+        #     _add_customer_references(srm, order)
+        #
+        #     # Ask the shipping to fedex
+        #     request = srm.process_shipment()
+        #
+        #     warnings = request.get('warnings_message')
+        #     if warnings:
+        #         _logger.info(warnings)
+        #
+        #     if not request.get('errors_message'):
+        #
+        #         if _convert_curr_iso_fdx(order_currency.name) in request['price']:
+        #             carrier_price = request['price'][_convert_curr_iso_fdx(order_currency.name)]
+        #         else:
+        #             _logger.info("Preferred currency has not been found in FedEx response")
+        #             company_currency = order.company_id.currency_id
+        #             if _convert_curr_iso_fdx(company_currency.name) in request['price']:
+        #                 carrier_price = company_currency.compute(
+        #                     request['price'][_convert_curr_iso_fdx(company_currency.name)], order_currency)
+        #             else:
+        #                 carrier_price = company_currency.compute(request['price']['USD'], order_currency)
+        #
+        #         carrier_tracking_ref = request['tracking_number']
+        #         order.update({
+        #             'carrier_id': self,
+        #             'shipping_number': carrier_tracking_ref
+        #         })
+        #         logmessage = (
+        #                 _("Shipment created into Fedex <br/> <b>Tracking Number : </b>%s") % (carrier_tracking_ref))
+        #
+        #         fedex_labels = [
+        #             ('FedEx_Label-%s-%s-%s.%s' % (self.fedex_service_type,order.name, index, self.fedex_label_file_type), label)
+        #             for index, label in enumerate(srm._get_labels(self.fedex_label_file_type))]
+        #         order.message_post(body=logmessage, attachments=fedex_labels)
+        #
+        #         shipping_data = {'exact_price': carrier_price,
+        #                          'tracking_number': carrier_tracking_ref}
+        #         res = res + [shipping_data]
+        #     else:
+        #         raise UserError(request['errors_message'])
+        #
+        # ##############
+        # # No package #
+        # ##############
+        # else:
+        #     raise UserError(_('Please provide packages count'))
+        # return res
 
         # // Below method is override for sales order fedex shipping Label PO
     #@api.multi
     def fedex_send_shipping(self, pickings):
         _logger.info('Override fedex_send_shipping method call')
-        res = []
-
-        for picking in pickings:
-
-            srm = FedexRequest(self.log_xml, request_type="shipping", prod_environment=self.prod_environment)
-            superself = self.sudo()
-            srm.web_authentication_detail(superself.fedex_developer_key, superself.fedex_developer_password)
-            srm.client_detail(superself.fedex_account_number, superself.fedex_meter_number)
-
-            srm.transaction_detail(picking.id)
-
-            package_type = picking.package_ids and picking.package_ids[
-                0].packaging_id.shipper_package_code or self.fedex_default_packaging_id.shipper_package_code
-            srm.shipment_request(self.fedex_droppoff_type, self.fedex_service_type, package_type,
-                                 self.fedex_weight_unit, self.fedex_saturday_delivery)
-            srm.set_currency(_convert_curr_iso_fdx(picking.company_id.currency_id.name))
-            srm.set_shipper(picking.company_id.partner_id, picking.picking_type_id.warehouse_id.partner_id)
-            srm.set_recipient(picking.partner_id)
-
-            srm.shipping_charges_payment(superself.fedex_account_number)
-
-            srm.shipment_label('COMMON2D', self.fedex_label_file_type, self.fedex_label_stock_type,
-                               'TOP_EDGE_OF_TEXT_FIRST', 'SHIPPING_LABEL_FIRST')
-
-            order = picking.sale_id
-            company = order.company_id or picking.company_id or self.env.user.company_id
-            order_currency = picking.sale_id.currency_id or picking.company_id.currency_id
-
-            net_weight = self._fedex_convert_weight(picking.shipping_weight, self.fedex_weight_unit)
-
-            # Commodities for customs declaration (international shipping)
-            if self.fedex_service_type in ['INTERNATIONAL_ECONOMY', 'INTERNATIONAL_PRIORITY'] or (
-                    picking.partner_id.country_id.code == 'IN' and picking.picking_type_id.warehouse_id.partner_id.country_id.code == 'IN'):
-
-                commodity_currency = order_currency
-                total_commodities_amount = 0.0
-                commodity_country_of_manufacture = picking.picking_type_id.warehouse_id.partner_id.country_id.code
-
-                for operation in picking.move_line_ids:
-                    commodity_amount = operation.move_id.sale_line_id.price_unit or operation.product_id.list_price
-                    total_commodities_amount += (commodity_amount * operation.qty_done)
-                    commodity_description = operation.product_id.name
-                    commodity_number_of_piece = '1'
-                    commodity_weight_units = self.fedex_weight_unit
-                    commodity_weight_value = self._fedex_convert_weight(
-                        operation.product_id.weight * operation.qty_done, self.fedex_weight_unit)
-                    commodity_quantity = operation.qty_done
-                    commodity_quantity_units = 'EA'
-                    # DO NOT FORWARD PORT AFTER 12.0
-                    if getattr(operation.product_id, 'hs_code', False):
-                        commodity_harmonized_code = operation.product_id.hs_code or ''
-                    else:
-                        commodity_harmonized_code = ''
-                    srm._commodities(_convert_curr_iso_fdx(commodity_currency.name), commodity_amount,
-                                     commodity_number_of_piece, commodity_weight_units, commodity_weight_value,
-                                     commodity_description, commodity_country_of_manufacture, commodity_quantity,
-                                     commodity_quantity_units, commodity_harmonized_code)
-                srm.customs_value(_convert_curr_iso_fdx(commodity_currency.name), total_commodities_amount,
-                                  "NON_DOCUMENTS")
-                srm.duties_payment(picking.picking_type_id.warehouse_id.partner_id.country_id.code,
-                                   superself.fedex_account_number)
-
-            package_count = len(picking.package_ids) or 1
-
-            # For india picking courier is not accepted without this details in label.
-            po_number = dept_number = False
-            if picking.partner_id.country_id.code == 'IN' and picking.picking_type_id.warehouse_id.partner_id.country_id.code == 'IN':
-                po_number = 'B2B' if picking.partner_id.commercial_partner_id.is_company else 'B2C'
-                dept_number = 'BILL D/T: SENDER'
-
-            # TODO RIM master: factorize the following crap
-
-            ################
-            # Multipackage #
-            ################
-            if package_count > 1:
-
-                # Note: Fedex has a complex multi-piece shipping interface
-                # - Each package has to be sent in a separate request
-                # - First package is called "master" package and holds shipping-
-                #   related information, including addresses, customs...
-                # - Last package responses contains shipping price and code
-                # - If a problem happens with a package, every previous package
-                #   of the shipping has to be cancelled separately
-                # (Why doing it in a simple way when the complex way exists??)
-
-                master_tracking_id = False
-                package_labels = []
-                carrier_tracking_ref = ""
-
-                for sequence, package in enumerate(picking.package_ids, start=1):
-
-                    package_weight = self._fedex_convert_weight(package.shipping_weight, self.fedex_weight_unit)
-                    packaging = package.packaging_id
-                    _add_customer_references_so(srm, order)
-                    srm._add_package(
-                        package_weight,
-                        package_code=packaging.shipper_package_code,
-                        package_height=packaging.height,
-                        package_width=packaging.width,
-                        package_length=packaging.length,
-                        sequence_number=sequence,
-                        po_number=po_number,
-                        dept_number=dept_number,
-                    )
-                    srm.set_master_package(net_weight, package_count, master_tracking_id=master_tracking_id)
-                    request = srm.process_shipment()
-                    package_name = package.name or sequence
-
-                    warnings = request.get('warnings_message')
-                    if warnings:
-                        _logger.info(warnings)
-
-                    # First package
-                    if sequence == 1:
-                        if not request.get('errors_message'):
-                            master_tracking_id = request['master_tracking_id']
-                            package_labels.append((package_name, srm.get_label()))
-                            carrier_tracking_ref = request['tracking_number']
-                        else:
-                            raise UserError(request['errors_message'])
-
-                    # Intermediary packages
-                    elif sequence > 1 and sequence < package_count:
-                        if not request.get('errors_message'):
-                            package_labels.append((package_name, srm.get_label()))
-                            carrier_tracking_ref = carrier_tracking_ref + "," + request['tracking_number']
-                        else:
-                            raise UserError(request['errors_message'])
-
-                    # Last package
-                    elif sequence == package_count:
-                        # recuperer le label pdf
-                        if not request.get('errors_message'):
-                            package_labels.append((package_name, srm.get_label()))
-
-                            if _convert_curr_iso_fdx(order_currency.name) in request['price']:
-                                carrier_price = request['price'][_convert_curr_iso_fdx(order_currency.name)]
-                            else:
-                                _logger.info("Preferred currency has not been found in FedEx response")
-                                company_currency = picking.company_id.currency_id
-                                if _convert_curr_iso_fdx(company_currency.name) in request['price']:
-                                    amount = request['price'][_convert_curr_iso_fdx(company_currency.name)]
-                                    carrier_price = company_currency._convert(
-                                        amount, order_currency, company, order.date_order or fields.Date.today())
-                                else:
-                                    amount = request['price']['USD']
-                                    carrier_price = company_currency._convert(
-                                        amount, order_currency, company, order.date_order or fields.Date.today())
-
-                            carrier_tracking_ref = carrier_tracking_ref + "," + request['tracking_number']
-
-                            logmessage = _("Shipment created into Fedex<br/>"
-                                           "<b>Tracking Numbers:</b> %s<br/>"
-                                           "<b>Packages:</b> %s") % (
-                                             carrier_tracking_ref, ','.join([pl[0] for pl in package_labels]))
-                            if self.fedex_label_file_type != 'PDF':
-                                attachments = [('LabelFedex-%s.%s' % (pl[0], self.fedex_label_file_type), pl[1]) for
-                                               pl in package_labels]
-                            if self.fedex_label_file_type == 'PDF':
-                                attachments = [('LabelFedex.pdf', pdf.merge_pdf([pl[1] for pl in package_labels]))]
-                            picking.message_post(body=logmessage, attachments=attachments)
-                            shipping_data = {'exact_price': carrier_price,
-                                             'tracking_number': carrier_tracking_ref}
-                            res = res + [shipping_data]
-                        else:
-                            raise UserError(request['errors_message'])
-
-            # TODO RIM handle if a package is not accepted (others should be deleted)
-
-            ###############
-            # One package #
-            ###############
-            elif package_count == 1:
-                srm.add_package(net_weight)
-                _add_customer_references_so(srm, order)
-
-                # packaging = picking.package_ids[:1].packaging_id or picking.carrier_id.fedex_default_packaging_id
-                # srm._add_package(
-                #     net_weight,
-                #     package_code=packaging.shipper_package_code,
-                #     package_height=packaging.height,
-                #     package_width=packaging.width,
-                #     package_length=packaging.length,
-                #     po_number=po_number,
-                #     dept_number=dept_number,
-                # )
-                srm.set_master_package(net_weight, 1)
-
-                # Ask the shipping to fedex
-                request = srm.process_shipment()
-
-                warnings = request.get('warnings_message')
-                if warnings:
-                    _logger.info(warnings)
-
-                if not request.get('errors_message'):
-
-                    if _convert_curr_iso_fdx(order_currency.name) in request['price']:
-                        carrier_price = request['price'][_convert_curr_iso_fdx(order_currency.name)]
-                    else:
-                        _logger.info("Preferred currency has not been found in FedEx response")
-                        company_currency = picking.company_id.currency_id
-                        if _convert_curr_iso_fdx(company_currency.name) in request['price']:
-                            amount = request['price'][_convert_curr_iso_fdx(company_currency.name)]
-                            carrier_price = company_currency._convert(
-                                amount, order_currency, company, order.date_order or fields.Date.today())
-                        else:
-                            amount = request['price']['USD']
-                            carrier_price = company_currency._convert(
-                                amount, order_currency, company, order.date_order or fields.Date.today())
-
-                    carrier_tracking_ref = request['tracking_number']
-                    logmessage = (_("Shipment created into Fedex <br/> <b>Tracking Number : </b>%s") % (
-                        carrier_tracking_ref))
-
-                    fedex_labels = [
-                        ('LabelFedex-%s-%s.%s' % (carrier_tracking_ref, index, self.fedex_label_file_type), label)
-                        for index, label in enumerate(srm._get_labels(self.fedex_label_file_type))]
-                    picking.message_post(body=logmessage, attachments=fedex_labels)
-
-                    shipping_data = {'exact_price': carrier_price,
-                                     'tracking_number': carrier_tracking_ref}
-                    res = res + [shipping_data]
-                else:
-                    raise UserError(request['errors_message'])
-
-            ##############
-            # No package #
-            ##############
-            else:
-                raise UserError(('No packages for this picking'))
-
-        return res
+        # res = []
+        #
+        # for picking in pickings:
+        #
+        #     srm = FedexRequest(self.log_xml, request_type="shipping", prod_environment=self.prod_environment)
+        #     superself = self.sudo()
+        #     srm.web_authentication_detail(superself.fedex_developer_key, superself.fedex_developer_password)
+        #     srm.client_detail(superself.fedex_account_number, superself.fedex_meter_number)
+        #
+        #     srm.transaction_detail(picking.id)
+        #
+        #     package_type = picking.package_ids and picking.package_ids[
+        #         0].packaging_id.shipper_package_code or self.fedex_default_packaging_id.shipper_package_code
+        #     srm.shipment_request(self.fedex_droppoff_type, self.fedex_service_type, package_type,
+        #                          self.fedex_weight_unit, self.fedex_saturday_delivery)
+        #     srm.set_currency(_convert_curr_iso_fdx(picking.company_id.currency_id.name))
+        #     srm.set_shipper(picking.company_id.partner_id, picking.picking_type_id.warehouse_id.partner_id)
+        #     srm.set_recipient(picking.partner_id)
+        #
+        #     srm.shipping_charges_payment(superself.fedex_account_number)
+        #
+        #     srm.shipment_label('COMMON2D', self.fedex_label_file_type, self.fedex_label_stock_type,
+        #                        'TOP_EDGE_OF_TEXT_FIRST', 'SHIPPING_LABEL_FIRST')
+        #
+        #     order = picking.sale_id
+        #     company = order.company_id or picking.company_id or self.env.user.company_id
+        #     order_currency = picking.sale_id.currency_id or picking.company_id.currency_id
+        #
+        #     net_weight = self._fedex_convert_weight(picking.shipping_weight, self.fedex_weight_unit)
+        #
+        #     # Commodities for customs declaration (international shipping)
+        #     if self.fedex_service_type in ['INTERNATIONAL_ECONOMY', 'INTERNATIONAL_PRIORITY'] or (
+        #             picking.partner_id.country_id.code == 'IN' and picking.picking_type_id.warehouse_id.partner_id.country_id.code == 'IN'):
+        #
+        #         commodity_currency = order_currency
+        #         total_commodities_amount = 0.0
+        #         commodity_country_of_manufacture = picking.picking_type_id.warehouse_id.partner_id.country_id.code
+        #
+        #         for operation in picking.move_line_ids:
+        #             commodity_amount = operation.move_id.sale_line_id.price_unit or operation.product_id.list_price
+        #             total_commodities_amount += (commodity_amount * operation.qty_done)
+        #             commodity_description = operation.product_id.name
+        #             commodity_number_of_piece = '1'
+        #             commodity_weight_units = self.fedex_weight_unit
+        #             commodity_weight_value = self._fedex_convert_weight(
+        #                 operation.product_id.weight * operation.qty_done, self.fedex_weight_unit)
+        #             commodity_quantity = operation.qty_done
+        #             commodity_quantity_units = 'EA'
+        #             # DO NOT FORWARD PORT AFTER 12.0
+        #             if getattr(operation.product_id, 'hs_code', False):
+        #                 commodity_harmonized_code = operation.product_id.hs_code or ''
+        #             else:
+        #                 commodity_harmonized_code = ''
+        #             srm._commodities(_convert_curr_iso_fdx(commodity_currency.name), commodity_amount,
+        #                              commodity_number_of_piece, commodity_weight_units, commodity_weight_value,
+        #                              commodity_description, commodity_country_of_manufacture, commodity_quantity,
+        #                              commodity_quantity_units, commodity_harmonized_code)
+        #         srm.customs_value(_convert_curr_iso_fdx(commodity_currency.name), total_commodities_amount,
+        #                           "NON_DOCUMENTS")
+        #         srm.duties_payment(picking.picking_type_id.warehouse_id.partner_id.country_id.code,
+        #                            superself.fedex_account_number)
+        #
+        #     package_count = len(picking.package_ids) or 1
+        #
+        #     # For india picking courier is not accepted without this details in label.
+        #     po_number = dept_number = False
+        #     if picking.partner_id.country_id.code == 'IN' and picking.picking_type_id.warehouse_id.partner_id.country_id.code == 'IN':
+        #         po_number = 'B2B' if picking.partner_id.commercial_partner_id.is_company else 'B2C'
+        #         dept_number = 'BILL D/T: SENDER'
+        #
+        #     # TODO RIM master: factorize the following crap
+        #
+        #     ################
+        #     # Multipackage #
+        #     ################
+        #     if package_count > 1:
+        #
+        #         # Note: Fedex has a complex multi-piece shipping interface
+        #         # - Each package has to be sent in a separate request
+        #         # - First package is called "master" package and holds shipping-
+        #         #   related information, including addresses, customs...
+        #         # - Last package responses contains shipping price and code
+        #         # - If a problem happens with a package, every previous package
+        #         #   of the shipping has to be cancelled separately
+        #         # (Why doing it in a simple way when the complex way exists??)
+        #
+        #         master_tracking_id = False
+        #         package_labels = []
+        #         carrier_tracking_ref = ""
+        #
+        #         for sequence, package in enumerate(picking.package_ids, start=1):
+        #
+        #             package_weight = self._fedex_convert_weight(package.shipping_weight, self.fedex_weight_unit)
+        #             packaging = package.packaging_id
+        #             _add_customer_references_so(srm, order)
+        #             srm._add_package(
+        #                 package_weight,
+        #                 package_code=packaging.shipper_package_code,
+        #                 package_height=packaging.height,
+        #                 package_width=packaging.width,
+        #                 package_length=packaging.length,
+        #                 sequence_number=sequence,
+        #                 po_number=po_number,
+        #                 dept_number=dept_number,
+        #             )
+        #             srm.set_master_package(net_weight, package_count, master_tracking_id=master_tracking_id)
+        #             request = srm.process_shipment()
+        #             package_name = package.name or sequence
+        #
+        #             warnings = request.get('warnings_message')
+        #             if warnings:
+        #                 _logger.info(warnings)
+        #
+        #             # First package
+        #             if sequence == 1:
+        #                 if not request.get('errors_message'):
+        #                     master_tracking_id = request['master_tracking_id']
+        #                     package_labels.append((package_name, srm.get_label()))
+        #                     carrier_tracking_ref = request['tracking_number']
+        #                 else:
+        #                     raise UserError(request['errors_message'])
+        #
+        #             # Intermediary packages
+        #             elif sequence > 1 and sequence < package_count:
+        #                 if not request.get('errors_message'):
+        #                     package_labels.append((package_name, srm.get_label()))
+        #                     carrier_tracking_ref = carrier_tracking_ref + "," + request['tracking_number']
+        #                 else:
+        #                     raise UserError(request['errors_message'])
+        #
+        #             # Last package
+        #             elif sequence == package_count:
+        #                 # recuperer le label pdf
+        #                 if not request.get('errors_message'):
+        #                     package_labels.append((package_name, srm.get_label()))
+        #
+        #                     if _convert_curr_iso_fdx(order_currency.name) in request['price']:
+        #                         carrier_price = request['price'][_convert_curr_iso_fdx(order_currency.name)]
+        #                     else:
+        #                         _logger.info("Preferred currency has not been found in FedEx response")
+        #                         company_currency = picking.company_id.currency_id
+        #                         if _convert_curr_iso_fdx(company_currency.name) in request['price']:
+        #                             amount = request['price'][_convert_curr_iso_fdx(company_currency.name)]
+        #                             carrier_price = company_currency._convert(
+        #                                 amount, order_currency, company, order.date_order or fields.Date.today())
+        #                         else:
+        #                             amount = request['price']['USD']
+        #                             carrier_price = company_currency._convert(
+        #                                 amount, order_currency, company, order.date_order or fields.Date.today())
+        #
+        #                     carrier_tracking_ref = carrier_tracking_ref + "," + request['tracking_number']
+        #
+        #                     logmessage = _("Shipment created into Fedex<br/>"
+        #                                    "<b>Tracking Numbers:</b> %s<br/>"
+        #                                    "<b>Packages:</b> %s") % (
+        #                                      carrier_tracking_ref, ','.join([pl[0] for pl in package_labels]))
+        #                     if self.fedex_label_file_type != 'PDF':
+        #                         attachments = [('LabelFedex-%s.%s' % (pl[0], self.fedex_label_file_type), pl[1]) for
+        #                                        pl in package_labels]
+        #                     if self.fedex_label_file_type == 'PDF':
+        #                         attachments = [('LabelFedex.pdf', pdf.merge_pdf([pl[1] for pl in package_labels]))]
+        #                     picking.message_post(body=logmessage, attachments=attachments)
+        #                     shipping_data = {'exact_price': carrier_price,
+        #                                      'tracking_number': carrier_tracking_ref}
+        #                     res = res + [shipping_data]
+        #                 else:
+        #                     raise UserError(request['errors_message'])
+        #
+        #     # TODO RIM handle if a package is not accepted (others should be deleted)
+        #
+        #     ###############
+        #     # One package #
+        #     ###############
+        #     elif package_count == 1:
+        #         srm.add_package(net_weight)
+        #         _add_customer_references_so(srm, order)
+        #
+        #         # packaging = picking.package_ids[:1].packaging_id or picking.carrier_id.fedex_default_packaging_id
+        #         # srm._add_package(
+        #         #     net_weight,
+        #         #     package_code=packaging.shipper_package_code,
+        #         #     package_height=packaging.height,
+        #         #     package_width=packaging.width,
+        #         #     package_length=packaging.length,
+        #         #     po_number=po_number,
+        #         #     dept_number=dept_number,
+        #         # )
+        #         srm.set_master_package(net_weight, 1)
+        #
+        #         # Ask the shipping to fedex
+        #         request = srm.process_shipment()
+        #
+        #         warnings = request.get('warnings_message')
+        #         if warnings:
+        #             _logger.info(warnings)
+        #
+        #         if not request.get('errors_message'):
+        #
+        #             if _convert_curr_iso_fdx(order_currency.name) in request['price']:
+        #                 carrier_price = request['price'][_convert_curr_iso_fdx(order_currency.name)]
+        #             else:
+        #                 _logger.info("Preferred currency has not been found in FedEx response")
+        #                 company_currency = picking.company_id.currency_id
+        #                 if _convert_curr_iso_fdx(company_currency.name) in request['price']:
+        #                     amount = request['price'][_convert_curr_iso_fdx(company_currency.name)]
+        #                     carrier_price = company_currency._convert(
+        #                         amount, order_currency, company, order.date_order or fields.Date.today())
+        #                 else:
+        #                     amount = request['price']['USD']
+        #                     carrier_price = company_currency._convert(
+        #                         amount, order_currency, company, order.date_order or fields.Date.today())
+        #
+        #             carrier_tracking_ref = request['tracking_number']
+        #             logmessage = (_("Shipment created into Fedex <br/> <b>Tracking Number : </b>%s") % (
+        #                 carrier_tracking_ref))
+        #
+        #             fedex_labels = [
+        #                 ('LabelFedex-%s-%s.%s' % (carrier_tracking_ref, index, self.fedex_label_file_type), label)
+        #                 for index, label in enumerate(srm._get_labels(self.fedex_label_file_type))]
+        #             picking.message_post(body=logmessage, attachments=fedex_labels)
+        #
+        #             shipping_data = {'exact_price': carrier_price,
+        #                              'tracking_number': carrier_tracking_ref}
+        #             res = res + [shipping_data]
+        #         else:
+        #             raise UserError(request['errors_message'])
+        #
+        #     ##############
+        #     # No package #
+        #     ##############
+        #     else:
+        #         raise UserError(('No packages for this picking'))
+        #
+        # return res
 
 
 
@@ -2468,7 +2472,12 @@ class MailComposer(models.TransientModel):
             #     signature = self.env.user.signature
             #     values['body_html'] = tools.append_content_to_html(values['body_html'], signature, plaintext=False)
         elif template_id:
-            values = self.generate_email_for_composer(template_id, [res_id])[res_id]
+            #values = self.generate_email_for_composer(template_id, [res_id])[res_id]
+            values = self.generate_email_for_composer(
+                template_id, [res_id],
+                ['subject', 'body_html', 'email_from', 'email_to', 'partner_to', 'email_cc', 'reply_to',
+                 'attachment_ids', 'mail_server_id']
+            )[res_id]
             # transform attachments into attachment_ids; not attached to the document because this will
             # be done further in the posting process, allowing to clean database if email not send
             attachment_ids = []
@@ -2477,24 +2486,24 @@ class MailComposer(models.TransientModel):
                 data_attach = {
                     'name': attach_fname,
                     'datas': attach_datas,
-                    'datas_fname': attach_fname,
+
                     'res_model': 'mail.compose.message',
                     'res_id': 0,
                     'type': 'binary',  # override default_type from context, possibly meant for another model!
                 }
                 attachment_ids.append(Attachment.create(data_attach).id)
-            ship_label = self.env['ir.attachment'].search(
-                [('res_id', '=', res_id), ('res_model_name', '=', 'Vendor Offer Automation')], order="id desc")
-            if values.get('attachment_ids', []) or attachment_ids:
-                values['attachment_ids'] = [(5,)] + values.get('attachment_ids', []) + attachment_ids + ([ship_label[0].id] if ship_label else [])
-        else:
-            default_values = self.with_context(default_composition_mode=composition_mode, default_model=model,
-                                               default_res_id=res_id).default_get(
-                ['composition_mode', 'model', 'res_id', 'parent_id', 'partner_ids', 'subject', 'body', 'email_from',
-                 'reply_to', 'attachment_ids', 'mail_server_id'])
-            values = dict((key, default_values[key]) for key in
-                          ['subject', 'body', 'partner_ids', 'email_from', 'reply_to', 'attachment_ids',
-                           'mail_server_id'] if key in default_values)
+        #     ship_label = self.env['ir.attachment'].search(
+        #         [('res_id', '=', res_id), ('res_model_name', '=', 'Vendor Offer Automation')], order="id desc")
+        #     if values.get('attachment_ids', []) or attachment_ids:
+        #         values['attachment_ids'] = [(5,)] + values.get('attachment_ids', []) + attachment_ids + ([ship_label[0].id] if ship_label else [])
+        # else:
+        #     default_values = self.with_context(default_composition_mode=composition_mode, default_model=model,
+        #                                        default_res_id=res_id).default_get(
+        #         ['composition_mode', 'model', 'res_id', 'parent_id', 'partner_ids', 'subject', 'body', 'email_from',
+        #          'reply_to', 'attachment_ids', 'mail_server_id'])
+        #     values = dict((key, default_values[key]) for key in
+        #                   ['subject', 'body', 'partner_ids', 'email_from', 'reply_to', 'attachment_ids',
+        #                    'mail_server_id'] if key in default_values)
 
         if values.get('body_html'):
             values['body'] = values.pop('body_html')
