@@ -18,7 +18,7 @@ from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMA
 
 import errno
 
-from werkzeug import FileStorage
+from werkzeug.datastructures import FileStorage
 
 from odoo.http import Controller, request, route
 
@@ -98,7 +98,8 @@ class FileUploadController(Controller):
     def _get_users_list(self, **post):
         # cr, context, pool, uid = request.cr, request.context, request.registry, request.uid
         input_data = post['input_data']
-        records = request.env['res.partner'].sudo().search([(input_data, '=', True), ('parent_id', '=', None)])
+        print('input_data', input_data)
+        records = request.env['res.partner'].sudo().search([(input_data, '>', 0), ('parent_id', '=', None)])
         response_data = [dict(name=record['name'], id=record['id']) for record in records]
         return str(json.dumps(response_data))
 

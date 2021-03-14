@@ -16,18 +16,18 @@
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="priority" eval="20"/>
             <field name="arch" type="xml">
-                <!--<button name="toggle_active" position="before">
+                <div name="button_box" position="inside">
                     <button class="oe_stat_button" name="action_view_notification" type="object" icon="fa-bell">
                         <span class="o_stat_text">In-Stock Notification</span>
                     </button>
                     <button class="oe_stat_button" name="action_import_template" type="object" icon="fa-upload"
-                            attrs="{'invisible':['|', '|', ('is_parent', '==', False),('prioritization', '==', False)]}">
+                            attrs="{'invisible':['|', ('is_parent', '==', False),('prioritization', '==', False)]}">
                         <span class="o_stat_text">Import Template</span>
                     </button>
-                    &lt;!&ndash;<button class="oe_stat_button" name="action_gl_account" type="object" icon="fa-child">
+                    <!--<button class="oe_stat_button" name="action_gl_account" type="object" icon="fa-child">
                         <span class="o_stat_text">GL Account</span>
-                    </button>&ndash;&gt;
-                </button>-->
+                    </button>-->
+                </div>
                 <field name="vat" position="after">
                     <field name="sku_preconfig" attrs="{'readonly':[('is_parent', '==', False)]}"
                            placeholder="****       e.g. A**2"/>
@@ -54,7 +54,7 @@
                 </field>
                 <xpath expr="/form/sheet/notebook/page[@name='sales_purchases']" position="after">
                     <page name="prioritization" string="Customer Priority Configuration"
-                          attrs="{'invisible':['|', '|', ('is_parent', '==', False),('prioritization', '==', False)]}">
+                          attrs="{'invisible':['|', ('is_parent', '==', False),('prioritization', '==', False)]}">
                         <field name="prioritization_ids" mode="tree,form" widget="one2many_selectable">
                             <form>
                                 <group>
@@ -108,7 +108,7 @@
                         </field>
                     </page>
                     <page name="prioritization" string="Global Priority Configuration"
-                          attrs="{'invisible':['|', '|', ('is_parent', '==', False),('prioritization', '==', False)]}">
+                          attrs="{'invisible':['|', ('is_parent', '==', False),('prioritization', '==', False)]}">
                         <group>
                             <group>
                                 <field name="auto_allocate"/>

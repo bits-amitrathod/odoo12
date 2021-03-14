@@ -23,7 +23,7 @@ class SaleOrder(models.Model):
         ('done', 'Locked'),
         ('cancel', 'Cancelled'),
         ('void', 'Voided'),
-    ], string='Status', readonly=True, copy=False, index=True, track_visibility='onchange', default='draft')
+    ], string='Status', readonly=True, copy=False, index=True, tracking=True, default='draft')
     shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
     preferred_method = fields.Selection(string='Preferred Invoice Delivery Method',
                                         related='partner_id.preferred_method', readonly=True)
@@ -34,7 +34,7 @@ class SaleOrder(models.Model):
         ('legacy', 'Legacy')], string='Sales Level', related='partner_id.sale_margine', readonly=True, store=True)
     carrier_acc_no = fields.Char("Carrier Account No", related='partner_id.carrier_acc_no', readonly=True)
 
-    order_processor = fields.Many2one('res.users', string='Order Processor', index=True, track_visibility='onchange',
+    order_processor = fields.Many2one('res.users', string='Order Processor', index=True, tracking=True,
                               default=lambda self: self.env.user)
 
     gl_account = fields.Char("GL Account", store=False, compute='_get_gl_account', readonly=True)
