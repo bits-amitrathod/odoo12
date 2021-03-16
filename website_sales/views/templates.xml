@@ -193,6 +193,18 @@
         </li>
     </template>
 
+    <template id="checkout_cstm" name="Invoice Address updated" inherit_id="website_sale.checkout">
+        <xpath expr="//div[@id='wrap']/div[@class='container oe_website_sale py-2']/
+            div[@class='row']/div[@class='col-12 col-xl order-xl-1 oe_cart']/
+            div[@class='row']/div[@class='col-lg-6 one_kanban']" position="replace">
+            <t t-call="website_sale.address_kanban">
+                <t t-set='contact' t-value="order.partner_invoice_id"/>
+                <t t-set='selected' t-value="1"/>
+                <t t-set='readonly' t-value="1"/>
+            </t>
+        </xpath>
+    </template>
+
 
     <!--
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Email Notification Template ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
