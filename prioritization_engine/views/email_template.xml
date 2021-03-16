@@ -1,6 +1,6 @@
 <odoo>
     <data>
-       <!-- <record id="on_hold_doc_response" model="mail.template">
+       <record id="on_hold_doc_response" model="mail.template">
             <field name="name">On Hold Document Response</field>
             <field name="model_id" ref="base.model_res_users"/>
             <field name="email_from"><![CDATA["${object.company_id.name|safe}" <${(object.company_id.email or user.email)|safe}>]]></field>
@@ -42,10 +42,10 @@
                 </p>
 
             ]]></field>
-            <field name="user_signature" eval="False"/>
-        </record>-->
+            <!--<field name="user_signature" eval="False"/>-->
+        </record>
 
-        <!--<record id="stockhawk_sales_order_confirm_email_response" model="mail.template">
+        <record id="stockhawk_sales_order_confirm_email_response" model="mail.template">
             <field name="name">final email response on uploaded documents</field>
             <field name="model_id" ref="base.model_res_users"/>
             <field name="email_from"><![CDATA["${object.company_id.name|safe}" <${(object.company_id.email or user.email)|safe}>]]></field>
@@ -83,8 +83,8 @@
                     Odoo
                 </P>
             ]]></field>
-            <field name="user_signature" eval="False"/>
-        </record>-->
+            <!--<field name="user_signature" eval="False"/>-->
+        </record>
     </data>
 </odoo>
 

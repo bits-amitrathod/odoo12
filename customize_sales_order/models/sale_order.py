@@ -40,14 +40,16 @@ class CustomerContract(models.Model):
 
     @api.depends('category_id')
     def _display_reinstated_date_flag(self):
-        for record in self:
-            for category_id in record.category_id:
-                if category_id.id == 31:
-                    self.display_reinstated_date_flag = 1
+        # uncomment it when upload original db
+        # for record in self:
+        #     for category_id in record.category_id:
+        #         if category_id.id == 31:
+        #             self.display_reinstated_date_flag = 1
+        self.display_reinstated_date_flag = 1
 
     @api.onchange('parent_id')
     def onchange_parent_id(self):
-        self.customer = True
+        self.customer_rank = 1
         account_payment_term = self.env['account.payment.term'].search([('name', '=', 'Net 30'), ('active', '=', True)])
         if account_payment_term:
             self.property_payment_term_id = account_payment_term.id

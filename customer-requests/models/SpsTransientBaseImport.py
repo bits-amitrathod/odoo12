@@ -70,8 +70,8 @@ class SpsTransientBaseImport(models.TransientModel):
 
         rows_to_import = self._read_file(options)
         if options.get('headers'):
-            rows_to_import = itertools.islice(rows_to_import, 0, None)
-        data = [list(row) for row in pycompat.imap(mapper, rows_to_import) if any(row)]
+            rows_to_import = itertools.islice(rows_to_import, 1, None)
+        data = [list(row) for row in map(mapper, rows_to_import) if any(row)]
         cols = data[0:1]
 
         cell_values = data[1:]
@@ -136,7 +136,7 @@ class SpsTransientBaseImport(models.TransientModel):
             return {
                 'messages': [{
                     'type': 'error',
-                    'message': pycompat.text_type(error),
+                    'message': str(error),
                     'record': False,
                 }]
             }
