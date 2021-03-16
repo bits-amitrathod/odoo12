@@ -26,7 +26,7 @@ class DocumentProcessTransientModel(models.TransientModel):
     def process_document(self, user_model, uploaded_file_path, template_type_from_user, file_name, email_from, document_source='Api', ):
         if not user_model.prioritization:
             return dict(errorCode=6, message='Prioritization is Not Enabled')
-        if not user_model.customer:
+        if user_model.customer_rank == 0:
             return dict(errorCode=7, message='Not a Customer')
         _logger.info('user_model.parent_id %r', user_model.parent_id.id)
         gl_account_id = None
@@ -268,7 +268,7 @@ class DocumentProcessTransientModel(models.TransientModel):
     def _read_xls_book(book, read_data=False):
         sheet = book.sheet_by_index(0)
         data = []
-        for row in pycompat.imap(sheet.row, range(sheet.nrows)):
+        for row in map(sheet.row, range(sheet.nrows)):
             values = []
             for cell in row:
                 if cell.ctype is xlrd.XL_CELL_NUMBER:
