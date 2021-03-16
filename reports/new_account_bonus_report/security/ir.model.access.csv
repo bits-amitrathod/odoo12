@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_new_account_bonus_report_usr,new_account_bonus_report user,model_new_account_bonus_report,sales_team.group_sale_salesman_all_leads,1,1,0,0
+access_new_account_bonus_report_mgr,new_account_bonus_report manager,model_new_account_bonus_report,sales_team.group_sale_manager,1,1,1,1
