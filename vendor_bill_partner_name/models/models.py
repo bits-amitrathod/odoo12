@@ -156,41 +156,41 @@ class VendorBillPartnerName(models.Model):
 #
 #         return record
 
-class account_register_payments(models.TransientModel):
-    _inherit = 'account.register.payments'
-
-    #@api.multi
-    def _prepare_payment_vals(self, invoices):
-        '''Create the payment values.
-
-        :param invoices: The invoices that should have the same commercial partner and the same type.
-        :return: The payment values as a dictionary.
-        '''
-        amount = self._compute_payment_amount(invoices=invoices) if self.multi else self.amount
-        payment_type = ('inbound' if amount > 0 else 'outbound') if self.multi else self.payment_type
-        bank_account = self.multi and invoices[0].partner_bank_id or self.partner_bank_account_id
-        pmt_communication = self.show_communication_field and self.communication \
-                            or self.group_invoices and ' '.join([inv.reference or inv.number for inv in invoices]) \
-                            or invoices[0].reference # in this case, invoices contains only one element, since group_invoices is False
-        values = {
-            'journal_id': self.journal_id.id,
-            'payment_method_id': self.payment_method_id.id,
-            'payment_date': self.payment_date,
-            'communication': pmt_communication,
-            'invoice_ids': [(6, 0, invoices.ids)],
-            'payment_type': payment_type,
-            'amount': abs(amount),
-            'currency_id': self.currency_id.id,
-            'partner_id': invoices[0].partner_id.id,
-            'partner_type': MAP_INVOICE_TYPE_PARTNER_TYPE[invoices[0].type],
-            'partner_bank_account_id': bank_account.id,
-            'multi': False,
-            'payment_difference_handling': self.payment_difference_handling,
-            'writeoff_account_id': self.writeoff_account_id.id,
-            'writeoff_label': self.writeoff_label,
-        }
-
-        return values
+# class account_register_payments(models.TransientModel):
+#     _inherit = 'account.register.payments'
+#
+#     #@api.multi
+#     def _prepare_payment_vals(self, invoices):
+#         '''Create the payment values.
+#
+#         :param invoices: The invoices that should have the same commercial partner and the same type.
+#         :return: The payment values as a dictionary.
+#         '''
+#         amount = self._compute_payment_amount(invoices=invoices) if self.multi else self.amount
+#         payment_type = ('inbound' if amount > 0 else 'outbound') if self.multi else self.payment_type
+#         bank_account = self.multi and invoices[0].partner_bank_id or self.partner_bank_account_id
+#         pmt_communication = self.show_communication_field and self.communication \
+#                             or self.group_invoices and ' '.join([inv.reference or inv.number for inv in invoices]) \
+#                             or invoices[0].reference # in this case, invoices contains only one element, since group_invoices is False
+#         values = {
+#             'journal_id': self.journal_id.id,
+#             'payment_method_id': self.payment_method_id.id,
+#             'payment_date': self.payment_date,
+#             'communication': pmt_communication,
+#             'invoice_ids': [(6, 0, invoices.ids)],
+#             'payment_type': payment_type,
+#             'amount': abs(amount),
+#             'currency_id': self.currency_id.id,
+#             'partner_id': invoices[0].partner_id.id,
+#             'partner_type': MAP_INVOICE_TYPE_PARTNER_TYPE[invoices[0].type],
+#             'partner_bank_account_id': bank_account.id,
+#             'multi': False,
+#             'payment_difference_handling': self.payment_difference_handling,
+#             'writeoff_account_id': self.writeoff_account_id.id,
+#             'writeoff_label': self.writeoff_label,
+#         }
+#
+#         return values
 
 class hide_state_code(models.Model):
     _inherit = 'res.country.state'
