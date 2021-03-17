@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report
+                id="action_report_new_account_bonus_report"
+                string="New Account Bonus Report"
+                model="new.account.bonus.report"
+                report_type="qweb-html"
+                file="new_account_bonus_report.new_account_bonus_report_test"
+                name="new_account_bonus_report.new_account_bonus_report_test"
+        />
+    </data>
+</odoo>
