@@ -9,7 +9,7 @@
     'version': '1.0',
 
     # any module necessary for this one to work correctly
-    'depends': ['product_brand','website_sale'],
+    'depends': ['product_brand','website_sale','product_expiry_extension'],
 
     'data': [
         # 'security/ir.model.access.csv',

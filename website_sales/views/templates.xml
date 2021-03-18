@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!--
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Product Expiration Lot~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    -->
-
-    <template id="products_item" name="Products item" inherit_id="website_sale.products_item">
-        <xpath expr="//div[@class='product_price']" position="before">
-<!--            <t t-call="website_sales.productExpirationDate"/>-->
-        </xpath>
-    </template>
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Product Expiration Lot~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
     <template id="productExpirationDate" name="Product Expiration Date">
         <t t-if="isVisibleWebsiteExpirationDate and product.actual_quantity &gt; 0">
@@ -43,16 +35,6 @@
             </div>
         </t>
     </template>
-
-    <!--<template id="sort" inherit_id="website_sale.sort" active="True" customize_show="True" name="Show Sort by">
-        <xpath expr="//div[hasclass('dropdown_sorty_by')]" position="after">
-            <button type="button" class="categoriesCollapseBtn btn btn-default" data-toggle="collapse"
-                    data-target="#categories-collapse">
-                <span>Categories</span>
-                <span class="caret"/>
-            </button>
-        </xpath>
-    </template>-->
 
     <template id="products_categories" name="eCommerce Categories" inherit_id="website_sale.products_categories" active="False" customize_show="True">
         <xpath expr="//div[@id='products_grid_before']/ul" position="replace">
@@ -136,10 +118,7 @@
         </field>
     </record>
 
-
-    <!--
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Customer Reference As sales Order ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    -->
+    <!--  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Customer Reference As sales Order ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
     <template id="category_vender" name="category Vender">
         <div class="row category-wrapper">
@@ -193,10 +172,7 @@
         </li>
     </template>
 
-
-    <!--
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Email Notification Template ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Email Notification Template ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
     <record id="website_order_placed" model="mail.template">
         <field name="name">Email Notification: Product Purchase Details</field>
