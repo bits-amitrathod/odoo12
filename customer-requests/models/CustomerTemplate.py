@@ -55,7 +55,7 @@ class CustomerTemplate(models.Model):
         sheet = book.sheet_by_index(0)
         values = []
         _logger.info('sheet.nrows %r', str(sheet.nrows))
-        for row in pycompat.imap(sheet.row, range(sheet.nrows)):
+        for row in map(sheet.row, range(sheet.nrows)):
             _logger.info("Row........... %r", row)
             for cell in row:
                 if cell.ctype is xlrd.XL_CELL_NUMBER:
