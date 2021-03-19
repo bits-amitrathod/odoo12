@@ -15,6 +15,7 @@ class NewAccountBonusReport(models.Model):
 
     customer = fields.Many2one('res.partner', 'Customer Name')
     business_development = fields.Many2one('res.users', 'Business Development')
+    key_account = fields.Many2one('res.users', 'Key Account')
     sale_order_id = fields.Many2one('sale.order', 'Sale Order#')
     date_invoice = fields.Date('Invoice Date')
     invoice_status = fields.Char('Status')
@@ -25,7 +26,7 @@ class NewAccountBonusReport(models.Model):
 
     @api.model
     def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=False):
-        fields = ['customer', 'business_development', 'sale_order_id', 'date_invoice', 'invoice_status', 'amount_total',
+        fields = ['customer', 'business_development', 'key_account', 'sale_order_id', 'date_invoice', 'invoice_status', 'amount_total',
                   'months', 'currency_id', 'date_of_first_order']
         
         if orderby == '' or orderby is False:
@@ -46,6 +47,7 @@ class NewAccountBonusReport(models.Model):
         start_date = self.env.context.get('start_date')
         end_date = self.env.context.get('end_date')
         business_development_id = self.env.context.get('business_development')
+        key_account_id = self.env.context.get('key_account')
 
         if start_date and end_date:
             select_query = """
@@ -53,6 +55,7 @@ class NewAccountBonusReport(models.Model):
                         so.id                               AS sale_order_id, 
                         so.partner_id                       AS customer, 
                         so.user_id                          AS business_development,
+                        so.account_manager                  AS key_account,
                         ai.date_invoice                     AS date_invoice, 
                         CASE WHEN so.invoice_status = 'invoiced' then 'Fully Invoiced' END AS invoice_status, 
                         ai.amount_total                     AS amount_total, 
@@ -76,7 +79,10 @@ class NewAccountBonusReport(models.Model):
                    """
 
             if business_development_id:
-                select_query = select_query + "AND so.user_id = '" + str(business_development_id) + "'"
+                select_query = select_query + " AND so.user_id = '" + str(business_development_id) + "'"
+
+            if key_account_id:
+                select_query = select_query + " AND so.account_manager = '" + str(key_account_id) + "'"
 
             order_by = " ORDER BY ai.date_invoice asc"
 
@@ -103,26 +109,31 @@ class NewAccountBonusReportExport(models.TransientModel):
 
     business_development = fields.Many2one('res.users', string="Business Development", index=True)
 
+    key_account = fields.Many2one('res.users', string="Key Account", domain="[('active', '=', True)]")
+
     def download_excel_bd_new_account(self):
 
         start_date = self.string_to_date(str(self.start_date))
         end_date = start_date - datetime.timedelta(days=365)
         # start_date = start_date + datetime.timedelta(days=1)
 
+        url = '/web/export/new_account_bonus_report_export/' + str(start_date) + '/' + str(end_date) + '/'
+
         if self.business_development and self.business_development is not None:
-            return {
-                'type': 'ir.actions.act_url',
-                'url': '/web/export/new_account_bonus_report_export/' + str(start_date) + '/' + str(end_date) + '/' +
-                       str(self.business_development.id),
-                'target': 'new'
-            }
+            url = url + str(self.business_development.id) + '/'
         else:
-            return {
-                'type': 'ir.actions.act_url',
-                'url': '/web/export/new_account_bonus_report_export/' + str(start_date) + '/' + str(end_date) + '/' + str(
-                    'none'),
-                'target': 'new'
-            }
+            url = url + str('none') + '/'
+
+        if self.key_account and self.key_account is not None:
+            url = url + str(self.key_account.id)
+        else:
+            url = url + str('none')
+
+        return {
+            'type': 'ir.actions.act_url',
+            'url': url,
+            'target': 'new'
+        }
 
     @staticmethod
     def string_to_date(date_string):
