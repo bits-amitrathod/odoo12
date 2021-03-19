@@ -10,12 +10,6 @@ from odoo.addons.website_sale.controllers.main import TableCompute, QueryURL
 PPG = 20
 PPR = 4
 
-
-#
-# '/shop', '/shop/page/<int:page>',
-#                  '/shop/category/<model("product.public.category"):category>',
-#                  '/shop/category/<model("product.public.category"):category>\
-#
 class WebsiteSale(odoo.addons.website_sale.controllers.main.WebsiteSale):
     @http.route(['/page/<int:page>', '/shop/brands'], type='http',
                 auth='public', website=True)
@@ -82,8 +76,8 @@ class WebsiteSale(odoo.addons.website_sale.controllers.main.WebsiteSale):
         products = product_obj. \
             search(domain, limit=PPG, offset=pager['offset'],
                    order='website_published desc, website_sequence desc')
-        style_obj = request.env['product.style']
-        styles = style_obj.search([])
+        # style_obj = request.env['product.style']
+        # styles = style_obj.search([])
         category_obj = request.env['product.public.category']
         categories = category_obj.search([])
         categs = filter(lambda x: not x.parent_id, categories)
@@ -106,7 +100,7 @@ class WebsiteSale(odoo.addons.website_sale.controllers.main.WebsiteSale):
                        'products': products,
                        'bins': TableCompute().process(products),
                        'rows': PPR,
-                       'styles': styles,
+                       # 'styles': styles,
                        'categories': categs,
                        'attributes': attributes,
                        'compute_currency': compute_currency,
@@ -123,8 +117,7 @@ class WebsiteSale(odoo.addons.website_sale.controllers.main.WebsiteSale):
         productProduct = request.env['product.product'].search([('product_tmpl_id', 'in', products.ids)])
         for val in productProduct:
             val.env.cr.execute(
-                "SELECT min(use_date), max (use_date) FROM public.stock_production_lot where product_id = %s",
-                (val.id,))
+                "SELECT min(use_date), max (use_date) FROM public.stock_production_lot where product_id = %s",(val.id,))
             query_result = val.env.cr.dictfetchone()
             productMaxMinDates[val.id] = {"min": fields.Datetime.from_string(query_result['min']),
                                                           "max": fields.Datetime.from_string(query_result['max'])}
