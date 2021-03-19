@@ -1,14 +1,14 @@
 <odoo >
 
-        <record  model="payment.acquirer" id="payment_acquirer_purchaseorder" >
+        <!--<record  model="payment.acquirer" id="payment_acquirer_purchaseorder" >
            <field name="name">Purchase Order</field>
-            <field name="provider">purchaseorder</field>
-            <!--<field name="company_id" ref="base.main_company"/>
-            <field name="view_template_id" ref="purchaseorder_form"/>-->
-            <!--<field name="pre_msg"><![CDATA[
+            <field name="provider">0</field>
+            &lt;!&ndash;<field name="company_id" ref="base.main_company"/>
+            <field name="view_template_id" ref="purchaseorder_form"/>&ndash;&gt;
+            &lt;!&ndash;<field name="pre_msg"><![CDATA[
                 <p>You will be redirected to the PayUmoney website after clicking on the payment button.</p>]]>
-            </field>-->
+            </field>&ndash;&gt;
             <field name="journal_id">17</field>
-        </record>
+        </record>-->
 
 </odoo>

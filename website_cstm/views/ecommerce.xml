@@ -417,8 +417,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                     </div>
                     <div class="row">
                         <div class="col-md-6">
-                            <t t-set="variant_img" t-value="product_variant and product_variant.image_variant"/>
-                            <t t-set="image_ids"  t-value="product.product_image_ids"/>
+<!--                            <t t-set="variant_img" t-value="product_variant and product_variant.image_variant"/>-->
+<!--                            <t t-set="image_ids"  t-value="product.product_image_ids"/>-->
                             <div id="o-carousel-product" class="carousel slide" data-ride="carousel" data-interval="0">
                                 <div class="carousel-outer">
                                     <div class="carousel-inner">

@@ -25,42 +25,43 @@
             </xpath>
         </template>
 
-        <record id="invoice_supplier_form_credit_note_label_update" model="ir.ui.view">
+        <!-- Migration remaining  need to check again view not match -->
+        <!--<record id="invoice_supplier_form_credit_note_label_update" model="ir.ui.view">
             <field name="name">account.move.form</field>
             <field name="model">account.move</field>
             <field name="inherit_id" ref="account.view_move_form"></field>
             <field name="arch" type="xml">
                 <xpath expr="//form/sheet/div" position="replace">
                   <div>
-<!--                        <label for="draft_vendor_bill" string="Draft Vendor Bill" attrs="{'invisible': ['|',('state','!=','draft'), ('type','!=','in_invoice')]}"/>-->
+                        <label for="draft_vendor_bill" string="Draft Vendor Bill" attrs="{'invisible': ['|',('state','!=','draft'), ('type','!=','in_invoice')]}"/>
                         <label for="first_number" string="- First Number:" attrs="{'invisible': [('sequence_number_next_prefix','=',False)]}"/>
                         <label for="draft_vendor_credit_note" string="Draft Vendor Credit Note" attrs="{'invisible': ['|',('state','!=','draft'), ('type','!=','in_refund')]}"/>
                         <label for="vendor_bill_payment" string="Vendor Bill Payment" attrs="{'invisible': ['|',('state', '=', 'draft'), ('type','!=','in_invoice')]}"/>
                         <label for="vendor_credit_note" string="Vendor Credit Note" attrs="{'invisible': ['|',('state', '=', 'draft'), ('type','!=','in_refund')]}"/>
-                        <!--<h1 class="mt0">
+                        <h1 class="mt0">
                             <field name="number" class="oe_inline"  attrs="{'invisible': [('state', '=', 'draft')]}"/>
                             <div  attrs="{'invisible': [('sequence_number_next_prefix','=',False)]}">
                                 <field name="sequence_number_next_prefix" class="oe_inline"/>
                                 <field name="sequence_number_next" class="oe_inline"/>
                             </div>
-                        </h1>-->
+                        </h1>
                     </div>
                 </xpath>
             </field>
-        </record>
+        </record>-->
 
-        <!--<record id="invoice_form_credit_note_label_update" model="ir.ui.view">
+        <record id="invoice_form_credit_note_label_update" model="ir.ui.view">
             <field name="name">account.invoice.form</field>
             <field name="model">account.move</field>
             <field name="inherit_id" ref="account.view_move_form"></field>
             <field name="arch" type="xml">
-                <xpath expr="//form/sheet/span[1]" position="replace">
-                    <span class="o_form_label" attrs="{'invisible': ['|',('state','=','draft'), ('type','!=','out_refund')]}">Customer Credit Note</span>
-                     <span class="o_form_label" attrs="{'invisible': ['|',('state','=','draft'), ('type','!=','out_invoice')]}">Customer Invoice</span>
-                    &lt;!&ndash;<label string="Customer Credit Note" attrs="{'invisible': ['|',('state','=','draft'), ('type','!=','out_refund')]}"/>&ndash;&gt;
-                    &lt;!&ndash;<label string="Customer Invoice" attrs="{'invisible': ['|',('state','=','draft'), ('type','!=','out_invoice')]}"/>&ndash;&gt;
+                <xpath expr="//form/sheet/div[hasclass('oe_title')]/h1[1]/span" position="replace">
+                    <span class="o_form_label" attrs="{'invisible': ['|',('state','=','draft'), ('move_type','!=','out_refund')]}">Customer Credit Note</span>
+                    <span class="o_form_label" attrs="{'invisible': ['|',('state','=','draft'), ('move_type','!=','out_invoice')]}">Customer Invoice</span>
+                    <!--<label string="Customer Credit Note" attrs="{'invisible': ['|',('state','=','draft'), ('type','!=','out_refund')]}"/>-->
+                    <!--<label string="Customer Invoice" attrs="{'invisible': ['|',('state','=','draft'), ('type','!=','out_invoice')]}"/>-->
                 </xpath>
-                <xpath expr="//form/sheet/h1[@class='mt0']/div[1]" position="replace">
+                <!--<xpath expr="//form/sheet/h1[@class='mt0']/div[1]" position="replace">
                     <div attrs="{'invisible': [('sequence_number_next_prefix','!=',False)]}">
                             <label for="number" string="Draft Customer Invoice" attrs="{'invisible': ['|',('state','not in',('draft',)), ('type','!=','out_invoice')]}"/>
                             <label for="number" string="Draft Customer Credit Note" attrs="{'invisible': ['|',('state','not in',('draft',)), ('type','!=','out_refund')]}"/>
@@ -71,9 +72,10 @@
                         &lt;!&ndash;<label string="Draft Customer Credit Note" attrs="{'invisible': ['|',('state','not in',('draft',)), ('type','!=','out_refund')]}"/>&ndash;&gt;
                         &lt;!&ndash;<field name="number" readonly="1" class="oe_inline" attrs="{'invisible': [('state','in',('draft',))]}"/>&ndash;&gt;
                     &lt;!&ndash;</div>&ndash;&gt;
-                </xpath>
+                </xpath>-->
             </field>
-        </record>-->
+        </record>
+
         <record id="invoice_tree_inherited" model="ir.ui.view">
             <field name="name">account.invoice.tree</field>
             <field name="model">account.move</field>
@@ -84,47 +86,48 @@
                 </xpath>
             </field>
         </record>
-       <!-- <record id="view_account_invoice_report_search_inherit" model="ir.ui.view">
+
+        <record id="view_account_invoice_report_search_inherit" model="ir.ui.view">
         <field name="name">account.invoice.report.search</field>
         <field name="model">account.invoice.report</field>
         <field name="inherit_id" ref="account.view_account_invoice_report_search"></field>
         <field name="arch" type="xml">
             <search string="Invoices Analysis">
-&lt;!&ndash;                <filter string="My Invoices" name="my_invoice" domain="[('user_id', '=', uid)]"/>&ndash;&gt;
+                <filter string="My Invoices" name="my_invoice" domain="[('invoice_user_id', '=', uid)]"/>
                 <separator/>
-                <field name="date"/>
-                <filter string="This Year" name="thisyear" domain="['|', ('date', '=', False), '&amp;',('date','&lt;=', time.strftime('%%Y-12-31')),('date','&gt;=',time.strftime('%%Y-01-01')                  )]" help="Journal invoices with period in current year"/>
+                <field name="invoice_date"/>
+                <filter string="This Year" name="thisyear" domain="['|', ('invoice_date', '=', False), '&amp;',('invoice_date','&lt;=', time.strftime('%%Y-12-31')),('invoice_date','&gt;=',time.strftime('%%Y-01-01')                  )]" help="Journal invoices with period in current year"/>
                 <separator/>
                 <filter name="to_invoice" string="To Invoice" domain="[('state','=','draft')]" help = "Draft Invoices"/>
                 <filter string="Invoiced" name="current" domain="[('state','not in', ('draft','cancel'))]"/>
                 <separator/>
-                <filter string="This Month" name="this_month" domain="[('date', '&gt;=', context_today().strftime('%%Y-%%m-01'))]"/>
-                <filter string="Last Month" name="last_month" domain="['&amp;', ('date', '&gt;=', (context_today() - relativedelta(months=1)).strftime('%%Y-%%m-01')), ('date', '&lt;',                                 context_today().strftime('%%Y-%%m-01'))]"/>
+                <filter string="This Month" name="this_month" domain="[('invoice_date', '&gt;=', context_today().strftime('%%Y-%%m-01'))]"/>
+                <filter string="Last Month" name="last_month" domain="['&amp;', ('invoice_date', '&gt;=', (context_today() - relativedelta(months=1)).strftime('%%Y-%%m-01')), ('invoice_date', '&lt;',                                 context_today().strftime('%%Y-%%m-01'))]"/>
                 <separator/>
-                <filter string="Customer" name="customer" domain="['|', ('type','=','out_invoice'),('type','=','out_refund')]"/>
-                <filter string="Vendor" name="supplier" domain="['|', ('type','=','in_invoice'),('type','=','in_refund')]"/>
+                <filter string="Customer" name="customer" domain="['|', ('move_type','=','out_invoice'),('move_type','=','out_refund')]"/>
+                <filter string="Vendor" name="supplier" domain="['|', ('move_type','=','in_invoice'),('move_type','=','in_refund')]"/>
                 <separator/>
-                <filter name="invoice" string="Invoice" domain="['|', ('type','=','out_invoice'),('type','=','in_invoice')]"/>
-                <filter name="customer_credit_note" string="Customer Credit Note" domain="['|', ('type','=','out_refund'),('type','=','in_refund')]"/>
+                <filter name="invoice" string="Invoice" domain="['|', ('move_type','=','out_invoice'),('move_type','=','in_invoice')]"/>
+                <filter name="customer_credit_note" string="Customer Credit Note" domain="['|', ('move_type','=','out_refund'),('move_type','=','in_refund')]"/>
                 <field name="partner_id" operator="child_of"/>
-                <field name="user_id" />
-                <field name="categ_id" filter_domain="[('categ_id', 'child_of', self)]"/>
-                <field name="account_analytic_id"/>
+                <field name="invoice_user_id" />
+                <field name="product_categ_id" filter_domain="[('product_categ_id', 'child_of', self)]"/>
+                <field name="analytic_account_id"/>
                 <group expand="1" string="Group By">
                     <filter string="Partner" name="partner_id" context="{'group_by':'partner_id','residual_visible':True}"/>
-                    <filter string="Business Development" name='user' context="{'group_by':'user_id'}"/>
-                    <filter string="Product Category" name="category_product" context="{'group_by':'categ_id','residual_invisible':True}"/>
+                    <filter string="Business Development" name='user' context="{'group_by':'invoice_user_id'}"/>
+                    <filter string="Product Category" name="category_product" context="{'group_by':'product_categ_id','residual_invisible':True}"/>
                     <filter name="status" string="Status" context="{'group_by':'state'}"/>
                     <filter name="company" string="Company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>
                     <separator orientation="vertical" />
-                    <filter name="date" string="Date" context="{'group_by':'date'}"/>
-                    <filter name="due_month" string="Due Month" context="{'group_by':'date_due:month'}"/>
-                    <filter string="Analytic Account" name="account_analytic_id" context="{'group_by':'account_analytic_id'}" groups="analytic.group_analytic_accounting" />
+                    <filter name="invoice_date" string="Date" context="{'group_by':'invoice_date'}"/>
+                    <filter name="invoice_date_due" string="Due Month" context="{'group_by':'invoice_date_due:month'}"/>
+                    <filter string="Analytic Account" name="analytic_account_id" context="{'group_by':'analytic_account_id'}" groups="analytic.group_analytic_accounting" />
                 </group>
             </search>
         </field>
     </record>
--->
+
     <template id="report_invoice_document_inherited" inherit_id="account.report_invoice_document">
         <xpath expr="//div[@class='page']/h2" position="replace">
             <h2>

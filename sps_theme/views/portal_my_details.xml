@@ -1,6 +1,6 @@
 <odoo>
     <template id="your_details_page_template" inherit_id="portal.portal_my_details" name="Your Details">
-        <xpath expr="//h3" position="replace">
+        <xpath expr="//t[@t-set='additional_title']" position="replace">
             <div class="text-center pt32">
                 <h1  class="about-header"> Your Details </h1>
             </div>

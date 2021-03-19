@@ -128,6 +128,7 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         return request.render("website_sale.products", payload)
 
     @http.route(['/shop/product/<model("product.template"):product>'], type='http', auth="public", website=True)
+    @http.route(['/shop/<model("product.template"):product>'], type='http', auth="public", website=True, sitemap=True)
     def product(self, product, category='', search='', **kwargs):
         responce = super(WebsiteSales, self).product(product, category='', search='', **kwargs)
         payload = responce.qcontext
@@ -172,7 +173,8 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
             (product_id,))
         return request.env.cr.dictfetchone()
 
-    @http.route(['/shop/confirmation'], type='http', auth="public", website=True)
+    # @http.route(['/shop/confirmation'], type='http', auth="public", website=True)
+    @http.route(['/shop/confirmation'], type='http', auth="public", website=True, sitemap=False)
     def payment_confirmation(self, **post):
         responce = super(WebsiteSales, self).payment_confirmation(**post)
         order = responce.qcontext['order']
@@ -225,7 +227,6 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
             else:
                 return request.redirect('/')
 
-
     @http.route(['/add/product/cart'], type='http', auth="public", methods=['POST'], website=True, csrf=False)
     def add_product_in_cart(self):
         product_list, product_list_sorted = request.env['quotation.product.list'].sudo().get_product_list()
@@ -259,7 +260,7 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
             no_variant_attribute_values=no_variant_attribute_values
         )
 
-
+#  I don't see any use of this Code --> Tushar
 class WebsiteSaleOptionsCstm(odoo.addons.website_sale.controllers.main.WebsiteSale):
     @http.route(['/shop/modal'], type='json', auth="public", methods=['POST'], website=True)
     def modal(self, product_id, **kw):
