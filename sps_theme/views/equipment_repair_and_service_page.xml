@@ -8,7 +8,8 @@
                         <section class="padding-80-y">
                             <div class="container">
                                 <div class="text-center pb32">
-                                    <h1  class="about-header"> Equipment <span class="black-font">Repair &amp; Service</span> </h1>
+<!--                                    <h1  class="about-header"> Equipment <span class="black-font">Repair &amp; Service</span> </h1>-->
+                                    <h1  class="about-header">Medical Equipment Repair Service</h1>
                                 </div>
                                 <div class="banner-wrapper">
                                     <img src="/sps_theme/static/src/images/equipement-repair.jpg" class="img-fluid"/>
@@ -28,6 +29,9 @@
                                                 We are set on a course of continuous improvement for ourselves, for you, and for the patients at the end of every medical device we repair. We hold the highest standards for quality management when inspecting and repairing your equipment.
 
                                             </p>
+                                        </div>
+                                        <div class="col-md-12 text-center btn-wrapper">
+                                            <a itemprop="url" href="/equipment-repair-service" class="btn btn-info btn-sm" >Submit an Online Repair Ticket</a>
                                         </div>
                                     </div>
                                 </div>
@@ -99,6 +103,9 @@
                                    </div>
                                 </div>
                              </div>
+                             <div class="col-md-12 mt-5 text-center btn-wrapper">
+                                  <a itemprop="url" href="/equipment-repair-service" class="btn btn-info btn-sm" >Submit an Online Repair Ticket</a>
+                            </div>
                           </div>
                        </section>
                          <section class="help-section step-process padding-100-y bg-grey">
@@ -201,6 +208,21 @@
                                     </div>
 
                                 </div>
+                                <div class="row">
+                                    <div class="col-md-6 align-self-center">
+                                        <p class="hawk-title ft-32 medium-font">Do you have questions?</p>
+                                       <div class="section-description">
+                                           <p>
+                                                Link's
+                                           </p>
+                                       </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <img src="/sps_theme/static/src/images/exchange.jpg" class="img-fluid"/>
+                                   </div>
+
+                                </div>
+
                             </div>
                         </section>
 <!--                         <div class="seprator">-->

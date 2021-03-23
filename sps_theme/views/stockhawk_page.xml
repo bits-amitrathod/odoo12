@@ -38,6 +38,7 @@
 									<img src="/sps_theme/static/src/images/assistant.jpg" class="img-fluid"/>
 								</div>
 								<div class="col-md-6 align-self-center">
+									<h1 class="about-header">Stockhawk Medical Inventory Management Software</h1>
 									<p class="hawk-title ft-32 medium-font">Your Inventory Savings Assistant.</p>
 									<div class="section-description">
 										<p>When it comes to Surgical Product re-orders, do you wish you
@@ -246,6 +247,24 @@
 						<input class="form-field" type="hidden" name="email_to" value="info@surgicalproductsolutions.com"/>
                         <input class="form-field" type="hidden" name="subject" value="Received New 'Savings Impact Quote' Form"/>
 						</form>
+					</section>
+					<section class="padding-100-y">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-6 align-self-center">
+                                        <p class="hawk-title ft-32 medium-font">Do you have questions?</p>
+                                       <div class="section-description">
+                                           <p>
+                                                Link's
+                                           </p>
+                                       </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <img src="/sps_theme/static/src/images/exchange.jpg" class="img-fluid"/>
+                                   </div>
+
+                                </div>
+                            </div>
 					</section>
 				</div>
 			</t>
