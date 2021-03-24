@@ -1199,15 +1199,9 @@ class InventoryNotificationScheduler(models.TransientModel):
         else:
             email = vals['email_to_user'].sudo().email
 
-        if vals['email_to_user'] and vals['email_to_user'].sudo().user_id and \
-           vals['email_to_user'].sudo().user_id.partner_id and vals['email_to_user'].sudo().user_id.partner_id.email:
-            bd_email = vals['email_to_user'].sudo().user_id.partner_id.email
-        else:
-            bd_email = vals['email_from_user'].sudo().email
-
         local_context = {
             'products': vals['product_list'], 'headers': vals['headers'], 'columnProps': vals['coln_name'],
-            'email_from': bd_email,
+            'email_from': vals['email_from_user'].sudo().email,
             'email_to': email,
             'subject': vals['subject'],
             'descrption': vals['description'],
