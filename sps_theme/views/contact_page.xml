@@ -23,8 +23,8 @@
 											<div class="list-description">
 												<p>Sales</p>
 												<div class="contact-detail">
-													<span><a href="tel:(412) 564-1280">(412) 564-1280</a></span>
-													<span><a href="mailto:info@surgicalproductsolutions.com">info@surgicalproductsolutions.com</a></span>
+													<span><a href="tel:(412) 564-1280" class="text-black"><i class="fa fa-phone mr-2"></i> (412) 564-1280</a></span>
+													<span><a href="mailto:info@surgicalproductsolutions.com" class="text-black"><i class="fa fa-envelope mr-2"></i>  info@surgicalproductsolutions.com</a></span>
 												</div>
 											</div>
 										</div>
@@ -37,8 +37,8 @@
 											<div class="list-description">
 												<p>Acquisitions</p>
 												<div class="contact-detail">
-													<span><a href="tel:(412) 745-0330">(412) 745-0330</a></span>
-													<span><a href="mailto:info@surgicalproductsolutions.com">info@surgicalproductsolutions.com</a></span>
+													<span><a href="tel:(412) 745-0330" class="text-black"> <i class="fa fa-phone mr-2"></i>  (412) 745-0330</a></span>
+													<span><a href="mailto:info@surgicalproductsolutions.com" class="text-black"><i class="fa fa-envelope mr-2"></i> info@surgicalproductsolutions.com</a></span>
 												</div>
 											</div>
 										</div>
@@ -51,8 +51,8 @@
 											<div class="list-description">
 												<p>Contracts &amp; National Accounts</p>
 												<div class="contact-detail">
-													<span><a href="tel:(412) 564-1047">(412) 564-1047</a></span>
-													<span><a href="mailto:info@surgicalproductsolutions.com">info@surgicalproductsolutions.com</a></span>
+													<span><a href="tel:(412) 564-1047" class="text-black"><i class="fa fa-phone mr-2"></i>  (412) 564-1047</a></span>
+													<span><a href="mailto:info@surgicalproductsolutions.com" class="text-black"><i class="fa fa-envelope mr-2"></i> info@surgicalproductsolutions.com</a></span>
 												</div>
 											</div>
 										</div>
@@ -65,8 +65,8 @@
 											<div class="list-description">
 												<p>Accounting</p>
 												<div class="contact-detail">
-													<span><a href="tel:(412) 745-2322">(412) 745-2322</a></span>
-													<span><a href="mailto:info@surgicalproductsolutions.com">info@surgicalproductsolutions.com</a></span>
+													<span><a href="tel:(412) 745-2322" class="text-black"><i class="fa fa-phone mr-2"></i> (412) 745-2322</a></span>
+													<span><a href="mailto:info@surgicalproductsolutions.com" class="text-black"><i class="fa fa-envelope mr-2"></i> info@surgicalproductsolutions.com</a></span>
 												</div>
 											</div>
 										</div>
@@ -79,8 +79,8 @@
 											<div class="list-description">
 												<p>General Inquiries</p>
 												<div class="contact-detail">
-													<span><a href="tel:(412) 564-1280">(412) 564-1280</a></span>
-													<span><a href="mailto:info@surgicalproductsolutions.com">info@surgicalproductsolutions.com</a></span>
+													<span><a href="tel:(412) 564-1280" class="text-black"><i class="fa fa-phone mr-2"></i>  (412) 564-1280</a></span>
+													<span><a href="mailto:info@surgicalproductsolutions.com" class="text-black"><i class="fa fa-envelope mr-2"></i> info@surgicalproductsolutions.com</a></span>
 												</div>
 											</div>
 										</div>
@@ -118,6 +118,7 @@
 									</form>
 								</div>
 							</div>
+
 						</div>
 					</div>
 				</section>

@@ -51,14 +51,14 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
 
         if request.httprequest.path == "/shop/featured":
             title = "Discount Surgical Supplies"
-            sub_title = "Shop sale medical and surgical products"
+            sub_title = "Shop Sale Medical and Surgical Products"
             result = request.env['product.public.category'].search([('name', 'ilike', 'featured')], limit=1)
             if result:
                 category = result
 
         if request.httprequest.path == "/shop/capital-equipment":
             title = "Surplus Medical Equipment"
-            sub_title = "Shop unused surplus medical equipment"
+            sub_title = "Shop Unused Surplus Medical Equipment"
             result = request.env['product.public.category'].search([('name', 'ilike', 'capital equipment')], limit=1)
             if result:
                 category = result

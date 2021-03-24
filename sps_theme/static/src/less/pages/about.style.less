@@ -34,6 +34,12 @@
         }
     }
 
+.text-center{
+  h2{
+   color: @title-color;
+   }
+}
+
 .banner-wrapper{
     img{
         height: 540px;
@@ -442,9 +448,13 @@
                         line-height: 30px;
                         margin-bottom: 0;
                         color: @text-color;
+                        display:block;
                         a{
                             text-decoration: none;
                             color: @red;
+                            &.text-black{
+                            color: @text-color;
+                            }
                         }
                     }
                 }
