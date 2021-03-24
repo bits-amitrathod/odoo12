@@ -92,18 +92,32 @@
     <template id="payment_sale_note" inherit_id="website_sale_delivery.payment_delivery" name="Purchase Order">
         <xpath expr="//div[@class='card']" position="after">
             <script type="text/javascript" src="/payment_aquirer_cstm/static/src/js/script.js"></script>
-            <div class="col-sm-12 col-md-12" style="padding: 0px;" t-if="showShippingNote">
+            <div class="col-sm-12 col-md-12 p-0" >
+                <textarea style="margin-bottom: 0px;margin-top: 10px;" rows="3" name="sales_team_message"
+                          placeholder="Please specify additional comments or specific instructions for this order." class="form-control"/>
+            </div>
+            <div id="shipping_options" class="d-flex mt-3 ml-2">
+                <div class="radio-inline mr-5">
+                    <input type="radio" id="my_shipper_account_radio" name="shipping_method_selection" value="my_shipper_account"/>
+                    <label for="my_shipper_account_radio" class="medium-font">My Shipper Account</label>
+                </div>
+                  <div class="radio-inline">
+                        <input type="radio" id="charge_me_for_shipping_radio" name="shipping_method_selection" value="charge_me_for_shipping"/>
+                        <label for="charge_me_for_shipping_radio" class="medium-font">Charge Me For Shipping</label>
+                  </div>
+            </div>
+            <div class="col-sm-12 col-md-12 p-0"  t-if="showShippingNote">
                 <input type="hidden" value="" id="freeShipingLabel"  t-att-value="freeShipingLabel" />
 
                 <div class="well" id="expedited_shipping_div" style="margin-bottom: 0px;margin-top: 10px;">
-                    <b class="modal-title" style="font-family: 'robotobold';font-size:16px;">Expedited Shipping:</b>
-                    <p style="font-family: 'robotolight';font-size:16px;">
+                    <b class="modal-title bold-font f16 mb-2" >Expedited Shipping:</b>
+                    <p class="regular-font f16">
                         Your Order will be shipped Ground unless otherwise stated. If expedited shipping is needed,
                         Please indicate below:
                         (First Overnight by 8:30AM / Priority Overnight by 10:30AM /2nd day AM by 10:30 AM /2nd Day
                         /3rd Day)
                     </p>
-                    <b class="mb24" style="font-family: 'robotobold';font-size:16px;">Select a Delivery Method:</b>
+                    <b class="mb-3 bold-font f16">Select a Delivery Method:</b>
                     <select class="form-control" id="selectDeliveryMethod" style="font-family: 'robotolight';font-size: 16px;">
                         <option value="Ground" selected="true">Ground</option>
                         <option value="2nd day">2nd day</option>
@@ -111,14 +125,20 @@
                     </select>
                 </div>
             </div>
-
-            <div class="col-sm-12 col-md-12" style="padding: 0px;">
-                <textarea style="margin-bottom: 0px;margin-top: 10px;" rows="3" name="sales_team_message"
-                          placeholder="Please specify additional comments or specific instructions for this order." class="form-control"/>
-            </div>
         </xpath>
         <xpath expr="//div[@id='delivery_carrier']/h3" position="replace">
-            <h3 t-if="delivery_nb &gt; 1" class="mb24">Choose a Delivery Method</h3>
+            <h3 id="choose_a_delivery_method_label" t-if="delivery_nb &gt; 1" class="mb24">Choose a delivery method</h3>
+        </xpath>
+        <xpath expr="//div[@id='delivery_carrier']/div[@id='delivery_method']" position="replace">
+            <div id="delivery_method_custom" t-if="delivery_nb &gt; 1" class="card border-0">
+                <ul class="list-group">
+                    <t t-foreach="deliveries" t-as="delivery">
+                        <li class="list-group-item">
+                            <t t-call="website_sale_delivery.payment_delivery_methods"/>
+                        </li>
+                    </t>
+                </ul>
+            </div>
         </xpath>
     </template>
 </odoo>

@@ -12,9 +12,13 @@ odoo.define('payment_aquirer_cstm.payment_aquirer_cstm', function(require) {
                 var carrier_acc_no = data['carrier_acc_no']
                 console.log(carrier_acc_no);
                 if (carrier_acc_no) {
+                    $("#my_shipper_account_radio").prop('checked', true);
                     $("#delivery_35").prop('checked', true);
                     $("#expedited_shipping_div").parent().show();
+                    $("#choose_a_delivery_method_label").parent().hide();
+                    $("#delivery_method_custom").parent().hide();
                 } else {
+                    $("#shipping_options").hide();
                     $("#delivery_35").prop('checked', false);
                     $("#delivery_3").prop('checked', true);
                     $("#expedited_shipping_div").parent().hide();
@@ -36,6 +40,7 @@ odoo.define('payment_aquirer_cstm.payment_aquirer_cstm', function(require) {
                     }
                 }
          });
+
 
         $("#delivery_35").change(function() {
             if ( $(this).is(':checked') ) {
