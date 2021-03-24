@@ -11,7 +11,7 @@ class NewAccountBonusReportPopup(models.TransientModel):
 
     business_development = fields.Many2one('res.users', string="Business Development", index=True)
 
-    key_account = fields.Many2one('res.users', string="Key Account", domain="[('active', '=', True)]")
+    key_account = fields.Many2one('res.users', string="Key Account", index=True)
 
     # @api.multi
     def open_table(self):

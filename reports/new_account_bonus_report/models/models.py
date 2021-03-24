@@ -109,7 +109,7 @@ class NewAccountBonusReportExport(models.TransientModel):
 
     business_development = fields.Many2one('res.users', string="Business Development", index=True)
 
-    key_account = fields.Many2one('res.users', string="Key Account", domain="[('active', '=', True)]")
+    key_account = fields.Many2one('res.users', string="Key Account", index=True)
 
     def download_excel_bd_new_account(self):
 
