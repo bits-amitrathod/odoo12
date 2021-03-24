@@ -423,11 +423,9 @@ class InventoryNotificationScheduler(models.TransientModel):
                                     Please reply to this email or contact your Account Manager to hold product or place an order here.
                                     <br/> Many Thanks,
                                     <br/> SPS Customer Care <br/>
-                                    <center>
-                                        <a target="_blank" href="/shop/quote_my_report/""" + str(customr.id) + """" style="background-color:#1abc9c; padding:15px; text-decoration:none; color:#fff; border-radius:5px; font-size:16px" class="o_default_snippet_text">Click to Order</a>
-                                    </center>
+                                    
                                     <br/>
-                                    <table style="height: 96px; width: 601px; float: left;" border="0">
+                                    <table style="height: 96px; width: 601px;" border="0">
                                     <tbody>
                                     <tr style="height: 78px;">
                                     <td style="width: 156px; height: 78px;">
@@ -488,9 +486,10 @@ class InventoryNotificationScheduler(models.TransientModel):
                                     </tr>
                                     </tbody>
                                     </table>
-                                    <p style="text-align: left;">&nbsp;</p>
-                                    <p style="font-weight: 400; text-align: center;">&nbsp;</p>
-
+                                    <div class="text-center" style="text-align: center;">
+                                        <a target="_blank" href="/shop/quote_my_report/""" + str(customr.id) + """" style="background-color:#1abc9c; padding:15px; text-decoration:none; color:#fff; border-radius:5px; font-size:16px" class="o_default_snippet_text">Click to Order</a>
+                                    </div>
+                                   
                                     """
                 if products:
                     product_list.extend(list(products.values()))
