@@ -107,9 +107,11 @@ class NewAccountBonusReportExport(models.TransientModel):
     start_date = fields.Date('Start Date', default=fields.date.today(), required=True,
                              help="Choose a date to get the New Account Bonus Report at that Start date")
 
-    business_development = fields.Many2one('res.users', string="Business Development", index=True)
+    business_development = fields.Many2one('res.users', string="Business Development", index=True,
+                                           domain="['|', ('active', '=', True), ('active', '=', False)]")
 
-    key_account = fields.Many2one('res.users', string="Key Account", index=True)
+    key_account = fields.Many2one('res.users', string="Key Account", index=True,
+                                  domain="['|', ('active', '=', True), ('active', '=', False)]")
 
     def download_excel_bd_new_account(self):
 
