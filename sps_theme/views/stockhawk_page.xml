@@ -259,8 +259,8 @@
 												<div class="story-list link">
 													<div class="list-description">
 														<div class="contact-detail">
-															<span class="d-block"><a href="tel:(412) 564-1280" class="text-black"><i class="fa fa-phone mr-2"></i> (412) 564-1280</a></span>
-															<span class="d-block"><a href="mailto:info@surgicalproductsolutions.com" class="text-black"><i class="fa fa-envelope mr-2"></i>  info@surgicalproductsolutions.com</a></span>
+															<span><a href="tel:(412) 564-1280" class="text-black"><i class="icon-mobile mr-2"></i> (412) 564-1280</a></span>
+															<span><a href="mailto:info@surgicalproductsolutions.com" class="text-black"><i class="icon-email mr-2"></i>  info@surgicalproductsolutions.com</a></span>
 														</div>
 													</div>
 												</div>

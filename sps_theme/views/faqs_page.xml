@@ -11,8 +11,8 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-12">
-                                         <div id="sectionAccordian" class="accordion" role="tablist">
-                                               <div class="card bg-white">
+                                        <div id="sectionAccordian" class="accordion" role="tablist">
+                                            <div class="card bg-white">
                                                 <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
                                                    class="card-header collapsed" data-parent="#sectionAccordian"
                                                    data-target="#buyingTab1573497996797" data-original-title=""
@@ -196,60 +196,60 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="card bg-white">
-                                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
-                                                                   class="card-header collapsed" data-parent="#myCollapse"
-                                                                   data-original-title="" title=""
-                                                                   data-target="#myCollapseTab1573498085620">Do you offer any guarantee
-                                                                    on your products?
-                                                                </a>
-                                                                <div class="collapse" role="tabpanel" style=""
-                                                                     id="myCollapseTab1573498085620">
-                                                                    <div class="card-body">
-                                                                        <p class="card-text">
+                                                           <div class="card bg-white">
+                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
+                                                   class="card-header collapsed" data-parent="#myCollapse"
+                                                   data-original-title="" title=""
+                                                   data-target="#myCollapseTab1573498335255">How do I request a quote?
+                                                </a>
+                                                <div class="collapse" role="tabpanel" style=""
+                                                     id="myCollapseTab1573498335255">
+                                                    <div class="card-body">
+                                                        <p>
+                                                            You can send item lists of surgical disposables and capital equipment to <a href="mailto:info@surgicalproductsolutions.com"> info@surgicalproductsolutions.com</a>.
+                                                        </p>
+                                                        <p> Download our optional&amp;nbsp;<a
+                                                                href="https://surgicalproductsolutions.com/wp-content/uploads/2016/07/SPS-Item-List-Template-2018-05.xlsx?_ga=2.16642047.850330218.1573484187-514259207.1573484187"
+                                                                data-original-title="" title=""
+                                                                aria-describedby="tooltip75115">Item-List-Template</a> to list your product or contact us for an on-site inventory.
+                                                        </p>
 
-                                                                                Customers are allowed to return items upon request,
-                                                                                including ordering errors. Any customer not satisfied
-                                                                                with any device upon receipt will have that device
-                                                                                replaced at no charge if within 15 days of order
-                                                                                placement. Furthermore, if that specific product is not
-                                                                                available, SPS will give the customer equal dollar
-                                                                                credit towards any other device(s) in inventory. Should
-                                                                                any products sold reach its expiration date prior to
-                                                                                receipt of that product, SPS will replace the product at
-                                                                                no charge and if that specific product is not available,
-                                                                                equal dollar credit towards any other device(s) in
-                                                                                inventory will be issued.
-                                                                            <br/>
-                                                                        </p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="card bg-white">
-                                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
-                                                                   class="card-header collapsed" data-parent="#myCollapse"
-                                                                   data-original-title="" title=""
-                                                                   data-target="#myCollapseTab1573498336132">Do I need to have a medical
-                                                                    license to purchase from your website?
-                                                                </a>
-                                                                <div class="collapse" role="tabpanel" style=""
-                                                                     id="myCollapseTab1573498336132">
-                                                                    <div class="card-body">
-                                                                        <p class="card-text">
-                                                                           Yes, you
-                                                                                should be a licensed medical professional to purchase
-                                                                                any of our items.
-                                                                            <br/>
-                                                                        </p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+                                                        <p>Information needed for disposables:</p>
+                                                        <ul>
+                                                            <li>
+                                                                Manufacturers Reference Number
+                                                            </li>
+                                                            <li>
+                                                                Expiration Date
+                                                            </li>
+                                                            <li>
+                                                                Quantity
+                                                            </li>
+                                                        </ul>
+                                                        <p>
+                                                            Information needed for capital equipment:
+                                                        </p>
+                                                        <ul>
+                                                            <li>
+                                                                Manufacturer
+                                                            </li>
+                                                            <li>
+                                                                Model Number
+                                                            </li>
+                                                            <li>
+                                                                Condition
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+
 
                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                              <div class="card bg-white">
+                                            <div class="card bg-white">
                                                 <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
                                                    class="card-header collapsed" data-parent="#sectionAccordian"
                                                    data-target="#sellingTab1573497996797" data-original-title=""
@@ -257,47 +257,6 @@
                                                 </a>
                                                 <div class="collapse" data-parent="#sectionAccordian" role="tabpanel" id="sellingTab1573497996797" style="">
                                                     <div class="card-body">
-
-                                                         <div class="card bg-white">
-                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
-                                                   class="card-header collapsed" data-parent="#myCollapse"
-                                                   data-original-title="" title=""
-                                                   data-target="#myCollapseTab1573498335966">How do I retrieve my login
-                                                    information?
-                                                </a>
-                                                <div class="collapse" role="tabpanel" style=""
-                                                     id="myCollapseTab1573498335966">
-                                                    <div class="card-body">
-                                                        <p class="card-text">
-                                                           If you
-                                                                forgot your password, you can click the "forgot your
-                                                                password" link in the Log-in section to have it emailed
-                                                                to you. If you do not remember your user name or did not
-                                                                register an email, give us a call and we will be happy
-                                                                to look it up for you.
-                                                            <br/>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                                        <div class="card bg-white">
-                                                            <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
-                                                               class="card-header collapsed" data-parent="#myCollapse"
-                                                               data-original-title="" title=""
-                                                               data-target="#myCollapseTab1573498335801">What Is Surgical Product
-                                                                Solutions?
-                                                            </a>
-                                                            <div class="collapse" role="tabpanel" style=""
-                                                                 id="myCollapseTab1573498335801">
-                                                                <div class="card-body">
-                                                                    <p class="card-text">
-                                                                       Surgical
-                                                                            Product Solutions is a worldwide third party distributor
-                                                                            for surgical disposables and capital equipment.
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
                                                         <div class="card bg-white">
                                                             <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
                                                                class="card-header collapsed" data-parent="#myCollapse"
@@ -356,53 +315,6 @@
                                                             <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
                                                                class="card-header collapsed" data-parent="#myCollapse"
                                                                data-original-title="" title=""
-                                                               data-target="#myCollapseTab1573498335255">How do I request a quote?
-                                                            </a>
-                                                            <div class="collapse" role="tabpanel" style=""
-                                                                 id="myCollapseTab1573498335255">
-                                                                <div class="card-body">
-                                                                    <p>
-                                                                        You can send item lists of surgical disposables and capital equipment to <a href="mailto:info@surgicalproductsolutions.com"> info@surgicalproductsolutions.com</a>.
-                                                                    </p>
-                                                                    <p> Download our optional&amp;nbsp;<a
-                                                                            href="https://surgicalproductsolutions.com/wp-content/uploads/2016/07/SPS-Item-List-Template-2018-05.xlsx?_ga=2.16642047.850330218.1573484187-514259207.1573484187"
-                                                                            data-original-title="" title=""
-                                                                            aria-describedby="tooltip75115">Item-List-Template</a> to list your product or contact us for an on-site inventory.
-                                                                    </p>
-
-                                                                    <p>Information needed for disposables:</p>
-                                                                    <ul>
-                                                                        <li>
-                                                                            Manufacturers Reference Number
-                                                                        </li>
-                                                                        <li>
-                                                                            Expiration Date
-                                                                        </li>
-                                                                        <li>
-                                                                            Quantity
-                                                                        </li>
-                                                                    </ul>
-                                                                    <p>
-                                                                        Information needed for capital equipment:
-                                                                    </p>
-                                                                    <ul>
-                                                                        <li>
-                                                                            Manufacturer
-                                                                        </li>
-                                                                        <li>
-                                                                            Model Number
-                                                                        </li>
-                                                                        <li>
-                                                                            Condition
-                                                                        </li>
-                                                                    </ul>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="card bg-white">
-                                                            <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
-                                                               class="card-header collapsed" data-parent="#myCollapse"
-                                                               data-original-title="" title=""
                                                                data-target="#myCollapseTab1573498334908">What percent return do you
                                                                 offer for surplus?
                                                             </a>
@@ -421,139 +333,21 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="card bg-white">
-                                                            <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
-                                                               class="card-header collapsed" data-parent="#myCollapse"
-                                                               data-original-title="" title=""
-                                                               data-target="#myCollapseTab1573498334385">How do I view your
-                                                                inventory to find products to purchase?
-                                                            </a>
-                                                            <div class="collapse" role="tabpanel" style=""
-                                                                 id="myCollapseTab1573498334385">
-                                                                <div class="card-body">
-                                                                    <p class="card-text">
-                                                                        <span>You can download our </span>
-                                                                        <a href="/downloadCatalog" style="color: rgb(232, 19, 30); "> product catalog</a>
-                                                                        <span>
-                                                                            which is broken down by manufacturer, outfit
-                                                                            with all necessary product information. You can also
-                                                                            access the</span>
-                                                                        <a href="https://shopsps.com/" style="color: rgb(232, 19, 30);"> online store</a>
-                                                                        <span>, or speak with your Account Manager to search our inventory. </span>
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="card bg-white">
-                                                            <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
-                                                               class="card-header collapsed" data-parent="#myCollapse"
-                                                               data-original-title="" title=""
-                                                               data-target="#myCollapseTab1573498612671">Why are there additional
-                                                                letters on the manufacturer’s reference number?
-                                                            </a>
-                                                            <div class="collapse" role="tabpanel" style=""
-                                                                 id="myCollapseTab1573498612671">
-                                                                <div class="card-body">
-                                                                    <p>  We utilize the manufacturer reference numbers to align our
-                                                                        inventory. However, on some items there are additional
-                                                                        letters. Here is what they mean.
-                                                                    </p>
-                                                                    <ul>
-                                                                        <li>
-                                                                            <strong>-E</strong>&amp;nbsp;Although we are an “each”
-                                                                            company, if product checks in as a full box we keep it
-                                                                            that way. The -E represents the “each” version, of
-                                                                            product we also sell in a full box or case.
-                                                                        </li>
-                                                                        <li> <strong>-R</strong> Represents a product has been resterilized.
-                                                                        </li>
-                                                                        <li>
-                                                                            <strong>-RP</strong> Indicates a product has been reprocessed.
-                                                                        </li>
-                                                                        <li> <strong>-EQUIP</strong> Product for sale from Equipment division.
-                                                                        </li>
-                                                                    </ul>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="card bg-white">
-                                                            <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
-                                                               class="card-header collapsed" data-parent="#myCollapse"
-                                                               data-original-title="" title=""
-                                                               data-target="#myCollapseTab1573498887035">What if my order is
-                                                                damaged/incorrect? Do you have a return policy?
-                                                            </a>
-                                                            <div class="collapse" role="tabpanel" style=""
-                                                                 id="myCollapseTab1573498887035">
-                                                                <div class="card-body">
-                                                                    <p class="card-text">
-                                                                        <span>
-                                                                            In the event there is an issue with your order, contact
-                                                                            your Sales Representative immediately. Facilities can
-                                                                            return items upon request. If you are not satisfied with
-                                                                            any product upon receipt, we will replace the product or
-                                                                            issue a credit reimbursement.
-                                                                        </span>
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="card bg-white">
-                                                            <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
-                                                               class="card-header collapsed" data-parent="#myCollapse"
-                                                               data-original-title="" title=""
-                                                               data-target="#myCollapseTab1573498886059">What happens during a
-                                                                recall?
-                                                            </a>
-                                                            <div class="collapse" role="tabpanel" style=""
-                                                                 id="myCollapseTab1573498886059">
-                                                                <div class="card-body">
-                                                                    <p class="card-text">
-                                                                            Our system allows for full transparency of recall
-                                                                            affected LOT numbers that have been distributed from our
-                                                                            warehouse. Appropriate measures will be taken when a
-                                                                            recall alert is received, and you will be notified
-                                                                            immediately if necessary.
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
 
-                                                    </div>
-                                                </div>
-                                              </div>
-                                         </div>
-
-                                        <div id="myCollapse" class="accordion" role="tablist">
-                                            <div class="card bg-white">
-                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="true"
-                                                   class="card-header" data-parent="#myCollapse"
-                                                   data-target="#myCollapseTab1573497996797" data-original-title=""
-                                                   title="" aria-describedby="tooltip182829">How do I place an order?
-                                                </a>
-                                                <div class="collapse show" role="tabpanel"
-                                                     id="myCollapseTab1573497996797" style="">
-                                                    <div class="card-body">
-                                                        <p class="card-text">
-                                                              There are 3 ways to place an order with us:
-                                                        </p>
-                                                        <ul>
-                                                            <li>
-                                                                <span class="bold-font">Contact a Sales Representative –</span>  Call or email an SPS team member to place your order.
-
-                                                            </li>
-                                                            <li>
-                                                                <span class="bold-font">Shop Online –</span> Browse, fill a cart, and checkout online. You can pay using a credit card, PayPal, or Purchase Order number if you are an approved customer.
-
-                                                            </li>
-                                                            <li>
-                                                                <span class="bold-font">Stockhawk –</span> Easily create, edit, and submit same-day orders with SPS’s inventory savings program.
-                                                            </li>
-                                                        </ul>
                                                     </div>
                                                 </div>
                                             </div>
+
                                             <div class="card bg-white">
+                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
+                                                   class="card-header collapsed" data-parent="#sectionAccordian"
+                                                   data-target="#general1573497996797" data-original-title=""
+                                                   title="" aria-describedby="tooltip182829">General  with SPS
+                                                </a>
+                                                <div class="collapse"  data-parent="#sectionAccordian" role="tabpanel" id="general1573497996797" style="">
+                                                    <div class="card-body">
+                                                       <div id="myCollapse" class="accordion" role="tablist">
+                                                            <div class="card bg-white">
                                                 <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
                                                    class="card-header collapsed" data-parent="#myCollapse"
                                                    data-target="#myCollapseTab1573497996798" data-original-title=""
@@ -578,7 +372,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="card bg-white">
+                                                           <div class="card bg-white">
                                                 <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
                                                    class="card-header collapsed" data-parent="#myCollapse"
                                                    data-target="#myCollapseTab1573497996799" data-original-title=""
@@ -604,155 +398,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            <div class="card bg-white">
-                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
-                                                   class="card-header collapsed" data-parent="#myCollapse"
-                                                   data-original-title="" title=""
-                                                   data-target="#myCollapseTab1573498087395">How soon will my order
-                                                    ship?
-                                                </a>
-                                                <div class="collapse" role="tabpanel" style=""
-                                                     id="myCollapseTab1573498087395">
-                                                    <div class="card-body">
-                                                        <p class="card-text">
-                                                            All FedEx Ground orders placed by 4:30pm EST are processed
-                                                                and shipped the same day. The cut-off time for FedEx
-                                                                Express orders is 3:30pm EST. All orders after 4:30PM
-                                                                Eastern Standard Time will be shipped next day unless
-                                                                noted. SPS is not responsible for delays in shipping due
-                                                                to orders arriving after 4:30PM Eastern Standard Time.
-                                                            <br/>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="card bg-white">
-                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
-                                                   class="card-header collapsed" data-parent="#myCollapse"
-                                                   data-original-title="" title=""
-                                                   data-target="#myCollapseTab1573498090927">What are your shipping
-                                                    methods?
-                                                </a>
-                                                <div class="collapse" role="tabpanel" style=""
-                                                     id="myCollapseTab1573498090927">
-                                                    <div class="card-body">
-                                                        <p class="card-text">
-                                                            All orders are shipped FedEx ground unless expedited
-                                                                shipment is requested. FedEx Ground shipments are 2-5
-                                                                day delivery.
-                                                            <br/>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="card bg-white">
-                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
-                                                   class="card-header collapsed" data-parent="#myCollapse"
-                                                   data-original-title="" title=""
-                                                   data-target="#myCollapseTab1573498090753">What are the shipping and
-                                                    handling costs?
-                                                </a>
-                                                <div class="collapse" role="tabpanel" style=""
-                                                     id="myCollapseTab1573498090753">
-                                                    <div class="card-body">
-                                                        <p>
-                                                            Shipping and handling costs are based on the items purchased
-                                                            and range from $7.00 to $10.00 for standard ground shipping
-                                                            with in the United States. Overnight shipping charges are
-                                                            dependent on your location and size/weight of the items.
-                                                        </p>
-                                                        <p>
-                                                            For items shipping outside the United States, costs will
-                                                            vary depending on your location. If you are outside the
-                                                            United States &amp;amp; would like a shipping quote, you can
-                                                            contact us directly
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="card bg-white">
-                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
-                                                   class="card-header collapsed" data-parent="#myCollapse"
-                                                   data-original-title="" title=""
-                                                   data-target="#myCollapseTab1573498090587">Do you ship outside the
-                                                    United States?
-                                                </a>
-                                                <div class="collapse" role="tabpanel" style=""
-                                                     id="myCollapseTab1573498090587">
-                                                    <div class="card-body">
-                                                        <p class="card-text">
-                                                          Yes, we ship our products worldwide. Shipping charges are
-                                                                calculated at checkout or you can contact us for a
-                                                                shipping quote.
-
-                                                            <br/>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="card bg-white">
-                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
-                                                   class="card-header collapsed" data-parent="#myCollapse"
-                                                   data-original-title="" title=""
-                                                   data-target="#myCollapseTab1573498090196">What are your payment
-                                                    methods?
-                                                </a>
-                                                <div class="collapse" role="tabpanel" style=""
-                                                     id="myCollapseTab1573498090196">
-                                                    <div class="card-body">
-                                                        <p class="card-text">
-                                                            We
-                                                                accept Visa, MasterCard, American Express &amp;amp;
-                                                                Discover either online or over the phone. PayPal is
-                                                                accepted as well. Purchase orders are also accepted from
-                                                                approved customers only. If you would like to set up an
-                                                                account to be invoiced, please call us today.
-                                                            <br/>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="card bg-white">
-                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
-                                                   class="card-header collapsed" data-parent="#myCollapse"
-                                                   data-original-title="" title=""
-                                                   data-target="#myCollapseTab1573498087154">Is there a minimum order
-                                                    amount?
-                                                </a>
-                                                <div class="collapse" role="tabpanel" style=""
-                                                     id="myCollapseTab1573498087154">
-                                                    <div class="card-body">
-                                                        <p class="card-text">
-                                                           There
-                                                                are no minimum order requirements. The quantities listed
-                                                                next to each item are what we currently have available
-                                                                for purchase as our website is real-time.
-                                                            <br/>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="card bg-white">
-                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
-                                                   class="card-header collapsed" data-parent="#myCollapse"
-                                                   data-original-title="" title=""
-                                                   data-target="#myCollapseTab1573498086666">Can I save my shipping and
-                                                    billing information so that I do not need to enter it every time?
-                                                </a>
-                                                <div class="collapse" role="tabpanel" style=""
-                                                     id="myCollapseTab1573498086666">
-                                                    <div class="card-body">
-                                                        <p class="card-text">
-                                                           Yes. You
-                                                                can register by clicking the "Create an account" link
-                                                                located at the top of the home page.
-                                                            <br/>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="card bg-white">
+                                                           <div class="card bg-white">
                                                 <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
                                                    class="card-header collapsed" data-parent="#myCollapse"
                                                    data-original-title="" title=""
@@ -781,27 +427,26 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="card bg-white">
-                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
-                                                   class="card-header collapsed" data-parent="#myCollapse"
-                                                   data-original-title="" title=""
-                                                   data-target="#myCollapseTab1573498336132">Do I need to have a medical
-                                                    license to purchase from your website?
-                                                </a>
-                                                <div class="collapse" role="tabpanel" style=""
-                                                     id="myCollapseTab1573498336132">
-                                                    <div class="card-body">
-                                                        <p class="card-text">
-                                                           Yes, you
-                                                                should be a licensed medical professional to purchase
-                                                                any of our items.
-                                                            <br/>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="card bg-white">
+                                                           <div class="card bg-white">
+                                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
+                                                                   class="card-header collapsed" data-parent="#myCollapse"
+                                                                   data-original-title="" title=""
+                                                                   data-target="#myCollapseTab1573498336132">Do I need to have a medical
+                                                                    license to purchase from your website?
+                                                                </a>
+                                                                <div class="collapse" role="tabpanel" style=""
+                                                                     id="myCollapseTab1573498336132">
+                                                                    <div class="card-body">
+                                                                        <p class="card-text">
+                                                                           Yes, you
+                                                                                should be a licensed medical professional to purchase
+                                                                                any of our items.
+                                                                            <br/>
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                           <div class="card bg-white">
                                                 <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
                                                    class="card-header collapsed" data-parent="#myCollapse"
                                                    data-original-title="" title=""
@@ -823,7 +468,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="card bg-white">
+                                                           <div class="card bg-white">
                                                 <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
                                                    class="card-header collapsed" data-parent="#myCollapse"
                                                    data-original-title="" title=""
@@ -841,130 +486,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="card bg-white">
-                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
-                                                   class="card-header collapsed" data-parent="#myCollapse"
-                                                   data-original-title="" title=""
-                                                   data-target="#myCollapseTab1573498335618">&amp;nbsp;What products do
-                                                    you purchase?
-                                                </a>
-                                                <div class="collapse" role="tabpanel" style=""
-                                                     id="myCollapseTab1573498335618">
-                                                    <div class="card-body">
-                                                        <p>
-                                                            SPS Purchases unused, in-date surgical disposables as well
-                                                            as capital equipment.
-                                                        </p>
-
-                                                        <p>  Surgical Disposables focus includes but not limited to:</p>
-                                                        <ul>
-                                                            <li>
-                                                                General Surgery
-                                                            </li>
-                                                            <li>
-                                                                Ob/Gyn
-                                                            </li>
-                                                            <li>
-                                                                Orthopedic
-                                                            </li>
-                                                            <li>
-                                                                Wound Care
-                                                            </li>
-                                                        </ul>
-                                                        <p> See our <a href="/vendor-list" data-original-title="" title="" aria-describedby="tooltip980666">Vendor List</a> for our targeted products. </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="card bg-white">
-                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
-                                                   class="card-header collapsed" data-parent="#myCollapse"
-                                                   data-original-title="" title=""
-                                                   data-target="#myCollapseTab1573498335442">Do you purchase expired or
-                                                    reprocessed items?
-                                                </a>
-                                                <div class="collapse" role="tabpanel" style=""
-                                                     id="myCollapseTab1573498335442">
-                                                    <div class="card-body">
-                                                        <p>
-                                                            We are unable to purchase expired disposables. However, we
-                                                            do purchase reprocessed items.
-                                                        </p>
-                                                        <p>
-                                                            Feel free to submit your list of items&amp;nbsp;<a href="mailto:info@surgicalproductsolutions.com"> here</a> for a quote.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="card bg-white">
-                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
-                                                   class="card-header collapsed" data-parent="#myCollapse"
-                                                   data-original-title="" title=""
-                                                   data-target="#myCollapseTab1573498335255">How do I request a quote?
-                                                </a>
-                                                <div class="collapse" role="tabpanel" style=""
-                                                     id="myCollapseTab1573498335255">
-                                                    <div class="card-body">
-                                                        <p>
-                                                            You can send item lists of surgical disposables and capital equipment to <a href="mailto:info@surgicalproductsolutions.com"> info@surgicalproductsolutions.com</a>.
-                                                        </p>
-                                                        <p> Download our optional&amp;nbsp;<a
-                                                                href="https://surgicalproductsolutions.com/wp-content/uploads/2016/07/SPS-Item-List-Template-2018-05.xlsx?_ga=2.16642047.850330218.1573484187-514259207.1573484187"
-                                                                data-original-title="" title=""
-                                                                aria-describedby="tooltip75115">Item-List-Template</a> to list your product or contact us for an on-site inventory.
-                                                        </p>
-
-                                                        <p>Information needed for disposables:</p>
-                                                        <ul>
-                                                            <li>
-                                                                Manufacturers Reference Number
-                                                            </li>
-                                                            <li>
-                                                                Expiration Date
-                                                            </li>
-                                                            <li>
-                                                                Quantity
-                                                            </li>
-                                                        </ul>
-                                                        <p>
-                                                            Information needed for capital equipment:
-                                                        </p>
-                                                        <ul>
-                                                            <li>
-                                                                Manufacturer
-                                                            </li>
-                                                            <li>
-                                                                Model Number
-                                                            </li>
-                                                            <li>
-                                                                Condition
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="card bg-white">
-                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
-                                                   class="card-header collapsed" data-parent="#myCollapse"
-                                                   data-original-title="" title=""
-                                                   data-target="#myCollapseTab1573498334908">What percent return do you
-                                                    offer for surplus?
-                                                </a>
-                                                <div class="collapse" role="tabpanel" style=""
-                                                     id="myCollapseTab1573498334908">
-                                                    <div class="card-body">
-                                                        <p class="card-text">
-                                                                Fair market value is based upon a number of factors seen
-                                                                in the pie chart below.
-                                                        </p>
-                                                        <p class="card-text">
-                                                            <img class="img-fluid o_we_custom_image"
-                                                                 src="/website_cstm/static/src/img/chartFairMarketValue.png"/>
-                                                            <br/>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="card bg-white">
+                                                           <div class="card bg-white">
                                                 <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
                                                    class="card-header collapsed" data-parent="#myCollapse"
                                                    data-original-title="" title=""
@@ -987,7 +509,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="card bg-white">
+                                                           <div class="card bg-white">
                                                 <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
                                                    class="card-header collapsed" data-parent="#myCollapse"
                                                    data-original-title="" title=""
@@ -1019,7 +541,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="card bg-white">
+                                                           <div class="card bg-white">
                                                 <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
                                                    class="card-header collapsed" data-parent="#myCollapse"
                                                    data-original-title="" title=""
@@ -1041,7 +563,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="card bg-white">
+                                                           <div class="card bg-white">
                                                 <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
                                                    class="card-header collapsed" data-parent="#myCollapse"
                                                    data-original-title="" title=""
@@ -1061,13 +583,45 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+
+
+
+
+                                                       </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                         </div>
+                                        <!-- This Code used For out Side Questions -->
+                                        <!--<div id="myCollapse" class="accordion" role="tablist">
+                                           <div class="card bg-white">
+                                                <a href="#" role="tab" data-toggle="collapse" aria-expanded="false"
+                                                   class="card-header collapsed" data-parent="#myCollapse"
+                                                   data-original-title="" title=""
+                                                   data-target="#myCollapseTab1573498336132">Do I need to have a medical
+                                                    license to purchase from your website?
+                                                </a>
+                                                <div class="collapse" role="tabpanel" style=""
+                                                     id="myCollapseTab1573498336132">
+                                                    <div class="card-body">
+                                                        <p class="card-text">
+                                                           Yes, you
+                                                                should be a licensed medical professional to purchase
+                                                                any of our items.
+                                                            <br/>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                        </div>-->
                                     </div>
                                 </div>
                             </div>
                         </section>
-
-                        	<section class="padding-100-y contact-us-section">
+                        <section class="padding-100-y contact-us-section">
                             <div class="container">
 									<h3 class="section-title mt-0 mb-5">Don't see your question listed here? </h3>
                                 <div class="row">
@@ -1078,9 +632,9 @@
 												<div class="story-list link">
 													<div class="list-description">
 														<div class="contact-detail">
-															<span class="d-block"><a href="tel:(412) 564-1280" class="text-black"><i class="fa fa-phone mr-2"></i> (412) 564-1280</a></span>
-															<span class="d-block"><a href="mailto:info@surgicalproductsolutions.com" class="text-black"><i class="fa fa-envelope mr-2"></i>  info@surgicalproductsolutions.com</a></span>
-														</div>
+															<span><a href="tel:(412) 564-1280" class="text-black"><i class="icon-mobile mr-2"></i> (412) 564-1280</a></span>
+													        <span><a href="mailto:info@surgicalproductsolutions.com" class="text-black"><i class="icon-email mr-2"></i>  info@surgicalproductsolutions.com</a></span>
+                                                        </div>
 													</div>
 												</div>
 											</div>
@@ -1091,7 +645,7 @@
 									   </div>
                                     </div>
                                    <div class="col-xl-7 col-md-6 col-sm-6 mb48 mt8">
-								<div class="get-in-touch">
+                                       <div class="get-in-touch">
 									<h3 class="title">GET IN TOUCH</h3>
 									<span class="sub-title">Use the form below to get in touch with us, and we’ll respond as soon as possible. </span>
 									<form action="/website_form/" method="post" data-model_name="crm.lead" data-success_page="/thank-you" class="mt-5 s_website_form form-horizontal container-fluid" enctype="multipart/form-data" data-editable-form="false">
@@ -1120,12 +674,10 @@
 										</div>
 									</form>
 								</div>
-							</div>
-
-
+                                   </div>
                                 </div>
                             </div>
-					</section>
+					    </section>
 
                     <!--<div class="seprator"><div class="red"></div><div class="black"></div></div>-->
                     </div>
