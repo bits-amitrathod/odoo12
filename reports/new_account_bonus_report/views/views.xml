@@ -12,6 +12,7 @@
                     <field name="currency_id" invisible="1"/>
                     <field name="customer"/>
                     <field name="business_development"/>
+                    <field name="key_account"/>
                     <field name="sale_order_id"/>
                     <field name="date_invoice" widget="date"/>
                     <field name="amount_total" widget="monetary" options="{'currency_field': 'currency_id'}"/>
@@ -35,6 +36,7 @@
                             <group>
                                 <field name="customer"/>
                                 <field name="business_development"/>
+                                <field name="key_account"/>
                                 <field name="sale_order_id"/>
                                 <field name="date_invoice" widget="date"/>
                             </group>
@@ -63,6 +65,9 @@
                     <group>
                         <group>
                             <field name="business_development"/>
+                        </group>
+                        <group>
+                            <field name="key_account"/>
                         </group>
                     </group>
                     <footer>
@@ -100,9 +105,10 @@
                             <field name="business_development"/>
                         </group>
                         <group>
-                            <div>Click On ' Export To File ' button to export New Account Bonus Report file</div>
+                            <field name="key_account"/>
                         </group>
                     </group>
+                    <div>Click On ' Export To File ' button to export New Account Bonus Report file</div>
                     <footer>
                         <button name="download_excel_bd_new_account" string="Export To File" type="object"
                                 class="btn-primary"/>
@@ -122,9 +128,11 @@
                 <search string="Search">
                     <field name="customer"/>
                     <field name="business_development"/>
+                    <field name="key_account"/>
                     <group expand="0" string="Group By">
                         <filter name="customer" string="Customer Name" domain="[]" context="{'group_by':'customer'}"/>
-                        <!--<filter name="business_development" string="Business Development" domain="[]" context="{'group_by':'business_development'}"/>-->
+                        <filter name="business_development" string="Business Development" domain="[]" context="{'group_by':'business_development'}"/>
+                        <filter name="key_account" string="Key Account" domain="[]" context="{'group_by':'key_account'}"/>
                     </group>
                 </search>
             </field>

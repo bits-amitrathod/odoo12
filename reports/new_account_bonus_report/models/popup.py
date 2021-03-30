@@ -9,7 +9,11 @@ class NewAccountBonusReportPopup(models.TransientModel):
     start_date = fields.Date('Start Date', default=fields.date.today(), required=True,
                              help="Choose a date to get the New Account Bonus Report at that Start date")
 
-    business_development = fields.Many2one('res.users', string="Business Development", index=True)
+    business_development = fields.Many2one('res.users', string="Business Development", index=True,
+                                           domain="['|', ('active', '=', True), ('active', '=', False)]")
+
+    key_account = fields.Many2one('res.users', string="Key Account", index=True,
+                                  domain="['|', ('active', '=', True), ('active', '=', False)]")
 
     # @api.multi
     def open_table(self):
@@ -21,7 +25,9 @@ class NewAccountBonusReportPopup(models.TransientModel):
         form_view_id = self.env.ref('new_account_bonus_report.new_account_bonus_report_form_view').id
         res_model = 'new.account.bonus.report'
         margins_context = {'start_date': start_date, 'end_date': end_date,
-                           'business_development': self.business_development.id}
+                           'business_development': self.business_development.id,
+                           'key_account': self.key_account.id}
+
         self.env[res_model].with_context(margins_context).delete_and_create()
         action = {
             'type': 'ir.actions.act_window',

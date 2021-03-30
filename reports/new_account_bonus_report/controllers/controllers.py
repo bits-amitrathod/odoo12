@@ -75,17 +75,18 @@ class ExportNewAccountBonusReport(http.Controller):
         fp.close()
         return data
 
-    @http.route('/web/export/new_account_bonus_report_export/<string:start_date>/<string:end_date>/<string:business_development_id>',
+    @http.route('/web/export/new_account_bonus_report_export/<string:start_date>/<string:end_date>/<string:business_development_id>/<string:key_account_id>',
                 type='http',
                 auth="public")
     @serialize_exception
-    def download_document_xl(self, start_date, end_date, business_development_id, token=1, debug=1, **kw):
+    def download_document_xl(self, start_date, end_date, business_development_id, key_account_id, token=1, debug=1, **kw):
 
         select_query = """
                         SELECT ROW_NUMBER () OVER (ORDER BY so.id)  AS id, 
                         so.name                             AS sale_order_id, 
                         RPS.name                            AS customer, 
                         RPSS.name                           AS business_development,
+                        RPSSS.name                          AS key_account,
                         ai.date_invoice                     AS date_invoice, 
                         CASE WHEN so.invoice_status = 'invoiced' then 'Fully Invoiced' END AS invoice_status, 
                         ai.amount_total                     AS amount_total, 
@@ -107,10 +108,15 @@ class ExportNewAccountBonusReport(http.Controller):
                     INNER JOIN public.res_partner RPS ON so.partner_id = RPS.id
                     INNER JOIN public.res_users RU ON so.user_id = RU.id
                     INNER JOIN public.res_partner RPSS ON RU.partner_id = RPSS.id
+                    INNER JOIN public.res_users RUU ON so.account_manager = RUU.id
+                    INNER JOIN public.res_partner RPSSS ON RUU.partner_id = RPSSS.id
                 WHERE so.invoice_status = 'invoiced' """
 
         if business_development_id != "none":
-            select_query = select_query + "AND so.user_id = '" + str(business_development_id) + "'"
+            select_query = select_query + " AND so.user_id = '" + str(business_development_id) + "'"
+
+        if key_account_id != "none":
+            select_query = select_query + " AND so.account_manager = '" + str(key_account_id) + "'"
 
         order_by = " ORDER BY RPS.name"
 
@@ -125,6 +131,7 @@ class ExportNewAccountBonusReport(http.Controller):
             records.append([
                             line['customer'],
                             line['business_development'],
+                            line['key_account'],
                             line['sale_order_id'],
                             line['date_invoice'],
                             line['amount_total'],
@@ -132,7 +139,7 @@ class ExportNewAccountBonusReport(http.Controller):
                             line['invoice_status']])
 
         res = request.make_response(
-            self.from_data(["Customer Name", "Business Development", "Sale Order#", "Invoice Date", "Total",
+            self.from_data(["Customer Name", "Business Development", "Key Account", "Sale Order#", "Invoice Date", "Total",
                             "Months Ago First Order", "Status"],
                            records),
             headers=[('Content-Disposition', content_disposition('new_account_by_month_by_bd' + '.xls')),
