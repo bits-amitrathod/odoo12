@@ -99,11 +99,11 @@
             <div id="shipping_options" class="d-flex mt-3 ml-2">
                 <div class="radio-inline mr-5">
                     <input type="radio" id="my_shipper_account_radio" name="shipping_method_selection" value="my_shipper_account"/>
-                    <label for="my_shipper_account_radio" class="medium-font">My Shipper Account</label>
+                    <label for="my_shipper_account_radio" class="regular-font" style="font-size: 28px;">My Shipper Account</label>
                 </div>
                   <div class="radio-inline">
                         <input type="radio" id="charge_me_for_shipping_radio" name="shipping_method_selection" value="charge_me_for_shipping"/>
-                        <label for="charge_me_for_shipping_radio" class="medium-font">Charge Me For Shipping</label>
+                        <label for="charge_me_for_shipping_radio" class="regular-font" style="font-size: 28px;">Charge Me For Shipping</label>
                   </div>
             </div>
             <div class="col-sm-12 col-md-12 p-0"  t-if="showShippingNote">
