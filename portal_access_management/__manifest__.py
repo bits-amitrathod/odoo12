@@ -6,10 +6,11 @@
     'version': '11.0.0.1',
 
     # any module necessary for this one to work correctly
-     'depends': ['base'],
+     'depends': ['base', 'portal'],
 
     # always loaded
     'data': [
+         'data/portal_data.xml',
          'views/views.xml',
          'views/templates.xml',
     ],
