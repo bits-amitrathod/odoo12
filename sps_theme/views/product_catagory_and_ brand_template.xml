@@ -96,7 +96,7 @@
                                                         t-attf-class="oe_product"
                                                         t-att-data-ribbon-id="td_product['ribbon'].id">
                                                         <div t-attf-class="o_wsale_product_grid_wrapper o_wsale_product_grid_wrapper_#{td_product['x']}_#{td_product['y']}">
-                                                            <t t-call="website_sale.products_item">
+                                                            <t t-call="website_sales.products_item">
                                                                 <t t-set="product_image_big" t-value="td_product['x'] + td_product['y'] &gt; 2"/>
                                                             </t>
                                                         </div>
@@ -133,20 +133,18 @@
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Product Item on list ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
-<!--
     <template id="products_item" name="Products item" inherit_id="website_sale.products_item">
         <xpath expr="//div[@itemscope='itemscope']" position="replace">
             <div itemscope="itemscope" itemtype="http://schema.org/Product">
-
                 <div class="oe_product_image" style="position: relative;left: 0;">
                     <a itemprop="url"
                        t-att-href="keep('/shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']&gt;1 else None))">
-                        &lt;!&ndash; OLD Code&ndash;&gt;
-                        &lt;!&ndash;<span itemprop="image"
+                        <!-- OLD Code-->
+                        <!--<span itemprop="image"
                               t-attf-content="{{request.httprequest.url_root}}web/image/product.template/{{product.id}}/image"
                               t-field="product.image"
                               t-options="{'widget': 'image', 'resize': '300x300', 'zoom': 'image'}"
-                              t-att-alt="product.name" style="position: relative;"/>&ndash;&gt;
+                              t-att-alt="product.name" style="position: relative;"/>-->
                         <span t-field="product.image_1920"
                         t-options="{'widget': 'image', 'preview_image': 'image_1024' if product_image_big else 'image_256'}"
                         class="d-flex h-100 justify-content-center align-items-center"/>
@@ -163,7 +161,7 @@
                 </t>
                 <section class="product-detail">
                     <div class="text-info oe_subdescription" contenteditable="false">
-                        &lt;!&ndash;<div itemprop="description" t-field="product.description_sale"></div>&ndash;&gt;
+                        <!--<div itemprop="description" t-field="product.description_sale"></div>-->
                     </div>
                     <h5>
                         <a itemprop="name"
@@ -179,17 +177,17 @@
                          style="position: relative;">
                         <t t-if="combination_info['price'] &gt; 0">
                             <strong>
-                                &lt;!&ndash; OLD Code&ndash;&gt;
-                                &lt;!&ndash;<t t-if="product.website_price_difference and website.get_current_pricelist().discount_policy=='without_discount'">
+                                <!-- OLD Code-->
+                                <!--<t t-if="product.website_price_difference and website.get_current_pricelist().discount_policy=='without_discount'">
                                     <del class="text-danger mr8" style="white-space: nowrap;"
                                          t-esc="compute_currency(product.website_public_price)"
                                          t-options="{'widget': 'monetary', 'display_currency': website.get_current_pricelist().currency_id, 'from_currency': website.currency_id}"/>
-                                </t>&ndash;&gt;
-                                &lt;!&ndash; OLD Code&ndash;&gt;
-                                &lt;!&ndash;<span t-esc="product.website_price"
+                                </t>-->
+                                <!-- OLD Code-->
+                                <!--<span t-esc="product.website_price"
                                       t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
                                 <span itemprop="price" style="display:none;" t-esc="product.website_price"/>
-                                <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name"/> &ndash;&gt;
+                                <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name"/> -->
                                 <span t-if="combination_info['price']" t-esc="combination_info['price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
                                 <span itemprop="price" style="display:none;" t-esc="combination_info['price']" />
                                 <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name" />
@@ -199,17 +197,17 @@
                             <span>Call for Pricing 412-564-1280</span>
                         </t>
 
-                        &lt;!&ndash;<button type="button" class="btn btn-xs"
+                        <!--<button type="button" class="btn btn-xs"
                                 data-toggle="modal"
                                 style="background: transparent;"
                                 t-att-data-target="'#product_view'+str(product.id)">
                             <i class="fa fa-search-plus" style="color:  #666666; font-size: 15px;" data-toggle="tooltip"
                                data-placement="right" title="Quick Shop"/>
-                        </button>&ndash;&gt;
+                        </button>-->
 
                     </div>
 
-                    &lt;!&ndash;~~~~~~~~~~~~~~~~~~ Expration~~~~~~~~~~~~~~~~ &ndash;&gt;
+                    <!--~~~~~~~~~~~~~~~~~~ Expration~~~~~~~~~~~~~~~~ -->
                     <t t-call="website_sales.productExpirationDate"/>
 
                     <div t-if="product.actual_quantity &lt;= 0"
@@ -223,13 +221,10 @@
                            t-att-href="keep('/shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']&gt;1 else None))">BUY NOW</a>
                     </div>
 
-
-
                 </section>
             </div>
         </xpath>
     </template>
--->
 
     <!-- add some info on product detials page  checked-->
     <template id="product_attributes" inherit_id="website_sale.product" name="Product attributes">
@@ -426,7 +421,9 @@
         </t>
     </template>
 -->
-    <!--<template id="product_quantity" inherit_id="website_sale.product_quantity" customize_show="True"
+
+    <!-- Show Quantity on product details pages-->
+    <template id="product_quantity" inherit_id="website_sale.product_quantity" customize_show="True"
               name="Select Quantity">
         <xpath expr="//div[hasclass('css_quantity')]" position="replace">
             <t t-if="product.actual_quantity &gt; 0">
@@ -445,7 +442,5 @@
             </t>
         </xpath>
     </template>
--->
-
 
 </odoo>

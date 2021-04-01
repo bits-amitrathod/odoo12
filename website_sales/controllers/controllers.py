@@ -127,7 +127,8 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         payload['title'] = title
         return request.render("website_sale.products", payload)
 
-    @http.route(['/shop/product/<model("product.template"):product>'], type='http', auth="public", website=True)
+    # Compatibility pre-v14
+    # @http.route(['/shop/product/<model("product.template"):product>'], type='http', auth="public", website=True)
     @http.route(['/shop/<model("product.template"):product>'], type='http', auth="public", website=True, sitemap=True)
     def product(self, product, category='', search='', **kwargs):
         responce = super(WebsiteSales, self).product(product, category='', search='', **kwargs)
