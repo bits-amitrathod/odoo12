@@ -3,6 +3,13 @@
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Product Expiration Lot~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
+        <template id="products_item" name="Products item" inherit_id="website_sale.products_item">
+                <xpath expr="//div[@class='product_price']" position="before">
+                <!--   <t t-call="website_sales.productExpirationDate"/>-->
+                </xpath>
+        </template>
+
+
     <template id="productExpirationDate" name="Product Expiration Date">
         <t t-if="isVisibleWebsiteExpirationDate and product.actual_quantity &gt; 0">
             <div class="expiration-section">
@@ -37,19 +44,19 @@
     </template>
 
     <template id="products_categories" name="eCommerce Categories" inherit_id="website_sale.products_categories" active="False" customize_show="True">
-        <xpath expr="//div[@id='products_grid_before']/ul" position="replace">
+        <xpath expr="//div[@id='products_grid_before']//div[@id='wsale_products_categories_collapse']/ul" position="replace">
             <!-- products categories Filter -->
             <div class="sidebar-accordion pt-5" id="categories">
-              <div class="card">
-                <div class="card-header" id="allcategories">
-                  <h2 class="mb-0">
-                    <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#all_categories" aria-expanded="false" aria-controls="all_categories">
-                      PRODUCT CATEGORY <i class="fa fa-plus"></i>
-                    </button>
-                  </h2>
-                </div>
+                <div class="card">
+                    <div class="card-header" id="allcategories">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#all_categories" aria-expanded="false" aria-controls="all_categories">
+                              PRODUCT CATEGORY <i class="fa fa-plus"></i>
+                            </button>
+                        </h2>
+                    </div>
 
-                <div id="all_categories" class="collapse" aria-labelledby="headingOne" data-parent="#categories">
+                    <div id="all_categories" class="collapse" aria-labelledby="headingOne" data-parent="#categories">
                   <div class="card-body">
                       <ul class="sub-category">
                         <t t-foreach="categories" t-as="c">
@@ -58,10 +65,10 @@
                       </ul>
                   </div>
                 </div>
-              </div>
+                </div>
 
-            <!-- products Brand Filter -->
-                  <div class="card">
+                <!-- products Brand Filter -->
+                <div class="card">
                     <div class="card-header" id="brand">
                       <h2 class="mb-0">
                         <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
@@ -84,8 +91,7 @@
                       </div>
                     </div>
                   </div>
-                </div>
-
+            </div>
         </xpath>
         <xpath expr="//div[@id='products_grid_before']" position="attributes">
             <attribute name="class">col-md-3 col-sm-4</attribute>
