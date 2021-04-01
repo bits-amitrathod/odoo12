@@ -135,10 +135,10 @@ class VendorOffer(models.Model):
     notes_activity = fields.One2many('purchase.notes.activity', 'order_id', string='Notes')
 
     accelerator = fields.Boolean(string="Accelerator")
-    priority = fields.Selection([
-        ('low', 'Low'),
-        ('medium', 'Medium'),
-        ('high', 'High')], string='Priority')
+    # priority = fields.Selection([
+    #     ('low', 'Low'),
+    #     ('medium', 'Medium'),
+    #     ('high', 'High')], string='Priority')
 
     new_customer = fields.Boolean(string="New Customer")
     shipping_label_issued = fields.Selection([
@@ -600,7 +600,7 @@ class VendorOffer(models.Model):
                 self.revision = str(temp)
 
 
-            self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
+            #self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
 
     #@api.multi
     def action_button_confirm_api_cash(self, product_id):
@@ -621,7 +621,7 @@ class VendorOffer(models.Model):
             temp = int(self.revision) - 1
             self.revision = str(temp)
 
-        self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
+        #self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
 
     #@api.multi
     def action_button_confirm_api_credit(self, product_id):
@@ -643,7 +643,7 @@ class VendorOffer(models.Model):
             temp = int(self.revision) - 1
             self.revision = str(temp)
 
-        self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
+        #self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
 
     #@api.multi
     def button_confirm(self):

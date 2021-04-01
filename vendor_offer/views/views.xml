@@ -44,7 +44,7 @@
         <record model="ir.ui.view" id="vendor_offer.list">
             <field name="name">purchase.order list2</field>
             <field name="model">purchase.order</field>
-            <field name="priority">20</field>
+            <!--<field name="priority">20</field>-->
             <field name="arch" type="xml">
                 <tree>
                     <field name="name" attrs="{'invisible':[('state', 'not in', ('ven_draft','ven_sent'))]}"/>
@@ -716,7 +716,7 @@
         <record model="ir.ui.view" id="vendor_offer.vendor_pricing_list">
             <field name="name">product.product.list8</field>
             <field name="model">product.product</field>
-            <field name="priority">20</field>
+            <!--<field name="priority">20</field>-->
             <field name="arch" type="xml">
                 <tree create="false" import="false">
                     <!--<field name="sku_code" string="ProductNumber"/>-->
@@ -771,7 +771,7 @@
         <record id="vendor_offer_accept_popup" model="ir.ui.view">
             <field name="name">ven.offer.accept.vendor</field>
             <field name="model">purchase.order</field>
-            <field name="priority">20</field>
+            <!--<field name="priority">20</field>-->
             <field name="arch" type="xml">
                 <form string="Offer Accept">
                     <group>
