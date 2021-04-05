@@ -120,8 +120,12 @@
                     <b class="mb-3 bold-font f16">Select a Delivery Method:</b>
                     <select class="form-control" id="selectDeliveryMethod" style="font-family: 'robotolight';font-size: 16px;">
                         <option value="Ground" selected="true">Ground</option>
-                        <option value="2nd day">2nd day</option>
-                        <option value="Overnight">Overnight</option>
+                        <option value="First Overnight (U.S.) (by 8:30 a.m. next business day)">First Overnight (U.S.) (by 8:30 a.m. next business day)</option>
+                        <option value="Priority Overnight (U.S.) (by 10:30 a.m. next business day)">Priority Overnight (U.S.) (by 10:30 a.m. next business day)</option>
+                        <option value="Standard Overnight (U.S.) (by 3 p.m. next business day)">Standard Overnight (U.S.) (by 3 p.m. next business day)</option>
+                        <option value="2nd Day a.m. (U.S.) (by 10:30 a.m. or noon second business day)">2nd Day a.m. (U.S.) (by 10:30 a.m. or noon second business day)</option>
+                        <option value="2nd Day p.m. (U.S.) (by 4:30 p.m. second business day)">2nd Day p.m. (U.S.) (by 4:30 p.m. second business day)</option>
+                        <option value="Express Saver (U.S.) (by 4:30 p.m. third business day)">Express Saver (U.S.) (by 4:30 p.m. third business day)</option>
                     </select>
                 </div>
             </div>
