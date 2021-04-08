@@ -70,15 +70,14 @@ class SpsTransientBaseImport(models.TransientModel):
 
         rows_to_import = self._read_file(options)
         if options.get('headers'):
-            rows_to_import = itertools.islice(rows_to_import, 1, None)
+            rows_to_import = itertools.islice(rows_to_import, 0, None)
         data = [list(row) for row in map(mapper, rows_to_import) if any(row)]
         cols = data[0:1]
 
         cell_values = data[1:]
         return cell_values, import_fields, cols
 
-    #@api.multi
-    def do(self, fields, columns,options, parent_model, customer_id, template_type, upload_document, dryrun=False):
+    def do_custom(self, fields, columns,options, parent_model, customer_id, template_type, upload_document, dryrun=False):
         self.ensure_one()
         import_result = {'messages': []}
         try:
@@ -100,7 +99,7 @@ class SpsTransientBaseImport(models.TransientModel):
             if len(col) == 1:
                 resource_model = self.env[parent_model]
                 columns = col[0]
-                dict_list = [{ import_field: columns[idx]} for idx, import_field in enumerate(import_fields)]
+                dict_list = [{import_field: columns[idx]} for idx, import_field in enumerate(import_fields)]
                 resource_model_dict = dict(template_file=self.file, file_name=self.file_name,
                                            customer_id=customer_id)
                 for dictionary in dict_list:
@@ -110,9 +109,9 @@ class SpsTransientBaseImport(models.TransientModel):
                 for template_resource in template_resources:
                     template_resource.write(dict(template_status='InActive'))
                 name_create_enabled_fields = options.pop('name_create_enabled_fields', {})
-                template = resource_model.create(resource_model_dict).with_context(import_file=True, name_create_enabled_fields=name_create_enabled_fields)
-                # import_result = template.load(import_fields, data)
-                import_result['ids'] = [template.id]
+                template = resource_model.with_context(import_file=True, name_create_enabled_fields=name_create_enabled_fields).create(resource_model_dict)
+                # import_result = model.load(import_fields, data)
+                import_result['ids'] = [template['id']]
 
                 try:
                     if dryrun:
@@ -125,11 +124,11 @@ class SpsTransientBaseImport(models.TransientModel):
                             directory_path = ATTACHMENT_DIR + str(customer_id) + "/" + template_type + "/"
                             myfile_path = directory_path + str(self.file_name)
                             self.env['sps.document.process'].sudo().process_document(users_model, myfile_path, template_type, self.file_name, '', 'Manual')
-
                         else:
                             self._cr.execute('RELEASE SAVEPOINT import')
 
                 except psycopg2.InternalError:
+                    print('Internal error')
                     pass
         except ValueError as error:
             _logger.info('Error %r', str(error))
