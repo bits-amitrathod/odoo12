@@ -1,3 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_lot_history_report_user,lot_history_report user,model_lot_history_report,stock.group_stock_user,1,0,0,0
-access_lot_history_report_mng,lot_history_report manager,model_lot_history_report,stock.group_stock_manager,1,1,1,1
+lot_history_report,lot.history.report,model_lot_history_report,,1,1,1,1
+popup_lot_history,popup.lot.history,model_popup_lot_history,,1,1,1,1

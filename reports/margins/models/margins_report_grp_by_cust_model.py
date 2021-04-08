@@ -80,11 +80,11 @@ class MarginsReport(models.Model):
         date_range = ""
         if not s_date is None:
             select_query = select_query + ", '" + str(s_date) + "' as date_from "
-            where_clause = where_clause + AND + " o.confirmation_date >= '" + str(s_date) + "'"
+            where_clause = where_clause + AND + " o.date_order >= '" + str(s_date) + "'"
 
         if not e_date is None:
             select_query = select_query + ", '" + str(e_date) + "' as date_to "
-            where_clause = where_clause + AND + " o.confirmation_date <= '" + str(e_date) + "'"
+            where_clause = where_clause + AND + " o.date_order <= '" + str(e_date) + "'"
 
         if not partner_id is None:
             where_clause = where_clause + AND + " o.partner_id = " + str(partner_id)

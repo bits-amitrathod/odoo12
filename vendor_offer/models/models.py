@@ -1745,7 +1745,6 @@ def _add_customer_references_so(srm, order):
 def _convert_curr_iso_fdx(code):
     return FEDEX_CURR_MATCH.get(code, code)
 
-
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
