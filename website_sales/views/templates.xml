@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!--
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Product Expiration Lot~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Product Expiration Lot~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
-    <template id="products_item" name="Products item" inherit_id="website_sale.products_item">
-        <xpath expr="//div[@class='product_price']" position="before">
-<!--            <t t-call="website_sales.productExpirationDate"/>-->
-        </xpath>
-    </template>
+        <template id="products_item" name="Products item" inherit_id="website_sale.products_item">
+                <xpath expr="//div[@class='product_price']" position="before">
+                <!--   <t t-call="website_sales.productExpirationDate"/>-->
+                </xpath>
+        </template>
+
 
     <template id="productExpirationDate" name="Product Expiration Date">
         <t t-if="isVisibleWebsiteExpirationDate and product.actual_quantity &gt; 0">
@@ -44,30 +43,20 @@
         </t>
     </template>
 
-    <!--<template id="sort" inherit_id="website_sale.sort" active="True" customize_show="True" name="Show Sort by">
-        <xpath expr="//div[hasclass('dropdown_sorty_by')]" position="after">
-            <button type="button" class="categoriesCollapseBtn btn btn-default" data-toggle="collapse"
-                    data-target="#categories-collapse">
-                <span>Categories</span>
-                <span class="caret"/>
-            </button>
-        </xpath>
-    </template>-->
-
     <template id="products_categories" name="eCommerce Categories" inherit_id="website_sale.products_categories" active="False" customize_show="True">
-        <xpath expr="//div[@id='products_grid_before']/ul" position="replace">
+        <xpath expr="//div[@id='products_grid_before']//div[@id='wsale_products_categories_collapse']/ul" position="replace">
             <!-- products categories Filter -->
             <div class="sidebar-accordion pt-5" id="categories">
-              <div class="card">
-                <div class="card-header" id="allcategories">
-                  <h2 class="mb-0">
-                    <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#all_categories" aria-expanded="false" aria-controls="all_categories">
-                      PRODUCT CATEGORY <i class="fa fa-plus"></i>
-                    </button>
-                  </h2>
-                </div>
+                <div class="card">
+                    <div class="card-header" id="allcategories">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#all_categories" aria-expanded="false" aria-controls="all_categories">
+                              PRODUCT CATEGORY <i class="fa fa-plus"></i>
+                            </button>
+                        </h2>
+                    </div>
 
-                <div id="all_categories" class="collapse" aria-labelledby="headingOne" data-parent="#categories">
+                    <div id="all_categories" class="collapse" aria-labelledby="headingOne" data-parent="#categories">
                   <div class="card-body">
                       <ul class="sub-category">
                         <t t-foreach="categories" t-as="c">
@@ -76,10 +65,10 @@
                       </ul>
                   </div>
                 </div>
-              </div>
+                </div>
 
-            <!-- products Brand Filter -->
-                  <div class="card">
+                <!-- products Brand Filter -->
+                <div class="card">
                     <div class="card-header" id="brand">
                       <h2 class="mb-0">
                         <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
@@ -102,8 +91,7 @@
                       </div>
                     </div>
                   </div>
-                </div>
-
+            </div>
         </xpath>
         <xpath expr="//div[@id='products_grid_before']" position="attributes">
             <attribute name="class">col-md-3 col-sm-4</attribute>
@@ -136,10 +124,7 @@
         </field>
     </record>
 
-
-    <!--
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Customer Reference As sales Order ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    -->
+    <!--  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Customer Reference As sales Order ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
     <template id="category_vender" name="category Vender">
         <div class="row category-wrapper">
@@ -193,10 +178,7 @@
         </li>
     </template>
 
-
-    <!--
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Email Notification Template ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Email Notification Template ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
     <record id="website_order_placed" model="mail.template">
         <field name="name">Email Notification: Product Purchase Details</field>

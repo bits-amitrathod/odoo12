@@ -10,6 +10,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='category_id']" position="after">
                 <field name="contract" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}" placeholder="Contracts..."/>
+                 <!--<field name="contract" widget="many2many_tags" options="{'no_create_edit': True}" placeholder="Contracts..."/>-->
             </xpath>
         </field>
         </record>

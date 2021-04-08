@@ -1,6 +1,8 @@
 <odoo>
-   <template id="brand" inherit_id="website_sale.products" active="True" customize_show="True" name="Show Sort by">
 
+    <!-- /shop product listing -->
+    <!-- used for add some section top of shop page like  title - search - sorting -pagination in shop page  Done->checked -->
+    <template id="brand" inherit_id="website_sale.products" active="True" customize_show="True" name="Show Sort by">
 
        <xpath expr="//div[@id='products_grid']//table" position="before">
                 <div class="text-center pt32">
@@ -16,7 +18,14 @@
                         <t t-call="website.pager">
                             <t t-set="_classes">ml-2</t>
                         </t>
-
+                        <div class="btn-group btn-group-toggle mt-2 ml-md-2 d-none d-sm-inline-flex o_wsale_apply_layout" data-toggle="buttons">
+                            <label t-attf-class="btn btn-secondary #{'active' if layout_mode != 'list' else None} fa fa-th-large o_wsale_apply_grid" title="Grid">
+                                <input type="radio" name="wsale_products_layout" t-att-checked="'checked' if layout_mode != 'list' else None"/>
+                            </label>
+                            <label t-attf-class="btn btn-secondary #{'active' if layout_mode == 'list' else None} fa fa-th-list o_wsale_apply_list" title="List">
+                                <input type="radio" name="wsale_products_layout" t-att-checked="'checked' if layout_mode == 'list' else None"/>
+                            </label>
+                        </div>
                        <t t-set="list_price_desc_label">Catalog Price: High to Low</t>
                         <t t-set="list_price_asc_label">Catalog Price: Low to High</t>
                         <t t-set="name_asc_label">Name - A to Z</t>
@@ -55,36 +64,51 @@
                         </div>
 
            </div>
-
        </xpath>
 
-       <!--<xpath expr="//div[hasclass('products_pager')]/t[@t-call][last()]" position="after">
-            <t t-set="list_price_desc_label">Catalog price: High to Low</t>
-            <t t-set="list_price_asc_label">Catalog price: Low to High</t>
-            <t t-set="name_asc_label">Name - A to Z</t>
-            <t t-set="name_desc_label">Name - Z to A</t>
-            <t t-set="website_sale_sortable" t-value="[
-                (list_price_desc_label, 'list_price desc'),
-                (list_price_asc_label, 'list_price asc'),
-                (name_asc_label, 'name asc'),
-                (name_desc_label, 'name desc')
-            ]"/>
-            <t t-set="website_sale_sortable_current" t-value="[sort for sort in website_sale_sortable if sort[1]==request.params.get('order', '')]"/>
-        </xpath>-->
-       <!--<xpath expr="//div[hasclass('products_pager')]" position="before">
-                   <div class="text-center pt32">
-                        <h1  class="about-header"> Surgical Products - <strong>Shop</strong> </h1>
-                    </div>
-            </xpath>-->
+       <!-- Hide Default Search - Pagination - sort -->
+       <xpath expr="//div[hasclass('container')]//div[hasclass('products_pager')]" position="replace">
+            <div class="products_pager form-inline flex-md-nowrap justify-content-between justify-content-md-center">
+            </div>
+       </xpath>
     </template>
-
 
     <!--  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Product Item List ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
+    <!-- /shop product listing -->
     <template id="products_item_cstm" name="Products item" inherit_id="website_sale.products">
 
         <xpath expr="//table" position="replace">
-            <div class="row" t-foreach="porductRows" t-as="tr_product">
+            <!-- new odoo 14 Structure -->
+           <table class="table table-borderless m-0" t-att-data-ppg="ppg" t-att-data-ppr="ppr">
+                                    <colgroup t-ignore="true">
+                                        <!-- Force the number of columns (useful when only one row of (x < ppr) products) -->
+                                        <col t-foreach="ppr" t-as="p"/>
+                                    </colgroup>
+                                    <tbody>
+                                        <tr t-foreach="bins" t-as="tr_product">
+                                            <t t-foreach="tr_product" t-as="td_product">
+                                                <t t-if="td_product">
+                                                    <t t-set="product" t-value="td_product['product']" />
+                                                    <!-- We use t-attf-class here to allow easier customization -->
+                                                    <td t-att-colspan="td_product['x'] != 1 and td_product['x']"
+                                                        t-att-rowspan="td_product['y'] != 1 and td_product['y']"
+                                                        t-attf-class="oe_product"
+                                                        t-att-data-ribbon-id="td_product['ribbon'].id">
+                                                        <div t-attf-class="o_wsale_product_grid_wrapper o_wsale_product_grid_wrapper_#{td_product['x']}_#{td_product['y']}">
+                                                            <t t-call="website_sales.products_item">
+                                                                <t t-set="product_image_big" t-value="td_product['x'] + td_product['y'] &gt; 2"/>
+                                                            </t>
+                                                        </div>
+                                                    </td>
+                                                </t>
+                                                <td t-else=""/>
+                                            </t>
+                                        </tr>
+                                    </tbody>
+                                </table>
+            <!-- odoo 12 Structure -->
+            <!--<div class="row" t-foreach="porductRows" t-as="tr_product">
                 <t t-foreach="tr_product" t-as="td_product">
                     <t t-if="td_product">
                         <t t-set="product" t-value="td_product"/>
@@ -97,11 +121,12 @@
                     </t>
                     <div t-if="not td_product" class="oe-height-2 col-md-3 col-sm-6"/>
                 </t>
-            </div>
+            </div>-->
         </xpath>
-        <xpath expr="//h3[hasclass('css_editable_display')]" position="replace">
+        <!-- already Awalable in odoo 14  -->
+        <!--<xpath expr="//h3[hasclass('css_editable_display')]" position="replace">
             <h3 class="css_editable_display mt8">No Product Defined.</h3>
-        </xpath>
+        </xpath>-->
 
     </template>
 
@@ -111,15 +136,18 @@
     <template id="products_item" name="Products item" inherit_id="website_sale.products_item">
         <xpath expr="//div[@itemscope='itemscope']" position="replace">
             <div itemscope="itemscope" itemtype="http://schema.org/Product">
-
                 <div class="oe_product_image" style="position: relative;left: 0;">
                     <a itemprop="url"
                        t-att-href="keep('/shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']&gt;1 else None))">
-                        <span itemprop="image"
+                        <!-- OLD Code-->
+                        <!--<span itemprop="image"
                               t-attf-content="{{request.httprequest.url_root}}web/image/product.template/{{product.id}}/image"
                               t-field="product.image"
                               t-options="{'widget': 'image', 'resize': '300x300', 'zoom': 'image'}"
-                              t-att-alt="product.name" style="position: relative;"/>
+                              t-att-alt="product.name" style="position: relative;"/>-->
+                        <span t-field="product.image_1920"
+                        t-options="{'widget': 'image', 'preview_image': 'image_1024' if product_image_big else 'image_256'}"
+                        class="d-flex h-100 justify-content-center align-items-center"/>
                     </a>
                 </div>
                 <t t-if="show_publish">
@@ -147,18 +175,22 @@
                     <div  itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer"
                          class="product_price" t-if="product.product_variant_ids"
                          style="position: relative;">
-                        <t t-if="product.website_price  &gt; 0">
+                        <t t-if="combination_info['price'] &gt; 0">
                             <strong>
-                                <t t-if="product.website_price_difference and website.get_current_pricelist().discount_policy=='without_discount'">
+                                <!-- OLD Code-->
+                                <!--<t t-if="product.website_price_difference and website.get_current_pricelist().discount_policy=='without_discount'">
                                     <del class="text-danger mr8" style="white-space: nowrap;"
                                          t-esc="compute_currency(product.website_public_price)"
                                          t-options="{'widget': 'monetary', 'display_currency': website.get_current_pricelist().currency_id, 'from_currency': website.currency_id}"/>
-                                </t>
-
-                                <span t-esc="product.website_price"
+                                </t>-->
+                                <!-- OLD Code-->
+                                <!--<span t-esc="product.website_price"
                                       t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
                                 <span itemprop="price" style="display:none;" t-esc="product.website_price"/>
-                                <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name"/>
+                                <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name"/> -->
+                                <span t-if="combination_info['price']" t-esc="combination_info['price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                <span itemprop="price" style="display:none;" t-esc="combination_info['price']" />
+                                <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name" />
                             </strong>
                         </t>
                         <t t-else="">
@@ -189,14 +221,12 @@
                            t-att-href="keep('/shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']&gt;1 else None))">BUY NOW</a>
                     </div>
 
-
-
                 </section>
             </div>
         </xpath>
     </template>
 
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~ add  product detials ~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- add some info on product detials page  checked-->
     <template id="product_attributes" inherit_id="website_sale.product" name="Product attributes">
         <xpath expr="//a[@id='add_to_cart']" position="before">
             <div class="w-100"></div>
@@ -207,7 +237,7 @@
         </xpath>
     </template>
 
-    <template id="website_sale.product" name="Product">
+    <!--<template id="website_sale.product" name="Product">
 
         <t t-set="first_possible_combination" t-value="product._get_first_possible_combination()"/>
         <t t-set="combination_info" t-value="product._get_combination_info(first_possible_combination, add_qty=add_qty or 1, pricelist=pricelist)"/>
@@ -218,20 +248,20 @@
             <div itemscope="itemscope" itemtype="http://schema.org/Product" id="wrap" class="js_sale">
                 <section t-attf-class="container padding-60-y oe_website_sale #{'discount' if combination_info['has_discounted_price'] else ''}" id="product_detail">
                     <div class="row pb-5">
-<!--                        <div class="col-sm-4">-->
-<!--                            <ol class="breadcrumb">-->
-<!--                                <li>-->
-<!--                                <a t-att-href="keep(category=0)">Products</a>-->
-<!--                                </li>-->
-<!--                                <li t-if="category">-->
-<!--                                <a t-att-href="keep('/shop/category/%s' % slug(category), category=0)"-->
-<!--                                t-field="category.name"/>-->
-<!--                                </li>-->
-<!--                                <li class="active">-->
-<!--                                <span t-field="product.name"/>-->
-<!--                                </li>-->
-<!--                            </ol>-->
-<!--                        </div>-->
+&lt;!&ndash;                        <div class="col-sm-4">&ndash;&gt;
+&lt;!&ndash;                            <ol class="breadcrumb">&ndash;&gt;
+&lt;!&ndash;                                <li>&ndash;&gt;
+&lt;!&ndash;                                <a t-att-href="keep(category=0)">Products</a>&ndash;&gt;
+&lt;!&ndash;                                </li>&ndash;&gt;
+&lt;!&ndash;                                <li t-if="category">&ndash;&gt;
+&lt;!&ndash;                                <a t-att-href="keep('/shop/category/%s' % slug(category), category=0)"&ndash;&gt;
+&lt;!&ndash;                                t-field="category.name"/>&ndash;&gt;
+&lt;!&ndash;                                </li>&ndash;&gt;
+&lt;!&ndash;                                <li class="active">&ndash;&gt;
+&lt;!&ndash;                                <span t-field="product.name"/>&ndash;&gt;
+&lt;!&ndash;                                </li>&ndash;&gt;
+&lt;!&ndash;                            </ol>&ndash;&gt;
+&lt;!&ndash;                        </div>&ndash;&gt;
                         <div class="col-sm-4 mb8">
                             <div class=" w-75 m-auto">
                                 <t t-call="website_sale.search"/>
@@ -245,8 +275,8 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            <t t-set="variant_img" t-value="product_variant and product_variant.image_variant"/>
-                            <t t-set="image_ids"  t-value="product.product_image_ids"/>
+&lt;!&ndash;                            <t t-set="variant_img" t-value="product_variant and product_variant.image_variant"/>&ndash;&gt;
+&lt;!&ndash;                            <t t-set="image_ids"  t-value="product.product_image_ids"/>&ndash;&gt;
                             <div id="o-carousel-product" class="carousel slide" data-ride="carousel" data-interval="0">
                                 <div class="carousel-outer">
                                     <div class="carousel-inner">
@@ -284,11 +314,11 @@
                             <h5><a href="javascript:void(0)" itemprop="name" t-field="product.name">Product Name</a></h5>
                             <span itemprop="url" style="display:none;"
                                   t-esc="'%sshop/product/%s' % (request.httprequest.url_root, slug(product))"/>
-                            <!-- Manufacturer name -->
+                            &lt;!&ndash; Manufacturer name &ndash;&gt;
                             <p class="brand-code">
                                 <a t-att-href="keep('/shop/brands', brand=product.product_brand_id.id)"
                                    t-field="product.product_brand_id.name" class="linkCstm"></a>
-                                <!-- SKU -->
+                                &lt;!&ndash; SKU &ndash;&gt;
                               <span t-field="product.default_code"></span>
                             </p>
 
@@ -345,8 +375,8 @@
                                                             aria-expanded="false">Notify me
                                                     </button>
 
-                                                </div><!-- /btn-group -->
-                                            </div><!-- /input-group -->
+                                                </div>&lt;!&ndash; /btn-group &ndash;&gt;
+                                            </div>&lt;!&ndash; /input-group &ndash;&gt;
                                             <p style="display: none;" class="invalidEmail">
                                                 <i class="fa fa-exclamation-triangle"></i>
                                                 Email address is invalid
@@ -363,7 +393,7 @@
                                     </t>
                                 </div>
                             </form>
-<!--                            <hr class="mb8 mt12"/>-->
+&lt;!&ndash;                            <hr class="mb8 mt12"/>&ndash;&gt;
                             <div class="o_not_editable">
                                 <p t-field="product.description_sale" class="text-muted"/>
                             </div>
@@ -373,13 +403,13 @@
                 <div itemprop="description" t-field="product.website_description" class="oe_structure mt16"
                      id="product_full_description"/>
                 <t t-set="head">
-                    <!-- Facebook and linkedin sharing data -->
+                    &lt;!&ndash; Facebook and linkedin sharing data &ndash;&gt;
                     <meta property="og:type" content="website"/>
                     <meta property="og:url" t-att-content="request.httprequest.url"/>
                     <meta property="og:image"
                           t-attf-content="#{request.httprequest.url_root}web/image/product.template/#{product.id}/image"/>
                     <meta property="og:description" t-att-content="product.description_sale"/>
-                    <!--  Twitter sharing data -->
+                    &lt;!&ndash;  Twitter sharing data &ndash;&gt;
                     <meta name="twitter:card" content="summary_large_image"/>
                     <meta name="twitter:site" t-attf-content="@#{res_company.name}"/>
                     <meta name="twitter:title" t-att-content="product.name"/>
@@ -390,7 +420,9 @@
             </div>
         </t>
     </template>
+-->
 
+    <!-- Show Quantity on product details pages-->
     <template id="product_quantity" inherit_id="website_sale.product_quantity" customize_show="True"
               name="Select Quantity">
         <xpath expr="//div[hasclass('css_quantity')]" position="replace">
@@ -410,55 +442,5 @@
             </t>
         </xpath>
     </template>
-
-    <template id="website_sale_stock_product_cstm" inherit_id="website_sale.product" priority="4">
-        <xpath expr="//div[hasclass('availability_messages')]" position="replace">
-            <span/>
-        </xpath>
-    </template>
-
-    <template id="sortCstm" inherit_id="website_sale.sort" active="True" customize_show="True" name="Show Sort by">
-            <xpath expr="//div[hasclass('dropdown_sorty_by')]" position="replace">
-                <!--<t t-set="list_price_desc_label">Catalog price: High to Low</t>
-                <t t-set="list_price_asc_label">Catalog price: Low to High</t>
-                <t t-set="name_asc_label">Name - A to Z</t>
-                <t t-set="name_desc_label">Name - Z to A</t>
-                <t t-set="qty_available_desc_label">Quantity: High to Low</t>
-                <t t-set="qty_available_asc_label">Quantity: Low to High</t>
-                <t t-set="website_sale_sortable" t-value="[
-                    (list_price_desc_label, 'list_price desc'),
-                    (list_price_asc_label, 'list_price asc'),
-                    (name_asc_label, 'name asc'),
-                    (name_desc_label, 'name desc'),
-                    (qty_available_asc_label, 'actual_quantity asc'),
-                    (qty_available_desc_label, 'actual_quantity desc')
-                ]"/>
-                <t t-set="website_sale_sortable_current"
-                   t-value="[sort for sort in website_sale_sortable if sort[1]==request.params.get('order', '')]"/>
-                <div class="dropdown btn-group dropdown_sorty_by">
-                    <a href="#" class="dropdown-toggle btn btn-default" data-toggle="dropdown">
-                        <t t-if='len(website_sale_sortable_current)'>
-                            <span>Sorting by :
-                                <t t-raw='website_sale_sortable_current[0][0]'/>
-                            </span>
-                        </t>
-                        <t t-else='1'>
-                            <span>Sort by</span>
-                            <span class="caret"></span>
-                        </t>
-                    </a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li t-foreach="website_sale_sortable" t-as="sortby">
-                            <a t-att-href="keep('/shop', order=sortby[1])">
-                                <span t-raw="sortby[0]"/>
-                            </a>
-                        </li>
-                    </ul>
-                </div>-->
-            </xpath>
-        <xpath expr="//div[hasclass('container')]/div[1]" position="replace">
-        </xpath>
-        </template>
-
 
 </odoo>
