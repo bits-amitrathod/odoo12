@@ -158,7 +158,6 @@ var DataImport = AbstractAction.extend({
         },
     },
     init: function (parent, action) {
-        console.log("Inside Init");
         this._super.apply(this, arguments);
         this.action_manager = parent;
         this.res_model =  action.params[0].request_model;//action.params.model;
@@ -169,7 +168,6 @@ var DataImport = AbstractAction.extend({
         this._title = _t('Import Template'); // Displayed in the breadcrumbs
         this.do_not_change_match = false;
 	    this.sheets = [];
-        console.log(action.params[0].customer_id);
         this.customer = action.params[0].customer_id;
         this.user_type = action.params[0].user_type;
         this.parent_model = action.params[0].model;
@@ -177,9 +175,9 @@ var DataImport = AbstractAction.extend({
         this.upload_document = action.params[0].upload_document;
         // Displayed in the breadcrumbs
         if(this.upload_document == 'True'){
-            action.display_name = _t('Upload Document');
+            this._title = _t('Upload Document');
         }else{
-            action.display_name = _t('Import Template');
+            this._title = _t('Import Template');
         }
     },
     /**
@@ -790,10 +788,11 @@ var DataImport = AbstractAction.extend({
     _batchedImport: function (opts, args, kwargs, rec) {
         opts.callback && opts.callback(rec.done || 0);
         var self = this;
+
         return this._rpc({
-            model: 'base_import.import',
-            method: 'do',
-            args: args.concat([this.id, fields,columns, this.import_options(), this.parent_model, this.customer, this.template_type, this.upload_document]),
+            model: 'sps.template.transient',
+            method: 'do_custom',
+            args: [self.id, args[1],args[2], self.import_options(), self.parent_model, self.customer, self.template_type, self.upload_document],
             kwargs: kwargs
         }).then(function (results) {
             _.each(results.messages, offset_by(opts.skip));
