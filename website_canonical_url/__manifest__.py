@@ -14,8 +14,8 @@
         'website',
     ],
     'data': [
-        'views/website_views.xml',
-        'templates/layout.xml',
+        # 'views/website_views.xml',
+        # 'templates/layout.xml',
     ],
     'demo': [
         'demo/pages.xml',
