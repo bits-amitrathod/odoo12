@@ -77,18 +77,18 @@ class MarginsReport(models.Model):
             INNER JOIN product_template t ON p.product_tmpl_id = t.id
             LEFT JOIN res_partner r ON o.partner_id = r.id """
 
-        where_clause = " WHERE o.confirmation_date IS NOT NULL "
+        where_clause = " WHERE o.date_order IS NOT NULL "
 
         AND = " AND "
         date_range = ""
         if not s_date is None:
             select_query = select_query + ", '" + str(s_date) + "' as date_from "
-            where_clause = where_clause + AND + " o.confirmation_date >= '" + str(s_date) + "'"
+            where_clause = where_clause + AND + " o.date_order >= '" + str(s_date) + "'"
 
         if not e_date is None:
             select_query = select_query + ", '" + str(e_date) + "' as date_to "
             _logger.info(str(e_date + datetime.timedelta(days=1)))
-            where_clause = where_clause + AND + " o.confirmation_date <= '" + str(e_date + datetime.timedelta(days=1)) + "'"
+            where_clause = where_clause + AND + " o.date_order <= '" + str(e_date + datetime.timedelta(days=1)) + "'"
             _logger.info(where_clause)
 
         if not partner_id is None:

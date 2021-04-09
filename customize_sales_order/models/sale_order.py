@@ -18,21 +18,21 @@ class CustomerContract(models.Model):
             return res_users.id
 
     account_manager_cust = fields.Many2one('res.users', string="Key Account(KA)", domain="[('active', '=', True)"
-                                                                                         ",('share','=',False)]", track_visibility='onchange')
+                                                                                         ",('share','=',False)]", tracking=True)
     user_id = fields.Many2one('res.users', string='Business Development(BD)', help='The internal user in charge of this contact.',
-                              default=_get_default_user_id, track_visibility='onchange')
+                              default=_get_default_user_id, tracking=True)
 
     national_account_rep = fields.Many2one('res.users', string="National Account Rep.(NA)",
-                                           domain="[('active', '=', True), ('share','=',False)]", track_visibility='onchange')
+                                           domain="[('active', '=', True), ('share','=',False)]", tracking=True)
 
-    order_quota = fields.Float(string="Order Quota", help="Number of transactions", track_visibility='onchange',
+    order_quota = fields.Float(string="Order Quota", help="Number of transactions", tracking=True,
                                digits=dp.get_precision('Product Price'))
 
-    revenue_quota = fields.Monetary(string="Revenue Quota", help="Amount", track_visibility='onchange')
+    revenue_quota = fields.Monetary(string="Revenue Quota", help="Amount", tracking=True)
 
-    reinstated_date = fields.Datetime(string='Reinstated Date', track_visibility='onchange')
+    reinstated_date = fields.Datetime(string='Reinstated Date', tracking=True)
 
-    charity = fields.Boolean(string='Is a Charity?', track_visibility='onchange')
+    charity = fields.Boolean(string='Is a Charity?', tracking=True)
 
     display_reinstated_date_flag = fields.Integer(default=0, compute="_display_reinstated_date_flag")
 
@@ -64,11 +64,11 @@ class sale_order(models.Model):
     carrier_track_ref = fields.Char('Tracking Reference', store=True, readonly=True, compute='_get_carrier_tracking_ref')
     delivery_method_readonly_flag = fields.Integer('Delivery method readonly flag', default=1, compute='_get_delivery_method_readonly_flag')
     account_manager = fields.Many2one('res.users', store=True, readonly=True, string="Key Account",
-                                      compute="get_account_manager", track_visibility='onchange')
-    user_id = fields.Many2one('res.users', string='Business Development', index=True, track_visibility='onchange',
+                                      compute="get_account_manager", tracking=True)
+    user_id = fields.Many2one('res.users', string='Business Development', index=True, tracking=True,
                               track_sequence=2, default=lambda self: self.env.user)
     national_account = fields.Many2one('res.users', store=True, readonly=True, string="National Account",
-                                       compute="get_national_account", track_visibility='onchange')
+                                       compute="get_national_account", tracking=True)
     field_read_only = fields.Integer(compute="_get_user")
 
     #@api.one

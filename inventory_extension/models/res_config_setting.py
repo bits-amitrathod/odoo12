@@ -75,7 +75,8 @@ class StockPickingMarkAllButton(models.Model):
                 if purchase_order and purchase_order.acq_user_id is not None and purchase_order.acq_user_id:
                     sp.acq_user_id = purchase_order.acq_user_id.id
                 else:
-                    sp.acq_user_id=False
+                    sp.acq_user_id = None
+
 
     def _compute_visibility(self):
         for pick in self:

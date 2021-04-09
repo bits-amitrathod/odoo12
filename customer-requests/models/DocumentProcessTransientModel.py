@@ -47,6 +47,7 @@ class DocumentProcessTransientModel(models.TransientModel):
             mapping_field_list,
             templates_list,
             uploaded_file_path, template_type_from_user)
+
         if len(mappings) == 0:
             if not template_type:
                 _logger.info('-------Template mismatch------------')
@@ -58,7 +59,7 @@ class DocumentProcessTransientModel(models.TransientModel):
         if file_acceptable is None and len(requests) > 0:
             today_date = datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
             file_upload_record = dict(token=DocumentProcessTransientModel.random_string_generator(30),
-                                      gl_account_id=gl_account_id,
+                                      # gl_account_id=gl_account_id,
                                       customer_id=user_id, template_type=template_type,
                                       document_name=file_name,
                                       file_location=uploaded_file_path, source=document_source, email_from=email_from, status='draft',
@@ -247,15 +248,12 @@ class DocumentProcessTransientModel(models.TransientModel):
                 if all(elem in columns for elem in template_column_list):
                     column_mappings = mapped_columns
                     template_type = customer_template.template_type
-                    print('template_type *')
-                    print(template_type)
                     matched_templates.update({template_type: [column_mappings, template_type]})
             except UnboundLocalError as ue:
                 if ue:
                     _logger.info("raise error :%r", ue)
         _logger.info('template_type_from_user: %r', template_type_from_user)
         if len(matched_templates) > 1:
-            print('matched_template > 1')
             if template_type_from_user is None:
                 return [], [], False
             matched_template = matched_templates.get(template_type_from_user)
@@ -274,9 +272,9 @@ class DocumentProcessTransientModel(models.TransientModel):
                 if cell.ctype is xlrd.XL_CELL_NUMBER:
                     is_float = cell.value % 1 != 0.0
                     values.append(
-                        pycompat.text_type(cell.value)
+                        str(cell.value)
                         if is_float
-                        else pycompat.text_type(int(cell.value))
+                        else str(int(cell.value))
                     )
                 elif cell.ctype is xlrd.XL_CELL_DATE:
                     is_datetime = cell.value % 1 != 0.0
@@ -394,7 +392,6 @@ class DocumentProcessTransientModel(models.TransientModel):
                     j += 1
         if sku_preconfig_flag:
             product_sku = product_sku[len(user_model.sku_preconfig):]
-            print('product_sku : ', product_sku)
         sku_postconfig_flag = False
         if user_model.sku_postconfig and product_sku:
             if len(user_model.sku_postconfig) > 0:
@@ -414,6 +411,7 @@ class DocumentProcessTransientModel(models.TransientModel):
     def get_product(self, product_sku, req):
         product_sku = DocumentProcessTransientModel.cleaning_code(product_sku)
         _logger.info('product sku %r', product_sku)
+        product_sku_lower_case = product_sku.lower()
         sql_query = """ select * from  (SELECT pt.id, regexp_replace(REPLACE(RTRIM(LTRIM(REPLACE(pt.manufacturer_pref,'0',' '))),' ','0'), '[^A-Za-z0-9.]', '','g') as manufacturer_pref_cleaned, 
                                 regexp_replace(REPLACE(RTRIM(LTRIM(REPLACE(pt.sku_code,'0',' '))),' ','0'), '[^A-Za-z0-9.]', '','g') as sku_code_cleaned
                                 FROM product_template pt """
@@ -422,7 +420,7 @@ class DocumentProcessTransientModel(models.TransientModel):
         sql_query = sql_query + """ where pt.tracking != 'none' and pt.active = true """
         if req['uom'].lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
             sql_query = sql_query + """ and uu.name in ('Each', 'Unit') """
-        sql_query = sql_query + """ ) as temp_data where lower(sku_code_cleaned) ='""" + product_sku.lower() + """' or lower(manufacturer_pref_cleaned) = '""" + product_sku.lower() + """' """
+        sql_query = sql_query + """ ) as temp_data where lower(sku_code_cleaned) ='""" + product_sku_lower_case + """' or lower(manufacturer_pref_cleaned) = '""" + product_sku_lower_case + """' """
         self.env.cr.execute(sql_query)
         products = self.env.cr.dictfetchall()
         # return product object

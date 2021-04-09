@@ -39,7 +39,7 @@
                     <field name="is_share"/>
                     <field name="sale_margine"/>
                 </field>
-                <field name="lang" position="after">
+                <field name="active_lang_count" position="after">
                     <field name="allow_purchase" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                     <field name="prioritization" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                     <field name="on_hold" attrs="{'readonly':[('is_parent', '==', False)]}"/>
@@ -281,7 +281,7 @@
             <field name="model">product.template</field>
             <field name="inherit_id" ref="product.product_template_form_view"/>
             <field name="arch" type="xml">
-                <xpath expr="/form/sheet/notebook/page/group/group/field[@name='uom_po_id']" position="after">
+                <xpath expr="//form/sheet/notebook/page/group/group/field[@name='uom_po_id']" position="after">
                     <field name="manufacturer_uom" groups="uom.group_uom" options="{'no_create': True}"/>
                     <field name="actual_uom" groups="uom.group_uom" options="{'no_create': True}"/>
                 </xpath>

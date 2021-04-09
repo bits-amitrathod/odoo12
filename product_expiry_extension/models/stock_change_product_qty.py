@@ -6,7 +6,7 @@ import logging
 _logger = logging.getLogger(__name__)
 
 class ProductChangeQuantity(models.TransientModel):
-    _inherit = "stock.change.product.qty"
+    _inherit = "stock.scrap.scheduler"
     lot_id = fields.Many2one('stock.production.lot', 'Lot/Serial Number', required=True,
                              domain="[('product_id','=',product_id)]")
 

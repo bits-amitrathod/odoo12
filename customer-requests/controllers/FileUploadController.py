@@ -99,12 +99,12 @@ class FileUploadController(Controller):
         # cr, context, pool, uid = request.cr, request.context, request.registry, request.uid
         input_data = post['input_data']
         print('input_data', input_data)
-        records = request.env['res.partner'].sudo().search([(input_data, '>', 0), ('parent_id', '=', None)])
+        records = request.env['res.partner'].sudo().search([('customer_rank', '>', 0), ('parent_id', '=', None)])
         response_data = [dict(name=record['name'], id=record['id']) for record in records]
         return str(json.dumps(response_data))
 
     @http.route('/template_import/set_file', methods=['POST'])
-    def set_file(self, file, import_id, customer, template_type, jsonp='callback'):
+    def set_file(self, file, import_id, jsonp='callback'):
         import_id = int(import_id)
         written = request.env['sps.template.transient'].browse(import_id).sudo().write({
             'file': file.read(),
