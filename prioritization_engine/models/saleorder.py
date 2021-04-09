@@ -39,7 +39,6 @@ class SaleOrder(models.Model):
 
     gl_account = fields.Char("GL Account", store=False, compute='_get_gl_account', readonly=True)
 
-    #@api.multi
     def _get_gl_account(self):
         for order in self:
             if order.partner_id and order.partner_id.gl_account:
@@ -49,16 +48,16 @@ class SaleOrder(models.Model):
                             order.gl_account = order.gl_account + ", " + gl_acnt.name
                         else:
                             order.gl_account = gl_acnt.name
+            else:
+                order.gl_account = None
 
     # @api.onchange('client_order_ref')
     # def update_account_invoice_purchase_order(self):
     #     self.env['account.invoice'].search([('origin', '=', self.name)]).write({'name': self.client_order_ref})
 
-    #@api.multi
     def action_void(self):
         return self.write({'state': 'void'})
 
-    #@api.multi
     def unlink(self):
         for order in self:
             if order.state not in ('draft', 'cancel', 'void'):
@@ -71,13 +70,11 @@ class SaleOrder(models.Model):
         if len(multi) >= 1:
             return multi.action_assign()
 
-    #@api.multi
     def do_unreserve(self):
         multi = self.env['stock.picking'].search([('sale_id', '=', self.id)])
         if len(multi) >= 1:
             return multi.do_unreserve()
 
-    #@api.multi
     def action_quotation_send(self):
         _logger.info('saleorder -> action_quotation_send()')
         """
@@ -122,7 +119,6 @@ class SaleOrder(models.Model):
             'context': ctx,
         }
 
-    #@api.multi
     def action_confirm(self):
         res = super(SaleOrder, self).action_confirm()
         # if self.team_id.team_type == 'engine':
@@ -168,7 +164,6 @@ class SaleOrder(models.Model):
             _logger.error("getting error while sending email of sales order : %r", exc)
             response = {'message': 'Unable to connect to SMTP Server'}
 
-    #@api.multi
     def get_share_url(self, redirect=False, signup_partner=False, pid=None):
         """Override for sales order.
 
@@ -181,6 +176,7 @@ class SaleOrder(models.Model):
             auth_param = url_encode(self.partner_id.signup_get_auth_param()[self.partner_id.id])
             return self.get_portal_url(query_string='&%s' % auth_param)
         return super(SaleOrder, self)._get_share_url(redirect, signup_partner, pid)
+
 
 class SaleOrderLinePrioritization(models.Model):
     _inherit = "sale.order.line"
@@ -219,7 +215,6 @@ class SaleOrderLinePrioritization(models.Model):
         elif self.order_id.delivery_count > 1:
             raise ValidationError(_('Picking is not possible for multiple delivery please do picking inside Delivery'))
 
-    #@api.multi
     @api.onchange('product_id')
     def product_id_change(self):
         if not self.product_id:
@@ -316,71 +311,90 @@ class SaleOrderLinePrioritization(models.Model):
 class StockPicking(models.Model):
     _inherit = "stock.picking"
 
-    #@api.multi
     def button_validate(self):
-        _logger.info("stock :stock_picking_prioritization  button_validate called.....")
-        _logger.info("stock :stock_picking_prioritization parnter hold status %r :", self.partner_id)
+        # Clean-up the context key at validation to avoid forcing the creation of immediate
+        # transfers.
+        ctx = dict(self.env.context)
+        ctx.pop('default_immediate_transfer', None)
+        self = self.with_context(ctx)
 
-        self.ensure_one()
-        if not self.move_lines and not self.move_line_ids:
-            raise UserError(_('Please add some lines to move'))
+        # Sanity checks.
+        pickings_without_moves = self.browse()
+        pickings_without_quantities = self.browse()
+        pickings_without_lots = self.browse()
+        products_without_lots = self.env['product.product']
+        for picking in self:
+            if not picking.move_lines and not picking.move_line_ids:
+                pickings_without_moves |= picking
 
-        # If no lots when needed, raise error
-        picking_type = self.picking_type_id
-        precision_digits = self.env['decimal.precision'].precision_get('Product Unit of Measure')
-        no_quantities_done = all(
-            float_is_zero(move_line.qty_done, precision_digits=precision_digits) for move_line in self.move_line_ids)
-        no_reserved_quantities = all(
-            float_is_zero(move_line.product_qty, precision_rounding=move_line.product_uom_id.rounding) for move_line in
-            self.move_line_ids)
-        if no_reserved_quantities and no_quantities_done:
-            raise UserError(_(
-                'You cannot validate a transfer if you have not processed any quantity. You should rather cancel the transfer.'))
-        if self.partner_id.on_hold:
-            if picking_type.code == "outgoing":
-                raise UserError(_(
-                    'Customer is on hold. You cannot validate a transfer.'))
-        if picking_type.use_create_lots or picking_type.use_existing_lots:
-            lines_to_check = self.move_line_ids
-            if not no_quantities_done:
-                lines_to_check = lines_to_check.filtered(
-                    lambda line: float_compare(line.qty_done, 0, precision_rounding=line.product_uom_id.rounding))
+            picking.message_subscribe([self.env.user.partner_id.id])
+            picking_type = picking.picking_type_id
+            precision_digits = self.env['decimal.precision'].precision_get('Product Unit of Measure')
+            no_quantities_done = all(float_is_zero(move_line.qty_done, precision_digits=precision_digits) for move_line in picking.move_line_ids.filtered(lambda m: m.state not in ('done', 'cancel')))
+            no_reserved_quantities = all(float_is_zero(move_line.product_qty, precision_rounding=move_line.product_uom_id.rounding) for move_line in picking.move_line_ids)
+            if no_reserved_quantities and no_quantities_done:
+                pickings_without_quantities |= picking
 
-            for line in lines_to_check:
-                product = line.product_id
-                if product and product.tracking != 'none':
-                    if not line.lot_name and not line.lot_id:
-                        raise UserError(_('You need to supply a lot/serial number for %s.') % product.display_name)
+            if self.partner_id.on_hold:
+                if picking_type.code == "outgoing":
+                    raise UserError(_('Customer is on hold. You cannot validate a transfer.'))
+
+            if picking_type.use_create_lots or picking_type.use_existing_lots:
+                lines_to_check = picking.move_line_ids
+                if not no_quantities_done:
+                    lines_to_check = lines_to_check.filtered(lambda line: float_compare(line.qty_done, 0, precision_rounding=line.product_uom_id.rounding))
+                for line in lines_to_check:
+                    product = line.product_id
+                    if product and product.tracking != 'none':
+                        if not line.lot_name and not line.lot_id:
+                            pickings_without_lots |= picking
+                            products_without_lots |= product
                     elif line.qty_done == 0:
                         raise UserError(_(
                             'You cannot validate a transfer if you have not processed any quantity for %s.') % product.display_name)
 
-        if no_quantities_done:
-            view = self.env.ref('stock.view_immediate_transfer')
-            wiz = self.env['stock.immediate.transfer'].create({'pick_ids': [(4, self.id)]})
-            return {'name': _('Immediate Transfer?'), 'type': 'ir.actions.act_window', 'view_type': 'form',
-                    'view_mode': 'form', 'res_model': 'stock.immediate.transfer', 'views': [(view.id, 'form')],
-                    'view_id': view.id, 'target': 'new', 'res_id': wiz.id, 'context': self.env.context, }
+        if not self._should_show_transfers():
+            if pickings_without_moves:
+                raise UserError(_('Please add some items to move.'))
+            if pickings_without_quantities:
+                raise UserError(self._get_without_quantities_error_message())
+            if pickings_without_lots:
+                raise UserError(_('You need to supply a Lot/Serial number for products %s.') % ', '.join(products_without_lots.mapped('display_name')))
+        else:
+            message = ""
+            if pickings_without_moves:
+                message += _('Transfers %s: Please add some items to move.') % ', '.join(pickings_without_moves.mapped('name'))
+            if pickings_without_quantities:
+                message += _('\n\nTransfers %s: You cannot validate these transfers if no quantities are reserved nor done. To force these transfers, switch in edit more and encode the done quantities.') % ', '.join(pickings_without_quantities.mapped('name'))
+            if pickings_without_lots:
+                message += _('\n\nTransfers %s: You need to supply a Lot/Serial number for products %s.') % (', '.join(pickings_without_lots.mapped('name')), ', '.join(products_without_lots.mapped('display_name')))
+            if message:
+                raise UserError(message.lstrip())
 
-        if self._get_overprocessed_stock_moves() and not self._context.get('skip_overprocessed_check'):
-            view = self.env.ref('stock.view_overprocessed_transfer')
-            wiz = self.env['stock.overprocessed.transfer'].create({'picking_id': self.id})
-            return {'type': 'ir.actions.act_window', 'view_type': 'form', 'view_mode': 'form',
-                    'res_model': 'stock.overprocessed.transfer', 'views': [(view.id, 'form')], 'view_id': view.id,
-                    'target': 'new', 'res_id': wiz.id, 'context': self.env.context, }
+        # Run the pre-validation wizards. Processing a pre-validation wizard should work on the
+        # moves and/or the context and never call `_action_done`.
+        if not self.env.context.get('button_validate_picking_ids'):
+            self = self.with_context(button_validate_picking_ids=self.ids)
+        res = self._pre_action_done_hook()
+        if res is not True:
+            return res
 
-        # Check backorder should check for other barcodes
-        if self._check_backorder():
-            return self.action_generate_backorder_wizard()
-        self.action_done()
+        # Call `_action_done`.
+        if self.env.context.get('picking_ids_not_to_backorder'):
+            pickings_not_to_backorder = self.browse(self.env.context['picking_ids_not_to_backorder'])
+            pickings_to_backorder = self - pickings_not_to_backorder
+        else:
+            pickings_not_to_backorder = self.env['stock.picking']
+            pickings_to_backorder = self
+        pickings_not_to_backorder.with_context(cancel_backorder=True)._action_done()
+        pickings_to_backorder.with_context(cancel_backorder=False)._action_done()
 
         if picking_type.code == "outgoing":
             if self.state == 'done' and self.carrier_tracking_ref:
                 self.env['sale.order'].search([('name', '=', self.origin)]).write({'carrier_track_ref': self.carrier_tracking_ref})
 
-        return
+        return True
 
-    #@api.multi
     def send_to_shipper(self):
         print("inside send to shipper")
         print(self.carrier_tracking_ref)

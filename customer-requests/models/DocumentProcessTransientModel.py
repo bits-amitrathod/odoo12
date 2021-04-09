@@ -411,6 +411,7 @@ class DocumentProcessTransientModel(models.TransientModel):
     def get_product(self, product_sku, req):
         product_sku = DocumentProcessTransientModel.cleaning_code(product_sku)
         _logger.info('product sku %r', product_sku)
+        product_sku_lower_case = product_sku.lower()
         sql_query = """ select * from  (SELECT pt.id, regexp_replace(REPLACE(RTRIM(LTRIM(REPLACE(pt.manufacturer_pref,'0',' '))),' ','0'), '[^A-Za-z0-9.]', '','g') as manufacturer_pref_cleaned, 
                                 regexp_replace(REPLACE(RTRIM(LTRIM(REPLACE(pt.sku_code,'0',' '))),' ','0'), '[^A-Za-z0-9.]', '','g') as sku_code_cleaned
                                 FROM product_template pt """
@@ -419,7 +420,7 @@ class DocumentProcessTransientModel(models.TransientModel):
         sql_query = sql_query + """ where pt.tracking != 'none' and pt.active = true """
         if req['uom'].lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
             sql_query = sql_query + """ and uu.name in ('Each', 'Unit') """
-        sql_query = sql_query + """ ) as temp_data where lower(sku_code_cleaned) ='""" + product_sku.lower() + """' or lower(manufacturer_pref_cleaned) = '""" + product_sku.lower() + """' """
+        sql_query = sql_query + """ ) as temp_data where lower(sku_code_cleaned) ='""" + product_sku_lower_case + """' or lower(manufacturer_pref_cleaned) = '""" + product_sku_lower_case + """' """
         self.env.cr.execute(sql_query)
         products = self.env.cr.dictfetchall()
         # return product object
