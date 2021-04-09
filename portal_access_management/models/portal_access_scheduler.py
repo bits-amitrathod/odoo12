@@ -41,7 +41,7 @@ class PortalUserCustom(models.TransientModel):
             [('customer', '=', True), ('is_parent', '=', True), ('email', '!=', ''), ('active', '=', True),
              '|', '|', '|', '|', '|', '|', ('monday', '=', True), ('tuesday', '=', True), ('wednesday', '=', True),
              ('thursday', '=', True), ('friday', '=', True), ('saturday', '=', True), ('sunday', '=', True)],
-            order='id asc', limit=10)
+            order='id asc', limit=50)
 
 
         # ('portal_access_email_sent', '!=', True)
