@@ -1,2 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_bits_scrap_bits_scrap,bits_scrap.bits_scrap,model_bits_scrap_bits_scrap,,1,0,0,0
+
+access_inventory_notification_scheduler_manager,inventory_notification_scheduler_manager,model_inventory_notification_scheduler,,1,1,1,1
+access_inventory_notification_scheduler_user,inventory_notification_scheduler_user,model_inventory_notification_scheduler,,1,1,0,0
