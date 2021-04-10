@@ -9,7 +9,7 @@ class ProductionLot(models.Model):
     _inherit = 'stock.production.lot'
     _name = 'stock.production.lot'
 
-    life_date = fields.Datetime(string='End of Life Date',
+    expiration_date = fields.Datetime(string='End of Life Date',
                                 help='This is the date on which the goods with this Serial Number may become dangerous and must not be consumed.')
     use_date = fields.Datetime(string='Expiration Date',
                                help='This is the date on which the goods with this Serial Number start deteriorating, without being dangerous yet.')
@@ -21,16 +21,23 @@ class ProductionLot(models.Model):
                                           help="The Alert Date has been reached.")
     product_qty = fields.Float('Quantity', compute='_product_qty', search='_search_qty_available')
 
-    @api.depends('alert_date')
+    @api.depends('expiration_date')
     def _compute_product_expiry_alert(self):
         current_date = fields.Datetime.now()
-        for lot in self.filtered(lambda l: l.alert_date):
-            lot.product_expiry_alert = lot.alert_date <= current_date
+        for lot in self:
+            if lot.expiration_date:
+                lot.product_expiry_alert = lot.expiration_date <= current_date
+            else:
+                lot.product_expiry_alert = False
 
     def _get_dates(self, product_id=None):
         """Returns dates based on number of days configured in current lot's product."""
-        mapped_fields = {'life_date': 'life_time', 'use_date': 'use_time', 'removal_date': 'removal_time',
-            'alert_date': 'alert_time'}
+        mapped_fields = {
+            'expiration_date': 'expiration_time',
+            'use_date': 'use_time',
+            'removal_date': 'removal_time',
+            'alert_date': 'alert_time'
+        }
         res = dict.fromkeys(mapped_fields, False)
         product = self.env['product.product'].browse(product_id) or self.product_id
         if product:
@@ -56,7 +63,7 @@ class ProductionLot(models.Model):
         return super(ProductionLot, self).create(vals)
 
     def _set_required_vals_to_create_lot(self, vals):
-        vals.update({'use_date': False, 'alert_date': False, 'life_date': False, 'removal_date': False})
+        vals.update({'use_date': False, 'alert_date': False, 'expiration_date': False, 'removal_date': False})
         return vals
 
 
