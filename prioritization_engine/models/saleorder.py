@@ -75,21 +75,35 @@ class SaleOrder(models.Model):
         if len(multi) >= 1:
             return multi.do_unreserve()
 
+    def force_quotation_send(self):
+        for order in self:
+            email_act = order.action_quotation_send()
+            if email_act and email_act.get('context'):
+                email_ctx = email_act['context']
+                email_ctx.update(default_email_from=order.company_id.email, force_send=True)
+                order.with_context(**email_ctx).message_post_with_template(email_ctx.get('default_template_id'))
+        return True
+
+    def _find_mail_template(self, force_confirmation_template=False):
+        template_id = False
+
+        if force_confirmation_template or (self.state == 'sale' and not self.env.context.get('proforma', False)):
+            template_id = int(self.env['ir.config_parameter'].sudo().get_param('sale.default_confirmation_template'))
+            template_id = self.env['mail.template'].search([('id', '=', template_id)]).id
+            if not template_id:
+                template_id = self.env['ir.model.data'].xmlid_to_res_id('sale.mail_template_sale_confirmation', raise_if_not_found=False)
+        if not template_id:
+            template_id = self.env['ir.model.data'].xmlid_to_res_id('prioritization_engine.email_template_sale_custom', raise_if_not_found=False)
+        return template_id
+
     def action_quotation_send(self):
-        _logger.info('saleorder -> action_quotation_send()')
-        """
-        This function opens a window to compose an email, with the edi sale template message loaded by default
-        """
+        ''' Opens a wizard to compose an email, with relevant mail template loaded by default '''
         self.ensure_one()
-        ir_model_data = self.env['ir.model.data']
-        try:
-            template_id = ir_model_data.get_object_reference('prioritization_engine', 'email_template_sale_custom')[1]
-        except ValueError:
-            template_id = False
-        try:
-            compose_form_id = ir_model_data.get_object_reference('mail', 'email_compose_message_wizard_form')[1]
-        except ValueError:
-            compose_form_id = False
+        template_id = self._find_mail_template()
+        lang = self.env.context.get('lang')
+        template = self.env['mail.template'].browse(template_id)
+        if template.lang:
+            lang = template._render_lang(self.ids)[self.id]
         ctx = {
             'default_model': 'sale.order',
             'default_res_id': self.ids[0],
@@ -99,10 +113,11 @@ class SaleOrder(models.Model):
             'mark_so_as_sent': True,
             'custom_layout': "mail.mail_notification_paynow",
             'proforma': self.env.context.get('proforma', False),
-            'force_email': True
+            'force_email': True,
+            'model_description': self.with_context(lang=lang).type_name,
         }
 
-        if self.order_line[0] and self.order_line[0].customer_request_id and self.order_line[0].customer_request_id. \
+        if self.order_line[0] and self.order_line[0].customer_request_id and self.order_line[0].customer_request_id.\
                 document_id and self.order_line[0].customer_request_id.document_id.email_from:
             ctx['email_from'] = self.order_line[0].customer_request_id.document_id.email_from
         else:
@@ -110,45 +125,44 @@ class SaleOrder(models.Model):
 
         return {
             'type': 'ir.actions.act_window',
-            'view_type': 'form',
             'view_mode': 'form',
             'res_model': 'mail.compose.message',
-            'views': [(compose_form_id, 'form')],
-            'view_id': compose_form_id,
+            'views': [(False, 'form')],
+            'view_id': False,
             'target': 'new',
             'context': ctx,
         }
 
     def action_confirm(self):
         res = super(SaleOrder, self).action_confirm()
-        # if self.team_id.team_type == 'engine':
-        #     user = None
-        #     current_user = self.env['res.users'].browse(self._context.get('uid'))
-        #     sale_order_customer = self.partner_id
-        #     super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID)])
-        #     user_sale_person = current_user.user_id
-        #     user = sale_order_customer.user_id if sale_order_customer.user_id else super_user
-        #     self.update({'user_id': user.id})
-        #
-        #     # Send email to Salesperson and Admin when sales order accepted(Confirm)
-        #     upload_type = None
-        #     salesperson_email = None
-        #     if self.order_line[0].customer_request_id and self.order_line[0].customer_request_id.document_id and \
-        #             self.order_line[0].customer_request_id.document_id.source:
-        #         upload_type = self.order_line[0].customer_request_id.document_id.source
-        #     if self.user_id and self.user_id.partner_id and self.user_id.partner_id.email:
-        #         salesperson_email = self.user_id.partner_id.email
-        #     elif self.partner_id and self.partner_id.parent_id and self.partner_id.parent_id.user_id \
-        #             and self.partner_id.parent_id.user_id.partner_id and self.partner_id.parent_id.user_id.partner_id.email:
-        #         salesperson_email = self.partner_id.parent_id.user_id.partner_id.email
-        #     if self.sale_note:
-        #         note = self.sale_note
-        #     else:
-        #         note = ""
-        #     # self._send_sales_order_accepted_email(self.partner_id.display_name, self.name, self.state,
-        #     #                                       salesperson_email, upload_type, note)
-        #
-        # return res
+        if self.team_id.team_type == 'engine':
+            user = None
+            current_user = self.env['res.users'].browse(self._context.get('uid'))
+            sale_order_customer = self.partner_id
+            super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID)])
+            user_sale_person = current_user.user_id
+            user = sale_order_customer.user_id if sale_order_customer.user_id else super_user
+            self.update({'user_id': user.id})
+
+            # Send email to Salesperson and Admin when sales order accepted(Confirm)
+            upload_type = None
+            salesperson_email = None
+            if self.order_line[0].customer_request_id and self.order_line[0].customer_request_id.document_id and \
+                    self.order_line[0].customer_request_id.document_id.source:
+                upload_type = self.order_line[0].customer_request_id.document_id.source
+            if self.user_id and self.user_id.partner_id and self.user_id.partner_id.email:
+                salesperson_email = self.user_id.partner_id.email
+            elif self.partner_id and self.partner_id.parent_id and self.partner_id.parent_id.user_id \
+                    and self.partner_id.parent_id.user_id.partner_id and self.partner_id.parent_id.user_id.partner_id.email:
+                salesperson_email = self.partner_id.parent_id.user_id.partner_id.email
+            if self.sale_note:
+                note = self.sale_note
+            else:
+                note = ""
+            # self._send_sales_order_accepted_email(self.partner_id.display_name, self.name, self.state,
+            #                                       salesperson_email, upload_type, note)
+
+        return res
 
     def _send_sales_order_accepted_email(self, customer_name, sales_order_name, sales_order_status, salespersonEmail,
                                          upload_type, note):
@@ -435,28 +449,26 @@ class AccountInvoice(models.Model):
                          help="Reference of the document that produced this invoice.",
                          readonly=True, states={'draft': [('readonly', False)]})'''
 
-    # purchase_order = fields.Char(string='Purchase Order#', store=False, compute="_setInvoicePurchaseOrder",
-    #                              readonly=True)
-    # tracking_reference = fields.Char(string=' TrackingReference', store=False,
-    #                                  compute='_getSalesOerderPickingOutTrackingReference', readonly=True)
-    #
-    # #@api.multi
-    # def _setInvoicePurchaseOrder(self):
-    #     for order in self:
-    #         if order.origin == order.name:
-    #             order.purchase_order = ""
-    #         else:
-    #             order.purchase_order = order.name
-    #
-    # #@api.multi
-    # def _getSalesOerderPickingOutTrackingReference(self):
-    #     for order in self:
-    #         if order.origin:
-    #             order.env.cr.execute(
-    #                 "select carrier_tracking_ref from stock_picking WHERE origin like '" + order.origin + "' and state like 'done' and name like 'WH/OUT/%' limit 1")
-    #             query_result = order.env.cr.dictfetchone()
-    #             if query_result and query_result['carrier_tracking_ref']:
-    #                 order.tracking_reference = query_result['carrier_tracking_ref']
+    purchase_order = fields.Char(string='Purchase Order#', store=False, compute="_setInvoicePurchaseOrder",
+                                 readonly=True)
+    tracking_reference = fields.Char(string=' TrackingReference', store=False,
+                                     compute='_getSalesOerderPickingOutTrackingReference', readonly=True)
+
+    def _setInvoicePurchaseOrder(self):
+        for order in self:
+            if order.origin == order.name:
+                order.purchase_order = ""
+            else:
+                order.purchase_order = order.name
+
+    def _getSalesOerderPickingOutTrackingReference(self):
+        for order in self:
+            if order.origin:
+                order.env.cr.execute(
+                    "select carrier_tracking_ref from stock_picking WHERE origin like '" + order.origin + "' and state like 'done' and name like 'WH/OUT/%' limit 1")
+                query_result = order.env.cr.dictfetchone()
+                if query_result and query_result['carrier_tracking_ref']:
+                    order.tracking_reference = query_result['carrier_tracking_ref']
 
 
 class SaleOrderReport(models.Model):
