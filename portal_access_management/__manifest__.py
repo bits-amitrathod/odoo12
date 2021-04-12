@@ -10,9 +10,9 @@
 
     # always loaded
     'data': [
+         'views/portal_access_scheduler.xml',
          'data/portal_data.xml',
          'views/views.xml',
-         'views/templates.xml',
     ],
     'images': ['static/description/banner.png'],
     'installable': True,

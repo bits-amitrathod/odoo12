@@ -30,7 +30,11 @@ class PortalWizardUser(models.TransientModel):
             raise UserError(_('You must have an email address in your User Preferences to send emails.'))
 
         # determine subject and body in the portal user's language
-        template = self.env.ref('portal_access_management.mail_template_data_portal_welcome_cstm')
+        if self.wizard_id.custom_portal_access:
+            template = self.env.ref(
+                'portal_access_management.mail_template_data_portal_welcome_portal_access_scheduler')
+        else:
+            template = self.env.ref('portal_access_management.mail_template_data_portal_welcome_cstm')
         for wizard_line in self:
             lang = wizard_line.user_id.lang
             partner = wizard_line.user_id.partner_id
