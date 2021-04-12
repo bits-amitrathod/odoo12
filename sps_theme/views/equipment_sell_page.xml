@@ -1,5 +1,5 @@
 <odoo>
-   <template id="equipment_sell_template" name="Sell Page">
+   <template id="equipment_sell_template1" name="Sell Page">
       <t t-name="website.equipment">
          <t t-call="website.layout">
             <div id="wrap" class="oe_structure oe_empty">
