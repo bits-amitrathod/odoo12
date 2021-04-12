@@ -6,7 +6,7 @@
                     <section class="pt32 pb32">
                         <div class="container pb-3">
                             <div class="text-center pt-3 pb-3">
-                                <h1  class="about-header"> Request a <strong>Quote</strong> </h1>
+                                <h1  class="about-header"> Request a Free <strong>Quote</strong> </h1>
                             </div>
                             <div class="row">
                                 <div class="col-md-6 m-auto">
@@ -59,8 +59,8 @@
                                         </div>
                                     </div>
                                     <div class="col-md-1">
-                                        <div class="form-group has-float-label form-field o_website_form_required_custom">
-                                            <input type="text" placeholder="Suffix *" id="Suffix" class="form-control o_website_form_input" name="Suffix" required=""/>
+                                        <div class="form-group has-float-label form-field">
+                                            <input type="text" placeholder="Suffix " id="Suffix" class="form-control o_website_form_input" name="Suffix" />
 <!--                                            <label class="control-label" for="Suffix">Suffix</label>-->
                                         </div>
                                     </div>
@@ -83,6 +83,11 @@
                                         <div class="form-group has-float-label form-field o_website_form_required_custom">
                                             <input type="text" placeholder="Facility *" id="Facility" class="form-control o_website_form_input" name="Facility" required=""/>
 <!--                                            <label class="control-label" for="Facility">Facility</label>-->
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group has-float-label form-field o_website_form_required_custom">
+                                            <input type="text" placeholder="What services would you like a free quote for? *" id="services" class="form-control o_website_form_input" name="services" required=""/>
                                         </div>
                                     </div>
                                     <div class="col-md-6">

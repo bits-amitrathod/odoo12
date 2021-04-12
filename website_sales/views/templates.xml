@@ -79,7 +79,7 @@
               </div>
 
             <!-- products Brand Filter -->
-                  <div class="card">
+                 <!-- <div class="card">
                     <div class="card-header" id="brand">
                       <h2 class="mb-0">
                         <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
@@ -95,13 +95,13 @@
                             <li t-att-class="'active' if c.id == int(brand_id or 0) else None">
                                 <a t-att-href="keep('/shop/category/'+slug(category)+'/brand/' + slug(c), category=0)" t-field="c.name" class="linkCstm"></a>
                             </li>
-                            <!--<h5><t t-esc="c.name"/></h5>-->
-                            <!--<t t-call="website_sales.brand_recursive"/>-->
+                            &lt;!&ndash;<h5><t t-esc="c.name"/></h5>&ndash;&gt;
+                            &lt;!&ndash;<t t-call="website_sales.brand_recursive"/>&ndash;&gt;
                         </t>
                      </ul>
                       </div>
                     </div>
-                  </div>
+                  </div>-->
                 </div>
 
         </xpath>

@@ -25,7 +25,8 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         product_template = request.env['product.template'].search([('actual_quantity', '=', False)])
         product_brands = []
 
-        title = "Shop"
+        title = "Shop Surgical and Medical Surplus"
+        sub_title = "Browse Discount Surgical and Medical Surplus in our Online Store"
         c_all_id = request.env['product.public.category'].search([('name', 'ilike', 'All')], limit=1)
         if request.httprequest.path == "/shop":
             result = c_all_id
@@ -49,12 +50,15 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
             post.update({'order': 'actual_quantity desc'})
 
         if request.httprequest.path == "/shop/featured":
-            title = "Sale Items"
+            title = "Discount Surgical Supplies"
+            sub_title = "Shop Sale Medical and Surgical Products"
             result = request.env['product.public.category'].search([('name', 'ilike', 'featured')], limit=1)
             if result:
                 category = result
 
         if request.httprequest.path == "/shop/capital-equipment":
+            title = "Surplus Medical Equipment"
+            sub_title = "Shop Unused Surplus Medical Equipment"
             result = request.env['product.public.category'].search([('name', 'ilike', 'capital equipment')], limit=1)
             if result:
                 category = result
@@ -125,6 +129,7 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         payload['brands'] = product_brands
         payload['brand_id']= int(brand.id) if brand else 0
         payload['title'] = title
+        payload['sub_title'] = sub_title
         return request.render("website_sale.products", payload)
 
     @http.route(['/shop/product/<model("product.template"):product>'], type='http', auth="public", website=True)
