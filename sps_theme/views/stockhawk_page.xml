@@ -1,5 +1,5 @@
 <odoo>
-	<template id="stockhawk_page_template" name="Stockhawk">
+	<template id="stockhawk_page_template1" name="Stockhawk">
 		<t t-name="website.stockhawk">
 			<t t-call="website.layout">
 				<div id="wrap" class="stockhawk-page oe_structure oe_empty">

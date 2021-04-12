@@ -1,5 +1,5 @@
 <odoo>
-	<template id="contact_page_template" name="Contact Form" inherit_id="website.contactus" customize_show="True">
+	<template id="contact_page_template1" name="Contact Form" inherit_id="website.contactus" customize_show="True">
 		<xpath expr="//div[@id='wrap']" position="replace">
 			<div id="wrap" class="oe_structure oe_empty">
 				<section class="contact-us-section  mb0">

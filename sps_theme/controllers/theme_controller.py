@@ -23,15 +23,15 @@ class ThemeController(http.Controller):
 
     @http.route('/contact-us', type='http', auth="public", website=True)
     def contact(self):
-        return http.request.render('sps_theme.contact_page_template')
+        return http.request.render('sps_theme.contact_page_template1')
 
     @http.route('/stockhawk', type='http', auth="public", website=True)
     def stockhawk(self):
-        return http.request.render('sps_theme.stockhawk_page_template')
+        return http.request.render('sps_theme.stockhawk_page_template1')
 
     @http.route('/careers', type='http', auth="public", website=True)
     def careers(self):
-        return http.request.render('sps_theme.careers_page_template')
+        return http.request.render('sps_theme.careers_page_template1')
 
     @http.route('/faqs', type='http', auth="public", website=True)
     def faqs(self):
@@ -39,7 +39,7 @@ class ThemeController(http.Controller):
 
     @http.route('/equipment-sell', type='http', auth="public", website=True)
     def seller(self):
-        return http.request.render('sps_theme.equipment_sell_template')
+        return http.request.render('sps_theme.equipment_sell_template1')
 
     @http.route('/request-a-quote', type='http', auth="public", website=True)
     def request_a_quote(self):
@@ -51,7 +51,7 @@ class ThemeController(http.Controller):
 
     @http.route('/surgical-products-sell', type='http', auth="public", website=True)
     def surgical_products_sell(self):
-        return http.request.render('sps_theme.surgical_products_sell_page_template')
+        return http.request.render('sps_theme.surgical_products_sell_page_template1')
 
     @http.route('/equipment-repair', type='http', auth="public", website=True)
     def equipment_repair_and_service(self):
