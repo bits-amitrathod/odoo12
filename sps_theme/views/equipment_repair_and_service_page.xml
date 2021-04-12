@@ -8,7 +8,8 @@
                         <section class="padding-80-y">
                             <div class="container">
                                 <div class="text-center pb32">
-                                    <h1  class="about-header"> Equipment <span class="black-font">Repair &amp; Service</span> </h1>
+<!--                                    <h1  class="about-header"> Equipment <span class="black-font">Repair &amp; Service</span> </h1>-->
+                                    <h1  class="about-header">Medical Equipment Repair Service</h1>
                                 </div>
                                 <div class="banner-wrapper">
                                     <img src="/sps_theme/static/src/images/equipement-repair.jpg" class="img-fluid"/>
@@ -28,6 +29,9 @@
                                                 We are set on a course of continuous improvement for ourselves, for you, and for the patients at the end of every medical device we repair. We hold the highest standards for quality management when inspecting and repairing your equipment.
 
                                             </p>
+                                        </div>
+                                        <div class="col-md-12 text-center btn-wrapper">
+                                            <a itemprop="url" href="/equipment-repair-service" class="btn btn-info btn-sm" >Submit an Online Repair Ticket</a>
                                         </div>
                                     </div>
                                 </div>
@@ -99,6 +103,9 @@
                                    </div>
                                 </div>
                              </div>
+                             <div class="col-md-12 mt-5 text-center btn-wrapper">
+                                  <a itemprop="url" href="/equipment-repair-service" class="btn btn-info btn-sm" >Submit an Online Repair Ticket</a>
+                            </div>
                           </div>
                        </section>
                          <section class="help-section step-process padding-100-y bg-grey">
@@ -121,10 +128,7 @@
                                                     contact your SPS Account Manager
                                                     immediately.
                                               </p>
-                                              <div class="col-md-12 text-center btn-wrapper">
-                                                  <a itemprop="url" href="/equipment-repair-service" class="btn btn-info btn-sm" >Submit an Online Repair Ticket</a>
 
-                                              </div>
                                           </div>
                                       </div>
                                       <div class="col-lg-4 col-md-6 mb-3">
@@ -155,9 +159,14 @@
                                               </p>
                                           </div>
                                       </div>
+                                      <div class="col-md-12 text-center btn-wrapper">
+                                          <a itemprop="url" href="/equipment-repair-service" class="btn btn-info btn-sm" >Submit an Online Repair Ticket</a>
+
+                                      </div>
                                  </div>
                             </div>
                          </section>
+
                         <div class="seprator">
                           <div class="red"></div>
                           <div class="black"></div>
@@ -203,6 +212,20 @@
                                 </div>
                             </div>
                         </section>
+                         <section class="help-section step-process padding-60-y bg-grey">
+                            <div class="container">
+                                <h3 class="section-title mt-0">Do you have questions?</h3>
+                                 <div class="row pt-3">
+                                      <div class="col-lg-12 col-md-12 mb-3">
+                                              <div class="text-center btn-wrapper">
+                                                  <a itemprop="url" href="/faqs" class="btn btn-info btn-sm" >Read our FAQ</a>
+                                                  <a itemprop="url" href="/contact-us" class="btn btn-info btn-sm" >Contact Us</a>
+                                              </div>
+                                      </div>
+                                  </div>
+                            </div>
+                         </section>
+
 <!--                         <div class="seprator">-->
 <!--                              <div class="red"></div>-->
 <!--                              <div class="black"></div>-->

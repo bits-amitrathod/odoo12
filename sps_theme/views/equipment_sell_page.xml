@@ -6,7 +6,7 @@
                <section class="pt32 pb32">
                   <div class="container">
                      <div class="text-center pt32 pb32">
-                        <h1  class="about-header"> <span class="black-font">Sell</span> Your Used Surgical Equipment </h1>
+                        <h1  class="about-header"> <span class="black-font">Sell</span> Used Medical Equipment </h1>
                      </div>
                      <div class="manufacturer">
                         <h3 class="section-title">Featured Manufacturers We Carry</h3>
@@ -87,6 +87,9 @@
                            <img src="/sps_theme/static/src/images/surgical.jpg" class="img-fluid"/>
                         </div>
                      </div>
+                     <div class="col-12 text-center btn-wrapper mt-5">
+                           <button class="btn btn-info btn-sm scrolltoform">Sell Used Medical Equipment</button>
+                        </div>
                   </div>
                </section>
                <div class="seprator">
@@ -113,6 +116,9 @@
                                  cost savings solutions that work for you.
                               </p>
                            </div>
+                        </div>
+                        <div class="col-12 text-center btn-wrapper mt-5">
+                           <button class="btn btn-info btn-sm scrolltoform">Sell Used Medical Equipment</button>
                         </div>
                      </div>
                   </div>
@@ -185,6 +191,7 @@
                         </div>
                         <div class="col-12 text-center btn-wrapper mt-5">
                            <button class="btn btn-info btn-sm scrolltoform">Sell Your Surgical Equipment</button>
+                           <a class="btn btn-info btn-sm" href="/faqs">FAQ</a>
                         </div>
                      </div>
                   </div>
