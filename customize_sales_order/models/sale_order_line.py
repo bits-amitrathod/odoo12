@@ -13,7 +13,6 @@ class SaleOrderLineInherit(models.Model):
     product_min_max_exp_date = fields.Char('Product Min-Max Expiration Date',
                                            compute='_calculate_max_min_lot_expiration')
 
-    #@api.multi
     def _calculate_max_min_lot_expiration(self):
         for record in self:
             if record.product_id and record.product_id.id:
@@ -47,10 +46,17 @@ class SaleOrderLineInherit(models.Model):
                                         record.product_min_max_exp_date = str(
                                             datetime.datetime.strptime(str(query_result['min']),
                                                                        '%Y-%m-%d %H:%M:%S').strftime('%m/%d/%Y'))
-                                    else:
+                                    elif query_result['min'] and query_result['max']:
                                         record.product_min_max_exp_date = str(datetime.datetime.strptime(str(query_result['min']), '%Y-%m-%d %H:%M:%S').strftime('%m/%d/%Y')) \
                                             + str("-") + str(datetime.datetime.strptime(str(query_result['max']), '%Y-%m-%d %H:%M:%S').strftime('%m/%d/%Y'))
-
+                                    else:
+                                        record.product_min_max_exp_date = None
+                                else:
+                                    record.product_min_max_exp_date = None
+                            else:
+                                record.product_min_max_exp_date = None
+                    else:
+                        record.product_min_max_exp_date = None
     # #@api.multi
     # def unlink(self):
     #     if self.filtered(lambda line: line.state in 'done' and (line.invoice_lines or not line.is_downpayment)):

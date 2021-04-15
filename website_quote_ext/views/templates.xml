@@ -161,8 +161,8 @@
                    <div class="small mb-1"><strong class="text-muted">Your Contact</strong></div>
                    <div class="row flex-nowrap">
                        <div class="col flex-grow-0 pr-2">
-                           <img class="rounded-circle mr4 float-left o_portal_contact_img" t-if="sale_order.order_processor.image" t-att-src="image_data_uri(sale_order.order_processor.image)" alt="Contact"/>
-                           <img class="rounded-circle mr4 float-left o_portal_contact_img" t-if="not sale_order.order_processor.image" src="/web/static/src/img/placeholder.png" alt="Contact"/>
+                           <img class="rounded-circle mr4 float-left o_portal_contact_img" t-if="sale_order.order_processor.image_1024" t-att-src="image_data_uri(sale_order.order_processor.image_1024)" alt="Contact"/>
+                           <img class="rounded-circle mr4 float-left o_portal_contact_img" t-if="not sale_order.order_processor.image_1024" src="/web/static/src/img/placeholder.png" alt="Contact"/>
                        </div>
                        <div class="col pl-0" style="min-width: 150px">
                            <span t-field="sale_order.order_processor" t-options='{"widget": "contact", "fields": ["name", "phone"], "no_marker": True}'/>
@@ -379,7 +379,7 @@
                                 <t t-if="not line.display_type">
                                     <td id="product_sku_code"><span t-if="line.order_id.team_id.team_type=='engine'" t-field="line.product_id.product_tmpl_id.sku_code"/> </td>
                                     <td id="product_name"><span t-field="line.name"/> </td>
-                                    <td id="product_name"><span t-if="line.order_id.team_id.team_type=='engine'" t-field="line.product_min_max_exp_date"/> </td>
+                                    <td id="product_name"><span t-if="line.order_id.team_id.team_type=='engine' and line.product_min_max_exp_date" t-field="line.product_min_max_exp_date"/> </td>
                                     <td><span t-if="line.req_date" t-field="line.req_date" t-options='{"widget": "date"}'/></td>
                                     <td><span t-if="line.req_no" t-field="line.req_no"/></td>
                                     <td><span t-if="line.vendor" t-field="line.vendor"/></td>
@@ -829,7 +829,7 @@
                                 <div class="col-md-12 table-responsive">
                                 <table class="table">
                                     <tr>
-                                                <th></th>
+                                                <!--<th></th>-->
                                                 <th><span t-if="any([line.order_id.team_id.team_type=='engine' for line in sale_order.order_line])">Ref #</span> </th>
                                                 <th><span>Description</span> </th>
                                                 <th><span t-if="any([line.order_id.team_id.team_type=='engine' for line in sale_order.order_line])">Expiration</span> </th>
@@ -847,15 +847,15 @@
                                  <tr>
 
                                         <t t-if="ol.product_uom_qty != 0">
-                                        <td>
+                                        <!--<td>
                                         <span t-field="ol.product_image"
                                               t-options="{'widget': 'image', 'class': 'img-rounded', 'style':'width: 48px;height:48px'}"/>
-                                              </td>
+                                              </td>-->
                                         <td><span t-if="ol.order_id.team_id.team_type=='engine'" t-esc="ol.product_id.product_tmpl_id.sku_code"/></td>
                                             <td>
                                         <span t-esc="ol.product_id.name"/>
                                         </td>
-                                        <td><span t-if="ol.order_id.team_id.team_type=='engine'" t-esc="ol.product_min_max_exp_date"/></td>
+                                        <td><span t-if="ol.order_id.team_id.team_type=='engine' and ol.product_min_max_exp_date" t-esc="ol.product_min_max_exp_date"/></td>
                                         <td><span t-if="ol.req_date" t-field="ol.req_date" t-options='{"widget": "date"}'/></td>
                                         <td><span t-if="ol.req_no" t-field="ol.req_no"/></td>
                                         <td><span t-if="ol.vendor" t-field="ol.vendor"/></td>
