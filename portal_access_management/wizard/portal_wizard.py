@@ -45,7 +45,7 @@ class PortalWizardUser(models.TransientModel):
 
             if template:
                 template.with_context(dbname=self._cr.dbname, portal_url=portal_url, lang=lang).send_mail(
-                    wizard_line.id, force_send=True)
+                    wizard_line.id, force_send=False)
             else:
                 _logger.warning("No email template found for sending email to the portal user")
 
