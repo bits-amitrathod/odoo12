@@ -34,7 +34,7 @@ class PortalWizardUser(models.TransientModel):
             template = self.env.ref(
                 'portal_access_management.mail_template_data_portal_welcome_portal_access_scheduler')
         else:
-            template = self.env.ref('portal_access_management.mail_template_data_portal_welcome_cstm')
+            template = self.env.ref('portal_access_management.mail_template_data_portal_welcome_portal_access_scheduler')
         for wizard_line in self:
             lang = wizard_line.user_id.lang
             partner = wizard_line.user_id.partner_id
