@@ -710,7 +710,7 @@ background: #fafafa;
     }
     ul{
         padding-left: 5px;
-        list-style-type: "•";
+        list-style: none;
         li{
             font-size: 18px;
             line-height: 26px;
@@ -718,6 +718,21 @@ background: #fafafa;
             margin-bottom: 20px;
             color: @text-color;
             padding-left: 5px;
+            position: relative;
+             &:before{
+                //content: '•';
+                content: '\f111';
+                position: absolute;
+                left: -5px;
+                display: inline-block;
+                font: normal normal normal 14px/1 FontAwesome;
+                font-size: inherit;
+                text-rendering: auto;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+                font-size: 5px;
+                top: 10px;
+            }
         }
     }
 }
