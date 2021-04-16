@@ -39,12 +39,10 @@ class PortalUserCustom(models.TransientModel):
         today_start = today_date
         customers = self.env['res.partner'].search(
             [('customer', '=', True), ('is_parent', '=', True), ('email', '!=', ''), ('active', '=', True),
+             ('portal_access_email_sent', '!=', True),
              '|', '|', '|', '|', '|', '|', ('monday', '=', True), ('tuesday', '=', True), ('wednesday', '=', True),
              ('thursday', '=', True), ('friday', '=', True), ('saturday', '=', True), ('sunday', '=', True)],
-            order='id asc', limit=50)
-
-
-        # ('portal_access_email_sent', '!=', True)
+            order='id asc', limit=100)
 
         contacts_ids = []
         contact_ids = set()
