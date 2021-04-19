@@ -363,8 +363,8 @@ class PrioritizationTransient(models.TransientModel):
     partial_ordering = fields.Boolean("Allow Partial Ordering?")
     partial_UOM = fields.Boolean("Allow Partial UOM?")
 
-    def action_confirm(self, arg):
-        for selected in arg["selected_ids"]:
+    def action_confirm(self):
+        for selected in self.env.context["selected_ids"]:
             record = self.env['prioritization_engine.prioritization'].search([('id', '=', selected)])[0]
             record.write(
                 {'min_threshold': self.min_threshold, 'max_threshold': self.max_threshold, 'priority': self.priority,
