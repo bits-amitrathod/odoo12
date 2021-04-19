@@ -31,7 +31,7 @@ class InventoryNotificationScheduler(models.TransientModel):
 
     def process_manual_notification_scheduler(self):
         _logger.info("process_manual_notification_scheduler called..")
-        self.process_notification_scheduler()
+        #self.process_notification_scheduler()
 
 
     @api.model
@@ -333,12 +333,9 @@ class InventoryNotificationScheduler(models.TransientModel):
         days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
         dayName = today_date.weekday()
         weekday = days[dayName]
-        # customers =  self.env['res.partner'].search(
-        #     [('customer_rank', '=', 1), ('is_parent', '=', True), ('email', '!=', ''), ('active', '=', True),
-        #      (weekday, '=', True), ('todays_notification', '=', True)], order='id asc', limit=40)
-        customers = self.env['res.partner'].search(
+        customers =  self.env['res.partner'].search(
             [('customer_rank', '=', 1), ('is_parent', '=', True), ('email', '!=', ''), ('active', '=', True),
-             ], order='id asc', limit=40)
+             (weekday, '=', True), ('todays_notification', '=', True)], order='id asc', limit=40)
 
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
         start = time.time()
@@ -508,12 +505,12 @@ class InventoryNotificationScheduler(models.TransientModel):
     @api.model
     #@api.multi
     def process_notification_scheduler_everyday(self):
-
-        self.process_new_product_scheduler()
-        self.process_notify_available()
-        self.process_packing_list()
-        self.process_on_hold_customer()
-        self.process_todays_notification_flag_scheduler()
+        pass
+        # self.process_new_product_scheduler()
+        # self.process_notify_available()
+        # self.process_packing_list()
+        # self.process_on_hold_customer()
+        # self.process_todays_notification_flag_scheduler()
 
     def process_todays_notification_flag_scheduler(self):
         _logger.info('process_todays_notification_flag_scheduler called')
@@ -525,7 +522,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         weekday = days[dayName]
 
         customers = self.env['res.partner'].search(
-            [('customer', '=', True), ('is_parent', '=', True), ('email', '!=', ''), ('active', '=', True),
+            [('customer_rank', '=', 1), ('is_parent', '=', True), ('email', '!=', ''), ('active', '=', True),
              (weekday, '=', True), ('todays_notification', '=', False)])
 
         for customer in customers:

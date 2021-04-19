@@ -158,6 +158,7 @@ var DataImport = AbstractAction.extend({
         },
     },
     init: function (parent, action) {
+
         this._super.apply(this, arguments);
         this.action_manager = parent;
         this.res_model =  action.params[0].request_model;//action.params.model;

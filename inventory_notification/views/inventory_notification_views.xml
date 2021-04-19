@@ -67,11 +67,7 @@
         <field name="target">new</field>
     </record>
 
-<<<<<<< HEAD
-    <!--<menuitem name="Notification Scheduler" id="menu_stock_config_form_ext" action="run_purchase_notification"-->
-              <!--parent="product_expiry_extension.menu_scheduler_config" />-->
-=======
     <!--<menuitem name="Notification Scheduler" id="menu_stock_config_form_ext" action="run_purchase_notification"
               parent="product_expiry_extension.menu_scheduler_config" sequence="2"/>-->
->>>>>>> 37bb76b3df2dba7891a3df59f63ac4a976540547
+
 </odoo>

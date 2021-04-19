@@ -217,32 +217,65 @@
             <field name="arch" type="xml">
                 <form string="Vendor Offer" class="o_sale_order vendor_offer_class" duplicate="false"   attrs="{'delete': [('state', 'in', ('draft', 'ven_draft','ven_sent'))],
                 'edit': [('state', 'in', ('draft', 'ven_draft','ven_sent'))]}" >
-                     <header>
-                        <button name="action_send_offer_email" string="Send" type="object"
-                                class="btn-primary" />
-                        <button name="action_print_vendor_offer" string="Print" type="object" class="btn-primary"
-                               />
-                        <button name="%(vendor_offer.action_purchase_order_edit_note)d" type="action"
+                     <!--<header>-->
+                        <!--<button name="action_send_offer_email" string="Send" type="object"-->
+                                <!--class="btn-primary" />-->
+                        <!--<button name="action_print_vendor_offer" string="Print" type="object" class="btn-primary"-->
+                               <!--/>-->
+                        <!--<button name="%(vendor_offer.action_purchase_order_edit_note)d" type="action"-->
 
+                                <!--string="Add Note"/>-->
+                        <!--&lt;!&ndash;<button name="action_button_confirm_api_cash" states="ven_draft,ven_sent"&ndash;&gt;-->
+                                <!--&lt;!&ndash;string="Offer Accept As Cash" type="object"/>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<button name="action_button_confirm_api_credit" states="ven_draft,ven_sent"&ndash;&gt;-->
+                                <!--&lt;!&ndash;context="{'vendor_offer_data': True}" string="Offer Accept As Credit" type="object"/>&ndash;&gt;-->
+                        <!--<button name="action_confirm_offer_both" states="ven_draft,ven_sent"-->
+                                 <!--string="Offer Accepted" type="object"/>-->
+                        <!--<field name="status" widget="statusbar" statusbar_visible="ven_draft,ven_sent,purchase"-->
+                               <!--readonly="1"/>-->
+                        <!--<field name="vendor_offer_data" invisible="1"/>-->
+                        <!--<button name="action_duplicate_vendor_offer" type="object" string="Duplicate Offer"-->
+                                <!--/>-->
+                        <!--<button string="Shipping Label"-->
+                                <!--type="action" class="btn-primary"-->
+                                <!--name="%(action_view_tracking_text)d"-->
+                                <!--groups="stock.group_stock_user"/>-->
+                         <!--<button name="action_cancel_vendor_offer"  string="Cancel"-->
+                                <!--type="object"/>-->
+                        <!--<field name="state" invisible="1"/>-->
+                    <!--</header>-->
+                    <header>
+                        <button name="action_send_offer_email" string="Send" type="object" context="{'send_rfq':True}"
+                                class="btn-primary" attrs="{'invisible':[('state', 'in', ('purchase','cancel'))]}"/>
+                        <button name="action_print_vendor_offer" string="Print" type="object" class="btn-primary"
+                                attrs="{'invisible':[('state', 'in', ('purchase','cancel'))]}"/>
+                        <button name="%(vendor_offer.action_purchase_order_edit_note)d" type="action"
+                                context="{'isFooterInvisible':False}"
                                 string="Add Note"/>
                         <!--<button name="action_button_confirm_api_cash" states="ven_draft,ven_sent"-->
-                                <!--string="Offer Accept As Cash" type="object"/>-->
+                                <!--context="{'vendor_offer_data': True}" string="Offer Accept As Cash" type="object"/>-->
                         <!--<button name="action_button_confirm_api_credit" states="ven_draft,ven_sent"-->
                                 <!--context="{'vendor_offer_data': True}" string="Offer Accept As Credit" type="object"/>-->
                         <button name="action_confirm_offer_both" states="ven_draft,ven_sent"
-                                 string="Offer Accepted" type="object"/>
+                                context="{'vendor_offer_data': True}" string="Offer Accepted" type="object"/>
                         <field name="status" widget="statusbar" statusbar_visible="ven_draft,ven_sent,purchase"
                                readonly="1"/>
                         <field name="vendor_offer_data" invisible="1"/>
                         <button name="action_duplicate_vendor_offer" type="object" string="Duplicate Offer"
-                                />
+                                attrs="{'invisible':[('vendor_offer_data', '=',  False)]}"/>
                         <button string="Shipping Label"
                                 type="action" class="btn-primary"
                                 name="%(action_view_tracking_text)d"
+                                attrs="{'invisible': [('status', 'not in', ('ven_draft','ven_sent'))]}"
                                 groups="stock.group_stock_user"/>
-                         <button name="action_cancel_vendor_offer"  string="Cancel"
+                         <button name="action_cancel_vendor_offer" states="ven_draft,ven_sent" string="Cancel"
                                 type="object"/>
-                        <field name="state" invisible="1"/>
+                        <!--                        <button string="Track Shipment"-->
+                        <!--                                type="object" class="btn-primary"-->
+                        <!--                                name="action_fedex_track_request"-->
+                        <!--                                attrs="{'invisible': [('carrier_id', '==', False)]}"-->
+                        <!--                                groups="stock.group_stock_user"/>-->
+
                     </header>
                         <sheet>
                         <div class="oe_button_box" name="button_box">
@@ -476,161 +509,162 @@
         </record>
 
 
-        <!--<record id="purchase_order_form_inherit_2" model="ir.ui.view">-->
+        <record id="purchase_order_form_inherit_2" model="ir.ui.view">
 
-            <!--<field name="name">purchase.order.form</field>-->
-            <!--<field name="model">purchase.order</field>-->
-            <!--<field name="inherit_id" ref="purchase.purchase_order_form"></field>-->
-            <!--<field name="arch" type="xml">-->
-                <!--<button name="button_unlock" position="after">-->
-                    <!--<field name="status_ven" invisible="1"/>-->
-                    <!--&lt;!&ndash;<button name="action_validate"  attrs="{'invisible': ['|', ('show_validate', '=', False),('state', 'not in', 'purchase')]}"  string="Validate" groups="stock.group_stock_user" type="object" class="oe_highlight"/>&ndash;&gt;-->
-                    <!--&lt;!&ndash;<button name="%(vendor_offer.action_purchase_order_edit_note)d" type="action"&ndash;&gt;-->
-                            <!--&lt;!&ndash;context="{'isFooterInvisible':False}"&ndash;&gt;-->
-                            <!--&lt;!&ndash;string="Add Note"/>&ndash;&gt;-->
-                    <!--&lt;!&ndash;<button name="action_duplicate_vendor_offer" type="object"&ndash;&gt;-->
-                            <!--&lt;!&ndash;string="Duplicate Offer" attrs="{'invisible': [('vendor_offer_data','=',False)]}"/>&ndash;&gt;-->
-                    <!--&lt;!&ndash;<button string="Shipping Label"&ndash;&gt;-->
-                            <!--&lt;!&ndash;type="action" class="btn-primary"&ndash;&gt;-->
-                            <!--&lt;!&ndash;name="%(action_view_tracking_text)d"&ndash;&gt;-->
-                            <!--&lt;!&ndash;attrs="{'invisible': [('status_ven', 'not in', 'Accepted'),('vendor_offer_data', '=',  False)]}"&ndash;&gt;-->
-                            <!--&lt;!&ndash;groups="stock.group_stock_user"/>&ndash;&gt;-->
+            <field name="name">purchase.order.form</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"></field>
+            <field name="arch" type="xml">
+                <button name="button_unlock" position="after">
+                    <field name="status_ven" invisible="1"/>
+                    <!--<button name="action_validate"  attrs="{'invisible': ['|', ('show_validate', '=', False),('state', 'not in', 'purchase')]}"  string="Validate" groups="stock.group_stock_user" type="object" class="oe_highlight"/>-->
+                    <button name="%(vendor_offer.action_purchase_order_edit_note)d" type="action"
+                            context="{'isFooterInvisible':False}"
+                            string="Add Note"/>
+                    <button name="action_duplicate_vendor_offer" type="object"
+                            string="Duplicate Offer" attrs="{'invisible': [('vendor_offer_data','=',False)]}"/>
+                    <button string="Shipping Label"
+                            type="action" class="btn-primary"
+                            name="%(action_view_tracking_text)d"
+                            attrs="{'invisible': [('status_ven', 'not in', 'Accepted'),('vendor_offer_data', '=',  False)]}"
+                            groups="stock.group_stock_user"/>
 
-<!--&lt;!&ndash;                                        <button string="Track Shipment"&ndash;&gt;-->
-<!--&lt;!&ndash;                                                    type="object" class="btn-primary"&ndash;&gt;-->
-<!--&lt;!&ndash;                                                    name="action_fedex_track_request"&ndash;&gt;-->
-<!--&lt;!&ndash;                                                    attrs="{'invisible': [('carrier_id', '==', False)]}"&ndash;&gt;-->
-<!--&lt;!&ndash;                                                    groups="stock.group_stock_user"/>&ndash;&gt;-->
-
-
-                <!--</button>-->
-                <!--<xpath expr="//group/group/field[@name='origin']" position="replace">-->
-                    <!--<field name="origin" string="Sale Order#"/>-->
-                <!--</xpath>-->
-                <!--&lt;!&ndash;<xpath expr="//group/group/field[@name='company_id']" position="after">&ndash;&gt;-->
-                    <!--&lt;!&ndash;<field name="carrier_info"/>&ndash;&gt;-->
-                    <!--&lt;!&ndash;<field name="carrier_acc_no"/>&ndash;&gt;-->
-                    <!--&lt;!&ndash;<field name="shipping_terms"/>&ndash;&gt;-->
+<!--                                        <button string="Track Shipment"-->
+<!--                                                    type="object" class="btn-primary"-->
+<!--                                                    name="action_fedex_track_request"-->
+<!--                                                    attrs="{'invisible': [('carrier_id', '==', False)]}"-->
+<!--                                                    groups="stock.group_stock_user"/>-->
 
 
-                <!--&lt;!&ndash;</xpath>&ndash;&gt;-->
-                <!--&lt;!&ndash;<xpath expr="//group/group/field[@name='partner_ref']" position="after">&ndash;&gt;-->
-                    <!--&lt;!&ndash;<field name="offer_type" readonly="1"&ndash;&gt;-->
-                           <!--&lt;!&ndash;attrs="{'invisible': [('vendor_offer_data','=',False)]}"></field>&ndash;&gt;-->
-
-                <!--&lt;!&ndash;</xpath>&ndash;&gt;-->
-                <!--<xpath expr="//page[@name='purchase_delivery_invoice']/group/group" position="inside">-->
-                    <!--<field name="shipping_date"></field>-->
-                    <!--<field name="shipping_label_issued"></field>-->
-
-                <!--</xpath>-->
-                <!--<xpath expr="//group/group/field[@name='invoice_status']" position="after">-->
-                    <!--<field name="delivered_date"></field>-->
-                    <!--<field name="expected_date"></field>-->
-                    <!--<field name="appraisal_no"></field>-->
-                <!--</xpath>-->
-                <!--<xpath expr="//notebook/page/field[@name='order_line']" position="replace">-->
-                    <!--<field name="order_line" attrs="{'readonly': [('vendor_offer_data', '=', True)]}">-->
-                        <!--<tree string="Purchase Order Lines" editable="False">-->
-                            <!--<field name="currency_id" invisible="1"/>-->
-                            <!--<field name="state" invisible="1"/>-->
-                            <!--&lt;!&ndash;<field name="sequence" widget="handle"/>&ndash;&gt;-->
-                            <!--<field name="sku_code" readonly="1"/>-->
-                            <!--&lt;!&ndash;<field name="product_id"&ndash;&gt;-->
-                                   <!--&lt;!&ndash;attrs="{'readonly': [('state', 'in', ('purchase', 'to approve','done', 'cancel'))]}"&ndash;&gt;-->
-                                   <!--&lt;!&ndash;context="{'partner_id':parent.partner_id, 'quantity':product_qty,'uom':product_uom, 'company_id': parent.company_id}"&ndash;&gt;-->
-                                   <!--&lt;!&ndash;force_save="1"/>&ndash;&gt;-->
-                            <!--&lt;!&ndash;<field&ndash;&gt;-->
-                                        <!--&lt;!&ndash;name="product_id"&ndash;&gt;-->
-                                        <!--&lt;!&ndash;attrs="{&ndash;&gt;-->
-                                            <!--&lt;!&ndash;'readonly': [('state', 'in', ('purchase', 'to approve','done', 'cancel'))],&ndash;&gt;-->
-                                            <!--&lt;!&ndash;'required': [('display_type', '=', False)],&ndash;&gt;-->
-                                        <!--&lt;!&ndash;}"&ndash;&gt;-->
-                                        <!--&lt;!&ndash;context="{'partner_id':parent.partner_id, 'quantity':product_qty,'uom':product_uom, 'company_id': parent.company_id}"&ndash;&gt;-->
-                                        <!--&lt;!&ndash;force_save="1" domain="[('purchase_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"/>&ndash;&gt;-->
-                            <!--<field name="name" invisible="1"/>-->
-                            <!--&lt;!&ndash;&lt;!&ndash;<field name="move_dest_ids" invisible="1"/>&ndash;&gt;&ndash;&gt;-->
-                            <!--<field name="date_planned"/>-->
-                            <!--<field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>-->
-                            <!--&lt;!&ndash;<field name="account_analytic_id" context="{'default_partner_id':parent.partner_id}"&ndash;&gt;-->
-                                   <!--&lt;!&ndash;groups="purchase.group_analytic_accounting"/>&ndash;&gt;-->
-                            <!--&lt;!&ndash;<field name="analytic_tag_ids" groups="purchase.group_analytic_accounting"&ndash;&gt;-->
-                                   <!--&lt;!&ndash;widget="many2many_tags" options="{'color_field': 'color'}"/>&ndash;&gt;-->
-                            <!--<field name="product_qty" attrs="{'readonly': [('vendor_offer_data', '=', True)]}"/>-->
-                            <!--&lt;!&ndash;<field name="qty_received" invisible="not context.get('show_purchase', True)"/>&ndash;&gt;-->
-                            <!--&lt;!&ndash;<field name="qty_invoiced" invisible="not context.get('show_purchase', True)"/>&ndash;&gt;-->
-                            <!--&lt;!&ndash;<field name="product_uom" groups="product.group_uom"&ndash;&gt;-->
-                                   <!--&lt;!&ndash;attrs="{'readonly': [('state', 'in', ('purchase', 'done', 'cancel'))]}"&ndash;&gt;-->
-                                   <!--&lt;!&ndash;force_save="1"/>&ndash;&gt;-->
-                            <!--<field name="price_unit" attrs="{'readonly': [('vendor_offer_data', '=', True)]}"/>-->
-                            <!--<field name="product_offer_price" invisible="1"/>-->
-                               <!--<field name="vendor_offer_data" invisible="1"/>-->
-                            <!--&lt;!&ndash;<field name="product_unit_price" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />&ndash;&gt;-->
-                             <!--&lt;!&ndash;<field name="product_retail" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />&ndash;&gt;-->
-                              <!--&lt;!&ndash;<field name="delivered_product_offer_price" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />&ndash;&gt;-->
-                             <!--&lt;!&ndash;<field name="delivered_product_retail_price" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />&ndash;&gt;-->
-                            <!--&lt;!&ndash;<field name="billed_product_offer_price" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />&ndash;&gt;-->
-                             <!--&lt;!&ndash;<field name="billed_product_retail_price" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />&ndash;&gt;-->
-                            <!--&lt;!&ndash;     <field name="product_offer_price"-->
-                                       <!--attrs="{'readonly': [('vendor_offer_data', '=', True)],'invisible': [('vendor_offer_data', '=', False)]}"/>&ndash;&gt;-->
-
-                            <!--&lt;!&ndash;<field name="taxes_id" widget="many2many_tags" domain="[('type_tax_use','=','purchase')]"&ndash;&gt;-->
-                                   <!--&lt;!&ndash;context="{'default_type_tax_use': 'purchase'}" options="{'no_create': True}"/>&ndash;&gt;-->
-                            <!--&lt;!&ndash;<field name="price_subtotal" widget="monetary"/>&ndash;&gt;-->
-                            <!--&lt;!&ndash; <button name="action_show_details" string="Register lots, packs, location" type="object" icon="fa-list"  options='{"warn": true}' states="purchase"/>&ndash;&gt;-->
-
-                        <!--</tree>-->
-                    <!--</field>-->
-                    <!--<field name="vendor_offer_data" invisible="1"/>-->
-                <!--</xpath>-->
-                <!--&lt;!&ndash;<xpath expr="//notebook/page/group[@class='oe_subtotal_footer oe_right']" position="after">&ndash;&gt;-->
-
-                    <!--&lt;!&ndash;<group class="oe_subtotal_footer " attrs="{'invisible':[('vendor_offer_data', '=',  False)]}">&ndash;&gt;-->
-                                <!--&lt;!&ndash;<field name="rt_price_subtotal_amt" widget="monetary" options="{'currency_field': 'currency_id'}" string="Untaxed Retail Price"/>&ndash;&gt;-->
-                                <!--&lt;!&ndash;<field name="rt_price_tax_amt" widget="monetary" options="{'currency_field': 'currency_id'}" string="Taxes"/>&ndash;&gt;-->
-                                <!--&lt;!&ndash;<div class="oe_subtotal_footer_separator oe_inline">&ndash;&gt;-->
-                                    <!--&lt;!&ndash;<label for="rt_price_total_amt"/>&ndash;&gt;-->
-                                <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                                <!--&lt;!&ndash;<field name="rt_price_total_amt" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Total Retail Price"/>&ndash;&gt;-->
-                            <!--&lt;!&ndash;</group>&ndash;&gt;-->
-
-                    <!--&lt;!&ndash;<group class="oe_subtotal_footer " attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" style="margin-right: 15px;">&ndash;&gt;-->
-                                <!--&lt;!&ndash;<field name="billed_offer_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}" string="Billed Untaxed Offer Price"/>&ndash;&gt;-->
-                                <!--&lt;!&ndash;<field name="rt_price_tax_amt" widget="monetary" options="{'currency_field': 'currency_id'}" string="Taxes"/>&ndash;&gt;-->
-                                <!--&lt;!&ndash;<div class="oe_subtotal_footer_separator oe_inline">&ndash;&gt;-->
-                                    <!--&lt;!&ndash;<label for="billed_offer_total"/>&ndash;&gt;-->
-                                <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                                <!--&lt;!&ndash;<field name="billed_offer_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Billed Total Retail Price"/>&ndash;&gt;-->
-                                <!--&lt;!&ndash;<div class="oe_subtotal_footer_separator oe_inline">&ndash;&gt;-->
-                                    <!--&lt;!&ndash;<label for="final_billed_offer_total"/>&ndash;&gt;-->
-                                <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                                <!--&lt;!&ndash;<field name="final_billed_offer_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Final Billed Total Offer Price"/>&ndash;&gt;-->
-                    <!--&lt;!&ndash;</group>&ndash;&gt;-->
-
-                    <!--&lt;!&ndash;<group class="oe_subtotal_footer " attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" style="margin-right: 15px;">&ndash;&gt;-->
-                                <!--&lt;!&ndash;<field name="billed_retail_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}" string="Billed Untaxed Retail Price"/>&ndash;&gt;-->
-                                <!--&lt;!&ndash;<field name="rt_price_tax_amt" widget="monetary" options="{'currency_field': 'currency_id'}" string="Taxes"/>&ndash;&gt;-->
-                                <!--&lt;!&ndash;<div class="oe_subtotal_footer_separator oe_inline">&ndash;&gt;-->
-                                    <!--&lt;!&ndash;<label for="billed_retail_total"/>&ndash;&gt;-->
-                                <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                                <!--&lt;!&ndash;<field name="billed_retail_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Billed Total Retail Price"/>&ndash;&gt;-->
-                                <!--&lt;!&ndash;<div class="oe_subtotal_footer_separator oe_inline">&ndash;&gt;-->
-                                    <!--&lt;!&ndash;<label for="final_billed_retail_total"/>&ndash;&gt;-->
-                                <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                                <!--&lt;!&ndash;<field name="final_billed_retail_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Final Billed Total Retail Price"/>&ndash;&gt;-->
-                    <!--&lt;!&ndash;</group>&ndash;&gt;-->
-
-                <!--&lt;!&ndash;</xpath>&ndash;&gt;-->
-
-                <!--<xpath expr="//form[1]/sheet[1]/notebook[1]" position="inside">-->
-                    <!--<page name="studio_page_ptSZN" string="Notes">-->
-                        <!--<field name="notes_activity" attrs="{'readonly': True}"/>-->
-                    <!--</page>-->
-                <!--</xpath>-->
+                </button>
+                <xpath expr="//group/group/field[@name='origin']" position="replace">
+                    <field name="origin" string="Sale Order#"/>
+                </xpath>
+                <xpath expr="//group/group/field[@name='company_id']" position="after">
+                    <field name="carrier_info"/>
+                    <field name="carrier_acc_no"/>
+                    <field name="shipping_terms"/>
 
 
-            <!--</field>-->
-        <!--</record>-->
+                </xpath>
+                <xpath expr="//group/group/field[@name='partner_ref']" position="after">
+                    <field name="offer_type" readonly="1"
+                           attrs="{'invisible': [('vendor_offer_data','=',False)]}"></field>
+
+                </xpath>
+                <xpath expr="//page[@name='purchase_delivery_invoice']/group/group" position="inside">
+                    <field name="shipping_date"></field>
+                    <field name="shipping_label_issued"></field>
+
+                </xpath>
+                <xpath expr="//group/group/field[@name='invoice_status']" position="after">
+                    <field name="delivered_date"></field>
+                    <field name="expected_date"></field>
+                    <field name="appraisal_no"></field>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']" position="replace">
+                    <field name="order_line" attrs="{'readonly': [('vendor_offer_data', '=', True)]}">
+                        <tree string="Purchase Order Lines" editable="False">
+                            <field name="currency_id" invisible="1"/>
+                            <field name="state" invisible="1"/>
+                            <!--<field name="sequence" widget="handle"/>-->
+                            <field name="sku_code" readonly="1"/>
+                            <field name="product_id"
+                                   attrs="{'readonly': [('state', 'in', ('purchase', 'to approve','done', 'cancel'))]}"
+                                   context="{'partner_id':parent.partner_id, 'quantity':product_qty, 'company_id': parent.company_id}"
+                                   force_save="1"/>
+                            <!--'uom':product_uom,-->
+                            <!--<field-->
+                                        <!--name="product_id"-->
+                                        <!--attrs="{-->
+                                            <!--'readonly': [('state', 'in', ('purchase', 'to approve','done', 'cancel'))],-->
+                                            <!--'required': [('display_type', '=', False)],-->
+                                        <!--}"-->
+                                        <!--context="{'partner_id':parent.partner_id, 'quantity':product_qty,'uom':product_uom, 'company_id': parent.company_id}"-->
+                                        <!--force_save="1" domain="[('purchase_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"/>-->
+                            <field name="name" invisible="1"/>
+                            <!--&lt;!&ndash;<field name="move_dest_ids" invisible="1"/>&ndash;&gt;-->
+                            <field name="date_planned"/>
+                            <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                            <!--<field name="account_analytic_id" context="{'default_partner_id':parent.partner_id}"-->
+                                   <!--groups="purchase.group_analytic_accounting"/>-->
+                            <!--<field name="analytic_tag_ids" groups="purchase.group_analytic_accounting"-->
+                                   <!--widget="many2many_tags" options="{'color_field': 'color'}"/>-->
+                            <field name="product_qty" attrs="{'readonly': [('vendor_offer_data', '=', True)]}"/>
+                            <field name="qty_received" invisible="not context.get('show_purchase', True)"/>
+                            <field name="qty_invoiced" invisible="not context.get('show_purchase', True)"/>
+                            <!--<field name="product_uom" groups="product.group_uom"-->
+                                   <!--attrs="{'readonly': [('state', 'in', ('purchase', 'done', 'cancel'))]}"-->
+                                   <!--force_save="1"/>-->
+                            <field name="price_unit" attrs="{'readonly': [('vendor_offer_data', '=', True)]}"/>
+                            <field name="product_offer_price" invisible="1"/>
+                               <field name="vendor_offer_data" invisible="1"/>
+                            <field name="product_unit_price" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />
+                             <field name="product_retail" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />
+                              <field name="delivered_product_offer_price" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />
+                             <field name="delivered_product_retail_price" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />
+                            <field name="billed_product_offer_price" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />
+                             <field name="billed_product_retail_price" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />
+                            <!--     <field name="product_offer_price"
+                                       attrs="{'readonly': [('vendor_offer_data', '=', True)],'invisible': [('vendor_offer_data', '=', False)]}"/>-->
+
+                            <field name="taxes_id" widget="many2many_tags" domain="[('type_tax_use','=','purchase')]"
+                                   context="{'default_type_tax_use': 'purchase'}" options="{'no_create': True}"/>
+                            <field name="price_subtotal" widget="monetary"/>
+                            <!-- <button name="action_show_details" string="Register lots, packs, location" type="object" icon="fa-list"  options='{"warn": true}' states="purchase"/>-->
+
+                        </tree>
+                    </field>
+                    <field name="vendor_offer_data" invisible="1"/>
+                </xpath>
+                <xpath expr="//notebook/page/group[@class='oe_subtotal_footer oe_right']" position="after">
+
+                    <group class="oe_subtotal_footer " attrs="{'invisible':[('vendor_offer_data', '=',  False)]}">
+                                <field name="rt_price_subtotal_amt" widget="monetary" options="{'currency_field': 'currency_id'}" string="Untaxed Retail Price"/>
+                                <field name="rt_price_tax_amt" widget="monetary" options="{'currency_field': 'currency_id'}" string="Taxes"/>
+                                <div class="oe_subtotal_footer_separator oe_inline">
+                                    <label for="rt_price_total_amt"/>
+                                </div>
+                                <field name="rt_price_total_amt" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Total Retail Price"/>
+                            </group>
+
+                    <group class="oe_subtotal_footer " attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" style="margin-right: 15px;">
+                                <field name="billed_offer_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}" string="Billed Untaxed Offer Price"/>
+                                <field name="rt_price_tax_amt" widget="monetary" options="{'currency_field': 'currency_id'}" string="Taxes"/>
+                                <div class="oe_subtotal_footer_separator oe_inline">
+                                    <label for="billed_offer_total"/>
+                                </div>
+                                <field name="billed_offer_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Billed Total Retail Price"/>
+                                <div class="oe_subtotal_footer_separator oe_inline">
+                                    <label for="final_billed_offer_total"/>
+                                </div>
+                                <field name="final_billed_offer_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Final Billed Total Offer Price"/>
+                    </group>
+
+                    <group class="oe_subtotal_footer " attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" style="margin-right: 15px;">
+                                <field name="billed_retail_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}" string="Billed Untaxed Retail Price"/>
+                                <field name="rt_price_tax_amt" widget="monetary" options="{'currency_field': 'currency_id'}" string="Taxes"/>
+                                <div class="oe_subtotal_footer_separator oe_inline">
+                                    <label for="billed_retail_total"/>
+                                </div>
+                                <field name="billed_retail_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Billed Total Retail Price"/>
+                                <div class="oe_subtotal_footer_separator oe_inline">
+                                    <label for="final_billed_retail_total"/>
+                                </div>
+                                <field name="final_billed_retail_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Final Billed Total Retail Price"/>
+                    </group>
+
+                </xpath>
+
+                <xpath expr="//form[1]/sheet[1]/notebook[1]" position="inside">
+                    <page name="studio_page_ptSZN" string="Notes">
+                        <field name="notes_activity" attrs="{'readonly': True}"/>
+                    </page>
+                </xpath>
+
+
+            </field>
+        </record>
 
 
         <!--<record id="invoice_supplier_form_ex" model="ir.ui.view">-->
