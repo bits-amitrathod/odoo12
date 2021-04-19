@@ -431,7 +431,19 @@ class StockMove(models.Model):
 
         product_lot_qty_dict = {}
         # product_lot_qty_dict.clear()
+        msg = "Available Stock"
+        picking_id = None
         for move in self.filtered(lambda m: m.state in ['confirmed', 'waiting', 'partially_available']):
+            if move.picking_id.picking_type_id.id == 1:
+                picking_id = move.picking_id
+                quants = self.env['stock.quant']._gather(move.product_id, move.location_id)
+                msg += "<br>-------------------<br>"
+                msg += "Product : " + move.product_id.display_name
+                for quant in quants:
+                    msg += "<br>"
+                    msg += "Lot# : " + quant.lot_id.name + " Available Quantity : " + str(quant.quantity - quant.reserved_quantity)
+
+
             product_lot_qty_dict.clear()
 
             if (move.picking_id and move.picking_id.sale_id) and (move.picking_id.sale_id.team_id.team_type.lower().strip() == 'engine' and move.picking_id.sale_id.state.lower().strip() in (
@@ -588,6 +600,8 @@ class StockMove(models.Model):
                             partially_available_moves |= move
         partially_available_moves.write({'state': 'partially_available'})
         assigned_moves.write({'state': 'assigned'})
+        if picking_id is not None:
+            picking_id.message_post(body=msg)
         self.mapped('picking_id')._check_entire_pack()
 
 
