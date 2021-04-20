@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+popup_sale_orders_groupby_product_report,popup.sale.orders.groupby.product.report,model_popup_sale_orders_groupby_product_report,,1,1,1,1

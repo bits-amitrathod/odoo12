@@ -44,19 +44,19 @@ class ProductSaleByCountPopUp(models.TransientModel):
         sale_orders = self.env['sale.order'].search([])
 
         filtered_sale_orders = list(filter(
-            lambda x: x.confirmation_date and \
-                      s_date <= ProductSaleByCountPopUp.string_to_date_time(x.confirmation_date) <= e_date, sale_orders))
+            lambda x: x.date_order and \
+                      s_date <= ProductSaleByCountPopUp.string_to_date_time(x.date_order) <= e_date, sale_orders))
 
         non_domrant_partner_ids_within_selected_date_range = [sale_order.partner_id.id for sale_order in
                                                               filtered_sale_orders]
 
         all_partners = self.env['res.partner'].search(
-            [('customer', '=', True),('active','=',True), ('id', 'not in', non_domrant_partner_ids_within_selected_date_range)])
+            [('customer_rank', '>', 0),('active','=',True), ('id', 'not in', non_domrant_partner_ids_within_selected_date_range)])
         partner_ids=[]
         for partner in all_partners:
             confirmed_sales_orders = self.env['sale.order'].search(
-                [('partner_id', '=', partner.id), ('confirmation_date', '!=', False)]).sorted(
-                key=lambda o: o.confirmation_date)
+                [('partner_id', '=', partner.id), ('date_order', '!=', False)]).sorted(
+                key=lambda o: o.date_order)
             if len(confirmed_sales_orders) > 0:
                 partner_ids.append(partner.id)
         # partner_ids = [partner.id for partner in all_partners if

@@ -48,7 +48,7 @@ class TrendingReportListView(models.Model):
             sale_orders = self.env['sale.order'].search([('partner_id', '=', product.id), ('state', '=', 'sale')])
             groupby_dict_month['data'] = sale_orders
             for sale_order in groupby_dict_month['data']:
-                confirmation_date=datetime.date(datetime.strptime(str(sale_order.confirmation_date).split(".")[0],"%Y-%m-%d %H:%M:%S"))
+                confirmation_date=datetime.date(datetime.strptime(str(sale_order.date_order).split(".")[0],"%Y-%m-%d %H:%M:%S"))
                 if((confirmation_date.month == (start_date - relativedelta(months=5)).month) and (confirmation_date.year ==  (start_date - relativedelta(months=5)).year)):
                     product.month6 = product.month6 + sale_order.amount_total
                 if((confirmation_date.month == (start_date - relativedelta(months=4)).month) and (confirmation_date.year ==  (start_date - relativedelta(months=4)).year)):
@@ -111,9 +111,9 @@ class TrendingReportListView(models.Model):
         groupby_dict_month['data'] = sale_orders
         for sale_order in groupby_dict_month['data']:
             if (min == None):
-                min = sale_order.confirmation_date
-            elif (min > sale_order.confirmation_date):
-                min = sale_order.confirmation_date
+                min = sale_order.date_order
+            elif (min > sale_order.date_order):
+                min = sale_order.date_order
         if (min):
             in_days = (start_date - datetime.date(datetime.strptime(str(min).split(".")[0], "%Y-%m-%d %H:%M:%S"))).days
             return in_days
@@ -134,7 +134,7 @@ class TrendingReportListView(models.Model):
             sale_orders = self.env['sale.order'].search([('partner_id', '=', customer.id), ('state', '=', 'sale'), ('date_order','<=', start_date)])
             sale_order_dict['data'] = sale_orders
             for sale_order in sale_order_dict['data']:
-                confirmation_date = datetime.date(datetime.strptime(str(sale_order.confirmation_date).split(".")[0], "%Y-%m-%d %H:%M:%S"))
+                confirmation_date = datetime.date(datetime.strptime(str(sale_order.date_order).split(".")[0], "%Y-%m-%d %H:%M:%S"))
                 count=0
                 if (groupby_dict_month.get(confirmation_date.strftime('%b-%Y'))):
                     count=groupby_dict_month[confirmation_date.strftime('%b-%Y')]
@@ -183,9 +183,9 @@ class TrendingReportListView(models.Model):
             View = View.with_context(base_model_name=result['base_model'])
 
         # Apply post processing, groups and modifiers etc...
-        xarch, xfields = View.postprocess_and_fields(self._name, etree.fromstring(result['arch']), view_id)
-        result['arch'] = xarch
-        result['fields'] = xfields
+        # xarch, xfields = View.postprocess_and_fields(self._name, etree.fromstring(result['arch']), view_id)
+        # result['arch'] = xarch
+        # result['fields'] = xfields
 
         # Add related action information if aksed
         if toolbar:
