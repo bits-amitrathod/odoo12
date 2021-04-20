@@ -431,17 +431,18 @@ class StockMove(models.Model):
 
         product_lot_qty_dict = {}
         # product_lot_qty_dict.clear()
-        msg = "Available Stock"
+        msg = "<b>Available Stock</b>"
         picking_id = None
         for move in self.filtered(lambda m: m.state in ['confirmed', 'waiting', 'partially_available']):
             if move.picking_id.picking_type_id.id == 1:
                 picking_id = move.picking_id
                 quants = self.env['stock.quant']._gather(move.product_id, move.location_id)
                 msg += "<br>-------------------<br>"
-                msg += "Product : " + move.product_id.display_name
+                msg += "<b>Product :</b> " + str(move.product_id.display_name)
                 for quant in quants:
-                    msg += "<br>"
-                    msg += "Lot# : " + quant.lot_id.name + " Available Quantity : " + str(quant.quantity - quant.reserved_quantity)
+                    if (quant.quantity - quant.reserved_quantity) > 0:
+                        msg += "<br>"
+                        msg += "<b>Expiration Date :</b> " + str(quant.lot_id.use_date.date()) + " <b>Lot# :</b> " + str(quant.lot_id.name) + " <b>Available Quantity :</b> " + str(quant.quantity - quant.reserved_quantity)
 
 
             product_lot_qty_dict.clear()
@@ -598,8 +599,21 @@ class StockMove(models.Model):
                                 assigned_moves |= move
                                 break
                             partially_available_moves |= move
+
         partially_available_moves.write({'state': 'partially_available'})
         assigned_moves.write({'state': 'assigned'})
+        if assigned_moves:
+            msgs = "<b>Selected Lot#</b>"
+            for assigned_move in assigned_moves:
+                msgs += "<br>-------------------<br>"
+                msgs += "<b>Product :</b> " + str(assigned_move.product_id.display_name)
+                for move_line in assigned_move.move_line_ids:
+                    msgs += "<br>"
+                    msgs += "<b>Expiration Date :</b> " + str(move_line.lot_id.use_date.date()) + \
+                            " <b>Lot# :</b> " + str(move_line.lot_id.name) + \
+                            " <b>Quantity :</b> " + str(move_line.product_uom_qty)
+            picking_id.message_post(body=msgs)
+
         if picking_id is not None:
             picking_id.message_post(body=msg)
         self.mapped('picking_id')._check_entire_pack()
