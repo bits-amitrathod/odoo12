@@ -12,7 +12,9 @@
                     <field name="currency_id" invisible="1"/>
                     <field name="customer"/>
                     <field name="business_development"/>
+                    <field name="customer_business_development" invisible="1"/>
                     <field name="key_account"/>
+                    <field name="customer_key_account" invisible="1"/>
                     <field name="sale_order_id"/>
                     <field name="date_invoice" widget="date"/>
                     <field name="amount_total" widget="monetary" options="{'currency_field': 'currency_id'}"/>
@@ -128,11 +130,13 @@
                 <search string="Search">
                     <field name="customer"/>
                     <field name="business_development"/>
+                    <field name="customer_business_development" invisible="1"/>
                     <field name="key_account"/>
+                    <field name="customer_key_account" invisible="1"/>
                     <group expand="0" string="Group By">
                         <filter name="customer" string="Customer Name" domain="[]" context="{'group_by':'customer'}"/>
-                        <filter name="business_development" string="Business Development" domain="[]" context="{'group_by':'business_development'}"/>
-                        <filter name="key_account" string="Key Account" domain="[]" context="{'group_by':'key_account'}"/>
+                        <filter name="customer_business_development" string="Business Development" domain="[]" context="{'group_by':'customer_business_development'}"/>
+                        <filter name="customer_key_account" string="Key Account" domain="[]" context="{'group_by':'customer_key_account'}"/>
                     </group>
                 </search>
             </field>
