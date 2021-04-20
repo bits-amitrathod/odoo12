@@ -11,14 +11,25 @@ from odoo import models, fields, api
 _logger = logging.getLogger(__name__)
 import datetime
 
-
-
-
 class PricingRule(models.Model):
     _inherit="stock.picking"
-    shipping_terms=fields.Char(string="Shipping Term",compute='_compute_picking_vals')
-    requested_date=fields.Date(string="Req. Ship Date",compute='_compute_picking_vals')
-    delivery_method_name = fields.Char(string="Ship Via",compute='_compute_picking_vals')
+
+
+    def _compute_picking_vals1(self):
+        if self.sale_id.carrier_id:
+           return self.sale_id.carrier_id.name
+        else:
+            return
+
+    def _compute_picking_vals2(self):
+        for picking in self:
+            if picking.sale_id:
+                if picking.sale_id.shipping_terms:
+                    picking.shipping_term = picking.shipping_term(picking.sale_id.shipping_terms)
+
+    shipping_terms=fields.Char(string="Shipping Term",compute='_compute_picking_vals2')
+    requested_date=fields.Date(string="Req. Ship Date")
+    delivery_method_name = fields.Char(string="Ship Via",compute='_compute_picking_vals1')
     # name = fields.Char(string="Name")
     # state= fields.Char(string="State")
     # carrier_id=fields.Integer(string="Carrier")
@@ -47,11 +58,13 @@ class PricingRule(models.Model):
     def _compute_picking_vals(self):
        for picking in self:
           if picking.sale_id:
-              picking.commitment_date=picking.sale_id.commitment_date
+              picking.date_deadline=picking.sale_id.date_order
               if picking.sale_id.shipping_terms:
                 picking.shipping_terms=self.shipping_term(picking.sale_id.shipping_terms)
               if picking.sale_id.carrier_id:
                 picking.delivery_method_name = picking.sale_id.carrier_id.name
+
+
 
     def shipping_term(self,i):
         switcher = {

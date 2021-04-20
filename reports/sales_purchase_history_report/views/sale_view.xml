@@ -31,7 +31,7 @@
         <record id="action_sale_report_purchase_wizard" model="ir.actions.act_window">
             <field name="name">Sales Purchase History</field>
             <field name="res_model">sale.purchase.history.report</field>
-            <!-- <field name="view_type">form</field> -->
+<!--            <field name="view_type">form</field>-->
             <field name="view_mode">form</field>
             <field name="view_id" ref="sr_sale_purchase_report_form_view"/>
             <field name="target">new</field>
@@ -66,6 +66,7 @@
                 </tree>
               </field>
         </record>
+
         <record id="view_sales_order_line_view_cstm" model="ir.ui.view">
             <field name="name">sale.order.line.view</field>
             <field name="model">sale.order.line</field>
@@ -78,22 +79,22 @@
                             </h1>
                         </div>
                         <group>
-                            <group>
+                            <!--<group>
                                 <field name="product_id"/>
                                 <field name="product_sku_ref"/>
                                 <field name="unit_price_converted"/>
                                 <field name="customer_name"/>
                                 <field name="quotations_per_code"  />
                                 <field name="account_manager_cust_name" />
-                            </group>
-                            <group>
+                            </group>-->
+                            <!--<group>
                                 <field name="qty_delivered_converted" string="Required Quantity"/>
                                 <field name="qty_delivered_converted" string="Delivered Quantity"/>
                                 <field name="unit_price_converted" widget="monetary"/>
                                 <field name="total_price_converted" string="Total Price" widget="monetary" sum="Total"/>
                                 <field name="delivered_date" string="Delivered Date"/>
                                 <field name="currency_id"  invisible="1" />
-                            </group>
+                            </group>-->
                         </group>
                     </sheet>
                 </form>
@@ -124,13 +125,13 @@
             </field>
         </record>
 
-        <act_window name="Export Payroll Report"
+        <!--<act_window name="Export Payroll Report"
                     res_model="salepuchasehistory.export"
                     src_model="sale.order.line"
                     view_mode="form"
                     target="new"
                     key2="client_action_multi"
-                    id="sale_purchase_history_act_window"/>
+                    id="sale_purchase_history_act_window"/>-->
 
         <menuitem id="menu_sale_report_purchase_wizard" name="Sales Purchase History" action="action_sale_report_purchase_wizard" parent="sale.menu_sale_report" sequence="22"/>
     </data>

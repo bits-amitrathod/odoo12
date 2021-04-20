@@ -13,7 +13,7 @@
                   <field name="product_name"/>
                   <field name="qty"/>
                   <field name="product_uom"/>
-                    <field name="date_done" widget="date"/>
+                    <field name="date_planned" widget="date"/>
                   <field name="minExpDate" widget="date"/>
                   <field name="maxExpDate" widget="date"/>
                      <field name="product_unit_price" widget="monetary"/>
@@ -40,26 +40,25 @@
                             <group>
                                 <field name="sku"/>
                                 <field name="vendor"/>
-                                  <field name="product_id"/>
-                            <field name="price_subtotal" widget="monetary" string="Total"/>
-                                <field name="date_done" widget="date"/>
+                                <field name="product_id"/>
+                                <field name="price_subtotal" widget="monetary" string="Total"/>
+                                <field name="date_planned" widget="date"/>
                             </group>
-                            <group>
+                           <!-- <group>
                                <field name="product_unit_price" widget="monetary"/>
-                           <field name="product_offer_price" widget="monetary" />
-                           <field name="delivered_product_retail_price" widget="monetary"/>
-                           <field name="delivered_product_offer_price" widget="monetary" />
+                               <field name="product_offer_price" widget="monetary" />
+                               <field name="delivered_product_retail_price" widget="monetary"/>
+                               <field name="delivered_product_offer_price" widget="monetary" />
                                 <field name="minExpDate" widget="date"/>
-                                  <field name="maxExpDate" widget="date"/>
-                                     <field name="product_uom"/>
+                                <field name="maxExpDate" widget="date"/>
+                                <field name="product_uom"/>
                                 <field name="currency_id"  invisible="1" />
-                            </group>
+                            </group>-->
                         </group>
                     </sheet>
                 </form>
             </field>
         </record>
-
 
 
 

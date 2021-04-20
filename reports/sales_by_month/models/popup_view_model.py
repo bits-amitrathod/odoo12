@@ -16,7 +16,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
 
 
     end_date = fields.Date('To Date',default=(fields.date.today()),required=True)
-    product_sku_code = fields.Many2one('product.product', 'Product SKU')
+    product_sku_code = fields.Many2one('product.product', 'Product SKU',ondelete='cascade')
 
     def open_table(self):
         tree_view_id = self.env.ref('sales_by_month.list_view').id

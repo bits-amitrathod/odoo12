@@ -1,3 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_inv_customer_price_list_usr,access_inv_customer_price_list_user,model_inv_customer_price_list,sales_team.group_sale_salesman_all_leads,1,1,0,0
-access_inv_customer_price_list_mgr,access_inv_customer_price_list_mgr,model_inv_customer_price_list,sales_team.group_sale_manager,1,1,1,1
+inventory_customer_price_list_popup,inventory.customer_price_list_popup,model_inventory_customer_price_list_popup,,1,1,1,1
+inventory_product_price_list_popup,inventory.product_price_list_popup,model_inventory_product_price_list_popup,,1,1,1,1
+inv_customer_price_list,inv.customer_price_list,model_inv_customer_price_list,,1,1,1,1

@@ -70,7 +70,7 @@
                 <field name="customer_name" invisible="1"/>
                 <field name="product_code"/>
                 <field name="product_name"/>
-                <field name="cost" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="cost" widget="monetary" />
 
             </tree>
           </field>
@@ -86,7 +86,7 @@
                         <field name="customer_name" invisible="1"/>
                         <field name="product_code"/>
                         <field name="product_id"/>
-                        <field name="cost" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                        <field name="cost" widget="monetary" />
                     </group>
                 </sheet>
             </form>
@@ -103,7 +103,7 @@
                 <field name="product_tmpl_id" invisible="1"/>
                 <field name="sku_code" string="Product SKU"/>
                 <field name="name" string="Product Name"/>
-                <field name="lst_price" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="lst_price" widget="monetary" />
 
             </tree>
           </field>
