@@ -245,7 +245,12 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         """This route is called when adding a product to cart (no options)."""
         sale_order = request.website.sale_get_order(force_create=True)
         crm_team = request.env['crm.team'].sudo().search([('team_type', '=', 'my_in_stock_report')])
-        sale_order.team_id = crm_team.id
+
+        if sale_order.team_id.team_type != "my_in_stock_report":
+            msg = "Channel Type : " + str(sale_order.team_id.name) + " -> " + str(crm_team.name)
+            sale_order.sudo().message_post(body=msg)
+            sale_order.team_id = crm_team.id
+
         if sale_order.state != 'draft':
             request.session['sale_order_id'] = None
             sale_order = request.website.sale_get_order(force_create=True)
