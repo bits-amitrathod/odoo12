@@ -2,12 +2,11 @@ odoo.define('website_sales.quote_my_report_cart', function (require) {
 'use strict';
 
     require('web.dom_ready');
-    var base = require("web_editor.base");
     var ajax = require('web.ajax');
     var utils = require('web.utils');
     var core = require('web.core');
     var config = require('web.config');
-    require("website.content.zoomodoo");
+    require("web.zoomodoo");
     var _t = core._t;
 
     $('#selectAll').click(function (ev) {

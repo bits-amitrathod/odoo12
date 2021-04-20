@@ -1,7 +1,5 @@
 <odoo>
     <data>
-
-
         <record id="action_send_invitation_email" model="ir.actions.server">
             <field name="name">Send An Invitation Email</field>
             <field name="type">ir.actions.server</field>

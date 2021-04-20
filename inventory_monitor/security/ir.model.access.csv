@@ -1,3 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_inventory_monitor,inventory_monitor user,model_inventory_monitor,stock.group_stock_user,1,1,1,1
 access_inventory_monitor,inventory_monitor manager,model_inventory_monitor,stock.group_stock_manager,1,1,1,1
+access_res_config_settings,res_config_settings user,model_res_config_settings,stock.group_stock_user,1,1,1,1
+access_res_config_settings,res_config_settings user,model_res_config_settings,stock.group_stock_manager,1,1,1,1
+access_max_inventory_popup,max_inventory_popup user,model_max_inventory_popup,stock.group_stock_user,1,1,1,1
+access_max_inventory_popup,max_inventory_popup user,model_max_inventory_popup,stock.group_stock_manager,1,1,1,1

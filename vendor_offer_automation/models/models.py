@@ -57,7 +57,7 @@ class vendor_offer_automation(models.Model):
 
     @api.model
     def map_customer_sku_with_catelog_number(self):
-        if not self.document is None:
+        if not self.document is False:
             try:
                 book = xlrd.open_workbook(file_contents=self.document)
                 try:
@@ -229,7 +229,7 @@ class vendor_offer_automation(models.Model):
 
     @api.model
     def map_customer_sku_with_catelog_number_all_column(self):
-        if not self.document is None:
+        if not self.document is False:
             try:
                 book = xlrd.open_workbook(file_contents=self.document)
                 try:
@@ -594,8 +594,9 @@ class vendor_offer_automation(models.Model):
             'tag': 'import_offer_template',
             'params': [
                 {'model': 'sps.vendor_offer_automation.template', 'offer_id': self.id, 'vendor_id': self.partner_id.id,
-                 'user_type': 'supplier','import_type_ven': few_field_import}],
+                 'user_type': 'supplier','request_model':'sps.vendor_offer_automation.template','import_type_ven': few_field_import}],
         }
+
 
     def action_import_order_lines_all_column(self):
         tree_view_id = self.env.ref('vendor_offer_automation.vendor_template_client_action').id
@@ -609,6 +610,16 @@ class vendor_offer_automation(models.Model):
                  'vendor_id': self.partner_id.id,
                  'user_type': 'supplier', 'import_type_ven': all_field_import}],
         }
+        # tree_view_id = self.env.ref('vendor_offer_automation.vendor_template_client_action').id
+        # return {
+        #     'type': 'ir.actions.client',
+        #     'views': [(tree_view_id, 'form')],
+        #     'view_mode': 'form',
+        #     'tag': 'importtemplate',
+        #     'params': [
+        #         {'model': 'sps.customer.template', 'customer_id': self.id, 'user_type': 'customer', 'request_model':
+        #             'sps.customer.requests'}],
+        # }
 
     def get_order_line_multiplier(self, order_line_obj, premium):
         multiplier_list = None
