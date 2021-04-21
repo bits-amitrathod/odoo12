@@ -1,6 +1,7 @@
 /* Copyright 2016 0k.io,ACSONE SA/NV
  *  * License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). */
 
+/*
 odoo.define('web_m2x_options.web_m2x_options', function (require) {
     "use strict";
 
@@ -60,17 +61,21 @@ odoo.define('web_m2x_options.web_m2x_options', function (require) {
             this.$("p").text(_.str.sprintf(_t("You are creating a new %s, are you sure it does not exist yet?"), this.name));
             this.$("input").val(this.value);
         },
-        /**
+        */
+/**
          * @override
          * @param {boolean} isSet
-         */
+         *//*
+
         close: function (isSet) {
             this.isSet = isSet;
             this._super.apply(this, arguments);
         },
-        /**
+        */
+/**
          * @override
-         */
+         *//*
+
         destroy: function () {
             if (!this.isSet) {
                 this.trigger_up('closed_unset');
@@ -375,3 +380,4 @@ odoo.define('web_m2x_options.web_m2x_options', function (require) {
         },
     });
 });
+*/
