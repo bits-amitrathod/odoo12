@@ -211,6 +211,7 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         _logger.info('In quote my report')
         partner = request.env['res.partner'].sudo().search([('id', '=', partner_id)])
         _logger.info(partner)
+        request.session['my_in_stock_report_sales_channel'] = True
         if request.session.uid:
             _logger.info('Login successfully')
             user = request.env['res.users'].search([('id', '=', request.session.uid)])
@@ -270,6 +271,40 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
             product_custom_attribute_values=product_custom_attribute_values,
             no_variant_attribute_values=no_variant_attribute_values
         )
+
+    @http.route(['/shop/cart/update'], type='http', auth="public", methods=['POST'], website=True, csrf=False)
+    def cart_update(self, product_id, add_qty=1, set_qty=0, **kw):
+        """This route is called when adding a product to cart (no options)."""
+        sale_order = request.website.sale_get_order(force_create=True)
+        if sale_order.state != 'draft':
+            request.session['sale_order_id'] = None
+            sale_order = request.website.sale_get_order(force_create=True)
+
+        product_custom_attribute_values = None
+        if kw.get('product_custom_attribute_values'):
+            product_custom_attribute_values = json.loads(kw.get('product_custom_attribute_values'))
+
+        no_variant_attribute_values = None
+        if kw.get('no_variant_attribute_values'):
+            no_variant_attribute_values = json.loads(kw.get('no_variant_attribute_values'))
+
+        if 'my_in_stock_report_sales_channel' in request.session and \
+                request.session['my_in_stock_report_sales_channel'] and \
+                sale_order.team_id.team_type != "my_in_stock_report":
+            crm_team = request.env['crm.team'].sudo().search([('team_type', '=', 'my_in_stock_report')])
+            msg = "Channel Type : " + str(sale_order.team_id.name) + " -> " + str(crm_team.name)
+            sale_order.sudo().message_post(body=msg)
+            sale_order.team_id = crm_team.id
+            request.session.pop('my_in_stock_report_sales_channel')
+
+        sale_order._cart_update(
+            product_id=int(product_id),
+            add_qty=add_qty,
+            set_qty=set_qty,
+            product_custom_attribute_values=product_custom_attribute_values,
+            no_variant_attribute_values=no_variant_attribute_values
+        )
+        return request.redirect("/shop/cart")
 
 
 class WebsiteSaleOptionsCstm(odoo.addons.website_sale.controllers.main.WebsiteSale):
