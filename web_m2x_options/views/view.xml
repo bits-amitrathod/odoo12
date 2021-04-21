@@ -11,5 +11,6 @@
                 src="/web_m2x_options/static/src/js/form.js"
             />
         </xpath>
+
     </template>
 </odoo>
