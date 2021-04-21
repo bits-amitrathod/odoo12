@@ -34,7 +34,7 @@ class TrendingReportListView(models.Model):
     # trend_val = fields.Char('Trend', store=False,compute='_get_trend_value')
     # average_sale = fields.Monetary('Average',compute='_get_average_value', currency_field='currency_id', store=False)
     # total_sale = fields.Monetary('Total',compute='_get_total_value', currency_field='currency_id', store=False)
-    currency_id = fields.Many2one("res.currency",compute='_compute_sales_vals', string="Currency", store=False)
+    # currency_id = fields.Many2one("res.currency",compute='_compute_sales_vals', string="Currency", store=False)
 
 
     def _compute_sales_vals(self):

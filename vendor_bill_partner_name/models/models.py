@@ -125,31 +125,14 @@ class VendorBillPartnerName(models.Model):
         return tools.image_resize_image_big(base64.b64encode(image)) if image and colorize else super_return
 
 
-    # @api.model
-    # def _get_default_image(self, partner_type, is_company, parent_id):
-    #     super_return=super(VendorBillPartnerName, self). _get_default_image(partner_type, is_company, parent_id)
-    #     colorize, img_path, image = False, False, False
-    #
-    #     if super_return and partner_type == 'other':
-    #         if not image :
-    #             img_path = get_module_resource('vendor_bill_partner_name', 'static/src/img', 'cart.png')
-    #             colorize = True
-    #
-    #         if img_path:
-    #             with open(img_path, 'rb') as f:
-    #                 image = f.read()
-    #     # if image and colorize:
-    #     #     image = tools.image_colorize(image)
-    #
-    #     return tools.image_resize_image_big(base64.b64encode(image)) if image and colorize else super_return
 
-# class account_invoice(models.Model):
-#     _inherit = "account.invoice"
+# class account_move(models.Model):
+#     _inherit = "account.move"
 #
 #     @api.model
 #     def create(self, values):
 #         # Override the original create function for the res.partner model
-#         record = super(account_invoice, self).create(values)
+#         record = super(account_move, self).create(values)
 #
 #         # Change the values of a variable in this super function
 #         # record['passed_override_write_function'] = True

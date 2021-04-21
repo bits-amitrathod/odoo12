@@ -95,7 +95,7 @@
                         <label for="oe_import_has_header" style="display:none">The first row
                          contains the label of the column</label>
                     </div>
-                    <div class="js_import_options oe_import_debug_option oe_import_batch_limit">
+                    <!--<div class="js_import_options oe_import_debug_option oe_import_batch_limit">
                         <label for="oe_import_batch_limit">Batch limit</label>
                         <input id="oe_import_batch_limit" value="2000"/>
                     </div>
@@ -103,7 +103,7 @@
                             lines composed only of empty cells">
                         <label for="oe_import_row_start">Start at line</label>
                         <input id="oe_import_row_start" value="1"/>
-                    </div>
+                    </div>-->
                     <div class="oe_import_debug_option">
                         <input type="checkbox" class="oe_import_advanced_mode" checked="checked"
                                id="oe_import_advanced_mode" style="display:none"/>
@@ -144,8 +144,8 @@
     <t t-name="ImportTemplateViewInner.buttons">
         <button type="button" class="btn btn-primary o_import_import o_import_import_full d-none">Import</button>
         <button type="button" class="btn btn-primary o_import_import o_import_import_partial d-none">Resume</button>
-        <button type="button" class="btn btn-secondary o_import_validate d-none">Test</button>
-        <!--<button type="button" class="btn btn-secondary o_import_file_reload d-none">Reload File</button>-->
+        <button type="button" class="btn btn-secondary o_import_validate d-none">Test Import</button>
+        <button type="button" class="btn btn-secondary o_import_file_reload d-none">Reload File</button>
         <button type="button" class="btn btn-primary oe_import_file">Load File</button>
         <button type="button" class="btn btn-secondary o_import_cancel">Cancel</button>
     </t>

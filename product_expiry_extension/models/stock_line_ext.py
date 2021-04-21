@@ -36,7 +36,7 @@ class inventory_exe(models.Model):
         else:
             alert_date = datetime.datetime.strptime(str(lot_use_date), '%Y-%m-%d %H:%M:%S') - datetime.timedelta(days=3)
 
-        vals.update({'use_date': str(lot_use_date), 'alert_date': str(alert_date), 'life_date': str(lot_use_date),'removal_date': str(lot_use_date)})
+        vals.update({'use_date': str(lot_use_date), 'alert_date': str(alert_date), 'expiration_date': str(lot_use_date),'removal_date': str(lot_use_date)})
 
         return vals
 
@@ -135,7 +135,7 @@ class inventory_exe(models.Model):
                                         alert_date = final_date.date() - datetime.timedelta(days=3)
                                     lot = self.env['stock.production.lot'].create(
                                         {'name': ml.lot_name, 'use_date': ml.lot_expired_date,
-                                         'removal_date': ml.lot_expired_date, 'life_date': ml.lot_expired_date,
+                                         'removal_date': ml.lot_expired_date, 'expiration_date': ml.lot_expired_date,
                                          'alert_date': str(alert_date), 'product_id': ml.product_id.id})
                                 else:
                                     lot = self.env['stock.production.lot'].create(

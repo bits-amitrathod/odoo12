@@ -69,4 +69,5 @@
 
     <!--<menuitem name="Notification Scheduler" id="menu_stock_config_form_ext" action="run_purchase_notification"
               parent="product_expiry_extension.menu_scheduler_config" sequence="2"/>-->
+
 </odoo>

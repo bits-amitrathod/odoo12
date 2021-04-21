@@ -110,7 +110,7 @@ class VendorOfferImportTransientModel(models.TransientModel):
         return cell_values, import_fields, cols
 
     #@api.multi
-    def do(self, fields, columns,options, parent_model, customer_id, offer_id, import_type_ven,dryrun=False):
+    def do_custom(self, fields, columns,options, parent_model, customer_id, template_type, upload_document,offer_id, import_type_ven,dryrun=False):
         self.ensure_one()
         import_result = {'messages': []}
         try:
@@ -229,6 +229,8 @@ class VendorOfferImportTransientModel(models.TransientModel):
                 'preview': preview,
             }
 
+
+
     @api.model
     def _find_type_from_preview(self, options, preview):
         type_fields = []
@@ -248,50 +250,123 @@ class VendorOfferImportTransientModel(models.TransientModel):
 
         return ['id', 'text', 'boolean', 'char', 'datetime', 'selection', 'many2one', 'one2many', 'many2many', 'html']
 
-    def _match_headers(self, rows, fields, options):
-        if not options.get('headers'):
-            return [], {}
+    # def _match_headers(self, rows, fields, options):
+    #     """ Attempts to match the imported model's fields to the
+    #         titles of the parsed CSV file, if the file is supposed to have
+    #         headers.
+    #
+    #         Will consume the first line of the ``rows`` iterator.
+    #
+    #         Returns the list of headers and a dict mapping cell indices
+    #         to key paths in the ``fields`` tree. If headers were not
+    #         requested, both collections are empty.
+    #
+    #         :param Iterator rows:
+    #         :param dict fields:
+    #         :param dict options:
+    #         :rtype: (list(str), dict(int: list(str)))
+    #     """
+    #     if not options.get('headers'):
+    #         return [], {}
+    #
+    #     headers = next(rows, None)
+    #     if not headers:
+    #         return [], {}
+    #
+    #     matches = {}
+    #     mapping_records = self.env['base_import.mapping'].search_read([('res_model', '=', self.res_model)], ['column_name', 'field_name'])
+    #     mapping_fields = {rec['column_name']: rec['field_name'] for rec in mapping_records}
+    #     for index, header in enumerate(headers):
+    #         match_field = []
+    #         mapping_field_name = mapping_fields.get(header.lower())
+    #         if mapping_field_name:
+    #             match_field = mapping_field_name.split('/')
+    #         if not match_field:
+    #             match_field = [field['name'] for field in self._match_header(header, fields, options)]
+    #         matches[index] = match_field or None
+    #     return headers, matches
 
-        headers = next(rows, None)
-        if not headers:
-            return [], {}
-
-        matches = {}
-        mapping_records = []
-        mapping_fields = {rec['column_name']: rec['field_name'] for rec in mapping_records}
-        for index, header in enumerate(headers):
-            match_field = []
-            mapping_field_name = mapping_fields.get(header.lower())
-            if mapping_field_name:
-                match_field = mapping_field_name.split('/')
-            if not match_field:
-                match_field = [field['name'] for field in self._match_header(header.strip(), fields, options)]
-            matches[index] = match_field or None
-        return headers, matches
+    # def _match_headers(self, rows, fields, options):
+    #     if not options.get('headers'):
+    #         return [], {}
+    #
+    #     headers = next(rows, None)
+    #     if not headers:
+    #         return [], {}
+    #
+    #     matches = {}
+    #     mapping_records = []
+    #     mapping_fields = {rec['column_name']: rec['field_name'] for rec in mapping_records}
+    #     for index, header in enumerate(headers):
+    #         match_field = []
+    #         mapping_field_name = mapping_fields.get(header.lower())
+    #         if mapping_field_name:
+    #             match_field = mapping_field_name.split('/')
+    #         if not match_field:
+    #             match_field = [field['name'] for field in self._match_header(header.strip(), fields, options)]
+    #         matches[index] = match_field or None
+    #     return headers, matches
 
     #@api.multi
     def _read_xls(self, options):
         """ Read file content, using xlrd lib """
         book = xlrd.open_workbook(file_contents=self.file or b'')
-        return self._read_xls_book(book)
+        sheets = book.sheet_names()
+        sheet = sheets[0]
+        return self._read_xls_book(book,sheet)
 
-    def _read_xls_book(self, book):
-        sheet = book.sheet_by_index(0)
+    # def _read_xls_book(self, book):
+    #     sheet = book.sheet_by_index(0)
+    #     # emulate Sheet.get_rows for pre-0.9.4
+    #     for row in pycompat.imap(sheet.row, range(sheet.nrows)):
+    #         values = []
+    #         for cell in row:
+    #             if cell.ctype is xlrd.XL_CELL_NUMBER:
+    #                 is_float = cell.value % 1 != 0.0
+    #                 values.append(
+    #                     pycompat.text_type(cell.value)
+    #                     if is_float
+    #                     else pycompat.text_type(int(cell.value))
+    #                 )
+    #             elif cell.ctype is xlrd.XL_CELL_DATE:
+    #                 is_datetime = cell.value % 1 != 0.0
+    #                 # emulate xldate_as_datetime for pre-0.9.3
+    #                 dt = datetime(*xlrd.xldate.xldate_as_tuple(cell.value, book.datemode))
+    #                 values.append(
+    #                     dt.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+    #                     if is_datetime
+    #                     else dt.strftime(DEFAULT_SERVER_DATE_FORMAT)
+    #                 )
+    #             elif cell.ctype is xlrd.XL_CELL_BOOLEAN:
+    #                 values.append(u'True' if cell.value else u'False')
+    #             elif cell.ctype is xlrd.XL_CELL_ERROR:
+    #                 raise ValueError(
+    #                     _("Error cell found while reading XLS/XLSX file: %s") %
+    #                     xlrd.error_text_from_code.get(
+    #                         cell.value, "unknown error code %s" % cell.value)
+    #                 )
+    #             else:
+    #                 values.append(cell.value)
+    #         if any(x for x in values if x.strip()):
+    #             yield values
+
+    def _read_xls_book(self, book, sheet_name):
+        sheet = book.sheet_by_name(sheet_name)
         # emulate Sheet.get_rows for pre-0.9.4
-        for row in pycompat.imap(sheet.row, range(sheet.nrows)):
+        for rowx, row in enumerate(map(sheet.row, range(sheet.nrows))):
             values = []
-            for cell in row:
+            for colx, cell in enumerate(row, 1):
                 if cell.ctype is xlrd.XL_CELL_NUMBER:
                     is_float = cell.value % 1 != 0.0
                     values.append(
-                        pycompat.text_type(cell.value)
+                        str(cell.value)
                         if is_float
-                        else pycompat.text_type(int(cell.value))
+                        else str(int(cell.value))
                     )
                 elif cell.ctype is xlrd.XL_CELL_DATE:
                     is_datetime = cell.value % 1 != 0.0
                     # emulate xldate_as_datetime for pre-0.9.3
-                    dt = datetime(*xlrd.xldate.xldate_as_tuple(cell.value, book.datemode))
+                    dt = datetime.datetime(*xlrd.xldate.xldate_as_tuple(cell.value, book.datemode))
                     values.append(
                         dt.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
                         if is_datetime
@@ -301,61 +376,121 @@ class VendorOfferImportTransientModel(models.TransientModel):
                     values.append(u'True' if cell.value else u'False')
                 elif cell.ctype is xlrd.XL_CELL_ERROR:
                     raise ValueError(
-                        _("Error cell found while reading XLS/XLSX file: %s") %
-                        xlrd.error_text_from_code.get(
-                            cell.value, "unknown error code %s" % cell.value)
+                        _("Invalid cell value at row %(row)s, column %(col)s: %(cell_value)s") % {
+                            'row': rowx,
+                            'col': colx,
+                            'cell_value': xlrd.error_text_from_code.get(cell.value, _("unknown error code %s", cell.value))
+                        }
                     )
                 else:
                     values.append(cell.value)
-            if any(x for x in values if x.strip()):
-                yield values
+            break
+        # if any(x for x in values if x.strip()):
+        #     yield values
+        return values
 
     # use the same method for xlsx and xls files
     _read_xlsx = _read_xls
 
+    # @api.model
+    # def get_fields(self, model, import_type_ven='', depth=FIELDS_RECURSION_LIMIT):
+    #     Model = self.env['sps.vendor_offer_automation.template']
+    #     importable_fields = []
+    #     # importable_fields = [{
+    #     #     'id': 'id',
+    #     #     'name': 'id',
+    #     #     'string': _("External ID"),
+    #     #     'required': False,
+    #     #     'fields': [],
+    #     #     'type': 'id',
+    #     # }]
+    #     # if not depth:
+    #     #     return importable_fields
+    #     model_fields = Model.fields_get()
+    #     blacklist = models.MAGIC_COLUMNS + [Model.CONCURRENCY_CHECK_FIELD]
+    #     hide_column_list = []
+    #     if import_type_ven == few_field_import:
+    #         hide_column_list = hide_column_list_method
+    #     for name, field in model_fields.items():
+    #         if name in blacklist:
+    #             continue
+    #         if name in hide_column_list:
+    #             continue
+    #         # an empty string means the field is deprecated, @deprecated must
+    #         # be absent or False to mean not-deprecated
+    #         if field.get('deprecated', False) is not False:
+    #             continue
+    #         # if field.get('readonly'):
+    #         #     states = field.get('states')
+    #         #     if not states:
+    #         #         continue
+    #         #     # states = {state: [(attr, value), (attr2, value2)], state2:...}
+    #         #     if not any(attr == 'readonly' and value is False
+    #         #                for attr, value in itertools.chain.from_iterable(states.values())):
+    #         #         continue
+    #         if not name.startswith('mf_'):
+    #             continue
+    #         field_value = {
+    #             'id': name,
+    #             'name': name,
+    #             'string': field['string'],
+    #             # Y U NO ALWAYS HAS REQUIRED
+    #             'required': bool(field.get('required')),
+    #             'fields': [],
+    #             'type': field['type'],
+    #         }
+    #
+    #         if field['type'] in ('many2many', 'many2one'):
+    #             field_value['fields'] = [
+    #                 dict(field_value, name='id', string=_("External ID"), type='id'),
+    #                 dict(field_value, name='.id', string=_("Database ID"), type='id'),
+    #             ]
+    #         elif field['type'] == 'one2many' and depth:
+    #             field_value['fields'] = self.get_fields(field['relation'], depth=depth - 1)
+    #             if self.user_has_groups('base.group_no_one'):
+    #                 field_value['fields'].append(
+    #                     {'id': '.id', 'name': '.id', 'string': _("Database ID"), 'required': False, 'fields': [],
+    #                      'type': 'id'})
+    #
+    #         importable_fields.append(field_value)
+    #
+    #     # TODO: cache on model?
+    #     return importable_fields
+
     @api.model
-    def get_fields(self, model, import_type_ven='', depth=FIELDS_RECURSION_LIMIT):
+    def get_fields(self, model, depth=FIELDS_RECURSION_LIMIT):
         Model = self.env['sps.vendor_offer_automation.template']
         importable_fields = []
-        # importable_fields = [{
-        #     'id': 'id',
-        #     'name': 'id',
-        #     'string': _("External ID"),
-        #     'required': False,
-        #     'fields': [],
-        #     'type': 'id',
-        # }]
-        # if not depth:
-        #     return importable_fields
+        importable_fields = [{
+            'id': 'id',
+            'name': 'id',
+            'string': _("External ID"),
+            'required': False,
+            'fields': [],
+            'type': 'id',
+        }]
         model_fields = Model.fields_get()
         blacklist = models.MAGIC_COLUMNS + [Model.CONCURRENCY_CHECK_FIELD]
-        hide_column_list = []
-        if import_type_ven == few_field_import:
-            hide_column_list = hide_column_list_method
         for name, field in model_fields.items():
             if name in blacklist:
                 continue
-            if name in hide_column_list:
-                continue
-            # an empty string means the field is deprecated, @deprecated must
-            # be absent or False to mean not-deprecated
             if field.get('deprecated', False) is not False:
                 continue
-            # if field.get('readonly'):
-            #     states = field.get('states')
-            #     if not states:
-            #         continue
-            #     # states = {state: [(attr, value), (attr2, value2)], state2:...}
-            #     if not any(attr == 'readonly' and value is False
-            #                for attr, value in itertools.chain.from_iterable(states.values())):
-            #         continue
+            if field.get('readonly'):
+                states = field.get('states')
+                if not states:
+                    continue
+                if not any(attr == 'readonly' and value is False
+                           for attr, value in itertools.chain.from_iterable(states.values())):
+                    continue
             if not name.startswith('mf_'):
                 continue
             field_value = {
+                # 'id': name[3:],
+                # 'name': name[3:],
                 'id': name,
                 'name': name,
                 'string': field['string'],
-                # Y U NO ALWAYS HAS REQUIRED
                 'required': bool(field.get('required')),
                 'fields': [],
                 'type': field['type'],

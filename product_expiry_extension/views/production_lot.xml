@@ -29,7 +29,7 @@
         </field>
      </record>
 
-    <!--<record id="product_expiry.view_move_form_expiry" model="ir.ui.view">
+    <record id="product_expiry.view_move_form_expiry" model="ir.ui.view">
         <field name="name">stock.production.lot.tree</field>
         <field name="model">stock.production.lot</field>
 
@@ -42,7 +42,7 @@
                     <field name="removal_date" invisible="1" />
                 </group>
                 <group>
-                    <field name="life_date" invisible="1"/>
+                    <field name="expiration_date" invisible="1"/>
                     <field name="alert_date" attrs="{'required': True}" />
                 </group>
             </group>
@@ -52,8 +52,8 @@
             <span class="label label-danger" attrs="{'invisible': [('product_expiry_alert', '=', False)]}">Expiration Alert</span>
         </xpath>
         </field>
-    </record>-->
-    <!-- <record id="product_expiry.view_move_form_expiry_simple" model="ir.ui.view">
+    </record>
+    <record id="product_expiry.view_move_form_expiry_simple" model="ir.ui.view">
         <field name="name">stock.production.lot.inherit.form</field>
         <field name="model">stock.production.lot</field>
           <field name="view_id" ref="product_expiry.view_move_form_expiry_simple"/>
@@ -65,7 +65,7 @@
                     <field name="removal_date" invisible="1"/>
                 </group>
                 <group>
-                    <field name="life_date" invisible="1"/>
+                    <field name="expiration_date" invisible="1"/>
                     <field name="alert_date" attrs="{'required': True}"/>
                 </group>
             </group>
@@ -75,6 +75,6 @@
             <span class="label label-danger" attrs="{'invisible': [('product_expiry_alert', '=', False)]}">Expiration Alert</span>
         </xpath>
         </field>
-    </record>-->
+    </record>
 
 </odoo>
