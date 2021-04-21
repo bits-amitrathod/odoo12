@@ -135,10 +135,10 @@ class VendorOffer(models.Model):
     notes_activity = fields.One2many('purchase.notes.activity', 'order_id', string='Notes')
 
     accelerator = fields.Boolean(string="Accelerator")
-    priority = fields.Selection([
-        ('low', 'Low'),
-        ('medium', 'Medium'),
-        ('high', 'High')], string='Priority')
+    # priority = fields.Selection([
+    #     ('low', 'Low'),
+    #     ('medium', 'Medium'),
+    #     ('high', 'High')], string='Priority')
 
     new_customer = fields.Boolean(string="New Customer")
     shipping_label_issued = fields.Selection([
@@ -785,34 +785,35 @@ class VendorOffer(models.Model):
             return record
 
     #@api.multi
-    def write(self, values):
-        if (self.state == 'ven_draft' or self.state == 'ven_sent'):
-            # Fix for revion change on send button email template
-            if not 'message_follower_ids' in values:
-                temp = int(self.revision) + 1
-                values['revision'] = str(temp)
-                values['revision_date'] = fields.Datetime.now()
-            if 'partner_id' in values:
-                fetch_id = values['partner_id']
-                user_fetch = self.env['res.partner'].search([('id', '=', fetch_id), ])
-                if user_fetch:
-                    values['vendor_cust_id'] = user_fetch.saleforce_ac
-            record = super(VendorOffer, self).write(values)
-            if 'arrival_date_grp' in values:
-                for purchase in self:
-                    stock_pick = self.env['stock.picking'].search([('origin', '=', purchase.name)])
-                    for pick in stock_pick:
-                        pick.arrival_date = values['arrival_date_grp']
-
-            return record
-        else:
-            record = super(VendorOffer, self).write(values)
-            if 'arrival_date_grp' in values:
-                for purchase in self:
-                    stock_pick = self.env['stock.picking'].search([('origin', '=', purchase.name)])
-                    for pick in stock_pick:
-                        pick.arrival_date = values['arrival_date_grp']
-            return record
+    # def write(self, values):
+    #     self.ensure_one()
+    #     if (self.state == 'ven_draft' or self.state == 'ven_sent'):
+    #         # Fix for revion change on send button email template
+    #         if not 'message_follower_ids' in values:
+    #             temp = int(self.revision) + 1
+    #             values['revision'] = str(temp)
+    #             values['revision_date'] = fields.Datetime.now()
+    #         if 'partner_id' in values:
+    #             fetch_id = values['partner_id']
+    #             user_fetch = self.env['res.partner'].search([('id', '=', fetch_id), ])
+    #             if user_fetch:
+    #                 values['vendor_cust_id'] = user_fetch.saleforce_ac
+    #         record = super(VendorOffer, self).write(values)
+    #         if 'arrival_date_grp' in values:
+    #             for purchase in self:
+    #                 stock_pick = self.env['stock.picking'].search([('origin', '=', purchase.name)])
+    #                 for pick in stock_pick:
+    #                     pick.arrival_date = values['arrival_date_grp']
+    #
+    #         return record
+    #     else:
+    #         record = super(VendorOffer, self).write(values)
+    #         if 'arrival_date_grp' in values:
+    #             for purchase in self:
+    #                 stock_pick = self.env['stock.picking'].search([('origin', '=', purchase.name)])
+    #                 for pick in stock_pick:
+    #                     pick.arrival_date = values['arrival_date_grp']
+    #         return record
 
     def compute_access_url_offer(self):
         for order in self:
@@ -1744,7 +1745,6 @@ def _add_customer_references_so(srm, order):
 
 def _convert_curr_iso_fdx(code):
     return FEDEX_CURR_MATCH.get(code, code)
-
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'

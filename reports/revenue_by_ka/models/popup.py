@@ -12,14 +12,14 @@ class KaRevenueReportPopup(models.TransientModel):
                                     ('05', 'May'), ('06', 'June'), ('07', 'July'), ('08', 'August'), ('09', 'September'),
                                     ('10', 'October'), ('11', 'November'), ('12', 'December')], 'Start Month', required=True)
 
-    start_year = fields.Selection([(num, str(num)) for num in range(2010, (datetime.datetime.now().year) + 20)],
-                                  'Start Year', default=datetime.datetime.now().year, required=True)
+    start_year = fields.Selection([(str(num), str(num)) for num in range(2010, (datetime.datetime.now().year) + 20)],
+                                  'Start Year', default=str(datetime.datetime.now().year), required=True)
 
     end_month = fields.Selection([('01', 'January'), ('02', 'February'), ('03', 'March'), ('04', 'April'),
                                  ('05', 'May'), ('06', 'June'), ('07', 'July'), ('08', 'August'), ('09', 'September'),
                                  ('10', 'October'), ('11', 'November'), ('12', 'December')], 'End Month', required=True)
 
-    end_year = fields.Selection([(num, str(num)) for num in range(2010, (datetime.datetime.now().year) + 20)],
+    end_year = fields.Selection([(str(num), str(num)) for num in range(2010, (datetime.datetime.now().year) + 20)],
                                 'End Year', default=datetime.datetime.now().year, required=True)
 
     key_account = fields.Many2one('res.users', string="Key Account", domain="[('active', '=', True), "

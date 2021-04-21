@@ -15,7 +15,7 @@
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'views/broker_report_view.xml',
         'views/templates.xml',
         'report/broker_report.xml',

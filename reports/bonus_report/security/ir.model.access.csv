@@ -1,2 +1,2 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-brokerreport_popup,brokerreport.popup,model_brokerreport_popup,,1,1,1,1
+bonusreport_popup,bonusreport.popup,model_bonusreport_popup,,1,1,1,1

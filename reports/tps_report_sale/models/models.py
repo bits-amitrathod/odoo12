@@ -36,8 +36,8 @@ class tps_report_sale(models.Model):
             product.product_name = product.product_tmpl_id.name
             product.sku_name = product.product_tmpl_id.sku_code
             sale_order_lines = self.env['sale.order.line'].search(
-                [('product_id', '=', product.id), ('order_id.confirmation_date', '>=', start_date),
-                 ('order_id.confirmation_date', '<=', str(end_date))])
+                [('product_id', '=', product.id), ('order_id.date_order', '>=', start_date),
+                 ('order_id.date_order', '<=', str(end_date))])
             for sale_order_line in sale_order_lines:
                 product.currency_id = sale_order_line.currency_id
                 product.total_sales = product.total_sales + sale_order_line.price_total

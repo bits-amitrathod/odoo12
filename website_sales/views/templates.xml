@@ -3,12 +3,11 @@
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Product Expiration Lot~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
-        <template id="products_item" name="Products item" inherit_id="website_sale.products_item">
+    <template id="products_item" name="Products item" inherit_id="website_sale.products_item">
                 <xpath expr="//div[@class='product_price']" position="before">
                 <!--   <t t-call="website_sales.productExpirationDate"/>-->
                 </xpath>
-        </template>
-
+    </template>
 
     <template id="productExpirationDate" name="Product Expiration Date">
         <t t-if="isVisibleWebsiteExpirationDate and product.actual_quantity &gt; 0">
@@ -43,6 +42,7 @@
         </t>
     </template>
 
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ products categories Filter ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <template id="products_categories" name="eCommerce Categories" inherit_id="website_sale.products_categories" active="False" customize_show="True">
         <xpath expr="//div[@id='products_grid_before']//div[@id='wsale_products_categories_collapse']/ul" position="replace">
             <!-- products categories Filter -->

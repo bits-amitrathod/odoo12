@@ -57,8 +57,6 @@ class PurchaseHistory(models.Model):
                 if query_result['min'] is not None :
                     order.minExpDate = PurchaseHistory.string_to_date(str(query_result['min']))
 
-
-
     @api.onchange('maxExpDate')
     def _calculateDate2(self):
         for order in self:

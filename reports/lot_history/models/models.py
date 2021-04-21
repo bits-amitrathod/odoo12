@@ -201,7 +201,7 @@ class LotHistory(models.Model):
                 product_template.name as description,
                 'Adjustment Scrap' as type,
                 stock_scrap.name as event,
-                stock_scrap.date_expected as event_date,
+                stock_scrap.date_done as event_date,
                 stock_scrap.scrap_qty * -1 as change,
                 stock_production_lot.name as lot_no,
                 stock_scrap.product_id as product_id

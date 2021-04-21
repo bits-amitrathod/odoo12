@@ -237,7 +237,7 @@
         </xpath>
     </template>
 
-    <!--<template id="website_sale.product" name="Product">
+    <template id="website_sale.product" name="Product">
 
         <t t-set="first_possible_combination" t-value="product._get_first_possible_combination()"/>
         <t t-set="combination_info" t-value="product._get_combination_info(first_possible_combination, add_qty=add_qty or 1, pricelist=pricelist)"/>
@@ -248,20 +248,20 @@
             <div itemscope="itemscope" itemtype="http://schema.org/Product" id="wrap" class="js_sale">
                 <section t-attf-class="container padding-60-y oe_website_sale #{'discount' if combination_info['has_discounted_price'] else ''}" id="product_detail">
                     <div class="row pb-5">
-&lt;!&ndash;                        <div class="col-sm-4">&ndash;&gt;
-&lt;!&ndash;                            <ol class="breadcrumb">&ndash;&gt;
-&lt;!&ndash;                                <li>&ndash;&gt;
-&lt;!&ndash;                                <a t-att-href="keep(category=0)">Products</a>&ndash;&gt;
-&lt;!&ndash;                                </li>&ndash;&gt;
-&lt;!&ndash;                                <li t-if="category">&ndash;&gt;
-&lt;!&ndash;                                <a t-att-href="keep('/shop/category/%s' % slug(category), category=0)"&ndash;&gt;
-&lt;!&ndash;                                t-field="category.name"/>&ndash;&gt;
-&lt;!&ndash;                                </li>&ndash;&gt;
-&lt;!&ndash;                                <li class="active">&ndash;&gt;
-&lt;!&ndash;                                <span t-field="product.name"/>&ndash;&gt;
-&lt;!&ndash;                                </li>&ndash;&gt;
-&lt;!&ndash;                            </ol>&ndash;&gt;
-&lt;!&ndash;                        </div>&ndash;&gt;
+<!--                        <div class="col-sm-4">-->
+<!--                            <ol class="breadcrumb">-->
+<!--                                <li>-->
+<!--                                <a t-att-href="keep(category=0)">Products</a>-->
+<!--                                </li>-->
+<!--                                <li t-if="category">-->
+<!--                                <a t-att-href="keep('/shop/category/%s' % slug(category), category=0)"-->
+<!--                                t-field="category.name"/>-->
+<!--                                </li>-->
+<!--                                <li class="active">-->
+<!--                                <span t-field="product.name"/>-->
+<!--                                </li>-->
+<!--                            </ol>-->
+<!--                        </div>-->
                         <div class="col-sm-4 mb8">
                             <div class=" w-75 m-auto">
                                 <t t-call="website_sale.search"/>
@@ -275,8 +275,8 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-&lt;!&ndash;                            <t t-set="variant_img" t-value="product_variant and product_variant.image_variant"/>&ndash;&gt;
-&lt;!&ndash;                            <t t-set="image_ids"  t-value="product.product_image_ids"/>&ndash;&gt;
+<!--                            <t t-set="variant_img" t-value="product_variant and product_variant.image_variant"/>-->
+<!--                            <t t-set="image_ids"  t-value="product.product_image_ids"/>-->
                             <div id="o-carousel-product" class="carousel slide" data-ride="carousel" data-interval="0">
                                 <div class="carousel-outer">
                                     <div class="carousel-inner">
@@ -314,11 +314,11 @@
                             <h5><a href="javascript:void(0)" itemprop="name" t-field="product.name">Product Name</a></h5>
                             <span itemprop="url" style="display:none;"
                                   t-esc="'%sshop/product/%s' % (request.httprequest.url_root, slug(product))"/>
-                            &lt;!&ndash; Manufacturer name &ndash;&gt;
+                            <!-- Manufacturer name -->
                             <p class="brand-code">
                                 <a t-att-href="keep('/shop/brands', brand=product.product_brand_id.id)"
                                    t-field="product.product_brand_id.name" class="linkCstm"></a>
-                                &lt;!&ndash; SKU &ndash;&gt;
+                                <!-- SKU -->
                               <span t-field="product.default_code"></span>
                             </p>
 
@@ -375,8 +375,8 @@
                                                             aria-expanded="false">Notify me
                                                     </button>
 
-                                                </div>&lt;!&ndash; /btn-group &ndash;&gt;
-                                            </div>&lt;!&ndash; /input-group &ndash;&gt;
+                                                </div><!-- /btn-group -->
+                                            </div><!-- /input-group -->
                                             <p style="display: none;" class="invalidEmail">
                                                 <i class="fa fa-exclamation-triangle"></i>
                                                 Email address is invalid
@@ -393,7 +393,7 @@
                                     </t>
                                 </div>
                             </form>
-&lt;!&ndash;                            <hr class="mb8 mt12"/>&ndash;&gt;
+<!--                            <hr class="mb8 mt12"/>-->
                             <div class="o_not_editable">
                                 <p t-field="product.description_sale" class="text-muted"/>
                             </div>
@@ -403,13 +403,13 @@
                 <div itemprop="description" t-field="product.website_description" class="oe_structure mt16"
                      id="product_full_description"/>
                 <t t-set="head">
-                    &lt;!&ndash; Facebook and linkedin sharing data &ndash;&gt;
+                    <!-- Facebook and linkedin sharing data -->
                     <meta property="og:type" content="website"/>
                     <meta property="og:url" t-att-content="request.httprequest.url"/>
                     <meta property="og:image"
                           t-attf-content="#{request.httprequest.url_root}web/image/product.template/#{product.id}/image"/>
                     <meta property="og:description" t-att-content="product.description_sale"/>
-                    &lt;!&ndash;  Twitter sharing data &ndash;&gt;
+                    <!--  Twitter sharing data -->
                     <meta name="twitter:card" content="summary_large_image"/>
                     <meta name="twitter:site" t-attf-content="@#{res_company.name}"/>
                     <meta name="twitter:title" t-att-content="product.name"/>
@@ -420,7 +420,6 @@
             </div>
         </t>
     </template>
--->
 
     <!-- Show Quantity on product details pages-->
     <template id="product_quantity" inherit_id="website_sale.product_quantity" customize_show="True"

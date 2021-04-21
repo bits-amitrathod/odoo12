@@ -47,7 +47,10 @@ class TrendingReportListView(models.Model):
             cust_location_id = self.env['stock.location'].search([('name', '=', 'Customers')]).id
             for product in self:
                 stock_move_list = self.env['stock.move'].search(
-                    [('location_dest_id', '=', cust_location_id), ('state', '=', 'done'),('sale_line_id','!=',None),('product_id','=',product.id),('picking_id.date_done','>=',str(sixth_month)),('picking_id.date_done','<=',str(end_of_month))])
+                    [('location_dest_id', '=', cust_location_id), ('state', '=', 'done'),('sale_line_id','!=',None),
+                     ('product_id','=',product.id),('picking_id.date_done','>=',str(sixth_month)),('picking_id.date_done','<=',str(end_of_month))])
+                # stock_move_list = self.env['stock.move'].search([])
+
                 for stock_move in stock_move_list:
                     product.currency_id=stock_move.sale_line_id.currency_id
                     scheduled_date=datetime.date(datetime.strptime(str(stock_move.picking_id.date_done).split(".")[0],"%Y-%m-%d %H:%M:%S"))
@@ -83,18 +86,11 @@ class TrendingReportListView(models.Model):
                             product.month6 = product.month6 + (stock_move.sale_line_id.price_total)
                             product.month6_quantity = product.month6_quantity + int(stock_move_line.qty_done)
 
-
-
-
-
-
-
-
-    @api.model
+    # @api.model
     def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
         popup = self.env['salesbymonth.popup'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
 
-        View = self.env['ir.ui.view']
+        View = self.env['ir.ui.view'].sudo().browse(view_id)
 
         # Get the view arch and all other attributes describing the composition of the view
         result = self._fields_view_get(view_id=view_id, view_type=view_type, toolbar=toolbar, submenu=submenu)
@@ -104,7 +100,8 @@ class TrendingReportListView(models.Model):
             View = View.with_context(base_model_name=result['base_model'])
 
         # Apply post processing, groups and modifiers etc...
-        xarch, xfields = View.postprocess_and_fields(self._name, etree.fromstring(result['arch']), view_id)
+        xarch, xfields = View.postprocess_and_fields(etree.fromstring(result['arch']), model=self._name)
+        # xarch, xfields = view.postprocess_and_fields(etree.fromstring(result['arch']), model=self._name)
         result['arch'] = xarch
         result['fields'] = xfields
 

@@ -19,6 +19,7 @@
     'depends': ['base', 'stock', 'stock_barcode', 'delivery'],
 
     'data': [
+        'security/ir.model.access.csv',
         'views/views.xml',
         'reports/sps_receiving_list.xml'
     ],

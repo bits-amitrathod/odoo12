@@ -77,6 +77,7 @@ class StockPickingMarkAllButton(models.Model):
                 else:
                     sp.acq_user_id = None
 
+
     def _compute_visibility(self):
         for pick in self:
             pick.is_mark_all_button_visible =  pick.sale_id.id and not pick.state in ['done','cancel']

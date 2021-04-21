@@ -91,12 +91,12 @@ odoo.define('web_m2x_options.web_m2x_options', function (require) {
             if (_.isUndefined(this.ir_options_loaded)) {
                 this.ir_options_loaded = $.Deferred();
                 this.ir_options = {};
-                web_m2x_options.done(function (records) {
-                    _(records).each(function(record) {
-                        self.ir_options[record.key] = record.value;
-                    });
-                    self.ir_options_loaded.resolve();
-                });
+//                web_m2x_options.done(function (records) {
+//                    _(records).each(function(record) {
+//                        self.ir_options[record.key] = record.value;
+//                    });
+//                    self.ir_options_loaded.resolve();
+//                });
             }
             return $.when();
         },

@@ -90,9 +90,9 @@
 
                             </group>
                             <group>
-                                <field name="product_uom_qty"/>
+                                <!--<field name="product_uom_qty"/>
                                 <field name="product_uom"/>
-                                <field name="price_unit" widget="monetary"/>
+                                --><field name="price_unit" widget="monetary"/>
                                 <field name="currency_id" invisible="1"/>
                             </group>
 
