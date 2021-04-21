@@ -217,33 +217,6 @@
             <field name="arch" type="xml">
                 <form string="Vendor Offer" class="o_sale_order vendor_offer_class" duplicate="false"   attrs="{'delete': [('state', 'in', ('draft', 'ven_draft','ven_sent'))],
                 'edit': [('state', 'in', ('draft', 'ven_draft','ven_sent'))]}" >
-                     <!--<header>-->
-                        <!--<button name="action_send_offer_email" string="Send" type="object"-->
-                                <!--class="btn-primary" />-->
-                        <!--<button name="action_print_vendor_offer" string="Print" type="object" class="btn-primary"-->
-                               <!--/>-->
-                        <!--<button name="%(vendor_offer.action_purchase_order_edit_note)d" type="action"-->
-
-                                <!--string="Add Note"/>-->
-                        <!--&lt;!&ndash;<button name="action_button_confirm_api_cash" states="ven_draft,ven_sent"&ndash;&gt;-->
-                                <!--&lt;!&ndash;string="Offer Accept As Cash" type="object"/>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<button name="action_button_confirm_api_credit" states="ven_draft,ven_sent"&ndash;&gt;-->
-                                <!--&lt;!&ndash;context="{'vendor_offer_data': True}" string="Offer Accept As Credit" type="object"/>&ndash;&gt;-->
-                        <!--<button name="action_confirm_offer_both" states="ven_draft,ven_sent"-->
-                                 <!--string="Offer Accepted" type="object"/>-->
-                        <!--<field name="status" widget="statusbar" statusbar_visible="ven_draft,ven_sent,purchase"-->
-                               <!--readonly="1"/>-->
-                        <!--<field name="vendor_offer_data" invisible="1"/>-->
-                        <!--<button name="action_duplicate_vendor_offer" type="object" string="Duplicate Offer"-->
-                                <!--/>-->
-                        <!--<button string="Shipping Label"-->
-                                <!--type="action" class="btn-primary"-->
-                                <!--name="%(action_view_tracking_text)d"-->
-                                <!--groups="stock.group_stock_user"/>-->
-                         <!--<button name="action_cancel_vendor_offer"  string="Cancel"-->
-                                <!--type="object"/>-->
-                        <!--<field name="state" invisible="1"/>-->
-                    <!--</header>-->
                     <header>
                         <button name="action_send_offer_email" string="Send" type="object" context="{'send_rfq':True}"
                                 class="btn-primary" attrs="{'invisible':[('state', 'in', ('purchase','cancel'))]}"/>
@@ -761,23 +734,23 @@
             <!--<field name="priority">20</field>-->
             <field name="arch" type="xml">
                 <tree create="false" import="false">
-                    <!--<field name="sku_code" string="ProductNumber"/>-->
+                    <field name="sku_code" string="ProductNumber"/>
                     <field name="name" string="ProductDescription"/>
-                    <!--<field name="list_price" string="Price"/>-->
-                    <!--<field name="product_brand_id" string="CFP-Manufacturer"/>-->
-                    <!--<field name="tier" string="TIER"/>-->
-                    <!--<field name="product_sales_count"/>-->
-                    <!--<field name="product_sales_count_yrs"/>-->
-                    <!--<field name="actual_quantity"/>-->
-                    <!--<field name="amount_total_ven_pri"/>-->
-                    <!--<field name="premium" string="PREMIUM"/>-->
-                    <!--<field name="expired_inventory"/>-->
-                    <!--&lt;!&ndash;<field name="product_sales_count_month"/>&ndash;&gt;-->
-                    <!--<field name="product_sales_count_90"/>-->
-                    <!--<field name="incoming_qty" string="Quantity On Order"/>-->
-                    <!--<field name="average_aging"/>-->
-                    <!--<field name="inventory_scraped_yr"/>-->
-                    <!--<field name="quotations_per_code"/>-->
+                    <field name="list_price" string="Price"/>
+                    <field name="product_brand_id" string="CFP-Manufacturer"/>
+                    <field name="tier" string="TIER"/>
+                    <field name="product_sales_count"/>
+                    <field name="product_sales_count_yrs"/>
+                    <field name="actual_quantity"/>
+                    <field name="amount_total_ven_pri"/>
+                    <field name="premium" string="PREMIUM"/>
+                    <field name="expired_inventory"/>
+                    <!--<field name="product_sales_count_month"/>-->
+                    <field name="product_sales_count_90"/>
+                    <field name="incoming_qty" string="Quantity On Order"/>
+                    <field name="average_aging"/>
+                    <field name="inventory_scraped_yr"/>
+                    <field name="quotations_per_code"/>
                 </tree>
             </field>
         </record>
@@ -831,13 +804,24 @@
             </field>
         </record>
 
-        <!--<act_window name="Export PPVendorPricing"-->
-                    <!--res_model="vendor.pricing"-->
-                    <!--src_model="product.product"-->
-                    <!--view_mode="form"-->
-                    <!--target="new"-->
-                    <!--key2="client_action_multi"-->
-                    <!--id="vendor_pricing_act_window"/>-->
+<!--        <record name="Export PPVendorPricing"-->
+
+<!--                    res_model="vendor.pricing"-->
+<!--                    src_model="product.product"-->
+<!--                    view_mode="form"-->
+<!--                    target="new"-->
+<!--                    id="vendor_pricing_act_window"/>-->
+
+
+                <record id="vendor_pricing_act_window" model="ir.actions.act_window">
+                <field name="name">PPVendorPricing</field>
+                <field name="type">ir.actions.act_window</field>
+                <field name="res_model">vendor.pricing</field>
+                <field name="binding_model_id" ref="product.model_product_product"/>
+                <field name="view_mode">form</field>
+                     <field name="target">new</field>
+                <field name="context">{}</field>
+            </record>
 
         <!--do not remove this commented code -->
 
@@ -928,61 +912,135 @@
 
 
 
-                    <!--<record id="view_picking_form_inherit_website_sale_stock" model="ir.ui.view">-->
-                        <!--<field name="name">stock.picking.form.inherit.show.date.done</field>-->
-                        <!--<field name="model">stock.picking</field>-->
-                        <!--<field name="inherit_id" ref="stock.view_picking_form"/>-->
-                        <!--<field name="arch" type="xml">-->
-                            <!--<xpath expr="//sheet/group/group/field[@name='scheduled_date']" position="after">-->
-                                    <!--<field name="sale_id" invisible="1"/>-->
-                                     <!--<field name="arrival_date" attrs="{'invisible': [('sale_id', '!=', False)]}" />-->
-                             <!--</xpath>-->
-                        <!--</field>-->
-                    <!--</record>-->
+                    <record id="view_picking_form_inherit_website_sale_stock" model="ir.ui.view">
+                        <field name="name">stock.picking.form.inherit.show.date.done</field>
+                        <field name="model">stock.picking</field>
+                        <field name="inherit_id" ref="stock.view_picking_form"/>
+                        <field name="arch" type="xml">
+                            <xpath expr="//sheet/group/group/field[@name='partner_id']" position="after">
+                                    <field name="sale_id" invisible="1"/>
+                                     <field name="arrival_date" attrs="{'invisible': [('sale_id', '!=', False)]}" />
+                             </xpath>
+                        </field>
+                    </record>
 
-                <!--<record id="view_picking_form_inherit_website_sale_stock" model="ir.ui.view">-->
-                        <!--<field name="name">stock.picking.form.inherit.show.offer.price</field>-->
-                        <!--<field name="model">stock.picking</field>-->
-                        <!--<field name="inherit_id" ref="stock.view_picking_form"/>-->
-                        <!--<field name="arch" type="xml">-->
-                            <!--<xpath expr="//sheet/notebook/page/field[@name='move_ids_without_package']" position="replace">-->
+                <record id="view_picking_form_inherit_website_sale_stock" model="ir.ui.view">
+                        <field name="name">stock.picking.form.inherit.show.offer.price</field>
+                        <field name="model">stock.picking</field>
+                        <field name="inherit_id" ref="stock.view_picking_form"/>
+                        <field name="arch" type="xml">
+                            <xpath expr="//sheet/notebook/page[@name='operations']/field[@name='move_ids_without_package']" position="replace">
 
-                            <!--<field name="sale_id" invisible="1"></field>-->
-                            <!--<field name="move_ids_without_package" attrs="{'readonly': ['|', '&amp;', ('show_operations', '=', True), '|', ('is_locked', '=', True), ('state', '=', 'done'), '&amp;', ('state', '=', 'done'), ('is_locked', '=', True)]}" context="{'picking_type_code': picking_type_code, 'default_picking_id': id, 'form_view_ref':'stock.view_move_picking_form', 'address_in_id': partner_id, 'default_picking_type_id': picking_type_id, 'default_location_id': location_id, 'default_location_dest_id': location_dest_id}">-->
-                                <!--<tree limit="500" decoration-danger="not parent.immediate_transfer and state != 'done' and quantity_done > reserved_availability and show_reserved_availability" decoration-muted="scrapped == True or state == 'cancel' or (state == 'done' and is_locked == True)" string="Stock Moves" editable="bottom">-->
-                                    <!--<field name="name" invisible="1"/>-->
-                                    <!--<field name="date_expected" invisible="1"/>-->
-                                    <!--<field name="state" invisible="1" readonly="0"/>-->
-                                    <!--<field name="picking_type_id" invisible="1"/>-->
-                                    <!--<field name="location_id" invisible="1"/>-->
-                                    <!--<field name="location_dest_id" invisible="1"/>-->
-                                    <!--<field name="scrapped" invisible="1"/>-->
-                                    <!--<field name="picking_code" invisible="1"/>-->
-                                    <!--<field name="product_type" invisible="1"/>-->
-                                    <!--<field name="show_details_visible" invisible="1"/>-->
-                                    <!--<field name="show_reserved_availability" invisible="1"/>-->
-                                    <!--<field name="show_operations" invisible="1" readonly="1"/>-->
-                                    <!--<field name="additional" invisible="1"/>-->
-                                    <!--<field name="has_move_lines" invisible="1"/>-->
-                                    <!--<field name="is_locked" invisible="1"/>-->
-                                    <!--<field name="product_id" required="1" attrs="{'readonly': ['|', '&amp;', ('state', '!=', 'draft'), ('additional', '=', False), ('has_move_lines', '=', True)]}"/>-->
-                                    <!--<field name="is_initial_demand_editable" invisible="1"/>-->
-                                    <!--<field name="is_quantity_done_editable" invisible="1"/>-->
-                                    <!--<field name="product_uom_qty" string="Initial Demand" attrs="{'column_invisible': ['&amp;',('parent.immediate_transfer', '=', True), ('parent.is_locked', '=', True)], 'readonly': [('is_initial_demand_editable', '=', False)]}"/>-->
-                                    <!--<field name="re_expiration_date_str"    attrs="{'column_invisible':[('parent.sale_id', '!=',  False)],'invisible':[('re_vendor_offer_data', '=',  False)]}" />-->
-                                    <!--<field name="re_product_offer_price"   attrs="{'column_invisible':[('parent.sale_id', '!=',  False)],'invisible':[('re_vendor_offer_data', '=',  False)]}" />-->
-                                    <!--<field name="re_total_product_retail"   attrs="{'column_invisible':[('parent.sale_id', '!=',  False)],'invisible':[('re_vendor_offer_data', '=',  False)]}" />-->
-                                    <!--<field name="currency_id"  invisible="1"/>-->
-                                     <!--<field name="re_vendor_offer_data"  invisible="1"/>-->
-                                    <!--<field name="reserved_availability" string="Reserved" attrs="{'column_invisible': (['|','|', ('parent.state','=', 'done'), ('parent.picking_type_code', '=', 'incoming'),'&amp;',('parent.immediate_transfer', '=', True), ('parent.is_locked', '=', True)])}"/>-->
-                                    <!--<field name="quantity_done" string="Done" attrs="{'readonly': [('is_quantity_done_editable', '=', False)]}"/>-->
-                                    <!--<field name="product_uom" attrs="{'readonly': [('state', '!=', 'draft'), ('additional', '=', False)]}" options="{'no_open': True, 'no_create': True}" string="Unit of Measure" groups="uom.group_uom"/>-->
-                                    <!--<button name="action_show_details" string="Register lots, packs, location" type="object" icon="fa-list" attrs="{'invisible': [('show_details_visible', '=', False)]}" options='{"warn": true}'/>-->
-                                <!--</tree>-->
-                            <!--</field>-->
-                              <!--</xpath>-->
-                        <!--</field>-->
-                    <!--</record>-->
+                            <field name="sale_id" invisible="1"></field>
+<!--                            <field name="move_ids_without_package" attrs="{'readonly': ['|', '&amp;', ('show_operations', '=', True), '|', ('is_locked', '=', True), ('state', '=', 'done'), '&amp;', ('state', '=', 'done'), ('is_locked', '=', True)]}" context="{'picking_type_code': picking_type_code, 'default_picking_id': id, 'form_view_ref':'stock.view_move_picking_form', 'address_in_id': partner_id, 'default_picking_type_id': picking_type_id, 'default_location_id': location_id, 'default_location_dest_id': location_dest_id}">-->
+<!--                                <tree limit="500" decoration-danger="not parent.immediate_transfer and state != 'done' and quantity_done > reserved_availability and show_reserved_availability" decoration-muted="scrapped == True or state == 'cancel' or (state == 'done' and is_locked == True)" string="Stock Moves" editable="bottom">-->
+<!--                                    <field name="name" invisible="1"/>-->
+<!--                                    <field name="date_expected" invisible="1"/>-->
+<!--                                    <field name="state" invisible="1" readonly="0"/>-->
+<!--                                    <field name="picking_type_id" invisible="1"/>-->
+<!--                                    <field name="location_id" invisible="1"/>-->
+<!--                                    <field name="location_dest_id" invisible="1"/>-->
+<!--                                    <field name="scrapped" invisible="1"/>-->
+<!--                                    <field name="picking_code" invisible="1"/>-->
+<!--                                    <field name="product_type" invisible="1"/>-->
+<!--                                    <field name="show_details_visible" invisible="1"/>-->
+<!--                                    <field name="show_reserved_availability" invisible="1"/>-->
+<!--                                    <field name="show_operations" invisible="1" readonly="1"/>-->
+<!--                                    <field name="additional" invisible="1"/>-->
+<!--                                    <field name="has_move_lines" invisible="1"/>-->
+<!--                                    <field name="is_locked" invisible="1"/>-->
+<!--                                    <field name="product_id" required="1" attrs="{'readonly': ['|', '&amp;', ('state', '!=', 'draft'), ('additional', '=', False), ('has_move_lines', '=', True)]}"/>-->
+<!--                                    <field name="is_initial_demand_editable" invisible="1"/>-->
+<!--                                    <field name="is_quantity_done_editable" invisible="1"/>-->
+<!--                                    <field name="product_uom_qty" string="Initial Demand" attrs="{'column_invisible': ['&amp;',('parent.immediate_transfer', '=', True), ('parent.is_locked', '=', True)], 'readonly': [('is_initial_demand_editable', '=', False)]}"/>-->
+<!--                                    <field name="re_expiration_date_str"    attrs="{'column_invisible':[('parent.sale_id', '!=',  False)],'invisible':[('re_vendor_offer_data', '=',  False)]}" />-->
+<!--                                    <field name="re_product_offer_price"   attrs="{'column_invisible':[('parent.sale_id', '!=',  False)],'invisible':[('re_vendor_offer_data', '=',  False)]}" />-->
+<!--                                    <field name="re_total_product_retail"   attrs="{'column_invisible':[('parent.sale_id', '!=',  False)],'invisible':[('re_vendor_offer_data', '=',  False)]}" />-->
+<!--                                    <field name="currency_id"  invisible="1"/>-->
+<!--                                     <field name="re_vendor_offer_data"  invisible="1"/>-->
+<!--                                    <field name="reserved_availability" string="Reserved" attrs="{'column_invisible': (['|','|', ('parent.state','=', 'done'), ('parent.picking_type_code', '=', 'incoming'),'&amp;',('parent.immediate_transfer', '=', True), ('parent.is_locked', '=', True)])}"/>-->
+<!--                                    <field name="quantity_done" string="Done" attrs="{'readonly': [('is_quantity_done_editable', '=', False)]}"/>-->
+<!--                                    <field name="product_uom" attrs="{'readonly': [('state', '!=', 'draft'), ('additional', '=', False)]}" options="{'no_open': True, 'no_create': True}" string="Unit of Measure" groups="uom.group_uom"/>-->
+<!--                                    <button name="action_show_details" string="Register lots, packs, location" type="object" icon="fa-list" attrs="{'invisible': [('show_details_visible', '=', False)]}" options='{"warn": true}'/>-->
+<!--                                </tree>-->
+<!--                            </field>-->
+                                <field name="move_ids_without_package" mode="tree,kanban"
+                                attrs="{'readonly': ['&amp;', ('state', '=', 'done'), ('is_locked', '=', True)]}"
+                                context="{'default_company_id': company_id, 'default_date': scheduled_date, 'default_date_deadline': date_deadline, 'picking_type_code': picking_type_code, 'default_picking_id': id, 'form_view_ref':'stock.view_move_form', 'address_in_id': partner_id, 'default_picking_type_id': picking_type_id, 'default_location_id': location_id, 'default_location_dest_id': location_dest_id}">
+                                <tree decoration-danger="not parent.immediate_transfer and state != 'done' and quantity_done > reserved_availability and show_reserved_availability" decoration-muted="scrapped == True or state == 'cancel' or (state == 'done' and is_locked == True)" string="Stock Moves" editable="bottom">
+                                    <field name="company_id" invisible="1"/>
+                                    <field name="name" invisible="1"/>
+                                    <field name="state" invisible="1" readonly="0"/>
+                                    <field name="picking_type_id" invisible="1"/>
+                                    <field name="location_id" invisible="1"/>
+                                    <field name="location_dest_id" invisible="1"/>
+                                    <field name="scrapped" invisible="1"/>
+                                    <field name="picking_code" invisible="1"/>
+                                    <field name="product_type" invisible="1"/>
+                                    <field name="show_details_visible" invisible="1"/>
+                                    <field name="show_reserved_availability" invisible="1"/>
+                                    <field name="show_operations" invisible="1" readonly="1"/>
+                                    <field name="additional" invisible="1"/>
+                                    <field name="has_move_lines" invisible="1"/>
+                                    <field name="is_locked" invisible="1"/>
+                                    <field name="product_uom_category_id" invisible="1"/>
+                                    <field name="has_tracking" invisible="1"/>
+                                    <field name="display_assign_serial" invisible="1"/>
+                                    <field name="product_id" required="1" context="{'default_type': 'product'}" attrs="{'readonly': ['|', '&amp;', ('state', '!=', 'draft'), ('additional', '=', False), ('has_move_lines', '=', True)]}"/>
+                                    <field name="description_picking" string="Description" optional="hide"/>
+                                    <field name="date" invisible="1"/>
+                                    <field name="date_deadline" optional="hide"/>
+                                    <field name="is_initial_demand_editable" invisible="1"/>
+                                    <field name="is_quantity_done_editable" invisible="1"/>
+                                    <field name="product_uom_qty" string="Demand" attrs="{'column_invisible': [('parent.immediate_transfer', '=', True)], 'readonly': ['|', ('is_initial_demand_editable', '=', False), '&amp;', '&amp;', ('show_operations', '=', True), ('is_locked', '=', True), ('is_initial_demand_editable', '=', False)]}"/>
+                                    <field name="reserved_availability" string="Reserved" attrs="{'column_invisible': (['|','|', ('parent.state','=', 'done'), ('parent.picking_type_code', 'in', ['incoming', 'outgoing']), ('parent.immediate_transfer', '=', True)])}"/>
+                                    <field name="product_qty" invisible="1" readonly="1"/>
+                                    <field name="forecast_expected_date" invisible="1" />
+                                    <field name="forecast_availability" string="Reserved" attrs="{'column_invisible': ['|', ('parent.picking_type_code', '!=', 'outgoing'), ('parent.state','=', 'done')]}" widget="forecast_widget"/>
+                                    <field name="quantity_done" string="Done" attrs="{'readonly': [('is_quantity_done_editable', '=', False)]}"/>
+                                    <field name="product_uom" attrs="{'readonly': [('state', '!=', 'draft'), ('additional', '=', False)]}" options="{'no_open': True, 'no_create': True}" string="Unit of Measure" groups="uom.group_uom"/>
+                                    <field name="lot_ids" widget="many2many_tags"
+                                        groups="stock.group_production_lot"
+                                        attrs="{'invisible': ['|', ('show_details_visible', '=', False), ('has_tracking', '!=', 'serial')]}"
+                                        optional="hide"
+                                        options="{'create': [('parent.use_create_lots', '=', True)]}"
+                                        context="{'default_company_id': company_id, 'default_product_id': product_id, 'active_picking_id': parent.id}"
+                                        domain="[('product_id','=',product_id)]"
+                                    />
+                                    <button name="action_show_details" type="object" icon="fa-list" width="0.1"
+                                            attrs="{'invisible': [('show_details_visible', '=', False)]}" options='{"warn": true}'/>
+                                    <button name="action_assign_serial" type="object"
+                                            icon="fa-plus-square"
+                                            width="0.1"
+                                            role="img" title="Assign Serial Numbers"
+                                            attrs="{'invisible': ['|', ('display_assign_serial', '=', False), ('show_operations', '=', False)]}"/>
+                                </tree>
+                                <form string="Stock Moves">
+                                    <header>
+                                        <field name="state" widget="statusbar"/>
+                                    </header>
+                                    <group>
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <field name="additional" invisible="1"/>
+                                        <field name="has_move_lines" invisible="1"/>
+                                        <field name="company_id" invisible="1"/>
+                                        <field name="product_id" required="1" attrs="{'readonly': ['|', '&amp;', ('state', '!=', 'draft'), ('additional', '=', False), ('has_move_lines', '=', True)]}"/>
+                                        <field name="is_initial_demand_editable" invisible="1"/>
+                                        <field name="is_quantity_done_editable" invisible="1"/>
+                                        <field name="product_uom_qty" attrs="{'invisible': [('parent.immediate_transfer', '=', True)], 'readonly': [('is_initial_demand_editable', '=', False)]}"/>
+                                        <field name="reserved_availability" string="Reserved" attrs="{'invisible': (['|','|', ('parent.state','=', 'done'), ('parent.picking_type_code', 'in', ['outgoing', 'incoming']), ('parent.immediate_transfer', '=', True)])}"/>
+                                        <field name="product_qty" invisible="1" readonly="1"/>
+                                        <field name="forecast_expected_date" invisible="1"/>
+                                        <field name="forecast_availability" string="Reserved" attrs="{'invisible': ['|', ('parent.picking_type_code', '!=', 'outgoing'), ('parent.state','=', 'done')]}" widget="forecast_widget"/>
+                                        <field name="quantity_done" string="Done" attrs="{'readonly': [('is_quantity_done_editable', '=', False)]}"/>
+                                        <field name="product_uom" attrs="{'readonly': [('state', '!=', 'draft'), ('additional', '=', False)]}" options="{'no_open': True, 'no_create': True}" string="Unit of Measure" groups="uom.group_uom"/>
+                                        <field name="description_picking" string="Description"/>
+                                    </group>
+                                </form>
+                            </field>
+                              </xpath>
+                        </field>
+                    </record>
 
 
          <record id="acq_manager_form" model="ir.ui.view">

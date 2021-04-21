@@ -436,6 +436,13 @@ class VendorOffer(models.Model):
                             'amount_total': credit_amount_total
                         })
             else:
+                order.rt_price_subtotal_amt = False;
+                order.rt_price_total_amt = False;
+                order.rt_price_tax_amt = False;
+                order.billed_retail_untaxed = False;
+                order.billed_retail_total = False;
+                order.billed_offer_untaxed = False;
+                order.billed_offer_total = False;
                 amount_untaxed = amount_tax = price_total = 0.0
                 rt_price_tax = product_retail = rt_price_total = 0.0
                 billed_retail_untaxed = billed_offer_untaxed = 0.0
@@ -1822,7 +1829,8 @@ class VendorPricingList(models.Model):
 
     def onchange_product_id_vendor_offer_pricing(self):
         for line in self:
-            line.product_tier = line.product_tmpl_id.tier
+            # if line.product_tmpl_id.tier:
+            #     line.product_tier = line.product_tmpl_id.tier
             result1 = {}
             if not line.id:
                 return result1
@@ -1858,7 +1866,7 @@ class VendorPricingList(models.Model):
 
             sales_all_value = 0
             sales_all_val = self.env.cr.fetchone()
-            if sales_all_val[0] is not None:
+            if sales_all_val and  sales_all_val[0] is not None:
                 sales_all_value = sales_all_value + float(sales_all_val[0])
             line.amount_total_ven_pri = sales_all_value
 
@@ -1938,8 +1946,8 @@ class VendorPricingList(models.Model):
                 line.average_aging = 0
 
             scrapped_list = self.env['stock.scrap'].search([('product_id', '=', line.id), ('state', '=', 'done')
-                                                               , ('date_expected', '>', last_yr),
-                                                            ('date_expected', '<', today_date)])
+                                                               , ('date_done', '>', last_yr),
+                                                            ('date_done', '<', today_date)])
             total_qty = 0
             for obj in scrapped_list:
                 total_qty = total_qty + obj.scrap_qty
@@ -2240,7 +2248,7 @@ class VendorPricingExport(models.TransientModel):
                          AND      ( 
                                            "stock_move"."company_id" IS NULL 
                                   OR       ( 
-                                                    "stock_move"."company_id" IN(""" + str(company.id) + """))) 
+                                                    "stock_move"."company_id" =1)) 
                          GROUP BY "stock_move"."product_id" ) AS qty_on_order ON pp.id=qty_on_order.product_id LEFT JOIN
                 ( 
                          SELECT   sum(sts.scrap_qty) AS scrap_qty, 

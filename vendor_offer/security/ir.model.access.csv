@@ -12,3 +12,5 @@ access_purchase_notes_activity_manager,purchase_notes_activity_manager,model_pur
 
 access_purchase_order_shipping_popup_user,purchase.order.shipping.popup_user,model_purchase_order_shipping_popup,purchase.group_purchase_user,1,1,0,0
 access_purchase_order_shipping_popup_manager,purchase.order.shipping.popup_manager,model_purchase_order_shipping_popup,purchase.group_purchase_manager,1,1,1,1
+access_vendor_pricing_user,vendor.pricing_user,model_vendor_pricing,purchase.group_purchase_user,1,1,0,0
+access_vendor_pricing_manager,vendor.pricing_manager,model_vendor_pricing,purchase.group_purchase_manager,1,1,1,1
