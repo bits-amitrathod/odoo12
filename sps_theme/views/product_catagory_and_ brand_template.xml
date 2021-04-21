@@ -80,33 +80,55 @@
 
         <xpath expr="//table" position="replace">
             <!-- new odoo 14 Structure -->
-           <table class="table table-borderless m-0" t-att-data-ppg="ppg" t-att-data-ppr="ppr">
-                                    <colgroup t-ignore="true">
-                                        <!-- Force the number of columns (useful when only one row of (x < ppr) products) -->
-                                        <col t-foreach="ppr" t-as="p"/>
-                                    </colgroup>
-                                    <tbody>
-                                        <tr t-foreach="bins" t-as="tr_product">
-                                            <t t-foreach="tr_product" t-as="td_product">
-                                                <t t-if="td_product">
-                                                    <t t-set="product" t-value="td_product['product']" />
-                                                    <!-- We use t-attf-class here to allow easier customization -->
-                                                    <td t-att-colspan="td_product['x'] != 1 and td_product['x']"
-                                                        t-att-rowspan="td_product['y'] != 1 and td_product['y']"
-                                                        t-attf-class="oe_product"
-                                                        t-att-data-ribbon-id="td_product['ribbon'].id">
-                                                        <div t-attf-class="o_wsale_product_grid_wrapper o_wsale_product_grid_wrapper_#{td_product['x']}_#{td_product['y']}">
-                                                            <t t-call="website_sales.products_item">
-                                                                <t t-set="product_image_big" t-value="td_product['x'] + td_product['y'] &gt; 2"/>
-                                                            </t>
-                                                        </div>
-                                                    </td>
-                                                </t>
-                                                <td t-else=""/>
-                                            </t>
-                                        </tr>
-                                    </tbody>
-                                </table>
+<!--           <table class="table table-borderless m-0" t-att-data-ppg="ppg" t-att-data-ppr="ppr">-->
+<!--                                    <colgroup t-ignore="true">-->
+<!--                                        &lt;!&ndash; Force the number of columns (useful when only one row of (x < ppr) products) &ndash;&gt;-->
+<!--                                        <col t-foreach="ppr" t-as="p"/>-->
+<!--                                    </colgroup>-->
+<!--                                    <tbody>-->
+<!--                                        <tr t-foreach="bins" t-as="tr_product">-->
+<!--                                            <t t-foreach="tr_product" t-as="td_product">-->
+<!--                                                <t t-if="td_product">-->
+<!--                                                    <t t-set="product" t-value="td_product['product']" />-->
+<!--                                                    &lt;!&ndash; We use t-attf-class here to allow easier customization &ndash;&gt;-->
+<!--                                                    <td t-att-colspan="td_product['x'] != 1 and td_product['x']"-->
+<!--                                                        t-att-rowspan="td_product['y'] != 1 and td_product['y']"-->
+<!--                                                        t-attf-class="oe_product"-->
+<!--                                                        t-att-data-ribbon-id="td_product['ribbon'].id">-->
+<!--                                                        <div t-attf-class="o_wsale_product_grid_wrapper o_wsale_product_grid_wrapper_#{td_product['x']}_#{td_product['y']}">-->
+<!--                                                            <t t-call="website_sales.products_item">-->
+<!--                                                                <t t-set="product_image_big" t-value="td_product['x'] + td_product['y'] &gt; 2"/>-->
+<!--                                                            </t>-->
+<!--                                                        </div>-->
+<!--                                                    </td>-->
+<!--                                                </t>-->
+<!--                                                <td t-else=""/>-->
+<!--                                            </t>-->
+<!--                                        </tr>-->
+<!--                                    </tbody>-->
+<!--                                </table>-->
+    <div class="" t-att-data-ppg="ppg" t-att-data-ppr="ppr">
+            <div class="row" t-foreach="bins" t-as="tr_product">
+                    <t t-foreach="tr_product" t-as="td_product">
+                        <t t-if="td_product">
+                            <t t-set="product" t-value="td_product['product']" />
+                            <!-- We use t-attf-class here to allow easier customization -->
+                            <div t-att-colspan="td_product['x'] != 1 and td_product['x']"
+                                t-att-rowspan="td_product['y'] != 1 and td_product['y']"
+                                t-attf-class="oe_product col-md-3"
+                                t-att-data-ribbon-id="td_product['ribbon'].id">
+                                <div t-attf-class="o_wsale_product_grid_wrapper o_wsale_product_grid_wrapper_#{td_product['x']}_#{td_product['y']} h-100">
+                                    <t t-call="website_sales.products_item">
+                                        <t t-set="product_image_big" t-value="td_product['x'] + td_product['y'] > 2"/>
+                                    </t>
+                                </div>
+                            </div>
+                        </t>
+                        <div t-else=""/>
+                    </t>
+            </div>
+        </div>
+
             <!-- odoo 12 Structure -->
             <!--<div class="row" t-foreach="porductRows" t-as="tr_product">
                 <t t-foreach="tr_product" t-as="td_product">
@@ -134,22 +156,25 @@
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Product Item on list ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
     <template id="products_item" name="Products item" inherit_id="website_sale.products_item">
+      <xpath expr="//*[hasclass('o_wsale_products_item_title')]" position="replace">
+
+        </xpath>
         <xpath expr="//div[@itemscope='itemscope']" position="replace">
             <div itemscope="itemscope" itemtype="http://schema.org/Product">
-                <div class="oe_product_image" style="position: relative;left: 0;">
-                    <a itemprop="url"
-                       t-att-href="keep('/shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']&gt;1 else None))">
-                        <!-- OLD Code-->
-                        <!--<span itemprop="image"
-                              t-attf-content="{{request.httprequest.url_root}}web/image/product.template/{{product.id}}/image"
-                              t-field="product.image"
-                              t-options="{'widget': 'image', 'resize': '300x300', 'zoom': 'image'}"
-                              t-att-alt="product.name" style="position: relative;"/>-->
-                        <span t-field="product.image_1920"
-                        t-options="{'widget': 'image', 'preview_image': 'image_1024' if product_image_big else 'image_256'}"
-                        class="d-flex h-100 justify-content-center align-items-center"/>
-                    </a>
-                </div>
+<!--               <div class="oe_product_image" style="position: relative;left: 0;">-->
+<!--                    <a itemprop="url"-->
+<!--                       t-att-href="keep('/shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']&gt;1 else None))">-->
+<!--                        &lt;!&ndash; OLD Code&ndash;&gt;-->
+<!--                        &lt;!&ndash;<span itemprop="image"-->
+<!--                              t-attf-content="{{request.httprequest.url_root}}web/image/product.template/{{product.id}}/image"-->
+<!--                              t-field="product.image"-->
+<!--                              t-options="{'widget': 'image', 'resize': '300x300', 'zoom': 'image'}"-->
+<!--                              t-att-alt="product.name" style="position: relative;"/>&ndash;&gt;-->
+<!--                            <span t-field="product.image_1920"-->
+<!--                            t-options="{'widget': 'image', 'preview_image': 'image_1024' if product_image_big else 'image_256'}"-->
+<!--                            class="d-flex h-100 justify-content-center align-items-center"/>-->
+<!--                    </a>-->
+<!--                </div>-->
                 <t t-if="show_publish">
                     <div id="website_published_button" class="" groups="sales_team.group_sale_manager">
                         <t t-call="website.publish_management">

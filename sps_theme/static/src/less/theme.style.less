@@ -215,10 +215,14 @@ header{
                      width: 100%;
                 }
                 .nav {
+                justify-content: flex-end;
                     @media screen and (max-width: 767px){
                       text-align: center !important;
                     }
                     .nav-item{
+                    &.ml-lg-auto{
+                        margin-left: 0 !important;
+                    }
                         a{
                             font-size: 14px;
                             line-height: 26px;
@@ -1078,3 +1082,11 @@ border-bottom: 1px solid #e7e7e8;
     display: inline-grid;
 }
 
+.o_wsale_layout_list{
+    .oe_product {
+        &.col-md-3{
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+    }
+}
