@@ -8,6 +8,7 @@
     'website': "http://www.benchmarkitsolutions.com",
     'depends': ['base', 'account'],
     'data': [
+        'security/ir.model.access.csv',
         'views/payments_scheduler_view.xml',
         'report/payments_scheduler_report.xml',
         'report/payments_scheduler_report_temp.xml'

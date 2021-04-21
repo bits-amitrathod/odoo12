@@ -1,2 +1,2 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_purchase_history_custome_purchase_history_custome,purchase_history_custome.purchase_history_custome,model_purchase_history_custome_purchase_history_custome,,1,0,0,0
+popup_view_model_purchase_history,popup.view.model.purchase.history,model_popup_view_model_purchase_history,,1,1,1,1

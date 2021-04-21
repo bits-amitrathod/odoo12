@@ -13,14 +13,15 @@
 
             </div>-->
 
-       <div class="top-header collapse navbar-collapse" id="top_menu_collapse">
+
+            <div class="top-header collapse navbar-collapse" id="top_menu_collapse">
                   <ul class="contact-detail">
                     <li>
                         <a href="#">Contact Our Sales Team Today: <span>412.564.1280</span></a>
                     </li>
                 </ul>
-             <t t-if="not request.httprequest.path[0:5] == '/shop'">
-                <form class="navbar-form navbar-right" role="search" t-attf-action="/shop" method="get">
+                 <t t-if="not request.httprequest.path[0:5] == '/shop'">
+                    <form class="navbar-form navbar-right" role="search" t-attf-action="/shop" method="get">
                         <div class="input-group">
                             <input id="SearchBox" type="text" name="search"
                                    class="form-control search-input"
@@ -30,7 +31,8 @@
                             </div>
                         </div>
                     </form>
-             </t>
+
+                </t>
             </div>
         </xpath>
     </template>

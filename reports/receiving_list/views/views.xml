@@ -9,8 +9,10 @@
                         <group>
                             <field name="order_type" />
 
-                            <field name="sale_order_id" attrs="{'invisible': [('order_type', '!=', 0)], 'required' : [('order_type', '=', 0)]}" />
-                            <field name="purchase_order_id" attrs="{'invisible': [('order_type', '!=', 1)], 'required' : [('order_type', '=', 1)]}" />
+<!--                            <field name="sale_order_id" attrs="{'invisible': [('order_type', '!=', 0)], 'required' : [('order_type', '=', 0)]}" />-->
+<!--                            <field name="purchase_order_id" attrs="{'invisible': [('order_type', '!=', 1)], 'required' : [('order_type', '=', 1)]}" />-->
+<!--                            <field name="sale_order_id"/>-->
+<!--                            <field name="purchase_order_id"/>-->
 
                         </group>
                     </group>

@@ -75,7 +75,7 @@
                                                 <span t-esc="o.product_uom.name"/>
                                             </td>
                                             <td align="right"  style="border: 1px solid #000;">
-                                                <span t-esc="o.date_done"/>
+                                                <span t-esc="o.date_planned"/>
                                             </td>
                                             <td align="center"  style="border: 1px solid #000;">
                                                 <span t-esc="o.minExpDate" t-options="{'widget':'date'}"/>
