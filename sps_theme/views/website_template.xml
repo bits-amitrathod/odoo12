@@ -9,7 +9,7 @@
             <link rel="stylesheet" href="/sps_theme/static/src/less/common/variable.style.less"/>
             <link rel="stylesheet" href="/sps_theme/static/src/less/common/font.style.less"/>
             <link rel="stylesheet" href="/sps_theme/static/src/less/pages/about.style.less"/>
-<!--            <link rel="stylesheet" href="/sps_theme/static/src/less/theme.style.less"/>-->
+            <link rel="stylesheet" href="/sps_theme/static/src/less/theme.style.less"/>
 <!--            <link rel="stylesheet" href="/sps_theme/static/src/less/jquery-ui.css"/>-->
         </xpath>
 
