@@ -41,7 +41,7 @@ class SalesOrder(models.Model):
             if force_carrier_id or not carrier or carrier not in available_carriers:
                 verified_carrier = False
                 for delivery in available_carriers:
-                    if delivery.id == 35:
+                    if delivery.code == "my_shipper_account":
                         if self.partner_id.having_carrier and self.partner_id.carrier_acc_no:
                             verified_carrier = delivery._match_address(self.partner_shipping_id)
                     else:
