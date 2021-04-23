@@ -24,7 +24,7 @@
             <field name="company_id">1</field>
             <field name="free_over">False</field>
             <field name="is_published">True</field>
-            <field name="active">True</field>
+            <field name="active">False</field>
         </record>
      </data>
 </odoo>
