@@ -15,7 +15,9 @@ class NewAccountBonusReport(models.Model):
 
     customer = fields.Many2one('res.partner', 'Customer Name')
     business_development = fields.Many2one('res.users', 'Business Development')
+    customer_business_development = fields.Many2one('res.users', 'Customer Business Development')
     key_account = fields.Many2one('res.users', 'Key Account')
+    customer_key_account = fields.Many2one('res.users', 'Customer Key Account')
     sale_order_id = fields.Many2one('sale.order', 'Sale Order#')
     date_invoice = fields.Date('Invoice Date')
     invoice_status = fields.Char('Status')
@@ -26,9 +28,10 @@ class NewAccountBonusReport(models.Model):
 
     @api.model
     def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=False):
-        fields = ['customer', 'business_development', 'key_account', 'sale_order_id', 'date_invoice', 'invoice_status', 'amount_total',
+        fields = ['customer', 'business_development', 'key_account', 'sale_order_id', 'date_invoice', 'invoice_status',
+                  'amount_total',
                   'months', 'currency_id', 'date_of_first_order']
-        
+
         if orderby == '' or orderby is False:
             order_by = 'amount_total desc'
         else:
@@ -56,6 +59,8 @@ class NewAccountBonusReport(models.Model):
                         so.partner_id                       AS customer, 
                         so.user_id                          AS business_development,
                         so.account_manager                  AS key_account,
+                        rp.user_id                          AS customer_business_development,
+                        rp.account_manager_cust             AS customer_key_account,
                         ai.date_invoice                     AS date_invoice, 
                         CASE WHEN so.invoice_status = 'invoiced' then 'Fully Invoiced' END AS invoice_status, 
                         ai.amount_total                     AS amount_total, 
@@ -75,14 +80,16 @@ class NewAccountBonusReport(models.Model):
                         ON so.partner_id = X.partner_id
                     INNER JOIN 
                         public.account_invoice ai ON so.name = ai.origin AND ai.state = 'paid'
+                    INNER JOIN 
+                        public.res_partner rp ON so.partner_id = rp.id
                 WHERE so.invoice_status = 'invoiced'                
                    """
 
             if business_development_id:
-                select_query = select_query + " AND so.user_id = '" + str(business_development_id) + "'"
+                select_query = select_query + " AND rp.user_id = '" + str(business_development_id) + "'"
 
             if key_account_id:
-                select_query = select_query + " AND so.account_manager = '" + str(key_account_id) + "'"
+                select_query = select_query + " AND rp.account_manager_cust = '" + str(key_account_id) + "'"
 
             order_by = " ORDER BY ai.date_invoice asc"
 
