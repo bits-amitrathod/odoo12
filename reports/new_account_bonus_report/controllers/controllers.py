@@ -84,14 +84,17 @@ class ExportNewAccountBonusReport(http.Controller):
         select_query = """
                         SELECT ROW_NUMBER () OVER (ORDER BY so.id)  AS id, 
                         so.name                             AS sale_order_id, 
-                        RPS.name                            AS customer, 
-                        RPSS.name                           AS business_development,
-                        RPSSS.name                          AS key_account,
+                        rp.name                             AS customer, 
+                        rpp.name                            AS business_development,
+                        rppp.name                           AS key_account,
+                        rps.name                            AS customer_business_development,
+                        rpss.name                           AS customer_key_account,
                         ai.date_invoice                     AS date_invoice, 
                         CASE WHEN so.invoice_status = 'invoiced' then 'Fully Invoiced' END AS invoice_status, 
                         ai.amount_total                     AS amount_total, 
                         X.months                            AS months,
-                        ai.currency_id                      AS currency_id
+                        ai.currency_id                      AS currency_id,
+                        X.first_occurence                   AS date_of_first_order
                 FROM public.sale_order so
                 INNER JOIN
                     (
@@ -105,20 +108,34 @@ class ExportNewAccountBonusReport(http.Controller):
                         ON so.partner_id = X.partner_id
                     INNER JOIN 
                         public.account_invoice ai ON so.name = ai.origin AND ai.state = 'paid'
-                    INNER JOIN public.res_partner RPS ON so.partner_id = RPS.id
-                    INNER JOIN public.res_users RU ON so.user_id = RU.id
-                    INNER JOIN public.res_partner RPSS ON RU.partner_id = RPSS.id
-                    INNER JOIN public.res_users RUU ON so.account_manager = RUU.id
-                    INNER JOIN public.res_partner RPSSS ON RUU.partner_id = RPSSS.id
-                WHERE so.invoice_status = 'invoiced' """
+                    INNER JOIN 
+                        public.res_partner rp ON so.partner_id = rp.id
+                    INNER JOIN 
+                        public.res_users ru ON so.user_id = ru.id
+                    INNER JOIN 
+                        public.res_partner rpp ON ru.partner_id = rpp.id
+                    LEFT OUTER JOIN 
+                        public.res_users ruu ON so.account_manager = ruu.id
+                    LEFT OUTER JOIN 
+                        public.res_partner rppp ON ruu.partner_id = rppp.id
+                    INNER JOIN
+                        public.res_users rus ON rp.user_id = rus.id
+                    INNER JOIN 
+                        public.res_partner rps ON rus.partner_id = rps.id                        
+                    LEFT OUTER JOIN 
+                        public.res_users russ ON rp.account_manager_cust = russ.id
+                    LEFT OUTER JOIN 
+                        public.res_partner rpss ON russ.partner_id = rpss.id
+                WHERE so.invoice_status = 'invoiced'                
+                   """
 
         if business_development_id != "none":
-            select_query = select_query + " AND so.user_id = '" + str(business_development_id) + "'"
+            select_query = select_query + " AND rp.user_id = '" + str(business_development_id) + "'"
 
         if key_account_id != "none":
-            select_query = select_query + " AND so.account_manager = '" + str(key_account_id) + "'"
+            select_query = select_query + " AND rp.account_manager_cust = '" + str(key_account_id) + "'"
 
-        order_by = " ORDER BY RPS.name"
+        order_by = " ORDER BY rp.name"
 
         select_query = select_query + order_by
 
@@ -131,7 +148,9 @@ class ExportNewAccountBonusReport(http.Controller):
             records.append([
                             line['customer'],
                             line['business_development'],
+                            line['customer_business_development'],
                             line['key_account'],
+                            line['customer_key_account'],
                             line['sale_order_id'],
                             line['date_invoice'],
                             line['amount_total'],
@@ -139,7 +158,7 @@ class ExportNewAccountBonusReport(http.Controller):
                             line['invoice_status']])
 
         res = request.make_response(
-            self.from_data(["Customer Name", "Business Development", "Key Account", "Sale Order#", "Invoice Date", "Total",
+            self.from_data(["Customer Name", "#SO - Business Development", "Customer - Business Development", "#SO - Key Account", "Customer - Key Account", "Sale Order#", "Invoice Date", "Total",
                             "Months Ago First Order", "Status"],
                            records),
             headers=[('Content-Disposition', content_disposition('new_account_by_month_by_bd' + '.xls')),
