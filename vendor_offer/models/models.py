@@ -628,7 +628,7 @@ class VendorOffer(models.Model):
             temp = int(self.revision) - 1
             self.revision = str(temp)
 
-        self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
+        #self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
 
     #@api.multi
     def action_button_confirm_api_credit(self, product_id):
@@ -650,7 +650,7 @@ class VendorOffer(models.Model):
             temp = int(self.revision) - 1
             self.revision = str(temp)
 
-        self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
+        #self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
 
     #@api.multi
     def button_confirm(self):

@@ -1341,22 +1341,35 @@
                     </div>
                     <div class="modal fade" id="modalacceptcash" role="dialog" aria-hidden="true">
                         <div class="modal-dialog">
-                            <form id="accept" method="POST" t-att-data-order-id="order.id"
-                                  class="js_accept_json modal-content js_website_submit_form">
+<!--                            <form id="accept" method="POST" t-att-data-order-id="order.id"-->
+<!--                                  class="js_accept_json modal-content js_website_submit_form">-->
+                                 <form id="accept" method="POST" t-attf-action="/vendor_offer/accept/?access_token=#{csrf_token}"
+                                       class="js_accept_json modal-content js_website_submit_form">
+                                      <input type="hidden" name="res_id" t-att-value="order.id"/>
+                                      <input type="hidden" name="order_id" t-att-value="order.id"/>
+<!--                                      <input type="hidden" name="object" t-att-value="order"/>-->
+                                      <input type="hidden" name="partner_name" t-att-value="order.partner_id.name"/>
                                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&amp;times;</button>
                                     <h4 class="modal-title">Validate Cash Order</h4>
                                 </div>
-                                <div class="modal-body" id="sign-dialog">
 
-                                    <t t-call="portal.portal_signature">
-                                        <t t-set="object" t-value="order"/>
-                                        <t t-set="partner_name" t-value="order.partner_id.name"/>
-                                        <t t-set="callUrl" t-value="'/vendor_offer/accept/'"/>
-                                        <t t-set="order_id" t-value="order.id"/>
-                                    </t>
-                                </div>
+
+                                     <div class="modal-footer">
+                                        <button type="submit" t-object="order" class="btn stockhawk_reject_btn">Accept</button>
+                                        <button type="button" class="btn stockhawk_cancel_btn" data-dismiss="modal">Cancel
+                                        </button>
+                                    </div>
+<!--                                    <div class="modal-body" id="sign-dialog">-->
+
+<!--                                    <t t-call="portal.portal_signature">-->
+<!--                                        <t t-set="object" t-value="order"/>-->
+<!--                                        <t t-set="partner_name" t-value="order.partner_id.name"/>-->
+<!--                                        <t t-set="callUrl" t-value="'/vendor_offer/accept/'"/>-->
+<!--                                        <t t-set="order_id" t-value="order.id"/>-->
+<!--                                    </t>-->
+<!--                                </div>-->
                             </form>
                         </div>
                     </div>
@@ -1371,12 +1384,12 @@
                                 </div>
                                 <div class="modal-body" id="sign-dialog">
 
-                                    <t t-call="portal.portal_signature">
-                                        <t t-set="object" t-value="order"/>
-                                        <t t-set="partner_name" t-value="order.partner_id.name"/>
-                                        <t t-set="callUrl" t-value="'/vendor_offer/acceptcredit/'"/>
-                                        <t t-set="order_id" t-value="order.id"/>
-                                    </t>
+<!--                                    <t t-call="portal.portal_signature">-->
+<!--                                        <t t-set="object" t-value="order"/>-->
+<!--                                        <t t-set="partner_name" t-value="order.partner_id.name"/>-->
+<!--                                        <t t-set="callUrl" t-value="'/vendor_offer/acceptcredit/'"/>-->
+<!--                                        <t t-set="order_id" t-value="order.id"/>-->
+<!--                                    </t>-->
                                 </div>
                             </form>
                         </div>
@@ -1392,12 +1405,12 @@
                                 </div>
                                 <div class="modal-body" id="sign-dialog">
 
-                                    <t t-call="portal.portal_signature">
-                                        <t t-set="object" t-value="order"/>
-                                        <t t-set="partner_name" t-value="order.partner_id.name"/>
-                                        <t t-set="callUrl" t-value="'/vendor_offer/reject/'"/>
-                                        <t t-set="order_id" t-value="order.id"/>
-                                    </t>
+<!--                                    <t t-call="portal.portal_signature">-->
+<!--                                        <t t-set="object" t-value="order"/>-->
+<!--                                        <t t-set="partner_name" t-value="order.partner_id.name"/>-->
+<!--                                        <t t-set="callUrl" t-value="'/vendor_offer/reject/'"/>-->
+<!--                                        <t t-set="order_id" t-value="order.id"/>-->
+<!--                                    </t>-->
                                 </div>
                             </form>
                         </div>
