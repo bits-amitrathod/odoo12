@@ -70,7 +70,7 @@ function dataFilteredQuery(q) {
 }
 var DataImport = AbstractAction.extend({
     hasControlPanel: true,
-    contentTemplate: 'ImportView',
+    contentTemplate: 'ImportTemplateView',
     opts: [
         {name: 'encoding', label: _lt("Encoding:"), value: ''},
         {name: 'separator', label: _lt("Separator:"), value: ''},
@@ -101,7 +101,7 @@ var DataImport = AbstractAction.extend({
         },
         'click .oe_import_report a.oe_import_report_count': function (e) {
             e.preventDefault();
-            $(e.target).parent().toggleClass('oe_import_report_showmore');
+            $(e.target).parent().parent().toggleClass('oe_import_report_showmore');
         },
          'click .oe_import_report_see_possible_value': function (e) {
             e.preventDefault();
@@ -137,18 +137,19 @@ var DataImport = AbstractAction.extend({
 
         this._super.apply(this, arguments);
         this.action_manager = parent;
-        this.res_model =   ''; //action.params[0].request_model;//action.params.model;
+        this.res_model =   action.params[0].request_model; //action.params[0].request_model;//action.params.model;
         this.parent_context = action.params.context || {};
         // import object id
         this.id = null;
         this.sheets = [];
         this.session = session;
-        action.display_name = _t('Import Template'); // Displayed in the breadcrumbs
+        this._title = _t('Import Template'); // Displayed in the breadcrumbs
         this.do_not_change_match = false;
         this.customer = action.params[0].vendor_id;
         this.offer_id = action.params[0].offer_id;
         this.import_type_ven = action.params[0].import_type_ven;
         this.parent_model = action.params[0].model;
+         this.upload_document = action.params[0].upload_document;
         //this.template_type = 'Inventory';
     },
     willStart: function () {
@@ -176,11 +177,11 @@ var DataImport = AbstractAction.extend({
                         self.create_model().then(function (id) {
                             self.id = id;
                             self.$('input[name=import_id]').val(id);
-                            if(self.user_type== 'supplier'){
-                               self.$('#template_type_container').hide();
-                            } else{
-                               self.$('#template_type_container').show();
-                            }
+//                            if(self.user_type== 'supplier'){
+//                               self.$('#template_type_container').hide();
+//                            } else{
+//                               self.$('#template_type_container').show();
+//                            }
                             self.renderButtons();
                             var status = {
                                 cp_content: {$buttons: self.$buttons},
@@ -199,7 +200,7 @@ var DataImport = AbstractAction.extend({
     },
     renderButtons: function() {
         var self = this;
-        this.$buttons = $(QWeb.render("ImportView.buttons", this));
+        this.$buttons = $(QWeb.render("ImportTemplateViewInner.buttons", this));
         this.$buttons.filter('.o_import_validate').on('click', this.validate.bind(this));
         this.$buttons.filter('.o_import_import').on('click', this.import.bind(this));
         this.$buttons.filter('.o_import_file_reload').on('click', this.loaded_file.bind(this));
@@ -213,7 +214,7 @@ var DataImport = AbstractAction.extend({
     },
     setup_encoding_picker: function () {
         this.$('input.oe_import_encoding').select2({
-            width: '160px',
+             width: '50%',
             data: _.map(('utf-8 utf-16 windows-1252 latin1 latin2 big5 gb18030 shift_jis windows-1251 koir8_r').split(/\s+/), _make_option),
             query: dataFilteredQuery,
             initSelection: function ($e, c) {
@@ -229,7 +230,7 @@ var DataImport = AbstractAction.extend({
             {id: ' ', text: _t("Space")}
         ];
         this.$('input.oe_import_separator').select2({
-            width: '160px',
+            width: '50%',
             data: data,
             query: dataFilteredQuery,
             // this is not provided to initSelection so can't use this.data
@@ -245,7 +246,7 @@ var DataImport = AbstractAction.extend({
         ];
         var data_digits = data_decimal.concat([{id: '', text: _t("No Separator")}]);
         this.$('input.oe_import_float_thousand_separator').select2({
-            width: '160px',
+            width: '50%',
             data: data_digits,
             query: dataFilteredQuery,
             initSelection: function ($e, c) {
@@ -253,7 +254,7 @@ var DataImport = AbstractAction.extend({
             }
         });
         this.$('input.oe_import_float_decimal_separator').select2({
-            width: '160px',
+            width: '50%',
             data: data_decimal,
             query: dataFilteredQuery,
             initSelection: function ($e, c) {
@@ -283,7 +284,7 @@ setup_date_format_picker: function () {
             'MMDDYYYY',
         ]).map(_make_option);
         this.$('input.oe_import_date_format').select2({
-            width: '160px',
+            width: '50%',
             data: data,
             query: dataFilteredQuery,
             initSelection: function ($e, c) {
@@ -311,12 +312,15 @@ setup_date_format_picker: function () {
             advanced: this.$('input.oe_import_advanced_mode').prop('checked'),
             keep_matches: this.do_not_change_match,
             name_create_enabled_fields: {},
+            // start at row 1 = skip 0 lines
+            skip: Number(this.$('#oe_import_row_start').val()) - 1 || 0,
+            limit: Number(this.$('#oe_import_batch_limit').val()) || null,
         };
-        _(this.opts).each(function (opt) {
+        _.each(_.union(this.opts, this.spreadsheet_opts), function (opt) {
             options[opt.name] =
                 self.$('input.oe_import_' + opt.name).val();
         });
-         _(this.parse_opts_formats).each(function (opt) {
+        _(this.parse_opts_formats).each(function (opt) {
             options[opt.name] = time.moment_to_strftime_format(self.$('input.oe_import_' + opt.name).val());
         });
         _(this.parse_opts_separators).each(function (opt) {
@@ -345,7 +349,7 @@ setup_date_format_picker: function () {
             this.toggle_partial(null);
         }
 
-        this.$buttons.filter('.o_import_import, .o_import_validate').addClass('d-none');
+        this.$buttons.filter('.o_import_import, .o_import_validate , .o_import_file_reload').addClass('d-none');
         if (!this.$('input.oe_import_file').val()) { return this['settings_changed'](); }
         this.$('.oe_import_date_format').select2('val', '');
         this.$('.oe_import_datetime_format').val('');
@@ -365,7 +369,7 @@ setup_date_format_picker: function () {
     },
     onpreviewing: function () {
         var self = this;
-        this.$buttons.filter('.o_import_import, .o_import_validate').addClass('d-none');
+        this.$buttons.filter('.o_import_import, .o_import_validate, .o_import_file_reload').addClass('d-none');
         this.$form.addClass('oe_import_with_file');
         // TODO: test that write // succeeded?
         this.$form.removeClass('oe_import_preview_error oe_import_error');
@@ -408,14 +412,13 @@ setup_date_format_picker: function () {
 //            });
 //    },
     onpreview_error: function (event, from, to, result) {
-     alert("in pre errrrrrror");
         this.$('.oe_import_options').show();
-        this.$buttons.filter('.o_import_file_reload').removeClass('d-none');
-        this.$el.addClass('oe_import_preview_error oe_import_error');
-        this.$el.find('.oe_import_box, .oe_import_with_file').removeClass('d-none');
-        this.$el.find('.o_view_nocontent').addClass('d-none');
+	    this.$buttons.filter('.o_import_file_reload').removeClass('d-none');
+        this.$form.addClass('oe_import_preview_error oe_import_error');
+        this.$form.find('.oe_import_box, .oe_import_with_file').removeClass('d-none');
+        this.$form.find('.o_view_nocontent').addClass('d-none');
         this.$('.oe_import_error_report').html(
-                QWeb.render('ImportView.preview.error', result));
+                QWeb.render('ImportTemplateViewInner.preview.error', result));
     },
     onpreview_success: function (event, from, to, result) {
         var self = this;
@@ -424,19 +427,31 @@ setup_date_format_picker: function () {
             .removeClass('btn-primary').addClass('btn-secondary')
             .blur();
         this.$buttons.filter('.o_import_import, .o_import_validate, .o_import_file_reload').removeClass('d-none');
-        this.$el.find('.oe_import_box, .oe_import_with_file').removeClass('d-none');
-        this.$el.find('.o_view_nocontent').addClass('d-none');
-        this.$el.addClass('oe_import_preview');
+        this.$form.find('.oe_import_box, .oe_import_with_file').removeClass('d-none');
+        this.$form.find('.o_view_nocontent').addClass('d-none');
+        this.$form.addClass('oe_import_preview');
         this.$('input.oe_import_advanced_mode').prop('checked', result.advanced_mode);
-        this.$('.oe_import_grid').html(QWeb.render('ImportView.preview', result));
+        this.$('.oe_import_grid').html(QWeb.render('ImportTemplateViewInner.preview', result));
 
+        this.$('.o_import_batch_alert').toggleClass('d-none', !result.batch);
+
+        var messages = [];
         if (result.headers.length === 1) {
-            this.$('.oe_import_options').show();
-            this.onresults(null, null, null, {'messages': [{
-                type: 'warning',
-                message: _t("A single column was found in the file, this often means the file separator is incorrect")
-            }]});
+            messages.push({type: 'warning', message: _t("A single column was found in the file, this often means the file separator is incorrect")});
         }
+
+        if (!_.isEmpty(messages)) {
+            this.$('.oe_import_options').show();
+            this.onresults(null, null, null, {'messages': messages});
+        }
+
+        if (!_.isEqual(this.sheets, result.options.sheets)) {
+            this.sheets = result.options.sheets || [];
+            this.setup_sheets_picker();
+        }
+        this.$('div.oe_import_has_multiple_sheets').toggle(
+            this.sheets.length > 1
+        );
 
         // merge option values back in case they were updated/guessed
         _.each(['encoding', 'separator', 'float_thousand_separator', 'float_decimal_separator', 'sheet'], function (id) {
@@ -444,10 +459,8 @@ setup_date_format_picker: function () {
         });
         this.$('.oe_import_date_format').select2('val', time.strftime_to_moment_format(result.options.date_format));
         this.$('.oe_import_datetime_format').val(time.strftime_to_moment_format(result.options.datetime_format));
-        if (result.debug === false){
-            this.$('.oe_import_tracking').hide();
-            this.$('.oe_import_deferparentstore').hide();
-        }
+        // hide all "true debug" options when not in debug mode
+        this.$('.oe_import_debug_option').toggleClass('d-none', !result.debug);
 
         var $fields = this.$('.oe_import_fields input');
         this.render_fields_matches(result, $fields);
@@ -472,7 +485,7 @@ setup_date_format_picker: function () {
             var $thing = $();
             var bind = function (d) {};
             if (config.isDebug()) {
-                $thing = $(QWeb.render('ImportView.create_record_option')).insertAfter(v).hide();
+                $thing = $(QWeb.render('ImportTemplateViewInner.create_record_option')).insertAfter(v).hide();
                 bind = function (data) {
                     switch (data.type) {
                     case 'many2one': case 'many2many':
@@ -853,7 +866,7 @@ setup_date_format_picker: function () {
 
         this.$form.addClass('oe_import_error');
         this.$('.oe_import_error_report').html(
-            QWeb.render('ImportView.error', {
+            QWeb.render('ImportTemplateViewInner.error', {
                 errors: messagesSorted,
                 at: function (rows) {
                     var from = rows.from + offset;

@@ -22,7 +22,7 @@ class VendorOffer(http.Controller):
             'object': obj
         })
 
-    @http.route('/vendor_offer/accept',  type='json', auth="public", website=True, csrf=False)
+    @http.route('/vendor_offer/accept',   auth="public", website=True, csrf=False)
     def vendor_offer_accept(self, res_id, order_id=None, partner_name=None, signature=None,access_token=None):
         order = request.env['purchase.order'].search([('id', '=', res_id)])
         if order.state == 'purchase':
@@ -34,22 +34,28 @@ class VendorOffer(http.Controller):
                 'error': _('Offer already Rejected'),
             }
         order_sudo = order.sudo()
-        if not signature:
-            return {'error': _('Signature is missing.')}
+        # if not signature:
+        #     return {'error': _('Signature is missing.')}
         val = order_sudo.action_button_confirm_api_cash(res_id)
+        # _message_post_helper(
+        #     res_model='purchase.order',
+        #     res_id=order_sudo.id,
+        #     message=_('Order signed by %s') % (partner_name,),
+        #     attachments=[('signature.png', base64.b64decode(signature))] if signature else [],
+        #     **({'token': order.access_token} if order.access_token else {}))
         _message_post_helper(
             res_model='purchase.order',
             res_id=order_sudo.id,
-            message=_('Order signed by %s') % (partner_name,),
-            attachments=[('signature.png', base64.b64decode(signature))] if signature else [],
-            **({'token': order.access_token} if order.access_token else {}))
-        return {
-            'success': _('Your Order has been confirmed.'),
-            'force_refresh': True,
-            'redirect_url': '/my/home',
-        }
+            message=_('Order signed by %s') % (partner_name,)
+            )
+        # return {
+        #     'success': _('Your Order has been confirmed.'),
+        #     'force_refresh': True,
+        #     'redirect_url': '/my/home',
+        # }
+        return request.redirect('/my/home')
 
-    @http.route('/vendor_offer/acceptcredit/', type='json', auth="public", website=True, csrf=False)
+    @http.route('/vendor_offer/acceptcredit/',  auth="public", website=True, csrf=False)
     def vendor_offer_accept_credit(self, res_id, order_id=None, partner_name=None, signature=None, access_token=None):
         order = request.env['purchase.order'].search([('id', '=', res_id)])
         if order.state == 'purchase':
@@ -61,23 +67,29 @@ class VendorOffer(http.Controller):
                 'error': _('Offer already Rejected'),
             }
         order_sudo = order.sudo()
-        if not signature:
-            return {'error': _('Signature is missing.')}
+        # if not signature:
+        #     return {'error': _('Signature is missing.')}
         val = order_sudo.action_button_confirm_api_credit(res_id)
+        # _message_post_helper(
+        #     res_model='purchase.order',
+        #     res_id=order_sudo.id,
+        #     message=_('Order signed by %s') % (partner_name,),
+        #     attachments=[('signature.png', base64.b64decode(signature))] if signature else [],
+        #     **({'token': order.access_token} if order.access_token else {}))
         _message_post_helper(
             res_model='purchase.order',
             res_id=order_sudo.id,
-            message=_('Order signed by %s') % (partner_name,),
-            attachments=[('signature.png', base64.b64decode(signature))] if signature else [],
-            **({'token': order.access_token} if order.access_token else {}))
-        return {
-            'success': _('Your Order has been confirmed.'),
-            'force_refresh': True,
-            'redirect_url': '/my/home',
-        }
+            message=_('Order signed by %s') % (partner_name,)
+        )
+        # return {
+        #     'success': _('Your Order has been confirmed.'),
+        #     'force_refresh': True,
+        #     'redirect_url': '/my/home',
+        # }
 
+        return request.redirect('/my/home')
 
-    @http.route('/vendor_offer/reject/', type='json', auth="public", website=True, csrf=False)
+    @http.route('/vendor_offer/reject/', auth="public", website=True, csrf=False)
     def vendor_offer_reject(self, res_id,order_id=None, partner_name=None, signature=None,access_token=None):
         if not signature:
             return {'error': _('Signature is missing.')}
@@ -92,14 +104,20 @@ class VendorOffer(http.Controller):
             }
         order_sudo = order.sudo()
         val = order_sudo.action_cancel_vendor_offer_api(res_id)
+        # _message_post_helper(
+        #     res_model='purchase.order',
+        #     res_id=order_sudo.id,
+        #     message=_('Order rejected by %s') % (partner_name,),
+        #     attachments=[('signature.png', base64.b64decode(signature))] if signature else [],
+        #     **({'token': order.access_token} if order.access_token else {}))
         _message_post_helper(
             res_model='purchase.order',
             res_id=order_sudo.id,
-            message=_('Order rejected by %s') % (partner_name,),
-            attachments=[('signature.png', base64.b64decode(signature))] if signature else [],
-            **({'token': order.access_token} if order.access_token else {}))
-        return {
-            'success': _('Your Order has been rejected.'),
-            'force_refresh': True,
-            'redirect_url': '/my/home',
-        }
+            message=_('Order signed by %s') % (partner_name,)
+        )
+        # return {
+        #     'success': _('Your Order has been rejected.'),
+        #     'force_refresh': True,
+        #     'redirect_url': '/my/home',
+        # }
+        return request.redirect('/my/home')

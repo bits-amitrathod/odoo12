@@ -690,12 +690,51 @@ class vendor_offer_automation(models.Model):
         return dict(product_sales_count=product_sales_count, product_sales_count_month=product_sales_count_month,
                     product_sales_count_90=product_sales_count_90, product_sales_count_yrs=product_sales_count_yrs)
 
+    # @staticmethod
+    # def _read_xls_book(self, book, sheet_name,read_data=False):
+    #     sheet = book.sheet_by_name(sheet_name)
+    #     # emulate Sheet.get_rows for pre-0.9.4
+    #     for rowx, row in enumerate(map(sheet.row, range(sheet.nrows)), 1):
+    #         values = []
+    #         for colx, cell in enumerate(row, 1):
+    #             if cell.ctype is xlrd.XL_CELL_NUMBER:
+    #                 is_float = cell.value % 1 != 0.0
+    #                 values.append(
+    #                     str(cell.value)
+    #                     if is_float
+    #                     else str(int(cell.value))
+    #                 )
+    #             elif cell.ctype is xlrd.XL_CELL_DATE:
+    #                 is_datetime = cell.value % 1 != 0.0
+    #                 # emulate xldate_as_datetime for pre-0.9.3
+    #                 dt = datetime.datetime(*xlrd.xldate.xldate_as_tuple(cell.value, book.datemode))
+    #                 values.append(
+    #                     dt.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+    #                     if is_datetime
+    #                     else dt.strftime(DEFAULT_SERVER_DATE_FORMAT)
+    #                 )
+    #             elif cell.ctype is xlrd.XL_CELL_BOOLEAN:
+    #                 values.append(u'True' if cell.value else u'False')
+    #             elif cell.ctype is xlrd.XL_CELL_ERROR:
+    #                 raise ValueError(
+    #                     _("Invalid cell value at row %(row)s, column %(col)s: %(cell_value)s") % {
+    #                         'row': rowx,
+    #                         'col': colx,
+    #                         'cell_value': xlrd.error_text_from_code.get(cell.value, _("unknown error code %s", cell.value))
+    #                     }
+    #                 )
+    #             else:
+    #                 values.append(cell.value)
+    #         break
+    #     return values
+
     @staticmethod
     def _read_xls_book(book, pricing_index,flag, read_data=False,expiration_date_index=-1):
         sheet = book.sheet_by_index(pricing_index)
         data = []
         row_index = 0
-        for row in pycompat.imap(sheet.row, range(sheet.nrows)):
+        #for rowx, row in enumerate(map(sheet.row, range(sheet.nrows)), 1):
+        for rowx,row in enumerate(map(sheet.row, range(sheet.nrows))):
             if read_data is True and row_index == 0:
                 row_index = row_index + 1
                 continue
@@ -728,9 +767,9 @@ class vendor_offer_automation(models.Model):
                     if cell.ctype is xlrd.XL_CELL_NUMBER:
                         is_float = cell.value % 1 != 0.0
                         values.append(
-                            pycompat.text_type(cell.value)
+                            str(cell.value)
                             if is_float
-                            else pycompat.text_type(int(cell.value))
+                            else str(cell.value)
                         )
                     else:
                         values.append(cell.value)
