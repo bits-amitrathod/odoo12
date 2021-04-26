@@ -20,7 +20,8 @@ class NewAccountBonusReport(models.Model):
     customer_key_account = fields.Many2one('res.users', 'Customer Key Account')
     sale_order_id = fields.Many2one('sale.order', 'Sale Order#')
     date_invoice = fields.Date('Invoice Date')
-    invoice_status = fields.Char('Status')
+    invoice_status = fields.Char('Invoice Status')
+    invoice_state = fields.Char('Status')
     amount_total = fields.Float('Total')
     months = fields.Integer('Months Ago First Order', group_operator="max")
     currency_id = fields.Many2one('res.currency', string='Currency')
@@ -62,7 +63,9 @@ class NewAccountBonusReport(models.Model):
                         rp.user_id                          AS customer_business_development,
                         rp.account_manager_cust             AS customer_key_account,
                         ai.date_invoice                     AS date_invoice, 
-                        CASE WHEN so.invoice_status = 'invoiced' then 'Fully Invoiced' END AS invoice_status, 
+                        CASE WHEN so.invoice_status = 'invoiced' then 'Fully Invoiced' END AS invoice_status,
+                        CASE WHEN ai.state = 'open' then 'Open' 
+                             WHEN ai.state = 'paid' then 'Paid' END AS invoice_state,
                         ai.amount_total                     AS amount_total, 
                         X.months                            AS months,
                         ai.currency_id                      AS currency_id,
@@ -79,7 +82,7 @@ class NewAccountBonusReport(models.Model):
                         Having MIN(aii.date_invoice) > '""" + str(end_date) + """ ') X
                         ON so.partner_id = X.partner_id
                     INNER JOIN 
-                        public.account_invoice ai ON so.name = ai.origin AND ai.state = 'paid'
+                        public.account_invoice ai ON so.name = ai.origin AND ai.state in ('open', 'paid')
                     INNER JOIN 
                         public.res_partner rp ON so.partner_id = rp.id
                 WHERE so.invoice_status = 'invoiced'                
