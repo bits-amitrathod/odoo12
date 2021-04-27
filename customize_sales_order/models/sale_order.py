@@ -71,6 +71,15 @@ class sale_order(models.Model):
                                        compute="get_national_account", tracking=True)
     field_read_only = fields.Integer(compute="_get_user")
 
+    @api.model
+    def _get_default_team(self):
+        return self.env['crm.team']._get_default_team_id()
+
+    team_id = fields.Many2one(
+        'crm.team', 'Sales Team',
+        change_default=True, default=_get_default_team, tracking=True, check_company=True,  # Unrequired company
+        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
+
     #@api.one
     def _get_user(self):
         if self.env.user.email == "jtennant@surgicalproductsolutions.com":
