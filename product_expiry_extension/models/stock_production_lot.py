@@ -5,6 +5,7 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
+
 class ProductionLot(models.Model):
     _inherit = 'stock.production.lot'
     _name = 'stock.production.lot'
@@ -66,8 +67,6 @@ class ProductionLot(models.Model):
         vals.update({'use_date': False, 'alert_date': False, 'expiration_date': False, 'removal_date': False})
         return vals
 
-
-    #@api.multi
     def write(self, vals):
         if 'use_date' in vals and 'alert_date' in vals:
             if fields.Datetime.from_string(vals['alert_date']) >= fields.Datetime.from_string(vals['use_date']):
