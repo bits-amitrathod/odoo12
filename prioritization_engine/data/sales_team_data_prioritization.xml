@@ -2,12 +2,26 @@
 <odoo>
     <data noupdate="1">
 
-        <record id="salesteam_prioritization_sales" model="crm.team">
-            <field name="name">Prioritization</field>
+        <record id="salesteam_website_sales" model="crm.team">
+            <field name="name">Website</field>
+            <field name="team_type" eval="'website'"/>
             <field name="company_id" eval="False"/>
             <field name="active" eval="True"/>
-<!--            <field name="team_type" eval="'engine'"/>-->
         </record>
+
+        <record id="stockhawk_sales_team" model="crm.team">
+            <field name="name">Stockhawk</field>
+            <field name="team_type" eval="'engine'"/>
+            <field name="company_id" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!--<record id="my_in_stock_sales_team" model="crm.team">
+            <field name="name">My In-Stock Report</field>
+            <field name="team_type" eval="'my_in_stock_report'"/>
+            <field name="company_id" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>-->
 
         <!--Email template -->
         <record id="email_template_sale_custom" model="mail.template">
