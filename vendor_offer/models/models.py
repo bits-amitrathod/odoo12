@@ -2119,7 +2119,7 @@ class VendorPricingExport(models.TransientModel):
                                              left join stock_move_line AS sml 
                                                     ON sml.picking_id = sp.id 
                                       WHERE  sml.state = 'done' 
-                                             AND sml.location_dest_id =%s 
+                                            AND sml.location_dest_id =%s 
                                       GROUP  BY sml.product_id) AS all_sales 
                                   ON pp.id = all_sales.product_id 
                            left join (SELECT CASE 
@@ -2134,7 +2134,7 @@ class VendorPricingExport(models.TransientModel):
                                                      ON pt.id = ppi.product_tmpl_id 
                                              inner join sale_order so 
                                                      ON so.id = sol.order_id 
-                                     
+                                     WHERE  so.date_order >= %s 
                                              AND so.state IN ( 'sale' ) 
                                       GROUP  BY ppi.id) AS all_sales_amount 
                                   ON all_sales_amount.id = pp.id 
@@ -2146,8 +2146,9 @@ class VendorPricingExport(models.TransientModel):
                                              left join stock_move_line AS sml 
                                                     ON sml.picking_id = sp.id 
                                       WHERE  sml.state = 'done' 
-                                             AND sml.location_dest_id =%s 
-                                             AND sp.date_done >= %s 
+                                     AND sml.location_dest_id =%s 
+                                             AND sp.date_done >= %s       
+                                            
                                       GROUP  BY sml.product_id) AS yr_sales 
                                   ON pp.id = yr_sales.product_id 
                                   
@@ -2206,8 +2207,9 @@ class VendorPricingExport(models.TransientModel):
                           LEFT JOIN stock_move_line AS sml 
                           ON        sml.picking_id=sp.id 
                           WHERE     sml.state='done' 
-                          AND       sml.location_dest_id =%s 
+                        AND       sml.location_dest_id =%s 
                           AND       sp.date_done >= %s 
+                         
                           GROUP BY  sml.product_id ) AS ninty_sales ON pp.id=ninty_sales.product_id LEFT JOIN 
                 ( 
                          SELECT   count(spl.NAME) AS NAME, 
@@ -2248,15 +2250,15 @@ class VendorPricingExport(models.TransientModel):
                          AND      ( 
                                            "stock_move"."company_id" IS NULL 
                                   OR       ( 
-                                                    "stock_move"."company_id" =1)) 
+                                                    "stock_move"."company_id" IN(""" + str(company.id) + """))) 
                          GROUP BY "stock_move"."product_id" ) AS qty_on_order ON pp.id=qty_on_order.product_id LEFT JOIN
                 ( 
                          SELECT   sum(sts.scrap_qty) AS scrap_qty, 
                                   sts.product_id 
                          FROM     stock_scrap sts 
                          WHERE    sts.state ='done' 
-                         AND      sts.date_expected < %s 
-                         AND      sts.date_expected > %s 
+                         AND      sts.date_done < %s 
+                         AND      sts.date_done > %s 
                          GROUP BY sts.product_id ) AS inventory_scrapped ON pp.id=inventory_scrapped.product_id WHERE pp.active=true"""
 
         start_time = time.time()
@@ -2264,6 +2266,7 @@ class VendorPricingExport(models.TransientModel):
         self.env.cr.execute(str_query + str_query_join, (cust_location_id, last_yr, cust_location_id, last_yr,today_date,
                                                          cust_location_id, last_3_months, today_date,
                                                          today_date, last_yr))
+
         new_list = self.env.cr.dictfetchall()
 
         for line in new_list:
@@ -2311,7 +2314,7 @@ class ExportPPVendorPricingCSV(http.Controller):
 
     @property
     def content_type(self):
-        return 'text/csv;charset=utf8'
+        return 'text/csv'
 
     def filename(self):
 
@@ -2374,60 +2377,63 @@ class ExportPPVendorPricingXL(http.Controller):
         #
 
         #   XL will be exported
-        return 'PPVendorPricing' + '.xls'
+        return 'PPVendorPricing' + '.xlsx'
 
     def from_data(self, field, rows):
-        if len(rows) > 65535:
-            raise UserError(_(
-                'There are too many rows (%s rows, limit: 65535) to export as Excel 97-2003 (.xls) format. Consider splitting the export.') % len(
-                rows))
+        try:
+            if len(rows) > 65535:
+                raise UserError(_(
+                    'There are too many rows (%s rows, limit: 65535) to export as Excel 97-2003 (.xls) format. Consider splitting the export.') % len(
+                    rows))
 
-        workbook = xlwt.Workbook()
-        worksheet = workbook.add_sheet('Sheet 1')
+            workbook = xlwt.Workbook()
+            worksheet = workbook.add_sheet('Sheet 1')
 
-        for i, fieldname in enumerate(field):
-            worksheet.write(0, i, fieldname)
-            if i == 1:
-                worksheet.col(i).width = 20000  #
-            else:
-                worksheet.col(i).width = 4000  # around 110 pixels
+            for i, fieldname in enumerate(field):
+                worksheet.write(0, i, fieldname)
+                if i == 1:
+                    worksheet.col(i).width = 20000  #
+                else:
+                    worksheet.col(i).width = 4000  # around 110 pixels
 
-        base_style = xlwt.easyxf('align: wrap yes')
-        date_style = xlwt.easyxf('align: wrap yes', num_format_str='YYYY-MM-DD')
-        datetime_style = xlwt.easyxf('align: wrap yes', num_format_str='YYYY-MM-DD HH:mm:SS')
+            base_style = xlwt.easyxf('align: wrap yes')
+            date_style = xlwt.easyxf('align: wrap yes', num_format_str='YYYY-MM-DD')
+            datetime_style = xlwt.easyxf('align: wrap yes', num_format_str='YYYY-MM-DD HH:mm:SS')
 
-        for row_index, row in enumerate(rows):
-            for cell_index, cell_value in enumerate(row):
-                cell_style = base_style
+            for row_index, row in enumerate(rows):
+                for cell_index, cell_value in enumerate(row):
+                    cell_style = base_style
 
-                if isinstance(cell_value, bytes) and not isinstance(cell_value, pycompat.string_types):
-                    # because xls uses raw export, we can get a bytes object
-                    # here. xlwt does not support bytes values in Python 3 ->
-                    # assume this is base64 and decode to a string, if this
-                    # fails note that you can't export
-                    try:
-                        cell_value = pycompat.to_text(cell_value)
-                    except UnicodeDecodeError:
-                        raise UserError(_(
-                            "Binary fields can not be exported to Excel unless their content is base64-encoded. That does not seem to be the case for %s.") %
-                                        fields[cell_index])
+                    if isinstance(cell_value, bytes) and not isinstance(cell_value, pycompat.string_types):
+                        # because xls uses raw export, we can get a bytes object
+                        # here. xlwt does not support bytes values in Python 3 ->
+                        # assume this is base64 and decode to a string, if this
+                        # fails note that you can't export
+                        try:
+                            cell_value = pycompat.to_text(cell_value)
+                        except UnicodeDecodeError:
+                            raise UserError(_(
+                                "Binary fields can not be exported to Excel unless their content is base64-encoded. That does not seem to be the case for %s.") %
+                                            fields[cell_index])
 
-                if isinstance(cell_value, pycompat.string_types):
-                    cell_value = re.sub("\r", " ", pycompat.to_text(cell_value))
-                    # Excel supports a maximum of 32767 characters in each cell:
-                    cell_value = cell_value[:32767]
-                elif isinstance(cell_value, datetime.datetime):
-                    cell_style = datetime_style
-                elif isinstance(cell_value, datetime.date):
-                    cell_style = date_style
-                worksheet.write(row_index + 1, cell_index, cell_value, cell_style)
+                    if isinstance(cell_value, str):
+                        cell_value = re.sub("\r", " ", pycompat.to_text(cell_value))
+                        # Excel supports a maximum of 32767 characters in each cell:
+                        cell_value = cell_value[:32767]
+                    elif isinstance(cell_value, datetime.datetime):
+                        cell_style = datetime_style
+                    elif isinstance(cell_value, datetime.date):
+                        cell_style = date_style
+                    worksheet.write(row_index + 1, cell_index, cell_value, cell_style)
 
-        fp = io.BytesIO()
-        workbook.save(fp)
-        fp.seek(0)
-        data = fp.read()
-        fp.close()
-        return data
+            fp = io.BytesIO()
+            workbook.save(fp)
+            fp.seek(0)
+            data = fp.read()
+            fp.close()
+            return data
+        except Exception as ex:
+            _logger.error("Error", ex)
 
     @http.route('/web/PPVendorPricing/download_document_xl', type='http', auth="public")
     @serialize_exception
