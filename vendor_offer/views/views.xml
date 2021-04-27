@@ -813,15 +813,15 @@
 <!--                    id="vendor_pricing_act_window"/>-->
 
 
-<!--                <record id="vendor_pricing_act_window" model="ir.actions.act_window">-->
-<!--                <field name="name">Export PPVendorPricing</field>-->
-<!--                <field name="type">ir.actions.act_window</field>-->
-<!--                <field name="res_model" >vendor.pricing</field>-->
-<!--                <field name="binding_model_id" ref="product.model_product_product"/>-->
-<!--                <field name="view_mode">form</field>-->
-<!--                     <field name="target">new</field>-->
+                <record id="vendor_pricing_act_window" model="ir.actions.act_window">
+                <field name="name">Export PPVendorPricing</field>
+                <field name="type">ir.actions.act_window</field>
+                <field name="res_model" >vendor.pricing</field>
+                <field name="binding_model_id" ref="product.model_product_product"/>
+                <field name="view_mode">form</field>
+                     <field name="target">new</field>
 
-<!--            </record>-->
+            </record>
 
 
         <!--do not remove this commented code -->
