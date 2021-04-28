@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+salequotationexport_export,salequotationexport.export,model_salequotationexport_export,,1,1,1,1
+sale_quotation_history,sale.quotation.history,model_sale_quotation_history,,1,1,1,1

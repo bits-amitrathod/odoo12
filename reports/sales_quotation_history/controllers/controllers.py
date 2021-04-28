@@ -125,7 +125,7 @@ class ReportQuotationExport(http.Controller):
                 ["Product SKU", "Customer Name", "Key Account ", "Sales Order#", "Product Name", "Ordered Date"
                     , "Ordered Qty", "UOM", "Unit Price", "Total", "Open Quotations Per Code"],
                 records),
-            headers=[('Content-Disposition', content_disposition('sale_quotation_export' + '.xls')),
+            headers=[('Content-Disposition', content_disposition('sale_quotation_export' + '.xlsx')),
                      ('Content-Type', 'application/vnd.ms-excel')],
         )
 
