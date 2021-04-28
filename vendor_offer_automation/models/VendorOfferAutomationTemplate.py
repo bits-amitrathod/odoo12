@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api,_
+from odoo import models, fields, api
 
 hide_column_list_method = ['mf_product_description', 'mf_quantity_in_stock', 'mf_uom','mf_price', 'mf_sales_count',
                            'mf_sales_count_yr', 'mf_sales_total', 'mf_premium', 'mf_exp_inventory', 'mf_sales_count_90',
@@ -15,7 +15,7 @@ class VendorOfferAutomationTemplateClass(models.Model):
     _description = "Vendor Offer Automation Template"
     _name = "sps.vendor_offer_automation.template"
 
-    # customer_id = fields.Many2one('res.partner', string='Customer', required=True)
+    customer_id = fields.Many2one('res.partner', string='Customer', required=True)
     file_name = fields.Char('File Name')
     template_status = fields.Char('Template Status')
     columns_from_template = fields.Char('Columns of Template')
