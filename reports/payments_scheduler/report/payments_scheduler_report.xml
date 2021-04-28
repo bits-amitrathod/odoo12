@@ -4,7 +4,7 @@
         <report
                 id="payments_scheduler_temp"
                 string="Payments Scheduled Report"
-                model="account.invoice"
+                model="account.move"
                 report_type="qweb-html"
                 file="payments_scheduler.payments_scheduler_temp_test"
                 name="payments_scheduler.payments_scheduler_temp_test"
