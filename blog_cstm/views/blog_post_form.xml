@@ -7,7 +7,7 @@
             <field name="inherit_id" ref="website_blog.view_blog_post_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//sheet/div[1]" position="after">
-                    <field name="image" widget="image" class="oe_avatar" options="{&quot;preview_image&quot;: &quot;image_thumb&quot;}"/>
+                    <field name="image" widget="image" class="oe_avatar" options="{'preview_image': 'image'}"/>
                 </xpath>
             </field>
         </record>
