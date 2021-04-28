@@ -1,23 +1,21 @@
 # -*- coding: utf-8 -*-
 from collections import Counter
-
 from odoo import api, fields, models, _
 from odoo.addons import decimal_precision as dp
 from odoo.exceptions import UserError, ValidationError
-
 from odoo import models, fields, api
+from odoo.tools import OrderedSet
 import logging
 import datetime
-
 
 _logger = logging.getLogger(__name__)
 from odoo.tools.float_utils import float_round, float_compare, float_is_zero
 
-class inventory_exe(models.Model):
+
+class InventoryExe(models.Model):
     _inherit = 'stock.move.line'
     lot_expired_date = fields.Datetime('Expiration Date')
     lot_use_date = fields.Datetime('Expiration Date', compute='_compute_show_lot_user_date',readOnly=True, required=True)
-
 
     @api.onchange('lot_use_date')
     def _onchange_lot_use_date(self):
@@ -25,7 +23,6 @@ class inventory_exe(models.Model):
             values = {}
             values = self._get_updated_date(self.lot_use_date, values)
             self.env['stock.production.lot'].search([('id', '=', self.lot_id.id)]).write(values)
-
 
     def _get_updated_date(self,lot_use_date,vals):
         params = self.env['ir.config_parameter'].sudo()
@@ -41,35 +38,44 @@ class inventory_exe(models.Model):
         return vals
 
     @api.onchange('lot_name', 'lot_id','lot_expired_date')
-    def onchange_serial_number(self):
+    def _onchange_serial_number(self):
         """ When the user is encoding a move line for a tracked product, we apply some logic to
-        help him. This includes:
-            - automatically switch `qty_done` to 1.0
-            - warn if he has already encoded `lot_name` in another move line
-        """
+                help him. This includes:
+                    - automatically switch `qty_done` to 1.0
+                    - warn if he has already encoded `lot_name` in another move line
+                """
         _logger.info("move_line_onchange sewrial number calledd.")
         res = {}
 
-        if self.lot_id :
+        if self.lot_id:
             self._compute_show_lot_user_date()
         if self.product_id.tracking == 'serial':
             if not self.qty_done:
                 self.qty_done = 1
 
             message = None
-            if self.lot_name or self.lot_expired_date or self.lot_id :
+            if self.lot_name or self.lot_expired_date or self.lot_id:
 
                 move_lines_to_check = self._get_similar_move_lines() - self
                 if self.lot_name:
                     if self.lot_expired_date is False:
-                      res['warning'] = {'title': _('Warning'), 'message': "expired date required"}
-                      return res
+                        res['warning'] = {'title': _('Warning'), 'message': "expired date required"}
+                        return res
                     counter = Counter(move_lines_to_check.mapped('lot_name'))
                     if counter.get(self.lot_name) and counter[self.lot_name] > 1:
                         message = _(
                             'You cannot use the same serial number twice. Please correct the serial numbers encoded.')
+                    elif not self.lot_id:
+                        counter = self.env['stock.production.lot'].search_count([
+                            ('company_id', '=', self.company_id.id),
+                            ('product_id', '=', self.product_id.id),
+                            ('name', '=', self.lot_name),
+                        ])
+                        if counter > 0:
+                            message = _(
+                                'Existing Serial number (%s). Please correct the serial number encoded.') % self.lot_name
                 elif self.lot_id:
-                    self.lot_expired_date=self.lot_id.use_date
+                    self.lot_expired_date = self.lot_id.use_date
                     counter = Counter(move_lines_to_check.mapped('lot_id.id'))
                     if counter.get(self.lot_id.id) and counter[self.lot_id.id] > 1:
                         message = _(
@@ -84,7 +90,6 @@ class inventory_exe(models.Model):
             for ml in self:
                 ml.lot_use_date= ml.lot_id.use_date
 
-
     def _action_done(self):
         """ This method is called during a move's `action_done`. It'll actually move a quant from
         the source location to the destination location, and unreserve if needed in the source
@@ -94,13 +99,16 @@ class inventory_exe(models.Model):
         intended to be called when editing a `done` move (that's what the override of `write` here
         is done.
         """
+        Quant = self.env['stock.quant']
 
         # First, we loop over all the move lines to do a preliminary check: `qty_done` should not
         # be negative and, according to the presence of a picking type or a linked inventory
         # adjustment, enforce some rules on the `lot_id` field. If `qty_done` is null, we unlink
         # the line. It is mandatory in order to free the reservation and correctly apply
         # `action_done` on the next move lines.
-        ml_to_delete = self.env['stock.move.line']
+        ml_ids_tracked_without_lot = OrderedSet()
+        ml_ids_to_delete = OrderedSet()
+        ml_ids_to_create_lot = OrderedSet()
         for ml in self:
             # Check here if `ml.qty_done` respects the rounding of `ml.product_uom_id`.
             uom_qty = float_round(ml.qty_done, precision_rounding=ml.product_uom_id.rounding, rounding_method='HALF-UP')
@@ -108,8 +116,8 @@ class inventory_exe(models.Model):
             qty_done = float_round(ml.qty_done, precision_digits=precision_digits, rounding_method='HALF-UP')
             if float_compare(uom_qty, qty_done, precision_digits=precision_digits) != 0:
                 raise UserError(_('The quantity done for the product "%s" doesn\'t respect the rounding precision \
-                                    defined on the unit of measure "%s". Please change the quantity done or the \
-                                    rounding precision of your unit of measure.') % (
+                                   defined on the unit of measure "%s". Please change the quantity done or the \
+                                   rounding precision of your unit of measure.') % (
                 ml.product_id.display_name, ml.product_uom_id.name))
 
             qty_done_float_compared = float_compare(ml.qty_done, 0, precision_rounding=ml.product_uom_id.rounding)
@@ -121,27 +129,37 @@ class inventory_exe(models.Model):
                             # If a picking type is linked, we may have to create a production lot on
                             # the fly before assigning it to the move line if the user checked both
                             # `use_create_lots` and `use_existing_lots`.
-                            if ml.lot_name and not ml.lot_id:
-                                tmpl_id = ml.product_id.product_tmpl_id
-                                product_template = self.env['product.template'].search([('id', '=', int(tmpl_id))])
-                                params = self.env['ir.config_parameter'].sudo()
-                                production_lot_alert_days = int(
-                                    params.get_param('inventory_extension.production_lot_alert_days'))
-                                if ml.lot_expired_date and not ml.lot_expired_date is None:
-                                    final_date = fields.Datetime.from_string(ml.lot_expired_date)
-                                    if production_lot_alert_days > 0:
-                                        alert_date = final_date.date() - datetime.timedelta(days=production_lot_alert_days)
+                            if ml.lot_name:
+                                if ml.product_id.tracking == 'lot' and not ml.lot_id:
+                                    # customize code start
+                                    params = self.env['ir.config_parameter'].sudo()
+                                    production_lot_alert_days = int(
+                                        params.get_param('inventory_extension.production_lot_alert_days'))
+                                    if ml.lot_expired_date and ml.lot_expired_date is not None:
+                                        final_date = fields.Datetime.from_string(ml.lot_expired_date)
+                                        if production_lot_alert_days > 0:
+                                            alert_date = final_date.date() - datetime.timedelta(
+                                                days=production_lot_alert_days)
+                                        else:
+                                            alert_date = final_date.date() - datetime.timedelta(days=3)
+                                        lot = self.env['stock.production.lot'].create(
+                                            {'name': ml.lot_name, 'use_date': ml.lot_expired_date,
+                                             'removal_date': ml.lot_expired_date,
+                                             'expiration_date': ml.lot_expired_date,
+                                             'alert_date': str(alert_date), 'product_id': ml.product_id.id})
+                                    # customize code end
                                     else:
-                                        alert_date = final_date.date() - datetime.timedelta(days=3)
-                                    lot = self.env['stock.production.lot'].create(
-                                        {'name': ml.lot_name, 'use_date': ml.lot_expired_date,
-                                         'removal_date': ml.lot_expired_date, 'expiration_date': ml.lot_expired_date,
-                                         'alert_date': str(alert_date), 'product_id': ml.product_id.id})
+                                        lot = self.env['stock.production.lot'].search([
+                                            ('company_id', '=', ml.company_id.id),
+                                            ('product_id', '=', ml.product_id.id),
+                                            ('name', '=', ml.lot_name),
+                                        ], limit=1)
+                                    if lot:
+                                        ml.lot_id = lot.id
+                                    else:
+                                        ml_ids_to_create_lot.add(ml.id)
                                 else:
-                                    lot = self.env['stock.production.lot'].create(
-                                        {'name': ml.lot_name,'product_id': ml.product_id.id})
-
-                                ml.write({'lot_id': lot.id})
+                                    ml_ids_to_create_lot.add(ml.id)
                         elif not picking_type_id.use_create_lots and not picking_type_id.use_existing_lots:
                             # If the user disabled both `use_create_lots` and `use_existing_lots`
                             # checkboxes on the picking type, he's allowed to enter tracked
@@ -152,33 +170,48 @@ class inventory_exe(models.Model):
                         # tracked products without a `lot_id`.
                         continue
 
-                    if not ml.lot_id:
-                        raise UserError(_('You need to supply a lot/serial number for %s.') % ml.product_id.name)
+                    if not ml.lot_id and ml.id not in ml_ids_to_create_lot:
+                        ml_ids_tracked_without_lot.add(ml.id)
             elif qty_done_float_compared < 0:
                 raise UserError(_('No negative quantities allowed'))
             else:
-                ml_to_delete |= ml
-        ml_to_delete.unlink()
+                ml_ids_to_delete.add(ml.id)
+
+        if ml_ids_tracked_without_lot:
+            mls_tracked_without_lot = self.env['stock.move.line'].browse(ml_ids_tracked_without_lot)
+            raise UserError(_('You need to supply a Lot/Serial Number for product: \n - ') +
+                            '\n - '.join(mls_tracked_without_lot.mapped('product_id.display_name')))
+        ml_to_create_lot = self.env['stock.move.line'].browse(ml_ids_to_create_lot)
+        ml_to_create_lot._create_and_assign_production_lot()
+
+        mls_to_delete = self.env['stock.move.line'].browse(ml_ids_to_delete)
+        mls_to_delete.unlink()
+
+        mls_todo = (self - mls_to_delete)
+        mls_todo._check_company()
 
         # Now, we can actually move the quant.
-        done_ml = self.env['stock.move.line']
-        for ml in self - ml_to_delete:
+        ml_ids_to_ignore = OrderedSet()
+        for ml in mls_todo:
             if ml.product_id.type == 'product':
-                Quant = self.env['stock.quant']
                 rounding = ml.product_uom_id.rounding
 
                 # if this move line is force assigned, unreserve elsewhere if needed
-                if not ml.location_id.should_bypass_reservation() and float_compare(ml.qty_done, ml.product_qty,
-                                                                                    precision_rounding=rounding) > 0:
-                    extra_qty = ml.qty_done - ml.product_qty
+                if not ml._should_bypass_reservation(ml.location_id) and float_compare(ml.qty_done, ml.product_uom_qty,
+                                                                                       precision_rounding=rounding) > 0:
+                    qty_done_product_uom = ml.product_uom_id._compute_quantity(ml.qty_done, ml.product_id.uom_id,
+                                                                               rounding_method='HALF-UP')
+                    extra_qty = qty_done_product_uom - ml.product_qty
+                    ml_to_ignore = self.env['stock.move.line'].browse(ml_ids_to_ignore)
                     ml._free_reservation(ml.product_id, ml.location_id, extra_qty, lot_id=ml.lot_id,
-                                         package_id=ml.package_id, owner_id=ml.owner_id, ml_to_ignore=done_ml)
+                                         package_id=ml.package_id, owner_id=ml.owner_id, ml_to_ignore=ml_to_ignore)
                 # unreserve what's been reserved
-                if not ml.location_id.should_bypass_reservation() and ml.product_id.type == 'product' and ml.product_qty:
+                if not ml._should_bypass_reservation(
+                        ml.location_id) and ml.product_id.type == 'product' and ml.product_qty:
                     try:
                         Quant._update_reserved_quantity(ml.product_id, ml.location_id, -ml.product_qty,
-                                                        lot_id=ml.lot_id, package_id=ml.package_id,
-                                                        owner_id=ml.owner_id, strict=True)
+                                                        lot_id=ml.lot_id,
+                                                        package_id=ml.package_id, owner_id=ml.owner_id, strict=True)
                     except UserError:
                         Quant._update_reserved_quantity(ml.product_id, ml.location_id, -ml.product_qty, lot_id=False,
                                                         package_id=ml.package_id, owner_id=ml.owner_id, strict=True)
@@ -203,16 +236,17 @@ class inventory_exe(models.Model):
                                                          owner_id=ml.owner_id)
                 Quant._update_available_quantity(ml.product_id, ml.location_dest_id, quantity, lot_id=ml.lot_id,
                                                  package_id=ml.result_package_id, owner_id=ml.owner_id, in_date=in_date)
-            done_ml |= ml
+            ml_ids_to_ignore.add(ml.id)
         # Reset the reserved quantity as we just moved it to the destination location.
-        (self - ml_to_delete).with_context(bypass_reservation_update=True).write(
-            {'product_uom_qty': 0.00, 'date': fields.Datetime.now(), })
+        mls_todo.with_context(bypass_reservation_update=True).write({
+            'product_uom_qty': 0.00,
+            'date': fields.Datetime.now(),
+        })
 
 
 class ProductionLotNameAppendDate(models.Model):
     _inherit = 'stock.production.lot'
 
-    #@api.multi
     def name_get(self):
         result = []
         if self.env.context is None:
