@@ -1,4 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-popup_receiving_list,popup.receiving.list,model_popup_receiving_list,,1,1,1,1
+popup.receiving.list,popup.receiving.list,model_popup_receiving_list,,1,1,1,1
 report_receiving_list_po,report.receiving.list.po,model_report_receiving_list_po,,1,1,1,1
 report_receiving_list_so,report.receiving.list.so,model_report_receiving_list_so,,1,1,1,1

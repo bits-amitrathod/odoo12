@@ -6,7 +6,7 @@ odoo.define('payment_aquirer_cstm.payment_aquirer_cstm', function(require) {
     var $compute_badge = $('#delivery_carrier input[name="delivery_type"][value=3] ~ .o_delivery_compute');
     var salesTeamMessage = $('textarea[name="sales_team_message"]');
 
-    /*$(document).ready(function() {
+  /*  $(document).ready(function() {
         ajax.jsonRpc("/checkHavingCarrierWithAccountNo", 'call', {
             }).then(function(data) {
                 var carrier_acc_no = data['carrier_acc_no']

@@ -17,24 +17,24 @@ class WebsiteBlog(odoo.addons.website_blog.controllers.main.WebsiteBlog):
         response = request.render("website_blog.blog_post_complete", payload)
         return response
 
-    # @http.route([
-    #     '/blog',
-    #     '/blog/page/<int:page>',
-    #     '/blog/tag/<string:tag>',
-    #     '/blog/tag/<string:tag>/page/<int:page>',
-    #     '''/blog/<model("blog.blog"):blog>''',
-    #     '''/blog/<model("blog.blog"):blog>/page/<int:page>''',
-    #     '''/blog/<model("blog.blog"):blog>/tag/<string:tag>''',
-    #     '''/blog/<model("blog.blog"):blog>/tag/<string:tag>/page/<int:page>''',
-    # ], type='http', auth="public", website=True, sitemap=True)
-    # def blog(self, blog=None, tag=None, page=1, search=None, **opt):
-    #     response = super(WebsiteBlog, self).blog(blog, tag, page, search, **opt)
-    #     payload = response.qcontext
-    #     # sep = '-'
-    #     # if tag:
-    #     #     tag_id = int(tag.split(sep, 1)[1])
-    #     #     tag_name=request.env['blog.tag'].search([('id', '=',tag_id)],limit=1)
-    #     #     payload['tag_name'] = tag_name
-    #     response = request.render("website_blog.blog_post_short", payload)
-    #     return response
+    @http.route([
+        '/blog',
+        '/blog/page/<int:page>',
+        '/blog/tag/<string:tag>',
+        '/blog/tag/<string:tag>/page/<int:page>',
+        '''/blog/<model("blog.blog"):blog>''',
+        '''/blog/<model("blog.blog"):blog>/page/<int:page>''',
+        '''/blog/<model("blog.blog"):blog>/tag/<string:tag>''',
+        '''/blog/<model("blog.blog"):blog>/tag/<string:tag>/page/<int:page>''',
+    ], type='http', auth="public", website=True, sitemap=True)
+    def blog(self, blog=None, tag=None, page=1, search=None, **opt):
+        response = super(WebsiteBlog, self).blog(blog, tag, page, search, **opt)
+        payload = response.qcontext
+        # sep = '-'
+        # if tag:
+        #     tag_id = int(tag.split(sep, 1)[1])
+        #     tag_name=request.env['blog.tag'].search([('id', '=',tag_id)],limit=1)
+        #     payload['tag_name'] = tag_name
+        response = request.render("website_blog.blog_post_short", payload)
+        return response
 

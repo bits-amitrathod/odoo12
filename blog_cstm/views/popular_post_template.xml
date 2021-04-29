@@ -121,7 +121,8 @@
 			</a>
 		</div>
 	</template>
-	<!--<template id="blog_post_list" name="Post list UI update" inherit_id="website_blog.latest_blogs">
+
+	<template id="blog_post_list" name="Post list UI update" inherit_id="website_blog.latest_blogs">
 		<xpath expr="//div[@id='wrap']" position="replace">
 			<div class="oe_structure" id="oe_structure_website_blog_latest_blogs_1"/>
 			<section class="resource-page content-lib video-block padding-60-y">
@@ -184,7 +185,7 @@
 			</section>
 			<div class="oe_structure" id="oe_structure_website_blog_latest_blogs_2"/>
 		</xpath>
-	</template>-->
+	</template>
 <!--
 	<template id="blog_post_short1" name="Blog Posts" customize_show="True" active="True" inherit_id="website_blog.blog_post_short">
 		<xpath expr="//div[hasclass('container')][1]" position="replace">

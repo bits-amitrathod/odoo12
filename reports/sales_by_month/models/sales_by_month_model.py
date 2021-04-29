@@ -62,29 +62,47 @@ class TrendingReportListView(models.Model):
                             product.month1 = product.month1 + (
                                         stock_move.sale_line_id.price_total )
                             product.month1_quantity =product.month1_quantity + int(stock_move_line.qty_done)
+                        else:
+                            product.month1 = product.month1
+                            product.month1_quantity = product.month1_quantity
                         if ((scheduled_date.month == (today - relativedelta(months=1)).month) and (
                                 scheduled_date.year == (today - relativedelta(months=1)).year)):
                             product.month2 = product.month2 + (
                                         stock_move.sale_line_id.price_total)
                             product.month2_quantity = product.month2_quantity + int(stock_move_line.qty_done)
+                        else:
+                            product.month2 = product.month2
+                            product.month2_quantity = product.month2_quantity
                         if ((scheduled_date.month == (today - relativedelta(months=2)).month) and (
                                 scheduled_date.year == (today - relativedelta(months=2)).year)):
                             product.month3 = product.month3 + (
                                         stock_move.sale_line_id.price_total)
                             product.month3_quantity = product.month3_quantity + int(stock_move_line.qty_done)
+                        else:
+                            product.month3 = product.month3
+                            product.month3_quantity = product.month3_quantity
                         if ((scheduled_date.month == (today - relativedelta(months=3)).month) and (
                                 scheduled_date.year == (today - relativedelta(months=3)).year)):
                             product.month4 = product.month4 + (
                                         stock_move.sale_line_id.price_total)
                             product.month4_quantity = product.month4_quantity + int(stock_move_line.qty_done)
+                        else:
+                            product.month4 = product.month4
+                            product.month4_quantity = product.month4_quantity
                         if ((scheduled_date.month == (today - relativedelta(months=4)).month) and (
                                 scheduled_date.year == (today - relativedelta(months=4)).year)):
                             product.month5 = product.month5 + (
                                         stock_move.sale_line_id.price_total )
                             product.month5_quantity = product.month5_quantity + int(stock_move_line.qty_done)
+                        else:
+                            product.month5 = product.month5
+                            product.month5_quantity = product.month5_quantity
                         if((scheduled_date.month == (today - relativedelta(months=5)).month) and (scheduled_date.year ==  (today - relativedelta(months=5)).year)):
                             product.month6 = product.month6 + (stock_move.sale_line_id.price_total)
                             product.month6_quantity = product.month6_quantity + int(stock_move_line.qty_done)
+                        else:
+                            product.month6 = product.month6
+                            product.month6_quantity = product.month6_quantity
 
     # @api.model
     def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):

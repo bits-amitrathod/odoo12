@@ -155,7 +155,7 @@ class TrendingReportListView(models.Model):
                 customer.trend_val = 'NO SALE'
 
 
-    @api.onchange('average_sale')
+    # @api.onchange('average_sale')
     def _get_average_value(self):
         if 'code' in self.env.context:
             code=self.env.context['code']
@@ -170,6 +170,9 @@ class TrendingReportListView(models.Model):
                     customer.average_sale=(customer.total_sale *30 / self.get_day_from_purchase(customer.id))
                 else:
                     customer.average_sale=customer.total_sale
+            else:
+                customer.average_sale = customer.total_sale
+
 
     def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
 
@@ -183,9 +186,10 @@ class TrendingReportListView(models.Model):
             View = View.with_context(base_model_name=result['base_model'])
 
         # Apply post processing, groups and modifiers etc...
-        # xarch, xfields = View.postprocess_and_fields(self._name, etree.fromstring(result['arch']), view_id)
-        # result['arch'] = xarch
-        # result['fields'] = xfields
+        xarch, xfields = View.postprocess_and_fields(etree.fromstring(result['arch']), model=self._name)
+        # postprocess_and_fields(self._name, etree.fromstring(result['arch']), view_id)
+        result['arch'] = xarch
+        result['fields'] = xfields
 
         # Add related action information if aksed
         if toolbar:

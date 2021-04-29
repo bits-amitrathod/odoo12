@@ -1,3 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_report_bd_account_closed_usr,report_bd_account_closed user,model_report_bd_account_closed,sales_team.group_sale_salesman_all_leads,1,1,0,0
-access_report_bd_account_closed_mgr,report_bd_account_closed manager,model_report_bd_account_closed,sales_team.group_sale_manager,1,1,1,1
+report_bd_account_closed,report.bd.account.closed,model_report_bd_account_closed,,1,1,1,1
+popup_bd_account_closed,popup.bd.account.closed,model_popup_bd_account_closed,,1,1,1,1
