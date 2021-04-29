@@ -10,7 +10,7 @@
         </record>-->
     </data>
     <data>
-        <record id="view_form_prioritization_customer" model="ir.ui.view">
+        <record id="view_form_prioritization_customer1" model="ir.ui.view">
             <field name="name">Prioritization customer form</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
