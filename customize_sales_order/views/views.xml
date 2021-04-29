@@ -20,7 +20,7 @@
       <record id="view_form_prioritization_customer_custom" model="ir.ui.view">
             <field name="name">prioritization.customer.form.inherit</field>
             <field name="model">res.partner</field>
-            <field name="inherit_id" ref="prioritization_engine.view_form_prioritization_customer" />
+            <field name="inherit_id" ref="prioritization_engine.view_form_prioritization_customer1" />
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='is_broker']" position="after">
                     <field name="charity"/>
