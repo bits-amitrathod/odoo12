@@ -172,7 +172,7 @@
             </field>
         </record>
 
-        <record id="view_form_import_template" model="ir.ui.view">
+        <record id="view_form_import_template_stockhawk" model="ir.ui.view">
             <field name="name">Import Template customer form</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>

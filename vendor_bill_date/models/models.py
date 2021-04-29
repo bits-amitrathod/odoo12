@@ -39,10 +39,10 @@ class VendorBillDate(models.Model):
 
 
     # Populates Due_Date at the time of Saving bill of purchase order in Purchase module when click on 'Save' button
-    def create(self, vals):
-        ret_invoice=super(VendorBillDate,self).create(vals)
-        ret_invoice.action_date_assign()
-        return ret_invoice
+    # def create(self, vals):
+    #     ret_invoice=super(VendorBillDate,self).create(vals)
+    #     ret_invoice.action_date_assign()
+    #     return ret_invoice
 
 
 class Memo(models.Model):
