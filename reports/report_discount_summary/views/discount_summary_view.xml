@@ -11,9 +11,9 @@
                         <group>
                             <field name="sale_order"/>
                             <field name="partner_id"/>
-                            <field name="compute_at_date" widget="radio"/>
-                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
-                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <field name="compute_at_date" widget="radio" value="0"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', '1')]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', '1')]}"/>
                         </group>
                     </group>
                     <footer>

@@ -17,7 +17,6 @@ class BrokerReportPopUp(models.TransientModel):
                            default=fields.Date.today())
 
     def open_table(self):
-
         action=self.env.ref('broker_report.action_report_broker_report').report_action([], data={'start_date' : self.start_date ,'end_date' : self.end_date })
         action.update({'target':'main'})
         return action
