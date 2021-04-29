@@ -18,7 +18,7 @@ class Contract(models.Model):
 
     name = fields.Char(string="Contract", required=True)
     code = fields.Char(string=" ", readonly="1", store=True)
-    color = fields.Integer(store=False)
+    #color = fields.Integer(store=False)
 
     @api.model
     def create(self, val):

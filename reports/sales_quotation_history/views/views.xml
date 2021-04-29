@@ -98,13 +98,13 @@
                             </h1>
                         </div>
                         <group>
-                            <group>
+                            <!--<group>
                                 <field name="product_id"/>
                                 <field name="qe_product_sku_ref"/>
                                 <field name="qe_customer_name"/>
                                 <field name="qe_quotations_per_code"   />
                                 <field name="qe_account_manager_cust_name" />
-                            </group>
+                            </group>-->
                             <group>
                                 <!--<field name="qty_delivered_converted" string="Required Quantity"/>-->
                                 <!--<field name="qty_delivered_converted" string="Delivered Quantity"/>-->
@@ -137,13 +137,22 @@
             </field>
         </record>
 
-        <act_window name="Export Sales Quotation History "
+        <!--<act_window name="Export Sales Quotation History "
                     res_model="salequotationexport.export"
                     src_model="sale.order.line"
                     view_mode="form"
                     target="new"
                     key2="client_action_multi"
-                    id="sale_quotation_export_act_window"/>
+                    id="sale_quotation_export_act_window"/>-->
+        <record id="sale_quotation_export_act_window" model="ir.actions.act_window">
+                <field name="name">Export Sales Quotation History</field>
+                <field name="type">ir.actions.act_window</field>
+                <field name="res_model" >salequotationexport.export</field>
+                <field name="binding_model_id" ref="sale.model_sale_order_line"/>
+                <field name="view_mode">form</field>
+                     <field name="target">new</field>
+
+            </record>
 
         <menuitem id="menu_sale_quotation_export_list_view_wizard" name="Sales Quotation History" action="action_sale_quotation_export_wizard"
            parent="sale.menu_sale_report" sequence="26"/>

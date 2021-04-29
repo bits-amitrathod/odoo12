@@ -126,58 +126,58 @@ class AccountClosedByBd(models.Model):
 
 # Export code
 
-class AccountClosedByBdExport(models.TransientModel):
-    _name = 'report.bd.account.closed.export'
-
-    start_date = fields.Date('Start Date', default=fields.date.today(), required=True,
-                             help="Choose a date to get the Revenue From Accounts Closed In 12 Months By BD at that End date")
-
-    business_development = fields.Many2one('res.users', string='Business Development', index=True)
-
-    delivery_start_date = fields.Date('Revenue Start Date')
-    delivery_end_date = fields.Date('Revenue End Date')
-
-    def download_excel_bd_account_closed(self):
-
-        s_date = self.string_to_date(str(self.start_date))
-        e_date = s_date - datetime.timedelta(days=365)
-        s_date = s_date + datetime.timedelta(days=1)
-
-        if self.delivery_end_date:
-            updated_delivery_end_date = self.string_to_date(str(self.delivery_end_date)) # + datetime.timedelta(days=1)
-
-        if self.business_development and self.delivery_start_date and self.delivery_end_date:
-            return {
-                'type': 'ir.actions.act_url',
-                'url': '/web/export/account_closed_by_bd_export/' + str(s_date) + '/' + str(e_date) + '/' +
-                            str(self.business_development.id) + '/' + str(self.delivery_start_date) + '/' +
-                            str(updated_delivery_end_date),
-                'target': 'new'
-            }
-        elif self.delivery_start_date and self.delivery_end_date:
-            return {
-                'type': 'ir.actions.act_url',
-                'url': '/web/export/account_closed_by_bd_export/' + str(s_date) + '/' + str(e_date) + '/' + str('none') +
-                       '/' + str(self.delivery_start_date) + '/' + str(updated_delivery_end_date),
-                'target': 'new'
-            }
-
-        elif self.business_development and self.business_development is not None:
-            return {
-                'type': 'ir.actions.act_url',
-                'url': '/web/export/account_closed_by_bd_export/' + str(s_date) + '/' + str(e_date) + '/' +
-                           str(self.business_development.id) + '/' + str('none') + '/' + str('none'),
-                'target': 'new'
-            }
-        else:
-            return {
-                'type': 'ir.actions.act_url',
-                'url': '/web/export/account_closed_by_bd_export/' + str(s_date) + '/' + str(e_date) + '/' + str('none')
-                       + '/' + str('none') + '/' + str('none'),
-                'target': 'new'
-            }
-
-    @staticmethod
-    def string_to_date(date_string):
-        return datetime.datetime.strptime(date_string, DEFAULT_SERVER_DATE_FORMAT).date()
+# class AccountClosedByBdExport(models.TransientModel):
+#     _name = 'report.bd.account.closed.export'
+#
+#     start_date = fields.Date('Start Date', default=fields.date.today(), required=True,
+#                              help="Choose a date to get the Revenue From Accounts Closed In 12 Months By BD at that End date")
+#
+#     business_development = fields.Many2one('res.users', string='Business Development', index=True)
+#
+#     delivery_start_date = fields.Date('Revenue Start Date')
+#     delivery_end_date = fields.Date('Revenue End Date')
+#
+#     def download_excel_bd_account_closed(self):
+#
+#         s_date = self.string_to_date(str(self.start_date))
+#         e_date = s_date - datetime.timedelta(days=365)
+#         s_date = s_date + datetime.timedelta(days=1)
+#
+#         if self.delivery_end_date:
+#             updated_delivery_end_date = self.string_to_date(str(self.delivery_end_date)) # + datetime.timedelta(days=1)
+#
+#         if self.business_development and self.delivery_start_date and self.delivery_end_date:
+#             return {
+#                 'type': 'ir.actions.act_url',
+#                 'url': '/web/export/account_closed_by_bd_export/' + str(s_date) + '/' + str(e_date) + '/' +
+#                             str(self.business_development.id) + '/' + str(self.delivery_start_date) + '/' +
+#                             str(updated_delivery_end_date),
+#                 'target': 'new'
+#             }
+#         elif self.delivery_start_date and self.delivery_end_date:
+#             return {
+#                 'type': 'ir.actions.act_url',
+#                 'url': '/web/export/account_closed_by_bd_export/' + str(s_date) + '/' + str(e_date) + '/' + str('none') +
+#                        '/' + str(self.delivery_start_date) + '/' + str(updated_delivery_end_date),
+#                 'target': 'new'
+#             }
+#
+#         elif self.business_development and self.business_development is not None:
+#             return {
+#                 'type': 'ir.actions.act_url',
+#                 'url': '/web/export/account_closed_by_bd_export/' + str(s_date) + '/' + str(e_date) + '/' +
+#                            str(self.business_development.id) + '/' + str('none') + '/' + str('none'),
+#                 'target': 'new'
+#             }
+#         else:
+#             return {
+#                 'type': 'ir.actions.act_url',
+#                 'url': '/web/export/account_closed_by_bd_export/' + str(s_date) + '/' + str(e_date) + '/' + str('none')
+#                        + '/' + str('none') + '/' + str('none'),
+#                 'target': 'new'
+#             }
+#
+#     @staticmethod
+#     def string_to_date(date_string):
+#         return datetime.datetime.strptime(date_string, DEFAULT_SERVER_DATE_FORMAT).date()
 
