@@ -76,7 +76,7 @@ function dataFilteredQuery(q) {
 
 var DataImport = AbstractAction.extend({
     hasControlPanel: true,
-    contentTemplate: 'ImportTemplateView',
+    contentTemplate: 'ImportTemplateViewStockhawk',
     opts: [
         {name: 'encoding', label: _lt("Encoding:"), value: ''},
         {name: 'separator', label: _lt("Separator:"), value: ''},
@@ -259,7 +259,7 @@ var DataImport = AbstractAction.extend({
     },
     renderButtons: function() {
         var self = this;
-        this.$buttons = $(QWeb.render("ImportTemplateViewInner.buttons", this));
+        this.$buttons = $(QWeb.render("ImportTemplateViewInnerStockhawk.buttons", this));
         this.$buttons.filter('.o_import_validate').on('click', this.validate.bind(this));
         this.$buttons.filter('.o_import_import').on('click', this.import.bind(this));
         this.$buttons.filter('.o_import_file_reload').on('click', this.loaded_file.bind(this));
@@ -457,7 +457,7 @@ var DataImport = AbstractAction.extend({
         this.$form.find('.oe_import_box, .oe_import_with_file').removeClass('d-none');
         this.$form.find('.o_view_nocontent').addClass('d-none');
         this.$('.oe_import_error_report').html(
-                QWeb.render('ImportTemplateViewInner.preview.error', result));
+                QWeb.render('ImportTemplateViewInnerStockhawk.preview.error', result));
     },
     onpreview_success: function (event, from, to, result) {
         var self = this;
@@ -470,7 +470,7 @@ var DataImport = AbstractAction.extend({
         this.$form.find('.o_view_nocontent').addClass('d-none');
         this.$form.addClass('oe_import_preview');
         this.$('input.oe_import_advanced_mode').prop('checked', result.advanced_mode);
-        this.$('.oe_import_grid').html(QWeb.render('ImportTemplateViewInner.preview', result));
+        this.$('.oe_import_grid').html(QWeb.render('ImportTemplateViewInnerStockhawk.preview', result));
 
         this.$('.o_import_batch_alert').toggleClass('d-none', !result.batch);
 
@@ -524,7 +524,7 @@ var DataImport = AbstractAction.extend({
             var $thing = $();
             var bind = function (d) {};
             if (config.isDebug()) {
-                $thing = $(QWeb.render('ImportTemplateViewInner.create_record_option')).insertAfter(v).hide();
+                $thing = $(QWeb.render('ImportTemplateViewInnerStockhawk.create_record_option')).insertAfter(v).hide();
                 bind = function (data) {
                     switch (data.type) {
                     case 'many2one': case 'many2many':
@@ -916,7 +916,7 @@ var DataImport = AbstractAction.extend({
 
         this.$form.addClass('oe_import_error');
         this.$('.oe_import_error_report').html(
-            QWeb.render('ImportTemplateViewInner.error', {
+            QWeb.render('ImportTemplateViewInnerStockhawk.error', {
                 errors: messagesSorted,
                 at: function (rows) {
                     var from = rows.from + offset;
