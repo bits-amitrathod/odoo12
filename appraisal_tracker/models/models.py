@@ -34,6 +34,7 @@ class apprisal_tracker_vendor(models.Model):
     def _value_broker_margin(self):
 
             for order in self:
+                order.broker_margin=None
 
                 order.status_ven_app = order.status_ven
                 order.vendor_cust_id_app = order.partner_id.saleforce_ac
