@@ -41,6 +41,9 @@
                                         Months Ago First Order
                                     </th>
                                     <th style="border: 1px solid black;text-align:  center !important;width: 8%;">
+                                        Invoice Status
+                                    </th>
+                                    <th style="border: 1px solid black;text-align:  center !important;width: 8%;">
                                         Status
                                     </th>
                                 </tr>
@@ -70,6 +73,9 @@
                                     </td>
                                     <td style="border: 1px solid black;text-align: center;">
                                         <span t-esc="account.invoice_status"/>
+                                    </td>
+                                    <td style="border: 1px solid black;text-align: center;">
+                                        <span t-esc="account.invoice_state"/>
                                     </td>
                                 </tr>
                             </tbody>

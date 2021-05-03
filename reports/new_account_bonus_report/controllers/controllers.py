@@ -90,7 +90,9 @@ class ExportNewAccountBonusReport(http.Controller):
                         rps.name                            AS customer_business_development,
                         rpss.name                           AS customer_key_account,
                         ai.date_invoice                     AS date_invoice, 
-                        CASE WHEN so.invoice_status = 'invoiced' then 'Fully Invoiced' END AS invoice_status, 
+                        CASE WHEN so.invoice_status = 'invoiced' then 'Fully Invoiced' END AS invoice_status,
+                        CASE WHEN ai.state = 'open' then 'Open' 
+                             WHEN ai.state = 'paid' then 'Paid' END AS invoice_state,
                         ai.amount_total                     AS amount_total, 
                         X.months                            AS months,
                         ai.currency_id                      AS currency_id,
@@ -107,7 +109,7 @@ class ExportNewAccountBonusReport(http.Controller):
                         Having MIN(aii.date_invoice) > '""" + str(end_date) + """ ') X
                         ON so.partner_id = X.partner_id
                     INNER JOIN 
-                        public.account_invoice ai ON so.name = ai.origin AND ai.state = 'paid'
+                        public.account_invoice ai ON so.name = ai.origin AND ai.state in ('open', 'paid')
                     INNER JOIN 
                         public.res_partner rp ON so.partner_id = rp.id
                     INNER JOIN 
@@ -155,11 +157,12 @@ class ExportNewAccountBonusReport(http.Controller):
                             line['date_invoice'],
                             line['amount_total'],
                             line['months'],
-                            line['invoice_status']])
+                            line['invoice_status'],
+                            line['invoice_state']])
 
         res = request.make_response(
             self.from_data(["Customer Name", "#SO - Business Development", "Customer - Business Development", "#SO - Key Account", "Customer - Key Account", "Sale Order#", "Invoice Date", "Total",
-                            "Months Ago First Order", "Status"],
+                            "Months Ago First Order", "Invoice Status", "Status"],
                            records),
             headers=[('Content-Disposition', content_disposition('new_account_by_month_by_bd' + '.xls')),
                      ('Content-Type', 'application/vnd.ms-excel')],
