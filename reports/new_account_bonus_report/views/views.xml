@@ -20,6 +20,7 @@
                     <field name="amount_total" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                     <field name="months"/>
                     <field name="invoice_status"/>
+                    <field name="invoice_state"/>
                 </tree>
               </field>
         </record>
@@ -47,6 +48,7 @@
                                 <field name="amount_total" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                                 <field name="months"/>
                                 <field name="invoice_status"/>
+                                <field name="invoice_state"/>
                                 <field name="date_of_first_order"/>
                             </group>
                       </group>
@@ -133,10 +135,12 @@
                     <field name="customer_business_development" invisible="1"/>
                     <field name="key_account"/>
                     <field name="customer_key_account" invisible="1"/>
+                    <field name="invoice_state"/>
                     <group expand="0" string="Group By">
                         <filter name="customer" string="Customer Name" domain="[]" context="{'group_by':'customer'}"/>
                         <filter name="customer_business_development" string="Business Development" domain="[]" context="{'group_by':'customer_business_development'}"/>
                         <filter name="customer_key_account" string="Key Account" domain="[]" context="{'group_by':'customer_key_account'}"/>
+                        <filter name="invoice_state" string="Status" domain="[]" context="{'group_by':'invoice_state'}"/>
                     </group>
                 </search>
             </field>
