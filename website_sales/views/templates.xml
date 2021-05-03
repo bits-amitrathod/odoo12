@@ -350,9 +350,7 @@
                             <td>
                                 <strong>Shipping Method:</strong>
                                 ${object.carrier_id.name}
-                                % if object.carrier_id.fixed_price == 0.0:
-                                    (Free)
-                                % else:
+                                % if object.carrier_id.fixed_price > 0.0:
                                     (${format_amount(object.carrier_id.fixed_price, object.currency_id)})
                                 % endif
                             </td>
