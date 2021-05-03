@@ -471,12 +471,13 @@ class PrioritizationEngine(models.TransientModel):
                         self.update_customer_request_status(allocated_product['customer_request_id'], 'Partial',
                                                             ' Allocated Partial order product.')
 
-                _logger.info('**********Before _send_order_confirmation_mail() ************  :  %r', sale_order.state)
-                sale_order.force_quotation_send()
                 _logger.info('**********Before action_confirm************ : %r', sale_order.state)
                 sale_order.action_confirm()
+                sale_order.write({'state': 'draft'})
+                _logger.info('**********Before _send_order_confirmation_mail() ************  :  %r', sale_order.state)
+                sale_order.force_quotation_send()
                 _logger.info('sale order name  : %r  sale order state : %r', sale_order.name, sale_order.state)
-                sale_order.write({'state': 'sent'}) # removed from odoo 14 'confirmation_date': None
+                # sale_order.write({'state': 'sent'}) # removed from odoo 14 'confirmation_date': None
                 _logger.info('changed sales order state : %r', sale_order.state)
                 self.env.cr.commit()
             except Exception as exc:
