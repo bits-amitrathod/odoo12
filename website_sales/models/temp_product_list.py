@@ -136,4 +136,4 @@ class TempProductList(models.Model):
     def get_product_list(self,partner_id):
         product_list_sorted = sorted(self.product_list[self.get_parent(partner_id)].items(), key=lambda x: (x[1]['product_brand_name'],
                                                                                x[1]['product_sku']))
-        return self.product_list, product_list_sorted
+        return self.product_list[self.get_parent(partner_id)], product_list_sorted
