@@ -22,7 +22,7 @@ class TempProductList(models.Model):
             #parent_partner_id = partner.id
             partner_list = []
             #while not partner.is_parent:
-            parent_partner_id = partner.id if partner.is_parent else partner.parent_id
+            parent_partner_id = partner.id if partner.is_parent else partner.parent_id.id
             partner_list.append(parent_partner_id)
             self.env.cr.execute("select id from res_partner where parent_id =" + str(parent_partner_id).replace(",)", ")"))
             chil_list = self.env.cr.dictfetchall()
