@@ -61,7 +61,7 @@ class TempProductList(models.Model):
             where = """
                     where 
                     sale_order.partner_id in  
-                """ + str(partner_list)
+                """ + str(tuple(partner_list))
 
             groupby = """ 
 
