@@ -45,18 +45,13 @@ class TempProductList(models.Model):
                         sale_order_line
                         ON(
                         sale_order.id = sale_order_line.order_id and sale_order.partner_id in """+str(tuple(partner_list)).replace(",)", ")")+""")
-                        INNER JOIN
-                        product_product
-                        ON
-                        (
-                        sale_order_line.product_id = product_product.id)
-                        INNER JOIN
-                        product_template
-                        ON
-                        (
-                        product_product.product_tmpl_id = product_template.id  and  product_template.actual_quantity > 0 and 
-                        product_template.sale_ok = True)
-
+                        INNER JOIN (select product_product.id , product_template.product_brand_id 
+                                from product_product
+                                INNER JOIN product_template
+                                ON(product_product.product_tmpl_id = product_template.id  and
+                                     product_template.actual_quantity > 0 and
+                                     product_template.sale_ok = True)) as a              
+                        ON(sale_order_line.product_id = a.id)
                         """
             groupby = """ 
 
