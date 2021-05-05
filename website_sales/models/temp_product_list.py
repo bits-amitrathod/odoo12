@@ -44,7 +44,7 @@ class TempProductList(models.Model):
                         INNER JOIN
                         sale_order_line
                         ON(
-                        sale_order.id = sale_order_line.order_id)
+                        sale_order.id = sale_order_line.order_id and sale_order.partner_id in """+str(tuple(partner_list)).replace(",)", ")")+""")
                         INNER JOIN
                         product_product
                         ON
@@ -58,11 +58,6 @@ class TempProductList(models.Model):
                         product_template.sale_ok = True)
 
                         """
-            where = """
-                    where 
-                    sale_order.partner_id in  
-                """ + str(tuple(partner_list)).replace(",)", ")")
-
             groupby = """ 
 
                      group by partn_name, public.sale_order.partner_id,
@@ -70,7 +65,7 @@ class TempProductList(models.Model):
                             public.product_template.product_brand_id
                             """
 
-            sql_query = sql_query + where + groupby
+            sql_query = sql_query + groupby
 
             self.env.cr.execute(sql_query)
             query_results = self.env.cr.dictfetchall()
