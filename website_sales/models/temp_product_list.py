@@ -27,7 +27,7 @@ class TempProductList(models.Model):
             #print(self.env['quotation.product.list'].search([('partner', '=', parent_partner_id)]))
             if self.product_list.get(parent_partner_id) and self.product_list.get(parent_partner_id) is not None:
                 print(self.product_list.get(parent_partner_id))
-                self.product_list.get(parent_partner_id).unlink()
+                self.product_list.pop(parent_partner_id)
             self.env.cr.execute("select id from res_partner where parent_id =" + str(parent_partner_id).replace(",)", ")"))
             chil_list = self.env.cr.dictfetchall()
             for i in chil_list:
