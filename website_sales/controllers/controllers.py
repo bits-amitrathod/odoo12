@@ -234,8 +234,8 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
 
     @http.route(['/add/product/cart'], type='http', auth="public", methods=['POST'], website=True, csrf=False)
     def add_product_in_cart(self):
-        product_list, product_list_sorted = request.env['quotation.product.list'].sudo().get_product_list()
         user = request.env['res.users'].search([('id', '=', request.session.uid)])
+        product_list, product_list_sorted = request.env['quotation.product.list'].sudo().get_product_list(user.partner_id.id)
         for product_id in product_list:
             if product_list.get(product_id)['quantity'] > 0 and product_list.get(product_id)['select']:
                 self.cart_update_custom(product_list.get(product_id)['product'].id,
