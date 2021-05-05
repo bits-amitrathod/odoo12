@@ -31,18 +31,17 @@ class TempProductList(models.Model):
                 partner_list.append(i['id'])
             sql_query = """
                         SELECT  DISTINCT on (partn_name)
-                        CONCAT(sale_order.partner_id, product_product.id) as partn_name,
+                        CONCAT(sale_order.partner_id, a.id) as partn_name,
                         ROW_NUMBER () OVER (ORDER BY sale_order.partner_id) as id,
                         sale_order.partner_id AS partner_id,
-                        product_product.id AS product_id,
-                        product_template.product_brand_id AS product_brand_id,      
+                        a.id AS product_id,
+                        a.product_brand_id AS product_brand_id,      
                         null as min_expiration_date,
                         null as max_expiration_date,                  
                         1 as quantity                                     
                         FROM
                         sale_order
-                        INNER JOIN
-                        sale_order_line
+                        INNER JOIN sale_order_line
                         ON(
                         sale_order.id = sale_order_line.order_id and sale_order.partner_id in """+str(tuple(partner_list)).replace(",)", ")")+""")
                         INNER JOIN (select product_product.id , product_template.product_brand_id 
@@ -56,8 +55,8 @@ class TempProductList(models.Model):
             groupby = """ 
 
                      group by partn_name, public.sale_order.partner_id,
-                            public.product_product.id,
-                            public.product_template.product_brand_id
+                           a.id,
+                           a.product_brand_id
                             """
 
             sql_query = sql_query + groupby
