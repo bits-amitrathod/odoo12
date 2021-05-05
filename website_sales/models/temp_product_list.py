@@ -19,12 +19,11 @@ class TempProductList(models.Model):
         partner_id = self.env.context.get('quote_my_report_partner_id')
         if partner_id and partner_id is not None:
             partner = self.env['res.partner'].search([('id', '=', partner_id), ])
-            parent_partner_id = partner.id
+            #parent_partner_id = partner.id
             partner_list = []
-            while not partner.is_parent:
-                parent_partner_id = partner.id if partner.is_parent else partner.parent_id
+            #while not partner.is_parent:
+            parent_partner_id = partner.id if partner.is_parent else partner.parent_id
             partner_list.append(parent_partner_id)
-
             self.env.cr.execute("select id from res_partner where parent_id =" + str(parent_partner_id))
             chil_list = self.env.cr.dictfetchall()
             for i in chil_list:
