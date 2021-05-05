@@ -19,13 +19,14 @@ class TempProductList(models.Model):
         partner_id = self.env.context.get('quote_my_report_partner_id')
         if partner_id and partner_id is not None:
             partner = self.env['res.partner'].search([('id', '=', partner_id), ])
-            print(self.env['quotation.product.list'].search([('partner', '=', partner)]))
-            self.env['quotation.product.list'].search([('partner', '=', partner)]).unlink()
             #parent_partner_id = partner.id
             partner_list = []
             #while not partner.is_parent:
             parent_partner_id = partner.id if partner.is_parent else partner.parent_id.id
             partner_list.append(parent_partner_id)
+            print(self.env['quotation.product.list'].search([('partner', '=', parent_partner_id)]))
+            self.env['quotation.product.list'].search([('partner', '=', parent_partner_id)]).unlink()
+            print(self.env['quotation.product.list'].search([('partner', '=', parent_partner_id)]))
             self.env.cr.execute("select id from res_partner where parent_id =" + str(parent_partner_id).replace(",)", ")"))
             chil_list = self.env.cr.dictfetchall()
             for i in chil_list:
@@ -64,7 +65,7 @@ class TempProductList(models.Model):
 
             self.env.cr.execute(sql_query)
             query_results = self.env.cr.dictfetchall()
-            partner = self.env['res.partner'].search([('id', '=', partner_id)])
+            partner = self.env['res.partner'].search([('id', '=', parent_partner_id)])
             for query_result in query_results:
                 product = self.env['product.product'].search([('id', '=', query_result['product_id'])])
                 product_brand = self.env['product.brand'].search([('id', '=', query_result['product_brand_id'])])
