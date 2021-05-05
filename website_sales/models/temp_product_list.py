@@ -20,7 +20,7 @@ class TempProductList(models.Model):
         if partner_id and partner_id is not None:
             partner = self.env['res.partner'].search([('id', '=', partner_id), ])
             parent_partner_id = partner.id
-            partner_list = ()
+            partner_list = []
             while not partner.is_parent:
                 parent_partner_id = partner.id if partner.is_parent else partner.parent_id
             partner_list.append(parent_partner_id)
@@ -60,10 +60,10 @@ class TempProductList(models.Model):
                         """
             where = """
                     where 
-                    sale_order.partner_id in ( 
+                    sale_order.partner_id in  
                 """ + str(partner_list)
 
-            groupby = """ )
+            groupby = """ 
 
                      group by partn_name, public.sale_order.partner_id,
                             public.product_product.id,
