@@ -28,7 +28,7 @@ class TempProductList(models.Model):
             self.env.cr.execute("select id from res_partner where parent_id =" + str(parent_partner_id))
             chil_list = self.env.cr.dictfetchall()
             for i in chil_list:
-                partner_list.append(i)
+                partner_list.append(i['id'])
             sql_query = """
                         SELECT  DISTINCT on (partn_name)
                         CONCAT(sale_order.partner_id, product_product.id) as partn_name,
