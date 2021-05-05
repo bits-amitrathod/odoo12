@@ -218,7 +218,7 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
             if user and user.partner_id and user.partner_id.id == partner_id:
                 context = {'quote_my_report_partner_id': partner_id}
                 request.env['quotation.product.list'].with_context(context).sudo().delete_and_create()
-                product_list, product_sorted_list = request.env['quotation.product.list'].sudo().get_product_list()
+                product_list, product_sorted_list = request.env['quotation.product.list'].sudo().get_product_list(partner_id)
                 return http.request.render('website_sales.quote_my_report', {'product_list': product_list,
                                                                             'product_sorted_list': product_sorted_list})
             else:

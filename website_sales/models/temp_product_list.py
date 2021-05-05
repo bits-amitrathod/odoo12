@@ -14,15 +14,20 @@ class TempProductList(models.Model):
     def init(self):
         self.init_table()
 
+    def get_parent(self,partner_id):
+        partner = self.env['res.partner'].search([('id', '=', partner_id), ])
+        parent_partner_id = partner.id if partner.is_parent else partner.parent_id.id
+        return parent_partner_id
+
     def init_table(self):
         #self.product_list.clear()
         partner_id = self.env.context.get('quote_my_report_partner_id')
         if partner_id and partner_id is not None:
-            partner = self.env['res.partner'].search([('id', '=', partner_id), ])
+            #partner = self.env['res.partner'].search([('id', '=', partner_id), ])
             #parent_partner_id = partner.id
             partner_list = []
             #while not partner.is_parent:
-            parent_partner_id = partner.id if partner.is_parent else partner.parent_id.id
+            parent_partner_id = self.get_parent(partner_id)
             partner_list.append(parent_partner_id)
             #print(self.env['quotation.product.list'].search([('partner', '=', parent_partner_id)]))
             if self.product_list.get(parent_partner_id) and self.product_list.get(parent_partner_id) is not None:
@@ -128,7 +133,7 @@ class TempProductList(models.Model):
             for product_id in self.product_list:
                 self.product_list.get(product_id)['select'] = select
 
-    def get_product_list(self):
-        product_list_sorted = sorted(self.product_list.items(), key=lambda x: (x[1]['product_brand_name'],
+    def get_product_list(self,partner_id):
+        product_list_sorted = sorted(self.product_list[self.get_parent(partner_id)].items(), key=lambda x: (x[1]['product_brand_name'],
                                                                                x[1]['product_sku']))
         return self.product_list, product_list_sorted
