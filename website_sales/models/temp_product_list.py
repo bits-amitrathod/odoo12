@@ -17,6 +17,16 @@ class TempProductList(models.Model):
     def init_table(self):
         self.product_list.clear()
         partner_id = self.env.context.get('quote_my_report_partner_id')
+        parent_partner_id = partner_id
+        partner_list = []
+        while not parent_partner_id.is_parent:
+            parent_partner_id = partner_id if partner_id.is_parent else partner_id.parent_id
+        partner_list.append(parent_partner_id.id)
+
+        self.env.cr.execute("select id from res_partner where parent_id =" + str(parent_partner_id.id))
+        chil_list = self.env.cr.dictfetchall()
+        for i in chil_list:
+            partner_list.append(i)
         if partner_id and partner_id is not None:
             sql_query = """
                         SELECT  DISTINCT on (partn_name)
@@ -49,10 +59,10 @@ class TempProductList(models.Model):
                         """
             where = """
                     where 
-                    sale_order.partner_id = 
-                """ + str(partner_id)
+                    sale_order.partner_id in ( 
+                """ + str(partner_list)
 
-            groupby = """
+            groupby = """ )
 
                      group by partn_name, public.sale_order.partner_id,
                             public.product_product.id,
