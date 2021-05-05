@@ -15,10 +15,12 @@ class TempProductList(models.Model):
         self.init_table()
 
     def init_table(self):
-        self.product_list.clear()
+        #self.product_list.clear()
         partner_id = self.env.context.get('quote_my_report_partner_id')
         if partner_id and partner_id is not None:
             partner = self.env['res.partner'].search([('id', '=', partner_id), ])
+            print(self.env['quotation.product.list'].search([('partner', '=', partner)]))
+            self.env['quotation.product.list'].search([('partner', '=', partner)]).unlink()
             #parent_partner_id = partner.id
             partner_list = []
             #while not partner.is_parent:
