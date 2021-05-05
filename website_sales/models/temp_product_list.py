@@ -25,11 +25,9 @@ class TempProductList(models.Model):
             parent_partner_id = partner.id if partner.is_parent else partner.parent_id.id
             partner_list.append(parent_partner_id)
             #print(self.env['quotation.product.list'].search([('partner', '=', parent_partner_id)]))
-            print(self.product_list.get(parent_partner_id))
-            self.product_list.get(parent_partner_id).unlink()
-            print(self.product_list.get(parent_partner_id))
-            #self.env['quotation.product.list'].search([('partner', '=', parent_partner_id)]).unlink()
-            #print(self.env['quotation.product.list'].search([('partner', '=', parent_partner_id)]))
+            if self.product_list.get(parent_partner_id) and self.product_list.get(parent_partner_id) is not None:
+                print(self.product_list.get(parent_partner_id))
+                self.product_list.get(parent_partner_id).unlink()
             self.env.cr.execute("select id from res_partner where parent_id =" + str(parent_partner_id).replace(",)", ")"))
             chil_list = self.env.cr.dictfetchall()
             for i in chil_list:
