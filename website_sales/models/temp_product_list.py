@@ -111,7 +111,8 @@ class TempProductList(models.Model):
                                 'select': False}
 
                 product_data = {product.id: product_dict}
-                self.product_list.update(product_data)
+                customer_data={partner.id:product_data}
+                self.product_list.update(customer_data)
 
     @api.model_cr
     def delete_and_create(self):
