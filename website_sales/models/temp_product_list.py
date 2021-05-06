@@ -32,7 +32,7 @@ class TempProductList(models.Model):
             partner_list.append(parent_partner_id)
             #print(self.env['quotation.product.list'].search([('partner', '=', parent_partner_id)]))
             if self.product_list.get(parent_partner_id) and self.product_list.get(parent_partner_id) is not None:
-                print(self.product_list.get(parent_partner_id))
+                # print(self.product_list.get(parent_partner_id))
                 self.product_list.pop(parent_partner_id)
             self.env.cr.execute("select id from res_partner where parent_id =" + str(parent_partner_id).replace(",)", ")"))
             chil_list = self.env.cr.dictfetchall()
@@ -121,17 +121,13 @@ class TempProductList(models.Model):
                 temp_list.update(product_data)
             customer_data={partner.id:temp_list}
             self.product_list.update(customer_data)
-            print(self.product_list)
 
     @api.model_cr
     def delete_and_create(self):
         self.init_table()
 
     def update_quantity(self, partner_id, product_id, set_qty, select):
-        print('In update_quantity')
-        print(partner_id)
         parent_partner_id = self.get_parent(partner_id)
-        print(parent_partner_id)
         partner_product_list = self.product_list.get(parent_partner_id)
 
         if product_id is not None and product_id in partner_product_list.keys() and set_qty is not None:
