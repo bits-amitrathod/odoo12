@@ -21,6 +21,7 @@ class TempProductList(models.Model):
 
     def init_table(self):
         #self.product_list.clear()
+        temp_list = []
         partner_id = self.env.context.get('quote_my_report_partner_id')
         if partner_id and partner_id is not None:
             #partner = self.env['res.partner'].search([('id', '=', partner_id), ])
@@ -117,8 +118,9 @@ class TempProductList(models.Model):
                                 'select': False}
 
                 product_data = {product.id: product_dict}
-                customer_data={partner.id:product_data}
-                self.product_list.update(customer_data)
+                temp_list.append(product_data)
+            customer_data={partner.id:temp_list}
+            self.product_list.update(customer_data)
 
     @api.model_cr
     def delete_and_create(self):
