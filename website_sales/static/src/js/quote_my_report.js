@@ -46,6 +46,7 @@ odoo.define('website_sales.quote_my_report_cart', function (require) {
             var product_id = parseInt($input[0]['attributes']['data-product-id']['value']);
             var available_qty = parseInt($input[0]['attributes']['data-available-qty']['value']);
             var partn_name_id = $input[0]['attributes']['data-partn-name-id']['value'];
+            var partner_id = parseInt($input[0]['attributes']['data-partner-id']['value']);
             var new_qty = parseInt($input.val());
             console.log(partn_name_id);
             var ele1 = $link.parent().find("#allow_qty_plus_"+partn_name_id);
@@ -56,6 +57,7 @@ odoo.define('website_sales.quote_my_report_cart', function (require) {
             }
 
             ajax.jsonRpc("/shop/quote_my_report/update_json", 'call', {
+                        'partner_id': partner_id,
                         'product_id': product_id,
                         'new_qty': new_qty,
                     }).then(function (data) {
@@ -70,10 +72,12 @@ odoo.define('website_sales.quote_my_report_cart', function (require) {
             var $input = $link.parent().find("input");
             if ('data-partn-name-id' in $input[0]['attributes']) {
                 var partn_name_id = parseInt($input[0]['attributes']['data-partn-name-id']['value']);
+                console.log(parseInt($input[0]['attributes']['data-partner-id']['value']));
+                var partner_id = parseInt($input[0]['attributes']['data-partner-id']['value']);
                 var available_qty = parseInt($input[0]['attributes']['data-available-qty']['value']);
                 var new_qty = parseInt($('#input_qty_'+partn_name_id).val());
                 var val = $input.prop('checked');
-
+                console.log(partner_id);
                 if(val === true){
                     $('#row_checked_'+partn_name_id).addClass('row-checked')
                     if (new_qty >= available_qty) {
@@ -106,6 +110,7 @@ odoo.define('website_sales.quote_my_report_cart', function (require) {
                 }
 
                 ajax.jsonRpc("/shop/quote_my_report/update_json", 'call', {
+                            'partner_id': partner_id,
                             'product_id': product_id,
                             'select': val
                         }).then(function (data) {

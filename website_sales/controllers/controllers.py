@@ -194,9 +194,14 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         return responce
 
     @http.route(['/shop/quote_my_report/update_json'], type='json', auth="public", methods=['POST'], website=True)
-    def update_quote_my_report_json(self, product_id=None, new_qty=None, select=None):
+    def update_quote_my_report_json(self, partner_id=None, product_id=None, new_qty=None, select=None):
         count = 1
-        request.env['quotation.product.list'].sudo().update_quantity(product_id, new_qty, select)
+        if partner_id is None:
+            if request.session.uid:
+                user = request.env['res.users'].search([('id', '=', request.session.uid)])
+                if user and user.partner_id and user.partner_id.id:
+                    partner_id = user.partner_id.id
+        request.env['quotation.product.list'].sudo().update_quantity(partner_id, product_id, new_qty, select)
         return count
 
     @http.route(['/shop/my_in_stock_report'], type='http', auth="public", website=True)
@@ -211,13 +216,14 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         _logger.info('In quote my report')
         partner = request.env['res.partner'].sudo().search([('id', '=', partner_id)])
         _logger.info(partner)
+        request.session['my_in_stock_report_sales_channel'] = True
         if request.session.uid:
             _logger.info('Login successfully')
             user = request.env['res.users'].search([('id', '=', request.session.uid)])
             if user and user.partner_id and user.partner_id.id == partner_id:
                 context = {'quote_my_report_partner_id': partner_id}
                 request.env['quotation.product.list'].with_context(context).sudo().delete_and_create()
-                product_list, product_sorted_list = request.env['quotation.product.list'].sudo().get_product_list()
+                product_list, product_sorted_list = request.env['quotation.product.list'].sudo().get_product_list(partner_id)
                 return http.request.render('website_sales.quote_my_report', {'product_list': product_list,
                                                                             'product_sorted_list': product_sorted_list})
             else:
@@ -233,8 +239,8 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
 
     @http.route(['/add/product/cart'], type='http', auth="public", methods=['POST'], website=True, csrf=False)
     def add_product_in_cart(self):
-        product_list, product_list_sorted = request.env['quotation.product.list'].sudo().get_product_list()
         user = request.env['res.users'].search([('id', '=', request.session.uid)])
+        product_list, product_list_sorted = request.env['quotation.product.list'].sudo().get_product_list(user.partner_id.id)
         for product_id in product_list:
             if product_list.get(product_id)['quantity'] > 0 and product_list.get(product_id)['select']:
                 self.cart_update_custom(product_list.get(product_id)['product'].id,
@@ -270,6 +276,40 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
             product_custom_attribute_values=product_custom_attribute_values,
             no_variant_attribute_values=no_variant_attribute_values
         )
+
+    @http.route(['/shop/cart/update'], type='http', auth="public", methods=['POST'], website=True, csrf=False)
+    def cart_update(self, product_id, add_qty=1, set_qty=0, **kw):
+        """This route is called when adding a product to cart (no options)."""
+        sale_order = request.website.sale_get_order(force_create=True)
+        if sale_order.state != 'draft':
+            request.session['sale_order_id'] = None
+            sale_order = request.website.sale_get_order(force_create=True)
+
+        product_custom_attribute_values = None
+        if kw.get('product_custom_attribute_values'):
+            product_custom_attribute_values = json.loads(kw.get('product_custom_attribute_values'))
+
+        no_variant_attribute_values = None
+        if kw.get('no_variant_attribute_values'):
+            no_variant_attribute_values = json.loads(kw.get('no_variant_attribute_values'))
+
+        if 'my_in_stock_report_sales_channel' in request.session and \
+                request.session['my_in_stock_report_sales_channel'] and \
+                sale_order.team_id.team_type != "my_in_stock_report":
+            crm_team = request.env['crm.team'].sudo().search([('team_type', '=', 'my_in_stock_report')])
+            msg = "Channel Type : " + str(sale_order.team_id.name) + " -> " + str(crm_team.name)
+            sale_order.sudo().message_post(body=msg)
+            sale_order.team_id = crm_team.id
+            request.session.pop('my_in_stock_report_sales_channel')
+
+        sale_order._cart_update(
+            product_id=int(product_id),
+            add_qty=add_qty,
+            set_qty=set_qty,
+            product_custom_attribute_values=product_custom_attribute_values,
+            no_variant_attribute_values=no_variant_attribute_values
+        )
+        return request.redirect("/shop/cart")
 
 
 class WebsiteSaleOptionsCstm(odoo.addons.website_sale.controllers.main.WebsiteSale):
