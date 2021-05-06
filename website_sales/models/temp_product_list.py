@@ -14,7 +14,7 @@ class TempProductList(models.Model):
     def init(self):
         self.init_table()
 
-    def get_parent(self,partner_id):
+    def get_parent(self, partner_id):
         partner = self.env['res.partner'].search([('id', '=', partner_id), ])
         parent_partner_id = partner.id if partner.is_parent else partner.parent_id.id
         return parent_partner_id
@@ -117,23 +117,31 @@ class TempProductList(models.Model):
                                 'select': False}
 
                 product_data = {product.id: product_dict}
-                customer_data={partner.id:product_data}
+                customer_data = {partner.id: product_data}
                 self.product_list.update(customer_data)
+                print(self.product_list)
 
     @api.model_cr
     def delete_and_create(self):
         self.init_table()
 
-    def update_quantity(self, product_id, set_qty, select):
-        if product_id is not None and product_id in self.product_list.keys() and set_qty is not None:
-            self.product_list.get(product_id)['quantity'] = set_qty
-        elif product_id is not None and product_id in self.product_list.keys() and select is not None:
-            self.product_list.get(product_id)['select'] = select
+    def update_quantity(self, partner_id, product_id, set_qty, select):
+        print('In update_quantity')
+        print(partner_id)
+        parent_partner_id = self.get_parent(partner_id)
+        print(parent_partner_id)
+        partner_product_list = self.product_list.get(parent_partner_id)
+        print('partner_product_list------')
+        print(partner_product_list)
+        if product_id is not None and product_id in partner_product_list.keys() and set_qty is not None:
+            partner_product_list.get(product_id)['quantity'] = set_qty
+        elif product_id is not None and product_id in partner_product_list.keys() and select is not None:
+            partner_product_list.get(product_id)['select'] = select
         elif product_id is None and select is not None:
-            for product_id in self.product_list:
-                self.product_list.get(product_id)['select'] = select
+            for product_id in partner_product_list:
+                partner_product_list.get(product_id)['select'] = select
 
-    def get_product_list(self,partner_id):
+    def get_product_list(self, partner_id):
         product_list_sorted = sorted(self.product_list[self.get_parent(partner_id)].items(), key=lambda x: (x[1]['product_brand_name'],
                                                                                x[1]['product_sku']))
         return self.product_list[self.get_parent(partner_id)], product_list_sorted

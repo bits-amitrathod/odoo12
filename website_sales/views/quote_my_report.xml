@@ -45,6 +45,7 @@
                                 <td class="text-center td-checkbox align-middle">
                                     <input type="checkbox" id="product_list.get(product[0])['product'].id"
                                            t-att-data-partn-name-id="product_list.get(product[0])['partn_name']"
+                                           t-att-data-partner-id="product_list.get(product[0])['partner'].id"
                                            t-att-data-product-id="product_list.get(product[0])['product'].id"
                                            t-att-data-available-qty="product_list.get(product[0])['product'].actual_quantity"/>
                                 </td>
@@ -91,6 +92,7 @@
                                                type="text" class="js_quantity form-control quantity"
                                                t-att-data-product-id="product_list.get(product[0])['product'].id"
                                                t-att-data-partn-name-id="product_list.get(product[0])['partn_name']"
+                                               t-att-data-partner-id="product_list.get(product[0])['partner'].id"
                                                t-att-data-available-qty="product_list.get(product[0])['product'].actual_quantity"
                                                t-att-value="product_list.get(product[0])['quantity']" readonly="True"
                                                />

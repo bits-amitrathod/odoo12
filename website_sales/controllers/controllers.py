@@ -194,9 +194,9 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         return responce
 
     @http.route(['/shop/quote_my_report/update_json'], type='json', auth="public", methods=['POST'], website=True)
-    def update_quote_my_report_json(self, product_id=None, new_qty=None, select=None):
+    def update_quote_my_report_json(self, partner_id=None, product_id=None, new_qty=None, select=None):
         count = 1
-        request.env['quotation.product.list'].sudo().update_quantity(product_id, new_qty, select)
+        request.env['quotation.product.list'].sudo().update_quantity(partner_id, product_id, new_qty, select)
         return count
 
     @http.route(['/shop/my_in_stock_report'], type='http', auth="public", website=True)
