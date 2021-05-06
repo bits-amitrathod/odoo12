@@ -21,6 +21,7 @@ class TempProductList(models.Model):
 
     def init_table(self):
         #self.product_list.clear()
+        temp_list = {}
         partner_id = self.env.context.get('quote_my_report_partner_id')
         if partner_id and partner_id is not None:
             #partner = self.env['res.partner'].search([('id', '=', partner_id), ])
@@ -117,9 +118,10 @@ class TempProductList(models.Model):
                                 'select': False}
 
                 product_data = {product.id: product_dict}
-                customer_data = {partner.id: product_data}
-                self.product_list.update(customer_data)
-                print(self.product_list)
+                temp_list.update(product_data)
+            customer_data={partner.id:temp_list}
+            self.product_list.update(customer_data)
+            print(self.product_list)
 
     @api.model_cr
     def delete_and_create(self):
@@ -142,6 +144,13 @@ class TempProductList(models.Model):
                 partner_product_list.get(product_id)['select'] = select
 
     def get_product_list(self, partner_id):
+        print('In get_product_list')
+        print(partner_id)
         product_list_sorted = sorted(self.product_list[self.get_parent(partner_id)].items(), key=lambda x: (x[1]['product_brand_name'],
                                                                                x[1]['product_sku']))
+        print('--------start-----')
+        print(self.product_list[self.get_parent(partner_id)])
+        list1 = self.product_list[self.get_parent(partner_id)]
+        print(list1.get(11425)['partner'].id)
+        print('--------end-----')
         return self.product_list[self.get_parent(partner_id)], product_list_sorted
