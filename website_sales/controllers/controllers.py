@@ -59,7 +59,7 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         if request.httprequest.path == "/shop/capital-equipment":
             title = "Surplus Medical Equipment"
             sub_title = "Shop Unused Surplus Medical Equipment"
-            result = request.env['product.public.category'].search([('name', 'ilike', 'capital equipment')], limit=1)
+            result = request.env['product.public.category'].search([('name', 'ilike', 'surgical equipment')], limit=1)
             if result:
                 category = result
 
