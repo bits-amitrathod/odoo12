@@ -194,9 +194,9 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         return responce
 
     @http.route(['/shop/quote_my_report/update_json'], type='json', auth="public", methods=['POST'], website=True)
-    def update_quote_my_report_json(self, product_id=None, new_qty=None, select=None):
+    def update_quote_my_report_json(self, partner_id=None, product_id=None, new_qty=None, select=None):
         count = 1
-        request.env['quotation.product.list'].sudo().update_quantity(product_id, new_qty, select)
+        request.env['quotation.product.list'].sudo().update_quantity(partner_id, product_id, new_qty, select)
         return count
 
     @http.route(['/shop/my_in_stock_report'], type='http', auth="public", website=True)
@@ -218,7 +218,7 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
             if user and user.partner_id and user.partner_id.id == partner_id:
                 context = {'quote_my_report_partner_id': partner_id}
                 request.env['quotation.product.list'].with_context(context).sudo().delete_and_create()
-                product_list, product_sorted_list = request.env['quotation.product.list'].sudo().get_product_list()
+                product_list, product_sorted_list = request.env['quotation.product.list'].sudo().get_product_list(partner_id)
                 return http.request.render('website_sales.quote_my_report', {'product_list': product_list,
                                                                             'product_sorted_list': product_sorted_list})
             else:
@@ -234,8 +234,8 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
 
     @http.route(['/add/product/cart'], type='http', auth="public", methods=['POST'], website=True, csrf=False)
     def add_product_in_cart(self):
-        product_list, product_list_sorted = request.env['quotation.product.list'].sudo().get_product_list()
         user = request.env['res.users'].search([('id', '=', request.session.uid)])
+        product_list, product_list_sorted = request.env['quotation.product.list'].sudo().get_product_list(user.partner_id.id)
         for product_id in product_list:
             if product_list.get(product_id)['quantity'] > 0 and product_list.get(product_id)['select']:
                 self.cart_update_custom(product_list.get(product_id)['product'].id,

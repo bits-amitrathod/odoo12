@@ -14,56 +14,65 @@ class TempProductList(models.Model):
     def init(self):
         self.init_table()
 
+    def get_parent(self, partner_id):
+        partner = self.env['res.partner'].search([('id', '=', partner_id), ])
+        parent_partner_id = partner.id if partner.is_parent else partner.parent_id.id
+        return parent_partner_id
+
     def init_table(self):
-        self.product_list.clear()
+        #self.product_list.clear()
+        temp_list = {}
         partner_id = self.env.context.get('quote_my_report_partner_id')
         if partner_id and partner_id is not None:
+            #partner = self.env['res.partner'].search([('id', '=', partner_id), ])
+            #parent_partner_id = partner.id
+            partner_list = []
+            #while not partner.is_parent:
+            parent_partner_id = self.get_parent(partner_id)
+            partner_list.append(parent_partner_id)
+            #print(self.env['quotation.product.list'].search([('partner', '=', parent_partner_id)]))
+            if self.product_list.get(parent_partner_id) and self.product_list.get(parent_partner_id) is not None:
+                print(self.product_list.get(parent_partner_id))
+                self.product_list.pop(parent_partner_id)
+            self.env.cr.execute("select id from res_partner where parent_id =" + str(parent_partner_id).replace(",)", ")"))
+            chil_list = self.env.cr.dictfetchall()
+            for i in chil_list:
+                partner_list.append(i['id'])
             sql_query = """
                         SELECT  DISTINCT on (partn_name)
-                        CONCAT(sale_order.partner_id, product_product.id) as partn_name,
+                        CONCAT(sale_order.partner_id, a.id) as partn_name,
                         ROW_NUMBER () OVER (ORDER BY sale_order.partner_id) as id,
                         sale_order.partner_id AS partner_id,
-                        product_product.id AS product_id,
-                        product_template.product_brand_id AS product_brand_id,      
+                        a.id AS product_id,
+                        a.product_brand_id AS product_brand_id,      
                         null as min_expiration_date,
                         null as max_expiration_date,                  
                         1 as quantity                                     
                         FROM
                         sale_order
-                        INNER JOIN
-                        sale_order_line
+                        INNER JOIN sale_order_line
                         ON(
-                        sale_order.id = sale_order_line.order_id)
-                        INNER JOIN
-                        product_product
-                        ON
-                        (
-                        sale_order_line.product_id = product_product.id)
-                        INNER JOIN
-                        product_template
-                        ON
-                        (
-                        product_product.product_tmpl_id = product_template.id  and  product_template.actual_quantity > 0 and 
-                        product_template.sale_ok = True)
-
+                        sale_order.id = sale_order_line.order_id and sale_order.partner_id in """+str(tuple(partner_list)).replace(",)", ")")+""")
+                        INNER JOIN (select product_product.id , product_template.product_brand_id 
+                                from product_product
+                                INNER JOIN product_template
+                                ON(product_product.product_tmpl_id = product_template.id  and
+                                     product_template.actual_quantity > 0 and
+                                     product_template.sale_ok = True)) as a              
+                        ON(sale_order_line.product_id = a.id)
                         """
-            where = """
-                    where 
-                    sale_order.partner_id = 
-                """ + str(partner_id)
-
-            groupby = """
+            groupby = """ 
 
                      group by partn_name, public.sale_order.partner_id,
-                            public.product_product.id,
-                            public.product_template.product_brand_id
+                           a.id,
+                           a.product_brand_id
                             """
 
-            sql_query = sql_query + where + groupby
+            sql_query = sql_query + groupby
 
             self.env.cr.execute(sql_query)
             query_results = self.env.cr.dictfetchall()
-            partner = self.env['res.partner'].search([('id', '=', partner_id)])
+            partner = self.env['res.partner'].search([('id', '=', parent_partner_id)])
             for query_result in query_results:
                 product = self.env['product.product'].search([('id', '=', query_result['product_id'])])
                 product_brand = self.env['product.brand'].search([('id', '=', query_result['product_brand_id'])])
@@ -109,22 +118,32 @@ class TempProductList(models.Model):
                                 'select': False}
 
                 product_data = {product.id: product_dict}
-                self.product_list.update(product_data)
+                temp_list.update(product_data)
+            customer_data={partner.id:temp_list}
+            self.product_list.update(customer_data)
+            print(self.product_list)
 
     @api.model_cr
     def delete_and_create(self):
         self.init_table()
 
-    def update_quantity(self, product_id, set_qty, select):
-        if product_id is not None and product_id in self.product_list.keys() and set_qty is not None:
-            self.product_list.get(product_id)['quantity'] = set_qty
-        elif product_id is not None and product_id in self.product_list.keys() and select is not None:
-            self.product_list.get(product_id)['select'] = select
-        elif product_id is None and select is not None:
-            for product_id in self.product_list:
-                self.product_list.get(product_id)['select'] = select
+    def update_quantity(self, partner_id, product_id, set_qty, select):
+        print('In update_quantity')
+        print(partner_id)
+        parent_partner_id = self.get_parent(partner_id)
+        print(parent_partner_id)
+        partner_product_list = self.product_list.get(parent_partner_id)
 
-    def get_product_list(self):
-        product_list_sorted = sorted(self.product_list.items(), key=lambda x: (x[1]['product_brand_name'],
+        if product_id is not None and product_id in partner_product_list.keys() and set_qty is not None:
+            partner_product_list.get(product_id)['quantity'] = set_qty
+        elif product_id is not None and product_id in partner_product_list.keys() and select is not None:
+            partner_product_list.get(product_id)['select'] = select
+        elif product_id is None and select is not None:
+            for product_id in partner_product_list:
+                partner_product_list.get(product_id)['select'] = select
+
+    def get_product_list(self, partner_id):
+        product_list_sorted = sorted(self.product_list[self.get_parent(partner_id)].items(), key=lambda x: (x[1]['product_brand_name'],
                                                                                x[1]['product_sku']))
-        return self.product_list, product_list_sorted
+
+        return self.product_list[self.get_parent(partner_id)], product_list_sorted
