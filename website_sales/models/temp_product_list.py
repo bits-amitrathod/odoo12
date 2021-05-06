@@ -133,8 +133,7 @@ class TempProductList(models.Model):
         parent_partner_id = self.get_parent(partner_id)
         print(parent_partner_id)
         partner_product_list = self.product_list.get(parent_partner_id)
-        print('partner_product_list------')
-        print(partner_product_list)
+
         if product_id is not None and product_id in partner_product_list.keys() and set_qty is not None:
             partner_product_list.get(product_id)['quantity'] = set_qty
         elif product_id is not None and product_id in partner_product_list.keys() and select is not None:
@@ -144,13 +143,7 @@ class TempProductList(models.Model):
                 partner_product_list.get(product_id)['select'] = select
 
     def get_product_list(self, partner_id):
-        print('In get_product_list')
-        print(partner_id)
         product_list_sorted = sorted(self.product_list[self.get_parent(partner_id)].items(), key=lambda x: (x[1]['product_brand_name'],
                                                                                x[1]['product_sku']))
-        print('--------start-----')
-        print(self.product_list[self.get_parent(partner_id)])
-        list1 = self.product_list[self.get_parent(partner_id)]
-        print(list1.get(11425)['partner'].id)
-        print('--------end-----')
+
         return self.product_list[self.get_parent(partner_id)], product_list_sorted
