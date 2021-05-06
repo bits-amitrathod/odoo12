@@ -196,6 +196,11 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
     @http.route(['/shop/quote_my_report/update_json'], type='json', auth="public", methods=['POST'], website=True)
     def update_quote_my_report_json(self, partner_id=None, product_id=None, new_qty=None, select=None):
         count = 1
+        if partner_id is None:
+            if request.session.uid:
+                user = request.env['res.users'].search([('id', '=', request.session.uid)])
+                if user and user.partner_id and user.partner_id.id:
+                    partner_id = user.partner_id.id
         request.env['quotation.product.list'].sudo().update_quantity(partner_id, product_id, new_qty, select)
         return count
 
