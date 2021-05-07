@@ -1,12 +1,12 @@
 <odoo>
-	<template id="careers_page_template" name="Careers">
+	<template id="careers_page_template1" name="Careers">
 		<t t-name="website.careers">
 			<t t-call="website.layout">
 				<div id="wrap" class="oe_structure oe_empty">
 					<section class="pb-5">
 						<div class="container">
 						  	<div class="text-center pt32 pb32">
-								<h1  class="about-header"> Careers </h1>
+								<h1 class="about-header"> Surgical Product Solutions Careers </h1>
 							</div>
 							 <!--<div class="banner-wrapper">
 								<img src="/sps_theme/static/src/images/career.jpg" class="img-fluid"/>

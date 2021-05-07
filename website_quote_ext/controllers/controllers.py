@@ -285,8 +285,17 @@ class CustomerPortal(CustomerPortal):
             ('message_partner_ids', 'child_of', [partner.commercial_partner_id.id]),
             ('state', 'in', ['ven_sent', 'cancel'])
         ])
-        if partner.user_id and not partner.user_id._is_public():
-            sales_user = partner.user_id
+
+        if partner.account_manager_cust and not partner.account_manager_cust._is_public():
+            sales_user = partner.account_manager_cust
+        elif partner.user_id and not partner.user_id._is_public():
+            if partner.user_id.partner_id.name == "National Accounts":
+                if partner.national_account_rep and not partner.national_account_rep._is_public():
+                    sales_user = partner.national_account_rep
+                else:
+                    sales_user = partner.user_id
+            else:
+                sales_user = partner.user_id
 
         values.update({
             'sales_user': sales_user,
