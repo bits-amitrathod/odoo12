@@ -99,6 +99,7 @@
         <record id="mail_template_data_portal_welcome_portal_access_scheduler" model="mail.template">
             <field name="name">Portal access for purchasing platform</field>
             <field name="model_id" ref="portal.model_portal_wizard_user"/>
+            <field name="email_from">"Surgical Product Solutions" &lt;${ctx['emailFrom']}&gt;</field>
             <field name="subject">Your Online Account at ${object.user_id.company_id.name}</field>
             <field name="email_to">${object.user_id.email_formatted | safe}</field>
             <field name="body_html" type="html">
