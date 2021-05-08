@@ -31,7 +31,7 @@
             <field name="view_mode">form</field>
             <field name="view_id" ref="view_popup_view"/>
             <field name="target">new</field>
-            <field name="context">{'default_compute_at_date': 0, 'valuation': True}</field>
+            <field name="context">{'default_compute_at_date': '0', 'valuation': True}</field>
         </record>
 
         <record model="ir.ui.view" id="form_list">
