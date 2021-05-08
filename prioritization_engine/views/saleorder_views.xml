@@ -1,6 +1,6 @@
 <odoo>
     <data>
-        <record id="view_order_form_ex" model="ir.ui.view">
+        <record id="view_order_form_ex3" model="ir.ui.view">
             <field name="name">sale.order.form_ex</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
@@ -9,8 +9,8 @@
                 <button name="action_quotation_send" position="after">
                     <button name="action_quotation_send" string="Send by Email" type="object" states="engine"
                             class="btn-primary"/>
-                    <!--<button name="print_quotation" string="Print" type="object" states="engine"
-                            class="btn-primary o_sale_print"/>-->
+                    <button name="print_quotation" string="Print" type="object"
+                            class="btn-primary o_sale_print"/>
                     <button name="action_confirm" id="action_confirm"
                             string="Confirm Sale" class="btn-primary" type="object"
                             attrs="{'invisible': [('state', 'not in', ['engine'])]}"/>
@@ -31,8 +31,12 @@
                 <field name="payment_term_id" position="after">
                     <field name="carrier_info"/>
                     <field name="carrier_acc_no"/>
+                    <field name="client_order_ref"/>
+                    <field name="x_studio_allow_duplicate_po" widget="boolean_toggle"/>
+                    <field name="gl_account"/>
                     <field name="is_share"/>
                     <field name="sale_margine"/>
+                    <!--<field name="carrier_id"/>-->
                 </field>
                 <xpath expr="/form/sheet/notebook/page[1]/field[@name='order_line']/tree/field[@name='product_id']"
                        position="after">
@@ -112,17 +116,17 @@
                 </xpath>
             </field>
         </record>-->
-        <record id="view_order_form_cstm" model="ir.ui.view">
+        <record id="view_order_form_cstm1" model="ir.ui.view">
             <field name="name">sale.order.form.cstm</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
                 <!--remove field-->
                 <xpath expr="//field[@name='client_order_ref']" position="replace"/>
-                <xpath expr="//field[@name='carrier_acc_no']" position="after">
+                <!--<xpath expr="//field[@name='carrier_acc_no']" position="after">
                     <field name="client_order_ref"/>
                     <field name="gl_account"/>
-                </xpath>
+                </xpath>-->
             </field>
         </record>
 
