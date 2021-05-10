@@ -55,9 +55,9 @@
                 <form string="Choose your date">
                     <group>
                         <group>
-                            <field name="compute_at_date" widget="radio"/>
-                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
-                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <field name="compute_at_date" widget="radio" default="0"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', 1)]}"/>
                         </group>
                         <group>
                             <field name="business_development"/>
@@ -82,7 +82,7 @@
             <field name="view_mode">form</field>
             <field name="view_id" ref="bd_revenue_per_account_popup_view"/>
             <field name="target">new</field>
-            <field name="context">{'default_compute_at_date': 0, 'valuation': True}</field>
+            <field name="context">{'default_compute_at_date': '0', 'valuation': True}</field>
         </record>
 
         <!-- Action code ends here -->
@@ -95,9 +95,9 @@
                 <form string="Export Revenue By Business Development Per Account Report">
                     <group>
                         <group>
-                            <field name="compute_at_date" widget="radio"/>
-                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
-                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <field name="compute_at_date" widget="radio" default="0"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', 1)]}"/>
                         </group>
                         <group>
                             <field name="business_development"/>

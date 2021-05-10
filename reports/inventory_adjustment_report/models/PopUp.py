@@ -13,14 +13,16 @@ class PopUp(models.TransientModel):
     _name = 'adj_popup.view.model'
 
 
-    start_date = fields.Date('Start Date')
-    end_date = fields.Date(string="End Date")
+
     # product_id = fields.Many2many('product.product', string="Products")
 
     compute_at_date = fields.Selection([
         ('0', 'Show All'),
         ('1', 'Date Range')
     ],default='0', string="Compute", help="Choose to analyze the current inventory or from a specific date in the past.")
+
+    start_date = fields.Date('Start Date')
+    end_date = fields.Date(string="End Date")
 
     product_sku_code = fields.Many2one('product.product', string='Product SKU',
                                domain="[('active','=',True),('product_tmpl_id.type','=','product')]")
