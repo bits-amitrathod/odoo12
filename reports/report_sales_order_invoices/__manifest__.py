@@ -19,11 +19,10 @@
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'views/views.xml',
         'report/report_sales_order_invoices.xml',
         'report/sales_order_invoices.xml'
-        # 'views/templates.xml',
     ],
     # only loaded in demonstration mode
     # 'demo': [

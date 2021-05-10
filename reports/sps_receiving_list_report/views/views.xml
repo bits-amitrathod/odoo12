@@ -63,12 +63,12 @@
                     <group>
                         <group>
                             <field name="compute_at_date" widget="radio"/>
-                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '!=', 1)]}"/>
-                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '!=', 1)]}"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '!=', '1')]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '!=', '1')]}"/>
                         </group>
                         <group>
                             <field name="purchase_order" widget="many2many_tags"
-                                   attrs="{'invisible': [('compute_at_date', '!=', 2)]}"/>
+                                   attrs="{'invisible': [('compute_at_date', '!=', '2')]}"/>
                         </group>
                     </group>
                     <footer>
@@ -86,7 +86,7 @@
             <field name="view_mode">form</field>
             <field name="view_id" ref="view_sps_receive_list"/>
             <field name="target">new</field>
-            <field name="context">{'default_compute_at_date': 0}</field>
+            <field name="context">{'default_compute_at_date': '0'}</field>
         </record>
 
         <menuitem id="receive_list_report"

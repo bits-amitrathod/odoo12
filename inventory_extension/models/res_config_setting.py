@@ -76,6 +76,10 @@ class StockPickingMarkAllButton(models.Model):
                     sp.acq_user_id = purchase_order.acq_user_id.id
                 else:
                     sp.acq_user_id = None
+            else:
+                sp.acq_user_id = None
+
+
 
 
     def _compute_visibility(self):
