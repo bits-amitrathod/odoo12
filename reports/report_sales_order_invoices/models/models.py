@@ -23,13 +23,13 @@ class report_sales_order_invoices(models.TransientModel):
     def open_table(self):
 
         tree_view_id = self.env.ref('account.view_invoice_tree').id
-        # form_view_id = self.env.ref('account.view_move_form').id
+        form_view_id = self.env.ref('account.view_move_form').id
         records = self.env['sale.order'].search([])
         list = records.mapped('name')
 
         action = {
             'type': 'ir.actions.act_window',
-            'views': [(tree_view_id, 'tree')], #, (form_view_id, 'form')
+            'views': [(tree_view_id, 'tree'), (form_view_id, 'form')], #, (form_view_id, 'form')
             'view_type': 'form',
             'view_mode': 'tree,form',
             'name': _('Sales Order Invoice'),
