@@ -34,7 +34,8 @@ class PortalWizardUser(models.TransientModel):
             template = self.env.ref(
                 'portal_access_management.mail_template_data_portal_welcome_portal_access_scheduler')
         else:
-            template = self.env.ref('portal_access_management.mail_template_data_portal_welcome_portal_access_scheduler')
+            template = self.env.ref('portal_access_management.mail_template_data_portal_welcome_cstm')
+
         for wizard_line in self:
             lang = wizard_line.user_id.lang
             partner = wizard_line.user_id.partner_id
@@ -44,7 +45,8 @@ class PortalWizardUser(models.TransientModel):
             partner.signup_prepare()
 
             if template:
-                template.with_context(dbname=self._cr.dbname, portal_url=portal_url, lang=lang).send_mail(
+                email_from = 'info@surgicalproductsolutions.com'
+                template.with_context(emailFrom=email_from, dbname=self._cr.dbname, portal_url=portal_url, lang=lang).send_mail(
                     wizard_line.id, force_send=False)
             else:
                 _logger.warning("No email template found for sending email to the portal user")
