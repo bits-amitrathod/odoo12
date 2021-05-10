@@ -40,11 +40,12 @@ class CustomerContract(models.Model):
 
     @api.depends('category_id')
     def _display_reinstated_date_flag(self):
-        # uncomment it when upload original db
-        # for record in self:
-        #     for category_id in record.category_id:
-        #         if category_id.id == 31:
-        #             self.display_reinstated_date_flag = 1
+        for record in self:
+            for category_id in record.category_id:
+                if category_id.id == 31:
+                    self.display_reinstated_date_flag = 1
+                else:
+                    self.display_reinstated_date_flag = 0
         self.display_reinstated_date_flag = 1
 
     @api.onchange('parent_id')
@@ -80,7 +81,6 @@ class sale_order(models.Model):
         change_default=True, default=_get_default_team, tracking=True, check_company=True,  # Unrequired company
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
 
-    #@api.one
     def _get_user(self):
         if self.env.user.email == "jtennant@surgicalproductsolutions.com":
             self.field_read_only = 0
@@ -98,12 +98,10 @@ class sale_order(models.Model):
         else:
             self.is_signature = 0
 
-    #@api.one
     def get_account_manager(self):
         for so in self:
             so.account_manager = so.partner_id.account_manager_cust.id
 
-    #@api.one
     def get_national_account(self):
         for so in self:
             so.national_account = so.partner_id.national_account_rep.id
@@ -174,21 +172,20 @@ class sale_order(models.Model):
             self.env['stock.picking'].search([('sale_id', '=', self.id), ('picking_type_id', '=', 5)]).write({'carrier_id':self.carrier_id.id})
 
         # if 'sale_note' in val or self.sale_note:
-        # if self.sale_note and self.team_id.team_type != 'engine':
-        #     body = self.sale_note
-        #     for stk_picking in self.picking_ids:
-        #         stock_picking_val = {
-        #             'body': body,
-        #             'model': 'stock.picking',
-        #             'message_type': 'notification',
-        #             'no_auto_thread': False,
-        #             'subtype_id': self.env['ir.model.data'].xmlid_to_res_id('mail.mt_note'),
-        #             'res_id': stk_picking.id,
-        #             'author_id': self.env.user.partner_id.id,
-        #         }
-        #         self.env['mail.message'].sudo().create(stock_picking_val)
+        if self.sale_note and self.team_id.team_type != 'engine':
+            body = self.sale_note
+            for stk_picking in self.picking_ids:
+                stock_picking_val = {
+                    'body': body,
+                    'model': 'stock.picking',
+                    'message_type': 'notification',
+                    'no_auto_thread': False,
+                    'subtype_id': self.env['ir.model.data'].xmlid_to_res_id('mail.mt_note'),
+                    'res_id': stk_picking.id,
+                    'author_id': self.env.user.partner_id.id,
+                }
+                self.env['mail.message'].sudo().create(stock_picking_val)
 
-    #@api.one
     def _get_carrier_tracking_ref(self):
         for so in self:
             stock_picking = self.env['stock.picking'].search([('origin', '=', so.name), ('picking_type_id', '=', 5),
@@ -199,7 +196,6 @@ class sale_order(models.Model):
                     break
             break
 
-    #@api.one
     def _get_delivery_method_readonly_flag(self):
         for sale_ordr in self:
             if sale_ordr.state in ('draft', 'sent', 'sale'):
@@ -221,11 +217,10 @@ class sale_order(models.Model):
     @api.onchange('carrier_id')
     def onchange_carrier_id(self):
         if self.state in ('draft', 'sent', 'sale'):
-            self.delivery_price = 0.0
+            # self.delivery_price = 0.0
             self.delivery_rating_success = False
             self.delivery_message = False
 
-    #@api.multi
     def set_delivery_line(self):
         # Remove delivery products from the sales order
         self._remove_delivery_line()
@@ -260,7 +255,6 @@ class sale_order(models.Model):
                 order.delivery_price = 0.0
                 order.delivery_message = res['error_message']
 
-    #@api.multi
     @api.onchange('partner_id')
     def onchange_partner_id(self):
         if self.partner_id and self.partner_id.account_manager_cust and self.partner_id.account_manager_cust.id:
@@ -287,7 +281,6 @@ class StockPicking(models.Model):
     #         sale_order = self.env['sale.order'].search([('name', '=', stock_picking.origin)])
     #         stock_picking.note = sale_order.sale_note
 
-    #@api.multi
     def button_validate(self):
         action = super(StockPicking, self).button_validate()
 
@@ -323,7 +316,6 @@ class StockPicking(models.Model):
                     self.update_sale_order_line(sale_order, self.carrier_id, self.carrier_price)
         return action
 
-    #@api.one
     def cancel_shipment(self):
         self.carrier_id.cancel_shipment(self)
         msg = "Shipment %s cancelled" % self.carrier_tracking_ref
@@ -333,7 +325,6 @@ class StockPicking(models.Model):
         sale_order.carrier_track_ref = False
 
     def update_sale_order_line(self, sale_order, carrier, price_unit):
-
         sale_order_line = self.env['sale.order.line'].search([('order_id', '=', sale_order.id), ('is_delivery', '=', True)])
 
         if len(sale_order_line) == 1:
@@ -372,7 +363,8 @@ class StockPicking(models.Model):
                     'author_id': self.env.user.partner_id.id,
                 }
                 self.env['mail.message'].sudo().create(stock_picking_val)
-                
+
+
 class ResUsers(models.Model):
     _inherit = "res.users"
 

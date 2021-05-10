@@ -362,16 +362,16 @@
             </field>
         </record>
 
-        <record id="click_to_dial_field" model="ir.ui.view">
-        <field name="name">res.partner.form.wholesaler</field>
-        <field name="model">res.partner</field>
-        <field name="inherit_id" ref="base.view_partner_form"/>
-        <field eval="20" name="priority"/>
-        <field name="arch" type="xml">
-              <field name="lang" position="after">
-                  <field name="is_wholesaler" />
-              </field>
-        </field>
+        <record id="click_to_dial_field_partner" model="ir.ui.view">
+            <field name="name">res.partner.form.wholesaler</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field eval="20" name="priority"/>
+            <field name="arch" type="xml">
+                  <field name="on_hold" position="after">
+                      <field name="is_wholesaler" />
+                  </field>
+            </field>
         </record>
 
           <record id="appraisal_tracker_popup" model="ir.ui.view">
@@ -398,6 +398,15 @@
                     <!--target="new"-->
                     <!--key2="client_action_multi"-->
                     <!--id="appraisal_tracker_act_window"/>-->
+
+        <record id="appraisal_tracker_act_window" model="ir.actions.act_window">
+                <field name="name">Export Appraisal Tracker</field>
+<!--                <field name="type">ir.actions.act_window</field>-->
+                <field name="res_model" >appraisaltracker.export</field>
+                <field name="binding_model_id" ref="purchase.model_purchase_order"/>
+                <field name="view_mode">form</field>
+                <field name="target">new</field>
+            </record>
 
         <menuitem id="menu_procurement_management_appraisal_tracker" name="Appraisal Tracker"
                   parent="purchase.menu_procurement_management" action="appraisal_tracker.action_window" sequence="15"

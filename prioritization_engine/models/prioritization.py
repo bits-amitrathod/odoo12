@@ -440,9 +440,9 @@ class StockMove(models.Model):
                             _logger.info('taken_quantity : %r', taken_quantity)
                             need = need - taken_quantity
                         if need == taken_quantity:
-                            StockMove |= move
+                            assigned_moves_ids.add(move.id)
                         elif need == 0.0:
-                            StockMove |= move
+                            assigned_moves_ids.add(move.id)
                             break
             else:
                 if move._should_bypass_reservation():

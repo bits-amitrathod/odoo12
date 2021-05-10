@@ -10,7 +10,7 @@
         </record>-->
     </data>
     <data>
-        <record id="view_form_prioritization_customer" model="ir.ui.view">
+        <record id="view_form_prioritization_customer1" model="ir.ui.view">
             <field name="name">Prioritization customer form</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
@@ -43,6 +43,7 @@
                     <field name="allow_purchase" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                     <field name="prioritization" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                     <field name="on_hold" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                    <field name="customer_rank" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                     <field name="is_broker" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                     <field name="is_parent" invisible="1"/>
                     <field name="having_carrier" attrs="{'readonly':[('is_parent', '==', False)]}"/>

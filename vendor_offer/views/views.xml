@@ -282,12 +282,11 @@
                                  <field name="acq_manager_email"  invisible="1"/>
                                  <field name="acq_manager_phone" invisible="1" />
                                 <field name="vendor_cust_id"/>
-
-                                 <!--<field name="partner_id" widget="res_partner_many2one" context="{ 'show_vat': True}"-->
-                                <!--placeholder="Name, TIN, Email, or Reference"-->
-                            <!--/>-->
-                                   <field name="partner_id1"/>
-               <!--<field name="partner_id" widget="res_partner_many2one" />-->
+                    <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" invisible="1" />
+                                 <field name="partner_id" widget="res_partner_many2one" context="{ 'show_vat': True}"
+                                placeholder="Name, TIN, Email, or Reference"
+                            />
+<!--                                   <field name="partner_id1"/>-->
 
                                 <field name="acq_user_id"/>
                                 <field name="possible_competition"
@@ -378,21 +377,21 @@
                                         <field name="product_tier" readonly="1"/>
                                         <field name="product_qty" />
                                         <field name="expiration_date_str"  />
-                                        <field name="qty_in_stock" invisible="1"/>
-                                        <field name="product_sales_count" invisible="1"/>
-                                        <field name="product_sales_count_month" invisible="1"/>
-                                        <field name="product_sales_count_90" invisible="1"/>
-                                        <field name="product_sales_count_yrs" invisible="1"/>
+                                        <field name="qty_in_stock" />
+                                        <field name="product_sales_count" />
+                                        <field name="product_sales_count_month" />
+                                        <field name="product_sales_count_90" />
+                                        <field name="product_sales_count_yrs" />
                                         <field name="price_unit" invisible="1"/>
                                         <!--<field name="list_price" invisible="1"/>-->
                                         <field name="expired_inventory"/>
-                                        <field name="product_unit_price" invisible="1" />
+                                        <field name="product_unit_price" />
                                         <!--<field name="product_offer_price" attrs="{'readonly': False}" />-->
                                         <field name="product_offer_price"  />
                                         <field name="import_type_ven_line" invisible="1"/>
                                         <field name="product_retail"/>
                                         <field name="price_subtotal" string="Total Offer Price"/>
-                                        <field name="taxes_id" widget="many2many_tags" invisible="1"
+                                        <field name="taxes_id" widget="many2many_tags"
                                                domain="[('type_tax_use','=','purchase')]"
                                                context="{'default_type_tax_use': 'purchase'}"
                                                options="{'no_create': True}"
@@ -451,12 +450,12 @@
                             <page string="Deliveries">
                                 <group>
                                     <group>
-                                        <field name="date_planned"/>
+                                        <field name="date_planned" string="Scheduled Date" readonly="1"/>
                                         <field name="shipping_label_issued"/>
                                         <field name="invoice_status"/>
 
-                                        <!--<field name="payment_term_id" options="{'no_open': True, 'no_create': True}"-->
-                                               <!--attrs="{'readonly': ['|', ('invoice_status','=', 'invoiced'), ('state', '=', 'done')]}"/>-->
+                                        <field name="payment_term_id" options="{'no_open': True, 'no_create': True}"
+                                               attrs="{'readonly': ['|', ('invoice_status','=', 'invoiced'), ('state', '=', 'done')]}"/>
                                     </group>
                                     <group>
                                         <field name="shipping_date"/>

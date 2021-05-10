@@ -776,13 +776,11 @@ class VendorOffer(models.Model):
             vals['vendor_offer_data'] = True
             vals['revision'] = '1'
             vals['revision_date'] = fields.Datetime.now()
-            if 'partner_id1' in vals:
-                vals['partner_id'] = vals['partner_id1']
             if 'partner_id' in vals:
                 fetch_id = vals['partner_id']
                 user_fetch = self.env['res.partner'].search([('id', '=', fetch_id), ])
-                # if user_fetch:
-                #     vals['vendor_cust_id'] = user_fetch.saleforce_ac
+                if user_fetch:
+                    vals['vendor_cust_id'] = user_fetch.saleforce_ac
             record = super(VendorOffer, self).create(vals)
             return record
         else:
@@ -2135,7 +2133,7 @@ class VendorPricingExport(models.TransientModel):
                                              inner join sale_order so 
                                                      ON so.id = sol.order_id 
                                      WHERE  so.date_order >= %s 
-                                             AND so.state IN ( 'sale' ) 
+                                             AND so.state IN ( 'sale' ,'done') 
                                       GROUP  BY ppi.id) AS all_sales_amount 
                                   ON all_sales_amount.id = pp.id 
                            left join (SELECT SUM(sml.qty_done) AS qty_done, 
@@ -2259,7 +2257,7 @@ class VendorPricingExport(models.TransientModel):
                          WHERE    sts.state ='done' 
                          AND      sts.date_done < %s 
                          AND      sts.date_done > %s 
-                         GROUP BY sts.product_id ) AS inventory_scrapped ON pp.id=inventory_scrapped.product_id WHERE pp.active=true"""
+                         GROUP BY sts.product_id ) AS inventory_scrapped ON pp.id=inventory_scrapped.product_id WHERE pp.active=true  """
 
         start_time = time.time()
         #self.env.cr.execute(sql_fuction)
