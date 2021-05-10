@@ -139,13 +139,23 @@
         <!-- Filter's code ends here -->
 
         <!-- Export Action code -->
-        <act_window name="Export Revenue By Business Development Per Account Report"
+        <!--<act_window name="Export Revenue By Business Development Per Account Report"
                     res_model="report.bd.revenue.per.account.export"
                     src_model="report.bd.revenue.per.account"
                     view_mode="form"
                     target="new"
                     key2="client_action_multi"
-                    id="revenue_by_bd_per_account_export_act_window"/>
+                    id="revenue_by_bd_per_account_export_act_window"/>-->
+        <record id="revenue_by_bd_per_account_export_act_window" model="ir.actions.act_window">
+            <field name="name">Export Revenue By Business Development Per Account Report</field>
+            <field name="res_model">report.bd.revenue.per.account.export</field>
+            <field name="view_mode">form</field>
+<!--            <field name="view_id" ref="view_account_move_reversal"/>-->
+            <field name="target">new</field>
+<!--            <field name="groups_id" eval="[(4, ref('account.group_account_invoice'))]"/>-->
+<!--            <field name="binding_model_id" ref="report.bd.account.closed" />-->
+<!--            <field name="binding_view_types">list</field>-->
+        </record>
 
         <!-- Export Action code ends here -->
 

@@ -20,7 +20,7 @@ class KaRevenueReportPopup(models.TransientModel):
                                  ('10', 'October'), ('11', 'November'), ('12', 'December')], 'End Month', required=True)
 
     end_year = fields.Selection([(str(num), str(num)) for num in range(2010, (datetime.datetime.now().year) + 20)],
-                                'End Year', default=datetime.datetime.now().year, required=True)
+                                'End Year',  required=True) # default=datetime.datetime.now().year
 
     key_account = fields.Many2one('res.users', string="Key Account", domain="[('active', '=', True), "
                                                                             "('share','=',False)]")
