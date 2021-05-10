@@ -776,13 +776,11 @@ class VendorOffer(models.Model):
             vals['vendor_offer_data'] = True
             vals['revision'] = '1'
             vals['revision_date'] = fields.Datetime.now()
-            if 'partner_id1' in vals:
-                vals['partner_id'] = vals['partner_id1']
             if 'partner_id' in vals:
                 fetch_id = vals['partner_id']
                 user_fetch = self.env['res.partner'].search([('id', '=', fetch_id), ])
-                # if user_fetch:
-                #     vals['vendor_cust_id'] = user_fetch.saleforce_ac
+                if user_fetch:
+                    vals['vendor_cust_id'] = user_fetch.saleforce_ac
             record = super(VendorOffer, self).create(vals)
             return record
         else:
