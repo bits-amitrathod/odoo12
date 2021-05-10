@@ -410,7 +410,7 @@
 <!--            <field name="user_signature" eval="False"/>-->
         </record>
 
-       <!--<record id="view_res_partner_filter_inherit" model="ir.ui.view">
+       <record id="view_res_partner_filter_inherit" model="ir.ui.view">
             <field name="name">res.partner.select.inherit</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_res_partner_filter"/>
@@ -423,7 +423,7 @@
                    <field name="contract"/>
                </xpath>
             </field>
-        </record>-->
+        </record>
 
         <menuitem name="Import" id="prioritization_engine.prioritization_imenu"
                   parent="prioritization_engine.menu_root"/>

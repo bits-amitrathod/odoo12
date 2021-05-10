@@ -55,6 +55,12 @@ class SaleOrder(models.Model):
     # def update_account_invoice_purchase_order(self):
     #     self.env['account.invoice'].search([('origin', '=', self.name)]).write({'name': self.client_order_ref})
 
+    def print_quotation(self):
+        self.filtered(lambda s: s.state == 'draft').write({'state': 'sent'})
+
+        return self.env.ref('sale.action_report_saleorder') \
+            .with_context(discard_logo_check=True).report_action(self)
+
     def action_void(self):
         return self.write({'state': 'void'})
 
