@@ -2,23 +2,25 @@
 import os
 from datetime import datetime
 
-import suds
 from odoo import models, api, fields
-from suds.client import Client
-from suds.plugin import MessagePlugin
+from zeep import Client, Plugin, Settings
+from zeep.exceptions import Fault
+from zeep.wsdl.utils import etree_to_string
+from odoo.tools import remove_accents
 
-
-class LogPlugin(MessagePlugin):
+class LogPlugin(Plugin):
     """ Small plugin for suds that catches out/ingoing XML requests and logs them"""
 
     def __init__(self, debug_logger):
         self.debug_logger = debug_logger
 
-    def sending(self, context):
-        self.debug_logger(context.envelope, 'fedex_request')
+    def egress(self, envelope, http_headers, operation, binding_options):
+        self.debug_logger(etree_to_string(envelope).decode(), 'fedex_request')
+        return envelope, http_headers
 
-    def received(self, context):
-        self.debug_logger(context.reply, 'fedex_response')
+    def ingress(self, envelope, http_headers, operation):
+        self.debug_logger(etree_to_string(envelope).decode(), 'fedex_response')
+        return envelope, http_headers
 
 
 class FedexApiCstm():
@@ -33,22 +35,25 @@ class FedexApiCstm():
         if prod_environment:
             env_path = '../api/prod/'
         wsdl_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), env_path + 'TrackService_v16.wsdl')
-        self.client = Client('file:///%s' % wsdl_path.lstrip('/'), plugins=[LogPlugin(self.debug_logger)])
+        self.client = Client('file://%s' % wsdl_path.lstrip('/'), plugins=[LogPlugin(self.debug_logger)])
+        self.factory = self.client.type_factory('ns0')
 
     def set_version(self, serviceId, major, intermediate, minor):
-        self.Version = self.client.factory.create('VersionId')
+        self.Version = self.factory.VersionId()
         self.Version.ServiceId = serviceId
         self.Version.Major = major
         self.Version.Intermediate = intermediate
         self.Version.Minor = minor
 
     def set_tracking_umber(self, trackingNumber):
-        self.selectionDetails = self.client.factory.create('TrackSelectionDetail')
-        self.selectionDetails.PackageIdentifier = self.client.factory.create('TrackPackageIdentifier')
+        self.selectionDetails = self.factory.TrackSelectionDetail()
+        self.selectionDetails.PackageIdentifier = self.factory.TrackPackageIdentifier()
         self.selectionDetails.PackageIdentifier.Type = 'TRACKING_NUMBER_OR_DOORTAG'
         self.selectionDetails.PackageIdentifier.Value = trackingNumber
-        delattr(self.selectionDetails, 'OperatingCompany')
-        delattr(self.selectionDetails, 'CarrierCode')
+        # delattr(self.selectionDetails, 'OperatingCompany')
+        # delattr(self.selectionDetails, 'CarrierCode')
+        # delattr('OperatingCompany', self.selectionDetails)
+        # delattr('CarrierCode', self.selectionDetails)
 
     def process_track_request(self):
 
@@ -141,7 +146,7 @@ class FedexApiCstm():
                     [("%s: %s" % (n.Code, n.Message)) for n in self.response.Notifications if n.Severity == 'WARNING'])
                 formatted_response['warnings_message'] = warnings_message
 
-        except suds.WebFault as fault:
+        except Fault as fault:
             formatted_response['errors_message'] = fault
         except IOError:
             formatted_response['errors_message'] = "Fedex Server Not Found"
@@ -149,14 +154,14 @@ class FedexApiCstm():
         return formatted_response
 
     def web_authentication_detail(self, key, password):
-        WebAuthenticationCredential = self.client.factory.create('WebAuthenticationCredential')
+        WebAuthenticationCredential = self.factory.WebAuthenticationCredential()
         WebAuthenticationCredential.Key = key
         WebAuthenticationCredential.Password = password
-        self.WebAuthenticationDetail = self.client.factory.create('WebAuthenticationDetail')
+        self.WebAuthenticationDetail = self.factory.WebAuthenticationDetail()
         self.WebAuthenticationDetail.UserCredential = WebAuthenticationCredential
 
     def client_detail(self, account_number, meter_number):
-        self.ClientDetail = self.client.factory.create('ClientDetail')
+        self.ClientDetail = self.factory.ClientDetail()
         self.ClientDetail.AccountNumber = account_number
         self.ClientDetail.MeterNumber = meter_number
 
