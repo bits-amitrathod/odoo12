@@ -19,7 +19,6 @@
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'sale', 'account_closed_by_bd'],
-
     # always loaded
     'data': [
         'security/ir.model.access.csv',

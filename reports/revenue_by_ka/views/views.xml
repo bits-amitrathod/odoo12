@@ -143,7 +143,7 @@
             <field name="view_mode">form</field>
             <field name="view_id" ref="ka_revenue_popup_view"/>
             <field name="target">new</field>
-            <field name="context">{'default_compute_at_date': 0, 'valuation': True}</field>
+            <field name="context">{'default_compute_at_date': '0', 'valuation': True}</field>
         </record>
 
         <!-- Action code ends here -->
@@ -199,13 +199,22 @@
         <!-- Filter's code ends here -->
 
         <!-- Export Action code -->
-        <act_window name="Export Revenue By Key Account Report"
+        <!--<act_window name="Export Revenue By Key Account Report"
                     res_model="report.ka.revenue.export"
                     src_model="report.ka.revenue"
                     view_mode="form"
                     target="new"
                     key2="client_action_multi"
-                    id="revenue_by_ka_export_act_window"/>
+                    id="revenue_by_ka_export_act_window"/>-->
+
+        <record id="revenue_by_ka_export_act_window" model="ir.actions.act_window">
+            <field name="name">Export Revenue By Key Account Report</field>
+            <field name="res_model">report.ka.revenue.export</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="binding_model_id" ref="model_report_ka_revenue" />
+        </record>
+
 
         <!-- Export Action code ends here -->
 

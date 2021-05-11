@@ -399,6 +399,15 @@
                     <!--key2="client_action_multi"-->
                     <!--id="appraisal_tracker_act_window"/>-->
 
+        <record id="appraisal_tracker_act_window" model="ir.actions.act_window">
+                <field name="name">Export Appraisal Tracker</field>
+<!--                <field name="type">ir.actions.act_window</field>-->
+                <field name="res_model" >appraisaltracker.export</field>
+                <field name="binding_model_id" ref="purchase.model_purchase_order"/>
+                <field name="view_mode">form</field>
+                <field name="target">new</field>
+            </record>
+
         <menuitem id="menu_procurement_management_appraisal_tracker" name="Appraisal Tracker"
                   parent="purchase.menu_procurement_management" action="appraisal_tracker.action_window" sequence="15"
         />

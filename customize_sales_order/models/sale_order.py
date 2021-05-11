@@ -217,7 +217,7 @@ class sale_order(models.Model):
     @api.onchange('carrier_id')
     def onchange_carrier_id(self):
         if self.state in ('draft', 'sent', 'sale'):
-            self.delivery_price = 0.0
+            # self.delivery_price = 0.0
             self.delivery_rating_success = False
             self.delivery_message = False
 
