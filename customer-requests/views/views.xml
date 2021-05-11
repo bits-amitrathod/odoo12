@@ -139,14 +139,14 @@
             </field>
         </record>
 
-        <record id="view_form_import_document" model="ir.ui.view">
+        <record id="view_form_import_document_stockhawk" model="ir.ui.view">
             <field name="name">Import Documents customer form</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet/notebook/page[@name='internal_notes']" position="after">
-                    <page name="importdocument" string="Import Document">
-                          attrs="{'invisible':['|', '|', ('customer_rank', '==', 0), ('is_parent_assigned', '==', False),  ('prioritization', '==', False)]}">
+                    <page name="importdocument" string="Import Document"
+                          attrs="{'invisible':['|', '|', ('customer_rank', '==', 0), ('is_parent_assigned', '==', False), ('prioritization', '==', False)]}">
                         <field name="document_ids"/>
                         <field name="is_parent_assigned" string="Username" invisible="1"/>
                     </page>
@@ -154,13 +154,13 @@
             </field>
         </record>
 
-        <record id="view_form_api_credentials" model="ir.ui.view">
+        <record id="view_form_api_credentials_stockhawk" model="ir.ui.view">
             <field name="name">API Credentials customer form</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet/notebook/page[@name='internal_notes']" position="after">
-                    <page name="apicredentials" string="API Credentials">
+                    <page name="apicredentials" string="API Credentials"
                           attrs="{'invisible':['|', '|', ('customer_rank', '==', 0), ('is_parent_assigned', '==', False), ('prioritization', '==', False)]}">
                         <group>
                             <field name="api_username" string="Username"/>
