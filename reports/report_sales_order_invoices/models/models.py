@@ -22,29 +22,29 @@ class report_sales_order_invoices(models.TransientModel):
 
     def open_table(self):
 
-        tree_view_id = self.env.ref('account.invoice_tree').id
-        form_view_id = self.env.ref('account.invoice_form').id
+        tree_view_id = self.env.ref('account.view_invoice_tree').id
+        form_view_id = self.env.ref('account.view_move_form').id
         records = self.env['sale.order'].search([])
         list = records.mapped('name')
 
         action = {
             'type': 'ir.actions.act_window',
-            'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
+            'views': [(tree_view_id, 'tree'), (form_view_id, 'form')], #, (form_view_id, 'form')
             'view_type': 'form',
             'view_mode': 'tree,form',
             'name': _('Sales Order Invoice'),
-            #'res_model': 'account.invoice',
-            # 'context': {'search_default_product': 1}
+            'res_model': 'account.move',
+            'context': {'search_default_product': 1}
         }
 
         if self.compute_at_date == '0':
-            action['domain'] = [('state', '=', 'open'), ('date_invoice', '>=', self.start_date),
-                                ('date_invoice', '<=', self.end_date),
-                                ('origin', 'in', list)
+            action['domain'] = [('state', '=', 'open'), ('invoice_date', '>=', self.start_date),
+                                ('invoice_date', '<=', self.end_date),
+                                ('invoice_origin', 'in', list)
                                 ]
             return action
         elif self.compute_at_date == '1':
             action['domain'] = [
-                ('origin', '=', self.env['sale.order'].search([('id', '=', self.sale_order.ids[0])])[0].name),
+                ('invoice_origin', '=', self.env['sale.order'].search([('id', '=', self.sale_order.ids[0])])[0].name),
                 ('state', '=', 'open')]
             return action

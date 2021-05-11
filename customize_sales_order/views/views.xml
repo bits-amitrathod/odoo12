@@ -165,7 +165,7 @@
             </field>
         </record>
 
-      <record id="view_order_form_ex" model="ir.ui.view">
+      <record id="view_order_form_ex2" model="ir.ui.view">
             <field name="name">sale.order.form_ex</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
@@ -189,6 +189,21 @@
 		        </xpath>
             </field>
       </record>
+
+      <record id="res_partner_view_search_cstm" model="ir.ui.view">
+            <field name="name">res.partner.search.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="account.res_partner_view_search"/>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='customer']" position="replace">
+                   <filter string="Customer" name="customer" domain="[('customer_rank','>', 0), ('parent_id', '=', False)]"/>
+                </xpath>
+                <xpath expr="//filter[@name='supplier']" position="replace">
+                   <filter string="Vendor" name="supplier" domain="[('supplier_rank','>', 0), ('parent_id', '=', False)]"/>
+                   <separator/>
+                </xpath>
+            </field>
+        </record>
 
       <record id="click_to_dial_field_partner" model="ir.ui.view">
         <field name="name">res.partner.form</field>

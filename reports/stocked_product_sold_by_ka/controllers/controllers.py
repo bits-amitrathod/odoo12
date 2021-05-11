@@ -223,7 +223,7 @@ class StockedProductSoldByKa(http.Controller):
                  "Status", "Delivered Quantity", "Product UOM", "Unit Price", "Total"],
                 records),
             headers=[
-                ('Content-Disposition', content_disposition('short_date_and_over_stocked_product_sold_by_ka' + '.xls')),
+                ('Content-Disposition', content_disposition('short_date_and_over_stocked_product_sold_by_ka' + '.xlsx')),
                 ('Content-Type', 'application/vnd.ms-excel')],
         )
 

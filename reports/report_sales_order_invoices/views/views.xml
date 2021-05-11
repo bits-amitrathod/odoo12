@@ -8,7 +8,7 @@
                 <form string="Choose your date">
                      <group>
                         <group>
-                            <field name="compute_at_date" widget="radio"/>
+                            <field name="compute_at_date" widget="radio" default="0"/>
                              <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', '1')]}"/>
                             <field name="end_date" attrs="{'invisible': [('compute_at_date','=','1')]}"/>
                             <field name="sale_order" widget="many2one_tags" attrs="{'invisible': [('compute_at_date','=','0')]}"/>
@@ -32,19 +32,19 @@
             <field name="context">{'default_compute_at_date': '0', 'valuation': True}</field>
         </record>
 
-        <!--<record id="inherit_invoice_tree" model="ir.ui.view">
+        <record id="inherit_invoice_tree" model="ir.ui.view">
         <field name="name">exemple of change of create button on list view</field>
-        <field name="model">account.invoice</field>
-        <field name="inherit_id" ref="account.invoice_tree"/>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_invoice_tree"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='origin']" position="after">
+            <xpath expr="//field[@name='invoice_origin']" position="after">
                 <field name="purchase_order" string ="PO#"/>
             </xpath>
              <xpath expr="//tree" position="attributes">
                  <attribute name="create">false</attribute>
             </xpath>
         </field>
-        </record>-->
+        </record>
 
 
         <menuitem id="sr_menu_sale_sales_order_invoices"

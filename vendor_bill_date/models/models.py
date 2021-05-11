@@ -36,6 +36,12 @@ class VendorBillDate(models.Model):
             if self.date_invoice > self.date_due:
                 self.date_due = self.date_invoice
 
+    # @api.multi
+    def action_date_assign(self):
+        for inv in self:
+            # Here the onchange will automatically write to the database
+            inv._onchange_payment_term_date_invoice()
+        return True
 
 
     # Populates Due_Date at the time of Saving bill of purchase order in Purchase module when click on 'Save' button
