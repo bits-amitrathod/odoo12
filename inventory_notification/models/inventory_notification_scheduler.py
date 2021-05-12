@@ -505,7 +505,6 @@ class InventoryNotificationScheduler(models.TransientModel):
     @api.model
     #@api.multi
     def process_notification_scheduler_everyday(self):
-        pass
         self.process_new_product_scheduler()
         self.process_notify_available()
         self.process_packing_list()
