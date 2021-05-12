@@ -17,28 +17,28 @@ SUPERUSER_ID_INFO = 2
 class InventoryNotificationScheduler(models.TransientModel):
     _name = 'inventory.notification.scheduler'
 
-    warehouse_email = "vasimkhan@benchmarkit.solutions"
-    sales_email = "rohitkabadi@benchmarkit.solutions"
-    acquisitions_email = "ajinkyanimbalkar@benchmarkit.solutions"
-    all_email = "tushargodase@benchmarkit.solutions"
-    appraisal_email = "amitrathod@benchmarkit.solutions"
+    # warehouse_email = "vasimkhan@benchmarkit.solutions"
+    # sales_email = "rohitkabadi@benchmarkit.solutions"
+    # acquisitions_email = "ajinkyanimbalkar@benchmarkit.solutions"
+    # all_email = "tushargodase@benchmarkit.solutions"
+    # appraisal_email = "amitrathod@benchmarkit.solutions"
 
-    # warehouse_email = "warehouse@surgicalproductsolutions.com"
-    # sales_email = "sales@surgicalproductsolutions.com"
-    # acquisitions_email = "acquisitions@surgicalproductsolutions.com"
-    # all_email="sps@surgicalproductsolutions.com"
-    # appraisal_email = "appraisal@surgicalproductsolutions.com"
+    warehouse_email = "warehouse@surgicalproductsolutions.com"
+    sales_email = "sales@surgicalproductsolutions.com"
+    acquisitions_email = "acquisitions@surgicalproductsolutions.com"
+    all_email="sps@surgicalproductsolutions.com"
+    appraisal_email = "appraisal@surgicalproductsolutions.com"
 
     def process_manual_notification_scheduler(self):
         _logger.info("process_manual_notification_scheduler called..")
-        #self.process_notification_scheduler()
+        self.process_notification_scheduler()
 
 
     @api.model
     #@api.multi
     def process_notification_scheduler(self):
         _logger.info("process_notification_scheduler called")
-        #self.process_in_stock_scheduler()
+        self.process_in_stock_scheduler()
 
     def pick_notification_for_customer(self, picking):
         Stock_Moves = self.env['stock.move'].search([('picking_id', '=', picking.id)])
@@ -511,12 +511,11 @@ class InventoryNotificationScheduler(models.TransientModel):
     @api.model
     #@api.multi
     def process_notification_scheduler_everyday(self):
-        pass
-        # self.process_new_product_scheduler()
-        # self.process_notify_available()
-        # self.process_packing_list()
-        # self.process_on_hold_customer()
-        # self.process_todays_notification_flag_scheduler()
+        self.process_new_product_scheduler()
+        self.process_notify_available()
+        self.process_packing_list()
+        self.process_on_hold_customer()
+        self.process_todays_notification_flag_scheduler()
 
     def process_todays_notification_flag_scheduler(self):
         _logger.info('process_todays_notification_flag_scheduler called')
