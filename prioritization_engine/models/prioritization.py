@@ -402,6 +402,8 @@ class StockMove(models.Model):
                     if setting.partial_UOM and setting.partial_UOM is not None:
                         _logger.info('partial UOM** : %r', setting.partial_UOM)
                         stock_move.partial_UOM = setting.partial_UOM
+                else:
+                    stock_move.partial_UOM = None
 
     def _action_assign(self):
         """ Reserve stock moves by creating their stock move lines. A stock move is
