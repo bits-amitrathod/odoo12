@@ -8,11 +8,16 @@
             <field name="inherit_id" ref="base.view_partner_form" />
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='property_delivery_carrier_id']" position="before">
-                  <field name="account_manager_cust"/>
+                    <field name="account_manager_cust"/>
                     <field name="national_account_rep"/>
+                    <field name="message_bounce"/>
                 </xpath>
                 <xpath expr="//page[@name='sales_purchases']/group[@name='container_row_2']/group[@name='sale']/field[@name='user_id']" position="replace">
-                  <field name="user_id"/>
+                    <field name="customer_rank" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                    <field name="user_id"/>
+                </xpath>
+                <xpath expr="//group[@name='misc']/field[@name='ref']" position="after">
+                    <field name="barcode"/>
                 </xpath>
             </field>
         </record>
