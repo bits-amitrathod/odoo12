@@ -506,11 +506,11 @@ class InventoryNotificationScheduler(models.TransientModel):
     #@api.multi
     def process_notification_scheduler_everyday(self):
         pass
-        # self.process_new_product_scheduler()
-        # self.process_notify_available()
-        # self.process_packing_list()
-        # self.process_on_hold_customer()
-        # self.process_todays_notification_flag_scheduler()
+        self.process_new_product_scheduler()
+        self.process_notify_available()
+        self.process_packing_list()
+        self.process_on_hold_customer()
+        self.process_todays_notification_flag_scheduler()
 
     def process_todays_notification_flag_scheduler(self):
         _logger.info('process_todays_notification_flag_scheduler called')
