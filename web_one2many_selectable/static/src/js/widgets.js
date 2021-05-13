@@ -123,6 +123,8 @@ var One2ManySelectable = FieldOne2Many.extend({
 
 });
 fieldRegistry.add("one2many_selectable", One2ManySelectable);
-return One2ManySelectable;
+return {
+    One2ManySelectable: One2ManySelectable,
+};
 
 });
