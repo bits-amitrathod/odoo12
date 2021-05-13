@@ -404,6 +404,8 @@ class StockMove(models.Model):
                         stock_move.partial_UOM = setting.partial_UOM
                 else:
                     stock_move.partial_UOM = None
+            else:
+                stock_move.partial_UOM = None
 
     def _action_assign(self):
         """ Reserve stock moves by creating their stock move lines. A stock move is

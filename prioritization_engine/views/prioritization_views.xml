@@ -40,6 +40,7 @@
                     <field name="sale_margine"/>
                 </field>
                 <field name="active_lang_count" position="after">
+                    <field name="lang"/>
                     <field name="allow_purchase" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                     <field name="prioritization" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                     <field name="on_hold" attrs="{'readonly':[('is_parent', '==', False)]}"/>
