@@ -49,12 +49,15 @@
         <record id="email_template_edi_vendor_offer_done" model="mail.template">
             <field name="name">Vendor Offer - Send by Email</field>
             <field name="model_id" ref="purchase.model_purchase_order"/>
-            <field name="subject">${object.company_id.name} Order (Ref ${object.name or 'n/a' })</field>
+            <field name="subject">${object.company_id.name} Offer (Ref ${object.name or 'n/a' })</field>
             <!--<field name="email_from">${object.super_user_email}</field>-->
-             <field name="email_from">${object.sudo().create_uid.email_formatted | safe}</field>
-            <field name="partner_to">${object.partner_id.id}</field>
-           <field name="body_html"><![CDATA[
+             <field name="email_from">${(object.acq_user_id.partner_id.email if object.acq_user_id.partner_id.email != False else object.sudo().create_uid.email_formatted | safe)}</field>
+            <field name="partner_to">${(object.partner_id.id if object.partner_id.vendor_email==False)}</field>
+            <field name="email_to">${(object.partner_id.vendor_email if object.partner_id.vendor_email!=False)}</field>
+            <field name="email_cc">${object.acq_user_id.partner_id.email | safe}</field>
+             <field name="body_html"><![CDATA[
                 % set access_url = object.get_mail_url() or ''
+
                 <p>Dear ${object.partner_id.name}
                 % if object.partner_id.parent_id:
                     (<i>${object.partner_id.parent_id.name}</i>)
@@ -70,6 +73,7 @@
                 % endif
                  % if object.offer_type=='cash':
                     Cash amounting <strong>${format_amount(object.cash_amount_total, object.currency_id)}</strong>
+
                 % elif object.offer_type=='credit':
                     Credit amounting <strong>${format_amount(object.credit_amount_total, object.currency_id)}</strong>
                  % elif object.offer_type=='cashcredit':
@@ -79,6 +83,7 @@
                    Credit amounting <strong>${format_amount(object.credit_amount_total, object.currency_id)}</strong>
                      Cash amounting <strong>${format_amount(object.cash_amount_total, object.currency_id)}</strong>
                  % endif
+
                 from ${object.company_id.name}.
                 </p>
                 <br/><br/>
@@ -98,84 +103,24 @@
             <field name="auto_delete" eval="True"/>
         </record>
 
-        <!--&lt;!&ndash;Default Notification Email template for invoices&ndash;&gt;-->
-        <!--&lt;!&ndash;<record id="vendor_offer.mail_template_data_notification_email_vendor_offer" model="mail.template">&ndash;&gt;-->
-            <!--&lt;!&ndash;<field name="name">Vendor Offer Notification Email</field>&ndash;&gt;-->
-            <!--&lt;!&ndash;<field name="subject">${object.subject}</field>&ndash;&gt;-->
-            <!--&lt;!&ndash;<field name="model_id" ref="mail.model_mail_message"/>&ndash;&gt;-->
-            <!--&lt;!&ndash;<field name="auto_delete" eval="True"/>&ndash;&gt;-->
-            <!--&lt;!&ndash;<field name="body_html"><![CDATA[<html>&ndash;&gt;-->
-                <!--&lt;!&ndash;<head></head>&ndash;&gt;-->
-                <!--&lt;!&ndash;% set company = record and record.company_id or ctx.get('company')&ndash;&gt;-->
-                <!--&lt;!&ndash;<body style="margin: 0; padding: 0;">&ndash;&gt;-->
-                                <!--&lt;!&ndash;<table border="0" width="100%" cellpadding="0" bgcolor="#ededed" style="padding: 20px; background-color: #ededed" summary="o_mail_notification">&ndash;&gt;-->
-                    <!--&lt;!&ndash;<tbody>&ndash;&gt;-->
-
-                      <!--&lt;!&ndash;&lt;!&ndash; HEADER &ndash;&gt;&ndash;&gt;-->
-                      <!--&lt;!&ndash;<tr>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<td align="center" style="min-width: 590px;">&ndash;&gt;-->
-                          <!--&lt;!&ndash;<table width="590" border="0" cellpadding="0" bgcolor="#875A7B" style="min-width: 590px; background-color: rgb(135,90,123); padding: 20px;">&ndash;&gt;-->
-                            <!--&lt;!&ndash;<tr>&ndash;&gt;-->
-                              <!--&lt;!&ndash;<td valign="middle">&ndash;&gt;-->
-                                  <!--&lt;!&ndash;<span style="font-size:20px; color:white; font-weight: bold;">&ndash;&gt;-->
-                                      <!--&lt;!&ndash;${object.record_name}&ndash;&gt;-->
-                                  <!--&lt;!&ndash;</span>&ndash;&gt;-->
-                              <!--&lt;!&ndash;</td>&ndash;&gt;-->
-                              <!--&lt;!&ndash;<td valign="middle" align="right">&ndash;&gt;-->
-                                  <!--&lt;!&ndash;<img src="/logo.png?company=${company.id}" style="padding: 0px; margin: 0px; height: auto; width: 80px;" alt="${company.name}">&ndash;&gt;-->
-                              <!--&lt;!&ndash;</td>&ndash;&gt;-->
-                            <!--&lt;!&ndash;</tr>&ndash;&gt;-->
-                          <!--&lt;!&ndash;</table>&ndash;&gt;-->
-                        <!--&lt;!&ndash;</td>&ndash;&gt;-->
-                      <!--&lt;!&ndash;</tr>&ndash;&gt;-->
-
-                      <!--&lt;!&ndash;&lt;!&ndash; CONTENT &ndash;&gt;&ndash;&gt;-->
-                      <!--&lt;!&ndash;<tr>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<td align="center" style="min-width: 590px;">&ndash;&gt;-->
-                          <!--&lt;!&ndash;<table width="590" border="0" cellpadding="0" bgcolor="#ffffff" style="min-width: 590px; background-color: rgb(255, 255, 255); padding: 20px;">&ndash;&gt;-->
-                            <!--&lt;!&ndash;<tbody>&ndash;&gt;-->
-                              <!--&lt;!&ndash;<td valign="top" style="font-family:Arial,Helvetica,sans-serif; color: #555; font-size: 14px;">&ndash;&gt;-->
-                                <!--&lt;!&ndash;${object.body | safe}&ndash;&gt;-->
-                              <!--&lt;!&ndash;</td>&ndash;&gt;-->
-                            <!--&lt;!&ndash;</tbody>&ndash;&gt;-->
-                          <!--&lt;!&ndash;</table>&ndash;&gt;-->
-                        <!--&lt;!&ndash;</td>&ndash;&gt;-->
-                      <!--&lt;!&ndash;</tr>&ndash;&gt;-->
-
-                      <!--&lt;!&ndash;&lt;!&ndash; FOOTER &ndash;&gt;&ndash;&gt;-->
-                      <!--&lt;!&ndash;<tr>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<td align="center" style="min-width: 590px;">&ndash;&gt;-->
-                          <!--&lt;!&ndash;<table width="590" border="0" cellpadding="0" bgcolor="#875A7B" style="min-width: 590px; background-color: rgb(135,90,123); padding: 20px;">&ndash;&gt;-->
-                            <!--&lt;!&ndash;<tr>&ndash;&gt;-->
-                              <!--&lt;!&ndash;<td valign="middle" align="left" style="color: #fff; padding-top: 10px; padding-bottom: 10px; font-size: 12px;">&ndash;&gt;-->
-                                <!--&lt;!&ndash;${company.name}<br/>&ndash;&gt;-->
-                                <!--&lt;!&ndash;${company.phone or ''}&ndash;&gt;-->
-                              <!--&lt;!&ndash;</td>&ndash;&gt;-->
-                              <!--&lt;!&ndash;<td valign="middle" align="right" style="color: #fff; padding-top: 10px; padding-bottom: 10px; font-size: 12px;">&ndash;&gt;-->
-                                <!--&lt;!&ndash;% if company.email:&ndash;&gt;-->
-                                <!--&lt;!&ndash;<a href="mailto:${company.email}" style="text-decoration:none; color: white;">${company.email}</a><br/>&ndash;&gt;-->
-                                <!--&lt;!&ndash;% endif&ndash;&gt;-->
-                                <!--&lt;!&ndash;% if company.website:&ndash;&gt;-->
-                                    <!--&lt;!&ndash;<a href="${company.website}" style="text-decoration:none; color: white;">&ndash;&gt;-->
-                                        <!--&lt;!&ndash;${company.website}&ndash;&gt;-->
-                                    <!--&lt;!&ndash;</a>&ndash;&gt;-->
-                                <!--&lt;!&ndash;% endif&ndash;&gt;-->
-                              <!--&lt;!&ndash;</td>&ndash;&gt;-->
-                            <!--&lt;!&ndash;</tr>&ndash;&gt;-->
-                          <!--&lt;!&ndash;</table>&ndash;&gt;-->
-                        <!--&lt;!&ndash;</td>&ndash;&gt;-->
-                      <!--&lt;!&ndash;</tr>&ndash;&gt;-->
-                      <!--&lt;!&ndash;<tr>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<td align="center">&ndash;&gt;-->
-                            <!--&lt;!&ndash;Powered by <a href="https://www.odoo.com">Odoo</a>.&ndash;&gt;-->
-                        <!--&lt;!&ndash;</td>&ndash;&gt;-->
-                      <!--&lt;!&ndash;</tr>&ndash;&gt;-->
-                    <!--&lt;!&ndash;</tbody>&ndash;&gt;-->
-                <!--&lt;!&ndash;</table>&ndash;&gt;-->
-                <!--&lt;!&ndash;</body>&ndash;&gt;-->
-                <!--&lt;!&ndash;</html>&ndash;&gt;-->
-            <!--&lt;!&ndash;]]></field>&ndash;&gt;-->
-        <!--&lt;!&ndash;</record>&ndash;&gt;-->
+        <record id="email_template_edi_vendor_offer_done_cstm" model="mail.template">
+            <field name="name">Vendor Offer - Send by Email</field>
+            <field name="model_id" ref="purchase.model_purchase_order"/>
+            <field name="email_from">${(object.acq_user_id.partner_id.email if object.acq_user_id.partner_id.email != False else object.sudo().create_uid.email_formatted | safe)}</field>
+            <field name="partner_to">${(object.partner_id.id if object.partner_id.vendor_email==False)}</field>
+            <field name="email_to">${(object.partner_id.vendor_email if object.partner_id.vendor_email!=False)}</field>
+            <field name="email_cc"><![CDATA[${ctx['email_cc'] | safe}]]></field>
+            <field name="subject"><![CDATA[${ctx['subject_details']}]]></field>
+            <field name="body_html"><![CDATA[
+                    <div style="font-size: 13px;font-family: "Times New Roman"> ${ctx['body_details'] | safe} </div>
+                ]]>
+            </field>
+            <field name="report_template" ref="action_report_vendor_offer"/>
+            <field name="report_name">OFFER_${(object.name or '').replace('/','_')}</field>
+            <field name="lang">${object.partner_id.lang}</field>
+            <!--<field name="user_signature" eval="False"/>-->
+            <field name="auto_delete" eval="True"/>
+        </record>
 
         <template id="mail_notification_vendor_offer" name="Mail: Vendor Offer Notification Email">
 <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;"><tr><td align="center">

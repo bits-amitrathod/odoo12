@@ -129,6 +129,8 @@ class SpsCustomerRequest(models.Model):
                     _logger.info('Customer prioritization setting is False or customer is On Hold. Customer id is :%r',
                                  str(global_level_setting.id))
                     return False
+            else:
+                return False
 
     @api.depends('document_id')
     def _get_qty_to_show(self):
