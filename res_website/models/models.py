@@ -19,18 +19,18 @@ class WebResource(models.Model):
     ], default='award', string='Category', required=True )
 
     image = fields.Binary('Image',attachment=True)
-    image_medium = fields.Binary('Medium', compute="_get_image", store=True, attachment=True)
-    image_thumb = fields.Binary('Thumbnail', compute="_get_image", store=True, attachment=True)
+    image_medium = fields.Binary('Medium',  store=True, attachment=True)
+    image_thumb = fields.Binary('Thumbnail', store=True, attachment=True)
 
-    @api.depends('image')
-    def _get_image(self):
-        for record in self:
-            if record.image:
-                record.image_medium = image.crop_image(record.image, type='top', ratio=(4, 3), size=(500, 400))
-                record.image_thumb = image.crop_image(record.image, type='top', ratio=(4, 3), size=(200, 200))
-            else:
-                record.image_medium = False
-                record.iamge_thumb = False
+    # @api.depends('image')
+    # def _get_image(self):
+    #     for record in self:
+    #         if record.image:
+    #             record.image_medium = image.crop_image(record.image, type='top', ratio=(4, 3), size=(500, 400))
+    #             record.image_thumb = image.crop_image(record.image, type='top', ratio=(4, 3), size=(200, 200))
+    #         else:
+    #             record.image_medium = False
+    #             record.iamge_thumb = False
 
     #@api.multi
     def toggle_website_published(self):
