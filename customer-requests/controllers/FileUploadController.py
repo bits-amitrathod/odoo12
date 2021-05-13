@@ -99,7 +99,7 @@ class FileUploadController(Controller):
         # cr, context, pool, uid = request.cr, request.context, request.registry, request.uid
         input_data = post['input_data']
         print('input_data', input_data)
-        records = request.env['res.partner'].sudo().search([(input_data, '>', 0), ('parent_id', '=', None)])
+        records = request.env['res.partner'].sudo().search([('customer_rank', '>', 0), ('parent_id', '=', None)])
         response_data = [dict(name=record['name'], id=record['id']) for record in records]
         return str(json.dumps(response_data))
 
