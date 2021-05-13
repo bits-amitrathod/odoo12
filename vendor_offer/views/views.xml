@@ -537,37 +537,38 @@
                 <xpath expr="//notebook/page/field[@name='order_line']" position="replace">
                     <field name="order_line" attrs="{'readonly': [('vendor_offer_data', '=', True)]}">
                         <tree string="Purchase Order Lines" editable="False">
+                            <field name="display_type" invisible="1"/>
                             <field name="currency_id" invisible="1"/>
-                            <field name="state" invisible="1"/>
-                            <!--<field name="sequence" widget="handle"/>-->
+                             <field name="state" invisible="1" readonly="1"/>
+                            <field name="product_type" invisible="1"/>
+                            <field name="product_uom_category_id" invisible="1"/>
+                            <field name="invoice_lines" invisible="1"/>
+                            <field name="sequence" widget="handle"/>
+
                             <field name="sku_code" readonly="1"/>
-                            <field name="product_id"
-                                   attrs="{'readonly': [('state', 'in', ('purchase', 'to approve','done', 'cancel'))]}"
-                                   context="{'partner_id':parent.partner_id, 'quantity':product_qty, 'company_id': parent.company_id}"
-                                   force_save="1"/>
-                            <!--'uom':product_uom,-->
-                            <!--<field-->
-                                        <!--name="product_id"-->
-                                        <!--attrs="{-->
-                                            <!--'readonly': [('state', 'in', ('purchase', 'to approve','done', 'cancel'))],-->
-                                            <!--'required': [('display_type', '=', False)],-->
-                                        <!--}"-->
-                                        <!--context="{'partner_id':parent.partner_id, 'quantity':product_qty,'uom':product_uom, 'company_id': parent.company_id}"-->
-                                        <!--force_save="1" domain="[('purchase_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"/>-->
+                                <field
+                                        name="product_id"
+                                        attrs="{
+                                            'readonly': [('state', 'in', ('purchase', 'to approve','done', 'cancel'))],
+                                            'required': [('display_type', '=', False)],
+                                        }"
+                                        style="width: 158px;"
+                                        context="{'partner_id':parent.partner_id, 'quantity':product_qty,'uom':product_uom, 'company_id': parent.company_id}"
+                                        force_save="1" domain="[('purchase_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"/>
                             <field name="name" invisible="1"/>
-                            <!--&lt;!&ndash;<field name="move_dest_ids" invisible="1"/>&ndash;&gt;-->
+                            <field name="move_dest_ids" invisible="1"/>
                             <field name="date_planned"/>
                             <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
-                            <!--<field name="account_analytic_id" context="{'default_partner_id':parent.partner_id}"-->
-                                   <!--groups="purchase.group_analytic_accounting"/>-->
-                            <!--<field name="analytic_tag_ids" groups="purchase.group_analytic_accounting"-->
-                                   <!--widget="many2many_tags" options="{'color_field': 'color'}"/>-->
+                            <field name="account_analytic_id" context="{'default_partner_id':parent.partner_id}"
+                                   groups="purchase.group_analytic_accounting"/>
+                            <field name="analytic_tag_ids" groups="purchase.group_analytic_accounting"
+                                   widget="many2many_tags" options="{'color_field': 'color'}"/>
                             <field name="product_qty" attrs="{'readonly': [('vendor_offer_data', '=', True)]}"/>
                             <field name="qty_received" invisible="not context.get('show_purchase', True)"/>
                             <field name="qty_invoiced" invisible="not context.get('show_purchase', True)"/>
-                            <!--<field name="product_uom" groups="product.group_uom"-->
-                                   <!--attrs="{'readonly': [('state', 'in', ('purchase', 'done', 'cancel'))]}"-->
-                                   <!--force_save="1"/>-->
+                            <field name="product_uom" groups="product.group_uom"
+                                   attrs="{'readonly': [('state', 'in', ('purchase', 'done', 'cancel'))]}"
+                                   force_save="1"/>
                             <field name="price_unit" attrs="{'readonly': [('vendor_offer_data', '=', True)]}"/>
                             <field name="product_offer_price" invisible="1"/>
                                <field name="vendor_offer_data" invisible="1"/>
