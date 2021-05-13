@@ -29,6 +29,17 @@
         </field>
      </record>
 
+    <record id="stock_production_lot_view_form_notebook_attr" model="ir.ui.view">
+        <field name="name">stock.production.lot.notebook.form</field>
+        <field name="model">stock.production.lot</field>
+        <field name="inherit_id" ref="product_expiry.view_move_form_expiry"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/notebook" position="attributes">
+                <attribute name="attrs">{'invisible': 0}</attribute>
+            </xpath>
+        </field>
+    </record>
+
     <!--<record id="product_expiry_view_move_form_expiry_inherit" model="ir.ui.view">
         <field name="name">stock.production.lot.tree</field>
         <field name="model">stock.production.lot</field>

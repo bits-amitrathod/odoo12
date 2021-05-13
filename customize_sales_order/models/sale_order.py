@@ -40,13 +40,16 @@ class CustomerContract(models.Model):
 
     @api.depends('category_id')
     def _display_reinstated_date_flag(self):
+        reinstated_date_flag = False
         for record in self:
-            for category_id in record.category_id:
-                if category_id.id == 31:
-                    self.display_reinstated_date_flag = 1
-                else:
-                    self.display_reinstated_date_flag = 0
-        self.display_reinstated_date_flag = 1
+            if record and record.category_id:
+                for category_id in record.category_id:
+                    if category_id.name.strip().upper() == 'REINSTATED':
+                        reinstated_date_flag = True
+        if reinstated_date_flag:
+            self.display_reinstated_date_flag = 1
+        else:
+            self.display_reinstated_date_flag = 0
 
     @api.onchange('parent_id')
     def onchange_parent_id(self):

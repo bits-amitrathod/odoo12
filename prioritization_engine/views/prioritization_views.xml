@@ -1,13 +1,13 @@
 <odoo>
     <data  noupdate="1">
-       <!-- <record id="seq_sfnumber" model="ir.sequence">
+       <record id="seq_sfnumber" model="ir.sequence">
             <field name="name">Sale Force</field>
             <field name="code">sale.force.no</field>
-            &lt;!&ndash;<field name="prefix">SF</field>&ndash;&gt;
+            <!--<field name="prefix">SF</field>-->
             <field name="padding">5</field>
             <field name="number_next">12000</field>
             <field name="number_increment">1</field>
-        </record>-->
+        </record>
     </data>
     <data>
         <record id="view_form_prioritization_customer1" model="ir.ui.view">
@@ -40,10 +40,11 @@
                     <field name="sale_margine"/>
                 </field>
                 <field name="active_lang_count" position="after">
+                    <field name="lang"/>
                     <field name="allow_purchase" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                     <field name="prioritization" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                     <field name="on_hold" attrs="{'readonly':[('is_parent', '==', False)]}"/>
-                    <field name="customer_rank" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                    <field name="customer_rank" attrs="{'readonly':[('is_parent', '==', False)]}" invisible="1"/>
                     <field name="is_broker" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                     <field name="is_parent" invisible="1"/>
                     <field name="having_carrier" attrs="{'readonly':[('is_parent', '==', False)]}"/>
@@ -289,7 +290,7 @@
             </field>
         </record>
 
-        <record id="contact_form_ex" model="ir.ui.view">
+        <record id="contact_form_ex_stockhawk" model="ir.ui.view">
             <field name="name">res.partner.form_ex</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
@@ -300,10 +301,10 @@
                         <field name="gl_account"/>
                     </div>
                 </xpath>
-                <!--<xpath expr="/form/sheet/notebook/page[1]/field[@name='child_ids']/form[1]/sheet/group/group[2]/field[@name='name']"
+                <xpath expr="/form/sheet/notebook/page[1]/field[@name='child_ids']/form[1]/sheet/group/group[1]/field[@name='name']"
                        position="after">
                     <field name="gl_account" placeholder=" GL Account No.." widget="one2many"/>
-                </xpath>-->
+                </xpath>
             </field>
         </record>
 

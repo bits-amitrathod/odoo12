@@ -1,5 +1,5 @@
 <odoo>
-    <template id="surgical_products_sell_page_template" name="Surgical Products Sell">
+    <template id="surgical_products_sell_page_template1" name="Surgical Products Sell">
         <t t-name="website.surgical_products_sell">
             <t t-call="website.layout">
                 <div id="wrap" class="surgical-product-sell oe_structure oe_empty">
@@ -7,7 +7,7 @@
                         <div class="container">
                             <div class="row">
                                 <div class="col-md-6 pb-3">
-                                    <h3 class="video-title"><span class="bold-font">Sell</span> Your Surplus Surgical Products.</h3>
+                                    <h1 class="video-title"><span class="bold-font">Sell</span> Your Surplus Surgical Supplies.</h1>
                                     <div class="section-description mt-3 mb-4">
                                         <p>If you have a surplus inventory of surgical products, why not sell them so they don’t go to waste? SPS will purchase your unused, in-date surgical supplies.
                                         </p>

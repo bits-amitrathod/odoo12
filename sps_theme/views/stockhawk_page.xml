@@ -1,5 +1,5 @@
 <odoo>
-	<template id="stockhawk_page_template" name="Stockhawk">
+	<template id="stockhawk_page_template1" name="Stockhawk">
 		<t t-name="website.stockhawk">
 			<t t-call="website.layout">
 				<div id="wrap" class="stockhawk-page oe_structure oe_empty">
@@ -38,7 +38,8 @@
 									<img src="/sps_theme/static/src/images/assistant.jpg" class="img-fluid"/>
 								</div>
 								<div class="col-md-6 align-self-center">
-									<p class="hawk-title ft-32 medium-font">Your Inventory Savings Assistant.</p>
+									<h1 class="about-header">Stockhawk Medical Inventory Management Software</h1>
+									<h2 class="hawk-title ft-32 medium-font">Your Inventory Savings Assistant.</h2>
 									<div class="section-description">
 										<p>When it comes to Surgical Product re-orders, do you wish you
                                             had a quick way to ensure you’re getting the best price? At SPS,
@@ -246,6 +247,65 @@
 						<input class="form-field" type="hidden" name="email_to" value="info@surgicalproductsolutions.com"/>
                         <input class="form-field" type="hidden" name="subject" value="Received New 'Savings Impact Quote' Form"/>
 						</form>
+					</section>
+					<section class="padding-100-y contact-us-section">
+                            <div class="container">
+									<h3 class="section-title mt-0 mb-5">Do you have questions about Stockhawk? </h3>
+                                <div class="row">
+                                    <div class="col-xl-5 col-md-6 col-sm-6 mb48 mt8">
+                                       <div class="contact-info">
+										   <h3 class="contact-title">CONTACT OUR SALES TEAM</h3>
+											<div class="section-description mt-0 ">
+												<div class="story-list link">
+													<div class="list-description">
+														<div class="contact-detail">
+															<span><a href="tel:(412) 564-1280" class="text-black"><i class="icon-mobile mr-2"></i> (412) 564-1280</a></span>
+															<span><a href="mailto:info@surgicalproductsolutions.com" class="text-black"><i class="icon-email mr-2"></i>  info@surgicalproductsolutions.com</a></span>
+														</div>
+													</div>
+												</div>
+											</div>
+										   <div class="text-left btn-wrapper">
+                                                  <a itemprop="url" href="/request-a-quote" class="btn btn-info btn-sm" >Request a Quote</a>
+                                                  <a itemprop="url" href="/faqs" class="btn btn-info btn-sm" >Read our FAQ</a>
+                                              </div>
+									   </div>
+                                    </div>
+                                   <div class="col-xl-7 col-md-6 col-sm-6 mb48 mt8">
+								<div class="get-in-touch">
+									<h3 class="title">GET IN TOUCH</h3>
+									<span class="sub-title">Use the form below to get in touch with us, and we’ll respond as soon as possible. </span>
+									<form action="/website_form/" method="post" data-model_name="crm.lead" data-success_page="/thank-you" class="mt-5 s_website_form form-horizontal container-fluid" enctype="multipart/form-data" data-editable-form="false">
+										<div class="col-md-8">
+
+											<div class="form-group has-float-label form-field o_website_form_required_custom">
+												<input type="text" class="form-control o_website_form_input" placeholder="Name *" id="contact_name" name="contact_name" t-att-value="request.params.get('contact_name', '')" required=""/>
+<!--												<label class="control-label" for="contact_name">Name</label>-->
+											</div>
+										</div>
+										<div class="col-md-8">
+											<div class="form-group has-float-label form-field o_website_form_required_custom">
+												<input placeholder="Email *"  type="text" id="email_form" class="form-control o_website_form_input" name="email_from" required="" t-att-value="request.params.get('email_from', '')"/>
+<!--												<label class="control-label" for="email_form">Email</label>-->
+												<input type="hidden" class="form-control o_website_form_input" name="name" required="True" value="Website Contact Us" />
+											</div>
+										</div>
+										<div class="col-12">
+											<div class="form-group has-float-label form-field o_website_form_required_custom o_website_form_required_custom">
+                                                <textarea id="description" placeholder="Message *" class="form-control o_website_form_input" name="description"  required="" rows="5"><t t-esc="request.params.get('description', '')" /></textarea>
+<!--                                                <label class="control-label" for="description">Message</label>-->
+                                          </div>
+										</div>
+										<div class="col-md-12 text-center btn-wrapper">
+									        <button class="btn btn-info btn-sm action_button o_website_form_send">Send Message</button>
+										</div>
+									</form>
+								</div>
+							</div>
+
+
+                                </div>
+                            </div>
 					</section>
 				</div>
 			</t>

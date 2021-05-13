@@ -35,7 +35,7 @@ class LoginCaseInsensitive(models.Model):
 
         # create a copy of the template user (attached to a specific partner_id if given)
         values['active'] = True
-        values['customer'] = True
+        values['customer_rank'] = 1
         try:
             with self.env.cr.savepoint():
                 return template_user.with_context(no_reset_password=True).copy(values)
@@ -130,7 +130,7 @@ class LoginCaseInsensitive(models.Model):
             partner = self.env['res.partner']._signup_retrieve_partner(token, check_validity=True, raise_exception=True)
             # invalidate signup token
             partner.write({'signup_token': False, 'signup_type': False, 'signup_expiration': False,
-                           'supplier': True})
+                           'supplier_rank': 1})
 
             account_payment_term = self.env['account.payment.term'].search([('name', '=', 'Net 30'),
                                                                             ('active', '=', True)])
@@ -168,7 +168,7 @@ class LoginCaseInsensitive(models.Model):
             # no token, sign up an external user
             values['saleforce_ac'] = self.env['ir.sequence'].next_by_code('sale.force.no') or _('New')
             values['email'] = values.get('email') or values.get('login')
-            values['supplier'] = True
+            values['supplier_rank'] = 1
             account_payment_term = self.env['account.payment.term'].search([('name', '=', 'Net 30'), ('active', '=', True)])
             if account_payment_term:
                 values['property_payment_term_id'] = account_payment_term.id
@@ -715,7 +715,7 @@ class WebsiteSale(http.Controller):
                 if k not in ('field_required', 'partner_id', 'callback', 'submitted'): # classic case
                     _logger.debug("website_sale postprocess: %s value has been dropped (empty or not writable)" % k)
 
-        new_values['customer'] = True
+        new_values['customer_rank'] = 1
         new_values['team_id'] = request.website.salesteam_id and request.website.salesteam_id.id
         new_values['user_id'] = request.website.salesperson_id and request.website.salesperson_id.id
 

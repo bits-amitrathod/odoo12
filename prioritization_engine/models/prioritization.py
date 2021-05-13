@@ -379,9 +379,11 @@ class PrioritizationTransient(models.TransientModel):
 
 class SalesChannelPrioritization(models.Model):
     _inherit = "crm.team"
-    team_type = fields.Selection(selection=[('engine', 'Stockhawk'), ('sales', 'Sales'), ('website', 'Website')],
+
+    team_type = fields.Selection(selection=[('engine', 'Prioritization'), ('sales', 'Sales'), ('website', 'Website'),
+                                  ('my_in_stock_report', 'My In-Stock Report')],
                                  string='Channel Type', default='sales',
-                                 required=True,
+                                 required=True, track_visibility='onchange',
                                  help="The type of this channel, it will define the resources this channel uses.")
 
 
@@ -400,6 +402,10 @@ class StockMove(models.Model):
                     if setting.partial_UOM and setting.partial_UOM is not None:
                         _logger.info('partial UOM** : %r', setting.partial_UOM)
                         stock_move.partial_UOM = setting.partial_UOM
+                else:
+                    stock_move.partial_UOM = None
+            else:
+                stock_move.partial_UOM = None
 
     def _action_assign(self):
         """ Reserve stock moves by creating their stock move lines. A stock move is
@@ -416,10 +422,23 @@ class StockMove(models.Model):
         reserved_availability = {move: move.reserved_availability for move in self}
         roundings = {move: move.product_id.uom_id.rounding for move in self}
         move_line_vals_list = []
+        msg = "<b>Available Stock</b>"
+        picking_id = None
         for move in self.filtered(lambda m: m.state in ['confirmed', 'waiting', 'partially_available']):
             rounding = roundings[move]
             missing_reserved_uom_quantity = move.product_uom_qty - reserved_availability[move]
             missing_reserved_quantity = move.product_uom._compute_quantity(missing_reserved_uom_quantity, move.product_id.uom_id, rounding_method='HALF-UP')
+            if move and move.picking_id and move.picking_id.picking_type_id and move.picking_id.picking_type_id.id == 1:
+                picking_id = move.picking_id
+                quants = self.env['stock.quant']._gather(move.product_id, move.location_id)
+                msg += "<br>-------------------<br>"
+                msg += "<b>Product :</b> " + str(move.product_id.display_name)
+                for quant in quants:
+                    if (quant.quantity - quant.reserved_quantity) > 0:
+                        msg += "<br>"
+                        msg += "<b>Expiration Date :</b> " + str(quant.lot_id.use_date.date()) + " <b>Lot# :</b> " + str(
+                            quant.lot_id.name) + " <b>Available Quantity :</b> " + str(quant.quantity - quant.reserved_quantity)
+
             product_lot_qty_dict.clear()
             if (move.picking_id and move.picking_id.sale_id) and (move.picking_id.sale_id.team_id.team_type.lower().strip() == 'engine' and move.picking_id.sale_id.state.lower().strip() in ('sale')):
                 available_production_lot_dict = self.env['available.product.dict'].get_available_production_lot(move.partner_id.id, move.product_id.id)
@@ -559,6 +578,21 @@ class StockMove(models.Model):
         self.env['stock.move.line'].create(move_line_vals_list)
         StockMove.browse(partially_available_moves_ids).write({'state': 'partially_available'})
         StockMove.browse(assigned_moves_ids).write({'state': 'assigned'})
+        if picking_id and picking_id is not None and assigned_moves_ids:
+            msgs = "<b>Selected Lot#</b>"
+            for move_id in assigned_moves_ids:
+                assigned_move = StockMove.browse(move_id)
+                msgs += "<br>-------------------<br>"
+                msgs += "<b>Product :</b> " + str(assigned_move.product_id.display_name)
+                for move_line in assigned_move.move_line_ids:
+                    msgs += "<br>"
+                    msgs += "<b>Expiration Date :</b> " + str(move_line.lot_id.use_date.date()) + \
+                            " <b>Lot# :</b> " + str(move_line.lot_id.name) + \
+                            " <b>Quantity :</b> " + str(move_line.product_uom_qty)
+            picking_id.message_post(body=msgs)
+
+        if picking_id and picking_id is not None:
+            picking_id.message_post(body=msg)
         self.mapped('picking_id')._check_entire_pack()
 
 
