@@ -21,11 +21,25 @@
       </field>
     </record>
 
-    <record id="view_order_form_inherit_sale_stock" model="ir.ui.view">
+    <record id="view_order_form_inherit_sale_stock_inherit" model="ir.ui.view">
         <field name="name">sale.order.form.sale.stock</field>
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale_stock.view_order_form_inherit_sale_stock"/>
         <field name="arch" type="xml">
+            <xpath expr="//group[@name='sale_shipping']" position="attributes">
+                    <attribute name="groups"></attribute>
+                    <attribute name="string">Shipping Information</attribute>
+                </xpath>
+            <xpath expr="//field[@name='picking_policy']" position="before">
+                <field name="warehouse_id" />
+            </xpath>
+            <xpath expr="//field[@name='picking_policy']" position="after">
+                <field name="expected_date" />
+                <field name="effective_date" />
+            </xpath>
+            <xpath expr="//field[@name='commitment_date']" position="replace">
+                <field name="commitment_date" string="Commitment Date"/>
+            </xpath>
             <xpath expr="//group[@name='sale_shipping']" position="inside">
                 <field name="all_qty_delivered"/>
             </xpath>

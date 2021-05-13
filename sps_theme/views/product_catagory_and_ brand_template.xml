@@ -6,7 +6,9 @@
 
        <xpath expr="//div[@id='products_grid']//table" position="before">
                 <div class="text-center pt32">
-                        <h1  class="about-header"> Surgical Products - <span class="black-font"><t t-esc="title"/></span> </h1>
+                        <!--<h1  class="about-header"> Surgical Products - <span class="black-font"><t t-esc="title"/></span> </h1>-->
+                    <h1 class="about-header" t-esc="title" />
+                    <h2 t-esc="sub_title" />
                 </div>
            <div class="products_pager form-inline justify-content-center">
                         <t t-call="website_sale.search">

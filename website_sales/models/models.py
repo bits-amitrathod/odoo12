@@ -19,3 +19,14 @@ class ResConfigSettings(models.TransientModel):
         super(ResConfigSettings, self).set_values()
         ICPSudo = self.env['ir.config_parameter'].sudo()
         ICPSudo.set_param('website_sales.website_expiration_date', self.website_expiration_date)
+
+
+class Website(models.Model):
+    _inherit = "website"
+
+    def _prepare_sale_order_values(self, partner, pricelist):
+        values = super(Website, self)._prepare_sale_order_values(partner, pricelist)
+        address = partner.address_get(['invoice'])
+        if address['invoice']:
+            values['partner_invoice_id'] = address['invoice']
+        return values

@@ -6,12 +6,13 @@
     'version': '11.0.0.1',
 
     # any module necessary for this one to work correctly
-     'depends': ['base'],
+     'depends': ['base', 'portal'],
 
     # always loaded
     'data': [
+         'views/portal_access_scheduler.xml',
+         'data/portal_data.xml',
          'views/views.xml',
-         'views/templates.xml',
     ],
     'images': ['static/description/banner.png'],
     'installable': True,

@@ -1,5 +1,5 @@
 <odoo>
-	<template id="contact_page_template" name="Contact Form" inherit_id="website.contactus" customize_show="True">
+	<template id="contact_page_template1" name="Contact Form" inherit_id="website.contactus" customize_show="True">
 		<xpath expr="//div[@id='wrap']" position="replace">
 			<div id="wrap" class="oe_structure oe_empty">
 				<section class="contact-us-section  mb0">
@@ -23,7 +23,8 @@
 											<div class="list-description">
 												<p>Sales</p>
 												<div class="contact-detail">
-													<span>(412) 564-1280</span>
+													<span><a href="tel:(412) 564-1280" class="text-black"><i class="icon-mobile mr-2"></i> (412) 564-1280</a></span>
+													<span><a href="mailto:info@surgicalproductsolutions.com" class="text-black"><i class="icon-email mr-2"></i>  info@surgicalproductsolutions.com</a></span>
 												</div>
 											</div>
 										</div>
@@ -36,7 +37,8 @@
 											<div class="list-description">
 												<p>Acquisitions</p>
 												<div class="contact-detail">
-													<span>(412) 745-0330</span>
+													<span><a href="tel:(412) 745-0330" class="text-black"> <i class="icon-mobile mr-2"></i>  (412) 745-0330</a></span>
+													<span><a href="mailto:info@surgicalproductsolutions.com" class="text-black"><i class="icon-email mr-2"></i> info@surgicalproductsolutions.com</a></span>
 												</div>
 											</div>
 										</div>
@@ -49,7 +51,8 @@
 											<div class="list-description">
 												<p>Contracts &amp; National Accounts</p>
 												<div class="contact-detail">
-													<span>(412) 564-1047</span>
+													<span><a href="tel:(412) 564-1047" class="text-black"><i class="icon-mobile mr-2"></i>  (412) 564-1047</a></span>
+													<span><a href="mailto:info@surgicalproductsolutions.com" class="text-black"><i class="icon-email mr-2"></i> info@surgicalproductsolutions.com</a></span>
 												</div>
 											</div>
 										</div>
@@ -62,7 +65,22 @@
 											<div class="list-description">
 												<p>Accounting</p>
 												<div class="contact-detail">
-													<span>(412) 745-2322</span>
+													<span><a href="tel:(412) 745-2322" class="text-black"><i class="icon-mobile  mr-2"></i> (412) 745-2322</a></span>
+													<span><a href="mailto:info@surgicalproductsolutions.com" class="text-black"><i class="icon-email mr-2"></i> info@surgicalproductsolutions.com</a></span>
+												</div>
+											</div>
+										</div>
+										<div class="story-list link">
+											<div class="bulleted-list">
+												<div>
+													<i class="fa fa-plus"></i>
+												</div>
+											</div>
+											<div class="list-description">
+												<p>General Inquiries</p>
+												<div class="contact-detail">
+													<span><a href="tel:(412) 564-1280" class="text-black"><i class="icon-mobile mr-2"></i>  (412) 564-1280</a></span>
+													<span><a href="mailto:info@surgicalproductsolutions.com" class="text-black"><i class="icon-email mr-2"></i> info@surgicalproductsolutions.com</a></span>
 												</div>
 											</div>
 										</div>
@@ -100,6 +118,7 @@
 									</form>
 								</div>
 							</div>
+
 						</div>
 					</div>
 				</section>

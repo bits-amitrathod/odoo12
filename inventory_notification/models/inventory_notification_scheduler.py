@@ -412,7 +412,10 @@ class InventoryNotificationScheduler(models.TransientModel):
                 descrption = "<strong>Good morning " + customr.name + "</strong>" \
                                                                       "<br/> <br/> Below are items you have previously requested that are currently in stock. " \
                                                                       "In addition, below is the link to download full product catalog. Please let us know what" \
-                                                                      " ordering needs we can help provide savings on this week! <br/> <a href='https://www.shopsps.com/downloadCatalog'>Click Here to Download SPS Product Catalog </a>"
+                                                                      " ordering needs we can help provide savings on this week! <br/> <a href='https://www.shopsps.com/downloadCatalog'>Click Here to Download SPS Product Catalog </a>" \
+                                                                      """<center>
+                                                                                <a target="_blank" href="/shop/quote_my_report/""" + str(customr.id) + """" style="background-color:#1abc9c; padding:15px; text-decoration:none; color:#fff; border-radius:5px; font-size:16px" class="o_default_snippet_text">Click to Order</a>
+                                                                        </center>"""
                 header = ['Manufacturer','Catalog number', 'Description', 'Sales Price', 'Quantity On Hand',
                           'Min Exp. Date',
                           'Max Exp. Date', 'Unit Of Measure']
@@ -422,7 +425,9 @@ class InventoryNotificationScheduler(models.TransientModel):
                                     Please reply to this email or contact your Account Manager to hold product or place an order here.
                                     <br/> Many Thanks,
                                     <br/> SPS Customer Care <br/>
-                                    <table style="height: 96px; width: 601px; float: left;" border="0">
+                                    
+                                    <br/>
+                                    <table style="height: 96px; width: 601px;" border="0">
                                     <tbody>
                                     <tr style="height: 78px;">
                                     <td style="width: 156px; height: 78px;">
@@ -479,9 +484,10 @@ class InventoryNotificationScheduler(models.TransientModel):
                                     </tr>
                                     </tbody>
                                     </table>
-                                    <p style="text-align: left;">&nbsp;</p>
-                                    <p style="font-weight: 400; text-align: center;">&nbsp;</p>
-
+                                    <div class="text-center" style="text-align: center;">
+                                        <a target="_blank" href="/shop/quote_my_report/""" + str(customr.id) + """" style="background-color:#1abc9c; padding:15px; text-decoration:none; color:#fff; border-radius:5px; font-size:16px" class="o_default_snippet_text">Click to Order</a>
+                                    </div>
+                                   
                                     """
                 if products:
                     product_list.extend(list(products.values()))

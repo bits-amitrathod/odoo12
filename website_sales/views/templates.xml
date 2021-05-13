@@ -178,66 +178,177 @@
         </li>
     </template>
 
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Email Notification Template ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <template id="checkout_cstm" name="Invoice Address updated" inherit_id="website_sale.checkout">
+        <xpath expr="//div[@id='wrap']/div[@class='container oe_website_sale py-2']/
+            div[@class='row']/div[@class='col-12 col-xl order-xl-1 oe_cart']/
+            div[@class='row']/div[@class='col-lg-6 one_kanban']" position="replace">
+            <t t-call="website_sale.address_kanban">
+                <t t-set='contact' t-value="order.partner_invoice_id"/>
+                <t t-set='selected' t-value="1"/>
+                <t t-set='readonly' t-value="1"/>
+            </t>
+        </xpath>
+    </template>
 
+
+    <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Email Notification Template ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    -->
     <record id="website_order_placed" model="mail.template">
         <field name="name">Email Notification: Product Purchase Details</field>
         <field name="model_id" ref="website_sale.model_sale_order"/>
         <field name="email_to">${object.user_id.login}</field>
         <field name="email_cc">${('amitrathod@benchmarkit.solutions' if object.user_id.login=='info@surgicalproductsolutions.com' else 'info@surgicalproductsolutions.com, amitrathod@benchmarkit.solutions' | safe)}</field>
-        <field name="subject">Please find the sales order that was placed online at shopsps.com</field>
+        <field name="subject">Please find the sales order that was placed online at shopsps.com from ${object.partner_id.name}.</field>
         <field name="body_html">
             <![CDATA[
                 <link href="css/bootstrap.min.css" rel="stylesheet">
                  <div style="margin:auto;width:100%;padding-left: 60px;" class="container"/>
                      <div margin-top: 50px;>
-                      <div>
-                           <p>Hi <span>Team</span>,</p>
-                           <p>Please find below a listing of orders that have been placed online:</p>
+                        <div>
+                           <p>Hello <span>Team</span>,</p>
+                           <p>A new sales order is placed online. Please see details below:</p>
+                           <p><b>Customer :    </b> ${object.partner_id.name}</p>
+                           <p><b>Sale Order# : </b> ${object.name} </p>
+                           <p><b>SF A/C No# : </b> ${object.partner_id.saleforce_ac} </p>
                         </div>
-                        <center>
-                        </center>
-                    </div>
-                        <br/>
-                        <table width="80%" class="table  table-condensed  table-bordered ">
-                                <thead style='background-color:#D6DBDF;'>
-                                    <tr>
-                                         <th style="text-align: center;">Sales No</th>
-                                         <th style="text-align: center;">SKU</th>
-                                         <th style="text-align: center;">Product Name</th>
-                                         <th style="text-align: center;">Quantity</th>
-                                          <th style="text-align: center;">UOM</th>
-                                         <th style="text-align: center;">Unit Price</th>
-                                         <th style="text-align: center;">Subtotal</th>
+                     </div>
+                     <div>
+                        <table style="border: 1px solid #efecec;width:100%">
+                                <thead style='border: 1px solid black;background-color:#D6DBDF;line-height: 30px'>
+                                    <tr style="border: 1px solid black;">
+                                         <!--<th style="text-align: center;">Sales No</th>-->
+                                         <th style="text-align: center;width:10%">SKU</th>
+                                         <th style="text-align: center;width:50%">Product Name</th>
+                                         <th style="text-align: center;width:10%">Quantity</th>
+                                         <th style="text-align: center;width:10%">UOM</th>
+                                         <th style="text-align: center;width:10%">Unit Price</th>
+                                         <th style="text-align: center;width:10%">Subtotal</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                 % for product in object.order_line:
-                                      <tr>
-                                             <td align="center">${product.order_id.name}</td>
-                                            % if product.product_id.product_tmpl_id.default_code == False:
-                                             <td></td>
-                                             % else:
-                                             <td align="center">${product.product_id.product_tmpl_id.default_code}</td>
-                                              %endif
-                                              <td align="center">${product.name}</td>
-                                              <td align="center">${"%.0f"% product.product_uom_qty}</td>
-                                              <td align="center">${product.product_uom.name}</td>
-                                              <td align="center">${product.price_unit}</td>
-                                              <td align="center">${product.price_subtotal}</td>
-                                              </div>
-                                      </tr>
-                                            %endfor
+                                     % for product in object.order_line:
+                                          <tr style='border: 1px solid black;background-color: ${product.background_color};line-height:25px'>
+                                                 <!--<td align="center">${product.order_id.name}</td>-->
+                                                 % if product.product_id.product_tmpl_id.default_code == False:
+                                                 <td><span></span></td>
+                                                 % else:
+                                                 <td style="text-align: center;width:10%"><span>${product.product_id.product_tmpl_id.default_code}</span></td>
+                                                 %endif
+                                                 <td style="text-align: center;width:50%"><span>${product.name}</span></td>
+                                                 <td style="text-align: center;width:10%"><span>${"%.0f"% product.product_uom_qty}</span></td>
+                                                 <td style="text-align: center;width:10%"><span>${product.product_uom.name}</span></td>
+                                                 <td style="text-align: center;width:10%"><span>${product.price_unit}</span></td>
+                                                 <td style="text-align: center;width:10%"><span>${product.price_subtotal}</span></td>
+                                          </tr>
+                                     %endfor
                                 </tbody>
-
                         </table>
-                     </div>
-                      <div  style="margin-top:20px">
-                            <p>Thanks & Regards,</p>
-                            <p> SPS Team </p>
-                      </div>
-                 </div>
-                ]]>
+                     <div>
+                 % if object.carrier_id:
+                    <div style="margin: 0px; padding: 0px;">
+                        <table style="border: 1px solid #efecec;width:100%" width="100%"  align="right">
+                            <tr>
+                                <td style="width: 60%"/>
+                                <td style="width: 30%; border-top: 1px solid #dee2e6;" align="right"><strong>Delivery:</strong></td>
+                                <td style="width: 10%; border-top: 1px solid #dee2e6;" align="right">${format_amount(object.amount_delivery, object.currency_id)}</td>
+                            </tr>
+                            <tr>
+                                <td style="width: 60%"/>
+                                <td style="width: 30%;" align="right"><strong>SubTotal:</strong></td>
+                                <td style="width: 10%;" align="right">${format_amount(object.amount_untaxed, object.currency_id)}</td>
+                            </tr>
+                        </table>
+                    </div>
+                % else:
+                <div style="margin: 0px; padding: 0px;">
+                    <table width="100%" style="color: #454748; border-spacing: 0px 4px;" align="right">
+                        <tr>
+                            <td style="width: 60%"/>
+                            <td style="width: 30%; border-top: 1px solid #dee2e6;" align="right"><strong>SubTotal:</strong></td>
+                            <td style="width: 10%; border-top: 1px solid #dee2e6;" align="right">${format_amount(object.amount_untaxed, object.currency_id)}</td>
+                        </tr>
+                    </table>
+                </div>
+                % endif
+                <div style="margin: 0px; padding: 0px;">
+                    <table width="100%" style="color: #454748; border-spacing: 0px 4px;" align="right">
+                        <tr>
+                            <td style="width: 60%"/>
+                            <td style="width: 30%;" align="right"><strong>Taxes:</strong></td>
+                            <td style="width: 10%;" align="right">${format_amount(object.amount_tax, object.currency_id)}</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 60%"/>
+                            <td style="width: 30%; border-top: 1px solid #dee2e6;" align="right"><strong>Total:</strong></td>
+                            <td style="width: 10%; border-top: 1px solid #dee2e6;" align="right">${format_amount(object.amount_total, object.currency_id)}</td>
+                        </tr>
+                    </table>
+                </div>
+                % set transaction = object.get_portal_last_transaction()
+                % if object.partner_invoice_id:
+                <div style="margin: 0px; padding: 0px;">
+                    <table width="100%" style="color: #454748;">
+                        <tr>
+                            <td style="padding-top: 10px;">
+                                <strong>Bill to:</strong>
+                                ${object.partner_invoice_id.street or ''}
+                                ${object.partner_invoice_id.city or ''}
+                                ${object.partner_invoice_id.state_id.name or ''}
+                                ${object.partner_invoice_id.zip or ''}
+                                ${object.partner_invoice_id.country_id.name or ''}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Payment Method:</strong>
+                                % if transaction.payment_token_id:
+                                    ${transaction.payment_token_id.name}
+                                % else:
+                                    ${transaction.acquirer_id.name}
+                                % endif
+                                 (${format_amount(transaction.amount, object.currency_id)})
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                % endif
+                % if object.partner_shipping_id and not object.only_services:
+                <div style="margin: 0px; padding: 0px;">
+                    <table width="100%" style="color: #454748;">
+                        <tr>
+                            <td>
+                                <br/>
+                                <strong>Ship to:</strong>
+                                ${object.partner_shipping_id.street or ''}
+                                ${object.partner_shipping_id.city or ''}
+                                ${object.partner_shipping_id.state_id.name or ''}
+                                ${object.partner_shipping_id.zip or ''}
+                                ${object.partner_shipping_id.country_id.name or ''}
+                            </td>
+                        </tr>
+                    </table>
+                    % if object.carrier_id:
+                    <table width="100%" style="color: #454748;">
+                        <tr>
+                            <td>
+                                <strong>Shipping Method:</strong>
+                                ${object.carrier_id.name}
+                                % if object.carrier_id.fixed_price > 0.0:
+                                    (${format_amount(object.carrier_id.fixed_price, object.currency_id)})
+                                % endif
+                            </td>
+                        </tr>
+                    </table>
+                    % endif
+                </div>
+                % endif
+                <div style="margin-top:20px">
+                    <p>Thanks & Regards,</p>
+                    <p> SPS Team </p>
+                </div>
+            </div>
+        ]]>
         </field>
 <!--        <field name="user_signature" eval="False"/>-->
     </record>
