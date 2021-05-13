@@ -3,9 +3,9 @@
     'name': 'Blog Cstm',
     'version': '1.0',
     'website': '',
-    'category': 'Others',
+    'category': 'bits',
     'summary': 'Blog Post customization',
-    'author': 'Benchmark',
+    'author': 'BenchmarkItSolutions',
     'description': " Blog Post customization",
     'depends': ['base_setup', 'mail','website_blog'],
     'data': [
