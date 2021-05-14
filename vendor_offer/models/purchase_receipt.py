@@ -25,10 +25,18 @@ class StockMoveOfferPrice(models.Model):
                 if po_order.id:
                     po_prods = self.env['purchase.order.line'].search(
                         [('product_id', '=', line.product_id.id),('order_id', '=', po_order.id)])
-                for obj in po_prods:
-                    line.update({
-                        're_product_offer_price': obj.price_unit,
-                        're_total_product_retail': obj.product_retail,
-                        're_expiration_date_str': obj.expiration_date_str
-                    })
+                if po_prods != []:
+                    for obj in po_prods:
+                        line.update({
+                            're_product_offer_price': obj.price_unit,
+                            're_total_product_retail': obj.product_retail,
+                            're_expiration_date_str': obj.expiration_date_str
+                        })
+                else:
+                    line.re_expiration_date_str = None
+                    line.re_total_product_retail = None
+                    line.re_product_offer_price = None
+
+            else:
+                line.re_expiration_date_str = None
 
