@@ -1,0 +1,16 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+user_oauth2_detail_user,oauth2_detail_user,model_oauth2_detail,google_shop.google_shop_user_group,1,1,1,0
+user_field_mappning_line_user,field_mappning_line_user,model_field_mappning_line,google_shop.google_shop_user_group,1,1,1,1
+user_field_mappning_user,field_mappning_user,model_field_mappning,google_shop.google_shop_user_group,1,1,1,0
+user_google_fields_user,google_fields_user,model_google_fields,google_shop.google_shop_user_group,1,1,1,0
+user_google_shop_user,google_shop_user,model_google_shop,google_shop.google_shop_user_group,1,1,1,0
+user_product_mapping_user,product_mapping_user,model_product_mapping,google_shop.google_shop_user_group,1,1,1,1
+
+
+admin_oauth2_detail_manager,oauth2_detail_Manager,model_oauth2_detail,sales_team.group_sale_manager,1,1,1,1
+admin_field_mappning_line_manager,field_mappning_line_Manager,model_field_mappning_line,sales_team.group_sale_manager,1,1,1,1
+admin_field_mappning_manager,field_mappning_Manager,model_field_mappning,sales_team.group_sale_manager,1,1,1,1
+admin_google_fields_manager,google_fields_Manager,model_google_fields,sales_team.group_sale_manager,1,1,1,1
+admin_google_shop_manager,google_shop_Manager,model_google_shop,sales_team.group_sale_manager,1,1,1,1
+admin_product_mapping_manager,product_mapping_Manager,model_product_mapping,sales_team.group_sale_manager,1,1,1,1
