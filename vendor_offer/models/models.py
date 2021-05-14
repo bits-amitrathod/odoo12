@@ -135,10 +135,10 @@ class VendorOffer(models.Model):
     notes_activity = fields.One2many('purchase.notes.activity', 'order_id', string='Notes')
 
     accelerator = fields.Boolean(string="Accelerator")
-    # priority = fields.Selection([
-    #     ('low', 'Low'),
-    #     ('medium', 'Medium'),
-    #     ('high', 'High')], string='Priority')
+    ven_priority = fields.Selection([
+        ('low', 'Low'),
+        ('medium', 'Medium'),
+        ('high', 'High')], string='Priority')
 
     new_customer = fields.Boolean(string="New Customer")
     shipping_label_issued = fields.Selection([
@@ -517,11 +517,10 @@ class VendorOffer(models.Model):
             'force_email': True
         })
 
-
-        # if self.partner_id and self.partner_id.vendor_email:
-        #     ctx['vendor_email'] = self.partner_id.vendor_email
-        # elif self.partner_id and self.partner_id.email:
-        #     ctx['vendor_email'] = self.partner_id.email
+        if self.partner_id and self.partner_id.vendor_email:
+            ctx['vendor_email'] = self.partner_id.vendor_email
+        elif self.partner_id and self.partner_id.email:
+            ctx['vendor_email'] = self.partner_id.email
 
         if self.acq_user_id and self.acq_user_id.partner_id and self.acq_user_id.partner_id.email:
             ctx['acq_mgr'] = self.acq_user_id.partner_id.email
@@ -2504,18 +2503,22 @@ class MailComposer(models.TransientModel):
                     'type': 'binary',  # override default_type from context, possibly meant for another model!
                 }
                 attachment_ids.append(Attachment.create(data_attach).id)
-        #     ship_label = self.env['ir.attachment'].search(
-        #         [('res_id', '=', res_id), ('res_model_name', '=', 'Vendor Offer Automation')], order="id desc")
-        #     if values.get('attachment_ids', []) or attachment_ids:
-        #         values['attachment_ids'] = [(5,)] + values.get('attachment_ids', []) + attachment_ids + ([ship_label[0].id] if ship_label else [])
-        # else:
-        #     default_values = self.with_context(default_composition_mode=composition_mode, default_model=model,
-        #                                        default_res_id=res_id).default_get(
-        #         ['composition_mode', 'model', 'res_id', 'parent_id', 'partner_ids', 'subject', 'body', 'email_from',
-        #          'reply_to', 'attachment_ids', 'mail_server_id'])
-        #     values = dict((key, default_values[key]) for key in
-        #                   ['subject', 'body', 'partner_ids', 'email_from', 'reply_to', 'attachment_ids',
-        #                    'mail_server_id'] if key in default_values)
+            ship_label = self.env['ir.attachment'].search(
+                [('res_id', '=', res_id), ('res_model', '=', 'purchase.order'),('name','like','%FedEx%')], order="id desc")
+            if values.get('attachment_ids', []) or attachment_ids:
+                #values['attachment_ids'] = [(5,)] + values.get('attachment_ids', []) + attachment_ids + ([ship_label[0].id] if ship_label else [])
+                #values['attachment_ids'] = [(5,)] + values.get('attachment_ids', []) + attachment_ids
+                values['attachment_ids'] = [(6, 0, values.get('attachment_ids', []) + attachment_ids + ([ship_label[0].id] if ship_label else []))]
+
+
+        else:
+            default_values = self.with_context(default_composition_mode=composition_mode, default_model=model,
+                                               default_res_id=res_id).default_get(
+                ['composition_mode', 'model', 'res_id', 'parent_id', 'partner_ids', 'subject', 'body', 'email_from',
+                 'reply_to', 'attachment_ids', 'mail_server_id'])
+            values = dict((key, default_values[key]) for key in
+                          ['subject', 'body', 'partner_ids', 'email_from', 'reply_to', 'attachment_ids',
+                           'mail_server_id'] if key in default_values)
 
         if values.get('body_html'):
             values['body'] = values.pop('body_html')

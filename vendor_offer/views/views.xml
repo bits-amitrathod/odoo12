@@ -277,24 +277,19 @@
                         </div>
                         <group>
                             <group>
-                                <!--<field name="partner_id"  />-->
-
                                  <field name="acq_manager_email"  invisible="1"/>
                                  <field name="acq_manager_phone" invisible="1" />
                                 <field name="vendor_cust_id"/>
-                    <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" invisible="1" />
-                                 <field name="partner_id" widget="res_partner_many2one" context="{ 'show_vat': True}"
-                                placeholder="Name, TIN, Email, or Reference"
-                            />
-<!--                                   <field name="partner_id1"/>-->
+                                <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" invisible="1" />
+                                     <field name="partner_id" widget="res_partner_many2one" context="{ 'show_vat': True}" string="Facility Name"
+                                    placeholder="Name, TIN, Email, or Reference"  />
 
                                 <field name="acq_user_id"/>
                                 <field name="possible_competition"
                                        attrs="{'readonly': [('import_type_ven', '==', 'all_field_import')]}"/>
-                                <!--<field name="accelerator" />-->
                                 <field name="accelerator"
                                        attrs="{'readonly': [('import_type_ven', '==', 'all_field_import')]}"/>
-                                <!--<field name="priority"/>-->
+                                <field name="ven_priority"/>
 
                                 <field name="offer_type" />
                                 <field name="potential_profit_margin"/>
@@ -537,37 +532,38 @@
                 <xpath expr="//notebook/page/field[@name='order_line']" position="replace">
                     <field name="order_line" attrs="{'readonly': [('vendor_offer_data', '=', True)]}">
                         <tree string="Purchase Order Lines" editable="False">
+                            <field name="display_type" invisible="1"/>
                             <field name="currency_id" invisible="1"/>
-                            <field name="state" invisible="1"/>
-                            <!--<field name="sequence" widget="handle"/>-->
+                             <field name="state" invisible="1" readonly="1"/>
+                            <field name="product_type" invisible="1"/>
+                            <field name="product_uom_category_id" invisible="1"/>
+                            <field name="invoice_lines" invisible="1"/>
+                            <field name="sequence" widget="handle"/>
+
                             <field name="sku_code" readonly="1"/>
-                            <field name="product_id"
-                                   attrs="{'readonly': [('state', 'in', ('purchase', 'to approve','done', 'cancel'))]}"
-                                   context="{'partner_id':parent.partner_id, 'quantity':product_qty, 'company_id': parent.company_id}"
-                                   force_save="1"/>
-                            <!--'uom':product_uom,-->
-                            <!--<field-->
-                                        <!--name="product_id"-->
-                                        <!--attrs="{-->
-                                            <!--'readonly': [('state', 'in', ('purchase', 'to approve','done', 'cancel'))],-->
-                                            <!--'required': [('display_type', '=', False)],-->
-                                        <!--}"-->
-                                        <!--context="{'partner_id':parent.partner_id, 'quantity':product_qty,'uom':product_uom, 'company_id': parent.company_id}"-->
-                                        <!--force_save="1" domain="[('purchase_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"/>-->
+                                <field
+                                        name="product_id"
+                                        attrs="{
+                                            'readonly': [('state', 'in', ('purchase', 'to approve','done', 'cancel'))],
+                                            'required': [('display_type', '=', False)],
+                                        }"
+                                        style="width: 158px;"
+                                        context="{'partner_id':parent.partner_id, 'quantity':product_qty,'uom':product_uom, 'company_id': parent.company_id}"
+                                        force_save="1" domain="[('purchase_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"/>
                             <field name="name" invisible="1"/>
-                            <!--&lt;!&ndash;<field name="move_dest_ids" invisible="1"/>&ndash;&gt;-->
+                            <field name="move_dest_ids" invisible="1"/>
                             <field name="date_planned"/>
                             <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
-                            <!--<field name="account_analytic_id" context="{'default_partner_id':parent.partner_id}"-->
-                                   <!--groups="purchase.group_analytic_accounting"/>-->
-                            <!--<field name="analytic_tag_ids" groups="purchase.group_analytic_accounting"-->
-                                   <!--widget="many2many_tags" options="{'color_field': 'color'}"/>-->
+                            <field name="account_analytic_id" context="{'default_partner_id':parent.partner_id}"
+                                   groups="purchase.group_analytic_accounting"/>
+                            <field name="analytic_tag_ids" groups="purchase.group_analytic_accounting"
+                                   widget="many2many_tags" options="{'color_field': 'color'}"/>
                             <field name="product_qty" attrs="{'readonly': [('vendor_offer_data', '=', True)]}"/>
                             <field name="qty_received" invisible="not context.get('show_purchase', True)"/>
                             <field name="qty_invoiced" invisible="not context.get('show_purchase', True)"/>
-                            <!--<field name="product_uom" groups="product.group_uom"-->
-                                   <!--attrs="{'readonly': [('state', 'in', ('purchase', 'done', 'cancel'))]}"-->
-                                   <!--force_save="1"/>-->
+                            <field name="product_uom" groups="product.group_uom"
+                                   attrs="{'readonly': [('state', 'in', ('purchase', 'done', 'cancel'))]}"
+                                   force_save="1"/>
                             <field name="price_unit" attrs="{'readonly': [('vendor_offer_data', '=', True)]}"/>
                             <field name="product_offer_price" invisible="1"/>
                                <field name="vendor_offer_data" invisible="1"/>
@@ -814,7 +810,7 @@
 
                 <record id="vendor_pricing_act_window" model="ir.actions.act_window">
                 <field name="name">Export PPVendorPricing</field>
-                <field name="type">ir.actions.act_window</field>
+<!--                <field name="type">ir.actions.act_window</field>-->
                 <field name="res_model" >vendor.pricing</field>
                 <field name="binding_model_id" ref="product.model_product_product"/>
                 <field name="view_mode">form</field>
@@ -982,6 +978,10 @@
                                     <field name="is_initial_demand_editable" invisible="1"/>
                                     <field name="is_quantity_done_editable" invisible="1"/>
                                     <field name="product_uom_qty" string="Demand" attrs="{'column_invisible': [('parent.immediate_transfer', '=', True)], 'readonly': ['|', ('is_initial_demand_editable', '=', False), '&amp;', '&amp;', ('show_operations', '=', True), ('is_locked', '=', True), ('is_initial_demand_editable', '=', False)]}"/>
+                                    <field name="re_expiration_date_str"    attrs="{'column_invisible':[('parent.sale_id', '!=',  False)],'invisible':[('re_vendor_offer_data', '=',  False)]}" />
+                                    <field name="re_product_offer_price"   attrs="{'column_invisible':[('parent.sale_id', '!=',  False)],'invisible':[('re_vendor_offer_data', '=',  False)]}" />
+                                    <field name="re_total_product_retail"   attrs="{'column_invisible':[('parent.sale_id', '!=',  False)],'invisible':[('re_vendor_offer_data', '=',  False)]}" />
+                                    <field name="re_vendor_offer_data"  invisible="1"/>
                                     <field name="reserved_availability" string="Reserved" attrs="{'column_invisible': (['|','|', ('parent.state','=', 'done'), ('parent.picking_type_code', 'in', ['incoming', 'outgoing']), ('parent.immediate_transfer', '=', True)])}"/>
                                     <field name="product_qty" invisible="1" readonly="1"/>
                                     <field name="forecast_expected_date" invisible="1" />
