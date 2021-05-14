@@ -553,7 +553,7 @@
                             <field name="name" invisible="1"/>
                             <field name="move_dest_ids" invisible="1"/>
                             <field name="date_planned"/>
-                            <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                            <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" attrs="{'column_invisible':[('parent.vendor_offer_data', '!=',  True)],'invisible':[('vendor_offer_data', '=',  False)]}" />
                             <field name="account_analytic_id" context="{'default_partner_id':parent.partner_id}"
                                    groups="purchase.group_analytic_accounting"/>
                             <field name="analytic_tag_ids" groups="purchase.group_analytic_accounting"
@@ -567,12 +567,12 @@
                             <field name="price_unit" attrs="{'readonly': [('vendor_offer_data', '=', True)]}"/>
                             <field name="product_offer_price" invisible="1"/>
                                <field name="vendor_offer_data" invisible="1"/>
-                            <field name="product_unit_price" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />
-                             <field name="product_retail" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />
-                              <field name="delivered_product_offer_price" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />
-                             <field name="delivered_product_retail_price" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />
-                            <field name="billed_product_offer_price" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />
-                             <field name="billed_product_retail_price" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />
+                            <field name="product_unit_price" attrs="{'column_invisible':[('parent.vendor_offer_data', '!=',  True)],'invisible':[('vendor_offer_data', '=',  False)]}" />
+                             <field name="product_retail" attrs="{'column_invisible':[('parent.vendor_offer_data', '!=',  True)],'invisible':[('vendor_offer_data', '=',  False)]}" />
+                              <field name="delivered_product_offer_price" attrs="{'column_invisible':[('parent.vendor_offer_data', '!=',  True)],'invisible':[('vendor_offer_data', '=',  False)]}" />
+                             <field name="delivered_product_retail_price" attrs="{'column_invisible':[('parent.vendor_offer_data', '!=',  True)],'invisible':[('vendor_offer_data', '=',  False)]}" />
+                            <field name="billed_product_offer_price" attrs="{'column_invisible':[('parent.vendor_offer_data', '!=',  True)],'invisible':[('vendor_offer_data', '=',  False)]}" />
+                             <field name="billed_product_retail_price" attrs="{'column_invisible':[('parent.vendor_offer_data', '!=',  True)],'invisible':[('vendor_offer_data', '=',  False)]}" />
                             <!--     <field name="product_offer_price"
                                        attrs="{'readonly': [('vendor_offer_data', '=', True)],'invisible': [('vendor_offer_data', '=', False)]}"/>-->
 
