@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <data noupdate="1">
+        <record id="google_fields_1" model="google.fields">
+            <field name="name">offerId</field>
+            <field name="required">True</field>
+        </record>
+
+        <record id="google_fields_2" model="google.fields">
+            <field name="name">kind</field>
+            <field name="required">True</field>
+        </record>
+
+        <record id="google_fields_4" model="google.fields">
+            <field name="name">title</field>
+            <field name="required">True</field>
+        </record>
+
+        <record id="google_fields_5" model="google.fields">
+            <field name="name">description</field>
+            <field name="required">True</field>
+        </record>
+
+        <record id="google_fields_6" model="google.fields">
+            <field name="name">link</field>
+            <field name="required">True</field>
+        </record>
+
+        <record id="google_fields_7" model="google.fields">
+            <field name="name">price</field>
+            <field name="required">True</field>
+        </record>
+
+        <record id="google_fields_8" model="google.fields">
+            <field name="name">availability</field>
+            <field name="required">True</field>
+        </record>
+
+        <record id="google_fields_9" model="google.fields">
+            <field name="name">imageLink</field>
+            <field name="required">True</field>
+        </record>
+
+        <record id="google_fields_10" model="google.fields">
+            <field name="name">condition</field>
+            <field name="required">True</field>
+        </record>
+
+        <record id="google_fields_11" model="google.fields">
+            <field name="name">salePrice</field>
+            <field name="required">False</field>
+        </record>
+
+        <record id="google_fields_13" model="google.fields">
+          <field name="name">identifierExists</field>
+          <field name="required">True</field>
+        </record>
+
+        <record id="oauth2_detail_1" model="oauth2.detail">
+          <field name="sequence_no">1</field>
+          <field name="name">Token 1</field>
+            <field name="domain_uri">http://www.example.com</field>
+            <field name="callback_uri">http://www.example.com/google/1/OAuth2/</field>
+            <field name="client_id">******************************************</field>
+            <field name="client_secret">**************</field>
+            <field name="merchant_id">********</field>
+
+            <field name="authentication_state">new</field>
+        </record>
+
+        <record id="field_mapping_1" model="field.mappning">
+            <field name="name">Demo Field Mapping</field>
+            <field name="active">True</field>
+        </record>
+
+
+        <record id="field_mapping_line_1" model="field.mappning.line">
+            <field name="google_field_id" ref="google_fields_1"/>
+            <field name="fixed">False</field>
+            <field model="ir.model.fields" name="model_field_id" search="[('model', '=', 'product.product'),('name','=','id')]"/>
+            <field name="field_mapping_id" ref="field_mapping_1"/>
+            <field name="fixed_text">none</field>
+        </record>
+
+        <record id="field_mapping_line_11" model="field.mappning.line">
+            <field name="google_field_id" ref="google_fields_11"/>
+            <field name="fixed">False</field>
+            <field name="field_mapping_id" ref="field_mapping_1"/>
+            <field model="ir.model.fields" name="model_field_id" search="[('model', '=', 'product.product'),('name','=','list_price')]"/>
+            <field name="fixed_text">none</field>
+        </record>
+
+        <record id="field_mapping_line_4" model="field.mappning.line">
+            <field name="google_field_id" ref="google_fields_4"/>
+            <field name="fixed">False</field>
+            <field model="ir.model.fields" name="model_field_id" search="[('model', '=', 'product.product'),('field_description','ilike','Display Name')]"/>
+            <field name="field_mapping_id" ref="field_mapping_1"/>
+            <field name="fixed_text">none</field>
+        </record>
+
+        <record id="field_mapping_line_5" model="field.mappning.line">
+            <field name="google_field_id" ref="google_fields_5"/>
+            <field name="fixed">False</field>
+            <field model="ir.model.fields" name="model_field_id" search="[('model', '=', 'product.product'),('name','=','description_sale')]"/>
+            <field name="field_mapping_id" ref="field_mapping_1"/>
+            <field name="fixed_text">none</field>
+        </record>
+
+        <record id="field_mapping_line_6" model="field.mappning.line">
+            <field name="google_field_id" ref="google_fields_7"/>
+            <field name="fixed">False</field>
+            <field model="ir.model.fields" name="model_field_id" search="[('model', '=', 'product.product'),('name','=','price')]"/>
+            <field name="field_mapping_id" ref="field_mapping_1"/>
+            <field name="fixed_text">none</field>
+        </record>
+
+        <record id="field_mapping_line_13" model="field.mappning.line">
+            <field name="google_field_id" ref="google_fields_13"/>
+            <field name="fixed">False</field>
+            <field model="ir.model.fields" name="model_field_id" search="[('model', '=', 'product.product'),('name','=','active')]"/>
+            <field name="field_mapping_id" ref="field_mapping_1"/>
+            <field name="fixed_text">False</field>
+        </record>
+
+        <record id="field_mapping_line_7" model="field.mappning.line">
+            <field name="google_field_id" ref="google_fields_6"/>
+            <field name="fixed">False</field>
+            <field model="ir.model.fields" name="model_field_id" search="[('model', '=', 'product.product'),('name','=','id')]"/>
+            <field name="field_mapping_id" ref="field_mapping_1"/>
+            <field name="fixed_text">none</field>
+        </record>
+
+        <record id="field_mapping_line_8" model="field.mappning.line">
+            <field name="google_field_id" ref="google_fields_9"/>
+            <field name="fixed">False</field>
+            <field model="ir.model.fields" name="model_field_id" search="[('model', '=', 'product.product'),('name','=','id')]"/>
+            <field name="field_mapping_id" ref="field_mapping_1"/>
+            <field name="fixed_text">none</field>
+        </record>
+
+        <record id="field_mapping_line_2" model="field.mappning.line">
+            <field name="google_field_id" ref="google_fields_2"/>
+            <field name="fixed">True</field>
+            <field name="field_mapping_id" ref="field_mapping_1"/>
+            <field name="fixed_text">content#product</field>
+        </record>
+
+        <record id="field_mapping_line_9" model="field.mappning.line">
+            <field name="google_field_id" ref="google_fields_8"/>
+            <field name="fixed">True</field>
+            <field name="field_mapping_id" ref="field_mapping_1"/>
+            <field name="fixed_text">in stock</field>
+        </record>
+
+        <record id="field_mapping_line_10" model="field.mappning.line">
+            <field name="google_field_id" ref="google_fields_10"/>
+            <field name="fixed">True</field>
+            <field name="field_mapping_id" ref="field_mapping_1"/>
+            <field name="fixed_text">new</field>
+        </record>
+
+
+
+        <record id="google_shop_1" model="google.shop">
+              <field name="oauth_id" ref="oauth2_detail_1"/>
+              <field name="name">Demo Shop 1</field>
+              <field name="field_mapping_id" ref="field_mapping_1"/>
+              <field name="channel">online</field>
+              <field name="product_selection_type">domain</field>
+              <field name="shop_status">new</field>
+              <!-- <field name="content_language">online</field> -->
+              <field model="res.lang" name="content_language" search="[('code', '=', 'en_US')]"/>
+              <field model="res.country" name="target_country" search="[('name', '=', 'India')]"/>
+              <field name="limit">10</field>
+              <field name="shop_url">https://www.example.com</field>
+          </record>
+
+    </data>
+</odoo>
