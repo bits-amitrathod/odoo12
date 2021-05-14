@@ -17,6 +17,12 @@
               <field name="workflow_process_id"/>
             </group>
           </page>
+          <page name="credit_limit" string="Credit Limit">
+            <group>
+                <field name="x_studio_field_6O3nt"/>
+                <field name="x_studio_field_21C8m"/>
+            </group>
+          </page>
         </xpath>
       </field>
     </record>
