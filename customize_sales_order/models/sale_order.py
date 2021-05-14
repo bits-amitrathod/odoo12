@@ -224,9 +224,9 @@ class sale_order(models.Model):
             self.delivery_rating_success = False
             self.delivery_message = False
 
-    def set_delivery_line(self):
-        # Remove delivery products from the sales order
-        self._remove_delivery_line()
+    # def set_delivery_line(self):
+    #     # Remove delivery products from the sales order
+    #     self._remove_delivery_line()
 
         for order in self:
             if order.state not in ('draft', 'sent', 'sale'):
