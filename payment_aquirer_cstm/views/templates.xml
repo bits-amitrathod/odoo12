@@ -81,7 +81,7 @@
     <template id="payment_delivery_methods_inherit" inherit_id="website_sale_delivery.payment_delivery_methods">
         <xpath expr="//input[@t-att-value='delivery.id']" position="replace">
             <script type="text/javascript" src="/payment_aquirer_cstm/static/src/js/script.js"></script>
-            <input t-att-value="delivery.id" t-att-id="'delivery_%i' % delivery.id" type="radio" name="delivery_type" t-att-class="'d-none' if delivery_nb == 1 else ''"/>
+            <input t-att-value="delivery.id" t-att-id="'%s' % delivery.code" type="radio" name="delivery_type" t-att-class="'d-none' if delivery_nb == 1 else ''"/>
         </xpath>
         <xpath expr="//span[@t-else='' and @t-att-class='badge_class']" position="replace">
             <span t-else="" t-att-class="badge_class"/>

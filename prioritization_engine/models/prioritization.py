@@ -380,10 +380,10 @@ class PrioritizationTransient(models.TransientModel):
 class SalesChannelPrioritization(models.Model):
     _inherit = "crm.team"
 
-    team_type = fields.Selection(selection=[('engine', 'Prioritization'), ('sales', 'Sales'), ('website', 'Website'),
+    team_type = fields.Selection(selection=[('engine', 'Stockhawk'), ('sales', 'Sales'), ('website', 'Website'),
                                   ('my_in_stock_report', 'My In-Stock Report')],
                                  string='Channel Type', default='sales',
-                                 required=True, track_visibility='onchange',
+                                 required=True, tracking=True,
                                  help="The type of this channel, it will define the resources this channel uses.")
 
 

@@ -56,14 +56,20 @@ class PaymentAquirerCstm(http.Controller):
     def expedited_shipping(self, expedited_shipping):
         request.session['expedited_shipping'] = expedited_shipping
 
+    @http.route(['/shop/get_carrier'], type='json', auth="public", methods=['POST'], website=True, csrf=False)
+    def get_carrier(self, delivery_carrier_code):
+        delivery_carrier = request.env['delivery.carrier'].sudo().search([('code', '=', delivery_carrier_code)])
+        if delivery_carrier:
+            return {'carrier_id': delivery_carrier.id}
+
     @http.route('/checkHavingCarrierWithAccountNo', type='json', auth="public", methods=['POST'], website=True, csrf=False)
     def check_having_carrier_with_account_no(self):
         order = request.website.sale_get_order()
-        # if request.env.user.partner_id.having_carrier and request.env.user.partner_id.carrier_acc_no:
-        #     return {'carrier_acc_no': True}
-        # else:
-        #     currency = order.currency_id
-        #     return {'carrier_acc_no': False, 'error_message': order.delivery_message, 'amount_delivery': self._format_amount(order.amount_delivery, currency), 'status': order.delivery_rating_success}
+        if request.env.user.partner_id.having_carrier and request.env.user.partner_id.carrier_acc_no:
+            return {'carrier_acc_no': True}
+        else:
+            currency = order.currency_id
+            return {'carrier_acc_no': False, 'error_message': order.delivery_message, 'amount_delivery': self._format_amount(order.amount_delivery, currency), 'status': order.delivery_rating_success}
 
     def _format_amount(self, amount, currency):
         fmt = "%.{0}f".format(currency.decimal_places)
@@ -91,7 +97,7 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
             for x in ctx['deliveries']:
                 if x.delivery_type == "fixed" and x.fixed_price == 0:
                     ctx['showShippingNote'] = True
-                    ctx['freeShipingLabel'] = "delivery_" + str(x.id)
+                    ctx['freeShipingLabel'] = x.code
                 break
             return responce
 
@@ -111,7 +117,7 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
         for x in ctx['deliveries']:
             if x.delivery_type == "fixed" and x.fixed_price == 0:
                 ctx['showShippingNote'] = True
-                ctx['freeShipingLabel'] = "delivery_"+str(x.id)
+                ctx['freeShipingLabel'] = x.code
             break
 
         return responce
@@ -131,7 +137,7 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
                 #                      message_type='notification', subtype="mail.mt_note",
                 #                      **({'token': order.access_token} if order.access_token else {}))
 
-        if order.carrier_id.id == 35 and 'expedited_shipping' in request.session:
+        if order.carrier_id.code == "my_shipper_account" and 'expedited_shipping' in request.session:
             if request.session['expedited_shipping']:
                 if sale_note:
                     sale_note = sale_note + "\n" + "Please use customers shipper account with Method: " + \
