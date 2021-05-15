@@ -166,7 +166,6 @@ class sale_order(models.Model):
     def write(self, val):
         super(sale_order, self).write(val)
         # Add note in pick delivery
-
         if self.state and self.state in 'sale':
             for pick in self.picking_ids:
                 pick.note = val['sale_note'] if ('sale_note' in val.keys()) else self.sale_note
@@ -200,22 +199,21 @@ class sale_order(models.Model):
             break
 
     def _get_delivery_method_readonly_flag(self):
+        delivery_method_flag = 1
         for sale_ordr in self:
             if sale_ordr.state in ('draft', 'sent', 'sale'):
                 if sale_ordr.state == 'sale':
                     stock_pickings = self.env['stock.picking'].search(
                         [('sale_id', '=', sale_ordr.id), ('picking_type_id', '=', 1)])
                     for stock_picking in stock_pickings:
-                        if stock_picking.state == 'assigned' or stock_picking.state == 'draft' or stock_picking.state == 'waiting' \
-                                or stock_picking.state == 'confirmed' or stock_picking.state == 'confirmed':
-                            sale_ordr.delivery_method_readonly_flag = 1
-                            return 1
+                        if stock_picking.state in ('assigned', 'draft', 'waiting', 'confirmed'):
+                            delivery_method_flag = 1
                         else:
-                            sale_ordr.delivery_method_readonly_flag = 0
-                            return 0
+                            delivery_method_flag = 0
                 else:
-                    sale_ordr.delivery_method_readonly_flag = 1
-                    return 1
+                    delivery_method_flag = 1
+        sale_ordr.delivery_method_readonly_flag = delivery_method_flag
+        return delivery_method_flag
 
     @api.onchange('carrier_id')
     def onchange_carrier_id(self):
