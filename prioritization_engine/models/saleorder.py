@@ -141,6 +141,7 @@ class SaleOrder(models.Model):
 
     def action_confirm(self):
         res = super(SaleOrder, self).action_confirm()
+        self.add_note_in_delivery()
         if self.team_id.team_type == 'engine':
             user = None
             current_user = self.env['res.users'].browse(self._context.get('uid'))
@@ -151,24 +152,49 @@ class SaleOrder(models.Model):
             self.update({'user_id': user.id})
 
             # Send email to Salesperson and Admin when sales order accepted(Confirm)
-            upload_type = None
-            salesperson_email = None
-            if self.order_line[0].customer_request_id and self.order_line[0].customer_request_id.document_id and \
-                    self.order_line[0].customer_request_id.document_id.source:
-                upload_type = self.order_line[0].customer_request_id.document_id.source
-            if self.user_id and self.user_id.partner_id and self.user_id.partner_id.email:
-                salesperson_email = self.user_id.partner_id.email
-            elif self.partner_id and self.partner_id.parent_id and self.partner_id.parent_id.user_id \
-                    and self.partner_id.parent_id.user_id.partner_id and self.partner_id.parent_id.user_id.partner_id.email:
-                salesperson_email = self.partner_id.parent_id.user_id.partner_id.email
-            if self.sale_note:
-                note = self.sale_note
-            else:
-                note = ""
+            # upload_type = None
+            # salesperson_email = None
+            # if self.order_line[0].customer_request_id and self.order_line[0].customer_request_id.document_id and \
+            #         self.order_line[0].customer_request_id.document_id.source:
+            #     upload_type = self.order_line[0].customer_request_id.document_id.source
+            # if self.user_id and self.user_id.partner_id and self.user_id.partner_id.email:
+            #     salesperson_email = self.user_id.partner_id.email
+            # elif self.partner_id and self.partner_id.parent_id and self.partner_id.parent_id.user_id \
+            #         and self.partner_id.parent_id.user_id.partner_id and self.partner_id.parent_id.user_id.partner_id.email:
+            #     salesperson_email = self.partner_id.parent_id.user_id.partner_id.email
+            # if self.sale_note:
+            #     note = self.sale_note
+            # else:
+            #     note = ""
             # self._send_sales_order_accepted_email(self.partner_id.display_name, self.name, self.state,
             #                                       salesperson_email, upload_type, note)
 
         return res
+
+    def add_note_in_delivery(self):
+        # Add note in pick delivery
+        if self.state and self.state in 'sale':
+            for pick in self.picking_ids:
+                pick.note = self.sale_note
+
+        if self.carrier_id and self.state and self.state in 'sale':
+            self.env['stock.picking'].search([('sale_id', '=', self.id), ('picking_type_id', '=', 5)]).write(
+                {'carrier_id': self.carrier_id.id})
+
+        # if 'sale_note' in val or self.sale_note:
+        if self.sale_note and self.team_id.team_type != 'engine':
+            body = self.sale_note
+            for stk_picking in self.picking_ids:
+                stock_picking_val = {
+                    'body': body,
+                    'model': 'stock.picking',
+                    'message_type': 'notification',
+                    'no_auto_thread': False,
+                    'subtype_id': self.env['ir.model.data'].xmlid_to_res_id('mail.mt_note'),
+                    'res_id': stk_picking.id,
+                    'author_id': self.env.user.partner_id.id,
+                }
+                self.env['mail.message'].sudo().create(stock_picking_val)
 
     def _send_sales_order_accepted_email(self, customer_name, sales_order_name, sales_order_status, salespersonEmail,
                                          upload_type, note):

@@ -121,7 +121,6 @@ class TempProductList(models.Model):
                 temp_list.update(product_data)
             customer_data={partner.id:temp_list}
             self.product_list.update(customer_data)
-            print(customer_data)
 
     #  @api.model_cr
     def delete_and_create(self):
@@ -140,7 +139,7 @@ class TempProductList(models.Model):
                 partner_product_list.get(product_id)['select'] = select
 
     def get_product_list(self, partner_id):
-        product_list_sorted = sorted(self.product_list[self.get_parent(partner_id)].items(), key=lambda x: (x[1]['product_brand_name'],
-                                                                               x[1]['product_sku']))
+        product_list_sorted = sorted(self.product_list[self.get_parent(partner_id)].items(), key=lambda x: (x[1]['product_brand_name'] if x[1]['product_brand_name'] else "Test",
+                                                                               x[1]['product_sku'] if x[1]['product_sku'] else "Test"))
 
         return self.product_list[self.get_parent(partner_id)], product_list_sorted
