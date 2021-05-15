@@ -375,7 +375,7 @@ class ResUsers(models.Model):
     def create(self, vals_list):
         users = super(ResUsers, self.with_context(default_customer=False)).create(vals_list)
         for user in users:
-            user.partner_id.write({'customer': True})
+            user.partner_id.write({'customer_rank': 1})
             account_payment_term = self.env['account.payment.term'].search([('name', '=', 'Net 30'), ('active', '=', True)])
             if account_payment_term:
                 user.partner_id.write({'property_payment_term_id': account_payment_term.id,
