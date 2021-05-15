@@ -334,7 +334,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         dayName = today_date.weekday()
         weekday = days[dayName]
         customers =  self.env['res.partner'].search(
-            [('customer_rank', '=', 1), ('is_parent', '=', True), ('email', '!=', ''), ('active', '=', True),
+            [('customer_rank', '>=', 1), ('is_parent', '=', True), ('email', '!=', ''), ('active', '=', True),
              (weekday, '=', True), ('todays_notification', '=', True)], order='id asc', limit=40)
 
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
@@ -527,7 +527,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         weekday = days[dayName]
 
         customers = self.env['res.partner'].search(
-            [('customer_rank', '=', 1), ('is_parent', '=', True), ('email', '!=', ''), ('active', '=', True),
+            [('customer_rank', '>=', 1), ('is_parent', '=', True), ('email', '!=', ''), ('active', '=', True),
              (weekday, '=', True), ('todays_notification', '=', False)])
 
         for customer in customers:
