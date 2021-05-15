@@ -838,7 +838,7 @@ class VendorOffer(models.Model):
             return '%s?%s' % ('/mail/view' if redirect else self.access_url, url_encode(params))
 
     #@api.multi
-    def _get_share_url(self, redirect=False, signup_partner=False, pid=None):
+    def _get_share_url(self, redirect=False, signup_partner=False, pid=None, share_token=None):
 
         self.ensure_one()
         if self.state not in ['purchase', 'done']:
