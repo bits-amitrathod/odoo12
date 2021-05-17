@@ -68,7 +68,12 @@ class PaymentAquirerCstm(http.Controller):
         if request.env.user.partner_id.having_carrier and request.env.user.partner_id.carrier_acc_no:
             return {'carrier_acc_no': True}
         else:
-            currency = order.currency_id
+            if order.currency_id:
+                currency = order.currency_id
+            else:
+                res_currency = request.env['res.currency'].sudo().search([('name', '=', 'USD')])
+                if res_currency:
+                    currency = res_currency
             return {'carrier_acc_no': False, 'error_message': order.delivery_message, 'amount_delivery': self._format_amount(order.amount_delivery, currency), 'status': order.delivery_rating_success}
 
     def _format_amount(self, amount, currency):
