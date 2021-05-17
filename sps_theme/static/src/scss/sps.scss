@@ -1,0 +1,37 @@
+
+
+// Shared with web client and login screen
+.o_home_menu_background {
+     background: url(/web_enterprise/static/src/img/home-menu-bg-overlay.svg),
+        linear-gradient(to right bottom, #ccc, #fff) !important;
+        /*linear-gradient(to right bottom, #77717e, #c9a8a9);*/
+    background-size: cover;
+    .o_caption {
+        color: #666666ff !important;
+        text-shadow: none !important;
+    }
+    .o_main_navbar .o_user_menu > a{
+        color:#666666ff;
+    }
+    .o_main_navbar .o_user_menu .oe_topbar_avatar{
+        background: #394A58;
+    }
+    .o_menu_systray{
+        li{
+        .badge{
+        background-color: #C4262E !important;
+        border-color: #C4262E !important}
+        i{
+        color: #666666ff !important;
+        }
+        }
+    }
+}
+
+
+.btn{
+    &.btn-primary{
+        background: #7eb5e6;
+        border-color: #7eb5e6;
+    }
+}
