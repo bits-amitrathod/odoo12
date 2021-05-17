@@ -48,7 +48,7 @@ class ExportRevenueByNaPerAccount(http.Controller):
                 for cell_index, cell_value in enumerate(row):
                     cell_style = base_style
 
-                    if isinstance(cell_value, bytes) and not isinstance(cell_value, pycompat.string_types):
+                    if isinstance(cell_value, bytes) and not isinstance(cell_value, str):
 
                         try:
                             cell_value = pycompat.to_text(cell_value)
@@ -58,7 +58,7 @@ class ExportRevenueByNaPerAccount(http.Controller):
                                 "does not seem to be the case for %s.") %
                                             fields[cell_index])
 
-                    if isinstance(cell_value, pycompat.string_types):
+                    if isinstance(cell_value, str):
                         cell_value = re.sub("\r", " ", pycompat.to_text(cell_value))
                         # Excel supports a maximum of 32767 characters in each cell:
                         cell_value = cell_value[:32767]

@@ -488,19 +488,24 @@ class AccountInvoice(models.Model):
 
     def _setInvoicePurchaseOrder(self):
         for order in self:
-            if order.origin == order.name:
-                order.purchase_order = ""
-            else:
-                order.purchase_order = order.name
+            order.purchase_order = None
+            # if order.origin == order.name:
+            #     order.purchase_order = ""
+            # else:
+            #     order.purchase_order = order.name
 
     def _getSalesOerderPickingOutTrackingReference(self):
         for order in self:
-            if order.origin:
+            if order.stock_move_id and order.stock_move_id.picking_id and order.stock_move_id.picking_id.carrier_tracking_ref and order.stock_move_id.picking_id.state == 'done':
                 order.env.cr.execute(
-                    "select carrier_tracking_ref from stock_picking WHERE origin like '" + order.origin + "' and state like 'done' and name like 'WH/OUT/%' limit 1")
+                    "select carrier_tracking_ref from stock_picking WHERE id =" + order.stock_move_id.picking_id.id + " name like 'WH/OUT/%' limit 1")
                 query_result = order.env.cr.dictfetchone()
                 if query_result and query_result['carrier_tracking_ref']:
                     order.tracking_reference = query_result['carrier_tracking_ref']
+                else:
+                    order.tracking_reference = None
+            else:
+                order.tracking_reference = None
 
 
 class SaleOrderReport(models.Model):
