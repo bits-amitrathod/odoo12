@@ -35,7 +35,7 @@ class FedexApiCstm():
         if prod_environment:
             env_path = '../api/prod/'
         wsdl_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), env_path + 'TrackService_v16.wsdl')
-        self.client = Client('file://%s' % wsdl_path.lstrip('/'), plugins=[LogPlugin(self.debug_logger)])
+        self.client = Client('file:///%s' % wsdl_path.lstrip('/'), plugins=[LogPlugin(self.debug_logger)])
         self.factory = self.client.type_factory('ns0')
 
     def set_version(self, serviceId, major, intermediate, minor):
