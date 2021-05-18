@@ -46,6 +46,7 @@
                     <field name="on_hold" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                     <field name="customer_rank" attrs="{'readonly':[('is_parent', '==', False)]}" invisible="1"/>
                     <field name="is_broker" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                    <!--<field name="charity"/>-->
                     <field name="is_parent" invisible="1"/>
                     <field name="having_carrier" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                     <field name="carrier_info"
