@@ -346,7 +346,7 @@ class FedexRequest():
     # Shipping stuff
 
     def start_shipping_transaction(self, wsdl_path):
-        self.client = Client('file://%s' % wsdl_path.lstrip('/'), plugins=[LogPlugin(self.debug_logger)])
+        self.client = Client('file:///%s' % wsdl_path.lstrip('/'), plugins=[LogPlugin(self.debug_logger)])
         self.factory = self.client.type_factory("ns0")
         self.VersionId = self.factory.VersionId()
         self.VersionId.ServiceId = 'ship'
