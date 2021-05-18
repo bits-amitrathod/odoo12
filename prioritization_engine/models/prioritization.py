@@ -78,8 +78,9 @@ class Customer(models.Model):
             partner.saleforce_ac = self.env['ir.sequence'].next_by_code('sale.force.no') or _('New')
 
     def write(self, vals):
+        self.copy_parent_date(vals)
         res = super(Customer, self).write(vals)
-        res2 = self.copy_parent_date(vals)
+
         return res
 
     def copy_parent_date(self, vals):
@@ -113,6 +114,7 @@ class Customer(models.Model):
                                 'is_share': ml.is_share,
                                 'sale_margine': ml.sale_margine
                                 })
+
 
     def action_view_notification(self):
         '''
