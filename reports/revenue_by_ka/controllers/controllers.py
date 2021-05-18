@@ -48,7 +48,7 @@ class StockedProductSoldByKa(http.Controller):
                 for cell_index, cell_value in enumerate(row):
                     cell_style = base_style
 
-                    if isinstance(cell_value, bytes) and not isinstance(cell_value, pycompat.string_types):
+                    if isinstance(cell_value, bytes) and not isinstance(cell_value, str):
 
                         try:
                             cell_value = pycompat.to_text(cell_value)

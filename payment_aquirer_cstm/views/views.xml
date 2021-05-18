@@ -17,7 +17,7 @@
             <field name="name">Purchase Order</field>
             <field name="view_template_id" ref="default_acquirer_button"/>
             <field name="module_id" ref="base.module_payment_aquirer_cstm"/>
-            <field name="journal_id"></field>
+            <field name="journal_id">17</field>
             <field name="provider">0</field>
             <field name="description" type="html">
                 <p>

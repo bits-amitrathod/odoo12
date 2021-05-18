@@ -226,20 +226,20 @@ class sale_order(models.Model):
     #     # Remove delivery products from the sales order
     #     self._remove_delivery_line()
 
-        for order in self:
-            if order.state not in ('draft', 'sent', 'sale'):
-                raise UserError(_('You can add delivery price only on unconfirmed quotations.'))
-            elif not order.carrier_id:
-                raise UserError(_('No carrier set for this order.'))
-            elif not order.delivery_rating_success:
-                raise UserError(_('Please use "Check price" in order to compute a shipping price for this quotation.'))
-            else:
-                price_unit = order.carrier_id.rate_shipment(order)['price']
-                # TODO check whether it is safe to use delivery_price here
-                order._create_delivery_line(order.carrier_id, price_unit)
-            if order.carrier_id and order.state in 'sale':
-                self.env['stock.picking'].search([('sale_id', '=', order.id), ('picking_type_id', '=', 5)]).write({'carrier_id':order.carrier_id.id})
-        return True
+        # for order in self:
+        #     if order.state not in ('draft', 'sent', 'sale'):
+        #         raise UserError(_('You can add delivery price only on unconfirmed quotations.'))
+        #     elif not order.carrier_id:
+        #         raise UserError(_('No carrier set for this order.'))
+        #     elif not order.delivery_rating_success:
+        #         raise UserError(_('Please use "Check price" in order to compute a shipping price for this quotation.'))
+        #     else:
+        #         price_unit = order.carrier_id.rate_shipment(order)['price']
+        #         # TODO check whether it is safe to use delivery_price here
+        #         order._create_delivery_line(order.carrier_id, price_unit)
+        #     if order.carrier_id and order.state in 'sale':
+        #         self.env['stock.picking'].search([('sale_id', '=', order.id), ('picking_type_id', '=', 5)]).write({'carrier_id':order.carrier_id.id})
+        # return True
 
     def get_delivery_price(self):
         for order in self.filtered(lambda o: o.state in ('draft', 'sent', 'sale') and len(o.order_line) > 0):

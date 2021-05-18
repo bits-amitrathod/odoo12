@@ -24,6 +24,10 @@
 
                 </button>
 
+                <xpath expr="//field[@name='validity_date']" position="replace">
+                    <field name="validity_date" string="Validity" attrs="{'invisible': [('state', 'in', ['sale', 'done'])]}"/>
+                </xpath>
+
                 <field name="partner_shipping_id" position="after">
                     <field name="preferred_method"/>
                     <field name="shipping_terms"/>
@@ -36,7 +40,7 @@
                     <field name="gl_account"/>
                     <field name="is_share"/>
                     <field name="sale_margine"/>
-                    <!--<field name="carrier_id"/>-->
+                    <field name="carrier_id" context="{'order_id': id}" options='{"no_open": True, "no_create": True}' readonly="1"/>
                 </field>
                 <xpath expr="/form/sheet/notebook/page[1]/field[@name='order_line']/tree/field[@name='product_id']"
                        position="after">
@@ -116,19 +120,6 @@
                 </xpath>
             </field>
         </record>-->
-        <record id="view_order_form_cstm1" model="ir.ui.view">
-            <field name="name">sale.order.form.cstm</field>
-            <field name="model">sale.order</field>
-            <field name="inherit_id" ref="sale.view_order_form"/>
-            <field name="arch" type="xml">
-                <!--remove field-->
-                <xpath expr="//field[@name='client_order_ref']" position="replace"/>
-                <!--<xpath expr="//field[@name='carrier_acc_no']" position="after">
-                    <field name="client_order_ref"/>
-                    <field name="gl_account"/>
-                </xpath>-->
-            </field>
-        </record>
 
         <record id="view_order_list_cstm" model="ir.ui.view">
             <field name="name">sale.order.list.cstm</field>

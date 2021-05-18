@@ -20,4 +20,10 @@
         </xpath>
     </template>
 
+    <template id="assets_backend" name="web_enterprise assets backend" inherit_id="web.assets_backend">
+        <xpath expr="//link[last()]" position="after">
+            <link rel="stylesheet" type="text/scss" href="/sps_theme/static/src/scss/sps.scss"/>
+        </xpath>
+    </template>
+
 </odoo>
