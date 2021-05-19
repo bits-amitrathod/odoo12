@@ -58,7 +58,7 @@ class StockedProductSoldByKa(http.Controller):
                                 "does not seem to be the case for %s.") %
                                             fields[cell_index])
 
-                    if isinstance(cell_value, pycompat.string_types):
+                    if isinstance(cell_value, str):
                         cell_value = re.sub("\r", " ", pycompat.to_text(cell_value))
                         # Excel supports a maximum of 32767 characters in each cell:
                         cell_value = cell_value[:32767]
@@ -85,7 +85,7 @@ class StockedProductSoldByKa(http.Controller):
                             ROW_NUMBER () OVER (ORDER BY RP.id)         AS id, 
                             RP.name                                     AS customer, 
                             RPS.name                                    AS key_account,
-                            SOL.currency_id                             AS currency_id,
+                            CASE WHEN SOL.currency_id is NULL THEN 3 ELSE SOL.currency_id  END AS currency_id,
                             CASE WHEN COUNT(SO.no_of_order) > 0 THEN COUNT(SO.no_of_order) ELSE 0 END AS no_of_orders,
                             CASE WHEN SUM(SOL.revenue) > 0 THEN SUM(SOL.revenue) ELSE 0 END AS total_revenue,
 

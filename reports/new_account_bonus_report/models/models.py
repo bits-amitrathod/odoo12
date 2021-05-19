@@ -41,7 +41,7 @@ class NewAccountBonusReport(models.Model):
                                                             orderby=order_by, lazy=lazy)
         return res
 
-    @api.model_cr
+    # @api.model_cr
     def init(self):
         self.init_table()
 
@@ -100,7 +100,7 @@ class NewAccountBonusReport(models.Model):
 
             self._cr.execute("CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + select_query + " )")
 
-    @api.model_cr
+    # @api.model_cr
     def delete_and_create(self):
         self.init_table()
 
