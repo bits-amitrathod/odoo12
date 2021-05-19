@@ -1,33 +1,15 @@
 <odoo>
   <data>
 
-
-       <record id="view_partner_property_form" model="ir.ui.view">
-            <field name="name">res.partner.account.manager.form.inherit</field>
+       <record id="view_partner_form_charity_field" model="ir.ui.view">
+            <field name="name">View Partner form for charity</field>
             <field name="model">res.partner</field>
-            <field name="inherit_id" ref="base.view_partner_form" />
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="priority" eval="20"/>
             <field name="arch" type="xml">
-                <xpath expr="//page[@name='sales_purchases']/group[@name='container_row_2']/group[@name='sale']/field[@name='user_id']" position="replace">
-                    <field name="customer_rank" attrs="{'readonly':[('is_parent', '==', False)]}"/>
-                    <field name="user_id"/>
-                    <field name="account_manager_cust"/>
-                    <field name="national_account_rep"/>
-                    <field name="message_bounce"/>
-                </xpath>
-                <xpath expr="//group[@name='misc']/field[@name='ref']" position="after">
-                    <field name="barcode"/>
-                </xpath>
-            </field>
-        </record>
-
-      <record id="view_form_prioritization_customer_custom" model="ir.ui.view">
-            <field name="name">prioritization.customer.form.inherit</field>
-            <field name="model">res.partner</field>
-            <field name="inherit_id" ref="prioritization_engine.view_form_prioritization_customer1" />
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='is_broker']" position="after">
+                <field name="is_broker" position="after">
                     <field name="charity"/>
-                </xpath>
+                </field>
             </field>
       </record>
 
@@ -270,6 +252,16 @@
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field eval="20" name="priority"/>
         <field name="arch" type="xml">
+            <xpath expr="//page[@name='sales_purchases']/group[@name='container_row_2']/group[@name='sale']/field[@name='user_id']" position="replace">
+                <field name="customer_rank" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                <field name="user_id"/>
+                <field name="account_manager_cust"/>
+                <field name="national_account_rep"/>
+                <field name="message_bounce"/>
+            </xpath>
+            <xpath expr="//page[@name='sales_purchases']/group[@name='container_row_2']/group[@name='misc']/field[@name='ref']" position="after">
+                <field name="barcode"/>
+            </xpath>
             <xpath expr="//field[@name='sale_margine']" position="after">
                 <field name="order_quota"/>
                 <field name="revenue_quota"/>
