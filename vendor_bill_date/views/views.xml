@@ -1,18 +1,18 @@
 <odoo>
   <data>
-      <record id="view_bill_date" model="ir.ui.view">
-            <field name="name">Bill date</field>
-            <field name="model">account.move</field>
-            <field name="inherit_id" ref="account.view_move_form"/>
-            <field name="priority" eval="20"/>
-            <field name="arch" type="xml">
+<!--      <record id="view_bill_date" model="ir.ui.view">-->
+<!--            <field name="name">Bill date</field>-->
+<!--            <field name="model">account.move</field>-->
+<!--            <field name="inherit_id" ref="account.view_move_form"/>-->
+<!--            <field name="priority" eval="20"/>-->
+<!--            <field name="arch" type="xml">-->
 
-                <xpath expr="/form/sheet/group/group/field[@name='invoice_date']" position="replace">
-                    <field name="invoice_date" string="Bill Date"/>
-                </xpath>
+<!--                <xpath expr="/form/sheet/group/group/field[@name='invoice_date']" position="replace">-->
+<!--                    <field name="invoice_date" string="Bill Date"/>-->
+<!--                </xpath>-->
 
-            </field>
-      </record>
+<!--            </field>-->
+<!--      </record>-->
 
       <!--<record id="view_memo" model="ir.ui.view">
             <field name="name">Memo</field>

@@ -84,7 +84,8 @@ class VendorOffer(http.Controller):
     def vendor_offer_reject(self, res_id, signature, order_id=None, partner_name=None, access_token=None):
         if not signature:
             return {'error': _('Signature is missing.')}
-        order = request.env['purchase.order'].browse(res_id)
+        #order = request.env['purchase.order'].browse(res_id)
+        order = request.env['purchase.order'].search([('id', '=', res_id)])
         if order.state == 'purchase':
             return {
                 'error': _('Offer already Accepted'),
