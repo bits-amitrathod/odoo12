@@ -324,7 +324,7 @@ class AuthSignupHome(Home):
                             template.sudo().with_context(
                                 lang=user_sudo.lang,
                                 auth_login=werkzeug.url_encode({'auth_login': user_sudo.email}),
-                            ).send_mail(user_sudo.id, force_send=True)
+                            ).send_mail(user_sudo.id, force_send=False)
                     else:
                         raise ValidationError("Email address should contain small letters only.")
 
