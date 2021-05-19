@@ -124,7 +124,7 @@ class StockedProductSoldByKa(models.Model):
         compute_at = self.env.context.get('compute_at')
         key_account_id = self.env.context.get('key_account')
 
-        if compute_at:
+        if compute_at == '1':
             if start_date and start_date is not None and end_date and end_date is not None:
                 select_query = select_query + " AND SP.date_done BETWEEN '" + str(
                     start_date) + "'" + " AND '" + str(self.string_to_date(end_date) + datetime.timedelta(days=1)) + "'"
@@ -167,7 +167,7 @@ class StockedProductSoldByKaExport(models.TransientModel):
 
     def download_excel_product_sold_by_ka(self):
 
-        if self.compute_at_date:
+        if self.compute_at_date == '1':
             e_date = self.string_to_date(str(self.end_date))
             e_date = e_date + datetime.timedelta(days=1)
             s_date = self.string_to_date(str(self.start_date))
