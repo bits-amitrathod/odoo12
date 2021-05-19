@@ -89,7 +89,7 @@
         <record id="action_new_account_bonus_report" model="ir.actions.act_window">
             <field name="name">New Account Bonus Report</field>
             <field name="res_model">popup.new.account.bonus.report</field>
-            <field name="view_type">form</field>
+            <!--<field name="view_type">form</field>-->
             <field name="view_mode">form</field>
             <field name="view_id" ref="new_account_bonus_report_popup_view"/>
             <field name="target">new</field>
@@ -149,13 +149,13 @@
         <!-- Filter's code ends here -->
 
         <!-- Export Action code -->
-        <act_window name="Export New Account Bonus Report"
+        <!--<act_window name="Export New Account Bonus Report"
                     res_model="new.account.bonus.report.export"
                     src_model="new.account.bonus.report"
                     view_mode="form"
                     target="new"
                     key2="client_action_multi"
-                    id="new_account_by_month_by_bd_export_act_window"/>
+                    id="new_account_by_month_by_bd_export_act_window"/>-->
 
         <!-- Export Action code ends here -->
 
