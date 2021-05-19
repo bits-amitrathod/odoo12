@@ -236,7 +236,7 @@ class Customer(models.Model):
         template = self.env.ref('prioritization_engine.send_prioritization_credential_email').sudo()
         local_context = {'url': url, 'username': email, 'password': password}
         try:
-            template.with_context(local_context).send_mail(partner_id, raise_exception=True, force_send=True, )
+            template.with_context(local_context).send_mail(partner_id, raise_exception=True, force_send=False, )
         except:
             response = {'message': 'Unable to connect to SMTP Server'}
 

@@ -690,7 +690,7 @@ class PrioritizationEngine(models.TransientModel):
         template = self.env.ref('prioritization_engine.set_log_gl_account_response').sudo()
         local_context = {'body': body}
         try:
-            template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True, )
+            template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=False, )
         except Exception as exc:
             _logger.error("getting error while sending email of sales order : %r", exc)
             response = {'message': 'Unable to connect to SMTP Server'}
