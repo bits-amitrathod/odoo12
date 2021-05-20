@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from docutils.nodes import header
 
 from .VendorOfferAutomationTemplate import *
 from datetime import datetime
@@ -173,13 +174,51 @@ class VendorOfferImportTransientModel(models.TransientModel):
 
         return import_result
 
+
+    def _match_headers_ven(self, rows, fields, options):
+        """ Attempts to match the imported model's fields to the
+            titles of the parsed CSV file, if the file is supposed to have
+            headers.
+
+            Will consume the first line of the ``rows`` iterator.
+
+            Returns the list of headers and a dict mapping cell indices
+            to key paths in the ``fields`` tree. If headers were not
+            requested, both collections are empty.
+
+            :param Iterator rows:
+            :param dict fields:
+            :param dict options:
+            :rtype: (list(str), dict(int: list(str)))
+        """
+        if not options.get('headers'):
+            return [], {}
+
+        headers = next(rows, None)
+        if not headers:
+            return [], {}
+
+        matches = {}
+        mapping_records = self.env['base_import.mapping'].search_read([('res_model', '=', self.res_model)], ['column_name', 'field_name'])
+        mapping_fields = {rec['column_name']: rec['field_name'] for rec in mapping_records}
+        for index, header in enumerate(headers):
+            match_field = []
+            mapping_field_name = mapping_fields.get(header.lower())
+            if mapping_field_name:
+                match_field = mapping_field_name.split('/')
+            if not match_field:
+                match_field = [field['name'] for field in self._match_header(header.strip(), fields, options)]
+            matches[index] = match_field or None
+        return headers, matches
     #@api.multi
     def parse_preview(self, options, import_type_ven, count=10):
         self.ensure_one()
         fields = self.get_fields(self.res_model,import_type_ven)
         try:
             rows = self._read_file(options)
-            headers, matches = self._match_headers(rows, fields, options)
+            headers, matches = self._match_headers_ven(rows, fields, options)
+
+
             self.columns_from_template = ".".join(headers)
             preview = list(itertools.islice(rows, count))
             assert preview, "File seems to have no content"
