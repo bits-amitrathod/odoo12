@@ -311,46 +311,52 @@ class Prioritization(models.Model):
     # constraint
     @api.constrains('expiration_tolerance')
     def _check_expiration_tolerance(self):
-        expiration_tolerance = self.expiration_tolerance
-        if expiration_tolerance and len(str(abs(expiration_tolerance))) > 3:
-            raise ValidationError(
-                _('Customer Priority Configuration->Expiration Tolerance field must be less than 3 digit'))
+        for record in self:
+            expiration_tolerance = record.expiration_tolerance
+            if expiration_tolerance and len(str(abs(expiration_tolerance))) > 3:
+                raise ValidationError(
+                    _('Customer Priority Configuration->Expiration Tolerance field must be less than 3 digit'))
 
     @api.constrains('length_of_hold')
     def _check_length_of_hold(self):
-        length_of_hold = self.length_of_hold
-        if length_of_hold and len(str(abs(length_of_hold))) > 5:
-            raise ValidationError(
-                _('Customer Priority Configuration->Length of Holding field must be less than 5 digit'))
-        elif length_of_hold == 0:
-            raise ValidationError(_('Customer Priority Configuration->Length of Holding field should not be 0'))
+        for record in self:
+            length_of_hold = record.length_of_hold
+            if length_of_hold and len(str(abs(length_of_hold))) > 5:
+                raise ValidationError(
+                    _('Customer Priority Configuration->Length of Holding field must be less than 5 digit'))
+            elif length_of_hold == 0:
+                raise ValidationError(_('Customer Priority Configuration->Length of Holding field should not be 0'))
 
     @api.constrains('priority')
     def _check_priority(self):
-        priority = self.priority
-        if priority and len(str(abs(priority))) > 5:
-            raise ValidationError(_('Customer Priority Configuration->Priority field must be less than 5 digit'))
+        for record in self:
+            priority = record.priority
+            if priority and len(str(abs(priority))) > 5:
+                raise ValidationError(_('Customer Priority Configuration->Priority field must be less than 5 digit'))
 
     @api.constrains('cooling_period')
     def _check_cooling_period(self):
-        cooling_period = self.cooling_period
-        if cooling_period and cooling_period >= 366:
-            raise ValidationError(_('Customer Priority Configuration->Cooling Period field must be less 365 days'))
+        for record in self:
+            cooling_period = record.cooling_period
+            if cooling_period and cooling_period >= 366:
+                raise ValidationError(_('Customer Priority Configuration->Cooling Period field must be less 365 days'))
 
     @api.constrains('max_threshold')
     def _check_max_threshold(self):
         # max_threshold = self.max_threshold
-        if self.max_threshold and self.max_threshold >= 999:
-            raise ValidationError(_('Customer Priority Configuration->Max Threshold field must be less 999'))
-        if self.min_threshold and self.max_threshold <= self.min_threshold:
-            raise ValidationError(
-                _('Customer Priority Configuration->Max Threshold field must be greater than Min Threshold field'))
+        for record in self:
+            if record.max_threshold and record.max_threshold >= 999:
+                raise ValidationError(_('Customer Priority Configuration->Max Threshold field must be less 999'))
+            if record.min_threshold and record.max_threshold <= record.min_threshold:
+                raise ValidationError(
+                    _('Customer Priority Configuration->Max Threshold field must be greater than Min Threshold field'))
 
     @api.constrains('min_threshold')
     def _check_min_threshold(self):
-        min_threshold = self.min_threshold
-        if min_threshold and min_threshold > 999:
-            raise ValidationError(_('Customer Priority Configuration->Min Threshold field must be less 999'))
+        for record in self:
+            min_threshold = record.min_threshold
+            if min_threshold and min_threshold > 999:
+                raise ValidationError(_('Customer Priority Configuration->Min Threshold field must be less 999'))
 
 
 class PrioritizationTransient(models.TransientModel):
