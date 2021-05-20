@@ -34,7 +34,7 @@ class ReportPickTicketGroupByOrderDate(models.TransientModel):
             'domain': []
         }
 
-        if self.compute_at_date:
+        if self.compute_at_date=='1':
             if self.start_date:
                 action["domain"].append(('scheduled_date', '>=', self.start_date))
 

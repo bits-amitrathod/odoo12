@@ -32,7 +32,7 @@ class ReportSaleOrdersGroupbyProduct(models.TransientModel):
             'domain': [('state', 'in', ['sale', 'done']),('qty_delivered', '>',0)]
         }
 
-        if self.compute_at_date:
+        if self.compute_at_date =='1':
             action.update({'domain': [('order_id.date_order', '>=', self.start_date), ('order_id.date_order', '<=', self.end_date),
                    ('state', 'in', ('sale', 'done')),('qty_delivered', '>',0)]})
             return action

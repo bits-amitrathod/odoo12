@@ -18,7 +18,7 @@ class BonusReportPopUp(models.TransientModel):
         tree_view_id = self.env.ref('bonus_report.bonus_form_list').id
         form_view_id = self.env.ref('appraisal_tracker.appraisal_tracker_offer_form').id
 
-        if self.compute_at_date:
+        if self.compute_at_date == '1':
             self.end_date = self.string_to_date(str(self.end_date)) + datetime.timedelta(days=1)
             action = {
                 'type': 'ir.actions.act_window',

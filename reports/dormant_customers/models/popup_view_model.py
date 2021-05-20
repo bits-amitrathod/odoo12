@@ -29,7 +29,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
         tree_view_id = self.env.ref('dormant_customers.list_view').id
         form_view_id = self.env.ref('base.view_partner_form').id
 
-        if self.compute_at_date:
+        if self.compute_at_date == '1':
             s_date = ProductSaleByCountPopUp.string_to_date(str(self.start_date))
             e_date = ProductSaleByCountPopUp.string_to_date(str(self.end_date))
         else:
