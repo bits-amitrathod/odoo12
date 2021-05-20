@@ -442,7 +442,7 @@ class StockMove(models.Model):
                             quant.lot_id.name) + " <b>Available Quantity :</b> " + str(quant.quantity - quant.reserved_quantity)
 
             product_lot_qty_dict.clear()
-            if (move.picking_id and move.picking_id.sale_id) and (move.picking_id.sale_id.team_id.team_type.lower().strip() == 'engine' and move.picking_id.sale_id.state.lower().strip() in ('sale')):
+            if (move.picking_id and move.picking_id.sale_id and move.picking_id.sale_id.team_id) and (move.picking_id.sale_id.team_id.team_type.lower().strip() == 'engine' and move.picking_id.sale_id.state.lower().strip() in ('sale')):
                 available_production_lot_dict = self.env['available.product.dict'].get_available_production_lot(move.partner_id.id, move.product_id.id)
                 need = move.product_qty - move.reserved_availability
                 if available_production_lot_dict.get(int(move.product_id.id)) is not None:
