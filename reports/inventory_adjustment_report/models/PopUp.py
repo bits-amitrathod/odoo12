@@ -40,7 +40,7 @@ class PopUp(models.TransientModel):
             'domain': domain,
         }
 
-        if self.compute_at_date:
+        if self.compute_at_date =='1':
             action['domain'].append(('date', '>=', self.start_date))
             action['domain'].append(('date', '<=', self.end_date))
             if self.product_sku_code:

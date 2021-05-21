@@ -37,7 +37,7 @@ class PopUp(models.TransientModel):
             'target': 'main'
         }
 
-        if self.compute_at_date==1:
+        if self.compute_at_date=='1':
             if self.end_date:
                 e_date = datetime.datetime.strptime(str(self.end_date), "%Y-%m-%d")
                 e_date = str(e_date + datetime.timedelta(days=1))
@@ -48,7 +48,7 @@ class PopUp(models.TransientModel):
 
             action['domain'].append(('move_id.purchase_line_id', '!=', False))
             return action
-        elif self.compute_at_date == 2:
+        elif self.compute_at_date == '2':
             print('--------------------')
             print(self.purchase_order.ids)
             print(len(self.purchase_order.ids))

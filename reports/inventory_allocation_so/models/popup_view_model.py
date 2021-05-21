@@ -28,7 +28,7 @@ class TrendingReportListPopUp(models.TransientModel):
         form_view_id = self.env.ref('inventory_allocation_so.inv_sale_order_form')
 
 
-        if self.compute_at_date:
+        if self.compute_at_date =='1':
             s_date = self.string_to_date(str(self.start_date))
             e_date = self.string_to_date(str(self.end_date)) + datetime.timedelta(days=1)
         else:

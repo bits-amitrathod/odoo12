@@ -18,7 +18,7 @@ class DiscountSummaryPopUp(models.TransientModel):
         tree_view_id = self.env.ref('report_group_by_saleperson.view_order_tree').id
         form_view_id = self.env.ref('sale.view_order_form').id
 
-        if self.compute_at_date:
+        if self.compute_at_date =='1':
             action = {
                 'type': 'ir.actions.act_window',
                 'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],

@@ -38,7 +38,7 @@ class DiscountSummaryPopUp(models.TransientModel):
         if self.partner_id:
             action['domain'].append(('partner_id', '=', self.partner_id.id))
 
-        if self.compute_at_date:
+        if self.compute_at_date =='1':
             action['domain'].extend([('date_order', '>=', self.start_date), ('date_order', '<=', self.end_date)])
             return action
         else:

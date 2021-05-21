@@ -41,7 +41,7 @@ class ProductsOnHandByExpiryPopUp(models.TransientModel):
         on_hand_by_expiry_context = {}
         domain = []
 
-        if self.date_range:
+        if self.date_range == '1':
             s_date = ProductsOnHandByExpiryPopUp.string_to_date(str(self.start_date))
             e_date = ProductsOnHandByExpiryPopUp.string_to_date(str(self.end_date))
             if s_date > e_date:
