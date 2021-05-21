@@ -16,7 +16,7 @@
                     <field name="key_account"/>
                     <field name="customer_key_account" invisible="1"/>
                     <field name="sale_order_id"/>
-                    <field name="date_invoice" widget="date"/>
+                    <field name="invoice_date" widget="date"/>
                     <field name="amount_total" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                     <field name="months"/>
                     <field name="invoice_status"/>
@@ -41,7 +41,7 @@
                                 <field name="business_development"/>
                                 <field name="key_account"/>
                                 <field name="sale_order_id"/>
-                                <field name="date_invoice" widget="date"/>
+                                <field name="invoice_date" widget="date"/>
                             </group>
                             <group>
                                 <field name="currency_id" invisible="1"/>
@@ -156,6 +156,14 @@
                     target="new"
                     key2="client_action_multi"
                     id="new_account_by_month_by_bd_export_act_window"/>-->
+
+        <record id="new_account_bonus_report_export_act_window" model="ir.actions.act_window">
+            <field name="name">Export New Account Bonus Report</field>
+            <field name="res_model">new.account.bonus.report.export</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+             <field name="binding_model_id" ref="model_new_account_bonus_report" />
+        </record>
 
         <!-- Export Action code ends here -->
 

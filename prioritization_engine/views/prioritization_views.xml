@@ -53,7 +53,6 @@
                            attrs="{'invisible':[('having_carrier', '==', False)],'readonly':[('is_parent', '==', False)]}"/>
                     <field name="carrier_acc_no"
                            attrs="{'invisible':[('having_carrier', '==', False)],'readonly':[('is_parent', '==', False)]}"/>
-                    <field name="client_order_ref"/>
                     <field name="shipping_terms" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                 </field>
                 <xpath expr="/form/sheet/notebook/page[@name='sales_purchases']" position="after">

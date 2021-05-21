@@ -63,7 +63,7 @@
                                         <span t-esc="account.sale_order_id.name"/>
                                     </td>
                                     <td style="border: 1px solid black;text-align: center;">
-                                        <span t-esc="account.date_invoice" t-options='{"widget": "date"}'/>
+                                        <span t-esc="account.invoice_date" t-options='{"widget": "date"}'/>
                                     </td>
                                     <td style="border: 1px solid black;text-align: center;">
                                         <span t-esc="account.amount_total"  t-options='{"widget": "monetary","display_currency": account.currency_id}'/>

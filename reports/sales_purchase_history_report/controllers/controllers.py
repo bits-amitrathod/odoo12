@@ -184,7 +184,7 @@ class ReportPrintSalesPurchaseHistory(http.Controller):
                             "Delivered Date"
                                , "Delivered Qty", "UOM", "Unit Price", "Total", "Open Quotations Per Code"],
                            records),
-            headers=[('Content-Disposition', content_disposition('payroll_report' + '.xls')),
+            headers=[('Content-Disposition', content_disposition('payroll_report' + '.xlsx')),
                      ('Content-Type', 'application/vnd.ms-excel')],
         )
 
