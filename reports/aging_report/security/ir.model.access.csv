@@ -1,6 +1,6 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_aging_report_stock_manager,access_aging_report_stock_manager,model_aging_report,stock.group_stock_manager,1,1,1,1
-access_aging_report_stock_user,access_aging_report_stock_user,model_aging_report,stock.group_stock_user,1,1,0,0
+aging_report,aging.report,model_aging_report,,1,1,1,1
+aging_popup_view_model,aging_popup.view.model,model_aging_popup_view_model,,1,1,1,1
 
 
 
