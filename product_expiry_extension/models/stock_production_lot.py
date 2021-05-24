@@ -55,7 +55,8 @@ class ProductionLot(models.Model):
         if 'use_date' not in vals:
             vals = self._set_required_vals_to_create_lot(vals)
             # raise UserError(_('Lot expiration date is required.'))
-        elif fields.Datetime.from_string(vals['alert_date']) >= fields.Datetime.from_string(vals['use_date']):
+        elif ( ('use_date' in vals and 'alert_date' in vals and vals['alert_date']!=False) and
+               (fields.Datetime.from_string(vals['alert_date']) >= fields.Datetime.from_string(vals['use_date']))):
             raise UserError(_('Alert date should be less than expiration date.'))
         dates = self._get_dates(vals.get('product_id') or self.env.context.get('default_product_id'))
         for d in dates:
