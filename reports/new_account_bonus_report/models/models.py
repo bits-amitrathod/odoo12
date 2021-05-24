@@ -11,7 +11,7 @@ _logger = logging.getLogger(__name__)
 class NewAccountBonusReport(models.Model):
     _name = 'new.account.bonus.report'
     _auto = False
-    _order = 'date_invoice asc'
+    _order = 'invoice_date asc'
 
     customer = fields.Many2one('res.partner', 'Customer Name')
     business_development = fields.Many2one('res.users', 'Business Development')
@@ -19,7 +19,7 @@ class NewAccountBonusReport(models.Model):
     key_account = fields.Many2one('res.users', 'Key Account')
     customer_key_account = fields.Many2one('res.users', 'Customer Key Account')
     sale_order_id = fields.Many2one('sale.order', 'Sale Order#')
-    date_invoice = fields.Date('Invoice Date')
+    invoice_date = fields.Date('Invoice Date')
     invoice_status = fields.Char('Invoice Status')
     invoice_state = fields.Char('Status')
     amount_total = fields.Float('Total')
@@ -29,7 +29,7 @@ class NewAccountBonusReport(models.Model):
 
     @api.model
     def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=False):
-        fields = ['customer', 'business_development', 'key_account', 'sale_order_id', 'date_invoice', 'invoice_status',
+        fields = ['customer', 'business_development', 'key_account', 'sale_order_id', 'invoice_date', 'invoice_status',
                   'amount_total',
                   'months', 'currency_id', 'date_of_first_order']
 
@@ -62,10 +62,9 @@ class NewAccountBonusReport(models.Model):
                         so.account_manager                  AS key_account,
                         rp.user_id                          AS customer_business_development,
                         rp.account_manager_cust             AS customer_key_account,
-                        ai.date_invoice                     AS date_invoice, 
+                        ai.invoice_date                     AS invoice_date, 
                         CASE WHEN so.invoice_status = 'invoiced' then 'Fully Invoiced' END AS invoice_status,
-                        CASE WHEN ai.state = 'open' then 'Open' 
-                             WHEN ai.state = 'paid' then 'Paid' END AS invoice_state,
+                        CASE WHEN ai.state = 'posted' then 'Posted' END AS invoice_state,
                         ai.amount_total                     AS amount_total, 
                         X.months                            AS months,
                         ai.currency_id                      AS currency_id,
@@ -73,16 +72,16 @@ class NewAccountBonusReport(models.Model):
                 FROM public.sale_order so
                 INNER JOIN
                     (
-                        SELECT sos.partner_id, MIN(aii.date_invoice) As first_occurence,
-                            DATE_PART('month', AGE(' """ + str(start_date) + """ ', MIN(aii.date_invoice))) AS months    
+                        SELECT sos.partner_id, MIN(aii.invoice_date) As first_occurence,
+                            DATE_PART('month', AGE(' """ + str(start_date) + """ ', MIN(aii.invoice_date))) AS months    
                         FROM public.sale_order sos
                         INNER JOIN 
-                            public.account_invoice aii ON sos.name = aii.origin
+                            public.account_move aii ON sos.name = aii.invoice_origin
                         GROUP BY sos.partner_id
-                        Having MIN(aii.date_invoice) > '""" + str(end_date) + """ ') X
+                        Having MIN(aii.invoice_date) > '""" + str(end_date) + """ ') X
                         ON so.partner_id = X.partner_id
                     INNER JOIN 
-                        public.account_invoice ai ON so.name = ai.origin AND ai.state in ('open', 'paid')
+                        public.account_move ai ON so.name = ai.invoice_origin AND ai.state in ('posted')
                     INNER JOIN 
                         public.res_partner rp ON so.partner_id = rp.id
                 WHERE so.invoice_status = 'invoiced'                
@@ -94,7 +93,7 @@ class NewAccountBonusReport(models.Model):
             if key_account_id:
                 select_query = select_query + " AND rp.account_manager_cust = '" + str(key_account_id) + "'"
 
-            order_by = " ORDER BY ai.date_invoice asc"
+            order_by = " ORDER BY ai.invoice_date asc"
 
             select_query = select_query + order_by
 

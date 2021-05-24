@@ -432,7 +432,7 @@ class ReportPrintInStockExport(http.Controller):
             self.from_data(["partner_name", "brand_name", "sku_code", "product_name", "price_list"
                                , "actual_quantity", "product_uom", "min_expiration_date", "max_expiration_date"],
                            records),
-            headers=[('Content-Disposition', content_disposition('in_stock_report' + '.xls')),
+            headers=[('Content-Disposition', content_disposition('in_stock_report' + '.xlsx')),
                      ('Content-Type', 'application/vnd.ms-excel')],
         )
         res.set_cookie('fileToken', token)

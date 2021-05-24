@@ -35,7 +35,7 @@
                 <field name="payment_term_id" position="after">
                     <field name="carrier_info"/>
                     <field name="carrier_acc_no"/>
-                    <!--<field name="client_order_ref"/>-->
+                    <field name="client_order_ref"/>
                     <field name="x_studio_allow_duplicate_po" widget="boolean_toggle"/>
                     <field name="gl_account"/>
                     <field name="is_share"/>
@@ -66,6 +66,9 @@
 
                 <xpath expr="//group[@name='sales_person']/field[@name='user_id']"  position="after">
                      <field name="order_processor"/>
+                </xpath>
+                <xpath expr="//group[@name='sales_person']/field[@name='client_order_ref']"  position="replace">
+                     <field name="client_order_ref" invisible="1"/>
                 </xpath>
             </field>
         </record>
