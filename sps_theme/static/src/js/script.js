@@ -15,6 +15,12 @@ $(document).ready(function () {
             scrollTop: $("#requestform").offset().top - 250
         }, 1500);
     });
+    /* $(".scrolltoform2").click(function() {
+        $('html, body').animate({
+            scrollTop: $("#requestform").offset().top + 250
+        }, 1500);
+    });*/
+
 });
 
    function getFileNameWithExt(event) {
@@ -32,3 +38,8 @@ $(document).ready(function () {
       outputfile.value = fileName;
 
     }
+
+     function scrolldiv() {
+                var elem = document.getElementById("requestform");
+                elem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
