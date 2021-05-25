@@ -46,16 +46,24 @@ class CustomerPriceList(models.Model):
         products = []
         price_list_id=[]
         product_price_list_item = self.env['product.pricelist.item'].search([('applied_on', '=', '3_global')])
+        company_fetch = self.env['res.company'].search([], limit=1, order="id desc")
         if not customer_list is None and product_ids and not product_ids is None:
             for part in customer_list:
                 for product in product_ids:
                     product_price = part.property_product_pricelist.get_product_price(product, 1.0, part)
                     values = "(%s,%s,%s,%s,%s,%s,%s)"
                     final_query = insert_query + " " + values
+                    # self._cr.execute(final_query, (
+                    # str(part.display_name), str(product.product_tmpl_id.sku_code), str(product.product_tmpl_id.name),
+                    # str(product_price), str(product.product_tmpl_id.company_id.currency_id.id),
+                    # str(product.product_tmpl_id.company_id.currency_id.symbol), str(product.product_tmpl_id.id)))
                     self._cr.execute(final_query, (
-                    str(part.display_name), str(product.product_tmpl_id.sku_code), str(product.product_tmpl_id.name),
-                    str(product_price), str(product.product_tmpl_id.company_id.currency_id.id),
-                    str(product.product_tmpl_id.company_id.currency_id.symbol), str(product.product_tmpl_id.id)))
+                        str(part.display_name), str(product.product_tmpl_id.sku_code),
+                        str(product.product_tmpl_id.name),
+                        str(product_price),
+                        company_fetch.currency_id.id,
+                        company_fetch.currency_id.symbol,
+                        str(product.product_tmpl_id.id)))
 
         elif not customer_list is None :
             for part in customer_list:
@@ -83,7 +91,13 @@ class CustomerPriceList(models.Model):
                     product_price = part.property_product_pricelist.get_product_price(product, 1.0, part)
                     values="(%s,%s,%s,%s,%s,%s,%s)"
                     final_query=insert_query + " " + values
-                    self._cr.execute(final_query,(str(part.display_name),str(product.product_tmpl_id.sku_code),str(product.product_tmpl_id.name),str(product_price),str(product.product_tmpl_id.company_id.currency_id.id),str(product.product_tmpl_id.company_id.currency_id.symbol),str(product.product_tmpl_id.id)))
+                    #self._cr.execute(final_query,(str(part.display_name),str(product.product_tmpl_id.sku_code),str(product.product_tmpl_id.name),str(product_price),str(product.product_tmpl_id.company_id.currency_id.id),str(product.product_tmpl_id.company_id.currency_id.symbol),str(product.product_tmpl_id.id)))
+                    self._cr.execute(final_query, (
+                    str(part.display_name), str(product.product_tmpl_id.sku_code), str(product.product_tmpl_id.name),
+                    str(product_price),
+                    company_fetch.currency_id.id,
+                    company_fetch.currency_id.symbol,
+                    str(product.product_tmpl_id.id)))
 
     #  @api.model_cr
     def delete_and_create(self):

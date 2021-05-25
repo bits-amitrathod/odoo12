@@ -39,6 +39,8 @@ class PricingRule(models.Model):
                     RESTART IDENTITY;
                 """
         self._cr.execute(sql_query)
+
+        company_fetch = self.env['res.company'].search([], limit=1, order="id desc")
         insert_query="""INSERT INTO res_pricing_rule(customer_name, product_code, product_name, cost,currency_id,currency_symbol) values """
         price_list=self.env.context.get('price_list')
         if price_list and  not price_list is None :
@@ -66,7 +68,19 @@ class PricingRule(models.Model):
                         # product_price = 1.2
                         values="(%s,%s,%s,%s,%s,%s)"
                         final_query=insert_query + " " + values
-                        self._cr.execute(final_query,(str(part.display_name),str(product.product_tmpl_id.sku_code),str(product.product_tmpl_id.name),str(product_price),str(product.product_tmpl_id.company_id.currency_id.id),str(product.product_tmpl_id.company_id.currency_id.symbol)))
+                        # self._cr.execute(final_query,(str(part.display_name),
+                        #                               str(product.product_tmpl_id.sku_code),
+                        #                               str(product.product_tmpl_id.name),
+                        #                               str(product_price),
+                        #                               str(product.product_tmpl_id.company_id.currency_id.id),
+                        #                               str(product.product_tmpl_id.company_id.currency_id.symbol)))
+                        self._cr.execute(final_query,(str(part.display_name),
+                                                      str(product.product_tmpl_id.sku_code),
+                                                      str(product.product_tmpl_id.name),
+                                                      str(product_price),
+                                                      company_fetch.currency_id.id,
+                                                      company_fetch.currency_id.symbol
+                                                      ))
 
     #  @api.model_cr
     def delete_and_create(self):
