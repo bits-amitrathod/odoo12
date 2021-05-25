@@ -64,6 +64,7 @@ class PaymentAquirerCstm(http.Controller):
 
     @http.route('/checkHavingCarrierWithAccountNo', type='json', auth="public", methods=['POST'], website=True, csrf=False)
     def check_having_carrier_with_account_no(self):
+        Monetary = request.env['ir.qweb.field.monetary']
         order = request.website.sale_get_order()
         if request.env.user.partner_id.having_carrier and request.env.user.partner_id.carrier_acc_no:
             return {'carrier_acc_no': True}
@@ -74,13 +75,23 @@ class PaymentAquirerCstm(http.Controller):
                 res_currency = request.env['res.currency'].sudo().search([('name', '=', 'USD')])
                 if res_currency:
                     currency = res_currency
-            return {'carrier_acc_no': False, 'error_message': order.delivery_message, 'amount_delivery': self._format_amount(order.amount_delivery, currency), 'status': order.delivery_rating_success}
+            # return {
+            #     'carrier_acc_no': False,
+            #     'status': order.delivery_rating_success,
+            #     'error_message': order.delivery_message,
+            #     'is_free_delivery': not bool(order.amount_delivery),
+            #     'new_amount_delivery': Monetary.value_to_html(order.amount_delivery, {'display_currency': currency}),
+            #     'new_amount_untaxed': Monetary.value_to_html(order.amount_untaxed, {'display_currency': currency}),
+            #     'new_amount_tax': Monetary.value_to_html(order.amount_tax, {'display_currency': currency}),
+            #     'new_amount_total': Monetary.value_to_html(order.amount_total, {'display_currency': currency}),
+            # }
+            return {'carrier_acc_no': False, 'error_message': order.delivery_message, 'new_amount_delivery': Monetary.value_to_html(order.amount_delivery, {'display_currency': currency}), 'status': order.delivery_rating_success}
 
-    def _format_amount(self, amount, currency):
-        fmt = "%.{0}f".format(currency.decimal_places)
-        lang = request.env['res.lang']._lang_get(request.env.context.get('lang') or 'en_US')
-        return lang.format(fmt, currency.round(amount), grouping=True, monetary=True)\
-            .replace(r' ', u'\N{NO-BREAK SPACE}').replace(r'-', u'-\N{ZERO WIDTH NO-BREAK SPACE}')
+    # def _format_amount(self, amount, currency):
+    #     fmt = "%.{0}f".format(currency.decimal_places)
+    #     lang = request.env['res.lang']._lang_get(request.env.context.get('lang') or 'en_US')
+    #     return lang.format(fmt, currency.round(amount), grouping=True, monetary=True)\
+    #         .replace(r' ', u'\N{NO-BREAK SPACE}').replace(r'-', u'-\N{ZERO WIDTH NO-BREAK SPACE}')
 
 
 class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.WebsiteSale):
