@@ -875,7 +875,7 @@
                 <field name="sale_ok" position="before">
                     <label for="actual_quantity" style="font-size: 18px;color: #F44336;"/>
                     <span style="font-size: 18px;color: #F44336;font-weight: bold; margin-left: -4px;">:
-                        <field name="actual_quantity"/>
+                        <field name="actual_quantity" widget="statinfo" nolabel="1"/>
                     </span>
                     <div/>
                 </field>
