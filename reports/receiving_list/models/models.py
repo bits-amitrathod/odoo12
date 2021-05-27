@@ -18,8 +18,8 @@ class ReceivingListPopUp(models.TransientModel):
     ], string="Order Type", default='1', help="Choose to analyze the Show Summary or from a specific date in the past.",
         required=True)
 
-    sale_order_id = fields.Many2one('sale.order', string='Order Number')
-                                    # domain="[('picking_ids.state','in',('assigned','done')),('picking_ids.picking_type_id','=',2)]", )
+    sale_order_id = fields.Many2one('sale.order', string='Order Number',
+    domain = "[('picking_ids.state','in',('assigned','done')),('picking_ids.picking_type_id','=',2)]", )
 
     purchase_order_id = fields.Many2one('purchase.order', string='Order Number',
                                         domain="[('picking_ids.state','in',('assigned','done')),('picking_type_id.code','=','incoming')]",
@@ -27,7 +27,7 @@ class ReceivingListPopUp(models.TransientModel):
 
     def open_table(self):
         data = {'order_type': self.order_type}
-        if self.order_type == 1:
+        if self.order_type == '1':
             self.env['report.receiving.list.po'].delete_and_create()
             data['order_id'] = self.purchase_order_id.id
         else:
@@ -68,9 +68,9 @@ class ReceivingListPoReport(models.Model):
 
     def init_table(self):
         tools.drop_view_if_exists(self._cr, self._name.replace(".", "_"))
-        purchase = self.env['purchase.order'].search(
-            [('id', '=', 7499)])
-        _logger.info("id :%r", purchase)
+        # purchase = self.env['purchase.order'].search(
+        #     [('id', '=', 7499)])
+        # _logger.info("id :%r", purchase)
         select_query = """
                 SELECT
                     ROW_NUMBER () OVER (ORDER BY stock_move_line.id) as id, 
