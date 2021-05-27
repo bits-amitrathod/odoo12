@@ -7,7 +7,7 @@ class ReportSalesSalespersonWise(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
 
         if data:
-            if data['order_type'] == 1:
+            if data['order_type'] == '1':
                 records = self._get_purchase_order_data(data['order_id'])
             else:
                 records = self._get_sale_order_data(data['order_id'])
