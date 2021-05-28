@@ -39,7 +39,7 @@ class VoidedProductPopup(models.TransientModel):
         else:
             domain = [('status', '=', 'Voided')]
 
-        if self.compute_at_date:
+        if self.compute_at_date == 1:
             s_date = self.string_to_date(str(self.start_date))
             e_date = self.string_to_date(str(self.end_date)) # + datetime.timedelta(days=1)
             domain.append(('create_date', '>=', s_date))

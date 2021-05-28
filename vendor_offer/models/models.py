@@ -1208,15 +1208,14 @@ class ProductTemplateTire(models.Model):
 
     tier = fields.Many2one('tier.tier', string="Tier")
     class_code = fields.Many2one('classcode.classcode', string="Class Code")
-    actual_quantity = fields.Float(string='Qty Available For Sale', digits=dp.get_precision('Product Unit of Measure'),
-                                   compute="_compute_qty_available", store=True)
+    actual_quantity = fields.Float('Qty Available For Sale', compute="_compute_qty_available", search='_search_qty_available', compute_sudo=False, digits='Product Unit of Measure', store=True)
 
-    # @api.depends('product_variant_ids.stock_quant_ids.reserved_quantity',
-    #              'product_variant_ids.stock_move_ids.remaining_qty')
-    @api.depends('product_variant_ids.stock_quant_ids.reserved_quantity')
+    @api.depends('product_variant_ids', 'product_variant_ids.stock_quant_ids',
+                 'product_variant_ids.stock_quant_ids.reserved_quantity',
+                 'product_variant_ids.stock_move_ids.product_qty', 'product_variant_ids.stock_move_ids.state')
+    @api.depends_context('product_id', 'company', 'location', 'warehouse')
     def _compute_qty_available(self):
         for template in self:
-
             stock_quant = self.env['stock.quant'].search([('product_tmpl_id', '=', template.id)])
             reserved_quantity = 0
             if len(stock_quant) > 0:
