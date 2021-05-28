@@ -72,7 +72,7 @@ class PaymentAquirerCstm(http.Controller):
             if order.currency_id:
                 currency = order.currency_id
             else:
-                res_currency = request.env['res.currency'].sudo().search([('name', '=', 'USD')])
+                res_currency = request.env.user.company_id.currency_id
                 if res_currency:
                     currency = res_currency
             # return {
