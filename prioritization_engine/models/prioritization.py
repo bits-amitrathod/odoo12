@@ -122,7 +122,8 @@ class Customer(models.Model):
         of given partner ids. It can be form
         view,
         '''
-        action = self.env.ref('prioritization_engine.action_notification_setting').read()[0]
+        # action = self.env.ref('prioritization_engine.action_notification_setting').read()[0]
+        action = self.env["ir.actions.actions"]._for_xml_id("prioritization_engine.action_notification_setting")
         action['views'] = [(self.env.ref('prioritization_engine.view_notification_setting_form').id, 'form')]
         action['view_ids'] = self.env.ref('prioritization_engine.view_notification_setting_form').id
         action['res_id'] = self.id
