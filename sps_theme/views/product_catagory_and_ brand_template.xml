@@ -70,7 +70,7 @@
 
        <!-- Hide Default Search - Pagination - sort -->
        <xpath expr="//div[hasclass('container')]//div[hasclass('products_pager')]" position="replace">
-            <div class="products_pager form-inline flex-md-nowrap justify-content-between justify-content-md-center">
+            <div class="products_pager form-inline flex-md-nowrap justify-content-between justify-content-md-center d-none">
             </div>
        </xpath>
     </template>
