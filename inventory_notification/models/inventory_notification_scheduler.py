@@ -35,9 +35,11 @@ class InventoryNotificationScheduler(models.TransientModel):
 
     @api.model
     @api.multi
-    def process_notification_scheduler(self):
+    def process_notification_scheduler(self, custom_date=None):
         _logger.info("process_notification_scheduler called")
-        self.process_in_stock_scheduler()
+        if custom_date is not None:
+            custom_date = datetime.strptime(custom_date, '%Y-%m-%d').date()
+        self.process_in_stock_scheduler(custom_date)
 
     def pick_notification_for_customer(self, picking):
         Stock_Moves = self.env['stock.move'].search([('picking_id', '=', picking.id)])
@@ -324,14 +326,19 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                         vals['description'], vals['sale_order_lines'], vals['header'],
                                                         vals['columnProps'], vals['closing_content'], None)
 
-    def process_in_stock_scheduler(self):
+    def process_in_stock_scheduler(self, custom_date=None):
         _logger.info("process_in_stock_scheduler called")
         #email_queue = []
-        today_date = date.today()
+        if custom_date is not None:
+            today_date = custom_date
+        else:
+            today_date = date.today()
+
         today_start = today_date
         days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
         dayName = today_date.weekday()
         weekday = days[dayName]
+
         customers = self.env['res.partner'].search(
             [('customer', '=', True), ('is_parent', '=', True), ('email', '!=', ''), ('active', '=', True),
              (weekday, '=', True), ('todays_notification', '=', True)], order='id asc', limit=40)
@@ -508,17 +515,23 @@ class InventoryNotificationScheduler(models.TransientModel):
 
     @api.model
     @api.multi
-    def process_notification_scheduler_everyday(self):
+    def process_notification_scheduler_everyday(self, custom_date=None):
         self.process_new_product_scheduler()
         self.process_notify_available()
         self.process_packing_list()
         self.process_on_hold_customer()
-        self.process_todays_notification_flag_scheduler()
+        if custom_date is not None:
+            custom_date = datetime.strptime(custom_date, '%Y-%m-%d').date()
+        self.process_todays_notification_flag_scheduler(custom_date)
 
-    def process_todays_notification_flag_scheduler(self):
+    def process_todays_notification_flag_scheduler(self, custom_date=None):
         _logger.info('process_todays_notification_flag_scheduler called')
 
-        today_date = date.today()
+        if custom_date is not None:
+            today_date = custom_date
+        else:
+            today_date = date.today()
+
         today_start = today_date
         days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
         dayName = today_date.weekday()
