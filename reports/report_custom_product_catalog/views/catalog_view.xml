@@ -9,13 +9,13 @@
             <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false">
                      <field name="manufacture"/>
-                    <field name="sku"  string="Product SKU"/>
-                    <field name="name" string="Product Name"/>
-                    <field name="qty" string="Product Qty"/>
-                    <field name="list_price" string="Price"  widget='monetary'/>
-                    <field name="currency_id" invisible="1"/>
-                    <field name="min_date" string="Min Exp Date"/>
-                    <field name="max_date" string="Max Exp Date"/>
+                    <field name="sku"  string="Product SKU" optional="show"/>
+                    <field name="name" string="Product Name" optional="show"/>
+                    <field name="qty" string="Product Qty" optional="show"/>
+                    <field name="list_price" string="Price"  widget='monetary' optional="show"/>
+                    <field name="currency_id" invisible="1" optional="show"/>
+                    <field name="min_date" string="Min Exp Date" optional="show"/>
+                    <field name="max_date" string="Max Exp Date" optional="show"/>
 
                 </tree>
             </field>
@@ -50,10 +50,10 @@
             <field name="priority">20</field>
             <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false">
-                    <field name="sku_code"  string="Product SKU"/>
-                    <field name="name" string="Product Name"/>
-                    <field name="list_price" widget="monetary"/>
-                    <field name="currency_id" invisible="1"/>
+                    <field name="sku_code"  string="Product SKU" optional="show"/>
+                    <field name="name" string="Product Name" optional="show"/>
+                    <field name="list_price" widget="monetary" optional="show"/>
+                    <field name="currency_id" invisible="1" optional="show"/>
                 </tree>
             </field>
         </record>

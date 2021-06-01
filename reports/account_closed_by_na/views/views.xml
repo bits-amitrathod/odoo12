@@ -10,12 +10,12 @@
               <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false">
                     <field name="currency_id" invisible="1"/>
-                    <field name="sale_order_id"/>
-                    <field name="customer"/>
-                    <field name="national_account"/>
-                    <field name="delivery_date" widget="date"/>
-                    <field name="state"/>
-                    <field name="total_amount"  widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    <field name="sale_order_id" optional="show"/>
+                    <field name="customer" optional="show"/>
+                    <field name="national_account" optional="show"/>
+                    <field name="delivery_date" widget="date" optional="show"/>
+                    <field name="state" optional="show"/>
+                    <field name="total_amount"  widget="monetary" options="{'currency_field': 'currency_id'}" optional="show"/>
                 </tree>
               </field>
         </record>

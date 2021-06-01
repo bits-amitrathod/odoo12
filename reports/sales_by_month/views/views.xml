@@ -35,18 +35,18 @@
               <field name="priority">21</field>
               <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false">
-                    <field name="sku_code"  string="Product SKU" />
-                    <field name="product_tmpl_id" string="Product Name" />
-                    <field name="month1" widget="monetary" />
-                    <field name="month2" widget="monetary"/>
-                    <field name="month3" widget="monetary"/>
-                    <field name="month4" widget="monetary"  />
-                    <field name="month5" widget="monetary"/>
-                    <field name="month6" widget="monetary" />
-                    <field name="total_sale" widget="monetary"/>
-                    <field name="total_quantity" />
-                    <field name="product_uom_name" string="Product UOM"/>
-                    <field name="currency_id"  invisible="1"/>
+                    <field name="sku_code"  string="Product SKU" optional="show" />
+                    <field name="product_tmpl_id" string="Product Name" optional="show" />
+                    <field name="month1" widget="monetary" optional="show"/>
+                    <field name="month2" widget="monetary" optional="show"/>
+                    <field name="month3" widget="monetary" optional="show"/>
+                    <field name="month4" widget="monetary"  optional="show" />
+                    <field name="month5" widget="monetary" optional="show"/>
+                    <field name="month6" widget="monetary" optional="show" />
+                    <field name="total_sale" widget="monetary" optional="show"/>
+                    <field name="total_quantity" optional="show" />
+                    <field name="product_uom_name" string="Product UOM" optional="show"/>
+                    <field name="currency_id"  invisible="1" optional="show"/>
                 </tree>
               </field>
         </record>

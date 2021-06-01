@@ -53,15 +53,15 @@
               <field name="priority">20</field>
               <field name="arch" type="xml">
                   <tree create="false" edit="false" delete="false">
-                        <field name="currency_id" invisible="1"/>
-                        <field name="customer"/>
-                        <field name="key_account"/>
-                        <field name="no_of_orders"/>
-                        <field name="order_quota"/>
-                        <field name="progress_order_quota"/>
-                        <field name="total_revenue" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-                        <field name="revenue_quota" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-                        <field name="progress_revenue_quota"/>
+                        <field name="currency_id" invisible="1" optional="show"/>
+                        <field name="customer" optional="show"/>
+                        <field name="key_account" optional="show"/>
+                        <field name="no_of_orders" optional="show"/>
+                        <field name="order_quota" optional="show"/>
+                        <field name="progress_order_quota" optional="show"/>
+                        <field name="total_revenue" widget="monetary" options="{'currency_field': 'currency_id'}" optional="show"/>
+                        <field name="revenue_quota" widget="monetary" options="{'currency_field': 'currency_id'}" optional="show"/>
+                        <field name="progress_revenue_quota" optional="show"/>
                     </tree>
               </field>
         </record>

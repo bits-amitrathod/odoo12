@@ -41,15 +41,15 @@
             <field name="model">on_hand_by_expiry</field>
             <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false">
-                    <field name="color_value" invisible="1"/>
-                    <field name="sku_code"/>
-                    <field name="product_id"/>
-                    <field name="manufactures"/>
-                    <field name="qty"/>
-                    <field name="location_id"/>
-                    <field name="lot_name"/>
-                    <field name="expiration_date" widget="date" options='{"fg_color": "red:color_value==1;orange:color_value==2;green:color_value==3"}'/>
-                    <field name="status" options='{"fg_color": "red:color_value==1;orange:color_value==2;green:color_value==3"}'/>
+                    <field name="color_value" invisible="1" optional="show"/>
+                    <field name="sku_code" optional="show"/>
+                    <field name="product_id" optional="show"/>
+                    <field name="manufactures" optional="show"/>
+                    <field name="qty" optional="show"/>
+                    <field name="location_id" optional="show"/>
+                    <field name="lot_name" optional="show"/>
+                    <field name="expiration_date" widget="date" options='{"fg_color": "red:color_value==1;orange:color_value==2;green:color_value==3"}' optional="show"/>
+                    <field name="status" options='{"fg_color": "red:color_value==1;orange:color_value==2;green:color_value==3"}' optional="show"/>
                 </tree>
             </field>
         </record>

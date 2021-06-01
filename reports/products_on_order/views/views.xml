@@ -40,15 +40,15 @@
             <field name="model">report.products.on.order</field>
             <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false">
-                    <field name="order_id" string="Sales Order" />
-                    <field name="product_id" string="Product Name" invisible="1"/>
-                    <field name="partner_id" string="Customer Name"/>
-                    <field name="date_ordered" string="Order Date"/>
-                    <field name="sku_code"/>
-                    <field name="date_due" string="Due Date"/>
-                    <field name="qty_ordered"/>
-                    <field name="qty_remaining"/>
-                    <field name="product_uom"/>
+                    <field name="order_id" string="Sales Order" optional="show" />
+                    <field name="product_id" string="Product Name" invisible="1" optional="show"/>
+                    <field name="partner_id" string="Customer Name" optional="show"/>
+                    <field name="date_ordered" string="Order Date" optional="show"/>
+                    <field name="sku_code" optional="show"/>
+                    <field name="date_due" string="Due Date" optional="show"/>
+                    <field name="qty_ordered" optional="show"/>
+                    <field name="qty_remaining" optional="show"/>
+                    <field name="product_uom" optional="show"/>
                 </tree>
             </field>
         </record>

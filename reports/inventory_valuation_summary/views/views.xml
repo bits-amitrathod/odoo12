@@ -22,13 +22,13 @@
         <field name="model">report.inventory.valuation.summary</field>
         <field name="arch" type="xml">
             <tree create="false" edit="false" delete="false">
-                <field name="sku_code"/>
-                <field name="name" string="Product Name"/>
-                <field name="quantity_cal"/>
-                <field name="currency_id" invisible="1"/>
-                <field name="unit_cost" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-                <field name="asset_value" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-                <field name="cost_method" invisible="1"/>
+                <field name="sku_code" optional="show"/>
+                <field name="name" string="Product Name" optional="show"/>
+                <field name="quantity_cal" optional="show"/>
+                <field name="currency_id" invisible="1" optional="show"/>
+                <field name="unit_cost" widget="monetary" options="{'currency_field': 'currency_id'}" optional="show"/>
+                <field name="asset_value" widget="monetary" options="{'currency_field': 'currency_id'}" optional="show"/>
+                <field name="cost_method" invisible="1" optional="show"/>
                 <button name="action_valuation_at_date_details" type="object" icon="fa-info-circle"
                         attrs="{'invisible': [('cost_method', '!=', 'fifo')]}"/>
             </tree>

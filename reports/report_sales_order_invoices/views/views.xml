@@ -35,12 +35,12 @@
         <record id="inherit_invoice_tree" model="ir.ui.view">
         <field name="name">exemple of change of create button on list view</field>
         <field name="model">account.move</field>
-        <field name="inherit_id" ref="account.view_invoice_tree"/>
-        <field name="arch" type="xml">
+        <field name="inherit_id" ref="account.view_invoice_tree" optional="show"/>
+        <field name="arch" type="xml" optional="show">
             <xpath expr="//field[@name='invoice_origin']" position="after">
-                <field name="purchase_order" string ="PO#"/>
+                <field name="purchase_order" string ="PO#" optional="show"/>
             </xpath>
-             <xpath expr="//tree" position="attributes">
+             <xpath expr="//tree" position="attributes" >
                  <attribute name="create">false</attribute>
             </xpath>
         </field>

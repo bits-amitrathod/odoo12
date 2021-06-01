@@ -9,9 +9,9 @@
               <field name="priority">20</field>
               <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false">
-                <field name="customer"/>
-                <field name="onboard_date" widget="date"/>
-                <field name="national_account"/>
+                <field name="customer" optional="show"/>
+                <field name="onboard_date" widget="date" optional="show"/>
+                <field name="national_account" optional="show"/>
                 </tree>
               </field>
         </record>

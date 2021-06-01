@@ -32,12 +32,12 @@
           <field name="priority">20</field>
           <field name="arch" type="xml">
             <tree create="false" edit="false" delete="false" >
-                <field name="currency_id" invisible="1"/>
-                <field name="sale_order_name" invisible="1"/>
-                <field name="product_code" string="Product SKU"/>
-                <field name="product_id" string="Product Name"/>
-                <field name="product_quantity"/>
-                <field name="cost" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="currency_id" invisible="1" optional="show"/>
+                <field name="sale_order_name" invisible="1" optional="show"/>
+                <field name="product_code" string="Product SKU" optional="show"/>
+                <field name="product_id" string="Product Name" optional="show"/>
+                <field name="product_quantity" optional="show"/>
+                <field name="cost" widget="monetary" options="{'currency_field': 'currency_id'}" optional="show"/>
 
             </tree>
           </field>
