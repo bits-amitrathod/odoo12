@@ -9,11 +9,11 @@
               <field name="priority">20</field>
               <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false">
-                <field name="sale_order_id"/>
-                <field name="customer"/>
-                <field name="national_account"/>
-                <field name="delivery_date" widget="date"/>
-                <field name="total_amount"/>
+                <field name="sale_order_id" optional="show"/>
+                <field name="customer" optional="show"/>
+                <field name="national_account" optional="show"/>
+                <field name="delivery_date" widget="date" optional="show"/>
+                <field name="total_amount" optional="show"/>
                 </tree>
               </field>
         </record>

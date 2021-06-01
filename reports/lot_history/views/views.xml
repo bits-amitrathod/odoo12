@@ -6,16 +6,16 @@
             <field name="priority">20</field>
             <field name="arch" type="xml">
                  <tree create="false" edit="false" delete="false">
-                    <field name="sku_code"/>
-                    <field name="description"/>
-                    <field name="type"/>
-                    <field name="event"/>
-                    <field name="event_date"/>
-                    <field name="lot_no"/>
-                    <field name="change"/>
-                    <field name="vendor"/>
-                    <field name="phone"/>
-                    <field name="email"/>
+                    <field name="sku_code" optional="show"/>
+                    <field name="description" optional="show"/>
+                    <field name="type" optional="show"/>
+                    <field name="event" optional="show"/>
+                    <field name="event_date" optional="show"/>
+                    <field name="lot_no" optional="show"/>
+                    <field name="change" optional="show"/>
+                    <field name="vendor" optional="show"/>
+                    <field name="phone" optional="show"/>
+                    <field name="email" optional="show"/>
                 </tree>
             </field>
         </record>

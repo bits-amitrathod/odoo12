@@ -6,21 +6,21 @@
           <field name="priority">20</field>
           <field name="arch" type="xml">
               <tree create="false" edit="false" delete="false">
-                  <field name="order_name" string="Purchase Order#"/>
-                  <field name="sku"/>
+                  <field name="order_name" string="Purchase Order#" optional="show" />
+                  <field name="sku" optional="show"/>
                   <!--<field name="manufacturer_rep"/>-->
-                  <field name="vendor"/>
-                  <field name="product_name"/>
-                  <field name="qty"/>
-                  <field name="product_uom"/>
-                    <field name="date_planned" widget="date"/>
-                  <field name="minExpDate" widget="date"/>
-                  <field name="maxExpDate" widget="date"/>
-                     <field name="product_unit_price" widget="monetary"/>
-                   <field name="product_offer_price" widget="monetary" />
-                   <field name="delivered_product_retail_price" widget="monetary" sum="Total Retail Price"/>
-                   <field name="delivered_product_offer_price" widget="monetary"  sum="Total Offer Price"/>
-                  <field name="currency_id" invisible="1"/>
+                  <field name="vendor" optional="show"/>
+                  <field name="product_name" optional="show"/>
+                  <field name="qty" optional="show"/>
+                  <field name="product_uom" optional="show"/>
+                    <field name="date_planned" widget="date" optional="show"/>
+                  <field name="minExpDate" widget="date" optional="show"/>
+                  <field name="maxExpDate" widget="date" optional="show"/>
+                     <field name="product_unit_price" widget="monetary" optional="show"/>
+                   <field name="product_offer_price" widget="monetary" optional="show" />
+                   <field name="delivered_product_retail_price" widget="monetary" sum="Total Retail Price" optional="show"/>
+                   <field name="delivered_product_offer_price" widget="monetary"  sum="Total Offer Price" optional="show"/>
+                  <field name="currency_id" invisible="1" optional="show"/>
               </tree>
           </field>
       </record>

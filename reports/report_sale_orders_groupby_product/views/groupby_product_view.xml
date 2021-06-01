@@ -52,19 +52,18 @@
             <field name="arch" type="xml">
                 <tree string="Sales Order Lines" create="false" edit="false" delete="false">
                     <field name="product_id" invisible="1"/>
-                    <field name="order_id" string="Sales Order#"/>
-                    <field name="date_order" widget="date"/>
+                    <field name="order_id" string="Sales Order#" optional="show"/>
                     <!--<field name="order_partner_id"/>-->
-                    <field name="sku_code"/>
+                    <field name="sku_code" optional="show" />
                     <!--<field name="salesman_id"/>-->
-                    <field name="qty_delivered" string="Delivered Qty"/>
+                    <field name="qty_delivered" string="Delivered Qty" optional="show"/>
                     <!--<field name="qty_delivered"/>-->
                     <!--<field name="qty_invoiced"/>-->
                     <!--<field name="qty_to_invoice"/>-->
-                    <field name="product_uom" string="Unit of Measure" groups="uom.group_uom"/>
+                    <field name="product_uom" string="Unit of Measure" groups="uom.group_uom"optional="show"/>
                     <field name="currency_id" invisible="1"/>
-                    <field name="price_subtotal" sum="price_subtotal" widget="monetary" />
-                    <field name="state" invisible="1"/>
+                    <field name="price_subtotal" sum="price_subtotal" widget="monetary" optional="show" />
+                    <field name="state" invisible="1" />
                 </tree>
             </field>
         </record>

@@ -39,15 +39,15 @@
               <field name="model">sale.order</field>
               <field name="priority">20</field>
               <field name="arch" type="xml">
-                <tree create="false" edit="false" delete="false">
-                    <field name="name" string="Sales Order#"/>
-                    <field name="partner_id"/>
+                <tree create="false" edit="false" delete="false" multi_edit="1" sample="1">
+                    <field name="name" string="Sales Order#" optional="show" />
+                    <field name="partner_id" optional="hide" />
                    <!-- <field name="r_line_item"/>-->
-                    <field name="date_order" widget="date"/>
-                    <field name="r_discount" widget="monetary"/>
-                    <field name="r_amount" widget="monetary"/>
+                    <field name="date_order" widget="date" optional="show"/>
+                    <field name="r_discount" widget="monetary" optional="show"/>
+                    <field name="r_amount" widget="monetary" optional="show"/>
                     <!--<field name="r_total" widget="monetary"/>-->
-                    <field name="currency_id"  invisible="1" />
+                    <field name="currency_id"  invisible="1" optional="show" />
                     <field name="state" invisible="1"/>
                 </tree>
               </field>

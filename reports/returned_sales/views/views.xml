@@ -41,14 +41,14 @@
             <field name="model">report.returned.sales.order</field>
             <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false">
-                    <field name="order_id" string="Sales Order#"/>
-                    <field name="partner_id" string="Customer Name"/>
-                    <field name="product_id" string="Product Name"/>
-                    <field name="sku_code"/>
-                    <field name="user_id"/>
-                    <field name="done_qty" string="Qty Done"/>
-                    <field name="product_uom_id"/>
-                    <field name="cost_price" string="Selling Cost" widget="monetary"/>
+                    <field name="order_id" string="Sales Order#" optional="show"/>
+                    <field name="partner_id" string="Customer Name" optional="show"/>
+                    <field name="product_id" string="Product Name" optional="show"/>
+                    <field name="sku_code" optional="show"/>
+                    <field name="user_id" optional="show"/>
+                    <field name="done_qty" string="Qty Done" optional="show"/>
+                    <field name="product_uom_id" optional="show"/>
+                    <field name="cost_price" string="Selling Cost" widget="monetary" optional="show"/>
                     <field name="currency_id" invisible="1"/>
                 </tree>
             </field>

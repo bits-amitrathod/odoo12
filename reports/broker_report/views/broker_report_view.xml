@@ -37,12 +37,12 @@
               <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false" >
 
-                     <field name="broker_desc" />
-                     <field name="total_retail_broker" />
-                     <field name="bonus_eligible" />
-                     <field name="hospital_total" />
-                     <field name="broker_greater_40_total" />
-                     <field name="broker_less_40_total" />
+                     <field name="broker_desc" optional="show" />
+                     <field name="total_retail_broker" optional="show" />
+                     <field name="bonus_eligible" optional="show"/>
+                     <field name="hospital_total" optional="show" />
+                     <field name="broker_greater_40_total" optional="show"/>
+                     <field name="broker_less_40_total" optional="show"/>
 
                 </tree>
               </field>
