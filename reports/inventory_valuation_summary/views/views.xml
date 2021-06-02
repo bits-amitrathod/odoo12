@@ -1,20 +1,22 @@
 <odoo>
 
+<!--
     <record id="view_stock_inventory_valuation_summary" model="ir.ui.view">
         <field name="name">report.inventory.valuation.summary.default</field>
         <field name="model">report.inventory.valuation.summary</field>
         <field name="arch" type="xml">
             <search string="Product">
-                <filter string="Warehouse" name="valuation_summary" domain="[]"
+                <filter string="Warehouse" name="valuation_summary"
                         context="{'group_by' : 'warehouse'}"/>
-                <filter string="Location" name="valuation_summary" domain="[]"
+                <filter string="Location" name="valuation_summary"
                         context="{'group_by' : 'location'}"/>
-                <filter string="Type" name="valuation_summary" domain="[]"
+                <filter string="Type" name="valuation_summary"
                         context="{'group_by' : 'type'}"/>
                 <separator/>
             </search>
         </field>
     </record>
+-->
 
     <!-- LIST VIEW -->
     <record model="ir.ui.view" id="inventory_valuation_summary_list">
