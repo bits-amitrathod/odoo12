@@ -60,7 +60,7 @@
                     <!--<field name="qty_delivered"/>-->
                     <!--<field name="qty_invoiced"/>-->
                     <!--<field name="qty_to_invoice"/>-->
-                    <field name="product_uom" string="Unit of Measure" groups="uom.group_uom"optional="show"/>
+                    <field name="product_uom" string="Unit of Measure" groups="uom.group_uom" optional="show"/>
                     <field name="currency_id" invisible="1"/>
                     <field name="price_subtotal" sum="price_subtotal" widget="monetary" optional="show" />
                     <field name="state" invisible="1" />
