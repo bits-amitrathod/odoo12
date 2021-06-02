@@ -8,10 +8,10 @@
         <field name="priority">20</field>
         <field name="arch" type="xml">
             <tree create="false" edit="false" delete="false">
-                <field name="sku_code"/>
-                <field name="product_name"/>
-                <field name="total_sales" widget="monetary"/>
-                <field name="currency_id" invisible="1"/>
+                <field name="sku_code" optional="show"/>
+                <field name="product_name" optional="show"/>
+                <field name="total_sales" widget="monetary" optional="show"/>
+                <field name="currency_id" invisible="1" optional="show"/>
             </tree>
         </field>
     </record>

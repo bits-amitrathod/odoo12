@@ -36,13 +36,13 @@
               <field name="priority">20</field>
               <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false">
-                    <field name="partner_id"/>
-                    <field name="sku_code_product"/>
-                    <field name="product_id" string="Product Name"/>
-                    <field name="last_sold" />
-                    <field name="cost" widget="monetary"/>
-                    <field name="currency_id" invisible="1"/>
-                    <field name="state" invisible="1" />
+                    <field name="partner_id" optional="show"/>
+                    <field name="sku_code_product" optional="show"/>
+                    <field name="product_id" string="Product Name" optional="show"/>
+                    <field name="last_sold" optional="show"/>
+                    <field name="cost" widget="monetary" optional="show"/>
+                    <field name="currency_id" invisible="1" optional="show" />
+                    <field name="state" invisible="1" optional="show" />
                 </tree>
               </field>
         </record>

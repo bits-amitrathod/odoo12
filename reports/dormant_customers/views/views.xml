@@ -38,9 +38,9 @@
               <field name="priority">21</field>
               <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false">
-                    <field name="display_name" string="Customer" />
-                    <field name="sale_order" />
-                    <field name="last_purchase_date" />
+                    <field name="display_name" string="Customer" optional="show"/>
+                    <field name="sale_order" optional="show"/>
+                    <field name="last_purchase_date" optional="show" />
                 </tree>
               </field>
         </record>

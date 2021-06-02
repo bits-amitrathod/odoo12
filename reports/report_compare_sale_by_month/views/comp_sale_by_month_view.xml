@@ -57,13 +57,13 @@
               <field name="priority">20</field>
               <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false">
-                    <field name="sku_code" string="Product SKU"/>
-                    <field name="name" string="Product Name"/>
-                    <field name="last_month_total_qty" />
-                    <field name="last_month_total_amount" widget="monetary" />
-                    <field name="current_month_total_qty" />
-                    <field name="current_month_total_amount" widget="monetary"/>
-                    <field name="currency_id"  invisible="1" />
+                    <field name="sku_code" string="Product SKU" optional="show"/>
+                    <field name="name" string="Product Name" optional="show"/>
+                    <field name="last_month_total_qty" optional="show"/>
+                    <field name="last_month_total_amount" widget="monetary" optional="show"/>
+                    <field name="current_month_total_qty" optional="show" />
+                    <field name="current_month_total_amount" widget="monetary" optional="show"/>
+                    <field name="currency_id"  invisible="1" optional="show" />
                     <!--<field name="location"/>-->
                 </tree>
               </field>
