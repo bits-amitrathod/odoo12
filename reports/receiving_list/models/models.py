@@ -18,8 +18,9 @@ class ReceivingListPopUp(models.TransientModel):
     ], string="Order Type", default='1', help="Choose to analyze the Show Summary or from a specific date in the past.",
         required=True)
 
-    sale_order_id = fields.Many2one('sale.order', string='Order Number',
-    domain = "[('picking_ids.state','in',('assigned','done')),('picking_ids.picking_type_id','=',2)]", )
+    sale_order_id = fields.Many2one('sale.order', string='Order Number'
+    # , domain = "[('picking_ids.state','in',('assigned','done')),('picking_ids.picking_type_id','=',2)]"
+                                    )
 
     purchase_order_id = fields.Many2one('purchase.order', string='Order Number',
                                         domain="[('picking_ids.state','in',('assigned','done')),('picking_type_id.code','=','incoming')]",
