@@ -5,7 +5,7 @@
             <field name="name">View Partner form for charity</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
-            <field name="priority" eval="20"/>
+            <field name="priority" eval="21"/>
             <field name="arch" type="xml">
                 <field name="is_broker" position="after">
                     <field name="charity"/>
@@ -213,7 +213,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//group[@name='sales_person']/field[@name='user_id']"  position="replace">
                     <field name="field_read_only" invisible="1"/>
-                    <field name="user_id" attrs="{'readonly': [('field_read_only', '==', 1)]}"/>
+                    <field name="user_id" string="Business Development(BD)" attrs="{'readonly': [('field_read_only', '==', 1)]}"/>
                     <field name="account_manager" attrs="{'readonly': [('field_read_only', '==', 1)]}"/>
                     <field name="national_account" attrs="{'readonly': [('field_read_only', '==', 1)]}"/>
                 </xpath>
@@ -254,7 +254,7 @@
         <field name="arch" type="xml">
             <xpath expr="//page[@name='sales_purchases']/group[@name='container_row_2']/group[@name='sale']/field[@name='user_id']" position="replace">
                 <field name="customer_rank" attrs="{'readonly':[('is_parent', '==', False)]}"/>
-                <field name="user_id"/>
+                <field name="user_id" string="Business Development(BD)"/>
                 <field name="account_manager_cust"/>
                 <field name="national_account_rep"/>
                 <field name="message_bounce"/>
