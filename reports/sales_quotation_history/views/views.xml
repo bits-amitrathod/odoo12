@@ -51,7 +51,7 @@
 
         <record id="sr_sale_quotation_export_form_view" model="ir.ui.view">
             <field name="name">sale.purchase.history.report.form.view</field>
-            <field name="model">sale.purchase.history.report</field>
+            <field name="model">sale.quotation.history</field>
             <field name="arch" type="xml">
                 <form string="Sales Quotation History">
                     <group>
