@@ -43,37 +43,37 @@ class TrendingReportListView(models.Model):
             popup = self.env['popup.trending.report'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
             code = int(popup.code)
 
-        for product in self:
+        for customer in self:
             groupby_dict_month = {}
-            sale_orders = self.env['sale.order'].search([('partner_id', '=', product.id), ('state', '=', 'sale')])
+            sale_orders = self.env['sale.order'].search([('partner_id', '=', customer.id), ('state', '=', 'sale')])
             groupby_dict_month['data'] = sale_orders
             for sale_order in groupby_dict_month['data']:
                 confirmation_date=datetime.date(datetime.strptime(str(sale_order.date_order).split(".")[0],"%Y-%m-%d %H:%M:%S"))
                 if((confirmation_date.month == (start_date - relativedelta(months=5)).month) and (confirmation_date.year ==  (start_date - relativedelta(months=5)).year)):
-                    product.month6 = product.month6 + sale_order.amount_total
+                    customer.month6 = customer.month6 + sale_order.amount_total
                 if((confirmation_date.month == (start_date - relativedelta(months=4)).month) and (confirmation_date.year ==  (start_date - relativedelta(months=4)).year)):
-                    product.month5 = product.month5 + sale_order.amount_total
+                    customer.month5 = customer.month5 + sale_order.amount_total
                 if((confirmation_date.month == (start_date - relativedelta(months=3)).month) and (confirmation_date.year ==  (start_date - relativedelta(months=3)).year)):
-                    product.month4 = product.month4 + sale_order.amount_total
+                    customer.month4 = customer.month4 + sale_order.amount_total
                 if((confirmation_date.month == (start_date - relativedelta(months=2)).month) and (confirmation_date.year ==  (start_date - relativedelta(months=2)).year)):
-                    product.month3 = product.month3 + sale_order.amount_total
+                    customer.month3 = customer.month3 + sale_order.amount_total
                 if((confirmation_date.month == (start_date - relativedelta(months=1)).month) and (confirmation_date.year ==  (start_date - relativedelta(months=1)).year)):
-                    product.month2 = product.month2 + sale_order.amount_total
+                    customer.month2 = customer.month2 + sale_order.amount_total
                 if((confirmation_date.month == (start_date).month) and (confirmation_date.year ==  (start_date).year)):
-                    product.month1 = product.month1 + sale_order.amount_total
+                    customer.month1 = customer.month1 + sale_order.amount_total
                 if(code==12):
                     if ((confirmation_date.month == (start_date - relativedelta(months=11)).month) and (confirmation_date.year == (start_date - relativedelta(months=11)).year)):
-                        product.month12 = product.month12 + sale_order.amount_total
+                        customer.month12 = customer.month12 + sale_order.amount_total
                     if ((confirmation_date.month == (start_date - relativedelta(months=10)).month) and (confirmation_date.year == (start_date - relativedelta(months=10)).year)):
-                        product.month11 = product.month11 + sale_order.amount_total
+                        customer.month11 = customer.month11 + sale_order.amount_total
                     if ((confirmation_date.month == (start_date - relativedelta(months=9)).month) and (confirmation_date.year == (start_date - relativedelta(months=9)).year)):
-                        product.month10 = product.month10 + sale_order.amount_total
+                        customer.month10 = customer.month10 + sale_order.amount_total
                     if ((confirmation_date.month == (start_date - relativedelta(months=8)).month) and (confirmation_date.year == (start_date - relativedelta(months=8)).year)):
-                        product.month9 = product.month9 + sale_order.amount_total
+                        customer.month9 = customer.month9 + sale_order.amount_total
                     if ((confirmation_date.month == (start_date - relativedelta(months=7)).month) and (confirmation_date.year == (start_date - relativedelta(months=7)).year)):
-                        product.month8 = product.month8 + sale_order.amount_total
+                        customer.month8 = customer.month8 + sale_order.amount_total
                     if ((confirmation_date.month == (start_date - relativedelta(months=6)).month) and (confirmation_date.year == (start_date - relativedelta(months=6)).year)):
-                        product.month7 = product.month7 + sale_order.amount_total
+                        customer.month7 = customer.month7 + sale_order.amount_total
 
 
 
@@ -91,12 +91,13 @@ class TrendingReportListView(models.Model):
 
     @api.onchange('month_count')
     def _first_purchase_date(self):
+        self._compute_sales_vals()
         for customer in self:
             if(self.get_day_from_purchase(customer.id)):
                 customer.month_count = self.get_day_from_purchase(customer.id) / 30
             else:
                 customer.month_count=0
-        self._compute_sales_vals()
+
 
 
     def get_day_from_purchase(self,customer_id):
