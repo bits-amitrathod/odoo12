@@ -35,14 +35,23 @@
         }
     }
 }
+
+.o_main_navbar .show .dropdown-toggle{
+ background-color: #C4262E !important;
+}
+.o_main_navbar > a:hover{
+    background-color: #C4262E !important
+}
+
 .o_main_navbar{
 border-bottom: 1px solid #394158;
 background-color: #394a58;
  ul > {
      li > {
+
        a{
         &:hover{
-            background-color: #C4262E !important;;
+            background-color: #C4262E !important;
         }
        }
      }

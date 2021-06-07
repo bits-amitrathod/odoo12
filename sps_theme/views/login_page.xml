@@ -170,7 +170,7 @@
                 <p class="alert alert-success" t-if="message">
                     <t t-esc="message"/>
                 </p>
-                <a href="/web/login" class="btn btn-link pull-right">Back to Login</a>
+                <a href="/web/login" class="btn btn-link text-right d-block">Back to Login</a>
             </div>
             <section class="product-category">
                     <div class="container">
