@@ -86,18 +86,12 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                     if (data['status'] === true){
                         console.log('in if blog');
                         $carrierBadge.html(data['new_amount_delivery']);
-                        //$carrier_badge.children('span').text(data['new_amount_delivery']);
                         $carrierBadge.removeClass('o_wsale_delivery_carrier_error');
                         $payButton.prop('disabled', false);
-                        //$carrierBadge.removeClass('d-none');
-//                        $compute_badge.addClass('d-none');
                     }else{
                         console.log('in else blog');
-                       // $carrierBadge.addClass('d-none');
                         $carrierBadge.addClass('o_wsale_delivery_carrier_error');
                         $carrierBadge.text(data['error_message']);
-//                        $compute_badge.removeClass('d-none');
-//                        $compute_badge.text(data['error_message']);
                     }
                 }
          });
@@ -168,6 +162,15 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                 ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
                     'expedited_shipping': value
                 });
+                ajax.jsonRpc("/shop/get_carrier", 'call', {
+                    'delivery_carrier_code': 'my_shipper_account'
+                }).then(function(data) {
+                    var carrier_id = parseInt(data['carrier_id'])
+                    var values = {'carrier_id': carrier_id};
+                    dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
+                    .then(_handleCarrierUpdateResults);
+
+               });
             }
         });
 
@@ -177,6 +180,15 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                 ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
                     'expedited_shipping': ""
                 });
+                ajax.jsonRpc("/shop/get_carrier", 'call', {
+                    'delivery_carrier_code': 'fedex_ground'
+                }).then(function(data) {
+                    var carrier_id = parseInt(data['carrier_id'])
+                    var values = {'carrier_id': carrier_id};
+                    dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
+                    .then(_handleCarrierUpdateResults);
+
+               });
             }
         });
 
@@ -186,6 +198,15 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                 ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
                     'expedited_shipping': ""
                 });
+                ajax.jsonRpc("/shop/get_carrier", 'call', {
+                    'delivery_carrier_code': 'fedex_first_overnight_u_s_by_8_30_a_m_next_business_day_'
+                }).then(function(data) {
+                    var carrier_id = parseInt(data['carrier_id'])
+                    var values = {'carrier_id': carrier_id};
+                    dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
+                    .then(_handleCarrierUpdateResults);
+
+               });
             }
         });
 
@@ -195,6 +216,15 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                 ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
                     'expedited_shipping': ""
                 });
+                ajax.jsonRpc("/shop/get_carrier", 'call', {
+                    'delivery_carrier_code': 'fedex_priority_overnight_u_s_by_10_30_a_m_next_business_day_'
+                }).then(function(data) {
+                    var carrier_id = parseInt(data['carrier_id'])
+                    var values = {'carrier_id': carrier_id};
+                    dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
+                    .then(_handleCarrierUpdateResults);
+
+               });
             }
         });
 
@@ -204,6 +234,15 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                 ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
                     'expedited_shipping': ""
                 });
+                ajax.jsonRpc("/shop/get_carrier", 'call', {
+                    'delivery_carrier_code': 'fedex_standard_overnight_u_s_by_3_p_m_next_business_day_'
+                }).then(function(data) {
+                    var carrier_id = parseInt(data['carrier_id'])
+                    var values = {'carrier_id': carrier_id};
+                    dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
+                    .then(_handleCarrierUpdateResults);
+
+               });
             }
         });
 
@@ -213,6 +252,15 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                 ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
                     'expedited_shipping': ""
                 });
+                ajax.jsonRpc("/shop/get_carrier", 'call', {
+                    'delivery_carrier_code': 'fedex_2nd_day_a_m_u_s_by_10_30_a_m_or_noon_second_business_day_'
+                }).then(function(data) {
+                    var carrier_id = parseInt(data['carrier_id'])
+                    var values = {'carrier_id': carrier_id};
+                    dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
+                    .then(_handleCarrierUpdateResults);
+
+               });
             }
         });
 
@@ -222,6 +270,15 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                 ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
                     'expedited_shipping': ""
                 });
+                ajax.jsonRpc("/shop/get_carrier", 'call', {
+                    'delivery_carrier_code': 'fedex_2nd_day_p_m_u_s_by_4_30_p_m_second_business_day_'
+                }).then(function(data) {
+                    var carrier_id = parseInt(data['carrier_id'])
+                    var values = {'carrier_id': carrier_id};
+                    dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
+                    .then(_handleCarrierUpdateResults);
+
+               });
             }
         });
 
@@ -231,6 +288,15 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                 ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
                     'expedited_shipping': ""
                 });
+                ajax.jsonRpc("/shop/get_carrier", 'call', {
+                    'delivery_carrier_code': 'fedex_express_saver_u_s_by_4_30_p_m_third_business_day_'
+                }).then(function(data) {
+                    var carrier_id = parseInt(data['carrier_id'])
+                    var values = {'carrier_id': carrier_id};
+                    dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
+                    .then(_handleCarrierUpdateResults);
+
+               });
             }
         });
 
