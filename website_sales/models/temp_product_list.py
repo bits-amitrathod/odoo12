@@ -16,7 +16,18 @@ class TempProductList(models.Model):
 
     def get_parent(self, partner_id):
         partner = self.env['res.partner'].search([('id', '=', partner_id), ])
-        parent_partner_id = partner.id if partner.is_parent else partner.parent_id.id
+        parent_partner_id = None
+        if partner:
+            if partner.is_parent:
+                parent_partner_id = partner.id
+            elif partner.parent_id and partner.parent_id.id:
+                parent_partner_id = partner.parent_id.id
+            else:
+                parent_partner_id = partner.id
+        else:
+            print('partner is inactive')
+
+        # parent_partner_id = partner.id if partner.is_parent else partner.parent_id.id
         return parent_partner_id
 
     def init_table(self):
@@ -58,7 +69,9 @@ class TempProductList(models.Model):
                                 INNER JOIN product_template
                                 ON(product_product.product_tmpl_id = product_template.id  and
                                      product_template.actual_quantity > 0 and
-                                     product_template.sale_ok = True)) as a              
+                                     product_template.sale_ok = True and product_template.is_published = True and
+                                     product_template.active = True)
+                                WHERE product_product.active = True ) as a              
                         ON(sale_order_line.product_id = a.id)
                         """
             groupby = """ 
@@ -100,11 +113,11 @@ class TempProductList(models.Model):
                     (query_result['product_id'],))
                 result = self.env.cr.dictfetchone()
 
-                if partner.property_product_pricelist.id:
+                if partner.property_product_pricelist.id and product:
                     price_list = partner.property_product_pricelist.get_product_price(
                         product, product.product_tmpl_id.actual_quantity, partner)
                 else:
-                    price_list = 0
+                    price_list = product.product_tmpl_id.list_price
 
                 product_dict = {'product': product,
                                 'partner': partner,
