@@ -6,6 +6,7 @@ import operator
 
 class TempProductList(models.Model):
     _name = 'quotation.product.list'
+    _description = ""
     _auto = False
 
     product_list = {}

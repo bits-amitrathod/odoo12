@@ -3,63 +3,72 @@ from odoo import models, fields, api,_
 from odoo.exceptions import UserError,Warning
 
 
-class CustomerCreditNote(models.Model):
-    _inherit = "account.payment"
+class CustomerCreditNote(models.TransientModel):
+    _inherit = "account.payment.register"
 
-    def action_validate_invoice_payment(self):
+    def action_create_payments(self):
 
         account_journal = self.env['account.journal'].search([('id', '=', self.journal_id.id)])
         if account_journal.code == 'CRN':
             if self.env.context.get('journal_type') != 'sale':
                 print('is CRN')
                 res_partner = self.env['res.partner'].search([('id', '=',self.partner_id.id)])
-                if res_partner.customer is True:
-                    super(CustomerCreditNote, self).action_validate_invoice_payment()
+                if res_partner.customer_rank > 0:
+                    super(CustomerCreditNote, self).action_create_payments()
                     print('is CUSTOMER')
-                    invoice_ids = self.invoice_ids.ids
-                    for invoice_id in invoice_ids:
-                        invoice_obj_fetch = self.env['account.invoice'].browse(invoice_id)
-                        tax_string = []
-                        line_string_all = []
-                        invoice_line_obj_list = self.env['account.invoice.line'].search(
-                            [('invoice_id', 'in', invoice_obj_fetch.ids)])
+                    self.line_ids
+                    # acc_move_ids = self.invoice_ids.ids
+                    # for acc_move_id in invoice_ids:
+                    #     invoice_obj_fetch = self.env['account.move'].browse(acc_move_id)
+                    tax_string = []
+                    line_string_all = []
+                    #     invoice_line_obj_list = self.env['account.invoice.line'].search( [('invoice_id', 'in', invoice_obj_fetch.ids)])
 
-                        account_obj = self.env['account.account'].search([('code', '=', '1310')])
-                        for line in invoice_line_obj_list:
-                            name = 'Credit Transfer'
-                            if invoice_obj_fetch.origin:
-                                name = name + ' PO# :' + invoice_obj_fetch.origin
-                            if invoice_obj_fetch.number:
-                                name = name + ' Bill# :' + invoice_obj_fetch.number
+                    account_obj = self.env['account.account'].search([('code', '=', '1310')])
+                    for acc_move_line in self.line_ids:
+                        name = 'Credit Transfer'
+                        self.line_ids[0].move_id.display_name
+                        if acc_move_line.move_id.display_name:
+                            name = name + ' PO# :' + acc_move_line.move_id.display_name
+                       # if acc_move_line.move_id.number:
+                       #    name = name + ' Bill# :' + invoice_obj_fetch.number
 
-                            line_string_all.append((0, 0, {
-                                'name': name, 'price_subtotal': line.price_subtotal,
-                                'price_unit': line.price_unit,
-                                'price_total': line.price_total, 'price_subtotal_signed': line.price_subtotal_signed
-                                , 'account_id': account_obj.id, 'quantity': line.quantity,
-                                'currency_id': line.currency_id.id,
-                                'uom_id': line.uom_id.id
-                            }))
+                        line_string_all.append((0, 0, {
+                            'name': name,
+                            'price_subtotal': acc_move_line.price_subtotal,
+                            'price_unit': acc_move_line.price_unit,
+                            'price_total': acc_move_line.price_total,
+                            # 'price_subtotal_signed': acc_move_line.price_subtotal_signed,
+                            'account_id': account_obj.id,
+                            'quantity': acc_move_line.quantity,
+                            'currency_id': acc_move_line.currency_id.id,
+                            # 'uom_id': acc_move_line.uom_id.id
+                        }))
 
-                        invoice_obj = {
+                        acc_move = {
                             'id': False,
-                            'date_due': fields.Date.today(),
-                            'partner_id': self.partner_id.id, 'reference_type': 'none', 'type': 'out_refund', 'state': 'draft',
-                            'amount_untaxed': invoice_obj_fetch.amount_untaxed,
-                            'amount_untaxed_signed': invoice_obj_fetch.amount_untaxed_signed,
-                            'amount_tax': invoice_obj_fetch.amount_tax,
-                            'amount_total': invoice_obj_fetch.amount_total,
-                            'amount_total_signed': invoice_obj_fetch.amount_total_signed,
-                            'amount_total_company_signed': invoice_obj_fetch.amount_total_company_signed,
-                            'residual': invoice_obj_fetch.residual, 'residual_signed': invoice_obj_fetch.residual_signed,
-                            'residual_company_signed': invoice_obj_fetch.residual_company_signed,
-                            'reconciled': False,
-                            'sent': 'false', 'vendor_credit_flag': True
-                        }
-                        invoice_obj['invoice_line_ids'] = line_string_all
-                        #'tax_line_ids': [(0, 0, tax_string)]
-                        invoice_created = self.env['account.invoice'].create(invoice_obj)
-                        invoice_created.action_invoice_open()
+                            # 'date_due': fields.Date.today(),
+                            # 'partner_id': self.partner_id.id,
+                            # 'reference_type': 'none',
+                            # 'type': 'out_refund',
+                            # 'state': 'draft',
+                            # 'amount_untaxed': acc_move_line.move_id.amount_untaxed,
+                            # 'amount_untaxed_signed': acc_move_line.move_id.amount_untaxed_signed,
+                            # 'amount_tax': acc_move_line.move_id.amount_tax,
+                            # 'amount_total': acc_move_line.move_id.amount_total,
+                            # 'amount_total_signed': acc_move_line.move_id.amount_total_signed,
+                            # 'amount_total_company_signed': acc_move_line.move_id.amount_total_company_signed,
+                            # 'residual': acc_move_line.move_id.residual,
+                            # 'residual_signed': acc_move_line.move_id.residual_signed,
+                            # 'residual_company_signed': acc_move_line.move_id.residual_company_signed,
+                            # 'reconciled': False,
+                            # 'sent': 'false',
+                            # 'vendor_credit_flag': True
+                            }
+                        acc_move['line_ids'] = line_string_all
+                    #     #'tax_line_ids': [(0, 0, tax_string)]
+                        invoice_created = self.env['account.move'].create(acc_move)
+                        # invoice_created.action_invoice_open()
                 else:
                     raise Warning(_(
                         'Payment Warning!\nCannot proceed with Payment Journal =" Credit Note " '
@@ -69,7 +78,7 @@ class CustomerCreditNote(models.Model):
                     'Payment Warning!\n This Payment Journal option is available for Vendor Bill only'))
         else:
             print('not CRN')
-            super(CustomerCreditNote, self).action_validate_invoice_payment()
+            super(CustomerCreditNote, self).action_create_payments()
 
     def _get_counterpart_move_line_vals(self, invoice=False):
         if self.payment_type == 'transfer':

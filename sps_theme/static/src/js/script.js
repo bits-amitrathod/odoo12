@@ -3,6 +3,14 @@ $(document).ready(function () {
         inline: true
     });*/
 
+document.addEventListener('scroll', function(e) {
+   if(window.pageYOffset === 0){
+    alert("Hey......");
+    var div = document.getElementById("oe_main_menu_navbar");
+    div.classList.remove('fixed-top')
+}
+});
+
     $('.close').click(function(){
           $('.myVideoClass').each(function(){
             $(this)[0].contentWindow.postMessage('{"event":"command","func":"' + 'stopVideo' + '","args":""}', '*');
@@ -41,5 +49,7 @@ $(document).ready(function () {
 
      function scrolldiv() {
                 var elem = document.getElementById("requestform");
+                var div = document.getElementById("oe_main_menu_navbar");
+                div.classList.add("fixed-top");
                 elem.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
