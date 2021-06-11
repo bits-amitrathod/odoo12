@@ -9,7 +9,7 @@
             <field name="active" eval="True"/>
         </record>-->
 
-        <record id="stockhawk_sales_team" model="crm.team">
+        <!--<record id="stockhawk_sales_team" model="crm.team">
             <field name="name">Stockhawk</field>
             <field name="team_type" eval="'engine'"/>
             <field name="company_id" eval="False"/>
@@ -21,7 +21,7 @@
             <field name="team_type" eval="'my_in_stock_report'"/>
             <field name="company_id" eval="False"/>
             <field name="active" eval="True"/>
-        </record>
+        </record>-->
 
         <!--Email template -->
         <record id="email_template_sale_custom" model="mail.template">
@@ -137,7 +137,7 @@ from ${object.company_id.name}.
             <field name="inherit_id" ref="sales_team.crm_team_view_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='invoiced_target']" position="after">
-                    <field name="sequence"/>
+                    <!--<field name="sequence"/>-->
                     <field name="team_type"/>
                 </xpath>
             </field>
