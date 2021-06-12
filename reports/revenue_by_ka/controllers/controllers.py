@@ -166,7 +166,7 @@ class StockedProductSoldByKa(http.Controller):
             self.from_data(["Customer Name", "Key Account", "No. of orders", "Order Quota", "Progress of Order Quota",
                             "Total Revenue", "Revenue Quota", "Progress of Revenue Quota"],
                            records),
-            headers=[('Content-Disposition', content_disposition('revenue_by_ka' + '.xlsx')),
+            headers=[('Content-Disposition', content_disposition('revenue_by_ka' + '.xls')),
                      ('Content-Type', 'application/vnd.ms-excel')],
         )
 

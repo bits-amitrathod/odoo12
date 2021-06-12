@@ -208,7 +208,7 @@ class ApprisalTracker(http.Controller):
                             "Delivered Date", "Arrival Date", "Tier 1 Retail", "Tier 2 Retail", "< 40% Retail",
                             "New Customer", "Status"],
                            records),
-            headers=[('Content-Disposition', content_disposition('appraisal_tracker' + '.xlsx')),
+            headers=[('Content-Disposition', content_disposition('appraisal_tracker' + '.xls')),
                      ('Content-Type', 'application/vnd.ms-excel')],
         )
 
