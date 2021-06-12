@@ -21,6 +21,9 @@
                     <div t-elif="not bool(product_list)" class="js_cart_lines alert alert-info">
                         Products not available!
                     </div>
+                    <div t-if="not bool(active)" class="js_cart_lines alert alert-info">
+                        You are inactive customer, please contact your administrator!
+                    </div>
                     <table class="mb16 table table-striped table-sm js_cart_lines remove-odd" id="quote_products" t-if="bool(product_list)">
                     <thead>
                         <tr>

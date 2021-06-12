@@ -225,10 +225,18 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
             user = request.env['res.users'].search([('id', '=', request.session.uid)])
             if user and user.partner_id and user.partner_id.id == partner_id:
                 context = {'quote_my_report_partner_id': partner_id}
-                request.env['quotation.product.list'].with_context(context).sudo().delete_and_create()
-                product_list, product_sorted_list = request.env['quotation.product.list'].sudo().get_product_list(partner_id)
-                return http.request.render('website_sales.quote_my_report', {'product_list': product_list,
-                                                                            'product_sorted_list': product_sorted_list})
+                try:
+                    # user.share is False means internal user
+                    if user and user.share is False and user.partner_id and user.partner_id.active is False:
+                        return http.request.render('website_sales.quote_my_report', {'active': False, 'product_list': {},
+                                                                                     'product_sorted_list': {}})
+                    else:
+                        request.env['quotation.product.list'].with_context(context).sudo().delete_and_create()
+                        product_list, product_sorted_list = request.env['quotation.product.list'].sudo().get_product_list(partner_id)
+                        return http.request.render('website_sales.quote_my_report', {'active': True, 'product_list': product_list,
+                                                                                    'product_sorted_list': product_sorted_list})
+                except Exception as e:
+                    _logger.error(e)
             else:
                 invalid_url = 'The requested URL is not valid for logged in user.'
                 return http.request.render('website_sales.quote_my_report', {'invalid_url': invalid_url})
