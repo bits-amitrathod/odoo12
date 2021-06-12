@@ -163,7 +163,7 @@ class ExportNewAccountBonusReport(http.Controller):
             self.from_data(["Customer Name", "#SO - Business Development", "Customer - Business Development", "#SO - Key Account", "Customer - Key Account", "Sale Order#", "Invoice Date", "Total",
                             "Months Ago First Order", "Invoice Status", "Status"],
                            records),
-            headers=[('Content-Disposition', content_disposition('new_account_by_month_by_bd' + '.xlsx')),
+            headers=[('Content-Disposition', content_disposition('new_account_by_month_by_bd' + '.xls')),
                      ('Content-Type', 'application/vnd.ms-excel')],
         )
 

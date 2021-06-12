@@ -152,7 +152,7 @@ class ExportRevenueByBdPerAccount(http.Controller):
         res = request.make_response(
             self.from_data(["Sale Order#", "Customer Name", "Business Development", "Delivery Date", "Total"],
                            records),
-            headers=[('Content-Disposition', content_disposition('revenue_by_bd_per_account' + '.xlsx')),
+            headers=[('Content-Disposition', content_disposition('revenue_by_bd_per_account' + '.xls')),
                      ('Content-Type', 'application/vnd.ms-excel')],
         )
 

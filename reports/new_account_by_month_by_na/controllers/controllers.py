@@ -193,7 +193,7 @@ class ExportNewAccountByMonthByNa(http.Controller):
         res = request.make_response(
             self.from_data(["Customer Name", "Delivery Date", "National Account"],
                            records),
-            headers=[('Content-Disposition', content_disposition('new_account_by_month_by_na' + '.xlsx')),
+            headers=[('Content-Disposition', content_disposition('new_account_by_month_by_na' + '.xls')),
                      ('Content-Type', 'application/vnd.ms-excel')],
         )
 
