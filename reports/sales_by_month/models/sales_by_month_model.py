@@ -108,45 +108,40 @@ class TrendingReportListView(models.Model):
     def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
         popup = self.env['salesbymonth.popup'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
 
-        View = self.env['ir.ui.view'].sudo().browse(view_id)
+        self.check_access_rights('read')
+        view = self.env['ir.ui.view'].sudo().browse(view_id)
 
         # Get the view arch and all other attributes describing the composition of the view
         result = self._fields_view_get(view_id=view_id, view_type=view_type, toolbar=toolbar, submenu=submenu)
 
         # Override context for postprocessing
         if view_id and result.get('base_model', self._name) != self._name:
-            View = View.with_context(base_model_name=result['base_model'])
+            view = view.with_context(base_model_name=result['base_model'])
 
         # Apply post processing, groups and modifiers etc...
-        xarch, xfields = View.postprocess_and_fields(etree.fromstring(result['arch']), model=self._name)
-        # xarch, xfields = view.postprocess_and_fields(etree.fromstring(result['arch']), model=self._name)
+        xarch, xfields = view.postprocess_and_fields(etree.fromstring(result['arch']), model=self._name)
         result['arch'] = xarch
         result['fields'] = xfields
 
         # Add related action information if aksed
         if toolbar:
+            vt = 'list' if view_type == 'tree' else view_type
             bindings = self.env['ir.actions.actions'].get_bindings(self._name)
             resreport = [action
                          for action in bindings['report']
-                         if view_type == 'tree' or not action.get('multi')]
+                         if vt in (action.get('binding_view_types') or vt).split(',')]
             resaction = [action
                          for action in bindings['action']
-                         if view_type == 'tree' or not action.get('multi')]
-            resrelate = []
-            if view_type == 'form':
-                resrelate = bindings['action_form_only']
-
-            for res in itertools.chain(resreport, resaction):
-                res['string'] = res['name']
+                         if vt in (action.get('binding_view_types') or vt).split(',')]
 
             result['toolbar'] = {
                 'print': resreport,
                 'action': resaction,
-                'relate': resrelate,
             }
-            if popup and popup.end_date and not popup.end_date is None:
+
+            if popup and popup.end_date and popup.end_date is not None:
                 today = datetime.date(datetime.strptime(str(popup.end_date), "%Y-%m-%d"))
-                if(result['name']=="product.sale.by.count.view.list" ):
+                if result['name'] == "product.sale.by.count.view.list":
                     doc = etree.XML(result['arch'])
                     for node in doc.xpath("//field[@name='month6']"):
                         node.set('string', (today - relativedelta(months=5)).strftime('%b-%Y')+" (Sale)")
@@ -163,7 +158,7 @@ class TrendingReportListView(models.Model):
 
                     result['arch'] = etree.tostring(doc, encoding='unicode')
 
-                if(result['name']=="sales.by.month.form"):
+                if result['name'] == "sales.by.month.form":
                     doc = etree.XML(result['arch'])
                     for node in doc.xpath("//field[@name='month6']"):
                         node.set('string', (today - relativedelta(months=5)).strftime('%b-%Y') + " (Sale)")
