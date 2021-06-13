@@ -1110,14 +1110,15 @@ class InventoryNotificationScheduler(models.TransientModel):
 
                     docids = self.env['sale.packing_list_popup'].get_packing_report(picking.sale_id)
                     data = None
-                    pdf = self.env.ref('packing_list.action_report_inventory_packing_list_pdf').render_qweb_pdf(docids,
-                                                                                                                data=data)[
+                    pdf = self.env.ref('packing_list.action_report_inventory_packing_list_pdf').sudo()._render_qweb_pdf(
+                        docids,
+                        data=data)[
                         0]
                     values1 = {}
-                    values1['attachment_ids'] = [(0, 0, {'name': picking.origin,
+                    values1['attachment_ids'] = [(0, 0, {'name': 'Packing_List_' + (picking.origin) + '.pdf',
                                                          'type': 'binary',
                                                          'mimetype': 'application/pdf',
-                                                         'datas_fname': 'Packing_List_' + (picking.origin) + '.pdf',
+                                                         'store_fname': 'Packing_List' + (picking.origin) + '.pdf',
                                                          'datas': base64.b64encode(pdf)})]
 
                     values1['model'] = None
