@@ -513,6 +513,13 @@ class InventoryNotificationScheduler(models.TransientModel):
                                     """
                 if products:
                     product_list.extend(list(products.values()))
+                    # Remove excluded product from list
+                    excluded_products = self.env['exclude.product.in.stock'].search([('partner_id', '=', customr.id)])
+                    if excluded_products:
+                        for excluded_product in excluded_products:
+                            if excluded_product.product_id in product_list:
+                                product_list.remove(excluded_product.product_id)
+
                     if customr.user_id.email:
                         email_list_cc.append(customr.user_id.email)
                     if customr.account_manager_cust.email:

@@ -72,7 +72,8 @@ class TempProductList(models.Model):
                                      product_template.actual_quantity > 0 and
                                      product_template.sale_ok = True and product_template.is_published = True and
                                      product_template.active = True)
-                                WHERE product_product.active = True ) as a              
+                                Where product_product.active = True and product_product.id NOT IN (Select product_id 
+                                from public.exclude_product_in_stock where partner_id = """ + str(parent_partner_id) + """)) as a         
                         ON(sale_order_line.product_id = a.id)
                         """
             groupby = """ 
