@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_customize_sales_order_customize_sales_order,customize_sales_order.customize_sales_order,model_customize_sales_order_customize_sales_order,,1,0,0,0
+access_exclude_product_in_stock_manager,exclude.product.in.stock sale manager,model_exclude_product_in_stock,sales_team.group_sale_manager,1,1,1,1
+access_exclude_product_in_stock_user,exclude.product.in.stock sale user,model_exclude_product_in_stock,sales_team.group_sale_salesman_all_leads,1,1,1,1

@@ -12,6 +12,8 @@ _logger = logging.getLogger(__name__)
 class CustomerContract(models.Model):
     _inherit = "res.partner"
 
+    exclude_in_stock_product_ids = fields.One2many('exclude.product.in.stock', 'partner_id')
+
     def _get_default_user_id(self):
         res_users = self.env['res.users'].search([('partner_id.name', '=', 'Surgical Product Solutions')])
         if res_users:

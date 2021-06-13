@@ -404,13 +404,17 @@ class StockMove(models.Model):
     def _get_partial_UOM(self):
         for stock_move in self:
             _logger.info('partner id : %r, product id : %r', stock_move.partner_id.id, stock_move.product_id.id)
-            if stock_move.partner_id and stock_move.product_id:
+            if stock_move.partner_id and stock_move.product_id and stock_move.sale_line_id and \
+                    stock_move.sale_line_id.order_id and stock_move.sale_line_id.order_id.team_id and \
+                    stock_move.sale_line_id.order_id.team_id.team_type == 'engine':
                 setting = self.env['sps.customer.requests'].get_settings_object(stock_move.partner_id.id,
                                                                                 stock_move.product_id.id)
                 if setting:
                     if setting.partial_UOM and setting.partial_UOM is not None:
                         _logger.info('partial UOM** : %r', setting.partial_UOM)
                         stock_move.partial_UOM = setting.partial_UOM
+                    else:
+                        stock_move.partial_UOM = None
                 else:
                     stock_move.partial_UOM = None
             else:
