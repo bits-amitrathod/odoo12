@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+
+    <record model="ir.ui.view" id="google_fields_tree">
+        <field name="name">Google Fields Tree</field>
+        <field name="model">google.fields</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="name"/>
+                <field name="required" />
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="google_fields_action">
+        <field name="name">Google Fields</field>
+        <field name="res_model">google.fields</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="google_fields_tree" />
+    </record>
+
+    <menuitem name="Google Fields" id= "google_fields_menu" parent="settings" action="google_fields_action" sequence="2"/>
+</odoo>
