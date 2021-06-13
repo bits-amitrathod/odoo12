@@ -13,6 +13,36 @@
             </field>
       </record>-->
 
+      <record id="view_form_import_template_stockhawk" model="ir.ui.view">
+            <field name="name">Import Template customer form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/sheet/notebook/page[@name='internal_notes']" position="after">
+                    <page name="InStockNotification" string="Exclude Product From In-Stock Notification"
+                          attrs="{'invisible':['|', '|', ('is_parent', '==', False), ('customer_rank', '==', 0), ('is_parent_assigned', '==', False)]}">
+                        <field name="exclude_in_stock_product_ids" mode="tree,form">
+                            <form>
+                                <group>
+                                    <group>
+                                        <field name="product_id"/>
+                                    </group>
+                                    <group>
+                                        <field name="sku_code" readonly="True"/>
+                                    </group>
+                                </group>
+                            </form>
+                            <tree string="Exclude Product From In-Stock Notification" editable="bottom">
+                                <field name="product_id"/>
+                                <field name="sku_code" readonly="True"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+
     <record id="view_order_form_inherit" model="ir.ui.view">
             <field name="name">sale.order.form</field>
             <field name="model">sale.order</field>
