@@ -36,9 +36,13 @@ class InventoryNotificationScheduler(models.TransientModel):
 
     @api.model
     # @api.multi
-    def process_notification_scheduler(self):
+    def process_notification_scheduler(self, custom_date=None):
         _logger.info("process_notification_scheduler called")
-        self.process_in_stock_scheduler()
+        if custom_date is not None:
+            custom_date = datetime.strptime(custom_date, '%Y-%m-%d').date()
+        else:
+            custom_date = date.today()
+        self.process_in_stock_scheduler(custom_date)
 
     def pick_notification_for_customer(self, picking):
         Stock_Moves = self.env['stock.move'].search([('picking_id', '=', picking.id)])
@@ -344,10 +348,10 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                         vals['description'], vals['sale_order_lines'], vals['header'],
                                                         vals['columnProps'], vals['closing_content'], None)
 
-    def process_in_stock_scheduler(self):
+    def process_in_stock_scheduler(self, custom_date):
         _logger.info("process_in_stock_scheduler called")
         # email_queue = []
-        today_date = date.today()
+        today_date = custom_date
         today_start = today_date
         days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
         dayName = today_date.weekday()
@@ -426,7 +430,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                     sale_order_lines = self.env['sale.order.line'].search([('order_id.id', '=', sale.id)])
                     for line in sale_order_lines:
                         # _logger.info(" product_id qty_available %r", line.product_id.actual_quantity)
-                        if line.product_id.actual_quantity and line.product_id.actual_quantity is not None and line.product_id.actual_quantity > 0 and line.product_id.product_tmpl_id.sale_ok:
+                        if line.product_id.actual_quantity and line.product_id.actual_quantity is not None and line.product_id.actual_quantity > 0 and line.product_id.product_tmpl_id.sale_ok and line.product_id.active and line.product_id.product_tmpl_id.active and line.product_id.product_tmpl_id.is_published:
                             products[line.product_id.id] = line.product_id
                 subject = "SPS Updated In-Stock Product Report"
                 descrption = "<strong>Good morning " + customr.name + "</strong>" \
@@ -513,6 +517,13 @@ class InventoryNotificationScheduler(models.TransientModel):
                                     """
                 if products:
                     product_list.extend(list(products.values()))
+                    # Remove excluded product from list
+                    excluded_products = self.env['exclude.product.in.stock'].search([('partner_id', '=', customr.id)])
+                    if excluded_products:
+                        for excluded_product in excluded_products:
+                            if excluded_product.product_id in product_list:
+                                product_list.remove(excluded_product.product_id)
+
                     if customr.user_id.email:
                         email_list_cc.append(customr.user_id.email)
                     if customr.account_manager_cust.email:
@@ -533,17 +544,21 @@ class InventoryNotificationScheduler(models.TransientModel):
 
     @api.model
     # @api.multi
-    def process_notification_scheduler_everyday(self):
+    def process_notification_scheduler_everyday(self, custom_date=None):
         self.process_new_product_scheduler()
         self.process_notify_available()
         self.process_packing_list()
         self.process_on_hold_customer()
-        self.process_todays_notification_flag_scheduler()
+        if custom_date is not None:
+            custom_date = datetime.strptime(custom_date, '%Y-%m-%d').date()
+        else:
+            custom_date = date.today()
+        self.process_todays_notification_flag_scheduler(custom_date)
 
-    def process_todays_notification_flag_scheduler(self):
+    def process_todays_notification_flag_scheduler(self, custom_date):
         _logger.info('process_todays_notification_flag_scheduler called')
 
-        today_date = date.today()
+        today_date = custom_date
         today_start = today_date
         days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
         dayName = today_date.weekday()

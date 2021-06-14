@@ -16,6 +16,13 @@ class InventoryExe(models.Model):
     _inherit = 'stock.move.line'
     lot_expired_date = fields.Datetime('Expiration Date')
     lot_use_date = fields.Datetime('Expiration Date', compute='_compute_show_lot_user_date',readOnly=True, required=True)
+    lot_id_po = fields.Many2one(
+        'stock.production.lot', 'Lot/Serial Number',
+        domain="[('product_id', '=', product_id), ('company_id', '=', company_id)]", check_company=True)
+
+    @api.onchange('lot_id_po')
+    def _onchange_lot_id_po(self):
+        self.lot_id = self.lot_id_po
 
     @api.onchange('lot_use_date')
     def _onchange_lot_use_date(self):
