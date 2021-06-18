@@ -29,7 +29,7 @@
     <template id="_assets_frontend_helpers1" inherit_id="web_editor._assets_frontend_helpers">
         <xpath expr="//link" position="before">
             <link rel="stylesheet" type="text/scss" href="/sps_theme/static/src/scss/ui_test.scss"/>
-        </xpath>
+        </xpath> 
     </template>
 
 </odoo>
