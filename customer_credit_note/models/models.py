@@ -9,6 +9,7 @@ class CustomerCreditNote(models.TransientModel):
     def action_create_payments(self):
 
         account_journal = self.env['account.journal'].search([('id', '=', self.journal_id.id)])
+        invoice_journal = self.env['account.journal'].search([('code', '=', 'INV')], limit=1)
         if account_journal.code == 'CRN':
             if self.env.context.get('journal_type') != 'sale':
                 print('is CRN')
@@ -16,22 +17,14 @@ class CustomerCreditNote(models.TransientModel):
                 if res_partner.customer_rank > 0:
                     super(CustomerCreditNote, self).action_create_payments()
                     print('is CUSTOMER')
-                    # self.line_ids
-                    # acc_move_ids = self.invoice_ids.ids
-                    # for acc_move_id in invoice_ids:
-                    #     invoice_obj_fetch = self.env['account.move'].browse(acc_move_id)
                     tax_string = []
                     line_string_all = []
-                    #     invoice_line_obj_list = self.env['account.invoice.line'].search( [('invoice_id', 'in', invoice_obj_fetch.ids)])
-
                     account_obj = self.env['account.account'].search([('code', '=', '1310')])
+                    account_receivable_obj = self.env['account.account'].search([('code', '=', '1200')])
                     for acc_move_line in self.line_ids:
                         name = 'Credit Transfer'
-                        # self.line_ids[0].move_id.display_name
                         if acc_move_line.move_id.display_name:
                             name = name + ' PO# :' + acc_move_line.move_id.display_name
-                       # if acc_move_line.move_id.number:
-                       #    name = name + ' Bill# :' + invoice_obj_fetch.number
 
                         # credit move line entry
 
@@ -41,13 +34,9 @@ class CustomerCreditNote(models.TransientModel):
                             'price_unit': acc_move_line.price_unit,
                             'price_total': acc_move_line.price_total,
                             'partner_id': acc_move_line.partner_id.id,
-                            # 'price_subtotal_signed': acc_move_line.price_subtotal_signed,
-                            'account_id': 7,  # 7 is 	1200 Account Receivable
-
+                            'account_id': account_receivable_obj.id,  # 7 is 	1200 Account Receivable
                             'quantity': acc_move_line.quantity,
                             'currency_id': acc_move_line.currency_id.id,
-                            # 'uom_id': acc_move_line.uom_id.id
-                            # Cross Check with Customer Credit Entry
                             'credit': acc_move_line.credit,
                             'debit': acc_move_line.debit,
                             'amount_residual': acc_move_line.amount_residual,
@@ -64,7 +53,6 @@ class CustomerCreditNote(models.TransientModel):
                             'price_unit': abs(acc_move_line.price_unit),
                             'price_total': abs(acc_move_line.price_total),
                             'partner_id': acc_move_line.partner_id.id,
-                            # 'price_subtotal_signed': acc_move_line.price_subtotal_signed,
                             'account_id': account_obj.id,
                             'quantity': acc_move_line.quantity,
                             'currency_id': acc_move_line.currency_id.id,
@@ -73,7 +61,6 @@ class CustomerCreditNote(models.TransientModel):
                             'amount_residual': abs(acc_move_line.amount_residual),
                             'amount_residual_currency': abs(acc_move_line.amount_residual_currency),
                             'exclude_from_invoice_tab': False,
-                            # 'uom_id': acc_move_line.uom_id.id,
                             'tax_base_amount': 0
                         }))
 
@@ -81,7 +68,6 @@ class CustomerCreditNote(models.TransientModel):
                             'id': False,
                             'invoice_date_due': fields.Date.today(),
                             'partner_id': self.partner_id.id,
-                            # 'reference_type': 'none',
                             'move_type': 'out_refund',
                             'state': 'draft',
                             'amount_untaxed': acc_move_line.move_id.amount_untaxed,
@@ -92,17 +78,8 @@ class CustomerCreditNote(models.TransientModel):
                             'amount_total_signed': acc_move_line.move_id.amount_total_signed,
                             'amount_residual_signed':acc_move_line.move_id.amount_residual_signed,
                             'amount_residual':acc_move_line.move_id.amount_residual,
-                            # 'move_type':'entry',
-                            # 'payment_state' : 'not_paid',
-                            # 'amount_total_company_signed': acc_move_line.move_id.amount_total_company_signed,
-                            # 'residual': acc_move_line.move_id.residual,
-                            # 'residual_signed': acc_move_line.move_id.residual_signed,
-                            # 'residual_company_signed': acc_move_line.move_id.residual_company_signed,
-                            # 'reconciled': False,
-                            # 'sent': 'false',
                             'vendor_credit_flag': True,
-                            #'journal_id':acc_move_line.move_id.journal_id.id,
-                            'journal_id':1, # 1 is INV
+                            'journal_id':invoice_journal.id, # 1 is INV
                             'extract_state':acc_move_line.move_id.extract_state,
                             'currency_id':acc_move_line.move_id.currency_id.id,
                             'date':acc_move_line.move_id.date
@@ -111,7 +88,7 @@ class CustomerCreditNote(models.TransientModel):
                     #     #'tax_line_ids': [(0, 0, tax_string)]
                         invoice_created = self.env['account.move'].create(acc_move)
                         invoice_created.action_post()
-                        # invoice_created.action_invoice_open()
+
                 else:
                     raise Warning(_(
                         'Payment Warning!\nCannot proceed with Payment Journal =" Credit Note " '
