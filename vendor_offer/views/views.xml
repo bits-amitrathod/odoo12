@@ -909,7 +909,7 @@
                         </field>
                     </record>
 
-                <record id="view_picking_form_inherit_website_sale_stock" model="ir.ui.view">
+                <record id="view_picking_form_inherit_website_sale_stock_custom" model="ir.ui.view">
                         <field name="name">stock.picking.form.inherit.show.offer.price</field>
                         <field name="model">stock.picking</field>
                         <field name="inherit_id" ref="stock.view_picking_form"/>

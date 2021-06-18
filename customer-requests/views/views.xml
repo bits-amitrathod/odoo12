@@ -178,7 +178,7 @@
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet/notebook/page[@name='internal_notes']" position="after">
-                    <page name="importedtemplate" string="Imported Templates">
+                    <page name="importedtemplate" string="Imported Templates"
                           attrs="{'invisible':['|', '|', ('customer_rank', '==', 0), ('is_parent_assigned', '==', False), ('prioritization', '==', False)]}">
                         <field name="template_ids"/>
                         <field name="is_parent_assigned" string="Username" invisible="1"/>

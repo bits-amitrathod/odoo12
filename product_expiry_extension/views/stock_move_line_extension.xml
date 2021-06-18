@@ -14,8 +14,19 @@
         <field name="lot_id" position="replace">
             <field class="min_width" name="lot_id" groups="stock.group_production_lot"
                         attrs="{'readonly': ['&amp;', ('package_level_id', '!=', False), ('parent.picking_type_entire_packs', '=', True)]}"
-                        invisible="not context.get('show_lots_m2o')"
-                        domain="[('product_id', '=', parent.product_id), ('company_id', '=', company_id)]"
+                        invisible="not context.get('show_lot_id_column')"
+                        domain="[('product_qty', '>', 0.0), ('product_id', '=', parent.product_id), ('company_id', '=', company_id)]"
+                        context="{
+                            'active_picking_id': picking_id,
+                            'default_company_id': parent.company_id,
+                            'default_product_id': parent.product_id,
+                            'lot_date_display_name': True
+                        }"
+                    />
+            <field class="min_width" name="lot_id_po" groups="stock.group_production_lot"
+                        attrs="{'readonly': ['&amp;', ('package_level_id', '!=', False), ('parent.picking_type_entire_packs', '=', True)]}"
+                        invisible="not context.get('do_not_show_lot_id_column')"
+                        domain="[('product_qty', '>', 0.0), ('product_id', '=', parent.product_id), ('company_id', '=', company_id)]"
                         context="{
                             'active_picking_id': picking_id,
                             'default_company_id': parent.company_id,
@@ -25,7 +36,7 @@
                     />
         </field>
         <field name="lot_id" position="after">
-            <field name="lot_use_date" attrs="{'readonly': [('lot_use_date', '!=', False)]}" invisible="not context.get('show_lots_m2o')" groups="stock.group_production_lot" context="{'default_product_id': parent.product_id, 'active_picking_id': picking_id}" />
+            <field name="lot_use_date" attrs="{'readonly': [('lot_use_date', '!=', False)]}" invisible="not context.get('show_lot_id_column')" groups="stock.group_production_lot" context="{'default_product_id': parent.product_id, 'active_picking_id': picking_id}" />
         </field>
          <field name="lot_name"  position="after" >
               <field name="lot_expired_date" widget="inventory_purchase"  attrs="{'readonly': [('parent.picking_type_entire_packs', '=', True)]}"  invisible="not context.get('show_lots_text')" groups="stock.group_production_lot"/>
