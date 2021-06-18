@@ -5,9 +5,11 @@ $(document).ready(function () {
 
 document.addEventListener('scroll', function(e) {
    if(window.pageYOffset === 0){
-    alert("Hey......");
     var div = document.getElementById("oe_main_menu_navbar");
-    div.classList.remove('fixed-top')
+    if(div !== null){
+     div.classList.remove('fixed-top')
+    }
+
 }
 });
 
@@ -50,6 +52,8 @@ document.addEventListener('scroll', function(e) {
      function scrolldiv() {
                 var elem = document.getElementById("requestform");
                 var div = document.getElementById("oe_main_menu_navbar");
-                div.classList.add("fixed-top");
+                if(div !== null){
+                 div.classList.add('fixed-top')
+                }
                 elem.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
