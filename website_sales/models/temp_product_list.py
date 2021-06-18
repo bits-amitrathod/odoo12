@@ -136,6 +136,15 @@ class TempProductList(models.Model):
                 temp_list.update(product_data)
             customer_data={partner.id:temp_list}
             self.product_list.update(customer_data)
+        else:
+            # This Code For only console error resolve purposr
+            self.env.cr.execute('''
+                         CREATE OR REPLACE VIEW %s AS (
+                         SELECT  so.id AS id,
+                                 so.name AS name
+                         FROM sale_order so
+                         )''' % (self._table)
+                                )
 
     #  @api.model_cr
     def delete_and_create(self):
