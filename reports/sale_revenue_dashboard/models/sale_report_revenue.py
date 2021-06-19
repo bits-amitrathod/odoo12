@@ -12,7 +12,6 @@ class SaleReport(models.Model):
     _rec_name = 'date'
     _order = 'date desc'
 
-    @api.model
     def _get_done_states(self):
         return ['sale', 'done', 'paid']
 
@@ -88,7 +87,7 @@ class SaleReport(models.Model):
             count(*) as nbr,
             s.name as name,
             s.date_order as date,
-            s.confirmation_date as confirmation_date,
+            s.date_order as confirmation_date,
             s.state as state,
             s.partner_id as partner_id,
             s.user_id as user_id,
@@ -139,7 +138,7 @@ class SaleReport(models.Model):
             t.categ_id,
             s.name,
             s.date_order,
-            s.confirmation_date,
+            s.date_order,
             s.partner_id,
             s.user_id,
             s.state,
@@ -159,7 +158,6 @@ class SaleReport(models.Model):
 
         return '%s (SELECT %s FROM %s WHERE l.product_id IS NOT NULL GROUP BY %s)' % (with_, select_, from_, groupby_)
 
-    @api.model_cr
     def init(self):
         # self._table = sale_report
         tools.drop_view_if_exists(self.env.cr, self._table)
@@ -169,7 +167,7 @@ class SaleOrderReportProforma(models.AbstractModel):
     _name = 'report.sale.report_saleproforma'
     _description = 'Proforma Report'
 
-    @api.multi
+    #@api.multi
     def _get_report_values(self, docids, data=None):
         docs = self.env['sale.order'].browse(docids)
         return {

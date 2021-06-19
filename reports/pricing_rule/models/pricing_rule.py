@@ -29,7 +29,7 @@ class PricingRule(models.Model):
 
 
 
-    @api.model_cr
+    #  @api.model_cr
     def init(self):
         self.init_table()
 
@@ -39,10 +39,12 @@ class PricingRule(models.Model):
                     RESTART IDENTITY;
                 """
         self._cr.execute(sql_query)
+
+        company_fetch = self.env['res.company'].search([], limit=1, order="id desc")
         insert_query="""INSERT INTO res_pricing_rule(customer_name, product_code, product_name, cost,currency_id,currency_symbol) values """
         price_list=self.env.context.get('price_list')
         if price_list and  not price_list is None :
-            partners = self.env['res.partner'].search([('active','=',True),('customer','=',True),('is_parent','=',True)])
+            partners = self.env['res.partner'].search([('active','=',True),('customer_rank','>',0),('is_parent','=',True)])
             for part in partners:
                 if part.property_product_pricelist and part.property_product_pricelist.id in price_list:
                     product_price_list_item = self.env['product.pricelist.item'].search(
@@ -60,13 +62,27 @@ class PricingRule(models.Model):
                     products = self.env['product.product'].search(
                         [('id', 'in', product_ids)])
                     i=0
+                    pricelist = self.env['product.pricelist']
                     for product in products:
                         product_price = part.property_product_pricelist.get_product_price(product, 1.0, part)
+                        # product_price = 1.2
                         values="(%s,%s,%s,%s,%s,%s)"
                         final_query=insert_query + " " + values
-                        self._cr.execute(final_query,(str(part.display_name),str(product.product_tmpl_id.sku_code),str(product.product_tmpl_id.name),str(product_price),str(product.product_tmpl_id.company_id.currency_id.id),str(product.product_tmpl_id.company_id.currency_id.symbol)))
+                        # self._cr.execute(final_query,(str(part.display_name),
+                        #                               str(product.product_tmpl_id.sku_code),
+                        #                               str(product.product_tmpl_id.name),
+                        #                               str(product_price),
+                        #                               str(product.product_tmpl_id.company_id.currency_id.id),
+                        #                               str(product.product_tmpl_id.company_id.currency_id.symbol)))
+                        self._cr.execute(final_query,(str(part.display_name),
+                                                      str(product.product_tmpl_id.sku_code),
+                                                      str(product.product_tmpl_id.name),
+                                                      str(product_price),
+                                                      company_fetch.currency_id.id,
+                                                      company_fetch.currency_id.symbol
+                                                      ))
 
-    @api.model_cr
+    #  @api.model_cr
     def delete_and_create(self):
         self.init_table()
 

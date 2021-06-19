@@ -6,8 +6,8 @@ class DiscountSummaryPopUp(models.TransientModel):
     _description = 'Gross Sale By Business Development'
 
     compute_at_date = fields.Selection([
-        (0, 'Show All '),
-        (1, 'Date Range ')
+        ('0', 'Show All '),
+        ('1', 'Date Range ')
     ], string="Compute", help="Choose to analyze the Show Summary or from a specific date in the past.")
 
     start_date = fields.Date('Start Date', default = (fields.date.today() - datetime.timedelta(days = 31)))
@@ -18,7 +18,7 @@ class DiscountSummaryPopUp(models.TransientModel):
         tree_view_id = self.env.ref('report_group_by_saleperson.view_order_tree').id
         form_view_id = self.env.ref('sale.view_order_form').id
 
-        if self.compute_at_date:
+        if self.compute_at_date =='1':
             action = {
                 'type': 'ir.actions.act_window',
                 'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
@@ -26,7 +26,7 @@ class DiscountSummaryPopUp(models.TransientModel):
                 'name': _('Gross Sales By Business Development'),
                 'res_model': 'sale.order',
                 'context': {'group_by':'user_id' , 'start_date' : self.start_date , 'end_date' : self.end_date} ,
-                'domain':[('state', '=', 'sale'),('confirmation_date', '>=', self.start_date),('confirmation_date','<=', self.end_date)] ,
+                'domain':[('state', '=', 'sale'),('date_order', '>=', self.start_date),('date_order','<=', self.end_date)] ,
             }
             return action
         else:

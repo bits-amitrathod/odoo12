@@ -3,10 +3,10 @@
 
 from odoo import fields, api, models
 
+
 class MailComposeForEngine(models.TransientModel):
     _inherit = 'mail.compose.message'
 
-    @api.multi
     def send_mail(self, auto_commit=False):
         if self.template_id.name == 'Vendor Offer - Send by Email' and self._context.get('default_model') == 'purchase.order' \
                 and self._context.get('default_res_id'):
@@ -39,3 +39,4 @@ class MailComposeForEngine(models.TransientModel):
             return super(MailComposeForEngine, self).send_mail(auto_commit=auto_commit)
         else:
             return super(MailComposeForEngine, self).send_mail(auto_commit=auto_commit)
+

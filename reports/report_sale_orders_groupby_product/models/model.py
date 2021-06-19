@@ -9,8 +9,8 @@ class ReportSaleOrdersGroupbyProduct(models.TransientModel):
     # _log_access = True
 
     compute_at_date = fields.Selection([
-        (0, 'Show All '),
-        (1, 'Date Range ')
+        ('0', 'Show All '),
+        ('1', 'Date Range ')
     ], string="Compute", help="Choose to analyze the Show Summary or from a specific date in the past.")
     start_date = fields.Date('Start Date', help="Choose report Start date", default = (fields.date.today() - datetime.timedelta(days = 31)))
     end_date = fields.Date('End Date', help="Choose report End date",
@@ -32,7 +32,7 @@ class ReportSaleOrdersGroupbyProduct(models.TransientModel):
             'domain': [('state', 'in', ['sale', 'done']),('qty_delivered', '>',0)]
         }
 
-        if self.compute_at_date:
+        if self.compute_at_date =='1':
             action.update({'domain': [('order_id.date_order', '>=', self.start_date), ('order_id.date_order', '<=', self.end_date),
                    ('state', 'in', ('sale', 'done')),('qty_delivered', '>',0)]})
             return action
@@ -49,12 +49,12 @@ class ReportSaleOrderLine(models.Model):
     date_order = fields.Datetime('Order Date', compute='_compute_date_order', store=False)
     sku_code = fields.Char('Product SKU', store=False, compute="_get_sku")
 
-    @api.multi
+    #@api.multi
     def _get_sku(self):
         for order in self:
                 order.sku_code = order.product_id.product_tmpl_id.sku_code
 
-    @api.multi
+    #@api.multi
     def _compute_date_order(self):
         for order in self:
             order.date_order = order.order_id.date_order
@@ -63,7 +63,7 @@ class ReportSaleOrderLine(models.Model):
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
-    @api.multi
+    #@api.multi
     def action_view_sales(self):
         tree_view_id = self.env.ref('report_sale_orders_groupby_product.report_sale_orders_group_by_product_tree').id
         pivote_view_id = self.env.ref('report_sale_orders_groupby_product.view_sold_level_pivot').id
@@ -78,7 +78,7 @@ class ProductTemplate(models.Model):
         }
         return action
 
-    @api.multi
+    #@api.multi
     def action_view_po(self):
         tree_view_id = self.env.ref('purchase.purchase_order_line_tree').id
         pivote_view_id = self.env.ref('report_sale_orders_groupby_product.view_prchase_level_pivot').id
@@ -97,7 +97,7 @@ class ProductTemplate(models.Model):
 class ProductProduct(models.Model):
     _inherit = 'product.product'
 
-    @api.multi
+    #@api.multi
     def action_view_sales(self):
         tree_view_id = self.env.ref('report_sale_orders_groupby_product.report_sale_orders_group_by_product_tree').id
         pivote_view_id = self.env.ref('report_sale_orders_groupby_product.view_sold_level_pivot').id
@@ -111,7 +111,7 @@ class ProductProduct(models.Model):
         }
         return action
 
-    @api.multi
+    #@api.multi
     def action_view_po(self):
         tree_view_id = self.env.ref('purchase.purchase_order_line_tree').id
         pivote_view_id = self.env.ref('report_sale_orders_groupby_product.view_prchase_level_pivot').id

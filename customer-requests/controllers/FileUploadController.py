@@ -18,7 +18,7 @@ from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMA
 
 import errno
 
-from werkzeug import FileStorage
+from werkzeug.datastructures import FileStorage
 
 from odoo.http import Controller, request, route
 
@@ -98,12 +98,13 @@ class FileUploadController(Controller):
     def _get_users_list(self, **post):
         # cr, context, pool, uid = request.cr, request.context, request.registry, request.uid
         input_data = post['input_data']
-        records = request.env['res.partner'].sudo().search([(input_data, '=', True), ('parent_id', '=', None)])
+        print('input_data', input_data)
+        records = request.env['res.partner'].sudo().search([('customer_rank', '>', 0), ('parent_id', '=', None)])
         response_data = [dict(name=record['name'], id=record['id']) for record in records]
         return str(json.dumps(response_data))
 
     @http.route('/template_import/set_file', methods=['POST'])
-    def set_file(self, file, import_id, customer, template_type, jsonp='callback'):
+    def set_file(self, file, import_id, jsonp='callback'):
         import_id = int(import_id)
         written = request.env['sps.template.transient'].browse(import_id).sudo().write({
             'file': file.read(),
@@ -138,7 +139,7 @@ class FileUploadController(Controller):
         template = request.env.ref('customer-requests.set_log_email').sudo()
         local_context = {'customerName': customerName, 'email': email, 'date': today_date, 'reason': reason}
         try:
-            template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True, )
+            template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=False, )
         except:
             response = {'message': 'Unable to connect to SMTP Server'}
 

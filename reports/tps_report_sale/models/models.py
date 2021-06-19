@@ -23,7 +23,7 @@ class tps_report_sale(models.Model):
     _rec_name = 'product_name'
 
 
-    @api.multi
+    #@api.multi
     def _compare_data(self):
         popup = self.env['tps.popup.view'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
         start_date = popup.start_date
@@ -36,15 +36,15 @@ class tps_report_sale(models.Model):
             product.product_name = product.product_tmpl_id.name
             product.sku_name = product.product_tmpl_id.sku_code
             sale_order_lines = self.env['sale.order.line'].search(
-                [('product_id', '=', product.id), ('order_id.confirmation_date', '>=', start_date),
-                 ('order_id.confirmation_date', '<=', str(end_date))])
+                [('product_id', '=', product.id), ('order_id.date_order', '>=', start_date),
+                 ('order_id.date_order', '<=', str(end_date))])
             for sale_order_line in sale_order_lines:
                 product.currency_id = sale_order_line.currency_id
                 product.total_sales = product.total_sales + sale_order_line.price_total
 
 
 
-    @api.model_cr
+    #  @api.model_cr
     def init(self):
         self.init_table()
 
@@ -73,12 +73,12 @@ class tps_report_sale(models.Model):
         # if start_date == end_date:
         end_date = end_date + datetime.timedelta(days=1)
 
-        select_query = select_query + """where so.confirmation_date>=%s and so.confirmation_date<=%s """ + """ group by pp.id,pt.name,sku_code,pp.product_tmpl_id,sol.currency_id"""
+        select_query = select_query + """where so.date_order>=%s and so.date_order<=%s """ + """ group by pp.id,pt.name,sku_code,pp.product_tmpl_id,sol.currency_id"""
         sql_query = "CREATE VIEW " + view + " AS ( " + select_query + ")"
         self._cr.execute(sql_query, (str(s_date), str(e_date), str(start_date), str(end_date),))
 
 
-    @api.model_cr
+    #  @api.model_cr
     def delete_and_create(self):
         self.init_table()
 

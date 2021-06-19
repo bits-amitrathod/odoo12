@@ -21,7 +21,7 @@ class Discount():
         else:
             return " "
 
-    @api.multi
+    #@api.multi
     def addObject(self, filtered_by_current_month):
         dict = {}
         log.info(" inside addObject ")
@@ -106,21 +106,19 @@ class ReportBrokerReport(models.AbstractModel):
 
                 if order.rt_price_total_amt != 0:
 
-                    if (order.broker_margin == "Margin < 40%" or order.broker_margin == "T1 BROKER" or
-                                                       order.broker_margin == "T2 BROKER"):
+                    if (str(order.broker_margin) == "Margin < 40%") or (str(order.broker_margin) == "T1 BROKER") or (str(order.broker_margin) == "T2 BROKER"):
                         margin_retailamount = margin_retailamount + order.rt_price_total_amt
                         margin_offeramount = margin_offeramount + order.amount_total
 
-                    if (order.broker_margin == "T1 BROKER" or
-                                                       order.broker_margin == "T2 BROKER"):
+                    if (str(order.broker_margin) == "T1 BROKER") or (str(order.broker_margin) == "T2 BROKER"):
                         t1t2_margin_retailamount = t1t2_margin_retailamount + order.rt_price_total_amt
                         tit2_margin_offeramount = tit2_margin_offeramount + order.amount_total
 
-                    if order.broker_margin == "Margin < 40%":
+                    if (str(order.broker_margin) == "Margin < 40%"):
                         m40_margin_retailamount = m40_margin_retailamount + order.rt_price_total_amt
                         m40_margin_offeramount = m40_margin_offeramount + order.amount_total
 
-                    if order.broker_margin == "Margin < 40%":
+                    if (order.broker_margin == "Margin < 40%"):
                         margin40tot = float(margin40tot) + order.rt_price_total_amt
 
             bonus_eligible = apprisal_list_rtl_val.total_retail_broker - margin40tot

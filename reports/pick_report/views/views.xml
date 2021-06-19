@@ -19,7 +19,7 @@
         <record id="action_pick_report" model="ir.actions.act_window">
             <field name="name">Pick Report</field>
             <field name="res_model">pick_report.popup</field>
-            <field name="view_type">form</field>
+<!--            <field name="view_type">form</field>-->
             <field name="view_mode">form</field>
             <field name="view_id" ref="view_pick_report_popup"/>
             <field name="target">new</field>

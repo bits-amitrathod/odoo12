@@ -39,7 +39,7 @@ e.g. <field name="course_id" widget="one2many_selectable">
 
 You can get the selected records in python function, a smple python function is as follows:
 
-@api.multi
+#@api.multi
 def bulk_verify(self):
     for record in self:
 	print record

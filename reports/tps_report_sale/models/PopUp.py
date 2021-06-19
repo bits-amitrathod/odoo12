@@ -28,7 +28,7 @@ class PopUp(models.TransientModel):
         # s_date = PopUp.string_to_date(str(self.start_date))
         # e_date = PopUp.string_to_date(str(self.end_date))
 
-        filtered_sale_orders = self.env['sale.order'].search([('confirmation_date', '>=', self.start_date),('confirmation_date','<=', self.end_date)])
+        filtered_sale_orders = self.env['sale.order'].search([('date_order', '>=', self.start_date),('date_order','<=', self.end_date)])
 
         product_ids = []
         for sale_order in filtered_sale_orders:

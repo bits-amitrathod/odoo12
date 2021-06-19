@@ -18,6 +18,7 @@ class Contract(models.Model):
 
     name = fields.Char(string="Contract", required=True)
     code = fields.Char(string=" ", readonly="1", store=True)
+    #color = fields.Integer(store=False)
 
     @api.model
     def create(self, val):
@@ -32,7 +33,7 @@ class Contract(models.Model):
         record = super(Contract, self).create(val)
         return record
 
-    @api.multi
+    
     def write(self, val):
 
         name_val = val['name']

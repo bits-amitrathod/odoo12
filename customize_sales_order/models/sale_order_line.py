@@ -13,7 +13,6 @@ class SaleOrderLineInherit(models.Model):
     product_min_max_exp_date = fields.Char('Product Min-Max Expiration Date',
                                            compute='_calculate_max_min_lot_expiration')
 
-    @api.multi
     def _calculate_max_min_lot_expiration(self):
         for record in self:
             if record.product_id and record.product_id.id:
@@ -47,27 +46,23 @@ class SaleOrderLineInherit(models.Model):
                                         record.product_min_max_exp_date = str(
                                             datetime.datetime.strptime(str(query_result['min']),
                                                                        '%Y-%m-%d %H:%M:%S').strftime('%m/%d/%Y'))
-                                    else:
+                                    elif query_result['min'] and query_result['max']:
                                         record.product_min_max_exp_date = str(datetime.datetime.strptime(str(query_result['min']), '%Y-%m-%d %H:%M:%S').strftime('%m/%d/%Y')) \
                                             + str("-") + str(datetime.datetime.strptime(str(query_result['max']), '%Y-%m-%d %H:%M:%S').strftime('%m/%d/%Y'))
+                                    else:
+                                        record.product_min_max_exp_date = None
+                                else:
+                                    record.product_min_max_exp_date = None
+                            else:
+                                record.product_min_max_exp_date = None
+                    else:
+                        record.product_min_max_exp_date = None
 
-    # @api.multi
-    # def unlink(self):
-    #     if self.filtered(lambda line: line.state in 'done' and (line.invoice_lines or not line.is_downpayment)):
-    #         raise UserError(_('You can not remove an order line once the sales order is confirmed.\nYou should rather set the quantity to 0.'))
-    #     return models.Model.unlink(self)
-
-    @api.multi
     def unlink(self):
-        if self.filtered(
-                lambda line: line.state in ('sale', 'done') and (line.invoice_lines or not line.is_downpayment)):
-            raise UserError(_(
-                'You can not remove an order line once the sales order is confirmed.\nYou should rather set the quantity to 0.'))
-        elif self.filtered(
-                lambda line: line.order_id.team_id.team_type == 'engine' and
-                             (line.state in ('sent', 'sale', 'done') and (line.invoice_lines or not line.is_downpayment))):
-            raise UserError(_(
-                'You can not remove an order line.\nYou should rather set the quantity to 0.'))
+        if self.filtered(lambda line: line.state in ('sale', 'done') and (line.invoice_lines or not line.is_downpayment)):
+            raise UserError(_('You can not remove an order line once the sales order is confirmed.\nYou should rather set the quantity to 0.'))
+        elif self.filtered(lambda line: line.order_id.team_id.team_type == 'engine' and (line.state in ('sent', 'sale', 'done') and (line.invoice_lines or not line.is_downpayment))):
+            raise UserError(_('You can not remove an order line.\nYou should rather set the quantity to 0.'))
 
         return super(SaleOrderLineInherit, self).unlink()
 
@@ -92,7 +87,6 @@ class SaleOrderLineInherit(models.Model):
                     'You are decreasing the ordered quantity! Do not forget to manually update the delivery order if needed.'),
             }
             return {'warning': warning_mess}
-
         elif self.order_id.team_id.team_type == 'engine' and (self.state in ('sale', 'sent') and self.product_id.type in ['product',
                                                              'consu'] and self.product_uom_qty < product_uom_qty_origin):
             # Do not display this warning if the new quantity is below the delivered
@@ -144,7 +138,7 @@ class SaleOrderLineInherit(models.Model):
             if currency_id.id == product_currency.id:
                 cur_factor = 1.0
             else:
-                cur_factor = currency_id._get_conversion_rate(product_currency, currency_id, self.company_id or self.env.user.company_id, self.order_id.date_order or fields.Date.today())
+                cur_factor = currency_id._get_conversion_rate(product_currency, currency_id, self.company_id or self.env.company, self.order_id.date_order or fields.Date.today())
 
         product_uom = self.env.context.get('uom') or product.uom_id.id
         if uom and uom.id != product_uom:

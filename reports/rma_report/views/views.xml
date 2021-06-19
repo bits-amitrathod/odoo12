@@ -21,7 +21,6 @@
         <record id="action_rma_report" model="ir.actions.act_window">
             <field name="name">RMA Report</field>
             <field name="res_model">rma.report.popup</field>
-            <field name="view_type">form</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="view_rma_report_popup"/>
             <field name="target">new</field>

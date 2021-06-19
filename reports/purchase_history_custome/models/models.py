@@ -29,7 +29,7 @@ class PurchaseHistory(models.Model):
 
 
 
-    @api.multi
+    #@api.multi
     def _calculateSKU1(self):
         for order in self:
             for p in order:
@@ -56,8 +56,6 @@ class PurchaseHistory(models.Model):
                 query_result = self.env.cr.dictfetchone()
                 if query_result['min'] is not None :
                     order.minExpDate = PurchaseHistory.string_to_date(str(query_result['min']))
-
-
 
     @api.onchange('maxExpDate')
     def _calculateDate2(self):

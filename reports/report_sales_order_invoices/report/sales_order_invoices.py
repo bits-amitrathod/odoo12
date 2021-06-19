@@ -6,7 +6,8 @@ class ReportSalesOrderInvoices(models.AbstractModel):
 
     @api.model
     def _get_report_values(self, docids, data=None):
-        invoices = self.env['account.invoice'].search([('id','in',docids)])
+        pass
+        invoices = self.env['account.move'].search([('id','in',docids)])
         orders = {}
         for invoice in invoices:
             orders[invoice.id] = self.env['sale.order'].search([('name','=',invoice.origin)])

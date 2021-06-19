@@ -7,9 +7,9 @@
                 <form string="Choose your date">
                     <group>
                         <group>
-                            <field name="compute_at_date" widget="radio"/>
-                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
-                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <field name="compute_at_date" widget="radio" default="0"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', 1)]}"/>
                         </group>
                     </group>
                     <footer>
@@ -23,7 +23,7 @@
         <record id="broker_report_id" model="ir.actions.act_window">
             <field name="name">Broker Report</field>
             <field name="res_model">brokerreport.popup</field>
-            <field name="view_type">form</field>
+            <!-- <field name="view_type">form</field> -->
             <field name="view_mode">form</field>
             <field name="view_id" ref="broker_view_popup_view"/>
             <field name="target">new</field>
@@ -37,12 +37,12 @@
               <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false" >
 
-                     <field name="broker_desc" />
-                     <field name="total_retail_broker" />
-                     <field name="bonus_eligible" />
-                     <field name="hospital_total" />
-                     <field name="broker_greater_40_total" />
-                     <field name="broker_less_40_total" />
+                     <field name="broker_desc" optional="show" />
+                     <field name="total_retail_broker" optional="show" />
+                     <field name="bonus_eligible" optional="show"/>
+                     <field name="hospital_total" optional="show" />
+                     <field name="broker_greater_40_total" optional="show"/>
+                     <field name="broker_less_40_total" optional="show"/>
 
                 </tree>
               </field>

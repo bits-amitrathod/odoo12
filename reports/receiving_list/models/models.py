@@ -13,13 +13,14 @@ class ReceivingListPopUp(models.TransientModel):
     _name = 'popup.receiving.list'
 
     order_type = fields.Selection([
-        (1, 'PO'),
-        (0, 'SO'),
-    ], string="Order Type", default=1, help="Choose to analyze the Show Summary or from a specific date in the past.",
+        ('1', 'PO'),
+        ('0', 'SO'),
+    ], string="Order Type", default='1', help="Choose to analyze the Show Summary or from a specific date in the past.",
         required=True)
 
-    sale_order_id = fields.Many2one('sale.order', string='Order Number',
-                                    domain="[('picking_ids.state','in',('assigned','done')),('picking_ids.picking_type_id','=',2)]", )
+    sale_order_id = fields.Many2one('sale.order', string='Order Number'
+    # , domain = "[('picking_ids.state','in',('assigned','done')),('picking_ids.picking_type_id','=',2)]"
+                                    )
 
     purchase_order_id = fields.Many2one('purchase.order', string='Order Number',
                                         domain="[('picking_ids.state','in',('assigned','done')),('picking_type_id.code','=','incoming')]",
@@ -27,7 +28,7 @@ class ReceivingListPopUp(models.TransientModel):
 
     def open_table(self):
         data = {'order_type': self.order_type}
-        if self.order_type == 1:
+        if self.order_type == '1':
             self.env['report.receiving.list.po'].delete_and_create()
             data['order_id'] = self.purchase_order_id.id
         else:
@@ -63,15 +64,14 @@ class ReceivingListPoReport(models.Model):
         ('assigned', 'Available'),
         ('done', 'Done')], string='Status')
 
-    @api.model_cr
     def init(self):
         self.init_table()
 
     def init_table(self):
         tools.drop_view_if_exists(self._cr, self._name.replace(".", "_"))
-        purchase = self.env['purchase.order'].search(
-            [('id', '=', 7499)])
-        _logger.info("id :%r", purchase)
+        # purchase = self.env['purchase.order'].search(
+        #     [('id', '=', 7499)])
+        # _logger.info("id :%r", purchase)
         select_query = """
                 SELECT
                     ROW_NUMBER () OVER (ORDER BY stock_move_line.id) as id, 
@@ -142,7 +142,6 @@ class ReceivingListPoReport(models.Model):
         sql_query = "CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + select_query + " )"
         self._cr.execute(sql_query)
 
-    @api.model_cr
     def delete_and_create(self):
         self.init_table()
 
@@ -170,7 +169,6 @@ class ReceivingListReport(models.Model):
         ('assigned', 'Available'),
         ('done', 'Done')], string='Status')
 
-    @api.model_cr
     def init(self):
         self.init_table()
 
@@ -228,6 +226,5 @@ class ReceivingListReport(models.Model):
         sql_query = "CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + select_query + " )"
         self._cr.execute(sql_query)
 
-    @api.model_cr
     def delete_and_create(self):
         self.init_table()

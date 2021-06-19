@@ -4,11 +4,10 @@ from odoo import api, models
 class ReportSalesSalespersonWise(models.AbstractModel):
     _name = 'report.receiving_list.receiving_list_temp'
 
-    @api.model
     def _get_report_values(self, docids, data=None):
 
         if data:
-            if data['order_type'] == 1:
+            if data['order_type'] == '1':
                 records = self._get_purchase_order_data(data['order_id'])
             else:
                 records = self._get_sale_order_data(data['order_id'])

@@ -7,9 +7,9 @@ class DiscountSummaryPopUp(models.TransientModel):
     # _description = 'Discount Summary PopUp'
 
     compute_at_date = fields.Selection([
-        (0, 'Show All '),
-        (1, 'Date Range ')
-    ], string="Compute", help="Choose to analyze the Show Summary or from a specific date in the past.")
+        ('0', 'Show All '),
+        ('1', 'Date Range ')
+    ], string="Compute", default='0', help="Choose to analyze the Show Summary or from a specific date in the past.")
 
     partner_id = fields.Many2one('res.partner', string='Customer')
     sale_order = fields.Many2one('sale.order', string='Sale Order', domain="[('order_line.discount', '>', 0)]")
@@ -38,8 +38,8 @@ class DiscountSummaryPopUp(models.TransientModel):
         if self.partner_id:
             action['domain'].append(('partner_id', '=', self.partner_id.id))
 
-        if self.compute_at_date:
-            action['domain'].extend([('confirmation_date', '>=', self.start_date), ('confirmation_date', '<=', self.end_date)])
+        if self.compute_at_date =='1':
+            action['domain'].extend([('date_order', '>=', self.start_date), ('date_order', '<=', self.end_date)])
             return action
         else:
             return action

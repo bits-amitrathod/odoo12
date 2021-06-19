@@ -2,8 +2,8 @@ from odoo import models, fields, api
 from datetime import timedelta
 
 class VendorBillDate(models.Model):
-    _inherit ='account.invoice'
-        
+    _inherit ='account.move'
+
     @api.onchange('payment_term_id', 'date_invoice')
     def _onchange_payment_term_date_invoice(self):
         # super(VendorBillDate,self). _onchange_payment_term_date_invoice()
@@ -21,7 +21,7 @@ class VendorBillDate(models.Model):
                 stock_picking_obj = self.env['stock.picking'].search( [('origin', '=', self.origin), ('state', '=', 'done'), ('picking_type_id', '=', 5)])
                 # add_hrs = 5
 
-            
+
             if not self.date_invoice:
                 self.date_invoice = str((max(stock_picking_obj).date_done)) if stock_picking_obj else None # + timedelta(hours=add_hrs)).date(
 
@@ -36,14 +36,19 @@ class VendorBillDate(models.Model):
             if self.date_invoice > self.date_due:
                 self.date_due = self.date_invoice
 
+    # @api.multi
+    def action_date_assign(self):
+        for inv in self:
+            # Here the onchange will automatically write to the database
+            inv._onchange_payment_term_date_invoice()
+        return True
 
 
     # Populates Due_Date at the time of Saving bill of purchase order in Purchase module when click on 'Save' button
-    @api.model
-    def create(self, vals):
-        ret_invoice=super(VendorBillDate,self).create(vals)
-        ret_invoice.action_date_assign()
-        return ret_invoice
+    # def create(self, vals):
+    #     ret_invoice=super(VendorBillDate,self).create(vals)
+    #     ret_invoice.action_date_assign()
+    #     return ret_invoice
 
 
 class Memo(models.Model):

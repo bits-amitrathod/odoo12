@@ -22,7 +22,6 @@ class PortalAccessScheduler(models.TransientModel):
     _name = 'portal.access.scheduler'
 
     @api.model
-    @api.multi
     def portal_access_scheduler(self):
         _logger.info('In portal_access_scheduler')
         self.env['portal.wizard'].sudo().get_all_partners()
@@ -33,7 +32,6 @@ class PortalUserCustom(models.TransientModel):
 
     custom_portal_access = fields.Boolean('Portal Access for purchasing platform', default=False)
 
-    @api.multi
     def get_all_partners(self):
         today_date = date.today()
         today_start = today_date
@@ -114,7 +112,6 @@ class PortalUserCustom(models.TransientModel):
                     except Exception as e:
                         _logger.error("%s", e)
 
-    @api.multi
     def get_error_message(self, partner_id):
         emails = []
         partners_error_empty = self.env['res.partner']

@@ -11,9 +11,9 @@
                         <group>
                             <field name="sale_order"/>
                             <field name="partner_id"/>
-                            <field name="compute_at_date" widget="radio"/>
-                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
-                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <field name="compute_at_date" widget="radio" value="0"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', '1')]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', '1')]}"/>
                         </group>
                     </group>
                     <footer>
@@ -27,11 +27,11 @@
         <record id="action_discount_summary_valuation" model="ir.actions.act_window">
             <field name="name">Discount Summary</field>
             <field name="res_model">popup.discount.summary</field>
-            <field name="view_type">form</field>
+<!--            <field name="view_type">form</field>-->
             <field name="view_mode">form</field>
             <field name="view_id" ref="view_popup_view"/>
             <field name="target">new</field>
-            <field name="context">{'default_compute_at_date': 0, 'valuation': True}</field>
+            <field name="context">{'default_compute_at_date': '0', 'valuation': True}</field>
         </record>
 
         <record model="ir.ui.view" id="form_list">
@@ -39,15 +39,15 @@
               <field name="model">sale.order</field>
               <field name="priority">20</field>
               <field name="arch" type="xml">
-                <tree create="false" edit="false" delete="false">
-                    <field name="name" string="Sales Order#"/>
-                    <field name="partner_id"/>
+                <tree create="false" edit="false" delete="false" multi_edit="1" sample="1">
+                    <field name="name" string="Sales Order#" optional="show" />
+                    <field name="partner_id" optional="hide" />
                    <!-- <field name="r_line_item"/>-->
-                    <field name="confirmation_date" widget="date"/>
-                    <field name="r_discount" widget="monetary"/>
-                    <field name="r_amount" widget="monetary"/>
+                    <field name="date_order" widget="date" optional="show"/>
+                    <field name="r_discount" widget="monetary" optional="show"/>
+                    <field name="r_amount" widget="monetary" optional="show"/>
                     <!--<field name="r_total" widget="monetary"/>-->
-                    <field name="currency_id"  invisible="1" />
+                    <field name="currency_id"  invisible="1" optional="show" />
                     <field name="state" invisible="1"/>
                 </tree>
               </field>

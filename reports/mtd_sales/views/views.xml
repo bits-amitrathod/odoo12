@@ -20,7 +20,7 @@
         <record id="action_mtd_sales" model="ir.actions.act_window">
             <field name="name">MTD Sales</field>
             <field name="res_model">mtd_sales.popup</field>
-            <field name="view_type">form</field>
+<!--            <field name="view_type">form</field>-->
             <field name="view_mode">form</field>
             <field name="view_id" ref="view_mtd_sales_popup"/>
             <field name="target">new</field>
@@ -44,8 +44,8 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false" string="MTD Sales">
-                    <field name="day_of_month"/>
-                    <field name="amount_total" widget='monetary'/>
+                    <field name="day_of_month" optional="show"/>
+                    <field name="amount_total" widget='monetary' optional="show"/>
                 </tree>
             </field>
         </record>

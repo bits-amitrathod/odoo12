@@ -15,7 +15,8 @@
     'depends': ['base','base_setup','product', 'stock','vendor_offer','prioritization_engine','inventory_monitor','customize_sales_order','mail_bot'],
 
     # always loaded
-    'data': [# 'security/ir.model.access.csv',
+    'data': [
+         'security/ir.model.access.csv',
          'views/inventory_notification_views.xml',
          'views/inventory_notification_print.xml',
          'views/inventory_notification_print_report.xml',

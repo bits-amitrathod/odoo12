@@ -15,10 +15,10 @@ class ProductsOnHandByDatePopUp(models.TransientModel):
     report_date = fields.Date('Report On Date', default=fields.date.today(), required=True)
 
     costing_method = fields.Selection([
-        (1, 'Standard Costing '),
-        (2, 'Average Costing'),
-        (3, 'FIFO Costing')
-    ], string="Costing Method", default=1,
+        ('1', 'Standard Costing '),
+        ('2', 'Average Costing'),
+        ('3', 'FIFO Costing')
+    ], string="Costing Method", default='1',
         help="Choose to analyze the Show Summary or from a specific date in the past.")
 
     vendor_id = fields.Many2one('res.partner', string='Vendor', required=False, )
@@ -30,10 +30,10 @@ class ProductsOnHandByDatePopUp(models.TransientModel):
     show_cost = fields.Boolean('Show Cost', default=False, required=False)
 
     quantities = fields.Selection([
-        (0, 'Show Only with Quantities '),
-        (1, 'Include Zero Quantities '),
-        (2, 'Show Only Zero Quantities ')
-    ], string="Quantities", help="", default=0)
+        ('0', 'Show Only with Quantities '),
+        ('1', 'Include Zero Quantities '),
+        ('2', 'Show Only Zero Quantities ')
+    ], string="Quantities", help="", default='0')
 
     def open_table(self):
 
@@ -74,10 +74,6 @@ class ProductsOnHandByDatePopUp(models.TransientModel):
             action["domain"].append(('warehouse_id', '=', self.warehouse_id.id))
 
         return action
-
-
-
-
 
     @staticmethod
     def string_to_date(date_string):

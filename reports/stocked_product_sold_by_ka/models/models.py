@@ -27,7 +27,7 @@ class StockedProductSoldByKa(models.Model):
     total_amount = fields.Float('Total')
     currency_id = fields.Many2one('res.currency', string='Currency')
 
-    @api.model_cr
+    #  @api.model_cr
     def init(self):
         self.init_table()
 
@@ -124,7 +124,7 @@ class StockedProductSoldByKa(models.Model):
         compute_at = self.env.context.get('compute_at')
         key_account_id = self.env.context.get('key_account')
 
-        if compute_at:
+        if compute_at == '1':
             if start_date and start_date is not None and end_date and end_date is not None:
                 select_query = select_query + " AND SP.date_done BETWEEN '" + str(
                     start_date) + "'" + " AND '" + str(self.string_to_date(end_date) + datetime.timedelta(days=1)) + "'"
@@ -142,7 +142,7 @@ class StockedProductSoldByKa(models.Model):
 
         self._cr.execute("CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + sql_query + " )")
 
-    @api.model_cr
+    #  @api.model_cr
     def delete_and_create(self):
         self.init_table()
 
@@ -156,9 +156,9 @@ class StockedProductSoldByKaExport(models.TransientModel):
     _description = 'Short date and over stocked product sold by KA export'
 
     compute_at_date = fields.Selection([
-        (0, 'Show All'),
-        (1, 'Date Range ')
-    ], string="Compute", default=0, help="Choose to analyze the Show Summary or from a specific date in the past.")
+        ('0', 'Show All'),
+        ('1', 'Date Range ')
+    ], string="Compute", default='0', help="Choose to analyze the Show Summary or from a specific date in the past.")
 
     start_date = fields.Date(string="Start Date", default=(fields.date.today() - datetime.timedelta(days=31)))
     end_date = fields.Date(string="End Date", default=fields.date.today())
@@ -167,7 +167,7 @@ class StockedProductSoldByKaExport(models.TransientModel):
 
     def download_excel_product_sold_by_ka(self):
 
-        if self.compute_at_date:
+        if self.compute_at_date == '1':
             e_date = self.string_to_date(str(self.end_date))
             e_date = e_date + datetime.timedelta(days=1)
             s_date = self.string_to_date(str(self.start_date))

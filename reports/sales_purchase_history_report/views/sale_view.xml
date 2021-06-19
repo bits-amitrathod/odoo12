@@ -31,7 +31,7 @@
         <record id="action_sale_report_purchase_wizard" model="ir.actions.act_window">
             <field name="name">Sales Purchase History</field>
             <field name="res_model">sale.purchase.history.report</field>
-            <field name="view_type">form</field>
+<!--            <field name="view_type">form</field>-->
             <field name="view_mode">form</field>
             <field name="view_id" ref="sr_sale_purchase_report_form_view"/>
             <field name="target">new</field>
@@ -45,27 +45,28 @@
               <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false">
 
-                    <field name="product_sku_ref" string="Product SKU"/>
-                    <field name="customer_name" string="Customer Name"/>
-                    <field name="sales_person_cust_name" />
-                    <field name="account_manager_cust_name" />
-                    <field name="order_id" string="Sales Order#"/>
-                    <field name="product_id" string="Product Name"/>
-                    <field name="is_broker_opt" />
-                    <field name="is_shared_opt" />
-                    <field name="sales_team_id" />
-                    <field name="sale_sales_margine" />
-                    <field name="delivered_date" string="Delivered Date"/>
-                    <field name="qty_delivered_converted" string="Delivered Qty" />
-                    <field name="product_uom_converted" string="UOM"/>
-                    <field name="unit_price_converted" widget="monetary" string="Unit Price" />
-                    <field name="total_price_converted" widget="monetary" string="Total" sum="Total"/>
-                    <field name="currency_id"  invisible="1" />
-                    <field name="quotations_per_code"  />
+                    <field name="product_sku_ref" string="Product SKU" optional="show"/>
+                    <field name="customer_name" string="Customer Name" optional="show"/>
+                    <field name="sales_person_cust_name" optional="show" />
+                    <field name="account_manager_cust_name" optional="show"/>
+                    <field name="order_id" string="Sales Order#" optional="show"/>
+                    <field name="product_id" string="Product Name" optional="show"/>
+                    <field name="is_broker_opt" optional="show"/>
+                    <field name="is_shared_opt" optional="show"/>
+                    <field name="sales_team_id" optional="show"/>
+                    <field name="sale_sales_margine" optional="show" />
+                    <field name="delivered_date" string="Delivered Date" optional="show"/>
+                    <field name="qty_delivered_converted" string="Delivered Qty" optional="show" />
+                    <field name="product_uom_converted" string="UOM" optional="show"/>
+                    <field name="unit_price_converted" widget="monetary" string="Unit Price" optional="show" />
+                    <field name="total_price_converted" widget="monetary" string="Total" sum="Total" optional="show"/>
+                    <field name="currency_id"  invisible="1" optional="show" />
+                    <field name="quotations_per_code" optional="show" />
 
                 </tree>
               </field>
         </record>
+
         <record id="view_sales_order_line_view_cstm" model="ir.ui.view">
             <field name="name">sale.order.line.view</field>
             <field name="model">sale.order.line</field>
@@ -78,22 +79,22 @@
                             </h1>
                         </div>
                         <group>
-                            <group>
+                            <!--<group>
                                 <field name="product_id"/>
                                 <field name="product_sku_ref"/>
                                 <field name="unit_price_converted"/>
                                 <field name="customer_name"/>
                                 <field name="quotations_per_code"  />
                                 <field name="account_manager_cust_name" />
-                            </group>
-                            <group>
+                            </group>-->
+                            <!--<group>
                                 <field name="qty_delivered_converted" string="Required Quantity"/>
                                 <field name="qty_delivered_converted" string="Delivered Quantity"/>
                                 <field name="unit_price_converted" widget="monetary"/>
                                 <field name="total_price_converted" string="Total Price" widget="monetary" sum="Total"/>
                                 <field name="delivered_date" string="Delivered Date"/>
                                 <field name="currency_id"  invisible="1" />
-                            </group>
+                            </group>-->
                         </group>
                     </sheet>
                 </form>
@@ -107,9 +108,9 @@
                 <form string="Export Payroll Report">
                     <group>
                         <group>
-                            <field name="compute_at_date" widget="radio"/>
-                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
-                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <field name="compute_at_date" widget="radio" default="0"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', 1)]}"/>
                         </group>
                         <group>
                             <div>Click On ' Export To File ' button to export payroll report file</div>
@@ -124,13 +125,13 @@
             </field>
         </record>
 
-        <act_window name="Export Payroll Report"
+        <!--<act_window name="Export Payroll Report"
                     res_model="salepuchasehistory.export"
                     src_model="sale.order.line"
                     view_mode="form"
                     target="new"
                     key2="client_action_multi"
-                    id="sale_purchase_history_act_window"/>
+                    id="sale_purchase_history_act_window"/>-->
 
         <menuitem id="menu_sale_report_purchase_wizard" name="Sales Purchase History" action="action_sale_report_purchase_wizard" parent="sale.menu_sale_report" sequence="22"/>
     </data>

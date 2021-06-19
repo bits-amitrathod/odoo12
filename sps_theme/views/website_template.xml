@@ -10,17 +10,26 @@
             <link rel="stylesheet" href="/sps_theme/static/src/less/common/font.style.less"/>
             <link rel="stylesheet" href="/sps_theme/static/src/less/pages/about.style.less"/>
             <link rel="stylesheet" href="/sps_theme/static/src/less/theme.style.less"/>
-<!--            <link rel="stylesheet" href="/sps_theme/static/src/less/jquery-ui.css"/>-->
+
         </xpath>
 
         <xpath expr="//script[last()]" position="after">
             <!-- .js -->
-
             <script type="text/javascript" src="/sps_theme/static/src/js/script.js"/>
             <script type="text/javascript" src="/sps_theme/static/src/js/notify_me.js"/>
-             <!--<script type="text/javascript" src="/sps_theme/static/src/js/jquery.js"/>-->
-<!--             <script type="text/javascript" src="/sps_theme/static/src/js/jquery-ui.js"/>-->
         </xpath>
+    </template>
+
+    <template id="assets_backend" name="web_enterprise assets backend" inherit_id="web.assets_backend">
+        <xpath expr="//link[last()]" position="after">
+            <link rel="stylesheet" type="text/scss" href="/sps_theme/static/src/scss/sps.scss"/>
+        </xpath>
+    </template>
+
+    <template id="_assets_frontend_helpers1" inherit_id="web_editor._assets_frontend_helpers">
+        <xpath expr="//link" position="before">
+            <link rel="stylesheet" type="text/scss" href="/sps_theme/static/src/scss/ui_test.scss"/>
+        </xpath> 
     </template>
 
 </odoo>

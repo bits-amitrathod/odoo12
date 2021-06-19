@@ -9,13 +9,13 @@
             <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false">
                      <field name="manufacture"/>
-                    <field name="sku"  string="Product SKU"/>
-                    <field name="name" string="Product Name"/>
-                    <field name="qty" string="Product Qty"/>
-                    <field name="list_price" string="Price"  widget='monetary'/>
-                    <field name="currency_id" invisible="1"/>
-                    <field name="min_date" string="Min Exp Date"/>
-                    <field name="max_date" string="Max Exp Date"/>
+                    <field name="sku"  string="Product SKU" optional="show"/>
+                    <field name="name" string="Product Name" optional="show"/>
+                    <field name="qty" string="Product Qty" optional="show"/>
+                    <field name="list_price" string="Price"  widget='monetary' optional="show"/>
+                    <field name="currency_id" invisible="1" optional="show"/>
+                    <field name="min_date" string="Min Exp Date" optional="show"/>
+                    <field name="max_date" string="Max Exp Date" optional="show"/>
 
                 </tree>
             </field>
@@ -50,10 +50,10 @@
             <field name="priority">20</field>
             <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false">
-                    <field name="sku_code"  string="Product SKU"/>
-                    <field name="name" string="Product Name"/>
-                    <field name="list_price" widget="monetary"/>
-                    <field name="currency_id" invisible="1"/>
+                    <field name="sku_code"  string="Product SKU" optional="show"/>
+                    <field name="name" string="Product Name" optional="show"/>
+                    <field name="list_price" widget="monetary" optional="show"/>
+                    <field name="currency_id" invisible="1" optional="show"/>
                 </tree>
             </field>
         </record>
@@ -102,7 +102,7 @@
         <record id="action_report_custom_product_catalog" model="ir.actions.act_window">
             <field name="name">Custom Product Catalog</field>
             <field name="res_model">popup.custom.product.catalog</field>
-            <field name="view_type">form</field>
+<!--            <field name="view_type">form</field>-->
             <field name="view_mode">form</field>
             <field name="target">new</field>
             <field name="context">{'is_custom_report': True}</field>
@@ -111,28 +111,15 @@
         <record id="action_report_product_catalog" model="ir.actions.act_window">
             <field name="name">Product Catalog</field>
             <field name="res_model">popup.product.catalog</field>
-            <field name="view_type">form</field>
+<!--            <field name="view_type">form</field>-->
             <field name="view_mode">form</field>
             <field name="target">new</field>
             <field name="context">{'is_custom_report': False}</field>
         </record>
 
-        <!--<record id="action_custom_catalog_list" model="ir.actions.act_window">-->
-        <!--<field name="name">Custom Product Catalog</field>-->
-        <!--<field name="res_model">product.product</field>-->
-        <!--<field name="view_type">form</field>-->
-        <!--<field name="view_mode">form,tree</field>-->
-        <!--<field name="view_id" ref="custom_list_view"/>-->
-        <!--</record>-->
 
-        <!--<record id="action_product_catalog_list" model="ir.actions.act_window">-->
-        <!--<field name="name">Product Catalog</field>-->
-        <!--<field name="res_model">product.product</field>-->
-        <!--<field name="view_type">form</field>-->
-        <!--<field name="view_mode">form,tree</field>-->
-        <!--<field name="view_id" ref="product_list_view"/>-->
-        <!--</record>-->
-
+        <!-- Export Change Need -->
+<!--
         <record id="view_purchase_order_edit_note_form11" model="ir.ui.view">
             <field name="name">product.product.export.product.catalog</field>
             <field name="model">report.report_custom_product_catalog.catalog_temp</field>
@@ -156,7 +143,7 @@
                     view_mode="form"
                     target="new"
                     key2="client_action_multi"
-                    id="custom_product_catalog_act_window"/>
+                    id="custom_product_catalog_act_window"/>-->
 
         <menuitem id="sr_menu_custome_product_catalog_wizard"
                   name="Custom Product Catalog"

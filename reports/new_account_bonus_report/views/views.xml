@@ -9,18 +9,18 @@
               <field name="priority">20</field>
               <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false">
-                    <field name="currency_id" invisible="1"/>
-                    <field name="customer"/>
-                    <field name="business_development"/>
-                    <field name="customer_business_development" invisible="1"/>
-                    <field name="key_account"/>
-                    <field name="customer_key_account" invisible="1"/>
-                    <field name="sale_order_id"/>
-                    <field name="date_invoice" widget="date"/>
-                    <field name="amount_total" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-                    <field name="months"/>
-                    <field name="invoice_status"/>
-                    <field name="invoice_state"/>
+                    <field name="currency_id" invisible="1" optional="show"/>
+                    <field name="customer" optional="show"/>
+                    <field name="business_development" optional="show"/>
+                    <field name="customer_business_development" invisible="1" optional="show"/>
+                    <field name="key_account" optional="show"/>
+                    <field name="customer_key_account" invisible="1" optional="show"/>
+                    <field name="sale_order_id" optional="show"/>
+                    <field name="invoice_date" widget="date" optional="show"/>
+                    <field name="amount_total" widget="monetary" options="{'currency_field': 'currency_id'}" optional="show"/>
+                    <field name="months" optional="show"/>
+                    <field name="invoice_status" optional="show"/>
+                    <field name="invoice_state" optional="show"/>
                 </tree>
               </field>
         </record>
@@ -41,7 +41,7 @@
                                 <field name="business_development"/>
                                 <field name="key_account"/>
                                 <field name="sale_order_id"/>
-                                <field name="date_invoice" widget="date"/>
+                                <field name="invoice_date" widget="date"/>
                             </group>
                             <group>
                                 <field name="currency_id" invisible="1"/>
@@ -89,7 +89,7 @@
         <record id="action_new_account_bonus_report" model="ir.actions.act_window">
             <field name="name">New Account Bonus Report</field>
             <field name="res_model">popup.new.account.bonus.report</field>
-            <field name="view_type">form</field>
+            <!--<field name="view_type">form</field>-->
             <field name="view_mode">form</field>
             <field name="view_id" ref="new_account_bonus_report_popup_view"/>
             <field name="target">new</field>
@@ -149,13 +149,21 @@
         <!-- Filter's code ends here -->
 
         <!-- Export Action code -->
-        <act_window name="Export New Account Bonus Report"
+        <!--<act_window name="Export New Account Bonus Report"
                     res_model="new.account.bonus.report.export"
                     src_model="new.account.bonus.report"
                     view_mode="form"
                     target="new"
                     key2="client_action_multi"
-                    id="new_account_by_month_by_bd_export_act_window"/>
+                    id="new_account_by_month_by_bd_export_act_window"/>-->
+
+        <record id="new_account_bonus_report_export_act_window" model="ir.actions.act_window">
+            <field name="name">Export New Account Bonus Report</field>
+            <field name="res_model">new.account.bonus.report.export</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+             <field name="binding_model_id" ref="model_new_account_bonus_report" />
+        </record>
 
         <!-- Export Action code ends here -->
 

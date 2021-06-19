@@ -11,10 +11,9 @@ class SaleSalespersonReport(models.TransientModel):
     order_partner_id = fields.Many2one('res.partner', string='Customer')
     contract_id = fields.Many2many('contract.contract', string='Contract')
     category_id = fields.Many2many('res.partner.category', string='Tag')
-    order_account_manager_cust = fields.Many2one('res.users', string="Key Account", domain="[('active', '=', True)"
-                                                                                               ",('share','=',False)]")
+    order_account_manager_cust = fields.Many2one('res.users', string="Key Account", domain="[('active','=',True),('share','=',False)]")
 
-    @api.multi
+    #@api.multi
     def open_table(self):
         tree_view_id = self.env.ref('sales_purchase_history_report.list_view').id
         form_view_id = self.env.ref('sales_purchase_history_report.view_sales_order_line_view_cstm').id

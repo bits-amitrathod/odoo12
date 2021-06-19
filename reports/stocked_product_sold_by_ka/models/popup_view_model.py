@@ -18,9 +18,9 @@ class ProductsSoldByKaPopUp(models.TransientModel):
                                                                             "('share','=',False)]")
 
     compute_at_date = fields.Selection([
-        (0, 'Show All '),
-        (1, 'Date Range ')
-    ], string="Compute", default=0, help="Choose to analyze the Show Summary or from a specific date in the past.")
+        ('0', 'Show All '),
+        ('1', 'Date Range ')
+    ], string="Compute", default='0', help="Choose to analyze the Show Summary or from a specific date in the past.")
 
     def open_table(self):
         tree_view_id = self.env.ref('stocked_product_sold_by_ka.report_product_sold_by_ka_list_view').id

@@ -6,7 +6,7 @@ import os
 
 from odoo import fields, http, modules, SUPERUSER_ID
 from odoo.http import request
-from odoo.addons.web.controllers.main import binary_content
+# from odoo.addons.web.controllers.main import binary_content
 from odoo.addons.portal.controllers.web import Home
 from odoo.addons.http_routing.models.ir_http import slug, _guess_mimetype
 
@@ -95,10 +95,11 @@ class ThemeController(http.Controller):
         if result:
             id = result.id
 
-            status, headers, content = binary_content(model='sps_theme.product_download_catelog', id=id,
-                                                      field='file',
-                                                      filename_field='filename',
-                                                      download=True, env=request.env(user=SUPERUSER_ID))
+            status, headers, content = request.env['ir.http'].binary_content(model='sps_theme.product_download_catelog',
+                                                                             id=id,
+                                                                             field='file',
+                                                                             filename_field='filename',
+                                                                             download=True)
 
             if not content:
                 img_path = modules.get_module_resource('web', 'static/src/img', 'placeholder.png')

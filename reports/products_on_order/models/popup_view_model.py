@@ -14,9 +14,9 @@ class ProductSaleByCountPopUp(models.TransientModel):
     _description = 'Products On Order'
 
     compute_at_date = fields.Selection([
-        (0, 'This Month '),
-        (1, 'Date Range ')
-    ], string="Compute", default=0, help="Choose to analyze the Show Summary or from a specific date in the past.")
+        ('0', 'This Month '),
+        ('1', 'Date Range ')
+    ], string="Compute", default='0', help="Choose to analyze the Show Summary or from a specific date in the past.")
 
     start_date = fields.Date('Start Date', default=fields.date.today())
 
@@ -30,7 +30,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
         tree_view_id = self.env.ref('products_on_order.products_on_orderlist_view').id
         form_view_id = self.env.ref('products_on_order.products_on_orderform_view').id
 
-        if self.compute_at_date:
+        if self.compute_at_date =='1':
             s_date = ProductSaleByCountPopUp.string_to_date(str(self.start_date))
             e_date = ProductSaleByCountPopUp.string_to_date(str(self.end_date)) + datetime.timedelta(days=1)
         else:

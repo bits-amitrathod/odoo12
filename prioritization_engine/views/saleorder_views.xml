@@ -1,6 +1,6 @@
 <odoo>
     <data>
-        <record id="view_order_form_ex" model="ir.ui.view">
+        <record id="view_order_form_ex3" model="ir.ui.view">
             <field name="name">sale.order.form_ex</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
@@ -9,7 +9,7 @@
                 <button name="action_quotation_send" position="after">
                     <button name="action_quotation_send" string="Send by Email" type="object" states="engine"
                             class="btn-primary"/>
-                    <button name="print_quotation" string="Print" type="object" states="engine"
+                    <button name="print_quotation" string="Print" type="object"
                             class="btn-primary o_sale_print"/>
                     <button name="action_confirm" id="action_confirm"
                             string="Confirm Sale" class="btn-primary" type="object"
@@ -24,6 +24,10 @@
 
                 </button>
 
+                <xpath expr="//field[@name='validity_date']" position="replace">
+                    <field name="validity_date" string="Validity" attrs="{'invisible': [('state', 'in', ['sale', 'done'])]}"/>
+                </xpath>
+
                 <field name="partner_shipping_id" position="after">
                     <field name="preferred_method"/>
                     <field name="shipping_terms"/>
@@ -31,8 +35,12 @@
                 <field name="payment_term_id" position="after">
                     <field name="carrier_info"/>
                     <field name="carrier_acc_no"/>
+                    <field name="client_order_ref"/>
+                    <field name="x_studio_allow_duplicate_po" widget="boolean_toggle"/>
+                    <field name="gl_account"/>
                     <field name="is_share"/>
                     <field name="sale_margine"/>
+                    <field name="carrier_id" context="{'order_id': id}" options='{"no_open": True, "no_create": True}' readonly="1"/>
                 </field>
                 <xpath expr="/form/sheet/notebook/page[1]/field[@name='order_line']/tree/field[@name='product_id']"
                        position="after">
@@ -59,9 +67,12 @@
                 <xpath expr="//group[@name='sales_person']/field[@name='user_id']"  position="after">
                      <field name="order_processor"/>
                 </xpath>
+                <xpath expr="//group[@name='sales_person']/field[@name='client_order_ref']"  position="replace">
+                     <field name="client_order_ref" invisible="1"/>
+                </xpath>
             </field>
         </record>
-        <record id="view_invoice_form_ex" model="ir.ui.view">
+      <!--  <record id="view_invoice_form_ex" model="ir.ui.view">
             <field name="name">account.invoice.form_ex</field>
             <field name="model">account.invoice</field>
             <field name="inherit_id" ref="account.invoice_form"/>
@@ -92,8 +103,9 @@
                     <field name="memo"/>
                 </xpath>
             </field>
-        </record>
-        <record id="invoice_supplier_form_ex" model="ir.ui.view">
+        </record>-->
+
+        <!--<record id="invoice_supplier_form_ex" model="ir.ui.view">
             <field name="name">account.invoice.supplier.form_ex</field>
             <field name="model">account.invoice</field>
             <field name="inherit_id" ref="account.invoice_supplier_form"/>
@@ -102,7 +114,7 @@
                     <field name="origin" string="Purchase Order#" attrs="{'invisible': [('origin', '=', False)]}"/>
                     <field name="name" string="Sale Order#"/>
                 </field>
-                <!--remove field-->
+                &lt;!&ndash;remove field&ndash;&gt;
                 <xpath expr="/form/sheet[1]/notebook/page[@name='other_info']/group/group[1]/field[@name='name']"
                        position="replace"/>
                 <xpath expr="/form/sheet[1]/notebook/page[@name='other_info']/group/group[1]/field[@name='date']"
@@ -110,20 +122,7 @@
                     <field name="memo"/>
                 </xpath>
             </field>
-        </record>
-        <record id="view_order_form_cstm" model="ir.ui.view">
-            <field name="name">sale.order.form.cstm</field>
-            <field name="model">sale.order</field>
-            <field name="inherit_id" ref="sale.view_order_form"/>
-            <field name="arch" type="xml">
-                <!--remove field-->
-                <xpath expr="//field[@name='client_order_ref']" position="replace"/>
-                <xpath expr="//field[@name='carrier_acc_no']" position="after">
-                    <field name="client_order_ref"/>
-                    <field name="gl_account"/>
-                </xpath>
-            </field>
-        </record>
+        </record>-->
 
         <record id="view_order_list_cstm" model="ir.ui.view">
             <field name="name">sale.order.list.cstm</field>
@@ -155,24 +154,24 @@
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='order_line']/form/group/group/div/field[@name='product_uom']" position="replace">
-                    <field name="product_uom" groups="product.group_uom" class="oe_inline oe_no_button" domain="[()]"
+                    <field name="product_uom" groups="uom.group_uom" class="oe_inline oe_no_button"
                                                     attrs="{'readonly': [('state', 'in', ('sale','done', 'cancel'))]}" options="{'no_create_edit': True, 'no_open': True}"/>
                 </xpath>
             </field>
         </record>
 
         <!-- Adding Sales Level & Is_shared field into group by-->
-        <record id="view_sales_order_filter_inherit" model="ir.ui.view">
+        <!--<record id="view_sales_order_filter_inherit" model="ir.ui.view">
             <field name="name">sale.order.common.search.inherit</field>
             <field name="model">sale.order</field>
-            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+            <field name="inherit_id" ref="sale.sale_order_view_search_inherit_sale"/>
             <field name="arch" type="xml">
 		    <xpath expr="/search/group" position="after">
 		        <filter name="sales_level" string="Sales Level" domain="[]" context="{'group_by':'sale_margine'}"/>
                 <filter name="is_shared" string="Is Shared" domain="[]" context="{'group_by':'is_share'}"/>
 		    </xpath>
             </field>
-        </record>
+        </record>-->
 
     </data>
 
@@ -183,44 +182,46 @@
         </xpath>
 
         <xpath expr="//div[@id='informations']" position="replace">
-            <div class="row mt32 ml8 mb32" id="informations">
-
-                <div t-if="doc.client_order_ref" class="mr8 ml8">
+            <div class="row mt32 mb32" id="informations">
+                <div t-if="doc.client_order_ref" class="col-auto col-3 mw-100 mb-2">
                     <strong>Your Reference:</strong>
-                    <p t-field="doc.client_order_ref"/>
+                    <p class="m-0" t-field="doc.client_order_ref"/>
                 </div>
-
-                <div t-if="doc.confirmation_date and doc.state not in ['draft','sent']"  class="mr8 ml8">
-                    <strong>Date Ordered:</strong>
-                    <p t-field="doc.confirmation_date"/>
+                <div t-if="doc.date_order and doc.state not in ['draft','sent']" class="col-auto col-3 mw-100 mb-2">
+                    <strong>Order Date:</strong>
+                    <p class="m-0" t-field="doc.date_order"/>
                 </div>
-                <div t-if="doc.date_order and doc.state in ['draft','sent']" class="mr8 ml8">
+                <div t-if="doc.date_order and doc.state in ['draft','sent']" class="col-auto col-3 mw-100 mb-2">
                     <strong>Quotation Date:</strong>
-                    <p t-field="doc.date_order"/>
+                    <p class="m-0" t-field="doc.date_order" t-options='{"widget": "date"}'/>
                 </div>
-                <div t-if="doc.order_processor.name" class="mr8 ml8">
+                <div t-if="doc.order_processor.name" class="col-auto col-3 mw-100 mb-2">
                     <strong>Order Processor:</strong>
                     <p t-field="doc.order_processor"/>
                 </div>
-                <div t-if="doc.partner_id.gl_account" class="mr8 ml8">
+                <div t-if="doc.partner_id.gl_account" class="col-auto col-3 mw-100 mb-2">
                     <strong>GL Account:</strong>
                     <t t-foreach="doc.partner_id.gl_account" t-as="gl_account">
                         <p t-field="gl_account.name"/>
                     </t>
                 </div>
-                <div name="payment_term" t-if="doc.payment_term_id" class="mr8 ml8">
+                <div name="payment_term" t-if="doc.payment_term_id" class="col-auto col-3 mw-100 mb-2">
                     <strong>Payment Terms:</strong>
                     <p t-field="doc.payment_term_id"/>
                 </div>
-                <div t-if="doc.validity_date and doc.state in ['draft', 'sent']" class="mr8 ml8">
+                <div t-if="doc.validity_date and doc.state in ['draft', 'sent']" class="col-auto col-3 mw-100 mb-2" name="expiration_date">
                     <strong>Expiration Date:</strong>
-                    <p t-field="doc.validity_date"/>
+                    <p class="m-0" t-field="doc.validity_date"/>
                 </div>
-                <div t-if="doc.carrier_track_ref" class="mr8 ml8">
+                <div t-if="doc.user_id.name" class="col-auto col-3 mw-100 mb-2">
+                    <strong>Business Development:</strong>
+                    <p class="m-0" t-field="doc.user_id"/>
+                </div>
+                <div t-if="doc.carrier_track_ref" class="col-auto col-3 mw-100 mb-2">
                     <strong>Tracking Reference:</strong>
                     <p t-field="doc.carrier_track_ref"/>
                 </div>
-                <div t-if="doc.carrier_id " class="mr8 ml8">
+                <div t-if="doc.carrier_id " class="col-auto col-3 mw-100 mb-2">
                     <strong>Delivery Method:</strong>
                     <p t-field="doc.carrier_id.name"/>
                 </div>

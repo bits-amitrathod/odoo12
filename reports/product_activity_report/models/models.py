@@ -131,7 +131,7 @@ class ReportProductActivity(models.Model):
                         res_users
                     ON
                         (
-                            product_template.responsible_id = res_users.id)
+                            product_template.id = res_users.id)
                     INNER JOIN
                         res_partner
                     ON
@@ -320,7 +320,7 @@ class ReportProductActivity(models.Model):
         sql_query = insert + """
                     SELECT
                         stock_warehouse.name                                      AS warehouse,
-                        stock_scrap.date_expected                                 AS DATE,
+                        stock_scrap.date_done                                 AS DATE,
                         stock_location.id as location_id,
                         stock_warehouse.code || '/' || stock_location.name AS location,
                         stock_scrap.name                                          AS event,

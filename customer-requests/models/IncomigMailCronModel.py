@@ -63,7 +63,6 @@ ATTACHMENT_DIR = "/home/odoo/Documents/attachments/"
 class IncomingMailCronModel(models.Model):
     _inherit = 'fetchmail.server'
 
-    @api.multi
     def fetch_mail(self):
         """ WARNING: meant for cron usage only - will commit() after each email! """
         start_time = time.time()
@@ -72,7 +71,7 @@ class IncomingMailCronModel(models.Model):
         for server in self:
             count, failed = 0, 0
             pop_server = None
-            if server.type == 'imap':
+            if server.server_type == 'imap':
                 additionnal_context = {
                     'fetchmail_cron_running': True
                 }
@@ -88,19 +87,19 @@ class IncomingMailCronModel(models.Model):
                         try:
                             res_id = MailThread.with_context(**additionnal_context).message_process(server.object_id.model, data[0][1], save_original=server.original, strip_attachments=(not server.attach))
                         except Exception:
-                            _logger.info('Failed to process mail from %s server %s.', server.type, server.name, exc_info=True)
+                            _logger.info('Failed to process mail from %s server %s.', server.server_type, server.name, exc_info=True)
                             failed += 1
                         imap_server.store(num, '+FLAGS', '\\Seen')
                         self._cr.commit()
                         count += 1
-                    _logger.info("Fetched %d email(s) on %s server %s; %d succeeded, %d failed.", count, server.type, server.name, (count - failed), failed)
+                    _logger.info("Fetched %d email(s) on %s server %s; %d succeeded, %d failed.", count, server.server_type, server.name, (count - failed), failed)
                 except Exception:
-                    _logger.info("General failure when trying to fetch mail from %s server %s.", server.type, server.name, exc_info=True)
+                    _logger.info("General failure when trying to fetch mail from %s server %s.", server.server_type, server.name, exc_info=True)
                 finally:
                     if imap_server:
                         imap_server.close()
                         imap_server.logout()
-            elif server.type == 'pop':
+            elif server.server_type == 'pop':
                 _logger.info('Server tpye is POP')
                 try:
                     pop_server = server.connect()
@@ -124,7 +123,7 @@ class IncomingMailCronModel(models.Model):
                         try:
                             if isinstance(message, xmlrpclib.Binary):
                                 message = bytes(message.data)
-                            if isinstance(message, pycompat.text_type):
+                            if isinstance(message, str):
                                 message = message.encode('utf-8')
                             extract = getattr(email, 'message_from_bytes', email.message_from_string)
                             message = extract(message)
@@ -286,8 +285,8 @@ class IncomingMailCronModel(models.Model):
 
                             if "errorCode" in response:
                                 self._error_code(response, saleforce_ac, attachments, customer_email, email_from, email_subject)
-                        except Exception:
-                            _logger.info('Failed to process mail from %s server %s.', server.type, server.name, exc_info=True)
+                        except Exception as e:
+                            _logger.info('Failed to process mail from %s server %s.', server.server_type, server.name, exc_info=True)
                             failed += 1
 
                         if res_id and server.action_id:
@@ -301,9 +300,9 @@ class IncomingMailCronModel(models.Model):
                         pop_server = None
                     _logger.info('num_messages = %d', num_messages)
                     _logger.info("Fetched %d email(s) on %s server %s; %d succeeded, %d failed.", num_messages,
-                                 server.type, server.name, (num_messages - failed), failed)
+                                 server.server_type, server.name, (num_messages - failed), failed)
                 except Exception as exc:
-                    _logger.info("General failure when trying to fetch mail from %s server %s.", server.type,
+                    _logger.info("General failure when trying to fetch mail from %s server %s.", server.server_type,
                                  server.name, exc_info=True)
                     _logger.error('Incoming email : %r', exc)
                 finally:
@@ -353,17 +352,21 @@ class IncomingMailCronModel(models.Model):
             for part in message.walk():
                 if part.get_content_type() == 'multipart/alternative':
                     alternative = True
+                if part.get_content_type() == 'multipart/mixed':
+                    mixed = True
                 if part.get_content_maintype() == 'multipart':
                     continue  # skip container
-                filename = part.get_param('filename', None, 'content-disposition')
-                if not filename:
-                    filename = part.get_param('name', None)
-                if filename:
-                    if isinstance(filename, tuple):
-                        filename = email.utils.collapse_rfc2231_value(filename).strip()
-                    else:
-                        filename = tools.decode_smtp_header(filename)
-                encoding = part.get_content_charset()
+                # filename = part.get_param('filename', None, 'content-disposition')
+                # if not filename:
+                #     filename = part.get_param('name', None)
+                # if filename:
+                #     if isinstance(filename, tuple):
+                #         filename = email.utils.collapse_rfc2231_value(filename).strip()
+                #     else:
+                #         filename = tools.decode_smtp_header(filename)
+                filename = part.get_filename()  # I may not properly handle all charsets
+                encoding = part.get_content_charset()  # None if attachment
+
                 if filename and part.get('content-id'):
                     inner_cid = part.get('content-id').strip('><')
                     attachments.append(_Attachment(filename, part.get_payload(decode=True),

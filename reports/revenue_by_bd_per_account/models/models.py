@@ -23,7 +23,7 @@ class RevenueByBdPerAccount(models.Model):
     # unit_price = fields.Float('Unit Price')
     total_amount = fields.Float('Total')
 
-    @api.model_cr
+    #  @api.model_cr
     def init(self):
         self.init_table()
 
@@ -72,7 +72,7 @@ class RevenueByBdPerAccount(models.Model):
         compute_at = self.env.context.get('compute_at')
         salesperson_account_id = self.env.context.get('business_development')
 
-        if compute_at:
+        if compute_at == '1':
             if start_date and start_date is not None and end_date and end_date is not None:
                 select_query = select_query + " AND SP.date_done BETWEEN '" + str(
                     start_date) + "'" + " AND '" + str(self.string_to_date(end_date) + datetime.timedelta(days=1)) + "'"
@@ -88,7 +88,7 @@ class RevenueByBdPerAccount(models.Model):
 
         self._cr.execute("CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + sql_query + " )")
 
-    @api.model_cr
+    #  @api.model_cr
     def delete_and_create(self):
         self.init_table()
 
@@ -103,9 +103,9 @@ class RevenueByBdPerAccountExport(models.TransientModel):
     _name = 'report.bd.revenue.per.account.export'
 
     compute_at_date = fields.Selection([
-        (0, 'Show All'),
-        (1, 'Date Range ')
-    ], string="Compute", default=0, help="Choose Show All or from a specific date in the past.")
+        ('0', 'Show All'),
+        ('1', 'Date Range ')
+    ], string="Compute", default='0', help="Choose Show All or from a specific date in the past.")
 
     start_date = fields.Date('Start Date', default=(fields.date.today() - datetime.timedelta(days=31)),
                              help="Choose a date to get the Revenu By Business Development at that  Start date")
@@ -115,7 +115,7 @@ class RevenueByBdPerAccountExport(models.TransientModel):
 
     def download_excel_bd_revenue(self):
 
-        if self.compute_at_date:
+        if self.compute_at_date == '1':
             e_date = self.string_to_date(str(self.end_date))
             e_date = e_date + datetime.timedelta(days=1)
             s_date = self.string_to_date(str(self.start_date))

@@ -8,7 +8,7 @@
                 <form string="Choose your date">
                      <group>
                         <group>
-                            <field name="compute_at_date" widget="radio"/>
+                            <field name="compute_at_date" widget="radio" default="0"/>
                              <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', '1')]}"/>
                             <field name="end_date" attrs="{'invisible': [('compute_at_date','=','1')]}"/>
                             <field name="sale_order" widget="many2one_tags" attrs="{'invisible': [('compute_at_date','=','0')]}"/>
@@ -25,7 +25,7 @@
          <record id="action_sales_order_invoices" model="ir.actions.act_window">
             <field name="name">Sales Order Invoice</field>
             <field name="res_model">report.sale.order.invoices</field>
-            <field name="view_type">form</field>
+            <!-- <field name="view_type">form</field> -->
             <field name="view_mode">form</field>
             <field name="view_id" ref="sales_order_popup_view"/>
             <field name="target">new</field>
@@ -34,13 +34,13 @@
 
         <record id="inherit_invoice_tree" model="ir.ui.view">
         <field name="name">exemple of change of create button on list view</field>
-        <field name="model">account.invoice</field>
-        <field name="inherit_id" ref="account.invoice_tree"/>
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='origin']" position="after">
-                <field name="purchase_order" string ="PO#"/>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_invoice_tree"/>
+        <field name="arch" type="xml" >
+            <xpath expr="//field[@name='invoice_origin']" position="after">
+                <field name="purchase_order" string ="PO#" optional="show"/>
             </xpath>
-             <xpath expr="//tree" position="attributes">
+             <xpath expr="//tree" position="attributes" >
                  <attribute name="create">false</attribute>
             </xpath>
         </field>

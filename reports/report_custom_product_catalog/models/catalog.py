@@ -80,7 +80,7 @@ class ProductCatalogReport(models.Model):
     exp_min_date = fields.Date("Exp Min Date", store=False)
     exp_max_date = fields.Date("Exp Max Date", store=False)
 
-    @api.multi
+    #@api.multi
     def _compare_qty(self):
         for product in self:
             product.env.cr.execute(
@@ -116,8 +116,6 @@ class customeproductcata(models.Model):
     manufacture = fields.Char(string="Manufacture")
     user_id = fields.Char("User Id")
 
-
-    @api.model_cr
     def init(self):
         self.init_table()
 
@@ -128,6 +126,5 @@ class customeproductcata(models.Model):
                 """
         self._cr.execute(sql_query)
 
-    @api.model_cr
     def delete_and_create(self):
         self.init_table()

@@ -4,7 +4,7 @@
 from odoo import fields, models, api
 
 class AccountInvoice(models.Model):
-	_inherit = 'account.invoice'
-	
+	_inherit = 'account.move'
+
 	date_invoice = fields.Date('Invoice Date', readonly=False)
 	

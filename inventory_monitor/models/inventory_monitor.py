@@ -74,7 +74,7 @@ class ResConfigSettings(models.TransientModel):
                    module_product_expiry=module_product_expiry)
         return res
 
-    @api.multi
+    #@api.multi
     def set_values(self):
         super(ResConfigSettings, self).set_values()
         self.env['ir.config_parameter'].sudo().set_param("inventory_extension.production_lot_alert_days",
@@ -133,7 +133,7 @@ class ProductTemplate(models.Model):
     inventory_percent_color=fields.Integer("Inv Percent Color", default="0")
     future_percent_color = fields.Integer("Inv Percent Color", default="0")
     qty_on_order = fields.Integer("Qty On Order")
-    percentage_field = fields.Percent()
+    # percentage_field = fields.Percent()
     inventory_monitor=fields.Boolean("Can be Monitored")
     max_inventory_product_level_duration = fields.Integer(string="Max Inventory Level")
     product_tmpl_id = fields.Many2one('product.template', "Product Template")

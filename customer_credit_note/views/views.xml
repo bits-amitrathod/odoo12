@@ -2,14 +2,14 @@
     <data>
         <record id="view_account_invoice_filter_inherit" model="ir.ui.view">
             <field name="name">account.invoice.select</field>
-            <field name="model">account.invoice</field>
+            <field name="model">account.move</field>
             <field name="inherit_id" ref="account.view_account_invoice_filter"/>
             <field name="arch" type="xml">
-                <xpath expr="//search/field[@name='user_id']" position="replace">
-                    <field name="user_id" string="Business Development" domain="[('share','=', False)]"/>
+                <xpath expr="//search/field[@name='invoice_user_id']" position="replace">
+                    <field name="invoice_user_id" string="Business Development" domain="[('share','=', False)]"/>
                 </xpath>
                 <xpath expr="//search/group/filter[@name='salesperson']" position="replace">
-                    <filter string="Business Development" name="salesperson" context="{'group_by':'user_id'}"/>
+                    <filter string="Business Development" name="salesperson" context="{'group_by':'invoice_user_id'}"/>
                 </xpath>
             </field>
         </record>

@@ -54,7 +54,7 @@
                                 </td>
                                 <td colspan="2" t-if="not product_list.get(product[0])['product'].product_tmpl_id" class='td-img align-middle'></td>
                                 <td align="center" t-if="product_list.get(product[0])['product'].product_tmpl_id" class='td-img align-middle'>
-                                    <span t-field="product_list.get(product[0])['product'].image_small" t-options="{'widget': 'image', 'class': 'rounded'}" />
+                                    <span t-field="product_list.get(product[0])['product'].image_128" t-options="{'widget': 'image', 'class': 'rounded'}" />
                                 </td>
                                 <td t-if="product_list.get(product[0])['product'].product_tmpl_id" class='td-product_name align-middle'>
                                     <div>
@@ -109,7 +109,8 @@
                                     </div>
                                 </td>
                                 <td class="text-center td-price align-middle" name="price">
-                                    <span t-esc="product_list.get(product[0])['price_list']" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'display_currency': product_list.get(product[0])['product'].product_tmpl_id.company_id.currency_id}" />
+                                    <span t-esc="product_list.get(product[0])['price_list']" style="white-space: nowrap;"/>
+                                    <!--t-options="{'widget': 'monetary', 'display_currency': product_list.get(product[0])['product'].product_tmpl_id.company_id.currency_id}"-->
                                 </td>
                                 <!--<td>
                                     &lt;!&ndash;<input type="hidden" t-att-data-product-id="product.product.id"&ndash;&gt;
@@ -132,7 +133,7 @@
             </t>
         </template>
 
-        <template id="my_in_stock_report_link" name="Link to frontend portal" inherit_id="portal.frontend_layout">
+        <template id="my_in_stock_report_link" name="Link to frontend portal" inherit_id="portal.user_dropdown">
             <xpath expr="//a[@id='o_logout']" position="before">
                 <a href="/shop/my_in_stock_report" role="menuitem" class="dropdown-item">My In-Stock Report</a>
             </xpath>

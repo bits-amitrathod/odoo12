@@ -12,7 +12,7 @@ class ProcessHighPriorityRequests(models.Model):
     documents = set()
 
     @api.model
-    @api.multi
+    #@api.multi
     def process_high_priority_requests(self):
         _logger.info('process high priority requests.')
         self.documents.clear()

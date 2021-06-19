@@ -10,12 +10,12 @@ class BdRevenuePerAccountReportPopup(models.TransientModel):
     business_development = fields.Many2one('res.users', string="Business Development", index=True)
 
     compute_at_date = fields.Selection([
-        (0, 'Show All '),
-        (1, 'Date Range ')
+        ('0', 'Show All '),
+        ('1', 'Date Range ')
     ], string="Compute", help="Choose to analyze the Show Summary or from a specific date in the past.")
 
 
-    # @api.multi
+    # #@api.multi
     def open_table(self):
         tree_view_id = self.env.ref('revenue_by_bd_per_account.revenue_by_bd_per_account_list_view').id
         form_view_id = self.env.ref('revenue_by_bd_per_account.revenue_by_bd_per_account_form_view').id

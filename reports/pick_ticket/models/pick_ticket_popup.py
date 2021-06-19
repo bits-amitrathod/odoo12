@@ -8,9 +8,9 @@ class ReportPickTicketGroupByOrderDate(models.TransientModel):
     _description = 'Pick Ticket Group By Order'
 
     compute_at_date = fields.Selection([
-        (0, 'Order'),
-        (1, 'Date Range ')
-    ], string="Compute", help="Choose to analyze the Show Summary or from a specific date in the past.")
+        ('0', 'Order'),
+        ('1', 'Date Range ')
+    ], string="Compute", help="Choose to analyze the Show Summary or from a specific date in the past.", default='0')
 
     start_date = fields.Date('Start Date', default=fields.date.today() - datetime.timedelta(days=30), required=True)
 
@@ -34,7 +34,7 @@ class ReportPickTicketGroupByOrderDate(models.TransientModel):
             'domain': []
         }
 
-        if self.compute_at_date:
+        if self.compute_at_date=='1':
             if self.start_date:
                 action["domain"].append(('scheduled_date', '>=', self.start_date))
 

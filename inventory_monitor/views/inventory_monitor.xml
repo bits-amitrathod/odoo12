@@ -132,7 +132,7 @@
     <record id="view_inventory_moniter_line_tree_test" model="ir.ui.view">
         <field name="name">inventory.monitor.tree</field>
         <field name="model">inventory.monitor</field>
-        <field name="context">{"inventory_monitor":1}</field>
+        <!--<field name="context">{"inventory_monitor":1}</field>-->
         <field name="arch" type="xml">
             <tree string="Inventory Monitor" create="false" edit="false" delete="false">
                 <field name="sku_code" />
@@ -155,7 +155,7 @@
     <record id="view_inventory_moniter_line_form_test" model="ir.ui.view">
         <field name="name">inventory.monitor.tree</field>
         <field name="model">inventory.monitor</field>
-        <field name="context">{"inventory_monitor":1}</field>
+        <!--<field name="context">{"inventory_monitor":1}</field>-->
         <field name="arch" type="xml">
             <form string="Inventory Monitor" create="false" edit="false" delete="false">
                <sheet>
@@ -230,7 +230,7 @@
     <record id="max_inventory_level_duration" model="ir.actions.act_window">
         <field name="name"> Max Inventory Level Duration </field>
         <field name="res_model">max.inventory.popup</field>
-        <field name="view_type">form</field>
+        <!--<field name="view_type">form</field>-->
         <field name="view_mode">form</field>
         <field name="view_id" ref="max_inventory_level_duration_popup"/>
         <field name="target">new</field>

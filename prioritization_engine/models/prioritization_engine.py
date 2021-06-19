@@ -12,10 +12,10 @@ _logger = logging.getLogger(__name__)
 
 
 class PrioritizationEngine(models.TransientModel):
-    _inherit = 'crm.team'
+    # _inherit = 'crm.team'
     _name = 'prioritization.engine.model'
 
-    team_type = fields.Selection([('prioritization', 'Prioritization')])
+#     team_type = fields.Selection([('prioritization', 'Prioritization')])
 
     allocated_product_dict = {}
     allocated_product_for_gl_account_dict = {}
@@ -440,7 +440,7 @@ class PrioritizationEngine(models.TransientModel):
         crm_team = self.env['crm.team'].search([('team_type', '=', 'engine')])
 
         for partner_id_key in allocated_products_dict.keys():
-            sale_order_dict = {'partner_id': partner_id_key, 'state': 'engine', 'team_id': crm_team['id']}
+            sale_order_dict = {'partner_id': partner_id_key, 'state': 'draft', 'team_id': crm_team['id']}
             try:
                 self.env.cr.savepoint()
                 sale_order = self.env['sale.order'].create(dict(sale_order_dict))
@@ -471,12 +471,14 @@ class PrioritizationEngine(models.TransientModel):
                         self.update_customer_request_status(allocated_product['customer_request_id'], 'Partial',
                                                             ' Allocated Partial order product.')
 
-                _logger.info('**********Before action_confirm************  :  %r', sale_order.state)
+                _logger.info('**********Before action_confirm************ : %r', sale_order.state)
                 sale_order.action_confirm()
-                _logger.info('**********After action_confirm************')
-                _logger.info('sale order name  : %r  sale order state : %r', sale_order.name, sale_order.state)
+                sale_order.write({'state': 'draft'})
+                _logger.info('**********Before _send_order_confirmation_mail() ************  :  %r', sale_order.state)
                 sale_order.force_quotation_send()
-                sale_order.write({'state': 'sent', 'confirmation_date': None})
+                _logger.info('sale order name  : %r  sale order state : %r', sale_order.name, sale_order.state)
+                # sale_order.write({'state': 'sent'}) # removed from odoo 14 'confirmation_date': None
+                _logger.info('changed sales order state : %r', sale_order.state)
                 self.env.cr.commit()
             except Exception as exc:
                 _logger.error("getting error while creation of sales order : %r", exc)
@@ -688,7 +690,7 @@ class PrioritizationEngine(models.TransientModel):
         template = self.env.ref('prioritization_engine.set_log_gl_account_response').sudo()
         local_context = {'body': body}
         try:
-            template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=True, )
+            template.with_context(local_context).send_mail(SUPERUSER_ID, raise_exception=True, force_send=False, )
         except Exception as exc:
             _logger.error("getting error while sending email of sales order : %r", exc)
             response = {'message': 'Unable to connect to SMTP Server'}

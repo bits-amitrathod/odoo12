@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+pick_report_popup,pick_report.popup,model_pick_report_popup,,1,1,1,1
+report_pick_report_pick_tmpl,report.pick_report.pick_tmpl,model_report_pick_report_pick_tmpl,,1,1,1,1

@@ -33,9 +33,11 @@
         <field name="arch" type="xml">
             <search string="Sales Revenue Analysis">
                 <field name="date"/>
-                <filter string="Date" name="year" invisible="1" date="date" default_period="this_year"/>
+                <filter string="Date" name="year" invisible="1" date="delivery_date" default_period="this_year"/>
                 <!--<filter name="Quotations" string="Quotations" domain="[('state','=', 'draft')]"/>-->
                 <filter name="Sales" string="Sales Orders" domain="[('state','not in',('draft', 'cancel', 'sent'))]"/>
+                <separator/>
+                <filter name="delivery_date" date="delivery_date" default_period="this_month"/>
                 <separator/>
                 <field name="user_id"/>
                 <field name="team_id"/>
@@ -78,17 +80,17 @@
             <field name="target">main</field>
               <field name="search_view_id" ref="view_order_product_search_revenue"/>
             <!--<field name="context">{'search_default_Sales':1, 'group_by_no_leaf':1,'group_by':[]}</field>-->
-            <field name="context" eval="{'search_default_Sales': 1, 'time_ranges': {'field':'delivery_date', 'range':'last_30_days'}}"/>
-            <!--<field name="context">{'default_compute_at_date': 0, 'valuation': True}</field>-->
+            <field name="context" eval="{'search_default_Sales': 1, 'search_default_delivery_date':1, 'time_ranges': {'field':'delivery_date', 'range':'this_month'}}"/>
+            <!--<field name="context">{'default_compute_at_date': 0, 'valuation': True}</field> -->
         </record>
 
           <record id="revenue_report_action_dashboard" model="ir.actions.act_window">
             <field name="name">Dashboard KA/BD/NA</field>
             <field name="res_model">sale.report.revenue</field>
-               <field name="view_type">form</field>
+<!--               <field name="view_type">form</field>-->
             <field name="view_mode">graph</field>
             <field name="search_view_id" ref="sale_revenue_dashboard.view_order_product_search_revenue"/>
-            <field name="context" eval="{'search_default_Sales': 1, 'time_ranges': {'field':'delivery_date', 'range':'last_30_days'}}"/>
+            <field name="context" eval="{'search_default_Sales': 1, 'search_default_delivery_date':1, 'time_ranges': {'field':'delivery_date', 'range':'this_month'}}"/>
         </record>
 
         <!--<record id="revenue_report_action_dashboard_dashboard" model="ir.actions.act_window.view">-->
@@ -104,7 +106,7 @@
         	<!--<field name="act_window_id" ref="revenue_report_action_dashboard"/>-->
         <!--</record>-->
         <record id="revenue_report_action_dashboard_graph" model="ir.actions.act_window.view">
-        	<field name="sequence" eval="3"/>
+<!--        	<field name="sequence" eval="3"/>-->
         	<field name="view_mode">graph</field>
         	<field name="view_id" ref="revenue_graph_ka_list_view"/>
         	<field name="act_window_id" ref="revenue_report_action_dashboard"/>

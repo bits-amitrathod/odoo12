@@ -43,7 +43,7 @@ class RevenueByKa(models.Model):
                     line['progress_revenue_quota'] = (line['total_revenue'] / line['revenue_quota'])*100
         return res
 
-    @api.model_cr
+    #  @api.model_cr
     def init(self):
         self.init_table()
 
@@ -61,7 +61,7 @@ class RevenueByKa(models.Model):
                     ROW_NUMBER () OVER (ORDER BY RP.id)         AS id, 
                     RP.id                                       AS customer, 
                     RP.account_manager_cust                     AS key_account,
-                    SOL.currency_id                             AS currency_id,
+                    CASE WHEN SOL.currency_id is NULL THEN 3 ELSE SOL.currency_id END AS currency_id,
                     CASE WHEN COUNT(SO.no_of_order) > 0 THEN COUNT(SO.no_of_order) ELSE 0 END AS no_of_orders,
                     CASE WHEN SUM(SOL.revenue) > 0 THEN SUM(SOL.revenue) ELSE 0 END AS total_revenue,
                     
@@ -114,8 +114,17 @@ class RevenueByKa(models.Model):
             sql_query = select_query + group_by
 
             self._cr.execute("CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + sql_query + " )")
+        else:
+            # This Code For only console error resolve purposr
+            self.env.cr.execute('''
+                         CREATE OR REPLACE VIEW %s AS (
+                         SELECT  so.id AS id,
+                                 so.name AS name
+                         FROM sale_order so
+                         )''' % (self._table)
+                                )
 
-    @api.model_cr
+    #  @api.model_cr
     def delete_and_create(self):
         self.init_table()
 
@@ -134,16 +143,16 @@ class RevenueByKaExport(models.TransientModel):
                                     ('10', 'October'), ('11', 'November'), ('12', 'December')], 'Start Month',
                                    required=True)
 
-    start_year = fields.Selection([(num, str(num)) for num in range(2010, (datetime.datetime.now().year) + 20)],
-                                  'Start Year', default=datetime.datetime.now().year, required=True)
+    start_year = fields.Selection([(str(num), str(num)) for num in range(2010, (datetime.datetime.now().year) + 20)],
+                                  'Start Year', default=str(datetime.datetime.now().year), required=True)
 
     end_month = fields.Selection([('01', 'January'), ('02', 'February'), ('03', 'March'), ('04', 'April'),
                                   ('05', 'May'), ('06', 'June'), ('07', 'July'), ('08', 'August'), ('09', 'September'),
                                   ('10', 'October'), ('11', 'November'), ('12', 'December')], 'End Month',
                                  required=True)
 
-    end_year = fields.Selection([(num, str(num)) for num in range(2010, (datetime.datetime.now().year) + 20)],
-                                'End Year', default=datetime.datetime.now().year, required=True)
+    end_year = fields.Selection([(str(num), str(num)) for num in range(2010, (datetime.datetime.now().year) + 20)],
+                                'End Year', default=str(datetime.datetime.now().year), required=True)
 
     key_account = fields.Many2one('res.users', string="Key Account", domain="[('active', '=', True), "
                                                                             "('share','=',False)]")

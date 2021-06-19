@@ -1,4 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_report_returned_sales_order_manager,report_returned_sales_order manager,model_report_returned_sales_order,sales_team.group_sale_manager,1,1,1,1
-access_report_returned_sales_order_user,report_returned_sales_order user,model_report_returned_sales_order,sales_team.group_sale_salesman_all_leads,1,1,0,0
+popup_returned_sales,popup.returned.sales,model_popup_returned_sales,,1,1,1,1
+report_returned_sales_order,report.returned.sales.order,model_report_returned_sales_order,,1,1,1,1
 

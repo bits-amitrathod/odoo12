@@ -57,7 +57,7 @@ class vendor_offer_automation(models.Model):
 
     @api.model
     def map_customer_sku_with_catelog_number(self):
-        if not self.document is None:
+        if not self.document is False:
             try:
                 book = xlrd.open_workbook(file_contents=self.document)
                 try:
@@ -229,7 +229,7 @@ class vendor_offer_automation(models.Model):
 
     @api.model
     def map_customer_sku_with_catelog_number_all_column(self):
-        if not self.document is None:
+        if not self.document is False:
             try:
                 book = xlrd.open_workbook(file_contents=self.document)
                 try:
@@ -594,8 +594,9 @@ class vendor_offer_automation(models.Model):
             'tag': 'import_offer_template',
             'params': [
                 {'model': 'sps.vendor_offer_automation.template', 'offer_id': self.id, 'vendor_id': self.partner_id.id,
-                 'user_type': 'supplier','import_type_ven': few_field_import}],
+                 'user_type': 'supplier','request_model':'sps.vendor_offer_automation.template','import_type_ven': few_field_import}],
         }
+
 
     def action_import_order_lines_all_column(self):
         tree_view_id = self.env.ref('vendor_offer_automation.vendor_template_client_action').id
@@ -609,6 +610,16 @@ class vendor_offer_automation(models.Model):
                  'vendor_id': self.partner_id.id,
                  'user_type': 'supplier', 'import_type_ven': all_field_import}],
         }
+        # tree_view_id = self.env.ref('vendor_offer_automation.vendor_template_client_action').id
+        # return {
+        #     'type': 'ir.actions.client',
+        #     'views': [(tree_view_id, 'form')],
+        #     'view_mode': 'form',
+        #     'tag': 'importtemplate',
+        #     'params': [
+        #         {'model': 'sps.customer.template', 'customer_id': self.id, 'user_type': 'customer', 'request_model':
+        #             'sps.customer.requests'}],
+        # }
 
     def get_order_line_multiplier(self, order_line_obj, premium):
         multiplier_list = None
@@ -629,7 +640,7 @@ class vendor_offer_automation(models.Model):
             return False
         return multiplier_list.id
 
-    @api.multi
+    #@api.multi
     def get_product_sales_count(self, product_id):
         product_sales_count = product_sales_count_month = product_sales_count_90 = product_sales_count_yrs = None
         try:
@@ -679,12 +690,51 @@ class vendor_offer_automation(models.Model):
         return dict(product_sales_count=product_sales_count, product_sales_count_month=product_sales_count_month,
                     product_sales_count_90=product_sales_count_90, product_sales_count_yrs=product_sales_count_yrs)
 
+    # @staticmethod
+    # def _read_xls_book(self, book, sheet_name,read_data=False):
+    #     sheet = book.sheet_by_name(sheet_name)
+    #     # emulate Sheet.get_rows for pre-0.9.4
+    #     for rowx, row in enumerate(map(sheet.row, range(sheet.nrows)), 1):
+    #         values = []
+    #         for colx, cell in enumerate(row, 1):
+    #             if cell.ctype is xlrd.XL_CELL_NUMBER:
+    #                 is_float = cell.value % 1 != 0.0
+    #                 values.append(
+    #                     str(cell.value)
+    #                     if is_float
+    #                     else str(int(cell.value))
+    #                 )
+    #             elif cell.ctype is xlrd.XL_CELL_DATE:
+    #                 is_datetime = cell.value % 1 != 0.0
+    #                 # emulate xldate_as_datetime for pre-0.9.3
+    #                 dt = datetime.datetime(*xlrd.xldate.xldate_as_tuple(cell.value, book.datemode))
+    #                 values.append(
+    #                     dt.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+    #                     if is_datetime
+    #                     else dt.strftime(DEFAULT_SERVER_DATE_FORMAT)
+    #                 )
+    #             elif cell.ctype is xlrd.XL_CELL_BOOLEAN:
+    #                 values.append(u'True' if cell.value else u'False')
+    #             elif cell.ctype is xlrd.XL_CELL_ERROR:
+    #                 raise ValueError(
+    #                     _("Invalid cell value at row %(row)s, column %(col)s: %(cell_value)s") % {
+    #                         'row': rowx,
+    #                         'col': colx,
+    #                         'cell_value': xlrd.error_text_from_code.get(cell.value, _("unknown error code %s", cell.value))
+    #                     }
+    #                 )
+    #             else:
+    #                 values.append(cell.value)
+    #         break
+    #     return values
+
     @staticmethod
     def _read_xls_book(book, pricing_index,flag, read_data=False,expiration_date_index=-1):
         sheet = book.sheet_by_index(pricing_index)
         data = []
         row_index = 0
-        for row in pycompat.imap(sheet.row, range(sheet.nrows)):
+        #for rowx, row in enumerate(map(sheet.row, range(sheet.nrows)), 1):
+        for rowx,row in enumerate(map(sheet.row, range(sheet.nrows))):
             if read_data is True and row_index == 0:
                 row_index = row_index + 1
                 continue
@@ -717,9 +767,9 @@ class vendor_offer_automation(models.Model):
                     if cell.ctype is xlrd.XL_CELL_NUMBER:
                         is_float = cell.value % 1 != 0.0
                         values.append(
-                            pycompat.text_type(cell.value)
+                            str(cell.value)
                             if is_float
-                            else pycompat.text_type(int(cell.value))
+                            else str(cell.value)
                         )
                     else:
                         values.append(cell.value)
@@ -733,7 +783,7 @@ class vendor_offer_automation(models.Model):
         return data
 
 
-    @api.multi
+    #@api.multi
     def write(self, vals):
         res = super(vendor_offer_automation, self).write(vals)
         if 'document' in vals:

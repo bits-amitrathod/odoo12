@@ -9,7 +9,7 @@ class BdNewAccountByMonthReportPopup(models.TransientModel):
     end_date = fields.Date('End Date',default=fields.date.today(),required=True , help="Choose a date to get the New Account By Month By Business Development at that  End date")
     business_development = fields.Many2one('res.users', string="Business Development", index=True)
 
-    # @api.multi
+    # #@api.multi
     def open_table(self):
         e_date = self.string_to_date(str(self.end_date))
         e_date = e_date + datetime.timedelta(days=1)

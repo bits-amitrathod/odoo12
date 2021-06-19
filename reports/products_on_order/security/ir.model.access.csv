@@ -1,4 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_report_products_on_order_manager,report_products_on_order manager,model_report_products_on_order,sales_team.group_sale_manager,1,1,1,1
-access_report_products_on_order_user,report_products_on_order user,model_report_products_on_order,sales_team.group_sale_salesman_all_leads,1,1,0,0
+popup_product_on_order,popup.product.on.order,model_popup_product_on_order,,1,1,1,1
+report_products_on_order,report.products.on.order,model_report_products_on_order,,1,1,1,1
 

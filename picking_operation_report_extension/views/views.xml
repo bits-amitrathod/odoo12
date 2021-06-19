@@ -2,7 +2,7 @@
 <odoo>
     <data>
     <template id="pick_operation_report_extension" inherit_id="stock.report_picking">
-        <xpath expr="//table[@t-if='o.move_line_ids']" position="replace">
+        <xpath expr="//table[@t-if='o.move_line_ids and o.move_ids_without_package']" position="replace">
             <table class="table table-condensed" t-if="o.move_line_ids">
                               <t t-set="has_barcode" t-value="any([move_lines.product_id and move_lines.product_id.sudo().barcode or move_lines.package_id for move_lines in o.move_line_ids])"/>
                               <t t-set="has_serial_number" t-value="o.move_line_ids.filtered(lambda ml: ml.lot_id or ml.lot_name)" groups="stock.group_production_lot"/>

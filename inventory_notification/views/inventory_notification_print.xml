@@ -54,7 +54,7 @@
                  </div>
                 ]]>
             </field>
-            <field name="user_signature" eval="False"/>
+<!--            <field name="user_signature" eval="False"/>-->
         </record>
 
     <record id="in_stock_scheduler_template" model="mail.template">
@@ -112,7 +112,7 @@
                  </div>
                 ]]>
             </field>
-            <field name="user_signature" eval="False"/>
+<!--            <field name="user_signature" eval="False"/>-->
         </record>
 
     <record id="mail_template_acquisitions_manager" model="mail.template">
@@ -169,7 +169,7 @@
                  </div>
                 ]]>
             </field>
-            <field name="user_signature" eval="False"/>
+<!--            <field name="user_signature" eval="False"/>-->
         </record>
 
     <record id="mail_template_vendor_offer_acceptance" model="mail.template">
@@ -194,7 +194,7 @@
                 </div>
                 ]]>
             </field>
-            <field name="user_signature" eval="False"/>
+<!--            <field name="user_signature" eval="False"/>-->
         </record>
 
 </odoo>

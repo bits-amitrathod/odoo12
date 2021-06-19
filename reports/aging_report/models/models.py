@@ -31,7 +31,7 @@ class AgingReport(models.Model):
     days = fields.Integer("Days", compute='get_quantity_byorm', store=False)
     avg_day = fields.Integer("AVG Days")
 
-    @api.multi
+    #@api.multi
     def get_quantity_byorm(self):
         for order in self:
             order.sku_code=order.product_id.sku_code
@@ -46,7 +46,7 @@ class AgingReport(models.Model):
                 #     diff = a - b
                 #     order.days = diff.days
 
-    @api.model_cr
+    #  @api.model_cr
     def init(self):
         self.init_table()
 
@@ -129,13 +129,13 @@ class AgingReport(models.Model):
                             product_template.name as product_name,
                             sum(stock_move_line.product_uom_qty) as qty ,
                             stock_production_lot.name as lot_name ,
-                            max(sale_order.confirmation_date) as create_date,
+                            max(sale_order.date_order) as create_date,
                             stock_production_lot.use_date as use_date,
                             stock_warehouse.id as warehouse_id,
                             14 as location_id,
                             product_template.id as product_id,
                             'Shipping' as type,
-                            avg(DATE_PART('day',CURRENT_DATE :: TIMESTAMP - sale_order.confirmation_date :: TIMESTAMP )) as avg_day   
+                            avg(DATE_PART('day',CURRENT_DATE :: TIMESTAMP - sale_order.date_order :: TIMESTAMP )) as avg_day   
                     from sale_order
                     INNER JOIN stock_picking ON  stock_picking.sale_id = sale_order.id and sale_order.state in('sale') and stock_picking.picking_type_id =1 and stock_picking.state in('assigned','waiting')
                     LEFT JOIN stock_move_line ON stock_move_line.picking_id = stock_picking.id
@@ -182,11 +182,11 @@ class AgingReport(models.Model):
             # select_query = select_query + " and  public.stock_move.location_dest_id=%s"
             self._cr.execute(select_query, (receiving_location,))
 
-    @api.model_cr
+    #  @api.model_cr
     def delete_and_create(self):
         self.init_table()
 
-    # @api.multi
+    # #@api.multi
     # def _get_Data(self):
     #     for order in self:
     #          order.tracking = 'Lot#:' + str(order.name)

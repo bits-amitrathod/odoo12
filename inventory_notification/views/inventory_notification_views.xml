@@ -62,11 +62,12 @@
     <record id="run_purchase_notification" model="ir.actions.act_window">
         <field name="name">Run Scheduler</field>
         <field name="res_model">inventory.notification.scheduler</field>
-        <field name="view_type">form</field>
+        <!-- <field name="view_type">form</field> -->
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>
 
-    <menuitem name="Notification Scheduler" id="menu_stock_config_form_ext" action="run_purchase_notification"
-              parent="product_expiry_extension.menu_scheduler_config" sequence="2"/>
+    <!--<menuitem name="Notification Scheduler" id="menu_stock_config_form_ext" action="run_purchase_notification"
+              parent="product_expiry_extension.menu_scheduler_config" sequence="2"/>-->
+
 </odoo>

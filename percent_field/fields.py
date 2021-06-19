@@ -2,7 +2,6 @@ from odoo import api, fields
 # from odoo import
 from odoo.fields import Float
 Default = object()
-from odoo.sql_db import LazyCursor
 from odoo.tools import float_repr, float_round
 from odoo.exceptions import ValidationError
 

@@ -8,7 +8,6 @@ log = logging.getLogger(__name__)
 class ReportProductsOnOrder(models.AbstractModel):
     _name = 'report.products_on_order.prod_on_order_temp'
 
-    @api.model
     def _get_report_values(self, docids, data=None):
         products_on_order_list = self.env['report.products.on.order'].browse(docids)
 

@@ -1,6 +1,6 @@
 <odoo>
     <data>
-        <record id="on_hold_doc_response" model="mail.template">
+       <record id="on_hold_doc_response" model="mail.template">
             <field name="name">On Hold Document Response</field>
             <field name="model_id" ref="base.model_res_users"/>
             <field name="email_from"><![CDATA["${object.company_id.name|safe}" <${(object.company_id.email or user.email)|safe}>]]></field>
@@ -42,7 +42,7 @@
                 </p>
 
             ]]></field>
-            <field name="user_signature" eval="False"/>
+            <!--<field name="user_signature" eval="False"/>-->
         </record>
 
         <record id="stockhawk_sales_order_confirm_email_response" model="mail.template">
@@ -66,7 +66,7 @@
                         <th style="border:1px solid black;border-collapse:collapse;">Sale Order</th>
                         <th style="border:1px solid black;border-collapse:collapse;">Upload Type</th>
                         <th style="border:1px solid black;border-collapse:collapse;">Date</th>
-                        <!--<th style="border:1px solid black;border-collapse:collapse;">Status</th>-->
+                        &lt;!&ndash;<th style="border:1px solid black;border-collapse:collapse;">Status</th>&ndash;&gt;
                         <th style="border:1px solid black;border-collapse:collapse;">Note</th>
                     </tr>
                     <tr>
@@ -74,7 +74,7 @@
                         <td style="border:1px solid black;border-collapse:collapse;">${ctx['sales_order_name']}</td>
                         <td style="border:1px solid black;border-collapse:collapse;">${ctx['upload_type']}</td>
                         <td style="border:1px solid black;border-collapse:collapse;">${ctx['date']}</td>
-                        <!--<td style="border:1px solid black;border-collapse:collapse;">${ctx['sales_order_status']}</td>-->
+                        &lt;!&ndash;<td style="border:1px solid black;border-collapse:collapse;">${ctx['sales_order_status']}</td>&ndash;&gt;
                         <td style="border:1px solid black;border-collapse:collapse;">${ctx['note']}</td>
                     </tr>
                 </table>
@@ -83,7 +83,7 @@
                     Odoo
                 </P>
             ]]></field>
-            <field name="user_signature" eval="False"/>
+            <!--<field name="user_signature" eval="False"/>-->
         </record>
     </data>
 </odoo>

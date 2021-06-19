@@ -77,13 +77,16 @@ class ReportInStockReport(models.Model):
     # actual_quantity = fields.Float(string='Qty Available For Sale', compute='_calculate_max_min_lot_expiration', digits=dp.get_precision('Product Unit of Measure'))
     partn_name=fields.Char()
 
-    @api.multi
+    #@api.multi
     def _calculate_max_min_lot_expiration(self):
         for record in self:
             record.actual_quantity = record.product_tmpl_id.actual_quantity
             if record.partner_id.property_product_pricelist.id:
-                record.price_list = record.partner_id.property_product_pricelist.get_product_price(
-                    record.product_id, record.actual_quantity, record.partner_id)
+                a = record.partner_id.property_product_pricelist.get_product_price(record.product_id, record.actual_quantity, record.partner_id)
+                if a:
+                    record.price_list =a
+                else:
+                    record.price_list = None
             else:
                 record.price_list = 0
 
@@ -111,7 +114,7 @@ class ReportInStockReport(models.Model):
             record.min_expiration_date = fields.Date.from_string(query_result['min'])
             record.max_expiration_date = fields.Date.from_string(query_result['max'])
 
-    @api.model_cr
+    #  @api.model_cr
     def init(self):
         self.init_table()
 
@@ -170,7 +173,7 @@ class ReportInStockReport(models.Model):
             sql_query = "CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + sql_query +  groupby +" )"
             self._cr.execute(sql_query)
 
-    @api.model_cr
+    #  @api.model_cr
     def delete_and_create(self):
         self.init_table()
 

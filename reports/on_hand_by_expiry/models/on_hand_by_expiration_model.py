@@ -27,7 +27,6 @@ class OnHandByExpiry(models.Model):
     manufactures = fields.Char("Manufacture")
     _rec_name = 'product_id'
 
-    @api.model_cr
     def init(self):
         self.init_table()
 
@@ -80,13 +79,12 @@ class OnHandByExpiry(models.Model):
 
         self._cr.execute(sql_query)
 
-    @api.model_cr
     def delete_and_create(self):
         self.init_table()
 
     cart_qty = fields.Integer(compute='_compute_cart_qty')
 
-    @api.multi
+    #@api.multi
     @api.depends('status')
     def _set_date_fg_color(self):
         for product_lot in self:

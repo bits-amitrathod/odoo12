@@ -6,10 +6,10 @@
 from odoo import models, fields
 
 
-class AccountInvoice(models.Model):
-    _inherit = "account.invoice"
-
-    workflow_process_id = fields.Many2one(
-        comodel_name='sale.workflow.process',
-        string='Sale Workflow Process'
-    )
+# class AccountInvoice(models.Model):
+#     _inherit = "account.invoice"
+#
+#     workflow_process_id = fields.Many2one(
+#         comodel_name='sale.workflow.process',
+#         string='Sale Workflow Process'
+#     )
