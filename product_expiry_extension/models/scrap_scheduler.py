@@ -35,7 +35,7 @@ class ScrapScheduler(models.TransientModel):
                 stock_ids=self.env['stock.quant'].search([('lot_id','=',stock_product_lot.id),('location_id', '=', location_id.id),('quantity', '>', 0)])
                 for stock in stock_ids:
                     scrap_id=self.env['stock.location'].search([('name', '=', 'Scrapped'), ('active', '=', True)]).id
-                    val = {'location_id': location_id.id, 'date_expected': today_start, 'scrap_qty': int(stock.quantity),
+                    val = {'location_id': location_id.id, 'date_done': today_start, 'scrap_qty': int(stock.quantity),
                         'state': 'draft', 'product_id': int(stock.product_id), 'scrap_location_id': scrap_id, 'owner_id': False,
                         'product_uom_id': int(stock_product_lot.product_uom_id), 'package_id': False, 'picking_id': False, 'origin': False,
                         'lot_id': int(stock.lot_id)}

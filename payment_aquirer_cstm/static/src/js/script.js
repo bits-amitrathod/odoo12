@@ -83,6 +83,7 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                     console.log(data['error_message']);
                     console.log(data['new_amount_delivery']);
                     console.log(data['status']);
+
                     if (data['status'] === true){
                         console.log('in if blog');
                         $carrierBadge.html(data['new_amount_delivery']);
@@ -92,6 +93,11 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                         console.log('in else blog');
                         $carrierBadge.addClass('o_wsale_delivery_carrier_error');
                         $carrierBadge.text(data['error_message']);
+
+                        $payButton.prop('disabled', true);
+                        var disabledReasons = $payButton.data('disabled_reasons') || {};
+                        disabledReasons.carrier_selection = true;
+                        $payButton.data('disabled_reasons', disabledReasons);
                     }
                 }
          });
@@ -264,14 +270,14 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
             }
         });
 
-        $("#fedex_2nd_day_p_m_u_s_by_4_30_p_m_second_business_day_").change(function() {
+        $("#fedex_2nd_day_u_s_by_4_30_p_m_second_business_day_").change(function() {
             if ( $(this).is(':checked') ) {
                 $("#expedited_shipping_div").parent().hide();
                 ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
                     'expedited_shipping': ""
                 });
                 ajax.jsonRpc("/shop/get_carrier", 'call', {
-                    'delivery_carrier_code': 'fedex_2nd_day_p_m_u_s_by_4_30_p_m_second_business_day_'
+                    'delivery_carrier_code': 'fedex_2nd_day_u_s_by_4_30_p_m_second_business_day_'
                 }).then(function(data) {
                     var carrier_id = parseInt(data['carrier_id'])
                     var values = {'carrier_id': carrier_id};
