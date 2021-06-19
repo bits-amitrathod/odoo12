@@ -4,6 +4,48 @@ from datetime import timedelta
 class VendorBillDate(models.Model):
     _inherit ='account.move'
 
+    def _recompute_dynamic_lines(self, recompute_all_taxes=False, recompute_tax_base_amount=False):
+        ''' Recompute all lines that depend of others.
+
+        For example, tax lines depends of base lines (lines having tax_ids set). This is also the case of cash rounding
+        lines that depend of base lines or tax lines depending the cash rounding strategy. When a payment term is set,
+        this method will auto-balance the move with payment term lines.
+
+        :param recompute_all_taxes: Force the computation of taxes. If set to False, the computation will be done
+                                    or not depending of the field 'recompute_tax_line' in lines.
+        '''
+        for invoice in self:
+            # Dispatch lines and pre-compute some aggregated values like taxes.
+            for line in invoice.line_ids:
+                if line.recompute_tax_line:
+                    recompute_all_taxes = True
+                    line.recompute_tax_line = False
+
+            # Compute taxes.
+            if recompute_all_taxes:
+                invoice._recompute_tax_lines()
+            if recompute_tax_base_amount:
+                invoice._recompute_tax_lines(recompute_tax_base_amount=True)
+
+            if invoice.is_invoice(include_receipts=True):
+                # Compute cash rounding.
+                invoice._recompute_cash_rounding_lines()
+
+                # Compute payment terms.
+                invoice._recompute_payment_terms_lines()
+
+                # Only synchronize one2many in onchange.
+                if invoice != invoice._origin:
+                    invoice.invoice_line_ids = invoice.line_ids.filtered(lambda line: not line.exclude_from_invoice_tab)
+
+                if not invoice.invoice_date:
+                    today = fields.Date.context_today(self)
+                    if self.invoice_payment_term_id:
+                        self.invoice_date = today
+                    else:
+                        self.invoice_date = self.invoice_date_due or self.invoice_date or today
+
+
     @api.onchange('payment_term_id', 'date_invoice')
     def _onchange_payment_term_date_invoice(self):
         # super(VendorBillDate,self). _onchange_payment_term_date_invoice()
